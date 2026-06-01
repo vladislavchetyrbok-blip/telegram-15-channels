@@ -1,0 +1,13 @@
+{
+  "workerRunning": true,
+  "apiBase": "http://localhost:3000",
+  "pid": 28520,
+  "intervalMs": 300000,
+  "updatedAt": "2026-06-01T20:40:06.592Z",
+  "lastTickAt": "2026-06-01T20:40:06.532Z",
+  "nextTickAt": "2026-06-01T20:45:06.592Z",
+  "lastStatus": 500,
+  "lastResult": null,
+  "lastError": null,
+  "tokenConfigured": true
+}

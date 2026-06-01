@@ -1,0 +1,35 @@
+{
+  "ok": true,
+  "mode": "audit",
+  "repaired": 0,
+  "preservedPublished": 0,
+  "before": {
+    "total": 105,
+    "published": 16,
+    "readyToPublish": 89,
+    "blocked": 0,
+    "mojibake": 0,
+    "captionOk": 105,
+    "captionMissing": 0,
+    "captionTooLong": 0,
+    "weakText": 0,
+    "weakImage": 0,
+    "telegramImageOk": 105,
+    "examples": []
+  },
+  "after": {
+    "total": 105,
+    "published": 16,
+    "readyToPublish": 89,
+    "blocked": 0,
+    "mojibake": 0,
+    "captionOk": 105,
+    "captionMissing": 0,
+    "captionTooLong": 0,
+    "weakText": 0,
+    "weakImage": 0,
+    "telegramImageOk": 105,
+    "examples": []
+  },
+  "checkedAt": "2026-06-01T20:06:06.111Z"
+}

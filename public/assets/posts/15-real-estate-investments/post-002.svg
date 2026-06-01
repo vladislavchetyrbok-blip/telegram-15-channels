@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1120"/>
+      <stop offset="0.62" stop-color="#102a43"/>
+      <stop offset="1" stop-color="#101827"/>
+    </linearGradient>
+    <linearGradient id="a" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#60a5fa"/>
+      <stop offset="1" stop-color="#fbbf24"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg)"/>
+  <rect x="64" y="58" width="1072" height="558" rx="34" fill="#07111f" opacity="0.78" stroke="#60a5fa" stroke-width="2"/>
+  <rect x="98" y="94" width="218" height="44" rx="22" fill="url(#a)"/>
+  <text x="124" y="123" fill="#06111f" font-family="Arial,sans-serif" font-size="20" font-weight="800">POST IMAGE</text>
+  <text x="98" y="194" fill="#dff8ff" font-family="Arial,sans-serif" font-size="34" font-weight="800">real-estate-investments</text>
+  <foreignObject x="98" y="228" width="760" height="190">
+    <div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Arial,sans-serif;color:#fff;font-size:50px;font-weight:850;line-height:1.12">real-estate-investments test post 2</div>
+  </foreignObject>
+  <text x="100" y="474" fill="#93a8bc" font-family="Arial,sans-serif" font-size="24">analysis / risk / real estate</text>
+  <g transform="translate(875 232)">
+    <rect x="0" y="0" width="190" height="190" rx="42" fill="#0b1727" stroke="#60a5fa" stroke-width="2"/>
+    <path d="M45 122 L84 82 L113 110 L151 61" fill="none" stroke="#60a5fa" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="45" cy="122" r="8" fill="#fbbf24"/>
+    <circle cx="84" cy="82" r="8" fill="#fbbf24"/>
+    <circle cx="113" cy="110" r="8" fill="#fbbf24"/>
+    <circle cx="151" cy="61" r="8" fill="#fbbf24"/>
+  </g>
+  <text x="98" y="555" fill="#60a5fa" font-family="Arial,sans-serif" font-size="18">dry-run ready asset / real-estate-investments-post-002</text>
+</svg>

@@ -1,0 +1,38 @@
+{
+    "ok":  true,
+    "mode":  "generate",
+    "size":  "1080x1350",
+    "selected":  105,
+    "imagesRegenerated":  105,
+    "skipped":  0,
+    "failed":  0,
+    "imageQualityStrong":  105,
+    "imageQualityMedium":  0,
+    "imageQualityWeak":  0,
+    "telegramImageOk":  105,
+    "visualVersion":  "premium_v2",
+    "presets":  {
+                    "ukraine-market":  "premium_business_editorial",
+                    "auto-comfort":  "home_tech_comfort",
+                    "dnipro-real-estate-ua":  "real_estate_premium",
+                    "mens-style":  "men_style_lifestyle",
+                    "dnipro-city":  "fishing_rest_city",
+                    "home-tech":  "home_tech_comfort",
+                    "land-houses":  "real_estate_premium",
+                    "real-estate-investments":  "premium_finance_dashboard",
+                    "personal-progress":  "fishing_rest_city",
+                    "ai-tech":  "ai_tech_command_center",
+                    "business-ideas":  "premium_finance_dashboard",
+                    "dnipro-real-estate-ru":  "real_estate_premium",
+                    "commercial-real-estate":  "real_estate_premium",
+                    "money-opportunities":  "premium_finance_dashboard",
+                    "fishing-rest":  "fishing_rest_city"
+                },
+    "errors":  [
+
+               ],
+    "telegramSent":  false,
+    "autopublishEnabledChanged":  false,
+    "targetsChanged":  false,
+    "generatedAt":  "2026-05-31T21:07:01.5090126Z"
+}

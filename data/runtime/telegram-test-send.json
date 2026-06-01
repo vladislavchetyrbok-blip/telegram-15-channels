@@ -1,0 +1,125 @@
+{
+  "ok": true,
+  "mode": "real_single_test",
+  "telegramSent": true,
+  "telegramApiCalled": true,
+  "realMassPublishEnabled": false,
+  "massBroadcast": false,
+  "channelsTouched": 1,
+  "tokenMasked": "configured ****984c",
+  "testChannelConfigured": true,
+  "selectedPost": "ukraine-market-post-001",
+  "selectedChannelTitle": "Україна: можливості та ринок",
+  "messageId": 6,
+  "status": "test_published",
+  "message": "1 тестовый пост отправлен. Проверь Telegram. Если не нужен — удали вручную.",
+  "error": null,
+  "payload": {
+    "targetMode": "real_single_test",
+    "target": "configured ****7401",
+    "method": "sendPhoto",
+    "postId": "ukraine-market-post-001",
+    "channelId": "ukraine-market",
+    "sourceChannelTitle": "ukraine-market",
+    "selectedChannelTitle": "Україна: можливості та ринок",
+    "title": "Як перевіряти програми підтримки та можливості",
+    "text": "Корисна програма підтримки має бути зрозумілою ще до подання заявки: хто організатор, для кого вона створена, які дедлайни, що саме потрібно підготувати і які зобов'язання бере учасник. Якщо відповідей немає, краще не поспішати.\n\nПеред участю варто перевірити офіційне джерело, умови фінансування в UAH, вимоги до документів та контакти для уточнень. Окремо звертайте увагу на формулювання: чесні програми не обіцяють миттєвий результат і не тиснуть на емоції.\n\nПрактична порада: збережіть шаблон заявки, короткий опис проєкту та список документів. Це допоможе швидше реагувати на нові можливості без хаосу.",
+    "caption": "<b>Як перевіряти програми підтримки та можливості</b>\n\nКорисна програма підтримки має бути зрозумілою ще до подання заявки: хто організатор, для кого вона створена, які дедлайни, що саме потрібно підготувати і які зобов'язання бере учасник. Якщо відповідей немає, краще не поспішати.\n\nПеред участю варто перевірити офіційне джерело, умови фінансування в UAH, вимоги до документів та контакти для уточнень. Окремо звертайте увагу на формулювання: чесні програми не обіцяють миттєвий результат і не тиснуть на емоції.\n\nПрактична порада: збережіть шаблон заявки, короткий опис проєкту та список документів. Це допоможе швидше реагувати на нові можливості без хаосу.",
+    "imageUrl": "/assets/posts/03-ukraine-opportunities-market/post-001.png",
+    "imageFilePath": "G:\\telegram-15-channels\\public\\assets\\telegram-posts\\03-ukraine-opportunities-market\\post-001.png",
+    "parseMode": "HTML"
+  },
+  "checks": [
+    {
+      "key": "channelId",
+      "ok": true,
+      "message": "ok"
+    },
+    {
+      "key": "title",
+      "ok": true,
+      "message": "ok"
+    },
+    {
+      "key": "text",
+      "ok": true,
+      "message": "ok"
+    },
+    {
+      "key": "imageUrl",
+      "ok": true,
+      "message": "ok"
+    },
+    {
+      "key": "imageFileExists",
+      "ok": true,
+      "message": "ok"
+    },
+    {
+      "key": "imageIsPostAsset",
+      "ok": true,
+      "message": "ok"
+    },
+    {
+      "key": "telegramImageStatus",
+      "ok": true,
+      "message": "ok"
+    },
+    {
+      "key": "telegramImageFile",
+      "ok": true,
+      "message": "ok"
+    },
+    {
+      "key": "textEncoding",
+      "ok": true,
+      "message": "ok"
+    },
+    {
+      "key": "forbiddenCurrency",
+      "ok": true,
+      "message": "ok"
+    },
+    {
+      "key": "readyForTest",
+      "ok": true,
+      "message": "ok"
+    },
+    {
+      "key": "token",
+      "ok": true,
+      "message": "ok"
+    },
+    {
+      "key": "testChannel",
+      "ok": true,
+      "message": "ok"
+    },
+    {
+      "key": "singleTarget",
+      "ok": true,
+      "message": "ok"
+    },
+    {
+      "key": "massPublishDisabled",
+      "ok": true,
+      "message": "ok"
+    },
+    {
+      "key": "botAccess",
+      "ok": true,
+      "message": "ok"
+    },
+    {
+      "key": "botAdmin",
+      "ok": true,
+      "message": "ok"
+    },
+    {
+      "key": "botCanPost",
+      "ok": true,
+      "message": "ok"
+    }
+  ],
+  "updatedAt": "2026-06-01T21:19:11.811Z"
+}

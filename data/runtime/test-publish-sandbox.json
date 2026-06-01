@@ -1,0 +1,35 @@
+{
+  "selectedChannelTitle": "Україна: можливості та ринок",
+  "selectedPost": "post-001",
+  "message": "Dry-run sandbox completed. Telegram API was not called.",
+  "ok": true,
+  "mode": "dry-run",
+  "telegramSent": false,
+  "telegramApiCalled": false,
+  "target": "mock/test receiver",
+  "payload": {
+    "target": "mock/test receiver",
+    "title": "Корисна можливість для фахівців",
+    "text": "Добірка кроків для пошуку програм, вакансій і навчальних можливостей в Україні.",
+    "imageUrl": "/assets/posts/03-ukraine-opportunities-market/post-001.svg",
+    "imageFilePath": "G:\\telegram-15-channels\\public\\assets\\posts\\03-ukraine-opportunities-market\\post-001.svg",
+    "parseMode": "HTML",
+    "buttons": []
+  },
+  "postStatus": "test_published",
+  "result": "sent",
+  "error": null,
+  "checks": {
+    "channelId": true,
+    "title": true,
+    "text": true,
+    "imageUrl": true,
+    "imageFileExists": true,
+    "imageBrowserPath": true,
+    "imageIsPostAsset": true,
+    "forbiddenCurrency": 0,
+    "readyForTest": true,
+    "realChannelsUntouched": true
+  },
+  "updatedAt": "2026-05-24T12:04:06.755Z"
+}

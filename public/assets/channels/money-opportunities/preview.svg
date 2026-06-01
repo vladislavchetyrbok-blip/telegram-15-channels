@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img" aria-label="Деньги и возможности preview">
+  <rect width="960" height="540" fill="#020617"/>
+  <rect x="48" y="48" width="864" height="444" rx="36" fill="#0f172a" stroke="#164e63" stroke-width="2"/>
+  <circle cx="798" cy="132" r="62" fill="#22d3ee" opacity="0.16"/>
+  <path d="M120 352h720" stroke="#155e75" stroke-width="18" stroke-linecap="round"/>
+  <path d="M146 302l112-98 82 72 176-162 78 64 110-108" fill="none" stroke="#22d3ee" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="120" y="158" font-family="Inter, Arial, sans-serif" font-size="36" font-weight="800" fill="#f8fafc">Деньги и возможности</text>
+  <text x="120" y="218" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="700" fill="#facc15">₴ $ € · UAH · USD · EUR</text>
+</svg>

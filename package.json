@@ -1,0 +1,49 @@
+{
+  "name": "telegram-15-channels",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "worker": "node scripts/autopublish-worker.mjs",
+    "autopublish:worker": "node scripts/autopublish-worker.mjs",
+    "autopublish:status": "node scripts/autopublish-status.mjs",
+    "autopublish:dry-run": "node scripts/autopublish-dry-run.mjs",
+    "autopilot:status": "node scripts/autopilot-status.mjs",
+    "autopilot:send-report": "node scripts/autopilot-send-report.mjs",
+    "autopilot:pause": "node scripts/autopilot-pause.mjs",
+    "autopilot:resume": "node scripts/autopilot-resume.mjs",
+    "publish:due": "node scripts/publish-due.mjs",
+    "autopublish": "node scripts/run-autopublish.mjs",
+    "check:autopublish": "node scripts/autopublish-worker.mjs --once",
+    "audit:content": "node scripts/content-audit-repair.mjs --audit",
+    "audit:calendar": "node scripts/audit-calendar.mjs",
+    "audit:previews": "node scripts/audit-previews.mjs",
+    "repair:content": "node scripts/content-audit-repair.mjs --repair",
+    "premium:visuals": "powershell -ExecutionPolicy Bypass -File .\\scripts\\generate-premium-visuals.ps1 -All -IncludePublished",
+    "visuals:stamp-provider": "node scripts/stamp-image-provider-metadata.mjs",
+    "prepare:tomorrow": "node scripts/prepare-tomorrow.mjs",
+    "start:all": "powershell -ExecutionPolicy Bypass -File .\\start-autopublish.ps1",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.468.0",
+    "next": "^14.2.15",
+    "pg": "^8.21.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.6",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^14.2.15",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.15",
+    "typescript": "^5.6.3"
+  }
+}

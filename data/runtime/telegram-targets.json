@@ -1,0 +1,137 @@
+{
+  "money-opportunities": {
+    "channelId": "money-opportunities",
+    "channelTitle": "Деньги и возможности",
+    "telegramTarget": "-1003995852493",
+    "telegramTargetTitle": "Деньги и возможности",
+    "telegramTargetType": "channel",
+    "telegramLinkedAt": "2026-05-25T00:00:00.000Z",
+    "telegramLinkSource": "manual"
+  },
+  "ai-tech": {
+    "channelId": "ai-tech",
+    "channelTitle": "AI и технологии",
+    "telegramTarget": "-1003504277183",
+    "telegramTargetTitle": "AI и технологии",
+    "telegramTargetType": "channel",
+    "telegramLinkedAt": "2026-05-25T00:00:00.000Z",
+    "telegramLinkSource": "manual"
+  },
+  "ukraine-market": {
+    "channelId": "ukraine-market",
+    "channelTitle": "Україна: можливості та ринок",
+    "telegramTarget": "-1003980997401",
+    "telegramTargetTitle": "Україна: можливості та ринок",
+    "telegramTargetType": "channel",
+    "telegramLinkedAt": "2026-05-31T17:34:54.166Z",
+    "telegramLinkSource": "getUpdates"
+  },
+  "mens-style": {
+    "channelId": "mens-style",
+    "channelTitle": "Мужской стиль и вещи",
+    "telegramTarget": "-1003944130233",
+    "telegramTargetTitle": "Мужской стиль и вещи",
+    "telegramTargetType": "channel",
+    "telegramLinkedAt": "2026-05-25T00:00:00.000Z",
+    "telegramLinkSource": "manual"
+  },
+  "home-tech": {
+    "channelId": "home-tech",
+    "channelTitle": "Техника для дома",
+    "telegramTarget": "-1003828463272",
+    "telegramTargetTitle": "Техника для дома",
+    "telegramTargetType": "channel",
+    "telegramLinkedAt": "2026-05-25T00:00:00.000Z",
+    "telegramLinkSource": "manual"
+  },
+  "fishing-rest": {
+    "channelId": "fishing-rest",
+    "channelTitle": "Рыбалка и отдых",
+    "telegramTarget": "-1003819092877",
+    "telegramTargetTitle": "Рыбалка и отдых",
+    "telegramTargetType": "channel",
+    "telegramLinkedAt": "2026-05-25T00:00:00.000Z",
+    "telegramLinkSource": "manual"
+  },
+  "dnipro-city": {
+    "channelId": "dnipro-city",
+    "channelTitle": "Дніпро / Город Днепр",
+    "telegramTarget": "-1003920058596",
+    "telegramTargetTitle": "Дніпро / Город Днепр",
+    "telegramTargetType": "channel",
+    "telegramLinkedAt": "2026-05-25T00:00:00.000Z",
+    "telegramLinkSource": "manual"
+  },
+  "auto-comfort": {
+    "channelId": "auto-comfort",
+    "channelTitle": "Авто и комфорт",
+    "telegramTarget": "-1003801331980",
+    "telegramTargetTitle": "Авто и комфорт",
+    "telegramTargetType": "channel",
+    "telegramLinkedAt": "2026-05-25T00:00:00.000Z",
+    "telegramLinkSource": "manual"
+  },
+  "business-ideas": {
+    "channelId": "business-ideas",
+    "channelTitle": "Ідеї для бізнесу",
+    "telegramTarget": "-1003995476841",
+    "telegramTargetTitle": "Ідеї для бізнесу",
+    "telegramTargetType": "channel",
+    "telegramLinkedAt": "2026-05-25T00:00:00.000Z",
+    "telegramLinkSource": "manual"
+  },
+  "personal-progress": {
+    "channelId": "personal-progress",
+    "channelTitle": "Личный прогресс",
+    "telegramTarget": "-1003793101443",
+    "telegramTargetTitle": "Личный прогресс",
+    "telegramTargetType": "channel",
+    "telegramLinkedAt": "2026-05-25T00:00:00.000Z",
+    "telegramLinkSource": "manual"
+  },
+  "dnipro-real-estate-ru": {
+    "channelId": "dnipro-real-estate-ru",
+    "channelTitle": "Недвижимость Днепра",
+    "telegramTarget": "-1003703940196",
+    "telegramTargetTitle": "Недвижимость Днепра",
+    "telegramTargetType": "channel",
+    "telegramLinkedAt": "2026-05-25T00:00:00.000Z",
+    "telegramLinkSource": "manual"
+  },
+  "dnipro-real-estate-ua": {
+    "channelId": "dnipro-real-estate-ua",
+    "channelTitle": "Нерухомість Дніпра",
+    "telegramTarget": "-1003973181492",
+    "telegramTargetTitle": "Нерухомість Дніпра",
+    "telegramTargetType": "channel",
+    "telegramLinkedAt": "2026-05-25T00:00:00.000Z",
+    "telegramLinkSource": "manual"
+  },
+  "commercial-real-estate": {
+    "channelId": "commercial-real-estate",
+    "channelTitle": "Коммерческая недвижимость",
+    "telegramTarget": "-1003163500222",
+    "telegramTargetTitle": "Коммерческая недвижимость",
+    "telegramTargetType": "channel",
+    "telegramLinkedAt": "2026-05-25T00:00:00.000Z",
+    "telegramLinkSource": "manual"
+  },
+  "land-houses": {
+    "channelId": "land-houses",
+    "channelTitle": "Земля и дома / Земля та будинки",
+    "telegramTarget": "-1003767929992",
+    "telegramTargetTitle": "Земля и дома / Земля та будинки",
+    "telegramTargetType": "channel",
+    "telegramLinkedAt": "2026-05-25T00:00:00.000Z",
+    "telegramLinkSource": "manual"
+  },
+  "real-estate-investments": {
+    "channelId": "real-estate-investments",
+    "channelTitle": "Инвестиции в недвижимость",
+    "telegramTarget": "-1003962737183",
+    "telegramTargetTitle": "Инвестиции в недвижимость",
+    "telegramTargetType": "channel",
+    "telegramLinkedAt": "2026-05-25T00:00:00.000Z",
+    "telegramLinkSource": "manual"
+  }
+}

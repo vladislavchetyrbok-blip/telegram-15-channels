@@ -1,0 +1,32 @@
+[
+  {
+    "id": "aa5b26f8-aad5-48af-bc05-34792b36476a",
+    "channelId": "ai-tech",
+    "postId": "weekly-2026-05-31-02-ai-technologies-02",
+    "status": "skipped",
+    "message": "dry_run: due post was not sent",
+    "telegramMessageId": null,
+    "telegramMessageLink": null,
+    "createdAt": "2026-06-01T20:19:09.244Z"
+  },
+  {
+    "id": "0179d43a-6c21-4fd8-82ee-01944bb89dc5",
+    "channelId": "ai-tech",
+    "postId": "weekly-2026-05-31-02-ai-technologies-02",
+    "status": "skipped",
+    "message": "dry_run: due post was not sent",
+    "telegramMessageId": null,
+    "telegramMessageLink": null,
+    "createdAt": "2026-06-01T20:35:28.980Z"
+  },
+  {
+    "id": "c1a2e4be-9e04-4242-9b2d-5ed718bf1e9c",
+    "channelId": "ai-tech",
+    "postId": "weekly-2026-05-31-02-ai-technologies-02",
+    "status": "skipped",
+    "message": "dry_run: due post was not sent",
+    "telegramMessageId": null,
+    "telegramMessageLink": null,
+    "createdAt": "2026-06-01T21:15:08.126Z"
+  }
+]

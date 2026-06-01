@@ -1,0 +1,21 @@
+{
+  "checked": 1,
+  "published": 0,
+  "skipped": 1,
+  "errors": 0,
+  "details": [
+    {
+      "channelId": "ai-tech",
+      "postId": "weekly-2026-05-31-02-ai-technologies-02",
+      "status": "skipped",
+      "message": "dry_run: due post was not sent"
+    }
+  ],
+  "message": "Processed 1 due post(s).",
+  "startedAt": "2026-06-01T21:15:08.121Z",
+  "finishedAt": "2026-06-01T21:15:08.127Z",
+  "storeMode": "json",
+  "dryRun": true,
+  "lastErrors": [],
+  "updatedAt": "2026-06-01T21:15:08.127Z"
+}
