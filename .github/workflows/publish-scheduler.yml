@@ -18,7 +18,7 @@ jobs:
       TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-      PUBLISH_DUE_STORE: postgres
+      PUBLISH_DUE_STORE: json
       PUBLISH_DUE_DRY_RUN: "false"
       PUBLISH_DUE_MAX_PER_RUN: "1"
 
