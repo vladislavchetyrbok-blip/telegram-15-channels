@@ -21,6 +21,7 @@ import {
   SendHorizontal,
   Settings,
   ShieldCheck,
+  TimerReset,
   Wand2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -35,6 +36,7 @@ const navItems = [
   { href: "/preflight", label: "Preflight", icon: ScanSearch },
   { href: "/publish-readiness", label: "Готово к публикации", icon: CheckCircle2 },
   { href: "/publishing-center", label: "Центр публикаций", icon: Rocket },
+  { href: "/admin/publish-scheduler", label: "Publish scheduler", icon: TimerReset },
   { href: "/network", label: "Пульт сети", icon: Gauge },
   { href: "/channels", label: "Каналы", icon: RadioTower },
   { href: "/generation", label: "Генерация", icon: Wand2 },

@@ -12,10 +12,13 @@
     }
   ],
   "message": "Processed 1 due post(s).",
-  "startedAt": "2026-06-01T21:15:08.121Z",
-  "finishedAt": "2026-06-01T21:15:08.127Z",
+  "runId": "99fe475f-8ea1-46f7-bb20-d07789573fa8",
+  "source": "api",
+  "startedAt": "2026-06-02T08:51:15.570Z",
+  "finishedAt": "2026-06-02T08:51:15.577Z",
   "storeMode": "json",
   "dryRun": true,
+  "realPublishEnabled": false,
   "lastErrors": [],
-  "updatedAt": "2026-06-01T21:15:08.127Z"
+  "updatedAt": "2026-06-02T08:51:15.577Z"
 }

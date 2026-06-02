@@ -1,91 +1,195 @@
 # GitHub Actions Publish Scheduler
 
-The workflow `.github/workflows/publish-scheduler.yml` runs `npm run publish:due` at minute 17 of every hour and can also be started manually with `workflow_dispatch`.
+Workflow: `.github/workflows/publish-scheduler.yml`
+
+It runs `npm run publish:due` once per hour at minute 17:
+
+```yaml
+cron: "17 * * * *"
+```
+
+The workflow also supports manual launch through `workflow_dispatch`.
+
+## Current Mode
+
+The production scheduler currently uses JSON storage:
+
+- `PUBLISH_DUE_STORE=json`
+- runtime plan: `data/runtime/weekly-content-plan.json`
+- runtime logs: `data/runtime/publication_logs.json`
+- latest run status: `data/runtime/publish-scheduler.json`
+
+`DATABASE_URL` is not required for the current JSON mode.
+
+GitHub Actions restores and saves a small scheduler runtime cache for:
+
+- `data/runtime/publication_logs.json`
+- `data/runtime/publish-scheduler.json`
+
+This lets duplicate protection see successful publication logs from previous hourly GitHub runs without requiring a database.
 
 ## Required GitHub Secrets
 
-- `TELEGRAM_BOT_TOKEN`: bot token used for real Telegram `sendPhoto` calls.
-- `DATABASE_URL`: PostgreSQL connection string for the remote scheduler data store.
-- `OPENAI_API_KEY`: available to the job for future AI generation steps. The current `publish:due` command does not call OpenAI directly.
+Add these in GitHub repository settings:
 
-Tokens are read only from environment variables and are not stored in code.
+- `TELEGRAM_BOT_TOKEN`
+- `TELEGRAM_DRY_RUN`
+- `TELEGRAM_REAL_PUBLISH_ENABLED`
+- `AUTOPUBLISH_ENABLED`
+- `AUTOPUBLISH_DAILY_LIMIT_PER_CHANNEL`
+- `AUTOPUBLISH_MAX_POSTS_PER_DAY`
+- `AUTOPUBLISH_TIME`
+- `AUTOPUBLISH_TIMEZONE`
+- `AUTOPUBLISH_TIME_START`
+- `AUTOPUBLISH_TIME_END`
+- `AUTOPUBLISH_DAYS`
+- `AUTOPUBLISH_WORKER_INTERVAL_MS`
 
-## Runtime Safety
+Optional/future secrets:
 
-The workflow sets:
+- `DATABASE_URL`: only needed after moving from JSON store to PostgreSQL/Supabase.
+- `OPENAI_API_KEY`: only needed if future due-publish steps call AI generation remotely.
 
-- `PUBLISH_DUE_STORE=postgres`
+Tokens are read from environment variables only. They are not stored in code.
+
+## Real Publish And Pause
+
+Real Telegram publishing is enabled only when all safety flags allow it:
+
 - `PUBLISH_DUE_DRY_RUN=false`
-- `PUBLISH_DUE_MAX_PER_RUN=1`
+- `TELEGRAM_DRY_RUN=false`
+- `TELEGRAM_REAL_PUBLISH_ENABLED=true`
 
-`PUBLISH_DUE_MAX_PER_RUN=1` prevents a first GitHub Actions run from publishing a large overdue backlog at once. Increase it only after checking the queue.
+To pause real publishing from GitHub Actions, set:
 
-Local runs default to JSON storage and dry-run mode:
+```text
+TELEGRAM_REAL_PUBLISH_ENABLED=false
+```
+
+The admin page dry-run button always forces:
+
+```text
+PUBLISH_DUE_DRY_RUN=true
+PUBLISH_DUE_SOURCE=api
+```
+
+So it checks due posts without sending Telegram messages.
+
+## Manual Workflow Launch
+
+1. Open GitHub repository.
+2. Go to `Actions`.
+3. Select `Publish due Telegram posts`.
+4. Click `Run workflow`.
+5. Confirm the run.
+
+The workflow uses concurrency control and `PUBLISH_DUE_MAX_PER_RUN=1`, so a single run should not publish a large overdue backlog.
+
+The workflow also restores the latest scheduler runtime cache before publishing and saves it after the run, including failed runs.
+
+## Local Commands
+
+Safe local check:
 
 ```powershell
 npm run publish:due
 ```
 
-Real local send requires an explicit opt-in:
+Local runs default to dry-run unless explicitly configured otherwise.
+
+Admin status:
 
 ```powershell
-$env:PUBLISH_DUE_DRY_RUN="false"
-$env:TELEGRAM_BOT_TOKEN="..."
-npm run publish:due
+Invoke-RestMethod http://127.0.0.1:3000/api/admin/publish-scheduler/status
+Invoke-RestMethod http://127.0.0.1:3000/api/admin/publication-logs
 ```
 
-## PostgreSQL Schema
+Admin page:
 
-The command creates `publication_logs` and `scheduler_runs` if they do not exist. The `posts` table is expected to exist with these columns:
-
-```sql
-create table if not exists posts (
-  id text primary key,
-  post_id text,
-  channel_id text not null,
-  channel_name text,
-  telegram_target text not null,
-  title text not null,
-  body text not null,
-  telegram_caption text not null,
-  image_path text,
-  telegram_image_path text,
-  image_url text,
-  status text not null,
-  publish_at timestamptz not null,
-  text_quality text,
-  image_quality text,
-  telegram_caption_status text,
-  telegram_image_status text,
-  quality_issues jsonb default '[]'::jsonb,
-  telegram_message_id integer,
-  telegram_published_at timestamptz,
-  publish_result text,
-  publish_error text,
-  updated_at timestamptz default now()
-);
-
-create table if not exists publication_logs (
-  id text primary key,
-  channel_id text,
-  post_id text,
-  status text not null,
-  message text,
-  telegram_message_id integer,
-  telegram_message_link text,
-  created_at timestamptz not null default now()
-);
-
-create table if not exists scheduler_runs (
-  id text primary key,
-  started_at timestamptz not null,
-  finished_at timestamptz,
-  checked integer not null default 0,
-  published integer not null default 0,
-  skipped integer not null default 0,
-  errors integer not null default 0,
-  message text
-);
+```text
+http://127.0.0.1:3000/admin/publish-scheduler
 ```
 
-The command selects posts with `status in ('scheduled', 'draft', 'approved')` and `publish_at <= now()`. It skips rows that already have `telegram_message_id`, `publish_result='success'`, or a successful `publication_logs` entry for the same `post_id`.
+## Logs And Status
+
+`publication_logs.json` stores event-level logs:
+
+- `success`: Telegram send completed.
+- `skipped`: post was not sent intentionally, for example `dry_run` or `already_published`.
+- `failed`: send or validation failed.
+
+Each new log entry includes:
+
+- `id`
+- `runId`
+- `source`: `local`, `github`, `manual`, or `api`
+- `channelId`
+- `postId`
+- `status`
+- `message`
+- `telegramMessageId`
+- `telegramMessageLink`
+- `dryRun`
+- `createdAt`
+
+`publish-scheduler.json` stores the latest scheduler run summary:
+
+- checked due posts
+- published
+- skipped
+- errors
+- source
+- store mode
+- dry-run state
+- run timestamps
+
+## Duplicate Protection
+
+Before sending, `npm run publish:due` checks:
+
+- the post already has `status=published`
+- the post already has `telegramMessageId`
+- the post has `publishResult=success`
+- there is a successful publication log for the same `postId`
+
+If any condition is true, the post is skipped with:
+
+```text
+already_published
+```
+
+JSON mode also uses a lock file:
+
+```text
+data/runtime/tmp/publish-due.lock
+```
+
+If another run is active, the next run exits cleanly with:
+
+```text
+publish already running
+```
+
+## Why JSON Store For Now
+
+JSON mode is enough for the current working setup:
+
+- the weekly plan already lives in runtime JSON
+- GitHub Actions can run the existing project command
+- no database migration is required
+- local dashboard and GitHub scheduler can share the same file format
+
+The tradeoff is that JSON is not ideal for multi-device interactive control.
+GitHub Actions cache helps with scheduler duplicate protection, but it is not a full remote admin database.
+
+## Future Phone/Internet Control
+
+For full control from a phone or any remote browser, move the control plane to a remote database and hosted admin app:
+
+- Supabase/PostgreSQL for posts, scheduler runs, and publication logs
+- hosted Next.js admin panel with authentication
+- persistent storage for images/runtime metadata
+- GitHub Actions or PM2 worker reading from the same remote database
+- backups for `autopublish.json`, `weekly-content-plan.json`, and publication logs before migration
+
+Until then, the local dashboard shows the state available on the current machine, and GitHub Actions logs show the remote workflow execution.

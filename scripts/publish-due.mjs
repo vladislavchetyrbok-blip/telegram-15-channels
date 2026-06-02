@@ -8,33 +8,46 @@ const planPath = path.join(runtimeDir, "weekly-content-plan.json");
 const targetsPath = path.join(runtimeDir, "telegram-targets.json");
 const logsPath = path.join(runtimeDir, "publication_logs.json");
 const statusPath = path.join(runtimeDir, "publish-scheduler.json");
-const lockPath = path.join(runtimeDir, "publish-due.lock");
+const tmpDir = path.join(runtimeDir, "tmp");
+const lockPath = path.join(tmpDir, "publish-due.lock");
 
 const dueStatuses = (process.env.PUBLISH_DUE_STATUSES || "scheduled,draft,approved,ready_to_publish")
   .split(",")
   .map((item) => item.trim())
   .filter(Boolean);
-const dryRun = process.env.PUBLISH_DUE_DRY_RUN !== "false";
+const requestedDryRun = process.env.PUBLISH_DUE_DRY_RUN === undefined ? true : process.env.PUBLISH_DUE_DRY_RUN !== "false";
+const telegramDryRun = process.env.TELEGRAM_DRY_RUN === "true";
+const realPublishEnabled = process.env.TELEGRAM_REAL_PUBLISH_ENABLED === "true";
+const dryRun = requestedDryRun || telegramDryRun || !realPublishEnabled;
 const maxPerRun = Math.max(1, Number(process.env.PUBLISH_DUE_MAX_PER_RUN || "1"));
 const storeMode = process.env.PUBLISH_DUE_STORE || (process.env.DATABASE_URL ? "postgres" : "json");
 const lockMaxAgeMs = 30 * 60_000;
+const runId = process.env.PUBLISH_DUE_RUN_ID || randomUUID();
+const source = normalizeSource(process.env.PUBLISH_DUE_SOURCE || (process.env.GITHUB_ACTIONS === "true" ? "github" : "local"));
 
 async function main() {
   mkdirSync(runtimeDir, { recursive: true });
-  acquireLock();
+  const lock = acquireLock();
   const startedAt = new Date().toISOString();
+
+  if (!lock.acquired) {
+    const result = { checked: 0, published: 0, skipped: 0, errors: 0, details: [], message: "publish already running" };
+    writeSchedulerStatus({ ...result, runId, source, startedAt, finishedAt: new Date().toISOString(), storeMode, dryRun, realPublishEnabled });
+    console.log(JSON.stringify({ ok: true, ...result, runId, source, storeMode, dryRun, realPublishEnabled }, null, 2));
+    return;
+  }
 
   try {
     const result = storeMode === "postgres" ? await publishDueFromPostgres(startedAt) : await publishDueFromJson(startedAt);
-    writeSchedulerStatus({ ...result, startedAt, finishedAt: new Date().toISOString(), storeMode, dryRun });
-    console.log(JSON.stringify({ ok: true, ...result, storeMode, dryRun }, null, 2));
+    writeSchedulerStatus({ ...result, runId, source, startedAt, finishedAt: new Date().toISOString(), storeMode, dryRun, realPublishEnabled });
+    console.log(JSON.stringify({ ok: true, ...result, runId, source, storeMode, dryRun, realPublishEnabled }, null, 2));
     if (result.errors > 0) process.exitCode = 1;
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     const result = { checked: 0, published: 0, skipped: 0, errors: 1, error: message, details: [] };
-    appendLocalPublicationLog({ channelId: null, postId: null, status: "error", message });
-    writeSchedulerStatus({ ...result, startedAt, finishedAt: new Date().toISOString(), storeMode, dryRun });
-    console.error(JSON.stringify({ ok: false, ...result, storeMode, dryRun }, null, 2));
+    appendLocalPublicationLog({ channelId: null, postId: null, status: "failed", message });
+    writeSchedulerStatus({ ...result, runId, source, startedAt, finishedAt: new Date().toISOString(), storeMode, dryRun, realPublishEnabled });
+    console.error(JSON.stringify({ ok: false, ...result, runId, source, storeMode, dryRun, realPublishEnabled }, null, 2));
     process.exitCode = 1;
   } finally {
     releaseLock();
@@ -47,12 +60,12 @@ async function publishDueFromJson(startedAt) {
   const logs = readPublicationLogs();
   const successPostIds = new Set(logs.filter((entry) => entry.status === "success").map((entry) => entry.postId).filter(Boolean));
   const now = Date.now();
-  const candidates = state.items
+  const dueItems = state.items
     .filter((item) => dueStatuses.includes(item.status))
     .filter((item) => new Date(item.publishAt || item.scheduledAt || 0).getTime() <= now)
-    .filter((item) => !item.telegramMessageId && item.publishResult !== "success" && !successPostIds.has(item.postId))
     .sort((a, b) => new Date(a.publishAt || a.scheduledAt).getTime() - new Date(b.publishAt || b.scheduledAt).getTime())
     .slice(0, maxPerRun);
+  const candidates = dueItems;
 
   const details = [];
   let published = 0;
@@ -63,6 +76,14 @@ async function publishDueFromJson(startedAt) {
   for (const item of candidates) {
     const target = targets[item.channelId]?.telegramTarget || item.telegramTarget || "";
     const quality = checkQualityGate(item);
+
+    if (isAlreadyPublished(item, successPostIds)) {
+      skipped += 1;
+      const message = "already_published";
+      details.push({ channelId: item.channelId, postId: item.postId, status: "skipped", message });
+      appendLocalPublicationLog({ channelId: item.channelId, postId: item.postId, status: "skipped", message, telegramMessageId: item.telegramMessageId ?? null });
+      continue;
+    }
 
     if (!quality.ok) {
       skipped += 1;
@@ -79,8 +100,8 @@ async function publishDueFromJson(startedAt) {
     if (!target) {
       errors += 1;
       const message = "telegram target missing";
-      details.push({ channelId: item.channelId, postId: item.postId, status: "error", message });
-      appendLocalPublicationLog({ channelId: item.channelId, postId: item.postId, status: "error", message });
+      details.push({ channelId: item.channelId, postId: item.postId, status: "failed", message });
+      appendLocalPublicationLog({ channelId: item.channelId, postId: item.postId, status: "failed", message });
       if (!dryRun) {
         markJsonItemFailed(state, item.id, message);
         planChanged = true;
@@ -115,8 +136,8 @@ async function publishDueFromJson(startedAt) {
       const message = send.error || "telegram send failed";
       markJsonItemFailed(state, item.id, message);
       planChanged = true;
-      details.push({ channelId: item.channelId, postId: item.postId, status: "error", message });
-      appendLocalPublicationLog({ channelId: item.channelId, postId: item.postId, status: "error", message });
+      details.push({ channelId: item.channelId, postId: item.postId, status: "failed", message });
+      appendLocalPublicationLog({ channelId: item.channelId, postId: item.postId, status: "failed", message });
     }
   }
 
@@ -173,13 +194,6 @@ async function publishDueFromPostgres(startedAt) {
         from ${table}
         where status = any($1::text[])
           and publish_at <= now()
-          and coalesce(publish_result, '') <> 'success'
-          and telegram_message_id is null
-          and not exists (
-            select 1 from publication_logs logs
-            where logs.post_id = coalesce(${table}.post_id::text, ${table}.id::text)
-              and logs.status = 'success'
-          )
         order by publish_at asc
         limit $2
       `,
@@ -192,6 +206,14 @@ async function publishDueFromPostgres(startedAt) {
     let errors = 0;
 
     for (const item of rows.rows) {
+      if (item.status === "published" || item.telegramMessageId || item.publishResult === "success" || await hasPostgresSuccessLog(client, item.postId)) {
+        skipped += 1;
+        const message = "already_published";
+        await insertPostgresPublicationLog(client, item, "skipped", message, item.telegramMessageId ?? null, buildTelegramMessageLink(item.telegramTarget, item.telegramMessageId));
+        details.push({ channelId: item.channelId, postId: item.postId, status: "skipped", message });
+        continue;
+      }
+
       const quality = checkQualityGate(item);
       if (!quality.ok) {
         skipped += 1;
@@ -231,16 +253,16 @@ async function publishDueFromPostgres(startedAt) {
       } else {
         errors += 1;
         const message = send.error || "telegram send failed";
-        await insertPostgresPublicationLog(client, item, "error", message);
+        await insertPostgresPublicationLog(client, item, "failed", message);
         await markPostgresFailed(client, table, item.id, message);
-        details.push({ channelId: item.channelId, postId: item.postId, status: "error", message });
+        details.push({ channelId: item.channelId, postId: item.postId, status: "failed", message });
       }
     }
 
     await client.query(
-      `insert into scheduler_runs(id, started_at, finished_at, checked, published, skipped, errors, message)
-       values($1, $2, now(), $3, $4, $5, $6, $7)`,
-      [randomUUID(), startedAt, rows.rows.length, published, skipped, errors, rows.rows.length ? `Processed ${rows.rows.length} due post(s).` : "No due posts found."],
+      `insert into scheduler_runs(id, source, store_mode, dry_run, started_at, finished_at, checked, published, skipped, errors, message)
+       values($1, $2, $3, $4, $5, now(), $6, $7, $8, $9, $10)`,
+      [runId, source, storeMode, dryRun, startedAt, rows.rows.length, published, skipped, errors, rows.rows.length ? `Processed ${rows.rows.length} due post(s).` : "No due posts found."],
     );
 
     return {
@@ -272,6 +294,10 @@ function checkQualityGate(item) {
   if (/PREMIUM_V2|TELEGRAM READY|debug label|service label|version label/i.test(text)) issues.push("service_label_detected");
 
   return { ok: issues.length === 0, issues };
+}
+
+function isAlreadyPublished(item, successPostIds) {
+  return item.status === "published" || Boolean(item.telegramMessageId) || item.publishResult === "success" || successPostIds.has(item.postId);
 }
 
 function normalizeQualityIssues(value) {
@@ -342,18 +368,27 @@ async function ensurePostgresTables(client) {
   await client.query(`
     create table if not exists publication_logs (
       id text primary key,
+      run_id text,
+      source text,
       channel_id text,
       post_id text,
       status text not null,
       message text,
       telegram_message_id integer,
       telegram_message_link text,
+      dry_run boolean,
       created_at timestamptz not null default now()
     )
   `);
+  await client.query("alter table publication_logs add column if not exists run_id text");
+  await client.query("alter table publication_logs add column if not exists source text");
+  await client.query("alter table publication_logs add column if not exists dry_run boolean");
   await client.query(`
     create table if not exists scheduler_runs (
       id text primary key,
+      source text,
+      store_mode text,
+      dry_run boolean,
       started_at timestamptz not null,
       finished_at timestamptz,
       checked integer not null default 0,
@@ -367,10 +402,15 @@ async function ensurePostgresTables(client) {
 
 async function insertPostgresPublicationLog(client, item, status, message, telegramMessageId = null, telegramMessageLink = null) {
   await client.query(
-    `insert into publication_logs(id, channel_id, post_id, status, message, telegram_message_id, telegram_message_link, created_at)
-     values($1, $2, $3, $4, $5, $6, $7, now())`,
-    [randomUUID(), item.channelId ?? null, item.postId ?? item.id ?? null, status, message, telegramMessageId, telegramMessageLink],
+    `insert into publication_logs(id, run_id, source, channel_id, post_id, status, message, telegram_message_id, telegram_message_link, dry_run, created_at)
+     values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, now())`,
+    [randomUUID(), runId, source, item.channelId ?? null, item.postId ?? item.id ?? null, status, message, telegramMessageId, telegramMessageLink, dryRun],
   );
+}
+
+async function hasPostgresSuccessLog(client, postId) {
+  const found = await client.query("select 1 from publication_logs where post_id = $1 and status = 'success' limit 1", [postId]);
+  return found.rowCount > 0;
 }
 
 async function markPostgresFailed(client, table, id, message) {
@@ -386,12 +426,15 @@ function appendLocalPublicationLog(entry) {
   const logs = readPublicationLogs();
   logs.push({
     id: randomUUID(),
+    runId,
+    source,
     channelId: entry.channelId ?? null,
     postId: entry.postId ?? null,
     status: entry.status,
     message: entry.message ?? null,
     telegramMessageId: entry.telegramMessageId ?? null,
     telegramMessageLink: entry.telegramMessageLink ?? null,
+    dryRun,
     createdAt: new Date().toISOString(),
   });
   writeJson(logsPath, logs.slice(-1000));
@@ -403,7 +446,7 @@ function readPublicationLogs() {
 
 function writeSchedulerStatus(status) {
   const logs = readPublicationLogs();
-  const errors = [...logs].reverse().filter((entry) => entry.status === "error").slice(0, 10);
+  const errors = [...logs].reverse().filter((entry) => entry.status === "failed" || entry.status === "error").slice(0, 10);
   writeJson(statusPath, {
     ...status,
     lastErrors: errors,
@@ -422,14 +465,16 @@ function writeJson(filePath, value) {
 }
 
 function acquireLock() {
+  mkdirSync(tmpDir, { recursive: true });
   if (existsSync(lockPath)) {
     const locked = readJson(lockPath, {});
     const age = Date.now() - new Date(locked.createdAt || 0).getTime();
     if (Number.isFinite(age) && age < lockMaxAgeMs) {
-      throw new Error(`publish:due is already running; lock=${lockPath}`);
+      return { acquired: false, reason: "publish already running" };
     }
   }
-  writeJson(lockPath, { pid: process.pid, createdAt: new Date().toISOString() });
+  writeJson(lockPath, { pid: process.pid, runId, source, createdAt: new Date().toISOString() });
+  return { acquired: true, reason: null };
 }
 
 function releaseLock() {
@@ -451,6 +496,10 @@ function getImageMime(filePath) {
 function safeIdentifier(value) {
   if (!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(value)) throw new Error(`Unsafe SQL identifier: ${value}`);
   return value;
+}
+
+function normalizeSource(value) {
+  return ["local", "github", "manual", "api"].includes(value) ? value : "local";
 }
 
 await main();

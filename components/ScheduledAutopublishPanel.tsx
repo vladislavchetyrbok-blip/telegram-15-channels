@@ -171,22 +171,34 @@ interface PreviewPayload {
 
 interface PublishSchedulerStatusPayload {
   ok: boolean;
-  lastRunAt: string | null;
-  startedAt: string | null;
-  finishedAt: string | null;
+  lastRun: {
+    runId: string | null;
+    source: string | null;
+    startedAt: string | null;
+    finishedAt: string | null;
+    lastRunAt: string | null;
+    message: string | null;
+  };
   checked: number;
   published: number;
   skipped: number;
   errors: number;
-  dryRun: boolean | null;
-  storeMode: string | null;
+  dryRun: boolean;
+  realPublishEnabled?: boolean;
+  autopublishEnabled?: boolean;
+  storeMode: string;
   message: string | null;
   lastErrors: Array<{
     id: string;
+    runId?: string | null;
+    source?: string | null;
     channelId: string | null;
     postId: string | null;
     status: string;
     message: string | null;
+    telegramMessageId?: number | null;
+    telegramMessageLink?: string | null;
+    dryRun?: boolean | null;
     createdAt: string;
   }>;
 }
@@ -449,7 +461,7 @@ export function ScheduledAutopublishPanel() {
   const nextPublicationLabel = status?.nextPublication
     ? `${new Date(status.nextPublication.plannedAt).toLocaleString()} / ${status.nextPublication.channelName}`
     : "none";
-  const publishSchedulerLastRunLabel = publishScheduler?.lastRunAt ? new Date(publishScheduler.lastRunAt).toLocaleString() : "none";
+  const publishSchedulerLastRunLabel = publishScheduler?.lastRun?.lastRunAt ? new Date(publishScheduler.lastRun.lastRunAt).toLocaleString() : "none";
 
   return (
     <section className="rounded-lg border border-emerald-300/20 bg-emerald-300/5 p-5 shadow-glow">
