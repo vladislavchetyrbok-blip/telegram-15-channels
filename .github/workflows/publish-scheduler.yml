@@ -12,27 +12,29 @@ concurrency:
 jobs:
   publish-due:
     runs-on: ubuntu-latest
-    env:
-  NODE_ENV: production
-  PUBLISH_DUE_STORE: json
-  PUBLISH_DUE_SOURCE: github
-  PUBLISH_DUE_DRY_RUN: "false"
-  PUBLISH_DUE_REAL_PUBLISH_ENABLED: "true"
-  TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-  TELEGRAM_DRY_RUN: "false"
-  TELEGRAM_REAL_PUBLISH_ENABLED: "true"
-  AUTOPUBLISH_ENABLED: ${{ secrets.AUTOPUBLISH_ENABLED }}
-  AUTOPUBLISH_DAILY_LIMIT_PER_CHANNEL: ${{ secrets.AUTOPUBLISH_DAILY_LIMIT_PER_CHANNEL }}
-  AUTOPUBLISH_MAX_POSTS_PER_DAY: ${{ secrets.AUTOPUBLISH_MAX_POSTS_PER_DAY }}
-  AUTOPUBLISH_TIME_START: ${{ secrets.AUTOPUBLISH_TIME_START }}
-  AUTOPUBLISH_TIME_END: ${{ secrets.AUTOPUBLISH_TIME_END }}
-  AUTOPUBLISH_DAYS: ${{ secrets.AUTOPUBLISH_DAYS }}
-  AUTOPUBLISH_TIME: ${{ secrets.AUTOPUBLISH_TIME }}
-  AUTOPUBLISH_TIMEZONE: ${{ secrets.AUTOPUBLISH_TIMEZONE }}
-  AUTOPUBLISH_WORKER_INTERVAL_MS: ${{ secrets.AUTOPUBLISH_WORKER_INTERVAL_MS }}
     timeout-minutes: 20
 
-  
+    env:
+      NODE_ENV: "production"
+      PUBLISH_DUE_STORE: "json"
+      PUBLISH_DUE_SOURCE: "github"
+      PUBLISH_DUE_DRY_RUN: "false"
+      PUBLISH_DUE_REAL_PUBLISH_ENABLED: "true"
+      PUBLISH_DUE_MAX_PER_RUN: "1"
+
+      TELEGRAM_BOT_TOKEN: "${{ secrets.TELEGRAM_BOT_TOKEN }}"
+      TELEGRAM_DRY_RUN: "false"
+      TELEGRAM_REAL_PUBLISH_ENABLED: "true"
+
+      AUTOPUBLISH_ENABLED: "${{ secrets.AUTOPUBLISH_ENABLED }}"
+      AUTOPUBLISH_DAILY_LIMIT_PER_CHANNEL: "${{ secrets.AUTOPUBLISH_DAILY_LIMIT_PER_CHANNEL }}"
+      AUTOPUBLISH_MAX_POSTS_PER_DAY: "${{ secrets.AUTOPUBLISH_MAX_POSTS_PER_DAY }}"
+      AUTOPUBLISH_TIME_START: "${{ secrets.AUTOPUBLISH_TIME_START }}"
+      AUTOPUBLISH_TIME_END: "${{ secrets.AUTOPUBLISH_TIME_END }}"
+      AUTOPUBLISH_DAYS: "${{ secrets.AUTOPUBLISH_DAYS }}"
+      AUTOPUBLISH_TIME: "${{ secrets.AUTOPUBLISH_TIME }}"
+      AUTOPUBLISH_TIMEZONE: "${{ secrets.AUTOPUBLISH_TIMEZONE }}"
+      AUTOPUBLISH_WORKER_INTERVAL_MS: "${{ secrets.AUTOPUBLISH_WORKER_INTERVAL_MS }}"
 
     steps:
       - name: Checkout repository
@@ -42,7 +44,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: npm
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -53,9 +55,13 @@ jobs:
           path: |
             data/runtime/publication_logs.json
             data/runtime/publish-scheduler.json
+            data/runtime/tmp
           key: publish-scheduler-runtime-${{ github.run_id }}
           restore-keys: |
             publish-scheduler-runtime-
+
+      - name: Prepare runtime folders
+        run: mkdir -p data/runtime/tmp
 
       - name: Publish due Telegram posts
         run: npm run publish:due
@@ -67,4 +73,5 @@ jobs:
           path: |
             data/runtime/publication_logs.json
             data/runtime/publish-scheduler.json
+            data/runtime/tmp
           key: publish-scheduler-runtime-${{ github.run_id }}
