@@ -1,12 +1,13 @@
 import { CheckCircle2, CircleAlert, CircleDashed, Rocket, ShieldCheck } from "lucide-react";
-import { requireAdminAccessPlaceholder } from "@/lib/admin-auth";
+import { AdminLogoutButton } from "@/components/AdminLogoutButton";
+import { requireAdminPageAccess } from "@/lib/admin-page-guard";
 import { getDeployReadinessStatus } from "@/lib/deploy-readiness";
 import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
 export default function DeployReadinessPage() {
-  const access = requireAdminAccessPlaceholder();
+  const access = requireAdminPageAccess("/admin/deploy-readiness");
   const status = getDeployReadinessStatus();
 
   const checks = [
@@ -21,6 +22,10 @@ export default function DeployReadinessPage() {
     { label: "Supabase schema exists", ready: status.hasSupabaseSchema },
     { label: "PostgreSQL adapter prepared", ready: status.hasPostgresAdapter },
     { label: "DATABASE_URL configured", ready: status.databaseUrlConfigured, tone: "warn" as const, note: "Only true/false is shown; value is never displayed." },
+    { label: "Admin auth prepared", ready: status.adminAuthPrepared },
+    { label: "Admin auth enabled", ready: status.adminAuthEnabled, tone: "warn" as const },
+    { label: "Admin password configured", ready: status.adminPasswordConfigured, tone: "warn" as const, note: "Only true/false is shown; value is never displayed." },
+    { label: "Admin session secret configured", ready: status.adminSessionSecretConfigured, tone: "warn" as const, note: "Only true/false is shown; value is never displayed." },
     { label: "Real publish controlled only via GitHub Secrets", ready: true },
     { label: "Duplicate guard enabled", ready: true, note: "publish:due checks status, telegramMessageId, publishResult and success logs." },
     { label: "Publication logs enabled", ready: status.hasPublicationLogs },
@@ -28,6 +33,9 @@ export default function DeployReadinessPage() {
 
   return (
     <div className="mx-auto w-full max-w-5xl space-y-5">
+      <div className="flex justify-end">
+        <AdminLogoutButton />
+      </div>
       <section className="rounded-lg border border-line bg-panel/82 p-5 shadow-glow">
         <div className="flex items-start gap-3">
           <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-cyan-300/30 bg-cyan-300/10 text-cyan-100">
@@ -51,6 +59,9 @@ export default function DeployReadinessPage() {
         <Metric label="Schema" value={status.hasSupabaseSchema ? "prepared" : "missing"} ready={status.hasSupabaseSchema} />
         <Metric label="Postgres adapter" value={status.hasPostgresAdapter ? "prepared" : "missing"} ready={status.hasPostgresAdapter} />
         <Metric label="DATABASE_URL" value={status.databaseUrlConfigured ? "configured" : "not configured"} ready={status.databaseUrlConfigured} warn={!status.databaseUrlConfigured} />
+        <Metric label="Admin auth" value={status.adminAuthEnabled ? "enabled" : "disabled"} ready={status.adminAuthEnabled} warn={!status.adminAuthEnabled} />
+        <Metric label="Admin password" value={status.adminPasswordConfigured ? "configured" : "not configured"} ready={status.adminPasswordConfigured} warn={!status.adminPasswordConfigured} />
+        <Metric label="Session secret" value={status.adminSessionSecretConfigured ? "configured" : "not configured"} ready={status.adminSessionSecretConfigured} warn={!status.adminSessionSecretConfigured} />
       </section>
 
       <section className="rounded-lg border border-line bg-panel/82 p-4">

@@ -1,5 +1,6 @@
 import { existsSync } from "node:fs";
 import path from "node:path";
+import { getAdminAuthStatus } from "@/lib/admin-auth";
 
 export interface DeployReadinessStatus {
   ok: boolean;
@@ -15,6 +16,10 @@ export interface DeployReadinessStatus {
   hasSupabaseSchema: boolean;
   hasPostgresAdapter: boolean;
   databaseUrlConfigured: boolean;
+  adminAuthPrepared: boolean;
+  adminAuthEnabled: boolean;
+  adminPasswordConfigured: boolean;
+  adminSessionSecretConfigured: boolean;
   warnings: string[];
   nextSteps: string[];
 }
@@ -33,6 +38,8 @@ export function getDeployReadinessStatus(): DeployReadinessStatus {
   const hasSupabaseSchema = fileExists("supabase/schema.sql");
   const hasPostgresAdapter = fileExists("lib/storage/postgres-publish-store.ts");
   const storeMode = process.env.PUBLISH_DUE_STORE || (process.env.DATABASE_URL ? "postgres" : "json");
+  const adminAuth = getAdminAuthStatus();
+  const adminAuthPrepared = fileExists("lib/admin-auth.ts") && fileExists("app/admin/login/page.tsx");
   const warnings: string[] = [];
   const nextSteps: string[] = [];
 
@@ -58,6 +65,13 @@ export function getDeployReadinessStatus(): DeployReadinessStatus {
     warnings.push("JSON store is active; local changes require git commit/push before GitHub Actions can see them.");
     nextSteps.push("Keep JSON mode as fallback, then add DB adapter for remote phone control.");
   }
+  if (!adminAuth.authEnabled) {
+    warnings.push("Admin auth is disabled; enable ADMIN_AUTH_ENABLED=true before public Vercel access.");
+    nextSteps.push("Set ADMIN_AUTH_ENABLED=true, ADMIN_PASSWORD and ADMIN_SESSION_SECRET in Vercel env.");
+  }
+  if (adminAuth.authEnabled && (!adminAuth.adminPasswordConfigured || !adminAuth.adminSessionSecretConfigured)) {
+    warnings.push("Admin auth is enabled but password/session secret is not fully configured.");
+  }
 
   nextSteps.push("Add real admin authentication before public hosting.");
   nextSteps.push("Keep real Telegram publishing controlled through GitHub Secrets until remote DB control is ready.");
@@ -76,6 +90,10 @@ export function getDeployReadinessStatus(): DeployReadinessStatus {
     hasSupabaseSchema,
     hasPostgresAdapter,
     databaseUrlConfigured,
+    adminAuthPrepared,
+    adminAuthEnabled: adminAuth.authEnabled,
+    adminPasswordConfigured: adminAuth.adminPasswordConfigured,
+    adminSessionSecretConfigured: adminAuth.adminSessionSecretConfigured,
     warnings,
     nextSteps: Array.from(new Set(nextSteps)),
   };

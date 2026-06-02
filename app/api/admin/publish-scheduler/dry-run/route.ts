@@ -2,14 +2,14 @@ import { execFile } from "node:child_process";
 import path from "node:path";
 import { promisify } from "node:util";
 import { NextResponse } from "next/server";
-import { requireAdminAccessPlaceholder } from "@/lib/admin-auth";
+import { requireAdminAccess } from "@/lib/admin-auth";
 
 const execFileAsync = promisify(execFile);
 
 export const dynamic = "force-dynamic";
 
 export async function POST() {
-  const access = requireAdminAccessPlaceholder();
+  const access = requireAdminAccess();
   if (!access.allowed) {
     return NextResponse.json({ ok: false, dryRun: true, message: "Admin access denied." }, { status: 401 });
   }

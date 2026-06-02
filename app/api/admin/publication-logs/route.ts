@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { requireAdminAccessPlaceholder } from "@/lib/admin-auth";
+import { requireAdminAccess } from "@/lib/admin-auth";
 import { getPublicationLogs } from "@/lib/publish-scheduler-status";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
-  const access = requireAdminAccessPlaceholder();
+  const access = requireAdminAccess();
   if (!access.allowed) {
     return NextResponse.json({ ok: false, message: "Admin access denied." }, { status: 401 });
   }
