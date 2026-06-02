@@ -3,6 +3,7 @@ import path from "node:path";
 import { promisify } from "node:util";
 import { NextResponse } from "next/server";
 import { requireAdminAccess } from "@/lib/admin-auth";
+import { assertSafeManualDryRunOnly } from "@/lib/production-safety";
 
 const execFileAsync = promisify(execFile);
 
@@ -11,8 +12,10 @@ export const dynamic = "force-dynamic";
 export async function POST() {
   const access = requireAdminAccess();
   if (!access.allowed) {
-    return NextResponse.json({ ok: false, dryRun: true, message: "Admin access denied." }, { status: 401 });
+    return NextResponse.json({ ok: false, manualAction: true, dryRun: true, realTelegramPublishAllowed: false, message: "Admin access denied." }, { status: 401 });
   }
+
+  const safety = assertSafeManualDryRunOnly();
 
   try {
     const scriptPath = path.join(process.cwd(), "scripts", "publish-due.mjs");
@@ -36,12 +39,15 @@ export async function POST() {
 
     return NextResponse.json({
       ok: true,
+      manualAction: true,
       dryRun: true,
+      realTelegramPublishAllowed: false,
       checked: Number(parsed?.checked ?? 0),
       published: Number(parsed?.published ?? 0),
       skipped: Number(parsed?.skipped ?? 0),
       errors: Number(parsed?.errors ?? 0),
       message: parsed?.message ?? "Dry-run completed.",
+      safety,
       result: parsed,
       stdout: result.stdout,
       stderr: result.stderr,
@@ -56,12 +62,15 @@ export async function POST() {
     return NextResponse.json(
       {
         ok: false,
+        manualAction: true,
         dryRun: true,
+        realTelegramPublishAllowed: false,
         checked: Number(parsed?.checked ?? 0),
         published: Number(parsed?.published ?? 0),
         skipped: Number(parsed?.skipped ?? 0),
         errors: Number(parsed?.errors ?? 0),
         message,
+        safety,
         result: parsed,
         stdout: output,
         stderr,

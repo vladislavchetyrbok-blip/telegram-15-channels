@@ -177,6 +177,17 @@ export function MobileControlPanel() {
         ]}
       />
 
+      <InfoBlock
+        title="What changes after Vercel"
+        items={[
+          "The admin panel can be opened from a phone through a hosted HTTPS URL.",
+          "ADMIN_PASSWORD is required before public access is enabled.",
+          "JSON store stays limited: it is not a reliable source of truth for phone-created edits on Vercel.",
+          "Creating or editing posts from a phone needs Supabase/PostgreSQL.",
+          "Publishing should still go through the protected scheduler, not through ad-hoc manual Telegram sends.",
+        ]}
+      />
+
       <section className="grid gap-3 md:grid-cols-2">
         <ArchitectureCard title="Сейчас" steps={["local/admin panel", "JSON files", "git push", "GitHub Actions", "Telegram"]} />
         <ArchitectureCard title="Позже" steps={["phone", "hosted admin", "Supabase/PostgreSQL", "GitHub Actions/server worker", "Telegram"]} />
