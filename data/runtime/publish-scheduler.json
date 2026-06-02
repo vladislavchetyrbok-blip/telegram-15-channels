@@ -12,13 +12,13 @@
     }
   ],
   "message": "Processed 1 due post(s).",
-  "runId": "99fe475f-8ea1-46f7-bb20-d07789573fa8",
-  "source": "api",
-  "startedAt": "2026-06-02T08:51:15.570Z",
-  "finishedAt": "2026-06-02T08:51:15.577Z",
+  "runId": "f4bebafb-418a-4669-905b-4f1657508ee3",
+  "source": "local",
+  "startedAt": "2026-06-02T15:19:51.145Z",
+  "finishedAt": "2026-06-02T15:19:51.152Z",
   "storeMode": "json",
   "dryRun": true,
   "realPublishEnabled": false,
   "lastErrors": [],
-  "updatedAt": "2026-06-02T08:51:15.577Z"
+  "updatedAt": "2026-06-02T15:19:51.152Z"
 }

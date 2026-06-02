@@ -18,6 +18,9 @@ export default function DeployReadinessPage() {
     { label: "Vercel not connected yet", ready: !status.hasVercelConfig, tone: "warn" as const },
     { label: "Mobile control page exists", ready: status.hasMobileControl },
     { label: "Scheduler dashboard exists", ready: status.hasSchedulerDashboard },
+    { label: "Supabase schema exists", ready: status.hasSupabaseSchema },
+    { label: "PostgreSQL adapter prepared", ready: status.hasPostgresAdapter },
+    { label: "DATABASE_URL configured", ready: status.databaseUrlConfigured, tone: "warn" as const, note: "Only true/false is shown; value is never displayed." },
     { label: "Real publish controlled only via GitHub Secrets", ready: true },
     { label: "Duplicate guard enabled", ready: true, note: "publish:due checks status, telegramMessageId, publishResult and success logs." },
     { label: "Publication logs enabled", ready: status.hasPublicationLogs },
@@ -45,6 +48,9 @@ export default function DeployReadinessPage() {
         <Metric label="Store" value={status.storeMode} ready={status.storeMode === "json"} />
         <Metric label="Supabase" value={status.hasSupabaseConfig ? "configured" : "not connected"} ready={status.hasSupabaseConfig} warn={!status.hasSupabaseConfig} />
         <Metric label="Vercel" value={status.hasVercelConfig ? "configured" : "not connected"} ready={status.hasVercelConfig} warn={!status.hasVercelConfig} />
+        <Metric label="Schema" value={status.hasSupabaseSchema ? "prepared" : "missing"} ready={status.hasSupabaseSchema} />
+        <Metric label="Postgres adapter" value={status.hasPostgresAdapter ? "prepared" : "missing"} ready={status.hasPostgresAdapter} />
+        <Metric label="DATABASE_URL" value={status.databaseUrlConfigured ? "configured" : "not configured"} ready={status.databaseUrlConfigured} warn={!status.databaseUrlConfigured} />
       </section>
 
       <section className="rounded-lg border border-line bg-panel/82 p-4">

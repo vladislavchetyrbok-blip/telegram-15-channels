@@ -54,5 +54,18 @@
     "telegramMessageLink": null,
     "dryRun": true,
     "createdAt": "2026-06-02T08:51:15.576Z"
+  },
+  {
+    "id": "98a76f4a-02de-4487-bf4a-16d6859596a5",
+    "runId": "f4bebafb-418a-4669-905b-4f1657508ee3",
+    "source": "local",
+    "channelId": "ai-tech",
+    "postId": "weekly-2026-05-31-02-ai-technologies-02",
+    "status": "skipped",
+    "message": "dry_run: due post was not sent",
+    "telegramMessageId": null,
+    "telegramMessageLink": null,
+    "dryRun": true,
+    "createdAt": "2026-06-02T15:19:51.151Z"
   }
 ]

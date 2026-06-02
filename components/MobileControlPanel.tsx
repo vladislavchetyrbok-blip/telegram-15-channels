@@ -167,6 +167,16 @@ export function MobileControlPanel() {
         ]}
       />
 
+      <InfoBlock
+        title="Будущий режим с телефона через Supabase"
+        items={[
+          "Сейчас: JSON store + git push, поэтому GitHub Actions видит только закоммиченные изменения.",
+          "Потом: phone -> hosted admin -> Supabase -> GitHub Actions -> Telegram.",
+          "Уже подготовлены mobile UI, deploy-readiness, publication logs, duplicate guard, SQL schema и storage adapters.",
+          "Еще нужно создать Supabase project, перенести JSON в DB, добавить hosted admin auth и сначала прогнать postgres mode в dry-run.",
+        ]}
+      />
+
       <section className="grid gap-3 md:grid-cols-2">
         <ArchitectureCard title="Сейчас" steps={["local/admin panel", "JSON files", "git push", "GitHub Actions", "Telegram"]} />
         <ArchitectureCard title="Позже" steps={["phone", "hosted admin", "Supabase/PostgreSQL", "GitHub Actions/server worker", "Telegram"]} />

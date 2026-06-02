@@ -12,6 +12,9 @@ export interface DeployReadinessStatus {
   hasSchedulerDashboard: boolean;
   hasSupabaseConfig: boolean;
   hasVercelConfig: boolean;
+  hasSupabaseSchema: boolean;
+  hasPostgresAdapter: boolean;
+  databaseUrlConfigured: boolean;
   warnings: string[];
   nextSteps: string[];
 }
@@ -24,8 +27,11 @@ export function getDeployReadinessStatus(): DeployReadinessStatus {
   const hasPublicationLogs = fileExists("data/runtime/publication_logs.json");
   const hasMobileControl = fileExists("app/admin/mobile-control/page.tsx");
   const hasSchedulerDashboard = fileExists("app/admin/publish-scheduler/page.tsx");
+  const databaseUrlConfigured = Boolean(process.env.DATABASE_URL);
   const hasSupabaseConfig = Boolean(process.env.DATABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_SERVICE_ROLE_KEY);
   const hasVercelConfig = Boolean(process.env.VERCEL || fileExists("vercel.json"));
+  const hasSupabaseSchema = fileExists("supabase/schema.sql");
+  const hasPostgresAdapter = fileExists("lib/storage/postgres-publish-store.ts");
   const storeMode = process.env.PUBLISH_DUE_STORE || (process.env.DATABASE_URL ? "postgres" : "json");
   const warnings: string[] = [];
   const nextSteps: string[] = [];
@@ -36,6 +42,13 @@ export function getDeployReadinessStatus(): DeployReadinessStatus {
   if (!hasSupabaseConfig) {
     warnings.push("Supabase/PostgreSQL is not connected yet.");
     nextSteps.push("Create Supabase/PostgreSQL project and add DATABASE_URL when ready.");
+  }
+  if (hasPostgresAdapter && storeMode === "json") {
+    warnings.push("PostgreSQL adapter prepared, but JSON store is still active.");
+  }
+  if (!hasSupabaseSchema) {
+    warnings.push("Supabase schema file is missing.");
+    nextSteps.push("Create Supabase SQL schema before database migration.");
   }
   if (!hasVercelConfig) {
     warnings.push("Vercel hosting is not connected yet.");
@@ -60,6 +73,9 @@ export function getDeployReadinessStatus(): DeployReadinessStatus {
     hasSchedulerDashboard,
     hasSupabaseConfig,
     hasVercelConfig,
+    hasSupabaseSchema,
+    hasPostgresAdapter,
+    databaseUrlConfigured,
     warnings,
     nextSteps: Array.from(new Set(nextSteps)),
   };
