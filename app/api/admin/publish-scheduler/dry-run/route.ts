@@ -2,12 +2,18 @@ import { execFile } from "node:child_process";
 import path from "node:path";
 import { promisify } from "node:util";
 import { NextResponse } from "next/server";
+import { requireAdminAccessPlaceholder } from "@/lib/admin-auth";
 
 const execFileAsync = promisify(execFile);
 
 export const dynamic = "force-dynamic";
 
 export async function POST() {
+  const access = requireAdminAccessPlaceholder();
+  if (!access.allowed) {
+    return NextResponse.json({ ok: false, dryRun: true, message: "Admin access denied." }, { status: 401 });
+  }
+
   try {
     const scriptPath = path.join(process.cwd(), "scripts", "publish-due.mjs");
     const result = await execFileAsync(process.execPath, [scriptPath], {
@@ -17,15 +23,26 @@ export async function POST() {
         PUBLISH_DUE_STORE: "json",
         PUBLISH_DUE_DRY_RUN: "true",
         PUBLISH_DUE_SOURCE: "api",
+        TELEGRAM_DRY_RUN: "true",
+        TELEGRAM_REAL_PUBLISH_ENABLED: "false",
+        TELEGRAM_BOT_TOKEN: "",
       },
       maxBuffer: 1024 * 1024,
       timeout: 120_000,
       windowsHide: true,
     });
 
+    const parsed = parseJsonOutput(result.stdout);
+
     return NextResponse.json({
       ok: true,
-      result: parseJsonOutput(result.stdout),
+      dryRun: true,
+      checked: Number(parsed?.checked ?? 0),
+      published: Number(parsed?.published ?? 0),
+      skipped: Number(parsed?.skipped ?? 0),
+      errors: Number(parsed?.errors ?? 0),
+      message: parsed?.message ?? "Dry-run completed.",
+      result: parsed,
       stdout: result.stdout,
       stderr: result.stderr,
     });
@@ -34,11 +51,18 @@ export async function POST() {
     const output = typeof error === "object" && error && "stdout" in error ? String(error.stdout ?? "") : "";
     const stderr = typeof error === "object" && error && "stderr" in error ? String(error.stderr ?? "") : "";
 
+    const parsed = parseJsonOutput(output);
+
     return NextResponse.json(
       {
         ok: false,
+        dryRun: true,
+        checked: Number(parsed?.checked ?? 0),
+        published: Number(parsed?.published ?? 0),
+        skipped: Number(parsed?.skipped ?? 0),
+        errors: Number(parsed?.errors ?? 0),
         message,
-        result: parseJsonOutput(output),
+        result: parsed,
         stdout: output,
         stderr,
       },
@@ -47,7 +71,7 @@ export async function POST() {
   }
 }
 
-function parseJsonOutput(output: string) {
+function parseJsonOutput(output: string): { checked?: number; published?: number; skipped?: number; errors?: number; message?: string; [key: string]: unknown } | null {
   const trimmed = output.trim();
   if (!trimmed) return null;
 

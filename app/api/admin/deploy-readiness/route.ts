@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireAdminAccessPlaceholder } from "@/lib/admin-auth";
-import { getPublishSchedulerStatus } from "@/lib/publish-scheduler-status";
+import { getDeployReadinessStatus } from "@/lib/deploy-readiness";
 
 export const dynamic = "force-dynamic";
 
@@ -10,9 +10,5 @@ export async function GET() {
     return NextResponse.json({ ok: false, message: "Admin access denied." }, { status: 401 });
   }
 
-  return NextResponse.json(getPublishSchedulerStatus(), {
-    headers: {
-      "Content-Type": "application/json; charset=utf-8",
-    },
-  });
+  return NextResponse.json(getDeployReadinessStatus());
 }
