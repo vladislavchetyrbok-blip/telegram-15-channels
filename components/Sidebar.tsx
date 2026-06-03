@@ -3,10 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  Activity,
   Bot,
   CalendarDays,
   CheckCircle2,
+  Cloud,
   Gauge,
+  Github,
   ImageIcon,
   LayoutDashboard,
   Lightbulb,
@@ -27,6 +30,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+const githubActionsUrl = process.env.NEXT_PUBLIC_GITHUB_ACTIONS_URL;
+
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/telegram-connection", label: "Telegram подключение", icon: Bot },
@@ -43,6 +48,9 @@ const navItems = [
   { href: "/admin/publish-monitor", label: "Publish monitor", icon: RadioTower },
   { href: "/admin/publish-scheduler", label: "Publish scheduler", icon: TimerReset },
   { href: "/admin/deploy-readiness", label: "Deploy readiness", icon: Rocket },
+  { href: "/admin/vercel-setup", label: "Vercel setup", icon: Cloud },
+  { href: "/admin/system-status", label: "System status", icon: Activity },
+  ...(githubActionsUrl ? [{ href: githubActionsUrl, label: "GitHub Actions", icon: Github, external: true }] : []),
   { href: "/network", label: "Пульт сети", icon: Gauge },
   { href: "/channels", label: "Каналы", icon: RadioTower },
   { href: "/generation", label: "Генерация", icon: Wand2 },
@@ -80,10 +88,22 @@ export function Sidebar() {
 
         <nav className="mt-5 grid grid-cols-2 gap-2 lg:mt-8 lg:grid-cols-1">
           {navItems.map((item) => {
-            const active = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
+            const external = "external" in item && item.external;
+            const active = !external && (pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href)));
             const Icon = item.icon;
 
-            return (
+            return external ? (
+              <a
+                key={item.href}
+                href={item.href}
+                target="_blank"
+                rel="noreferrer"
+                className="flex h-11 items-center gap-3 rounded-md px-3 text-sm font-medium text-slate-400 transition hover:bg-slate-800/60 hover:text-white"
+              >
+                <Icon className="h-4 w-4 shrink-0" />
+                <span className="truncate">{item.label}</span>
+              </a>
+            ) : (
               <Link
                 key={item.href}
                 href={item.href}

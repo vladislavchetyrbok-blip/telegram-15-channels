@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BookOpen, Cloud, FileText, LayoutDashboard, ListChecks, Radio, Smartphone, TimerReset } from "lucide-react";
+import { Activity, BookOpen, Cloud, FileText, LayoutDashboard, ListChecks, Radio, Smartphone, TimerReset } from "lucide-react";
 import { AdminLogoutButton } from "@/components/AdminLogoutButton";
 import { requireAdminPageAccess } from "@/lib/admin-page-guard";
 
@@ -13,6 +13,8 @@ const cards = [
   { href: "/admin/mobile-control", title: "Mobile Control", text: "Phone-first control panel with safe dry-run actions.", icon: Smartphone },
   { href: "/admin/deploy-readiness", title: "Deploy Readiness", text: "General GitHub Actions, Supabase and admin auth readiness.", icon: ListChecks },
   { href: "/admin/vercel-readiness", title: "Vercel Readiness", text: "Hosted admin safety, ADMIN_* env, JSON warning and phone access checklist.", icon: Cloud },
+  { href: "/admin/vercel-setup", title: "Vercel Setup", text: "Launch checklist for safe phone access through Vercel.", icon: Cloud },
+  { href: "/admin/system-status", title: "System Status", text: "One-screen health summary for auth, safety, reserve, Telegram and workflow status.", icon: Activity },
   { href: "/admin/publish-scheduler#publication-events", title: "Publication Logs", text: "Recent publication, skipped and failed events.", icon: FileText },
   { href: "/admin/deploy-readiness", title: "Documentation / Plans", text: "Migration plans and safe phone access notes.", icon: BookOpen },
 ];
