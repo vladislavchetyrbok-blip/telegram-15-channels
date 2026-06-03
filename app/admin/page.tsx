@@ -1,11 +1,12 @@
 import Link from "next/link";
-import { BookOpen, Cloud, FileText, LayoutDashboard, ListChecks, Smartphone, TimerReset } from "lucide-react";
+import { BookOpen, Cloud, FileText, LayoutDashboard, ListChecks, Radio, Smartphone, TimerReset } from "lucide-react";
 import { AdminLogoutButton } from "@/components/AdminLogoutButton";
 import { requireAdminPageAccess } from "@/lib/admin-page-guard";
 
 export const dynamic = "force-dynamic";
 
 const cards = [
+  { href: "/admin/publish-monitor", title: "Publish Monitor", text: "Queue reserve, today coverage, GitHub Actions checklist and recent outcomes.", icon: Radio },
   { href: "/admin/publish-scheduler", title: "Publish Scheduler", text: "Scheduler runs, publication status, skipped events and errors.", icon: TimerReset },
   { href: "/admin/mobile-control", title: "Mobile Control", text: "Phone-first control panel with safe dry-run actions.", icon: Smartphone },
   { href: "/admin/deploy-readiness", title: "Deploy Readiness", text: "General GitHub Actions, Supabase and admin auth readiness.", icon: ListChecks },
