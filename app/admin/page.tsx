@@ -6,6 +6,8 @@ import { requireAdminPageAccess } from "@/lib/admin-page-guard";
 export const dynamic = "force-dynamic";
 
 const cards = [
+  { href: "/admin/phone-dashboard", title: "Phone Dashboard", text: "iPhone-first status view for autonomous publishing.", icon: Smartphone },
+  { href: "/admin/phone-start", title: "Phone Start", text: "Fast mobile entry page with emergency instructions.", icon: Smartphone },
   { href: "/admin/publish-monitor", title: "Publish Monitor", text: "Queue reserve, today coverage, GitHub Actions checklist and recent outcomes.", icon: Radio },
   { href: "/admin/publish-scheduler", title: "Publish Scheduler", text: "Scheduler runs, publication status, skipped events and errors.", icon: TimerReset },
   { href: "/admin/mobile-control", title: "Mobile Control", text: "Phone-first control panel with safe dry-run actions.", icon: Smartphone },
