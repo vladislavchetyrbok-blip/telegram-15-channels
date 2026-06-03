@@ -127,6 +127,18 @@ export default function PhoneDashboardPage() {
         </div>
       </Section>
 
+      <Section title="Supabase migration readiness">
+        <div className="space-y-2 text-sm leading-6 text-slate-300">
+          <p>Database active: {status.supabaseMigration.databaseActive ? "yes" : "no"}</p>
+          <p>JSON store active: {status.supabaseMigration.jsonStoreActive ? "yes" : "no"}</p>
+          <p>Dry-run migration ready: {status.supabaseMigration.dryRunReady ? "yes" : "no"}</p>
+          <p>Current publishing unaffected: {status.supabaseMigration.productionPublishUnaffected ? "yes" : "no"}</p>
+          <p className="rounded-md border border-cyan-300/20 bg-cyan-300/5 p-3 text-cyan-50">
+            Supabase migration is a separate future step. Current Telegram publishing remains on GitHub Actions and JSON.
+          </p>
+        </div>
+      </Section>
+
       <Section title="Warnings">
         {status.warnings.length ? (
           <ul className="space-y-2 text-sm leading-6 text-amber-100">

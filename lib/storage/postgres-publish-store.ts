@@ -29,7 +29,7 @@ export class PostgresPublishStore implements PublishStore {
             and publish_at <= $2
           order by publish_at asc
         `,
-        [["draft", "scheduled", "approved"], now.toISOString()],
+        [["draft", "scheduled", "approved", "ready_to_publish"], now.toISOString()],
       );
       return result.rows.map(mapPostRow);
     });

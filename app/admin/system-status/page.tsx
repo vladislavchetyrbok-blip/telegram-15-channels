@@ -16,6 +16,7 @@ export default function SystemStatusPage() {
     { label: "Manual publish", value: "blocked", tone: "ok", icon: ShieldCheck },
     { label: "GitHub Actions", value: status.githubActions.mode, tone: status.githubActions.mode === "active" ? "ok" : "warn", icon: Github },
     { label: "Store", value: status.jsonStore.storeMode, tone: status.jsonStore.warning ? "warn" : "ok", icon: Database },
+    { label: "Supabase", value: status.supabaseMigration.currentStoreMode === "postgres" ? "active" : "not active", tone: status.supabaseMigration.jsonStoreStillActive ? "warn" : "ok", icon: Database },
     { label: "Ready posts", value: String(status.queue.ready), tone: status.queue.ready > 0 ? "ok" : "warn" },
     { label: "Days left", value: String(status.postReserve.estimatedDaysLeft), tone: status.postReserve.enoughUntilJune7 ? "ok" : "warn" },
     { label: "Telegram access", value: `${status.telegram.botAccessOk}/${status.telegram.botAccessTotal}`, tone: status.telegram.botAccessOk === status.telegram.botAccessTotal ? "ok" : "error", icon: RadioTower },
@@ -61,6 +62,13 @@ export default function SystemStatusPage() {
           <KeyValue label="Ready" value={String(status.queue.ready)} />
           <KeyValue label="Published" value={String(status.queue.published)} />
           <KeyValue label="Enough until June 7" value={status.postReserve.enoughUntilJune7 ? "yes" : "no"} />
+        </Panel>
+
+        <Panel title="Supabase migration" icon={Database}>
+          <KeyValue label="DATABASE_URL configured" value={status.supabaseMigration.hasDatabaseUrl ? "true" : "false"} warn={!status.supabaseMigration.hasDatabaseUrl} />
+          <KeyValue label="Schema file" value={status.supabaseMigration.hasSupabaseSchema ? "exists" : "missing"} warn={!status.supabaseMigration.hasSupabaseSchema} />
+          <KeyValue label="Migration script" value={status.supabaseMigration.hasMigrationScript ? "ready" : "missing"} warn={!status.supabaseMigration.hasMigrationScript} />
+          <KeyValue label="Production unaffected" value={status.supabaseMigration.productionPublishUnaffected ? "yes" : "no"} warn={!status.supabaseMigration.productionPublishUnaffected} />
         </Panel>
 
         <Panel title="Last events" icon={Activity}>

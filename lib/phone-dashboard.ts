@@ -2,6 +2,7 @@ import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { getPublishMonitorStatus } from "@/lib/publish-monitor";
 import { getPublishSchedulerStatus, type PublicationLogStatusEntry } from "@/lib/publish-scheduler-status";
+import { getSupabaseReadinessStatus } from "@/lib/supabase-readiness";
 import { getTelegramChannelTargets } from "@/lib/telegram-channel-targets";
 
 interface TelegramDiagnosticsFile {
@@ -76,6 +77,13 @@ export interface PhoneDashboardStatus {
     missingImages: number;
     scheduledIssues: number;
   };
+  supabaseMigration: {
+    currentStoreMode: string;
+    databaseActive: boolean;
+    jsonStoreActive: boolean;
+    dryRunReady: boolean;
+    productionPublishUnaffected: boolean;
+  };
   lastRun: ReturnType<typeof getPublishSchedulerStatus>["lastRun"];
   lastPublished: PublicationLogStatusEntry | null;
   lastError: PublicationLogStatusEntry | null;
@@ -96,6 +104,7 @@ export function getPhoneDashboardStatus(): PhoneDashboardStatus {
   const diagnostics = readJson<TelegramDiagnosticsFile>(telegramDiagnosticsPath, {});
   const weekly = readJson<WeeklyPlanFile>(weeklyPlanPath, {});
   const targets = getTelegramChannelTargets();
+  const supabase = getSupabaseReadinessStatus();
   const checks = diagnostics.checks ?? [];
   const skippedToday = monitor.recent.skipped.filter((entry) => isTodayEntry(entry, monitor.today.date, monitor.timezone)).length;
   const failedToday = monitor.recent.failed.filter((entry) => isTodayEntry(entry, monitor.today.date, monitor.timezone)).length;
@@ -147,6 +156,13 @@ export function getPhoneDashboardStatus(): PhoneDashboardStatus {
     },
     nextExpectedPublishTime: monitor.nextScheduledCheck,
     contentQuality,
+    supabaseMigration: {
+      currentStoreMode: supabase.currentStoreMode,
+      databaseActive: supabase.currentStoreMode === "postgres",
+      jsonStoreActive: supabase.jsonStoreStillActive,
+      dryRunReady: supabase.safeToMigrateDryRun,
+      productionPublishUnaffected: supabase.productionPublishUnaffected,
+    },
     lastRun: scheduler.lastRun,
     lastPublished: monitor.recent.published[0] ?? null,
     lastError: monitor.recent.failed[0] ?? null,

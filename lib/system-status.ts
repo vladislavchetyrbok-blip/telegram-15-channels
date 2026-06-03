@@ -1,6 +1,7 @@
 import { getAdminAuthStatus } from "@/lib/admin-auth";
 import { getPhoneDashboardStatus } from "@/lib/phone-dashboard";
 import { getProductionSafetyStatus } from "@/lib/production-safety";
+import { getSupabaseReadinessStatus } from "@/lib/supabase-readiness";
 import { getVercelSetupStatus } from "@/lib/vercel-setup";
 
 export interface SystemStatus {
@@ -22,6 +23,7 @@ export interface SystemStatus {
   queue: ReturnType<typeof getPhoneDashboardStatus>["queue"];
   telegram: ReturnType<typeof getPhoneDashboardStatus>["telegram"];
   contentQuality: ReturnType<typeof getPhoneDashboardStatus>["contentQuality"];
+  supabaseMigration: ReturnType<typeof getSupabaseReadinessStatus>;
   lastRun: ReturnType<typeof getPhoneDashboardStatus>["lastRun"];
   lastPublished: ReturnType<typeof getPhoneDashboardStatus>["lastPublished"];
   lastError: ReturnType<typeof getPhoneDashboardStatus>["lastError"];
@@ -34,10 +36,12 @@ export function getSystemStatus(): SystemStatus {
   const safety = getProductionSafetyStatus();
   const phone = getPhoneDashboardStatus();
   const vercel = getVercelSetupStatus();
+  const supabase = getSupabaseReadinessStatus();
   const warnings = [
     ...safety.warnings,
     ...phone.warnings,
     ...vercel.warnings,
+    ...supabase.warnings,
   ];
 
   return {
@@ -59,6 +63,7 @@ export function getSystemStatus(): SystemStatus {
     queue: phone.queue,
     telegram: phone.telegram,
     contentQuality: phone.contentQuality,
+    supabaseMigration: supabase,
     lastRun: phone.lastRun,
     lastPublished: phone.lastPublished,
     lastError: phone.lastError,
@@ -69,6 +74,7 @@ export function getSystemStatus(): SystemStatus {
       "Configure ADMIN_AUTH_ENABLED=true, ADMIN_PASSWORD and ADMIN_SESSION_SECRET before public access.",
       "Move posts and logs to Supabase/PostgreSQL before full phone write control.",
       ...vercel.nextSteps,
+      ...supabase.nextSteps,
     ])),
   };
 }

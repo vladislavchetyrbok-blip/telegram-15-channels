@@ -15,6 +15,7 @@ const cards = [
   { href: "/admin/vercel-readiness", title: "Vercel Readiness", text: "Hosted admin safety, ADMIN_* env, JSON warning and phone access checklist.", icon: Cloud },
   { href: "/admin/vercel-setup", title: "Vercel Setup", text: "Launch checklist for safe phone access through Vercel.", icon: Cloud },
   { href: "/admin/system-status", title: "System Status", text: "One-screen health summary for auth, safety, reserve, Telegram and workflow status.", icon: Activity },
+  { href: "/admin/supabase-readiness", title: "Supabase Readiness", text: "Dry-run migration checklist for moving JSON posts and logs into PostgreSQL later.", icon: ListChecks },
   { href: "/admin/publish-scheduler#publication-events", title: "Publication Logs", text: "Recent publication, skipped and failed events.", icon: FileText },
   { href: "/admin/deploy-readiness", title: "Documentation / Plans", text: "Migration plans and safe phone access notes.", icon: BookOpen },
 ];

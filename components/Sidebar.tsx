@@ -50,6 +50,7 @@ const navItems = [
   { href: "/admin/deploy-readiness", label: "Deploy readiness", icon: Rocket },
   { href: "/admin/vercel-setup", label: "Vercel setup", icon: Cloud },
   { href: "/admin/system-status", label: "System status", icon: Activity },
+  { href: "/admin/supabase-readiness", label: "Supabase readiness", icon: ListChecks },
   ...(githubActionsUrl ? [{ href: githubActionsUrl, label: "GitHub Actions", icon: Github, external: true }] : []),
   { href: "/network", label: "Пульт сети", icon: Gauge },
   { href: "/channels", label: "Каналы", icon: RadioTower },
