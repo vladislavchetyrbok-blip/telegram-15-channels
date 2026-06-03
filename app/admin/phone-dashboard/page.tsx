@@ -87,6 +87,10 @@ export default function PhoneDashboardPage() {
           <ListChecks className="h-5 w-5" />
           Open publish monitor
         </Link>
+        <Link href="/admin/supabase-readiness" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg border border-line bg-panel/82 px-4 text-sm font-semibold text-slate-200 transition hover:border-cyan-300/40 hover:text-cyan-100">
+          <ListChecks className="h-5 w-5" />
+          Open Supabase readiness
+        </Link>
       </section>
 
       <Section title="Open Telegram channels">
@@ -129,12 +133,12 @@ export default function PhoneDashboardPage() {
 
       <Section title="Supabase migration readiness">
         <div className="space-y-2 text-sm leading-6 text-slate-300">
-          <p>Database active: {status.supabaseMigration.databaseActive ? "yes" : "no"}</p>
+          <p>Database is not active yet: {status.supabaseMigration.databaseActive ? "no" : "yes"}</p>
           <p>JSON store active: {status.supabaseMigration.jsonStoreActive ? "yes" : "no"}</p>
           <p>Dry-run migration ready: {status.supabaseMigration.dryRunReady ? "yes" : "no"}</p>
           <p>Current publishing unaffected: {status.supabaseMigration.productionPublishUnaffected ? "yes" : "no"}</p>
           <p className="rounded-md border border-cyan-300/20 bg-cyan-300/5 p-3 text-cyan-50">
-            Supabase migration is a separate future step. Current Telegram publishing remains on GitHub Actions and JSON.
+            Supabase migration is a separate future step. Current Telegram publishing remains on GitHub Actions and JSON, so this preparation does not change the live publisher.
           </p>
         </div>
       </Section>

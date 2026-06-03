@@ -1,4 +1,4 @@
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { getConfiguredPublishStoreMode } from "@/lib/storage/publish-store-factory";
 
@@ -17,11 +17,25 @@ export interface SupabaseReadinessStatus {
 }
 
 const root = process.cwd();
+const schemaTerms = [
+  "create table if not exists channels",
+  "create table if not exists posts",
+  "create table if not exists publication_logs",
+  "create table if not exists scheduler_runs",
+  "idx_posts_channel_id",
+  "idx_posts_status",
+  "idx_posts_publish_at",
+  "idx_publication_logs_post_id",
+  "idx_publication_logs_channel_id",
+  "idx_publication_logs_created_at",
+  "idx_scheduler_runs_started_at",
+];
 
 export function getSupabaseReadinessStatus(): SupabaseReadinessStatus {
   const currentStoreMode = getConfiguredPublishStoreMode();
   const hasDatabaseUrl = Boolean(process.env.DATABASE_URL);
-  const hasSupabaseSchema = existsSync(path.join(root, "supabase", "schema.sql"));
+  const schemaPath = path.join(root, "supabase", "schema.sql");
+  const hasSupabaseSchema = hasRequiredSchemaTerms(schemaPath);
   const hasPostgresAdapter = existsSync(path.join(root, "lib", "storage", "postgres-publish-store.ts"));
   const hasMigrationScript = existsSync(path.join(root, "scripts", "migrate-json-to-supabase.mjs"));
   const jsonStoreStillActive = currentStoreMode === "json";
@@ -38,8 +52,8 @@ export function getSupabaseReadinessStatus(): SupabaseReadinessStatus {
   }
 
   if (!hasSupabaseSchema) {
-    warnings.push("supabase/schema.sql is missing.");
-    nextSteps.push("Create the database schema before any migration dry-run.");
+    warnings.push("supabase/schema.sql is missing or incomplete.");
+    nextSteps.push("Create or fix the database schema before any migration dry-run.");
   }
 
   if (!hasPostgresAdapter) {
@@ -68,4 +82,10 @@ export function getSupabaseReadinessStatus(): SupabaseReadinessStatus {
     warnings: Array.from(new Set(warnings)),
     nextSteps: Array.from(new Set(nextSteps)),
   };
+}
+
+function hasRequiredSchemaTerms(schemaPath: string) {
+  if (!existsSync(schemaPath)) return false;
+  const schema = readFileSync(schemaPath, "utf8").toLowerCase();
+  return schemaTerms.every((term) => schema.includes(term));
 }

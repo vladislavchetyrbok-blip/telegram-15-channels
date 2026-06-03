@@ -64,10 +64,13 @@ export default function SystemStatusPage() {
           <KeyValue label="Enough until June 7" value={status.postReserve.enoughUntilJune7 ? "yes" : "no"} />
         </Panel>
 
-        <Panel title="Supabase migration" icon={Database}>
+        <Panel title="Supabase migration readiness" icon={Database}>
+          <KeyValue label="Database still inactive" value={status.supabaseMigration.currentStoreMode === "postgres" ? "no" : "yes"} warn={status.supabaseMigration.currentStoreMode === "postgres"} />
+          <KeyValue label="JSON store active" value={status.supabaseMigration.jsonStoreStillActive ? "yes" : "no"} warn={!status.supabaseMigration.jsonStoreStillActive} />
           <KeyValue label="DATABASE_URL configured" value={status.supabaseMigration.hasDatabaseUrl ? "true" : "false"} warn={!status.supabaseMigration.hasDatabaseUrl} />
           <KeyValue label="Schema file" value={status.supabaseMigration.hasSupabaseSchema ? "exists" : "missing"} warn={!status.supabaseMigration.hasSupabaseSchema} />
           <KeyValue label="Migration script" value={status.supabaseMigration.hasMigrationScript ? "ready" : "missing"} warn={!status.supabaseMigration.hasMigrationScript} />
+          <KeyValue label="Switch requires separate step" value="yes" />
           <KeyValue label="Production unaffected" value={status.supabaseMigration.productionPublishUnaffected ? "yes" : "no"} warn={!status.supabaseMigration.productionPublishUnaffected} />
         </Panel>
 

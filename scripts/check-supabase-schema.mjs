@@ -7,6 +7,33 @@ const requiredTerms = [
   "create table if not exists posts",
   "create table if not exists publication_logs",
   "create table if not exists scheduler_runs",
+  "id text primary key",
+  "title text",
+  "slug text unique",
+  "telegram_chat_id text",
+  "language text",
+  "category text",
+  "is_active boolean",
+  "channel_id text",
+  "text text",
+  "image_url text",
+  "image_path text",
+  "status text",
+  "publish_at timestamptz",
+  "telegram_message_id integer",
+  "telegram_message_link text",
+  "error_message text",
+  "run_id text",
+  "source text",
+  "dry_run boolean",
+  "store_mode text",
+  "real_publish_enabled boolean",
+  "checked integer",
+  "published integer",
+  "skipped integer",
+  "errors integer",
+  "started_at timestamptz",
+  "finished_at timestamptz",
   "idx_posts_channel_id",
   "idx_posts_status",
   "idx_posts_publish_at",
@@ -21,7 +48,7 @@ if (!existsSync(schemaPath)) {
   process.exit(1);
 }
 
-const schema = readFileSync(schemaPath, "utf8").toLowerCase();
+const schema = readFileSync(schemaPath, "utf8").toLowerCase().replace(/\s+/g, " ");
 const missing = requiredTerms.filter((term) => !schema.includes(term));
 const result = {
   ok: missing.length === 0,

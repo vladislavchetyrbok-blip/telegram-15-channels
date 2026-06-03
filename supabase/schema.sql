@@ -17,7 +17,7 @@ create table if not exists posts (
   text text,
   image_url text,
   image_path text,
-  status text not null default 'draft' check (status in ('draft', 'scheduled', 'approved', 'ready_to_publish', 'published', 'failed', 'skipped')),
+  status text not null default 'draft' check (status in ('draft', 'scheduled', 'approved', 'ready_to_publish', 'published', 'failed', 'skipped', 'blocked')),
   publish_at timestamptz,
   telegram_message_id integer,
   telegram_message_link text,
@@ -28,7 +28,7 @@ create table if not exists posts (
 
 alter table posts drop constraint if exists posts_status_check;
 alter table posts add constraint posts_status_check
-  check (status in ('draft', 'scheduled', 'approved', 'ready_to_publish', 'published', 'failed', 'skipped'));
+  check (status in ('draft', 'scheduled', 'approved', 'ready_to_publish', 'published', 'failed', 'skipped', 'blocked'));
 
 create table if not exists publication_logs (
   id text primary key,
@@ -47,7 +47,7 @@ create table if not exists publication_logs (
 create table if not exists scheduler_runs (
   id text primary key,
   source text,
-  store_mode text not null default 'postgres',
+  store_mode text not null default 'json',
   dry_run boolean not null default true,
   real_publish_enabled boolean not null default false,
   checked integer not null default 0,
