@@ -55,6 +55,7 @@ const navItems = [
   { href: "/admin/store-compare", label: "Store compare", icon: Database },
   { href: "/admin/dual-read", label: "Dual-read status", icon: Database },
   { href: "/admin/mirror-sync", label: "Mirror sync", icon: Database },
+  { href: "/admin/backups", label: "Backups", icon: Database },
   ...(githubActionsUrl ? [{ href: githubActionsUrl, label: "GitHub Actions", icon: Github, external: true }] : []),
   { href: "/network", label: "Пульт сети", icon: Gauge },
   { href: "/channels", label: "Каналы", icon: RadioTower },
