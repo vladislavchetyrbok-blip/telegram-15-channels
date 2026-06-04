@@ -1,5 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
+import { loadLocalEnv } from "./lib/load-local-env.mjs";
+import { buildPgConfig } from "./lib/pg-config.mjs";
 
 const root = process.cwd();
 const runtimeDir = path.join(root, "data", "runtime");
@@ -9,6 +11,8 @@ const logsPath = path.join(runtimeDir, "publication_logs.json");
 const schedulerPath = path.join(runtimeDir, "publish-scheduler.json");
 const apply = process.argv.includes("--apply");
 const dryRun = !apply;
+
+loadLocalEnv({ cwd: root });
 
 async function main() {
   const rawSource = readSourceData();
@@ -413,16 +417,6 @@ function stringOrNull(value) {
 function toNumberOrNull(value) {
   const number = Number(value);
   return Number.isFinite(number) && number > 0 ? number : null;
-}
-
-function buildPgConfig(databaseUrl) {
-  const sslMode = process.env.PGSSLMODE;
-  const likelySupabase = /supabase\.(co|com)|pooler\.supabase/i.test(databaseUrl);
-  if (sslMode === "disable") return { connectionString: databaseUrl };
-  if (sslMode === "require" || likelySupabase) {
-    return { connectionString: databaseUrl, ssl: { rejectUnauthorized: false } };
-  }
-  return { connectionString: databaseUrl };
 }
 
 await main().catch((error) => {

@@ -15,6 +15,7 @@
     "publish:due": "node scripts/publish-due.mjs",
     "migrate:json-to-supabase:dry": "node scripts/migrate-json-to-supabase.mjs",
     "migrate:json-to-supabase:apply": "node scripts/migrate-json-to-supabase.mjs --apply",
+    "db:connection:check": "node scripts/check-supabase-connection.mjs",
     "db:schema:check": "node scripts/check-supabase-schema.mjs",
     "autopublish": "node scripts/run-autopublish.mjs",
     "check:autopublish": "node scripts/autopublish-worker.mjs --once",

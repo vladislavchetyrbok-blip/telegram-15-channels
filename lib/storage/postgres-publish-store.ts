@@ -13,6 +13,13 @@ interface QueryClient {
   query(sql: string, values?: unknown[]): Promise<{ rows: Array<Record<string, unknown>>; rowCount: number }>;
 }
 
+interface PgClientConfig {
+  connectionString: string;
+  ssl?: {
+    rejectUnauthorized: boolean;
+  };
+}
+
 export class PostgresPublishStore implements PublishStore {
   mode = "postgres" as const;
 
@@ -182,7 +189,7 @@ export class PostgresPublishStore implements PublishStore {
     }
 
     const { Client } = await loadPg();
-    const client = new Client({ connectionString: this.databaseUrl }) as QueryClient;
+    const client = new Client(buildPgConfig(this.databaseUrl)) as QueryClient;
     await client.connect();
     try {
       return await callback(client);
@@ -192,8 +199,26 @@ export class PostgresPublishStore implements PublishStore {
   }
 }
 
-async function loadPg(): Promise<{ Client: new (config: { connectionString: string }) => unknown }> {
-  return Function("specifier", "return import(specifier)")("pg") as Promise<{ Client: new (config: { connectionString: string }) => unknown }>;
+async function loadPg(): Promise<{ Client: new (config: PgClientConfig) => unknown }> {
+  return Function("specifier", "return import(specifier)")("pg") as Promise<{ Client: new (config: PgClientConfig) => unknown }>;
+}
+
+function buildPgConfig(databaseUrl: string): PgClientConfig {
+  const sslMode = process.env.PGSSLMODE;
+  const likelySupabase = isSupabaseHost(databaseUrl);
+  if (sslMode === "disable") return { connectionString: databaseUrl };
+  if (sslMode === "require" || sslMode === "no-verify" || likelySupabase) {
+    return { connectionString: databaseUrl, ssl: { rejectUnauthorized: false } };
+  }
+  return { connectionString: databaseUrl };
+}
+
+function isSupabaseHost(databaseUrl: string): boolean {
+  try {
+    return /supabase\.(co|com)|pooler\.supabase/i.test(new URL(databaseUrl).hostname);
+  } catch {
+    return /supabase\.(co|com)|pooler\.supabase/i.test(databaseUrl);
+  }
 }
 
 function mapPostRow(row: Record<string, unknown>): PostRecord {
