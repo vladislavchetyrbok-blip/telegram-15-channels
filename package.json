@@ -15,6 +15,7 @@
     "publish:due": "node scripts/publish-due.mjs",
     "production:safety:check": "node scripts/check-production-safety.mjs",
     "actions:scheduler:check": "node scripts/check-github-actions-scheduler.mjs",
+    "ops:health:check": "node scripts/check-operational-health.mjs",
     "backup:create": "node scripts/create-system-backup.mjs",
     "migrate:json-to-supabase:dry": "node scripts/migrate-json-to-supabase.mjs",
     "migrate:json-to-supabase:apply": "node scripts/migrate-json-to-supabase.mjs --apply",
