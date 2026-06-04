@@ -18,6 +18,8 @@
     "db:connection:check": "node scripts/check-supabase-connection.mjs",
     "db:store:compare": "node scripts/compare-json-supabase-store.mjs",
     "db:store:dual-read": "node scripts/check-dual-read-store.mjs",
+    "db:mirror:sync:dry": "node scripts/sync-json-to-supabase-mirror.mjs --dry-run",
+    "db:mirror:sync:apply": "node scripts/sync-json-to-supabase-mirror.mjs --apply --confirm-mirror-sync",
     "db:schema:check": "node scripts/check-supabase-schema.mjs",
     "autopublish": "node scripts/run-autopublish.mjs",
     "check:autopublish": "node scripts/autopublish-worker.mjs --once",
