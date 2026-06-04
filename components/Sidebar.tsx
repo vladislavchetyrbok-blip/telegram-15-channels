@@ -48,6 +48,7 @@ const navItems = [
   { href: "/admin/mobile-control", label: "Mobile control", icon: Smartphone },
   { href: "/admin/publish-monitor", label: "Publish monitor", icon: RadioTower },
   { href: "/admin/publish-scheduler", label: "Publish scheduler", icon: TimerReset },
+  { href: "/admin/production-safety", label: "Production Safety", icon: ShieldCheck },
   { href: "/admin/deploy-readiness", label: "Deploy readiness", icon: Rocket },
   { href: "/admin/vercel-setup", label: "Vercel setup", icon: Cloud },
   { href: "/admin/system-status", label: "System status", icon: Activity },
