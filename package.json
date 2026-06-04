@@ -13,6 +13,7 @@
     "autopilot:pause": "node scripts/autopilot-pause.mjs",
     "autopilot:resume": "node scripts/autopilot-resume.mjs",
     "publish:due": "node scripts/publish-due.mjs",
+    "content:quality:check": "node scripts/check-content-quality.mjs",
     "production:safety:check": "node scripts/check-production-safety.mjs",
     "actions:scheduler:check": "node scripts/check-github-actions-scheduler.mjs",
     "ops:health:check": "node scripts/check-operational-health.mjs",

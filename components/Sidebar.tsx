@@ -50,6 +50,7 @@ const navItems = [
   { href: "/admin/publish-scheduler", label: "Publish scheduler", icon: TimerReset },
   { href: "/admin/actions-scheduler", label: "Actions Scheduler", icon: Github },
   { href: "/admin/production-safety", label: "Production Safety", icon: ShieldCheck },
+  { href: "/admin/content-quality", label: "Content Quality", icon: ScanSearch },
   { href: "/admin/operational-health", label: "Operational Health", icon: Activity },
   { href: "/admin/deploy-readiness", label: "Deploy readiness", icon: Rocket },
   { href: "/admin/vercel-setup", label: "Vercel setup", icon: Cloud },
