@@ -240,12 +240,10 @@ function readSourceData() {
 }
 
 async function readExistingIds(client, source) {
-  const [channels, posts, publicationLogs, schedulerRuns] = await Promise.all([
-    countExisting(client, "channels", source.channels.map((item) => item.id)),
-    countExisting(client, "posts", source.posts.map((item) => item.id)),
-    countExisting(client, "publication_logs", source.publicationLogs.map((item) => item.id)),
-    countExisting(client, "scheduler_runs", source.schedulerRuns.map((item) => item.id)),
-  ]);
+  const channels = await countExisting(client, "channels", source.channels.map((item) => item.id));
+  const posts = await countExisting(client, "posts", source.posts.map((item) => item.id));
+  const publicationLogs = await countExisting(client, "publication_logs", source.publicationLogs.map((item) => item.id));
+  const schedulerRuns = await countExisting(client, "scheduler_runs", source.schedulerRuns.map((item) => item.id));
   return { channels, posts, publicationLogs, schedulerRuns };
 }
 
