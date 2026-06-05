@@ -51,22 +51,8 @@ const forbiddenPhrases = [
 ];
 
 export async function getContentQualityReport() {
-  const lastCheckedAt = new Date().toISOString();
-  const warnings = [];
-  const errors = [];
-  const plan = readJson(path.join(runtimeDir, "weekly-content-plan.json"), { items: [] }, errors);
-  const posts = Array.isArray(plan.items) ? plan.items : [];
-
-  if (!Array.isArray(plan.items)) errors.push("weekly-content-plan.json does not contain an items array.");
-
-  const channels = buildChannelMap(posts);
-  const duplicateTopics = buildDuplicateTopicMap(posts);
-  const repeatedImages = buildRepeatedImageMap(posts);
-  const repeatedTemplates = buildRepeatedTemplateMap(posts);
-  const analyzed = posts.map((post) => analyzePost(post, { channels, duplicateTopics, repeatedImages, repeatedTemplates }));
-  const channelQuality = buildChannelQuality(channels, analyzed, duplicateTopics);
-  const repeatedProblems = buildRepeatedProblems(analyzed);
-  const summary = buildSummary(analyzed);
+  const analysis = await getContentQualityAnalysis();
+  const { lastCheckedAt, warnings, errors, analyzed, channelQuality, repeatedProblems, summary } = analysis;
   const recommendations = buildRecommendations(summary, channelQuality, repeatedProblems);
   const reportWarnings = [
     ...warnings,
@@ -90,6 +76,36 @@ export async function getContentQualityReport() {
     warnings: Array.from(new Set(reportWarnings)),
     errors: Array.from(new Set(errors)),
     lastCheckedAt,
+  };
+}
+
+export async function getContentQualityAnalysis() {
+  const lastCheckedAt = new Date().toISOString();
+  const warnings = [];
+  const errors = [];
+  const plan = readJson(path.join(runtimeDir, "weekly-content-plan.json"), { items: [] }, errors);
+  const posts = Array.isArray(plan.items) ? plan.items : [];
+
+  if (!Array.isArray(plan.items)) errors.push("weekly-content-plan.json does not contain an items array.");
+
+  const channels = buildChannelMap(posts);
+  const duplicateTopics = buildDuplicateTopicMap(posts);
+  const repeatedImages = buildRepeatedImageMap(posts);
+  const repeatedTemplates = buildRepeatedTemplateMap(posts);
+  const analyzed = posts.map((post) => analyzePost(post, { channels, duplicateTopics, repeatedImages, repeatedTemplates }));
+  const channelQuality = buildChannelQuality(channels, analyzed, duplicateTopics);
+  const repeatedProblems = buildRepeatedProblems(analyzed);
+  const summary = buildSummary(analyzed);
+
+  return {
+    lastCheckedAt,
+    warnings,
+    errors,
+    posts,
+    analyzed,
+    summary,
+    channelQuality,
+    repeatedProblems,
   };
 }
 

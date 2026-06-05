@@ -13,6 +13,7 @@
     "autopilot:pause": "node scripts/autopilot-pause.mjs",
     "autopilot:resume": "node scripts/autopilot-resume.mjs",
     "publish:due": "node scripts/publish-due.mjs",
+    "publish:preview:check": "node scripts/check-final-publish-preview.mjs",
     "content:quality:check": "node scripts/check-content-quality.mjs",
     "content:regen:queue": "node scripts/check-regeneration-queue.mjs",
     "content:regen:drafts:dry": "node scripts/create-regeneration-drafts.mjs --dry-run",
