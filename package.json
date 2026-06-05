@@ -15,6 +15,7 @@
     "publish:due": "node scripts/publish-due.mjs",
     "publish:preview:check": "node scripts/check-final-publish-preview.mjs",
     "publish:verify:last": "node scripts/check-post-send-verification.mjs",
+    "publish:one-channel-queue": "node scripts/check-one-channel-test-queue.mjs",
     "publish:test-one:dry": "node scripts/manual-one-post-test-send.mjs --dry-run",
     "publish:test-one:send": "node scripts/manual-one-post-test-send.mjs --send --confirm-one-post-send",
     "content:quality:check": "node scripts/check-content-quality.mjs",
