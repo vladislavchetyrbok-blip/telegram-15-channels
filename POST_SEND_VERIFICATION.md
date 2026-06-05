@@ -57,13 +57,19 @@ Controlled mode returns:
 - `controlledBatchDetected`
 - `controlledBatchOk`
 - `bulkDetected`
+- `auditSource`
 - `expectedPostsPublished`
 - `expectedPostsPending`
+- `expectedPostsMissing`
 - `unexpectedPosts`
 - `unexpectedChannels`
 - `duplicatePublishedPosts`
 
-In controlled mode, `bulkDetected` stays `false` when the only actual publications are expected post IDs in the expected channel and the count is at or below `maxExpectedPosts`.
+In controlled mode, expected published and pending state is computed from the full JSON store and all publication logs, not only from the recent audit window. A post is treated as expected published when its JSON state is published-like, `testPublished` is true, `publishResult` is successful, `publishedAt` or `telegramMessageId` is present, or there is a successful publication log for that expected post ID in the expected channel.
+
+`window-minutes` is used for recent bulk safety only: unexpected new publications, unexpected channels, recent post IDs outside the allowlist, critical publication errors, and recent duplicate activity. This lets a controlled one-channel test continue later even when earlier allowed publications are older than the recent safety window.
+
+In controlled mode, `bulkDetected` stays `false` when the expected published state is at or below `maxExpectedPosts`, recent activity does not include unexpected post IDs or channels, and there are no duplicate successful publication logs for the expected post IDs.
 
 It becomes `true` for unexpected channels, unexpected post IDs, duplicate actual publication logs for the same post ID, more than `maxExpectedPosts` unique published posts, or critical publication errors.
 

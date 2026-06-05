@@ -61,6 +61,7 @@ interface SelectedPostVerification {
 
 interface BulkSafety {
   mode: string;
+  auditSource: string;
   windowMinutes: number;
   maxAllowedForManualTest: number;
   maxExpectedPosts: number;
@@ -78,6 +79,7 @@ interface BulkSafety {
   controlledBatchOk: boolean;
   expectedPostsPublished: string[];
   expectedPostsPending: string[];
+  expectedPostsMissing: string[];
   unexpectedPosts: string[];
   unexpectedChannels: string[];
   duplicatePublishedPosts: string[];
@@ -286,10 +288,12 @@ export function PostSendVerificationPanel() {
         <Panel title="Controlled Channel Test Audit" icon={<ShieldCheck className="h-4 w-4" />}>
           <Rows rows={[
             ["mode", controlledReport?.mode ?? controlledAuditParams.mode],
+            ["auditSource", controlledReport?.bulkSafety.auditSource ?? "-"],
             ["expected channel", controlledReport?.bulkSafety.expectedChannelId ?? controlledAuditParams.expectedChannelId],
             ["expected posts", controlledReport?.bulkSafety.expectedPostIds.join(", ") || controlledAuditParams.expectedPostIds.join(", ")],
             ["expected published", controlledReport?.bulkSafety.expectedPostsPublished.join(", ") || "-"],
             ["expected pending", controlledReport?.bulkSafety.expectedPostsPending.join(", ") || "-"],
+            ["missing expected posts", controlledReport?.bulkSafety.expectedPostsMissing.join(", ") || "-"],
             ["unexpected posts", controlledReport?.bulkSafety.unexpectedPosts.join(", ") || "-"],
             ["unexpected channels", controlledReport?.bulkSafety.unexpectedChannels.join(", ") || "-"],
             ["duplicate posts", controlledReport?.bulkSafety.duplicatePublishedPosts.join(", ") || "-"],

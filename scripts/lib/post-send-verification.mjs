@@ -35,7 +35,7 @@ export async function getPostSendVerificationReport(options = {}) {
   const selectedPostVerification = requestedPostId
     ? buildSelectedPostVerification({ postId: requestedPostId, posts, publicationLogs, warnings, errors })
     : null;
-  const bulkSafety = buildBulkSafety(publicationLogs, requestedPostId, {
+  const bulkSafety = buildBulkSafety(posts, publicationLogs, requestedPostId, {
     mode: auditMode,
     expectedChannelId,
     expectedPostIds,
@@ -137,7 +137,7 @@ function buildSelectedPostVerification({ postId, posts, publicationLogs, warning
   };
 }
 
-function buildBulkSafety(logs, selectedPostId, options = {}) {
+function buildBulkSafety(posts, logs, selectedPostId, options = {}) {
   const now = Date.now();
   const windowMinutes = positiveIntegerOrDefault(options.windowMinutes, defaultWindowMinutes);
   const windowMs = windowMinutes * 60 * 1000;
@@ -171,9 +171,14 @@ function buildBulkSafety(logs, selectedPostId, options = {}) {
   const expectedChannelId = stringOrNull(options.expectedChannelId);
   const expectedPostIds = parseExpectedPostIds(options.expectedPostIds);
   const maxExpectedPosts = positiveIntegerOrDefault(options.maxExpectedPosts, expectedPostIds.length || 3);
-  const duplicatePublishedPosts = duplicateStrings(recentActualLogs.map((log) => stringOrNull(log.postId)));
-  const expectedPostsPublished = expectedPostIds.filter((postId) => uniquePosts.includes(postId));
-  const expectedPostsPending = expectedPostIds.filter((postId) => !uniquePosts.includes(postId));
+  const expectedPostStates = buildExpectedPostStates({ expectedPostIds, expectedChannelId, posts, logs });
+  const duplicatePublishedPosts =
+    mode === controlledChannelMode
+      ? expectedPostStates.duplicatePublishedPosts
+      : duplicateStrings(recentActualLogs.map((log) => stringOrNull(log.postId)));
+  const expectedPostsPublished = expectedPostStates.expectedPostsPublished;
+  const expectedPostsPending = expectedPostStates.expectedPostsPending;
+  const expectedPostsMissing = expectedPostStates.expectedPostsMissing;
   const unexpectedPosts = expectedPostIds.length ? uniquePosts.filter((postId) => !expectedPostIds.includes(postId)) : [];
   const unexpectedChannels = expectedChannelId ? uniqueChannels.filter((channelId) => channelId !== expectedChannelId) : [];
   const selectedOnly =
@@ -184,12 +189,11 @@ function buildBulkSafety(logs, selectedPostId, options = {}) {
     mode === controlledChannelMode &&
     Boolean(expectedChannelId) &&
     expectedPostIds.length > 0 &&
-    uniqueChannels.length <= 1 &&
+    expectedPostsMissing.length === 0 &&
     unexpectedChannels.length === 0 &&
     unexpectedPosts.length === 0 &&
-    uniquePosts.length <= maxExpectedPosts &&
+    expectedPostsPublished.length <= maxExpectedPosts &&
     duplicatePublishedPosts.length === 0 &&
-    recentActualLogs.every((log) => stringOrNull(log.channelId) === expectedChannelId) &&
     criticalPublicationErrors.length === 0;
   const bulkDetected =
     mode === controlledChannelMode
@@ -205,11 +209,13 @@ function buildBulkSafety(logs, selectedPostId, options = {}) {
   if (mode === controlledChannelMode && unexpectedPosts.length) warnings.push("Controlled channel test audit found unexpected published postIds.");
   if (mode === controlledChannelMode && unexpectedChannels.length) warnings.push("Controlled channel test audit found unexpected channelIds.");
   if (mode === controlledChannelMode && duplicatePublishedPosts.length) warnings.push("Controlled channel test audit found duplicate published postIds.");
-  if (mode === controlledChannelMode && uniquePosts.length > maxExpectedPosts) warnings.push("Controlled channel test audit exceeded max expected posts.");
+  if (mode === controlledChannelMode && expectedPostsMissing.length) warnings.push("Controlled channel test audit is missing expected postIds in JSON.");
+  if (mode === controlledChannelMode && expectedPostsPublished.length > maxExpectedPosts) warnings.push("Controlled channel test audit exceeded max expected posts.");
   if (mode === controlledChannelMode && criticalPublicationErrors.length) warnings.push("Controlled channel test audit found critical publication errors.");
 
   return {
     mode,
+    auditSource: mode === controlledChannelMode ? "all-json-logs-plus-recent-window" : "recent-window",
     windowMinutes,
     maxAllowedForManualTest,
     maxExpectedPosts,
@@ -227,6 +233,7 @@ function buildBulkSafety(logs, selectedPostId, options = {}) {
     controlledBatchOk,
     expectedPostsPublished,
     expectedPostsPending,
+    expectedPostsMissing,
     unexpectedPosts,
     unexpectedChannels,
     duplicatePublishedPosts,
@@ -305,6 +312,49 @@ function buildOtherRecentPosts(logs, postId) {
       .map((log) => stringOrNull(log.postId))
       .filter((id) => id && id !== postId),
   );
+}
+
+function buildExpectedPostStates({ expectedPostIds, expectedChannelId, posts, logs }) {
+  const expectedPostsPublished = [];
+  const expectedPostsPending = [];
+  const expectedPostsMissing = [];
+  const matchingPublishedLogCounts = new Map();
+
+  for (const postId of expectedPostIds) {
+    const matchingPosts = posts.filter((post) => postIdFor(post) === postId);
+    const post = matchingPosts[0] ?? null;
+    const actualLogsForPost = logs.filter((log) => stringOrNull(log?.postId) === postId && isActualPublicationLog(log));
+    const actualLogsForExpectedChannel = expectedChannelId
+      ? actualLogsForPost.filter((log) => stringOrNull(log.channelId) === expectedChannelId)
+      : actualLogsForPost;
+    const status = normalizeStatus(post?.status);
+    const publishResult = normalizeStatus(post?.publishResult);
+    const failedOrBlocked = ["failed", "failure", "skipped", "blocked", "error"].includes(status) || ["failed", "failure", "skipped", "blocked", "error"].includes(publishResult);
+    const publishedByPost =
+      publishedStatuses.has(status) ||
+      publishedStatuses.has(publishResult) ||
+      Boolean(post?.testPublished) ||
+      Boolean(stringOrNull(post?.publishedAt)) ||
+      Boolean(post?.telegramMessageId);
+    const publishedByLog = actualLogsForExpectedChannel.length > 0;
+
+    if (!post) {
+      expectedPostsMissing.push(postId);
+    } else if (publishedByPost || publishedByLog) {
+      expectedPostsPublished.push(postId);
+    } else if (!failedOrBlocked) {
+      expectedPostsPending.push(postId);
+    }
+
+    matchingPublishedLogCounts.set(postId, actualLogsForExpectedChannel.length);
+  }
+
+  return {
+    expectedPostsPublished,
+    expectedPostsPending,
+    expectedPostsMissing,
+    duplicatePublishedPosts: expectedPostIds.filter((postId) => (matchingPublishedLogCounts.get(postId) ?? 0) > 1),
+  };
 }
 
 function latestByCreatedAt(items) {
