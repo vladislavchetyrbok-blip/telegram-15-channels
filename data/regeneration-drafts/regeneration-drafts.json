@@ -1,12 +1,13 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-05T11:08:43.507Z",
+  "updatedAt": "2026-06-05T11:53:27.053Z",
   "drafts": [
     {
       "id": "draft_20260605110843506_weekly-2026-06-01-03-ukraine-opportunities-market-03_17",
       "sourcePostId": "weekly-2026-06-01-03-ukraine-opportunities-market-03",
       "channelId": "ukraine-market",
       "createdAt": "2026-06-05T11:08:43.506Z",
+      "updatedAt": "2026-06-05T11:08:43.506Z",
       "regenerationType": "both",
       "priority": "medium",
       "original": {
@@ -28,6 +29,9 @@
       "recommendation": "Add a concrete reader action or decision criterion.",
       "status": "draft",
       "approved": false,
+      "approvedAt": null,
+      "rejectedAt": null,
+      "reviewNote": "",
       "applied": false
     },
     {
@@ -35,6 +39,7 @@
       "sourcePostId": "weekly-2026-06-01-06-fishing-rest-06",
       "channelId": "fishing-rest",
       "createdAt": "2026-06-05T11:08:43.506Z",
+      "updatedAt": "2026-06-05T11:08:43.506Z",
       "regenerationType": "both",
       "priority": "medium",
       "original": {
@@ -56,6 +61,9 @@
       "recommendation": "Add a concrete reader action or decision criterion.",
       "status": "draft",
       "approved": false,
+      "approvedAt": null,
+      "rejectedAt": null,
+      "reviewNote": "",
       "applied": false
     },
     {
@@ -63,6 +71,7 @@
       "sourcePostId": "weekly-2026-06-01-07-dnipro-city-07",
       "channelId": "dnipro-city",
       "createdAt": "2026-06-05T11:08:43.506Z",
+      "updatedAt": "2026-06-05T11:53:27.052Z",
       "regenerationType": "manual_review",
       "priority": "high",
       "original": {
@@ -83,8 +92,11 @@
         "generic_visual"
       ],
       "recommendation": "Add a concrete reader action or decision criterion.",
-      "status": "draft",
+      "status": "needs_changes",
       "approved": false,
+      "approvedAt": null,
+      "rejectedAt": null,
+      "reviewNote": "Manual review test",
       "applied": false
     },
     {
@@ -92,6 +104,7 @@
       "sourcePostId": "weekly-2026-06-01-08-auto-comfort-08",
       "channelId": "auto-comfort",
       "createdAt": "2026-06-05T11:08:43.506Z",
+      "updatedAt": "2026-06-05T11:08:43.506Z",
       "regenerationType": "manual_review",
       "priority": "high",
       "original": {
@@ -113,6 +126,9 @@
       "recommendation": "Add a concrete reader action or decision criterion.",
       "status": "draft",
       "approved": false,
+      "approvedAt": null,
+      "rejectedAt": null,
+      "reviewNote": "",
       "applied": false
     },
     {
@@ -120,6 +136,7 @@
       "sourcePostId": "weekly-2026-06-01-10-personal-progress-10",
       "channelId": "personal-progress",
       "createdAt": "2026-06-05T11:08:43.506Z",
+      "updatedAt": "2026-06-05T11:08:43.506Z",
       "regenerationType": "both",
       "priority": "medium",
       "original": {
@@ -141,6 +158,9 @@
       "recommendation": "Add a concrete reader action or decision criterion.",
       "status": "draft",
       "approved": false,
+      "approvedAt": null,
+      "rejectedAt": null,
+      "reviewNote": "",
       "applied": false
     },
     {
@@ -148,6 +168,7 @@
       "sourcePostId": "weekly-2026-06-01-11-dnipro-real-estate-ru-11",
       "channelId": "dnipro-real-estate-ru",
       "createdAt": "2026-06-05T11:08:43.506Z",
+      "updatedAt": "2026-06-05T11:08:43.506Z",
       "regenerationType": "both",
       "priority": "medium",
       "original": {
@@ -170,6 +191,9 @@
       "recommendation": "Add a concrete reader action or decision criterion.",
       "status": "draft",
       "approved": false,
+      "approvedAt": null,
+      "rejectedAt": null,
+      "reviewNote": "",
       "applied": false
     },
     {
@@ -177,6 +201,7 @@
       "sourcePostId": "weekly-2026-06-02-07-dnipro-city-07",
       "channelId": "dnipro-city",
       "createdAt": "2026-06-05T11:08:43.506Z",
+      "updatedAt": "2026-06-05T11:08:43.506Z",
       "regenerationType": "manual_review",
       "priority": "high",
       "original": {
@@ -198,6 +223,9 @@
       "recommendation": "Add a concrete reader action or decision criterion.",
       "status": "draft",
       "approved": false,
+      "approvedAt": null,
+      "rejectedAt": null,
+      "reviewNote": "",
       "applied": false
     },
     {
@@ -205,6 +233,7 @@
       "sourcePostId": "weekly-2026-06-03-03-ukraine-opportunities-market-03",
       "channelId": "ukraine-market",
       "createdAt": "2026-06-05T11:08:43.506Z",
+      "updatedAt": "2026-06-05T11:08:43.506Z",
       "regenerationType": "both",
       "priority": "medium",
       "original": {
@@ -226,6 +255,9 @@
       "recommendation": "Add a concrete reader action or decision criterion.",
       "status": "draft",
       "approved": false,
+      "approvedAt": null,
+      "rejectedAt": null,
+      "reviewNote": "",
       "applied": false
     },
     {
@@ -233,6 +265,7 @@
       "sourcePostId": "weekly-2026-06-03-06-fishing-rest-06",
       "channelId": "fishing-rest",
       "createdAt": "2026-06-05T11:08:43.506Z",
+      "updatedAt": "2026-06-05T11:08:43.506Z",
       "regenerationType": "both",
       "priority": "medium",
       "original": {
@@ -254,6 +287,9 @@
       "recommendation": "Add a concrete reader action or decision criterion.",
       "status": "draft",
       "approved": false,
+      "approvedAt": null,
+      "rejectedAt": null,
+      "reviewNote": "",
       "applied": false
     },
     {
@@ -261,6 +297,7 @@
       "sourcePostId": "weekly-2026-06-03-07-dnipro-city-07",
       "channelId": "dnipro-city",
       "createdAt": "2026-06-05T11:08:43.506Z",
+      "updatedAt": "2026-06-05T11:08:43.506Z",
       "regenerationType": "manual_review",
       "priority": "high",
       "original": {
@@ -283,6 +320,9 @@
       "recommendation": "Add a concrete reader action or decision criterion.",
       "status": "draft",
       "approved": false,
+      "approvedAt": null,
+      "rejectedAt": null,
+      "reviewNote": "",
       "applied": false
     },
     {
@@ -290,6 +330,7 @@
       "sourcePostId": "weekly-2026-06-03-08-auto-comfort-08",
       "channelId": "auto-comfort",
       "createdAt": "2026-06-05T11:08:43.506Z",
+      "updatedAt": "2026-06-05T11:08:43.506Z",
       "regenerationType": "manual_review",
       "priority": "high",
       "original": {
@@ -311,6 +352,9 @@
       "recommendation": "Add a concrete reader action or decision criterion.",
       "status": "draft",
       "approved": false,
+      "approvedAt": null,
+      "rejectedAt": null,
+      "reviewNote": "",
       "applied": false
     },
     {
@@ -318,6 +362,7 @@
       "sourcePostId": "weekly-2026-06-03-10-personal-progress-10",
       "channelId": "personal-progress",
       "createdAt": "2026-06-05T11:08:43.506Z",
+      "updatedAt": "2026-06-05T11:08:43.506Z",
       "regenerationType": "both",
       "priority": "medium",
       "original": {
@@ -339,6 +384,9 @@
       "recommendation": "Add a concrete reader action or decision criterion.",
       "status": "draft",
       "approved": false,
+      "approvedAt": null,
+      "rejectedAt": null,
+      "reviewNote": "",
       "applied": false
     },
     {
@@ -346,6 +394,7 @@
       "sourcePostId": "weekly-2026-06-03-11-dnipro-real-estate-ru-11",
       "channelId": "dnipro-real-estate-ru",
       "createdAt": "2026-06-05T11:08:43.506Z",
+      "updatedAt": "2026-06-05T11:08:43.506Z",
       "regenerationType": "both",
       "priority": "medium",
       "original": {
@@ -368,6 +417,9 @@
       "recommendation": "Add a concrete reader action or decision criterion.",
       "status": "draft",
       "approved": false,
+      "approvedAt": null,
+      "rejectedAt": null,
+      "reviewNote": "",
       "applied": false
     },
     {
@@ -375,6 +427,7 @@
       "sourcePostId": "weekly-2026-06-04-07-dnipro-city-07",
       "channelId": "dnipro-city",
       "createdAt": "2026-06-05T11:08:43.506Z",
+      "updatedAt": "2026-06-05T11:08:43.506Z",
       "regenerationType": "manual_review",
       "priority": "high",
       "original": {
@@ -396,6 +449,9 @@
       "recommendation": "Add a concrete reader action or decision criterion.",
       "status": "draft",
       "approved": false,
+      "approvedAt": null,
+      "rejectedAt": null,
+      "reviewNote": "",
       "applied": false
     },
     {
@@ -403,6 +459,7 @@
       "sourcePostId": "weekly-2026-06-05-07-dnipro-city-07",
       "channelId": "dnipro-city",
       "createdAt": "2026-06-05T11:08:43.506Z",
+      "updatedAt": "2026-06-05T11:08:43.506Z",
       "regenerationType": "manual_review",
       "priority": "high",
       "original": {
@@ -424,6 +481,9 @@
       "recommendation": "Add a concrete reader action or decision criterion.",
       "status": "draft",
       "approved": false,
+      "approvedAt": null,
+      "rejectedAt": null,
+      "reviewNote": "",
       "applied": false
     },
     {
@@ -431,6 +491,7 @@
       "sourcePostId": "weekly-2026-06-07-02-ai-technologies-02",
       "channelId": "ai-tech",
       "createdAt": "2026-06-05T11:08:43.506Z",
+      "updatedAt": "2026-06-05T11:08:43.506Z",
       "regenerationType": "manual_review",
       "priority": "high",
       "original": {
@@ -452,6 +513,9 @@
       "recommendation": "Add a concrete reader action or decision criterion.",
       "status": "draft",
       "approved": false,
+      "approvedAt": null,
+      "rejectedAt": null,
+      "reviewNote": "",
       "applied": false
     },
     {
@@ -459,6 +523,7 @@
       "sourcePostId": "weekly-2026-06-07-07-dnipro-city-07",
       "channelId": "dnipro-city",
       "createdAt": "2026-06-05T11:08:43.506Z",
+      "updatedAt": "2026-06-05T11:08:43.506Z",
       "regenerationType": "manual_review",
       "priority": "high",
       "original": {
@@ -480,6 +545,9 @@
       "recommendation": "Add a concrete reader action or decision criterion.",
       "status": "draft",
       "approved": false,
+      "approvedAt": null,
+      "rejectedAt": null,
+      "reviewNote": "",
       "applied": false
     },
     {
@@ -487,6 +555,7 @@
       "sourcePostId": "weekly-2026-06-08-02-ai-technologies-02",
       "channelId": "ai-tech",
       "createdAt": "2026-06-05T11:08:43.506Z",
+      "updatedAt": "2026-06-05T11:08:43.506Z",
       "regenerationType": "manual_review",
       "priority": "high",
       "original": {
@@ -508,6 +577,9 @@
       "recommendation": "Add a concrete reader action or decision criterion.",
       "status": "draft",
       "approved": false,
+      "approvedAt": null,
+      "rejectedAt": null,
+      "reviewNote": "",
       "applied": false
     }
   ]

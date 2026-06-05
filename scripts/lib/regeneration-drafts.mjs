@@ -8,6 +8,9 @@ export const regenerationDraftsDir = path.join(root, "data", "regeneration-draft
 export const regenerationDraftsFile = path.join(regenerationDraftsDir, "regeneration-drafts.json");
 
 const activeStatuses = new Set(["draft", "approved"]);
+const reviewStatuses = new Set(["draft", "approved", "rejected", "needs_changes"]);
+const regenerationTypes = new Set(["text", "image", "both", "manual_review"]);
+const priorities = new Set(["high", "medium", "low"]);
 const staleAfterMs = 7 * 24 * 60 * 60 * 1000;
 
 export async function previewRegenerationDraftCreation() {
@@ -43,6 +46,94 @@ export async function getRegenerationDraftStatus() {
     warnings,
     errors,
     lastCheckedAt: new Date().toISOString(),
+  };
+}
+
+export async function getRegenerationReviewStatus() {
+  const errors = [];
+  const store = readDraftStore(errors);
+  const drafts = sortDrafts(store.drafts);
+  const summary = buildReviewSummary(drafts);
+  const warnings = [];
+
+  if (summary.highPriorityPending > 0) warnings.push(`${summary.highPriorityPending} high-priority draft(s) are pending manual review.`);
+  if (summary.applied > 0) warnings.push(`${summary.applied} draft(s) have applied=true, but review center does not apply drafts.`);
+
+  return {
+    status: errors.length ? "error" : warnings.length ? "warning" : "ok",
+    productionStoreMode: "json",
+    sourceOfTruth: "json",
+    safeToSwitchToSupabase: false,
+    storePath: path.relative(root, regenerationDraftsFile),
+    summary,
+    drafts: drafts.slice(0, 20),
+    first20Drafts: drafts.slice(0, 20),
+    draftsByChannel: countBy(drafts, "channelId"),
+    draftsByType: countBy(drafts, "regenerationType"),
+    highPriorityPending: drafts.filter(isHighPriorityPending).map((draft) => draft.id).slice(0, 20),
+    warnings,
+    errors,
+    lastCheckedAt: new Date().toISOString(),
+  };
+}
+
+export async function reviewRegenerationDraft({ draftId, action, note }) {
+  const errors = [];
+  if (!draftId) {
+    return {
+      ok: false,
+      message: "Missing required --draft-id value. No regeneration drafts were changed.",
+      errors: ["Missing draftId."],
+    };
+  }
+
+  if (!["approve", "reject", "needs_changes"].includes(action)) {
+    return {
+      ok: false,
+      message: "Choose exactly one review action: approve, reject, or needs_changes. No regeneration drafts were changed.",
+      errors: ["Invalid review action."],
+    };
+  }
+
+  const store = readDraftStore(errors);
+  if (errors.length) {
+    return {
+      ok: false,
+      message: "Regeneration draft store could not be read. No regeneration drafts were changed.",
+      errors,
+    };
+  }
+
+  const drafts = store.drafts.map(normalizeDraft);
+  const draftIndex = drafts.findIndex((draft) => draft.id === draftId);
+  if (draftIndex === -1) {
+    return {
+      ok: false,
+      message: `Draft ${draftId} was not found. No regeneration drafts were changed.`,
+      errors: [`Draft ${draftId} was not found.`],
+    };
+  }
+
+  const now = new Date().toISOString();
+  const nextDraft = applyReviewAction(drafts[draftIndex], { action, note, now });
+  const nextDrafts = drafts.map((draft, index) => (index === draftIndex ? nextDraft : { ...draft, applied: false }));
+  mkdirSync(regenerationDraftsDir, { recursive: true });
+  writeDraftStore(nextDrafts);
+
+  const sortedDrafts = sortDrafts(nextDrafts);
+  const summary = buildReviewSummary(sortedDrafts);
+
+  return {
+    ok: true,
+    message: `Draft ${draftId} review status updated to ${nextDraft.status}.`,
+    draft: nextDraft,
+    summary,
+    productionStoreMode: "json",
+    sourceOfTruth: "json",
+    safeToSwitchToSupabase: false,
+    appliedDraftsWereNotApplied: true,
+    postsWereNotChanged: true,
+    lastReviewedAt: now,
   };
 }
 
@@ -145,6 +236,7 @@ function candidateToDraft(candidate, index) {
     sourcePostId: candidate.sourcePostId,
     channelId: candidate.channelId,
     createdAt,
+    updatedAt: createdAt,
     regenerationType: candidate.regenerationType,
     priority: candidate.priority,
     original: candidate.original,
@@ -153,6 +245,9 @@ function candidateToDraft(candidate, index) {
     recommendation: candidate.recommendation,
     status: "draft",
     approved: false,
+    approvedAt: null,
+    rejectedAt: null,
+    reviewNote: "",
     applied: false,
   };
 }
@@ -192,6 +287,7 @@ function shouldRewriteText(type) {
 }
 
 function buildDraftSummary(drafts) {
+  const reviewSummary = buildReviewSummary(drafts);
   return {
     totalDrafts: drafts.length,
     activeDrafts: drafts.filter(isActiveDraft).length,
@@ -203,6 +299,26 @@ function buildDraftSummary(drafts) {
     manualReviewDrafts: drafts.filter((draft) => draft.regenerationType === "manual_review").length,
     highPriorityDrafts: drafts.filter((draft) => draft.priority === "high").length,
     staleDrafts: drafts.filter(isStaleActiveDraft).length,
+    draft: reviewSummary.draft,
+    approved: reviewSummary.approved,
+    rejected: reviewSummary.rejected,
+    needsChanges: reviewSummary.needsChanges,
+    applied: reviewSummary.applied,
+    pendingReview: reviewSummary.pendingReview,
+    highPriorityPending: reviewSummary.highPriorityPending,
+  };
+}
+
+function buildReviewSummary(drafts) {
+  return {
+    totalDrafts: drafts.length,
+    draft: drafts.filter((draft) => draft.status === "draft").length,
+    approved: drafts.filter((draft) => draft.status === "approved").length,
+    rejected: drafts.filter((draft) => draft.status === "rejected").length,
+    needsChanges: drafts.filter((draft) => draft.status === "needs_changes").length,
+    applied: drafts.filter((draft) => draft.applied).length,
+    pendingReview: drafts.filter(isPendingReview).length,
+    highPriorityPending: drafts.filter(isHighPriorityPending).length,
   };
 }
 
@@ -216,8 +332,8 @@ function readDraftStore(errors = []) {
   if (!existsSync(regenerationDraftsFile)) return fallback;
 
   const parsed = readJson(regenerationDraftsFile, fallback, errors);
-  if (Array.isArray(parsed)) return { version: 1, updatedAt: null, drafts: parsed };
-  if (Array.isArray(parsed.drafts)) return { ...fallback, ...parsed, drafts: parsed.drafts };
+  if (Array.isArray(parsed)) return { version: 1, updatedAt: null, drafts: parsed.map(normalizeDraft) };
+  if (Array.isArray(parsed.drafts)) return { ...fallback, ...parsed, drafts: parsed.drafts.map(normalizeDraft) };
 
   errors.push(`${path.relative(root, regenerationDraftsFile)} does not contain a drafts array.`);
   return fallback;
@@ -227,9 +343,86 @@ function writeDraftStore(drafts) {
   const payload = {
     version: 1,
     updatedAt: new Date().toISOString(),
-    drafts: sortDrafts(drafts),
+    drafts: sortDrafts(drafts.map(normalizeDraft)),
   };
   writeFileSync(regenerationDraftsFile, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
+}
+
+function normalizeDraft(draft) {
+  const status = reviewStatuses.has(String(draft?.status)) ? String(draft.status) : "draft";
+  const createdAt = stringOrNull(draft?.createdAt) ?? new Date(0).toISOString();
+  const updatedAt = stringOrNull(draft?.updatedAt) ?? createdAt;
+  const approved = status === "approved";
+
+  return {
+    id: String(draft?.id ?? ""),
+    sourcePostId: String(draft?.sourcePostId ?? ""),
+    channelId: String(draft?.channelId ?? ""),
+    createdAt,
+    updatedAt,
+    regenerationType: regenerationTypes.has(String(draft?.regenerationType)) ? String(draft.regenerationType) : "manual_review",
+    priority: priorities.has(String(draft?.priority)) ? String(draft.priority) : "medium",
+    original: {
+      text: String(draft?.original?.text ?? ""),
+      imagePath: String(draft?.original?.imagePath ?? ""),
+      topic: String(draft?.original?.topic ?? ""),
+    },
+    draft: {
+      text: String(draft?.draft?.text ?? ""),
+      imagePrompt: String(draft?.draft?.imagePrompt ?? ""),
+      imagePath: draft?.draft?.imagePath ? String(draft.draft.imagePath) : null,
+    },
+    issues: Array.isArray(draft?.issues) ? draft.issues.map((issue) => String(issue)) : [],
+    recommendation: String(draft?.recommendation ?? ""),
+    status,
+    approved,
+    approvedAt: approved ? stringOrNull(draft?.approvedAt) : null,
+    rejectedAt: status === "rejected" ? stringOrNull(draft?.rejectedAt) : null,
+    reviewNote: String(draft?.reviewNote ?? ""),
+    applied: false,
+  };
+}
+
+function applyReviewAction(draft, { action, note, now }) {
+  const noteWasProvided = typeof note === "string";
+  const reviewNote = noteWasProvided ? note : draft.reviewNote;
+
+  if (action === "approve") {
+    return {
+      ...draft,
+      updatedAt: now,
+      status: "approved",
+      approved: true,
+      approvedAt: now,
+      rejectedAt: null,
+      reviewNote,
+      applied: false,
+    };
+  }
+
+  if (action === "reject") {
+    return {
+      ...draft,
+      updatedAt: now,
+      status: "rejected",
+      approved: false,
+      approvedAt: null,
+      rejectedAt: now,
+      reviewNote,
+      applied: false,
+    };
+  }
+
+  return {
+    ...draft,
+    updatedAt: now,
+    status: "needs_changes",
+    approved: false,
+    approvedAt: null,
+    rejectedAt: null,
+    reviewNote,
+    applied: false,
+  };
 }
 
 function readJson(filePath, fallback, errors) {
@@ -259,6 +452,14 @@ function isStaleActiveDraft(draft) {
   if (!isActiveDraft(draft)) return false;
   const createdAt = Date.parse(draft.createdAt ?? "");
   return Boolean(createdAt && Date.now() - createdAt > staleAfterMs);
+}
+
+function isPendingReview(draft) {
+  return !draft.applied && (draft.status === "draft" || draft.status === "needs_changes");
+}
+
+function isHighPriorityPending(draft) {
+  return draft.priority === "high" && isPendingReview(draft);
 }
 
 function draftKey(draft) {

@@ -55,6 +55,7 @@ const navItems = [
   { href: "/admin/content-quality", label: "Content Quality", icon: ScanSearch },
   { href: "/admin/regeneration-queue", label: "Regeneration Queue", icon: RefreshCw },
   { href: "/admin/regeneration-drafts", label: "Regeneration Drafts", icon: FileText },
+  { href: "/admin/regeneration-review", label: "Draft Review", icon: ShieldCheck },
   { href: "/admin/operational-health", label: "Operational Health", icon: Activity },
   { href: "/admin/deploy-readiness", label: "Deploy readiness", icon: Rocket },
   { href: "/admin/vercel-setup", label: "Vercel setup", icon: Cloud },
