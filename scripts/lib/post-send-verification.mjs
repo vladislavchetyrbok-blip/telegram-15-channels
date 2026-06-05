@@ -8,7 +8,10 @@ const planPath = path.join(runtimeDir, "weekly-content-plan.json");
 const logsPath = path.join(runtimeDir, "publication_logs.json");
 
 const publishedStatuses = new Set(["success", "published", "sent", "testpublished", "test_published", "ok"]);
+const criticalStatuses = new Set(["error", "failed", "failure", "critical"]);
 const maxAllowedForManualTest = 1;
+const defaultWindowMinutes = 10;
+const controlledChannelMode = "controlled-channel-test";
 
 export async function getPostSendVerificationReport(options = {}) {
   const lastCheckedAt = new Date().toISOString();
@@ -19,6 +22,11 @@ export async function getPostSendVerificationReport(options = {}) {
   const posts = Array.isArray(plan.items) ? plan.items : [];
   const publicationLogs = Array.isArray(logs) ? logs : [];
   const requestedPostId = stringOrNull(options.postId);
+  const auditMode = normalizeAuditMode(options.mode);
+  const expectedChannelId = stringOrNull(options.expectedChannelId);
+  const expectedPostIds = parseExpectedPostIds(options.expectedPostIds);
+  const maxExpectedPosts = positiveIntegerOrDefault(options.maxExpectedPosts, expectedPostIds.length || 3);
+  const windowMinutes = positiveIntegerOrDefault(options.windowMinutes, defaultWindowMinutes);
 
   if (!Array.isArray(plan.items)) errors.push("data/runtime/weekly-content-plan.json does not contain an items array.");
   if (!Array.isArray(logs)) errors.push("data/runtime/publication_logs.json does not contain an array.");
@@ -27,20 +35,28 @@ export async function getPostSendVerificationReport(options = {}) {
   const selectedPostVerification = requestedPostId
     ? buildSelectedPostVerification({ postId: requestedPostId, posts, publicationLogs, warnings, errors })
     : null;
-  const bulkSafety = buildBulkSafety(publicationLogs, requestedPostId);
+  const bulkSafety = buildBulkSafety(publicationLogs, requestedPostId, {
+    mode: auditMode,
+    expectedChannelId,
+    expectedPostIds,
+    maxExpectedPosts,
+    windowMinutes,
+  });
   const githubActions = buildGithubActionsSafety();
   const storeConsistency = await buildStoreConsistency(warnings);
 
   if (!lastPublication.latestPublicationLog) warnings.push("No publication logs were found.");
   if (bulkSafety.bulkDetected) {
-    warnings.push(`Bulk publication detected: ${bulkSafety.publicationsInLast10Minutes} publication logs in the last 10 minutes.`);
+    warnings.push(`Bulk publication detected: ${bulkSafety.publicationsInWindow} publication logs in the last ${bulkSafety.windowMinutes} minutes.`);
   }
+  if (auditMode === controlledChannelMode && !bulkSafety.controlledBatchOk) warnings.push("Controlled channel test audit failed.");
   if (storeConsistency.status !== "ok") {
     warnings.push(storeConsistency.message);
   }
 
   return {
     status: errors.length ? "error" : warnings.length ? "warning" : "ok",
+    mode: auditMode,
     productionStoreMode: "json",
     sourceOfTruth: "json",
     safeToSwitchToSupabase: false,
@@ -121,34 +137,100 @@ function buildSelectedPostVerification({ postId, posts, publicationLogs, warning
   };
 }
 
-function buildBulkSafety(logs, selectedPostId) {
+function buildBulkSafety(logs, selectedPostId, options = {}) {
   const now = Date.now();
-  const windowMs = 10 * 60 * 1000;
+  const windowMinutes = positiveIntegerOrDefault(options.windowMinutes, defaultWindowMinutes);
+  const windowMs = windowMinutes * 60 * 1000;
   const recentActualLogs = logs.filter((log) => {
     const createdAt = Date.parse(log?.createdAt ?? "");
     return isActualPublicationLog(log) && Number.isFinite(createdAt) && now - createdAt <= windowMs && now >= createdAt;
   });
+  const tenMinuteWindowMs = defaultWindowMinutes * 60 * 1000;
+  const recentTenMinuteActualLogs = logs.filter((log) => {
+    const createdAt = Date.parse(log?.createdAt ?? "");
+    return isActualPublicationLog(log) && Number.isFinite(createdAt) && now - createdAt <= tenMinuteWindowMs && now >= createdAt;
+  });
   const uniquePosts = uniqueStrings(recentActualLogs.map((log) => stringOrNull(log.postId)));
   const uniqueChannels = uniqueStrings(recentActualLogs.map((log) => stringOrNull(log.channelId)));
+  const uniqueTenMinutePosts = uniqueStrings(recentTenMinuteActualLogs.map((log) => stringOrNull(log.postId)));
+  const uniqueTenMinuteChannels = uniqueStrings(recentTenMinuteActualLogs.map((log) => stringOrNull(log.channelId)));
+  const criticalPublicationErrors = logs
+    .filter((log) => {
+      const createdAt = Date.parse(log?.createdAt ?? "");
+      return isCriticalPublicationErrorLog(log) && Number.isFinite(createdAt) && now - createdAt <= windowMs && now >= createdAt;
+    })
+    .map((log) => ({
+      id: stringOrNull(log.id),
+      postId: stringOrNull(log.postId),
+      channelId: stringOrNull(log.channelId),
+      status: normalizeStatus(log.status),
+      createdAt: stringOrNull(log.createdAt),
+      message: stringOrNull(log.error) ?? stringOrNull(log.message),
+    }));
+  const mode = normalizeAuditMode(options.mode);
+  const expectedChannelId = stringOrNull(options.expectedChannelId);
+  const expectedPostIds = parseExpectedPostIds(options.expectedPostIds);
+  const maxExpectedPosts = positiveIntegerOrDefault(options.maxExpectedPosts, expectedPostIds.length || 3);
+  const duplicatePublishedPosts = duplicateStrings(recentActualLogs.map((log) => stringOrNull(log.postId)));
+  const expectedPostsPublished = expectedPostIds.filter((postId) => uniquePosts.includes(postId));
+  const expectedPostsPending = expectedPostIds.filter((postId) => !uniquePosts.includes(postId));
+  const unexpectedPosts = expectedPostIds.length ? uniquePosts.filter((postId) => !expectedPostIds.includes(postId)) : [];
+  const unexpectedChannels = expectedChannelId ? uniqueChannels.filter((channelId) => channelId !== expectedChannelId) : [];
   const selectedOnly =
     selectedPostId && uniquePosts.length <= 1 && (uniquePosts.length === 0 || uniquePosts[0] === selectedPostId);
-  const bulkDetected =
-    recentActualLogs.length > maxAllowedForManualTest ||
-    uniquePosts.length > maxAllowedForManualTest ||
-    uniqueChannels.length > maxAllowedForManualTest;
   const warnings = [];
+  const controlledBatchDetected = mode === controlledChannelMode && recentActualLogs.length > 1;
+  const controlledBatchOk =
+    mode === controlledChannelMode &&
+    Boolean(expectedChannelId) &&
+    expectedPostIds.length > 0 &&
+    uniqueChannels.length <= 1 &&
+    unexpectedChannels.length === 0 &&
+    unexpectedPosts.length === 0 &&
+    uniquePosts.length <= maxExpectedPosts &&
+    duplicatePublishedPosts.length === 0 &&
+    recentActualLogs.every((log) => stringOrNull(log.channelId) === expectedChannelId) &&
+    criticalPublicationErrors.length === 0;
+  const bulkDetected =
+    mode === controlledChannelMode
+      ? !controlledBatchOk
+      : recentActualLogs.length > maxAllowedForManualTest ||
+        uniquePosts.length > maxAllowedForManualTest ||
+        uniqueChannels.length > maxAllowedForManualTest;
 
-  if (bulkDetected) warnings.push("More than one actual publication, post, or channel was touched in the last 10 minutes.");
+  if (bulkDetected) warnings.push(`More than one actual publication, post, or channel was touched in the last ${windowMinutes} minutes.`);
   if (selectedPostId && !selectedOnly) warnings.push("Recent actual publications are not limited to the selected postId.");
+  if (mode === controlledChannelMode && !expectedChannelId) warnings.push("Controlled channel test audit requires expected-channel-id.");
+  if (mode === controlledChannelMode && !expectedPostIds.length) warnings.push("Controlled channel test audit requires expected-post-ids.");
+  if (mode === controlledChannelMode && unexpectedPosts.length) warnings.push("Controlled channel test audit found unexpected published postIds.");
+  if (mode === controlledChannelMode && unexpectedChannels.length) warnings.push("Controlled channel test audit found unexpected channelIds.");
+  if (mode === controlledChannelMode && duplicatePublishedPosts.length) warnings.push("Controlled channel test audit found duplicate published postIds.");
+  if (mode === controlledChannelMode && uniquePosts.length > maxExpectedPosts) warnings.push("Controlled channel test audit exceeded max expected posts.");
+  if (mode === controlledChannelMode && criticalPublicationErrors.length) warnings.push("Controlled channel test audit found critical publication errors.");
 
   return {
-    windowMinutes: 10,
+    mode,
+    windowMinutes,
     maxAllowedForManualTest,
-    publicationsInLast10Minutes: recentActualLogs.length,
-    uniquePostsPublishedInLast10Minutes: uniquePosts.length,
-    uniqueChannelsTouchedInLast10Minutes: uniqueChannels.length,
+    maxExpectedPosts,
+    expectedChannelId,
+    expectedPostIds,
+    publicationsInWindow: recentActualLogs.length,
+    publicationsInLast10Minutes: recentTenMinuteActualLogs.length,
+    uniquePostsPublishedInWindow: uniquePosts.length,
+    uniquePostsPublishedInLast10Minutes: uniqueTenMinutePosts.length,
+    uniqueChannelsTouchedInWindow: uniqueChannels.length,
+    uniqueChannelsTouchedInLast10Minutes: uniqueTenMinuteChannels.length,
     recentPublishedPostIds: uniquePosts,
     recentTouchedChannelIds: uniqueChannels,
+    controlledBatchDetected,
+    controlledBatchOk,
+    expectedPostsPublished,
+    expectedPostsPending,
+    unexpectedPosts,
+    unexpectedChannels,
+    duplicatePublishedPosts,
+    criticalPublicationErrors,
     bulkDetected,
     warnings,
   };
@@ -235,6 +317,11 @@ function isActualPublicationLog(log) {
   return publishedStatuses.has(status) && log.dryRun !== true;
 }
 
+function isCriticalPublicationErrorLog(log) {
+  if (!log || log.dryRun === true) return false;
+  return criticalStatuses.has(normalizeStatus(log.status));
+}
+
 function readJson(filePath, fallback, errors) {
   if (!existsSync(filePath)) {
     errors.push(`${path.relative(root, filePath)} is missing.`);
@@ -258,6 +345,17 @@ function uniqueStrings(values) {
   return Array.from(new Set(values.filter(Boolean))).sort((left, right) => left.localeCompare(right));
 }
 
+function duplicateStrings(values) {
+  const counts = new Map();
+  for (const value of values.filter(Boolean)) {
+    counts.set(value, (counts.get(value) ?? 0) + 1);
+  }
+  return Array.from(counts.entries())
+    .filter(([, count]) => count > 1)
+    .map(([value]) => value)
+    .sort((left, right) => left.localeCompare(right));
+}
+
 function postIdFor(post) {
   return stringOrNull(post?.postId) ?? stringOrNull(post?.id) ?? "unknown";
 }
@@ -269,6 +367,20 @@ function normalizeStatus(value) {
 function stringOrNull(value) {
   if (typeof value === "number" && Number.isFinite(value)) return String(value);
   return typeof value === "string" && value.trim() ? value.trim() : null;
+}
+
+function normalizeAuditMode(value) {
+  return stringOrNull(value) === controlledChannelMode ? controlledChannelMode : "one-post";
+}
+
+function parseExpectedPostIds(value) {
+  if (Array.isArray(value)) return uniqueStrings(value.map(stringOrNull));
+  return uniqueStrings(String(value ?? "").split(",").map(stringOrNull));
+}
+
+function positiveIntegerOrDefault(value, fallback) {
+  const parsed = Number.parseInt(String(value ?? ""), 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
 }
 
 function sanitizeError(error) {

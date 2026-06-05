@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generatedAt": "2026-06-02T20:34:02.700Z",
-  "updatedAt": "2026-06-05T18:57:41.202Z",
+  "updatedAt": "2026-06-05T21:17:48.759Z",
   "items": [
     {
       "id": "2026-05-31-money-opportunities",
@@ -1727,7 +1727,7 @@
         "overlay": "channel/rubric/title only",
         "serviceLabels": false
       },
-      "status": "scheduled",
+      "status": "published",
       "qualityIssues": [],
       "metadata": {
         "oneChannelTestCandidate": true,
@@ -1737,11 +1737,18 @@
       },
       "duplicateTopic": false,
       "createdAt": "2026-06-02T20:34:02.700Z",
-      "updatedAt": "2026-06-05T19:40:00.000Z",
+      "updatedAt": "2026-06-05T21:16:34.438Z",
       "imageDimensions": {
         "width": 1080,
         "height": 1350
-      }
+      },
+      "publishResult": "success",
+      "testPublished": true,
+      "publishSource": "manual-one-post-test-send",
+      "telegramMessageId": 12,
+      "telegramPublishedAt": "2026-06-05T21:16:34.438Z",
+      "manualTestPublishedAt": "2026-06-05T21:16:34.438Z",
+      "manualTestPublicationLogId": "b6b41174-cd4e-47da-b8aa-1a2bd4a9ef2d"
     },
     {
       "id": "2026-06-03-ukraine-market",
@@ -2455,7 +2462,7 @@
         "overlay": "channel/rubric/title only",
         "serviceLabels": false
       },
-      "status": "scheduled",
+      "status": "published",
       "qualityIssues": [],
       "metadata": {
         "oneChannelTestCandidate": true,
@@ -2465,11 +2472,18 @@
       },
       "duplicateTopic": false,
       "createdAt": "2026-06-02T20:34:02.700Z",
-      "updatedAt": "2026-06-05T19:40:00.000Z",
+      "updatedAt": "2026-06-05T21:17:48.759Z",
       "imageDimensions": {
         "width": 1080,
         "height": 1350
-      }
+      },
+      "publishResult": "success",
+      "testPublished": true,
+      "publishSource": "manual-one-post-test-send",
+      "telegramMessageId": 13,
+      "telegramPublishedAt": "2026-06-05T21:17:48.759Z",
+      "manualTestPublishedAt": "2026-06-05T21:17:48.759Z",
+      "manualTestPublicationLogId": "5a8f71b0-7872-42e9-a265-9c5852a5ecb5"
     },
     {
       "id": "2026-06-04-ukraine-market",

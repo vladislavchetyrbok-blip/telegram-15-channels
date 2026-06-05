@@ -18,6 +18,12 @@ Check a specific post after a future one-post test send:
 node scripts/check-post-send-verification.mjs --post-id=weekly-2026-06-05-01-money-opportunities-01
 ```
 
+Check a controlled one-channel test window:
+
+```bash
+npm run publish:verify:controlled-channel
+```
+
 The CLI returns JSON with:
 
 - `lastPublication`
@@ -37,6 +43,29 @@ Open:
 ```
 
 The page shows the overall audit status, latest publication log, selected post verification, bulk safety, JSON/Supabase store consistency, and warning/error lists.
+
+It also includes a read-only Controlled Channel Test Audit block for the ai-tech controlled test window.
+
+## Controlled Channel Test Audit
+
+The default one-post mode is intentionally strict: more than one actual publication inside the audit window is treated as `bulkDetected: true`.
+
+`controlled-channel-test` mode is for a bounded one-channel test where 2-3 known `postId` values may be published to one expected channel. This is not bulk publishing when every actual publication in the window matches the allowlist.
+
+Controlled mode returns:
+
+- `controlledBatchDetected`
+- `controlledBatchOk`
+- `bulkDetected`
+- `expectedPostsPublished`
+- `expectedPostsPending`
+- `unexpectedPosts`
+- `unexpectedChannels`
+- `duplicatePublishedPosts`
+
+In controlled mode, `bulkDetected` stays `false` when the only actual publications are expected post IDs in the expected channel and the count is at or below `maxExpectedPosts`.
+
+It becomes `true` for unexpected channels, unexpected post IDs, duplicate actual publication logs for the same post ID, more than `maxExpectedPosts` unique published posts, or critical publication errors.
 
 ## What It Checks
 

@@ -9,6 +9,7 @@ type Tone = "ok" | "warning" | "error" | "info";
 
 interface PostSendVerificationReport {
   status: AuditStatus;
+  mode: string;
   productionStoreMode: "json";
   sourceOfTruth: "json";
   safeToSwitchToSupabase: false;
@@ -59,13 +60,28 @@ interface SelectedPostVerification {
 }
 
 interface BulkSafety {
+  mode: string;
   windowMinutes: number;
   maxAllowedForManualTest: number;
+  maxExpectedPosts: number;
+  expectedChannelId: string | null;
+  expectedPostIds: string[];
+  publicationsInWindow: number;
   publicationsInLast10Minutes: number;
+  uniquePostsPublishedInWindow: number;
   uniquePostsPublishedInLast10Minutes: number;
+  uniqueChannelsTouchedInWindow: number;
   uniqueChannelsTouchedInLast10Minutes: number;
   recentPublishedPostIds: string[];
   recentTouchedChannelIds: string[];
+  controlledBatchDetected: boolean;
+  controlledBatchOk: boolean;
+  expectedPostsPublished: string[];
+  expectedPostsPending: string[];
+  unexpectedPosts: string[];
+  unexpectedChannels: string[];
+  duplicatePublishedPosts: string[];
+  criticalPublicationErrors: Array<Record<string, unknown>>;
   bulkDetected: boolean;
   warnings: string[];
 }
@@ -97,11 +113,26 @@ interface GithubActionsSafety {
   tokenValueExposed: false;
 }
 
+const controlledAuditParams = {
+  mode: "controlled-channel-test",
+  expectedChannelId: "ai-tech",
+  expectedPostIds: [
+    "weekly-2026-06-03-02-ai-technologies-02",
+    "weekly-2026-06-04-02-ai-technologies-02",
+    "weekly-2026-06-05-02-ai-technologies-02",
+  ],
+  maxExpectedPosts: "3",
+  windowMinutes: "60",
+};
+
 export function PostSendVerificationPanel() {
   const [report, setReport] = useState<PostSendVerificationReport | null>(null);
+  const [controlledReport, setControlledReport] = useState<PostSendVerificationReport | null>(null);
   const [postId, setPostId] = useState("");
   const [loading, setLoading] = useState(true);
+  const [controlledLoading, setControlledLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [controlledError, setControlledError] = useState<string | null>(null);
 
   async function refresh(nextPostId = postId) {
     setLoading(true);
@@ -125,8 +156,35 @@ export function PostSendVerificationPanel() {
     }
   }
 
+  async function refreshControlled() {
+    setControlledLoading(true);
+    setControlledError(null);
+
+    try {
+      const params = new URLSearchParams({
+        mode: controlledAuditParams.mode,
+        expectedChannelId: controlledAuditParams.expectedChannelId,
+        expectedPostIds: controlledAuditParams.expectedPostIds.join(","),
+        maxExpectedPosts: controlledAuditParams.maxExpectedPosts,
+        windowMinutes: controlledAuditParams.windowMinutes,
+      });
+      const response = await fetch(`/api/admin/post-send-verification/status?${params.toString()}`, { cache: "no-store" });
+      const payload = (await response.json()) as PostSendVerificationReport | { message?: string };
+      if (!response.ok) {
+        throw new Error("message" in payload && payload.message ? payload.message : "Controlled audit request failed.");
+      }
+
+      setControlledReport(payload as PostSendVerificationReport);
+    } catch (requestError) {
+      setControlledError(requestError instanceof Error ? requestError.message : String(requestError));
+    } finally {
+      setControlledLoading(false);
+    }
+  }
+
   useEffect(() => {
     void refresh("");
+    void refreshControlled();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -155,10 +213,16 @@ export function PostSendVerificationPanel() {
             <h1 className="mt-1 text-2xl font-semibold leading-tight text-white">Post-Send Verification</h1>
           </div>
         </div>
-        <button type="button" onClick={() => void refresh(postId)} disabled={loading} className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md border border-cyan-300/30 bg-cyan-300/10 px-3 text-xs font-semibold text-cyan-100 transition hover:bg-cyan-300/15 disabled:cursor-not-allowed disabled:opacity-60">
-          <RefreshCw className={cn("h-4 w-4", loading && "animate-spin")} />
-          Refresh audit
-        </button>
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <button type="button" onClick={() => void refresh(postId)} disabled={loading} className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md border border-cyan-300/30 bg-cyan-300/10 px-3 text-xs font-semibold text-cyan-100 transition hover:bg-cyan-300/15 disabled:cursor-not-allowed disabled:opacity-60">
+            <RefreshCw className={cn("h-4 w-4", loading && "animate-spin")} />
+            Refresh normal audit
+          </button>
+          <button type="button" onClick={() => void refreshControlled()} disabled={controlledLoading} className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md border border-emerald-300/30 bg-emerald-300/10 px-3 text-xs font-semibold text-emerald-100 transition hover:bg-emerald-300/15 disabled:cursor-not-allowed disabled:opacity-60">
+            <RefreshCw className={cn("h-4 w-4", controlledLoading && "animate-spin")} />
+            Refresh controlled channel audit
+          </button>
+        </div>
       </section>
 
       <section className="grid grid-cols-2 gap-3 xl:grid-cols-10">
@@ -176,6 +240,7 @@ export function PostSendVerificationPanel() {
       </section>
 
       {error ? <p className="rounded-md border border-rose-300/25 bg-rose-300/10 p-3 text-sm leading-6 text-rose-100">{error}</p> : null}
+      {controlledError ? <p className="rounded-md border border-rose-300/25 bg-rose-300/10 p-3 text-sm leading-6 text-rose-100">{controlledError}</p> : null}
 
       <section className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_27rem]">
         <Panel title="Last publication" icon={<FileSearch className="h-4 w-4" />}>
@@ -215,6 +280,24 @@ export function PostSendVerificationPanel() {
           ]} />
           <div className="mt-3">
             <TextItems items={report?.bulkSafety.warnings ?? []} empty="No bulk warnings." />
+          </div>
+        </Panel>
+
+        <Panel title="Controlled Channel Test Audit" icon={<ShieldCheck className="h-4 w-4" />}>
+          <Rows rows={[
+            ["mode", controlledReport?.mode ?? controlledAuditParams.mode],
+            ["expected channel", controlledReport?.bulkSafety.expectedChannelId ?? controlledAuditParams.expectedChannelId],
+            ["expected posts", controlledReport?.bulkSafety.expectedPostIds.join(", ") || controlledAuditParams.expectedPostIds.join(", ")],
+            ["expected published", controlledReport?.bulkSafety.expectedPostsPublished.join(", ") || "-"],
+            ["expected pending", controlledReport?.bulkSafety.expectedPostsPending.join(", ") || "-"],
+            ["unexpected posts", controlledReport?.bulkSafety.unexpectedPosts.join(", ") || "-"],
+            ["unexpected channels", controlledReport?.bulkSafety.unexpectedChannels.join(", ") || "-"],
+            ["duplicate posts", controlledReport?.bulkSafety.duplicatePublishedPosts.join(", ") || "-"],
+            ["controlledBatchOk", yesNo(controlledReport?.bulkSafety.controlledBatchOk)],
+            ["bulkDetected", yesNo(controlledReport?.bulkSafety.bulkDetected)],
+          ]} />
+          <div className="mt-3">
+            <TextItems items={controlledReport?.bulkSafety.warnings ?? []} empty="No controlled channel warnings." />
           </div>
         </Panel>
 

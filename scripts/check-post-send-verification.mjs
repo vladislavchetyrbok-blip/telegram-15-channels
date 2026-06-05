@@ -2,7 +2,14 @@ import { getPostSendVerificationReport } from "./lib/post-send-verification.mjs"
 
 const args = parseArgs(process.argv.slice(2));
 const postId = args["post-id"] ?? null;
-const report = await getPostSendVerificationReport({ postId });
+const report = await getPostSendVerificationReport({
+  postId,
+  mode: args.mode,
+  expectedChannelId: args["expected-channel-id"],
+  expectedPostIds: args["expected-post-ids"],
+  maxExpectedPosts: args["max-expected-posts"],
+  windowMinutes: args["window-minutes"],
+});
 
 console.log(JSON.stringify(report, null, 2));
 
