@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generatedAt": "2026-06-02T20:34:02.700Z",
-  "updatedAt": "2026-06-05T18:26:23.531Z",
+  "updatedAt": "2026-06-05T18:57:41.202Z",
   "items": [
     {
       "id": "2026-05-31-money-opportunities",
@@ -1008,11 +1008,11 @@
         "preparedBy": "codex",
         "manualTestCandidate": true
       },
-      "status": "scheduled",
+      "status": "published",
       "qualityIssues": [],
       "duplicateTopic": false,
       "createdAt": "2026-06-02T20:34:02.700Z",
-      "updatedAt": "2026-06-05T18:26:23.531Z",
+      "updatedAt": "2026-06-05T18:57:41.202Z",
       "imageDimensions": {
         "width": 1080,
         "height": 1350
@@ -1022,7 +1022,14 @@
         "preparedAt": "2026-06-05T18:26:23.531Z",
         "preparedBy": "codex",
         "manualTestCandidate": true
-      }
+      },
+      "publishResult": "success",
+      "testPublished": true,
+      "publishSource": "manual-one-post-test-send",
+      "telegramMessageId": 11,
+      "telegramPublishedAt": "2026-06-05T18:57:41.202Z",
+      "manualTestPublishedAt": "2026-06-05T18:57:41.202Z",
+      "manualTestPublicationLogId": "1ed6b9d5-a9ef-4dab-bf66-4cbcb252fc15"
     },
     {
       "id": "2026-06-02-ukraine-market",
