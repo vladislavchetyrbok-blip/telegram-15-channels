@@ -1,0 +1,514 @@
+{
+  "version": 1,
+  "updatedAt": "2026-06-05T11:08:43.507Z",
+  "drafts": [
+    {
+      "id": "draft_20260605110843506_weekly-2026-06-01-03-ukraine-opportunities-market-03_17",
+      "sourcePostId": "weekly-2026-06-01-03-ukraine-opportunities-market-03",
+      "channelId": "ukraine-market",
+      "createdAt": "2026-06-05T11:08:43.506Z",
+      "regenerationType": "both",
+      "priority": "medium",
+      "original": {
+        "text": "Бізнес-можливості: що варто перевірити цього тижня\nБізнес-можливості — тема, де краще рухатися без поспіху.\n- Важливо не шукати чарівну відповідь, а розкласти ситуацію на умови, терміни, витрати часу й реальну користь для людини або бізнесу.\n- Корисна можливість має прозорі умови, зрозумілий дедлайн, офіційне джерело та реалістичні витрати часу.\n- Практичний підхід простий: спочатку визначте мету, потім перевірте джерело інформації, обмеження, дедлайни та додаткові витрати.\n- Якщо тема пов'язана з грошима, рахуйте тільки в UAH, USD або EUR і не змішуйте очікування з гарантованим результатом.\nИтог: Такий підхід не обіцяє легкого результату, зате допомагає швидше відділити нормальну можливість від шуму.",
+        "imagePath": "G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-06-01\\03-ukraine-opportunities-market\\weekly-2026-06-01-03-ukraine-opportunities-market-03.png",
+        "topic": "бізнес-можливості"
+      },
+      "draft": {
+        "text": "Hook: Бізнес-можливості: що варто перевірити цього тижня\n\n- Channel angle: make this useful for Україна: можливості та ринок without service labels or template phrasing.\n- Specific value: add one concrete check, comparison, number, place, or decision rule tied to бізнес-можливості.\n- Quality fix: address weak_cta, title_body_mismatch, duplicate_topic, generic_visual and keep the text ready for manual review before any publishing step.\n- Source context: Бізнес-можливості: що варто перевірити цього тижня\nБізнес-можливості — тема, де краще рухатися без поспіху.\n\nConclusion: keep the final version practical, channel-specific, and safe for a human approve/apply step later.",
+        "imagePrompt": "Create a Telegram-ready visual concept for Україна: можливості та ринок. Topic: бізнес-можливості. Goal: distinct, channel-specific cover image with no service labels, no placeholder look, no visible generation metadata. Fix focus: weak_cta, title_body_mismatch, duplicate_topic, generic_visual. Reference existing image only for continuity, not as a file to overwrite: G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-06-01\\03-ukraine-opportunities-market\\weekly-2026-06-01-03-ukraine-opportunities-market-03.png.",
+        "imagePath": null
+      },
+      "issues": [
+        "weak_cta",
+        "title_body_mismatch",
+        "duplicate_topic",
+        "generic_visual"
+      ],
+      "recommendation": "Add a concrete reader action or decision criterion.",
+      "status": "draft",
+      "approved": false,
+      "applied": false
+    },
+    {
+      "id": "draft_20260605110843506_weekly-2026-06-01-06-fishing-rest-06_13",
+      "sourcePostId": "weekly-2026-06-01-06-fishing-rest-06",
+      "channelId": "fishing-rest",
+      "createdAt": "2026-06-05T11:08:43.506Z",
+      "regenerationType": "both",
+      "priority": "medium",
+      "original": {
+        "text": "Лодки: спокойная подготовка решает половину отдыха\nХороший выезд начинается до дороги: лодки лучше собрать заранее, без суеты в последний час.\n- - Сверьте погоду, ветер и уровень воды, а не только красивый прогноз на день.\n- - Берите снасти под конкретное место: глубина, берег, течение и ожидаемая рыба важнее универсальности.\n- - Проверьте мелочи: нож, фонарь, запасная леска, сухой пакет, вода и тёплый слой.\n- - Оставьте место для спокойствия: перегруженная сумка часто мешает больше, чем помогает.\nИтог: Перед выездом пройдитесь по списку и уберите лишнее.",
+        "imagePath": "G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-06-01\\06-fishing-rest\\weekly-2026-06-01-06-fishing-rest-06.png",
+        "topic": "лодки"
+      },
+      "draft": {
+        "text": "Hook: Лодки: спокойная подготовка решает половину отдыха\n\n- Channel angle: make this useful for Рыбалка и отдых without service labels or template phrasing.\n- Specific value: add one concrete check, comparison, number, place, or decision rule tied to лодки.\n- Quality fix: address weak_cta, title_body_mismatch, duplicate_topic, generic_visual and keep the text ready for manual review before any publishing step.\n- Source context: Лодки: спокойная подготовка решает половину отдыха\nХороший выезд начинается до дороги: лодки лучше собрать заранее, без суеты в последний час.\n\nConclusion: keep the final version practical, channel-specific, and safe for a human approve/apply step later.",
+        "imagePrompt": "Create a Telegram-ready visual concept for Рыбалка и отдых. Topic: лодки. Goal: distinct, channel-specific cover image with no service labels, no placeholder look, no visible generation metadata. Fix focus: weak_cta, title_body_mismatch, duplicate_topic, generic_visual. Reference existing image only for continuity, not as a file to overwrite: G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-06-01\\06-fishing-rest\\weekly-2026-06-01-06-fishing-rest-06.png.",
+        "imagePath": null
+      },
+      "issues": [
+        "weak_cta",
+        "title_body_mismatch",
+        "duplicate_topic",
+        "generic_visual"
+      ],
+      "recommendation": "Add a concrete reader action or decision criterion.",
+      "status": "draft",
+      "approved": false,
+      "applied": false
+    },
+    {
+      "id": "draft_20260605110843506_weekly-2026-06-01-07-dnipro-city-07_1",
+      "sourcePostId": "weekly-2026-06-01-07-dnipro-city-07",
+      "channelId": "dnipro-city",
+      "createdAt": "2026-06-05T11:08:43.506Z",
+      "regenerationType": "manual_review",
+      "priority": "high",
+      "original": {
+        "text": "Дороги в Днепре: что заметить до привычного маршрута\nДороги в городе лучше оценивать через повседневность: как это влияет на маршрут, время, деньги и спокойствие жителей.\n- - Смотрите на удобство в будний день: транспорт, парковка, очереди и время в пути.\n- - Отделяйте разовую проблему от постоянной: город меняется неравномерно по районам.\n- - Проверяйте локальные сервисы по отзывам последних недель, а не старым подборкам.\n- - Если место новое, начните с короткого визита без больших ожиданий и сложных планов.\nИтог: Поделитесь наблюдением по своему району, если оно поможет другим.",
+        "imagePath": "G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-06-01\\07-dnipro-city\\weekly-2026-06-01-07-dnipro-city-07.png",
+        "topic": "дороги"
+      },
+      "draft": {
+        "text": "Hook: Дороги в Днепре: что заметить до привычного маршрута\n\n- Channel angle: make this useful for Дніпро / Город Днепр without service labels or template phrasing.\n- Specific value: add one concrete check, comparison, number, place, or decision rule tied to дороги.\n- Quality fix: address weak_cta, title_body_mismatch, duplicate_topic, channel_topic_mismatch, generic_visual and keep the text ready for manual review before any publishing step.\n- Source context: Дороги в Днепре: что заметить до привычного маршрута\nДороги в городе лучше оценивать через повседневность: как это влияет на маршрут, время, деньги и спокойствие жителей.\n\nConclusion: keep the final version practical, channel-specific, and safe for a human approve/apply step later.",
+        "imagePrompt": "Create a Telegram-ready visual concept for Дніпро / Город Днепр. Topic: дороги. Goal: distinct, channel-specific cover image with no service labels, no placeholder look, no visible generation metadata. Fix focus: weak_cta, title_body_mismatch, duplicate_topic, channel_topic_mismatch, generic_visual. Reference existing image only for continuity, not as a file to overwrite: G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-06-01\\07-dnipro-city\\weekly-2026-06-01-07-dnipro-city-07.png.",
+        "imagePath": null
+      },
+      "issues": [
+        "weak_cta",
+        "title_body_mismatch",
+        "duplicate_topic",
+        "channel_topic_mismatch",
+        "generic_visual"
+      ],
+      "recommendation": "Add a concrete reader action or decision criterion.",
+      "status": "draft",
+      "approved": false,
+      "applied": false
+    },
+    {
+      "id": "draft_20260605110843506_weekly-2026-06-01-08-auto-comfort-08_5",
+      "sourcePostId": "weekly-2026-06-01-08-auto-comfort-08",
+      "channelId": "auto-comfort",
+      "createdAt": "2026-06-05T11:08:43.506Z",
+      "regenerationType": "manual_review",
+      "priority": "high",
+      "original": {
+        "text": "Комфорт в салоне: что правда влияет на комфорт за рулём\nВ авто мелочи быстро становятся ежедневным раздражителем, поэтому комфорт в салоне лучше оценивать по реальному сценарию поездки.\n- - Сначала уберите базовые проблемы: шум, грязь, плохой обзор, неудобную посадку.\n- - Проверяйте аксессуары не по красивой упаковке, а по тому, мешают ли они управлению.\n- - Для дальних поездок важны вода, зарядка, свет, аптечка и спокойная организация вещей.\n- - Экономия хороша только там, где она не ухудшает безопасность и предсказуемость машины.\nИтог: Выберите одну вещь, которая раздражает в каждой поездке, и начните с неё.",
+        "imagePath": "G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-06-01\\08-auto-comfort\\weekly-2026-06-01-08-auto-comfort-08.png",
+        "topic": "комфорт в салоне"
+      },
+      "draft": {
+        "text": "Hook: Комфорт в салоне: что правда влияет на комфорт за рулём\n\n- Channel angle: make this useful for Авто и комфорт without service labels or template phrasing.\n- Specific value: add one concrete check, comparison, number, place, or decision rule tied to комфорт в салоне.\n- Quality fix: address weak_cta, duplicate_topic, channel_topic_mismatch, generic_visual and keep the text ready for manual review before any publishing step.\n- Source context: Комфорт в салоне: что правда влияет на комфорт за рулём\nВ авто мелочи быстро становятся ежедневным раздражителем, поэтому комфорт в салоне лучше оценивать по реальному сценарию поездки.\n\nConclusion: keep the final version practical, channel-specific, and safe for a human approve/apply step later.",
+        "imagePrompt": "Create a Telegram-ready visual concept for Авто и комфорт. Topic: комфорт в салоне. Goal: distinct, channel-specific cover image with no service labels, no placeholder look, no visible generation metadata. Fix focus: weak_cta, duplicate_topic, channel_topic_mismatch, generic_visual. Reference existing image only for continuity, not as a file to overwrite: G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-06-01\\08-auto-comfort\\weekly-2026-06-01-08-auto-comfort-08.png.",
+        "imagePath": null
+      },
+      "issues": [
+        "weak_cta",
+        "duplicate_topic",
+        "channel_topic_mismatch",
+        "generic_visual"
+      ],
+      "recommendation": "Add a concrete reader action or decision criterion.",
+      "status": "draft",
+      "approved": false,
+      "applied": false
+    },
+    {
+      "id": "draft_20260605110843506_weekly-2026-06-01-10-personal-progress-10_15",
+      "sourcePostId": "weekly-2026-06-01-10-personal-progress-10",
+      "channelId": "personal-progress",
+      "createdAt": "2026-06-05T11:08:43.506Z",
+      "regenerationType": "both",
+      "priority": "medium",
+      "original": {
+        "text": "Привычки: меньше героизма, больше системы\nПривычки держится не на вдохновении, а на маленькой конструкции, которую легко повторить завтра.\n- - Сделайте действие настолько маленьким, чтобы его можно было выполнить в плохой день.\n- - Уберите лишний выбор: время, место и первый шаг должны быть заранее понятны.\n- - Отмечайте факт выполнения, а не идеальное качество каждого подхода.\n- - Раз в неделю смотрите, что мешает, и упрощайте систему вместо самокритики.\nИтог: Выберите одно действие на 10 минут и закрепите его за конкретным временем.",
+        "imagePath": "G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-06-01\\10-personal-progress\\weekly-2026-06-01-10-personal-progress-10.png",
+        "topic": "привычки"
+      },
+      "draft": {
+        "text": "Hook: Привычки: меньше героизма, больше системы\n\n- Channel angle: make this useful for Личный прогресс without service labels or template phrasing.\n- Specific value: add one concrete check, comparison, number, place, or decision rule tied to привычки.\n- Quality fix: address weak_cta, title_body_mismatch, duplicate_topic, generic_visual and keep the text ready for manual review before any publishing step.\n- Source context: Привычки: меньше героизма, больше системы\nПривычки держится не на вдохновении, а на маленькой конструкции, которую легко повторить завтра.\n\nConclusion: keep the final version practical, channel-specific, and safe for a human approve/apply step later.",
+        "imagePrompt": "Create a Telegram-ready visual concept for Личный прогресс. Topic: привычки. Goal: distinct, channel-specific cover image with no service labels, no placeholder look, no visible generation metadata. Fix focus: weak_cta, title_body_mismatch, duplicate_topic, generic_visual. Reference existing image only for continuity, not as a file to overwrite: G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-06-01\\10-personal-progress\\weekly-2026-06-01-10-personal-progress-10.png.",
+        "imagePath": null
+      },
+      "issues": [
+        "weak_cta",
+        "title_body_mismatch",
+        "duplicate_topic",
+        "generic_visual"
+      ],
+      "recommendation": "Add a concrete reader action or decision criterion.",
+      "status": "draft",
+      "approved": false,
+      "applied": false
+    },
+    {
+      "id": "draft_20260605110843506_weekly-2026-06-01-11-dnipro-real-estate-ru-11_11",
+      "sourcePostId": "weekly-2026-06-01-11-dnipro-real-estate-ru-11",
+      "channelId": "dnipro-real-estate-ru",
+      "createdAt": "2026-06-05T11:08:43.506Z",
+      "regenerationType": "both",
+      "priority": "medium",
+      "original": {
+        "text": "Покупка: что проверить до решения по объекту\nПокупка в недвижимости нужно смотреть не только глазами, но и документами, цифрами и будущим сценарием использования.\n- - Сверьте право собственности, назначение объекта, ограничения и историю переходов.\n- - Оцените локацию в разное время дня: шум, транспорт, парковку, соседей и инфраструктуру.\n- - Посчитайте расходы после сделки: ремонт, налоги, простой, коммунальные платежи и обслуживание.\n- - Сравните объект с похожими предложениями, чтобы понять ликвидность и пространство для торга.\nИтог: Перед просмотром составьте список вопросов и не принимайте решение в тот же час.",
+        "imagePath": "G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-06-01\\11-dnipro-real-estate-ru\\weekly-2026-06-01-11-dnipro-real-estate-ru-11.png",
+        "topic": "покупка"
+      },
+      "draft": {
+        "text": "Hook: Покупка: что проверить до решения по объекту\n\n- Channel angle: make this useful for Недвижимость Днепра without service labels or template phrasing.\n- Specific value: add one concrete check, comparison, number, place, or decision rule tied to покупка.\n- Quality fix: address weak_cta, duplicate_topic, repeated_template, too_similar_posts, generic_visual and keep the text ready for manual review before any publishing step.\n- Source context: Покупка: что проверить до решения по объекту\nПокупка в недвижимости нужно смотреть не только глазами, но и документами, цифрами и будущим сценарием использования.\n\nConclusion: keep the final version practical, channel-specific, and safe for a human approve/apply step later.",
+        "imagePrompt": "Create a Telegram-ready visual concept for Недвижимость Днепра. Topic: покупка. Goal: distinct, channel-specific cover image with no service labels, no placeholder look, no visible generation metadata. Fix focus: weak_cta, duplicate_topic, repeated_template, too_similar_posts, generic_visual. Reference existing image only for continuity, not as a file to overwrite: G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-06-01\\11-dnipro-real-estate-ru\\weekly-2026-06-01-11-dnipro-real-estate-ru-11.png.",
+        "imagePath": null
+      },
+      "issues": [
+        "weak_cta",
+        "duplicate_topic",
+        "repeated_template",
+        "too_similar_posts",
+        "generic_visual"
+      ],
+      "recommendation": "Add a concrete reader action or decision criterion.",
+      "status": "draft",
+      "approved": false,
+      "applied": false
+    },
+    {
+      "id": "draft_20260605110843506_weekly-2026-06-02-07-dnipro-city-07_7",
+      "sourcePostId": "weekly-2026-06-02-07-dnipro-city-07",
+      "channelId": "dnipro-city",
+      "createdAt": "2026-06-05T11:08:43.506Z",
+      "regenerationType": "manual_review",
+      "priority": "high",
+      "original": {
+        "text": "Районы в Днепре: что заметить до привычного маршрута\nРайоны в городе лучше оценивать через повседневность: как это влияет на маршрут, время, деньги и спокойствие жителей.\n- - Смотрите на удобство в будний день: транспорт, парковка, очереди и время в пути.\n- - Отделяйте разовую проблему от постоянной: город меняется неравномерно по районам.\n- - Проверяйте локальные сервисы по отзывам последних недель, а не старым подборкам.\n- - Если место новое, начните с короткого визита без больших ожиданий и сложных планов.\nИтог: Поделитесь наблюдением по своему району, если оно поможет другим.",
+        "imagePath": "G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-06-02\\07-dnipro-city\\weekly-2026-06-02-07-dnipro-city-07.png",
+        "topic": "районы"
+      },
+      "draft": {
+        "text": "Hook: Районы в Днепре: что заметить до привычного маршрута\n\n- Channel angle: make this useful for Дніпро / Город Днепр without service labels or template phrasing.\n- Specific value: add one concrete check, comparison, number, place, or decision rule tied to районы.\n- Quality fix: address weak_cta, title_body_mismatch, channel_topic_mismatch, generic_visual and keep the text ready for manual review before any publishing step.\n- Source context: Районы в Днепре: что заметить до привычного маршрута\nРайоны в городе лучше оценивать через повседневность: как это влияет на маршрут, время, деньги и спокойствие жителей.\n\nConclusion: keep the final version practical, channel-specific, and safe for a human approve/apply step later.",
+        "imagePrompt": "Create a Telegram-ready visual concept for Дніпро / Город Днепр. Topic: районы. Goal: distinct, channel-specific cover image with no service labels, no placeholder look, no visible generation metadata. Fix focus: weak_cta, title_body_mismatch, channel_topic_mismatch, generic_visual. Reference existing image only for continuity, not as a file to overwrite: G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-06-02\\07-dnipro-city\\weekly-2026-06-02-07-dnipro-city-07.png.",
+        "imagePath": null
+      },
+      "issues": [
+        "weak_cta",
+        "title_body_mismatch",
+        "channel_topic_mismatch",
+        "generic_visual"
+      ],
+      "recommendation": "Add a concrete reader action or decision criterion.",
+      "status": "draft",
+      "approved": false,
+      "applied": false
+    },
+    {
+      "id": "draft_20260605110843506_weekly-2026-06-03-03-ukraine-opportunities-market-03_18",
+      "sourcePostId": "weekly-2026-06-03-03-ukraine-opportunities-market-03",
+      "channelId": "ukraine-market",
+      "createdAt": "2026-06-05T11:08:43.506Z",
+      "regenerationType": "both",
+      "priority": "medium",
+      "original": {
+        "text": "Бізнес-можливості: як відрізнити робочу можливість від інформаційного шуму\nБізнес-можливості варто дивитися через практичну користь: хто може скористатися, які умови, який дедлайн і що потрібно підготувати до першого кроку.\n- - Перевірте офіційне джерело, терміни, вимоги до учасників і контакт, який можна підтвердити без посередників.\n- - Оцініть витрати часу: заявка, документи, консультація або тестовий запуск мають вкладатися у реалістичний графік.\n- - Порівняйте бізнес-можливості з двома альтернативами, щоб зрозуміти, де є реальна користь, а де лише гучна подача.\n- - Якщо тема стосується грошей, рахуйте в UAH, USD або EUR і відокремлюйте прогноз від гарантованого результату.\nИтог: Збережіть одну корисну адресу або контакт і перевірте умови до того, як витрачати час на заявку.",
+        "imagePath": "G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-06-03\\03-ukraine-opportunities-market\\weekly-2026-06-03-03-ukraine-opportunities-market-03.png",
+        "topic": "бізнес-можливості"
+      },
+      "draft": {
+        "text": "Hook: Бізнес-можливості: як відрізнити робочу можливість від інформаційного шуму\n\n- Channel angle: make this useful for Україна: можливості та ринок without service labels or template phrasing.\n- Specific value: add one concrete check, comparison, number, place, or decision rule tied to бізнес-можливості.\n- Quality fix: address weak_cta, title_body_mismatch, duplicate_topic, generic_visual and keep the text ready for manual review before any publishing step.\n- Source context: Бізнес-можливості: як відрізнити робочу можливість від інформаційного шуму\nБізнес-можливості варто дивитися через практичну користь: хто може скористатися, які умови, який дедлайн і що потрібно підготувати до першого кроку.\n\nConclusion: keep the final version practical, channel-specific, and safe for a human approve/apply step later.",
+        "imagePrompt": "Create a Telegram-ready visual concept for Україна: можливості та ринок. Topic: бізнес-можливості. Goal: distinct, channel-specific cover image with no service labels, no placeholder look, no visible generation metadata. Fix focus: weak_cta, title_body_mismatch, duplicate_topic, generic_visual. Reference existing image only for continuity, not as a file to overwrite: G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-06-03\\03-ukraine-opportunities-market\\weekly-2026-06-03-03-ukraine-opportunities-market-03.png.",
+        "imagePath": null
+      },
+      "issues": [
+        "weak_cta",
+        "title_body_mismatch",
+        "duplicate_topic",
+        "generic_visual"
+      ],
+      "recommendation": "Add a concrete reader action or decision criterion.",
+      "status": "draft",
+      "approved": false,
+      "applied": false
+    },
+    {
+      "id": "draft_20260605110843506_weekly-2026-06-03-06-fishing-rest-06_14",
+      "sourcePostId": "weekly-2026-06-03-06-fishing-rest-06",
+      "channelId": "fishing-rest",
+      "createdAt": "2026-06-05T11:08:43.506Z",
+      "regenerationType": "both",
+      "priority": "medium",
+      "original": {
+        "text": "Лодки: спокойная подготовка решает половину отдыха\nХороший выезд начинается до дороги: лодки лучше собрать заранее, без суеты в последний час.\n- - Сверьте погоду, ветер и уровень воды, а не только красивый прогноз на день.\n- - Берите снасти под конкретное место: глубина, берег, течение и ожидаемая рыба важнее универсальности.\n- - Проверьте мелочи: нож, фонарь, запасная леска, сухой пакет, вода и тёплый слой.\n- - Оставьте место для спокойствия: перегруженная сумка часто мешает больше, чем помогает.\nИтог: Перед выездом пройдитесь по списку и уберите лишнее.",
+        "imagePath": "G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-06-03\\06-fishing-rest\\weekly-2026-06-03-06-fishing-rest-06.png",
+        "topic": "лодки"
+      },
+      "draft": {
+        "text": "Hook: Лодки: спокойная подготовка решает половину отдыха\n\n- Channel angle: make this useful for Рыбалка и отдых without service labels or template phrasing.\n- Specific value: add one concrete check, comparison, number, place, or decision rule tied to лодки.\n- Quality fix: address weak_cta, title_body_mismatch, duplicate_topic, generic_visual and keep the text ready for manual review before any publishing step.\n- Source context: Лодки: спокойная подготовка решает половину отдыха\nХороший выезд начинается до дороги: лодки лучше собрать заранее, без суеты в последний час.\n\nConclusion: keep the final version practical, channel-specific, and safe for a human approve/apply step later.",
+        "imagePrompt": "Create a Telegram-ready visual concept for Рыбалка и отдых. Topic: лодки. Goal: distinct, channel-specific cover image with no service labels, no placeholder look, no visible generation metadata. Fix focus: weak_cta, title_body_mismatch, duplicate_topic, generic_visual. Reference existing image only for continuity, not as a file to overwrite: G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-06-03\\06-fishing-rest\\weekly-2026-06-03-06-fishing-rest-06.png.",
+        "imagePath": null
+      },
+      "issues": [
+        "weak_cta",
+        "title_body_mismatch",
+        "duplicate_topic",
+        "generic_visual"
+      ],
+      "recommendation": "Add a concrete reader action or decision criterion.",
+      "status": "draft",
+      "approved": false,
+      "applied": false
+    },
+    {
+      "id": "draft_20260605110843506_weekly-2026-06-03-07-dnipro-city-07_2",
+      "sourcePostId": "weekly-2026-06-03-07-dnipro-city-07",
+      "channelId": "dnipro-city",
+      "createdAt": "2026-06-05T11:08:43.506Z",
+      "regenerationType": "manual_review",
+      "priority": "high",
+      "original": {
+        "text": "Дороги в Днепре: что заметить до привычного маршрута\nДороги в городе лучше оценивать через повседневность: как это влияет на маршрут, время, деньги и спокойствие жителей.\n- - Смотрите на удобство в будний день: транспорт, парковка, очереди и время в пути.\n- - Отделяйте разовую проблему от постоянной: город меняется неравномерно по районам.\n- - Проверяйте локальные сервисы по отзывам последних недель, а не старым подборкам.\n- - Если место новое, начните с короткого визита без больших ожиданий и сложных планов.\nИтог: Поделитесь наблюдением по своему району, если оно поможет другим.",
+        "imagePath": "G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-06-03\\07-dnipro-city\\weekly-2026-06-03-07-dnipro-city-07.png",
+        "topic": "дороги"
+      },
+      "draft": {
+        "text": "Hook: Дороги в Днепре: что заметить до привычного маршрута\n\n- Channel angle: make this useful for Дніпро / Город Днепр without service labels or template phrasing.\n- Specific value: add one concrete check, comparison, number, place, or decision rule tied to дороги.\n- Quality fix: address weak_cta, title_body_mismatch, duplicate_topic, channel_topic_mismatch, generic_visual and keep the text ready for manual review before any publishing step.\n- Source context: Дороги в Днепре: что заметить до привычного маршрута\nДороги в городе лучше оценивать через повседневность: как это влияет на маршрут, время, деньги и спокойствие жителей.\n\nConclusion: keep the final version practical, channel-specific, and safe for a human approve/apply step later.",
+        "imagePrompt": "Create a Telegram-ready visual concept for Дніпро / Город Днепр. Topic: дороги. Goal: distinct, channel-specific cover image with no service labels, no placeholder look, no visible generation metadata. Fix focus: weak_cta, title_body_mismatch, duplicate_topic, channel_topic_mismatch, generic_visual. Reference existing image only for continuity, not as a file to overwrite: G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-06-03\\07-dnipro-city\\weekly-2026-06-03-07-dnipro-city-07.png.",
+        "imagePath": null
+      },
+      "issues": [
+        "weak_cta",
+        "title_body_mismatch",
+        "duplicate_topic",
+        "channel_topic_mismatch",
+        "generic_visual"
+      ],
+      "recommendation": "Add a concrete reader action or decision criterion.",
+      "status": "draft",
+      "approved": false,
+      "applied": false
+    },
+    {
+      "id": "draft_20260605110843506_weekly-2026-06-03-08-auto-comfort-08_6",
+      "sourcePostId": "weekly-2026-06-03-08-auto-comfort-08",
+      "channelId": "auto-comfort",
+      "createdAt": "2026-06-05T11:08:43.506Z",
+      "regenerationType": "manual_review",
+      "priority": "high",
+      "original": {
+        "text": "Комфорт в салоне: что правда влияет на комфорт за рулём\nВ авто мелочи быстро становятся ежедневным раздражителем, поэтому комфорт в салоне лучше оценивать по реальному сценарию поездки.\n- - Сначала уберите базовые проблемы: шум, грязь, плохой обзор, неудобную посадку.\n- - Проверяйте аксессуары не по красивой упаковке, а по тому, мешают ли они управлению.\n- - Для дальних поездок важны вода, зарядка, свет, аптечка и спокойная организация вещей.\n- - Экономия хороша только там, где она не ухудшает безопасность и предсказуемость машины.\nИтог: Выберите одну вещь, которая раздражает в каждой поездке, и начните с неё.",
+        "imagePath": "G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-06-03\\08-auto-comfort\\weekly-2026-06-03-08-auto-comfort-08.png",
+        "topic": "комфорт в салоне"
+      },
+      "draft": {
+        "text": "Hook: Комфорт в салоне: что правда влияет на комфорт за рулём\n\n- Channel angle: make this useful for Авто и комфорт without service labels or template phrasing.\n- Specific value: add one concrete check, comparison, number, place, or decision rule tied to комфорт в салоне.\n- Quality fix: address weak_cta, duplicate_topic, channel_topic_mismatch, generic_visual and keep the text ready for manual review before any publishing step.\n- Source context: Комфорт в салоне: что правда влияет на комфорт за рулём\nВ авто мелочи быстро становятся ежедневным раздражителем, поэтому комфорт в салоне лучше оценивать по реальному сценарию поездки.\n\nConclusion: keep the final version practical, channel-specific, and safe for a human approve/apply step later.",
+        "imagePrompt": "Create a Telegram-ready visual concept for Авто и комфорт. Topic: комфорт в салоне. Goal: distinct, channel-specific cover image with no service labels, no placeholder look, no visible generation metadata. Fix focus: weak_cta, duplicate_topic, channel_topic_mismatch, generic_visual. Reference existing image only for continuity, not as a file to overwrite: G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-06-03\\08-auto-comfort\\weekly-2026-06-03-08-auto-comfort-08.png.",
+        "imagePath": null
+      },
+      "issues": [
+        "weak_cta",
+        "duplicate_topic",
+        "channel_topic_mismatch",
+        "generic_visual"
+      ],
+      "recommendation": "Add a concrete reader action or decision criterion.",
+      "status": "draft",
+      "approved": false,
+      "applied": false
+    },
+    {
+      "id": "draft_20260605110843506_weekly-2026-06-03-10-personal-progress-10_16",
+      "sourcePostId": "weekly-2026-06-03-10-personal-progress-10",
+      "channelId": "personal-progress",
+      "createdAt": "2026-06-05T11:08:43.506Z",
+      "regenerationType": "both",
+      "priority": "medium",
+      "original": {
+        "text": "Привычки: меньше героизма, больше системы\nПривычки держится не на вдохновении, а на маленькой конструкции, которую легко повторить завтра.\n- - Сделайте действие настолько маленьким, чтобы его можно было выполнить в плохой день.\n- - Уберите лишний выбор: время, место и первый шаг должны быть заранее понятны.\n- - Отмечайте факт выполнения, а не идеальное качество каждого подхода.\n- - Раз в неделю смотрите, что мешает, и упрощайте систему вместо самокритики.\nИтог: Выберите одно действие на 10 минут и закрепите его за конкретным временем.",
+        "imagePath": "G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-06-03\\10-personal-progress\\weekly-2026-06-03-10-personal-progress-10.png",
+        "topic": "привычки"
+      },
+      "draft": {
+        "text": "Hook: Привычки: меньше героизма, больше системы\n\n- Channel angle: make this useful for Личный прогресс without service labels or template phrasing.\n- Specific value: add one concrete check, comparison, number, place, or decision rule tied to привычки.\n- Quality fix: address weak_cta, title_body_mismatch, duplicate_topic, generic_visual and keep the text ready for manual review before any publishing step.\n- Source context: Привычки: меньше героизма, больше системы\nПривычки держится не на вдохновении, а на маленькой конструкции, которую легко повторить завтра.\n\nConclusion: keep the final version practical, channel-specific, and safe for a human approve/apply step later.",
+        "imagePrompt": "Create a Telegram-ready visual concept for Личный прогресс. Topic: привычки. Goal: distinct, channel-specific cover image with no service labels, no placeholder look, no visible generation metadata. Fix focus: weak_cta, title_body_mismatch, duplicate_topic, generic_visual. Reference existing image only for continuity, not as a file to overwrite: G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-06-03\\10-personal-progress\\weekly-2026-06-03-10-personal-progress-10.png.",
+        "imagePath": null
+      },
+      "issues": [
+        "weak_cta",
+        "title_body_mismatch",
+        "duplicate_topic",
+        "generic_visual"
+      ],
+      "recommendation": "Add a concrete reader action or decision criterion.",
+      "status": "draft",
+      "approved": false,
+      "applied": false
+    },
+    {
+      "id": "draft_20260605110843506_weekly-2026-06-03-11-dnipro-real-estate-ru-11_12",
+      "sourcePostId": "weekly-2026-06-03-11-dnipro-real-estate-ru-11",
+      "channelId": "dnipro-real-estate-ru",
+      "createdAt": "2026-06-05T11:08:43.506Z",
+      "regenerationType": "both",
+      "priority": "medium",
+      "original": {
+        "text": "Покупка: что проверить до решения по объекту\nПокупка в недвижимости нужно смотреть не только глазами, но и документами, цифрами и будущим сценарием использования.\n- - Сверьте право собственности, назначение объекта, ограничения и историю переходов.\n- - Оцените локацию в разное время дня: шум, транспорт, парковку, соседей и инфраструктуру.\n- - Посчитайте расходы после сделки: ремонт, налоги, простой, коммунальные платежи и обслуживание.\n- - Сравните объект с похожими предложениями, чтобы понять ликвидность и пространство для торга.\nИтог: Перед просмотром составьте список вопросов и не принимайте решение в тот же час.",
+        "imagePath": "G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-06-03\\11-dnipro-real-estate-ru\\weekly-2026-06-03-11-dnipro-real-estate-ru-11.png",
+        "topic": "покупка"
+      },
+      "draft": {
+        "text": "Hook: Покупка: что проверить до решения по объекту\n\n- Channel angle: make this useful for Недвижимость Днепра without service labels or template phrasing.\n- Specific value: add one concrete check, comparison, number, place, or decision rule tied to покупка.\n- Quality fix: address weak_cta, duplicate_topic, repeated_template, too_similar_posts, generic_visual and keep the text ready for manual review before any publishing step.\n- Source context: Покупка: что проверить до решения по объекту\nПокупка в недвижимости нужно смотреть не только глазами, но и документами, цифрами и будущим сценарием использования.\n\nConclusion: keep the final version practical, channel-specific, and safe for a human approve/apply step later.",
+        "imagePrompt": "Create a Telegram-ready visual concept for Недвижимость Днепра. Topic: покупка. Goal: distinct, channel-specific cover image with no service labels, no placeholder look, no visible generation metadata. Fix focus: weak_cta, duplicate_topic, repeated_template, too_similar_posts, generic_visual. Reference existing image only for continuity, not as a file to overwrite: G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-06-03\\11-dnipro-real-estate-ru\\weekly-2026-06-03-11-dnipro-real-estate-ru-11.png.",
+        "imagePath": null
+      },
+      "issues": [
+        "weak_cta",
+        "duplicate_topic",
+        "repeated_template",
+        "too_similar_posts",
+        "generic_visual"
+      ],
+      "recommendation": "Add a concrete reader action or decision criterion.",
+      "status": "draft",
+      "approved": false,
+      "applied": false
+    },
+    {
+      "id": "draft_20260605110843506_weekly-2026-06-04-07-dnipro-city-07_8",
+      "sourcePostId": "weekly-2026-06-04-07-dnipro-city-07",
+      "channelId": "dnipro-city",
+      "createdAt": "2026-06-05T11:08:43.506Z",
+      "regenerationType": "manual_review",
+      "priority": "high",
+      "original": {
+        "text": "Инфраструктура в Днепре: что заметить до привычного маршрута\nИнфраструктура в городе лучше оценивать через повседневность: как это влияет на маршрут, время, деньги и спокойствие жителей.\n- - Смотрите на удобство в будний день: транспорт, парковка, очереди и время в пути.\n- - Отделяйте разовую проблему от постоянной: город меняется неравномерно по районам.\n- - Проверяйте локальные сервисы по отзывам последних недель, а не старым подборкам.\n- - Если место новое, начните с короткого визита без больших ожиданий и сложных планов.\nИтог: Поделитесь наблюдением по своему району, если оно поможет другим.",
+        "imagePath": "G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-06-04\\07-dnipro-city\\weekly-2026-06-04-07-dnipro-city-07.png",
+        "topic": "инфраструктура"
+      },
+      "draft": {
+        "text": "Hook: Инфраструктура в Днепре: что заметить до привычного маршрута\n\n- Channel angle: make this useful for Дніпро / Город Днепр without service labels or template phrasing.\n- Specific value: add one concrete check, comparison, number, place, or decision rule tied to инфраструктура.\n- Quality fix: address weak_cta, title_body_mismatch, channel_topic_mismatch, generic_visual and keep the text ready for manual review before any publishing step.\n- Source context: Инфраструктура в Днепре: что заметить до привычного маршрута\nИнфраструктура в городе лучше оценивать через повседневность: как это влияет на маршрут, время, деньги и спокойствие жителей.\n\nConclusion: keep the final version practical, channel-specific, and safe for a human approve/apply step later.",
+        "imagePrompt": "Create a Telegram-ready visual concept for Дніпро / Город Днепр. Topic: инфраструктура. Goal: distinct, channel-specific cover image with no service labels, no placeholder look, no visible generation metadata. Fix focus: weak_cta, title_body_mismatch, channel_topic_mismatch, generic_visual. Reference existing image only for continuity, not as a file to overwrite: G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-06-04\\07-dnipro-city\\weekly-2026-06-04-07-dnipro-city-07.png.",
+        "imagePath": null
+      },
+      "issues": [
+        "weak_cta",
+        "title_body_mismatch",
+        "channel_topic_mismatch",
+        "generic_visual"
+      ],
+      "recommendation": "Add a concrete reader action or decision criterion.",
+      "status": "draft",
+      "approved": false,
+      "applied": false
+    },
+    {
+      "id": "draft_20260605110843506_weekly-2026-06-05-07-dnipro-city-07_9",
+      "sourcePostId": "weekly-2026-06-05-07-dnipro-city-07",
+      "channelId": "dnipro-city",
+      "createdAt": "2026-06-05T11:08:43.506Z",
+      "regenerationType": "manual_review",
+      "priority": "high",
+      "original": {
+        "text": "Места в Днепре: что заметить до привычного маршрута\nМеста в городе лучше оценивать через повседневность: как это влияет на маршрут, время, деньги и спокойствие жителей.\n- - Смотрите на удобство в будний день: транспорт, парковка, очереди и время в пути.\n- - Отделяйте разовую проблему от постоянной: город меняется неравномерно по районам.\n- - Проверяйте локальные сервисы по отзывам последних недель, а не старым подборкам.\n- - Если место новое, начните с короткого визита без больших ожиданий и сложных планов.\nИтог: Поделитесь наблюдением по своему району, если оно поможет другим.",
+        "imagePath": "G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-06-05\\07-dnipro-city\\weekly-2026-06-05-07-dnipro-city-07.png",
+        "topic": "места"
+      },
+      "draft": {
+        "text": "Hook: Места в Днепре: что заметить до привычного маршрута\n\n- Channel angle: make this useful for Дніпро / Город Днепр without service labels or template phrasing.\n- Specific value: add one concrete check, comparison, number, place, or decision rule tied to места.\n- Quality fix: address weak_cta, title_body_mismatch, channel_topic_mismatch, generic_visual and keep the text ready for manual review before any publishing step.\n- Source context: Места в Днепре: что заметить до привычного маршрута\nМеста в городе лучше оценивать через повседневность: как это влияет на маршрут, время, деньги и спокойствие жителей.\n\nConclusion: keep the final version practical, channel-specific, and safe for a human approve/apply step later.",
+        "imagePrompt": "Create a Telegram-ready visual concept for Дніпро / Город Днепр. Topic: места. Goal: distinct, channel-specific cover image with no service labels, no placeholder look, no visible generation metadata. Fix focus: weak_cta, title_body_mismatch, channel_topic_mismatch, generic_visual. Reference existing image only for continuity, not as a file to overwrite: G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-06-05\\07-dnipro-city\\weekly-2026-06-05-07-dnipro-city-07.png.",
+        "imagePath": null
+      },
+      "issues": [
+        "weak_cta",
+        "title_body_mismatch",
+        "channel_topic_mismatch",
+        "generic_visual"
+      ],
+      "recommendation": "Add a concrete reader action or decision criterion.",
+      "status": "draft",
+      "approved": false,
+      "applied": false
+    },
+    {
+      "id": "draft_20260605110843506_weekly-2026-06-07-02-ai-technologies-02_3",
+      "sourcePostId": "weekly-2026-06-07-02-ai-technologies-02",
+      "channelId": "ai-tech",
+      "createdAt": "2026-06-05T11:08:43.506Z",
+      "regenerationType": "manual_review",
+      "priority": "high",
+      "original": {
+        "text": "Промпты без хайпа: где это реально экономит время\nЕсли брать промпты в работу, полезно начинать не с модного названия, а с задачи, которую можно измерить за один день.\n- - Выберите один повторяемый процесс: письма, таблицы, заявки, подборки или ответы клиентам.\n- - Проверьте, какие данные можно отдавать инструменту, а какие лучше оставить локально.\n- - Сравните результат с ручной работой: скорость, ошибки, тон текста и понятность вывода.\n- - Оставьте человеку финальную проверку, особенно если пост, документ или решение видят другие люди.\nИтог: Сохраните идею и протестируйте на одной маленькой задаче, а не на всей системе сразу.",
+        "imagePath": "G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-06-07\\02-ai-technologies\\weekly-2026-06-07-02-ai-technologies-02.png",
+        "topic": "промпты"
+      },
+      "draft": {
+        "text": "Hook: Промпты без хайпа: где это реально экономит время\n\n- Channel angle: make this useful for AI и технологии without service labels or template phrasing.\n- Specific value: add one concrete check, comparison, number, place, or decision rule tied to промпты.\n- Quality fix: address weak_cta, title_body_mismatch, channel_topic_mismatch, generic_visual and keep the text ready for manual review before any publishing step.\n- Source context: Промпты без хайпа: где это реально экономит время\nЕсли брать промпты в работу, полезно начинать не с модного названия, а с задачи, которую можно измерить за один день.\n\nConclusion: keep the final version practical, channel-specific, and safe for a human approve/apply step later.",
+        "imagePrompt": "Create a Telegram-ready visual concept for AI и технологии. Topic: промпты. Goal: distinct, channel-specific cover image with no service labels, no placeholder look, no visible generation metadata. Fix focus: weak_cta, title_body_mismatch, channel_topic_mismatch, generic_visual. Reference existing image only for continuity, not as a file to overwrite: G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-06-07\\02-ai-technologies\\weekly-2026-06-07-02-ai-technologies-02.png.",
+        "imagePath": null
+      },
+      "issues": [
+        "weak_cta",
+        "title_body_mismatch",
+        "channel_topic_mismatch",
+        "generic_visual"
+      ],
+      "recommendation": "Add a concrete reader action or decision criterion.",
+      "status": "draft",
+      "approved": false,
+      "applied": false
+    },
+    {
+      "id": "draft_20260605110843506_weekly-2026-06-07-07-dnipro-city-07_10",
+      "sourcePostId": "weekly-2026-06-07-07-dnipro-city-07",
+      "channelId": "dnipro-city",
+      "createdAt": "2026-06-05T11:08:43.506Z",
+      "regenerationType": "manual_review",
+      "priority": "high",
+      "original": {
+        "text": "Сервисы в Днепре: что заметить до привычного маршрута\nСервисы в городе лучше оценивать через повседневность: как это влияет на маршрут, время, деньги и спокойствие жителей.\n- - Смотрите на удобство в будний день: транспорт, парковка, очереди и время в пути.\n- - Отделяйте разовую проблему от постоянной: город меняется неравномерно по районам.\n- - Проверяйте локальные сервисы по отзывам последних недель, а не старым подборкам.\n- - Если место новое, начните с короткого визита без больших ожиданий и сложных планов.\nИтог: Поделитесь наблюдением по своему району, если оно поможет другим.",
+        "imagePath": "G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-06-07\\07-dnipro-city\\weekly-2026-06-07-07-dnipro-city-07.png",
+        "topic": "сервисы"
+      },
+      "draft": {
+        "text": "Hook: Сервисы в Днепре: что заметить до привычного маршрута\n\n- Channel angle: make this useful for Дніпро / Город Днепр without service labels or template phrasing.\n- Specific value: add one concrete check, comparison, number, place, or decision rule tied to сервисы.\n- Quality fix: address weak_cta, title_body_mismatch, channel_topic_mismatch, generic_visual and keep the text ready for manual review before any publishing step.\n- Source context: Сервисы в Днепре: что заметить до привычного маршрута\nСервисы в городе лучше оценивать через повседневность: как это влияет на маршрут, время, деньги и спокойствие жителей.\n\nConclusion: keep the final version practical, channel-specific, and safe for a human approve/apply step later.",
+        "imagePrompt": "Create a Telegram-ready visual concept for Дніпро / Город Днепр. Topic: сервисы. Goal: distinct, channel-specific cover image with no service labels, no placeholder look, no visible generation metadata. Fix focus: weak_cta, title_body_mismatch, channel_topic_mismatch, generic_visual. Reference existing image only for continuity, not as a file to overwrite: G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-06-07\\07-dnipro-city\\weekly-2026-06-07-07-dnipro-city-07.png.",
+        "imagePath": null
+      },
+      "issues": [
+        "weak_cta",
+        "title_body_mismatch",
+        "channel_topic_mismatch",
+        "generic_visual"
+      ],
+      "recommendation": "Add a concrete reader action or decision criterion.",
+      "status": "draft",
+      "approved": false,
+      "applied": false
+    },
+    {
+      "id": "draft_20260605110843506_weekly-2026-06-08-02-ai-technologies-02_4",
+      "sourcePostId": "weekly-2026-06-08-02-ai-technologies-02",
+      "channelId": "ai-tech",
+      "createdAt": "2026-06-05T11:08:43.506Z",
+      "regenerationType": "manual_review",
+      "priority": "high",
+      "original": {
+        "text": "Гаджеты без хайпа: где это реально экономит время\nЕсли брать гаджеты в работу, полезно начинать не с модного названия, а с задачи, которую можно измерить за один день.\n- - Выберите один повторяемый процесс: письма, таблицы, заявки, подборки или ответы клиентам.\n- - Проверьте, какие данные можно отдавать инструменту, а какие лучше оставить локально.\n- - Сравните результат с ручной работой: скорость, ошибки, тон текста и понятность вывода.\n- - Оставьте человеку финальную проверку, особенно если пост, документ или решение видят другие люди.\nИтог: Сохраните идею и протестируйте на одной маленькой задаче, а не на всей системе сразу.",
+        "imagePath": "G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-06-08\\02-ai-technologies\\weekly-2026-06-08-02-ai-technologies-02.png",
+        "topic": "гаджеты"
+      },
+      "draft": {
+        "text": "Hook: Гаджеты без хайпа: где это реально экономит время\n\n- Channel angle: make this useful for AI и технологии without service labels or template phrasing.\n- Specific value: add one concrete check, comparison, number, place, or decision rule tied to гаджеты.\n- Quality fix: address weak_cta, title_body_mismatch, channel_topic_mismatch, generic_visual and keep the text ready for manual review before any publishing step.\n- Source context: Гаджеты без хайпа: где это реально экономит время\nЕсли брать гаджеты в работу, полезно начинать не с модного названия, а с задачи, которую можно измерить за один день.\n\nConclusion: keep the final version practical, channel-specific, and safe for a human approve/apply step later.",
+        "imagePrompt": "Create a Telegram-ready visual concept for AI и технологии. Topic: гаджеты. Goal: distinct, channel-specific cover image with no service labels, no placeholder look, no visible generation metadata. Fix focus: weak_cta, title_body_mismatch, channel_topic_mismatch, generic_visual. Reference existing image only for continuity, not as a file to overwrite: G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-06-08\\02-ai-technologies\\weekly-2026-06-08-02-ai-technologies-02.png.",
+        "imagePath": null
+      },
+      "issues": [
+        "weak_cta",
+        "title_body_mismatch",
+        "channel_topic_mismatch",
+        "generic_visual"
+      ],
+      "recommendation": "Add a concrete reader action or decision criterion.",
+      "status": "draft",
+      "approved": false,
+      "applied": false
+    }
+  ]
+}
