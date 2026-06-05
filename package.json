@@ -20,6 +20,8 @@
     "publish:test-one:dry": "node scripts/manual-one-post-test-send.mjs --dry-run",
     "publish:test-one:send": "node scripts/manual-one-post-test-send.mjs --send --confirm-one-post-send",
     "content:quality:check": "node scripts/check-content-quality.mjs",
+    "content:presentation:check": "node scripts/check-content-presentation.mjs",
+    "content:presentation:preview": "node scripts/preview-content-presentation.mjs",
     "content:regen:queue": "node scripts/check-regeneration-queue.mjs",
     "content:regen:drafts:dry": "node scripts/create-regeneration-drafts.mjs --dry-run",
     "content:regen:drafts:create": "node scripts/create-regeneration-drafts.mjs --create --confirm-draft-create",
