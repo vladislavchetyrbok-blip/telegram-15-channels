@@ -47,6 +47,7 @@ const navItems = [
   { href: "/preflight", label: "Preflight", icon: ScanSearch },
   { href: "/publish-readiness", label: "Готово к публикации", icon: CheckCircle2 },
   { href: "/admin/final-preview", label: "Final Preview", icon: Eye },
+  { href: "/admin/manual-test-send", label: "Manual Test Send", icon: SendHorizontal },
   { href: "/publishing-center", label: "Центр публикаций", icon: Rocket },
   { href: "/admin/phone-dashboard", label: "Phone dashboard", icon: Smartphone },
   { href: "/admin/phone-start", label: "Phone start", icon: Smartphone },

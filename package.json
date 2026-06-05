@@ -14,6 +14,8 @@
     "autopilot:resume": "node scripts/autopilot-resume.mjs",
     "publish:due": "node scripts/publish-due.mjs",
     "publish:preview:check": "node scripts/check-final-publish-preview.mjs",
+    "publish:test-one:dry": "node scripts/manual-one-post-test-send.mjs --dry-run",
+    "publish:test-one:send": "node scripts/manual-one-post-test-send.mjs --send --confirm-one-post-send",
     "content:quality:check": "node scripts/check-content-quality.mjs",
     "content:regen:queue": "node scripts/check-regeneration-queue.mjs",
     "content:regen:drafts:dry": "node scripts/create-regeneration-drafts.mjs --dry-run",
