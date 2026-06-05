@@ -106,5 +106,18 @@
     "telegramMessageLink": "https://t.me/c/3504277183/13",
     "dryRun": false,
     "createdAt": "2026-06-05T21:17:48.751Z"
+  },
+  {
+    "id": "5ba4b2db-3ebb-46ea-8d72-79c847e14f75",
+    "runId": "2b60a87d-c196-4198-8268-7a7c43be9c29",
+    "source": "manual-one-post-test-send",
+    "channelId": "ai-tech",
+    "postId": "weekly-2026-06-05-02-ai-technologies-02",
+    "status": "success",
+    "message": "manual_one_post_test_send message_id=14",
+    "telegramMessageId": 14,
+    "telegramMessageLink": "https://t.me/c/3504277183/14",
+    "dryRun": false,
+    "createdAt": "2026-06-05T22:47:54.296Z"
   }
 ]
