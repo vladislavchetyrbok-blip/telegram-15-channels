@@ -18,3 +18,4 @@ build/
 .vercel/
 .tools/
 data/backups/
+tsconfig.tsbuildinfo
