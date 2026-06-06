@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
+import Image from "next/image";
 import { AlertTriangle, CheckCircle2, Eye, ImageIcon, RefreshCw, ShieldCheck, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -124,6 +125,42 @@ interface VisualRegenerationDraftReport {
   lastCheckedAt: string;
 }
 
+interface VisualRegenerationImageReport {
+  status: Status;
+  imageCandidates: VisualRegenerationImageCandidate[];
+  summary: {
+    totalCandidates: number;
+    generated: number;
+    generationUnavailable: number;
+    failed: number;
+    fileExists: number;
+    previewComparable: number;
+  };
+  lastCheckedAt: string;
+}
+
+interface VisualRegenerationImageCandidate {
+  draftId: string;
+  postId: string;
+  channelId: string;
+  oldImagePath: string;
+  newImageCandidatePath: string | null;
+  fileExists: boolean;
+  generationStatus: string;
+  generatorUsed: string;
+  prompt: string;
+  newPremiumPrompt: string;
+  negativePrompt: string;
+  qualityReasons: string[];
+  visualQualityEstimate: Record<string, unknown>;
+  backupPath: string | null;
+  draftStatus: string;
+  previewComparable: boolean;
+  publicCandidateUrl: string | null;
+  publicOldImageUrl: string | null;
+  createdAt: string;
+}
+
 interface VisualRegenerationDraft {
   draftId: string;
   postId: string;
@@ -161,6 +198,7 @@ interface VisualRegenerationDraft {
 export function PremiumVisualQualityPanel() {
   const [report, setReport] = useState<PremiumVisualQualityReport | null>(null);
   const [draftReport, setDraftReport] = useState<VisualRegenerationDraftReport | null>(null);
+  const [imageReport, setImageReport] = useState<VisualRegenerationImageReport | null>(null);
   const [loading, setLoading] = useState(true);
   const [draftsLoading, setDraftsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -171,20 +209,26 @@ export function PremiumVisualQualityPanel() {
     setError(null);
 
     try {
-      const [qualityResponse, draftsResponse] = await Promise.all([
+      const [qualityResponse, draftsResponse, imagesResponse] = await Promise.all([
         fetch("/api/admin/visual-quality/status", { cache: "no-store" }),
         fetch("/api/admin/visual-regeneration/status", { cache: "no-store" }),
+        fetch("/api/admin/visual-regeneration/images/status", { cache: "no-store" }),
       ]);
       const qualityPayload = (await qualityResponse.json()) as PremiumVisualQualityReport | { message?: string };
       const draftsPayload = (await draftsResponse.json()) as VisualRegenerationDraftReport | { message?: string };
+      const imagesPayload = (await imagesResponse.json()) as VisualRegenerationImageReport | { message?: string };
       if (!qualityResponse.ok) {
         throw new Error("message" in qualityPayload && qualityPayload.message ? qualityPayload.message : "Visual quality request failed.");
       }
       if (!draftsResponse.ok) {
         throw new Error("message" in draftsPayload && draftsPayload.message ? draftsPayload.message : "Visual regeneration drafts request failed.");
       }
+      if (!imagesResponse.ok) {
+        throw new Error("message" in imagesPayload && imagesPayload.message ? imagesPayload.message : "Visual regeneration image candidates request failed.");
+      }
       setReport(qualityPayload as PremiumVisualQualityReport);
       setDraftReport(draftsPayload as VisualRegenerationDraftReport);
+      setImageReport(imagesPayload as VisualRegenerationImageReport);
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : String(requestError));
     } finally {
@@ -198,12 +242,20 @@ export function PremiumVisualQualityPanel() {
     setError(null);
 
     try {
-      const response = await fetch("/api/admin/visual-regeneration/status", { cache: "no-store" });
+      const [response, imagesResponse] = await Promise.all([
+        fetch("/api/admin/visual-regeneration/status", { cache: "no-store" }),
+        fetch("/api/admin/visual-regeneration/images/status", { cache: "no-store" }),
+      ]);
       const payload = (await response.json()) as VisualRegenerationDraftReport | { message?: string };
+      const imagesPayload = (await imagesResponse.json()) as VisualRegenerationImageReport | { message?: string };
       if (!response.ok) {
         throw new Error("message" in payload && payload.message ? payload.message : "Visual regeneration drafts request failed.");
       }
+      if (!imagesResponse.ok) {
+        throw new Error("message" in imagesPayload && imagesPayload.message ? imagesPayload.message : "Visual regeneration image candidates request failed.");
+      }
       setDraftReport(payload as VisualRegenerationDraftReport);
+      setImageReport(imagesPayload as VisualRegenerationImageReport);
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : String(requestError));
     } finally {
@@ -219,6 +271,7 @@ export function PremiumVisualQualityPanel() {
   const queueRows = report?.regenerationQueuePreview ?? [];
   const weakRows = report?.weakVisuals?.slice(0, 8) ?? [];
   const visualDraftRows = draftReport?.drafts ?? [];
+  const imageRows = imageReport?.imageCandidates ?? [];
 
   return (
     <div className="space-y-4">
@@ -312,6 +365,22 @@ export function PremiumVisualQualityPanel() {
         </div>
       </Panel>
 
+      <Panel title="Old vs New Visual Candidate" icon={<ImageIcon className="h-4 w-4" />}>
+        <div className="space-y-3">
+          <div className="grid gap-2 text-xs text-slate-400 md:grid-cols-5">
+            <Chip label="Candidates" value={String(imageReport?.summary.totalCandidates ?? 0)} />
+            <Chip label="Generated" value={String(imageReport?.summary.generated ?? 0)} />
+            <Chip label="Files" value={String(imageReport?.summary.fileExists ?? 0)} />
+            <Chip label="Comparable" value={String(imageReport?.summary.previewComparable ?? 0)} />
+            <Chip label="Last checked" value={imageReport?.lastCheckedAt ?? "not checked"} />
+          </div>
+          {imageRows.map((candidate) => (
+            <ImageCandidateCard key={candidate.draftId} candidate={candidate} draft={visualDraftRows.find((row) => row.draftId === candidate.draftId)} />
+          ))}
+          {imageReport && !imageRows.length ? <p className="text-sm text-slate-500">No image candidates created yet. Run visual:regen:image:create to create one draft asset.</p> : null}
+        </div>
+      </Panel>
+
       <Panel title="Weak visual samples" icon={<Eye className="h-4 w-4" />}>
         <div className="space-y-3">
           {weakRows.map((sample) => (
@@ -334,6 +403,54 @@ export function PremiumVisualQualityPanel() {
           ))}
         </div>
       </Panel>
+    </div>
+  );
+}
+
+function ImageCandidateCard({ candidate, draft }: { candidate: VisualRegenerationImageCandidate; draft?: VisualRegenerationDraft }) {
+  return (
+    <article className="rounded-lg border border-emerald-300/20 bg-emerald-300/5 p-3">
+      <div className="flex flex-col gap-2 xl:flex-row xl:items-start xl:justify-between">
+        <div>
+          <p className="text-sm font-semibold text-white">{candidate.draftId}</p>
+          <p className="mt-1 break-words text-sm text-slate-300">{candidate.channelId} / {candidate.postId}</p>
+          <p className="mt-1 text-xs text-slate-500">Generator: {candidate.generatorUsed}</p>
+        </div>
+        <div className="grid shrink-0 grid-cols-2 gap-2 text-xs md:grid-cols-4">
+          <Chip label="Generation" value={candidate.generationStatus} />
+          <Chip label="File exists" value={String(candidate.fileExists)} />
+          <Chip label="Draft" value={candidate.draftStatus} />
+          <Chip label="Comparable" value={String(candidate.previewComparable)} />
+        </div>
+      </div>
+      <div className="mt-4 grid gap-3 lg:grid-cols-2">
+        <PreviewImage title="Old image" src={candidate.publicOldImageUrl} fallback={candidate.oldImagePath || "old image not available"} />
+        <PreviewImage title="New candidate" src={candidate.fileExists ? candidate.publicCandidateUrl : null} fallback={candidate.fileExists ? candidate.newImageCandidatePath ?? "candidate path missing" : "prompt-only state; physical candidate file is not available"} />
+      </div>
+      <div className="mt-3 grid gap-2 text-xs text-slate-400 md:grid-cols-2">
+        <Chip label="Old path" value={candidate.oldImagePath || "not available"} />
+        <Chip label="New path" value={candidate.newImageCandidatePath ?? "not generated"} />
+      </div>
+      <PromptBlock title="Old prompt" value={draft?.oldPrompt || "-"} />
+      <PromptBlock title="New premium prompt" value={candidate.newPremiumPrompt || candidate.prompt} />
+      <PromptBlock title="Negative prompt" value={candidate.negativePrompt} />
+      <PromptBlock title="Quality estimate" value={JSON.stringify(candidate.visualQualityEstimate)} />
+      <TextItems title="Quality reasons" items={candidate.qualityReasons} empty="No quality reasons." />
+    </article>
+  );
+}
+
+function PreviewImage({ title, src, fallback }: { title: string; src: string | null; fallback: string }) {
+  return (
+    <div className="rounded-md border border-line bg-slate-950/40 p-3">
+      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">{title}</p>
+      {src ? (
+        <Image src={src} alt={title} width={540} height={675} unoptimized className="mt-3 aspect-[4/5] w-full rounded-md border border-line object-cover" />
+      ) : (
+        <div className="mt-3 flex aspect-[4/5] w-full items-center justify-center rounded-md border border-dashed border-slate-700 bg-black/20 p-4 text-center text-sm leading-6 text-slate-500">
+          {fallback}
+        </div>
+      )}
     </div>
   );
 }
