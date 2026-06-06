@@ -1,0 +1,9 @@
+{
+  "draftId": "visual_draft_20260606105307036_weekly-2026-06-06-02-ai-technologies-02",
+  "postId": "weekly-2026-06-06-02-ai-technologies-02",
+  "channelId": "ai-tech",
+  "newPremiumPrompt": "Premium editorial cover for a Telegram channel: premium clean tech editorial for a practical AI and software media channel. Topic: полезные приложения. Title context: Полезные приложения без хайпа: где это реально экономит время. Audience: builders, operators, founders, and power users who want useful AI workflows. Composition: dark realistic workspace or product scene, one strong focal device/interface, layered depth, cinematic but restrained light. Subjects to show: laptop with AI workflow dashboard, phone interface, developer workspace, automation control room, human using technology. Color mood: deep charcoal, graphite, cyan accents, subtle violet only as secondary glow. Content template: comparison; length bucket: short; visual mode: cover_card (1 image). Visual freshness: avoid repeating recent signatures (premium_card::premium_card, ai практика::premium_card::local_template::template); change subject, camera angle, and focal object. Style keywords: premium clean tech editorial, realistic devices, dashboard interface, strong focal point, high-end media style, no text, no logos. Strong focal point, real-world object or scene, useful editorial value, no text, no logos, no watermark.",
+  "negativePrompt": "abstract neural network, random circuit lines, AI logo, floating text, watermark, service label, template cover, generic blue/purple abstract network, empty background, random neon lines, meaningless AI logo, cheap stock-like background, unreadable text overlays, service labels, unreadable typography, empty composition, generic abstract background, cheap demo cover",
+  "note": "Placeholder preview metadata only; no image file was generated.",
+  "createdAt": "2026-06-06T10:53:07.036Z"
+}

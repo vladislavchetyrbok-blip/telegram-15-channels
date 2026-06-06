@@ -1,9 +1,37 @@
-﻿import Link from "next/link";
-import { Bot, CalendarPlus, PenSquare, Rocket, ShieldCheck } from "lucide-react";
-import { getUnifiedSystemStatus } from "@/lib/unified-system-status";
+"use client";
 
-export async function Header() {
-  const status = await getUnifiedSystemStatus();
+import Link from "next/link";
+import { Bot, CalendarPlus, PenSquare, Rocket, ShieldCheck } from "lucide-react";
+import { useEffect, useState } from "react";
+
+interface HeaderStatus {
+  channelsTotal: number;
+  readyToPublish: number;
+}
+
+export function Header() {
+  const [status, setStatus] = useState<HeaderStatus>({ channelsTotal: 15, readyToPublish: 0 });
+
+  useEffect(() => {
+    let mounted = true;
+
+    fetch("/api/system/unified-status", { cache: "no-store" })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((payload) => {
+        if (!mounted || !payload) return;
+        setStatus({
+          channelsTotal: typeof payload.channelsTotal === "number" ? payload.channelsTotal : 15,
+          readyToPublish: typeof payload.content?.readyToPublish === "number" ? payload.content.readyToPublish : 0,
+        });
+      })
+      .catch(() => {
+        if (mounted) setStatus({ channelsTotal: 15, readyToPublish: 0 });
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   return (
     <header className="sticky top-0 z-30 border-b border-line bg-[#070b14]/86 px-4 py-4 backdrop-blur sm:px-6 lg:px-8">
@@ -37,7 +65,7 @@ export async function Header() {
             Центр публикаций
           </Link>
           <span className="inline-flex h-10 items-center rounded-md border border-line bg-black/20 px-3 text-sm text-slate-400">
-            Ready: <span className="ml-2 text-cyan-200">{status.content.readyToPublish}</span>
+            Ready: <span className="ml-2 text-cyan-200">{status.readyToPublish}</span>
           </span>
         </div>
       </div>

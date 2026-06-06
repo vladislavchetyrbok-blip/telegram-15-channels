@@ -3,6 +3,8 @@ import { getVisualEngineStatus, checkComfyUiHealth, generateWithVisualProvider }
 import { getVisualEngineConfig, updateVisualEngineRuntimeSettings, type ImageProviderType } from "@/lib/visual-engine-config";
 import { getWeeklyContentPlanState } from "@/lib/weekly-content-plan";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   return NextResponse.json(await getVisualEngineStatus());
 }

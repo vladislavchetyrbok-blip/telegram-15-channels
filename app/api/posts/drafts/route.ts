@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { getEditableDraftStatuses, listPostDrafts } from "@/lib/post-draft-store";
 import type { PostDraftStatus } from "@/types";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const channelId = searchParams.get("channelId") || undefined;

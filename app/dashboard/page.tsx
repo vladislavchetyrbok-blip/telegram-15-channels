@@ -4,6 +4,8 @@ import { getUnifiedSystemStatus } from "@/lib/unified-system-status";
 import { canonicalChannelTitles } from "@/lib/channel-canonical";
 import { ScheduledAutopublishPanel } from "@/components/ScheduledAutopublishPanel";
 
+export const dynamic = "force-dynamic";
+
 export default async function DashboardPage() {
   const status = await getUnifiedSystemStatus();
   const channelRows = Object.entries(canonicalChannelTitles);

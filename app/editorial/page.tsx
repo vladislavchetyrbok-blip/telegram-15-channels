@@ -1,5 +1,7 @@
 import { EditorialProfilesPanel } from "@/components/EditorialProfilesPanel";
 
+export const dynamic = "force-dynamic";
+
 export default function EditorialPage() {
   return (
     <div className="space-y-6">

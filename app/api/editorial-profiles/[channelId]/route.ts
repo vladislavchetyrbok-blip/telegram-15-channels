@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { loadEditorialProfile } from "@/lib/editorial";
 
+export const dynamic = "force-dynamic";
+
 interface RouteContext {
   params: {
     channelId: string;

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { AlertTriangle, CheckCircle2, Eye, ImageIcon, RefreshCw, Sparkles } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Eye, ImageIcon, RefreshCw, ShieldCheck, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type Status = "ok" | "warning" | "error";
@@ -99,26 +99,115 @@ interface IssueSummary {
   message: string;
 }
 
+interface VisualRegenerationDraftReport {
+  status: Status;
+  summary: {
+    totalDrafts: number;
+    draft: number;
+    approved: number;
+    rejected: number;
+    needsChanges: number;
+    applied: number;
+    activeDrafts: number;
+    previewOnly: number;
+    withBackup: number;
+    realImageGenerated: number;
+  };
+  storePath: string;
+  backupRoot: string;
+  drafts: VisualRegenerationDraft[];
+  warnings: string[];
+  errors: string[];
+  telegramRealSendWasNotRun: boolean;
+  githubActionsWereNotTriggered: boolean;
+  publishSchedulerChanged: boolean;
+  lastCheckedAt: string;
+}
+
+interface VisualRegenerationDraft {
+  draftId: string;
+  postId: string;
+  channelId: string;
+  title: string;
+  sourceStatus: string;
+  status: string;
+  approved: boolean;
+  applied: boolean;
+  previewOnly: boolean;
+  oldImage: string;
+  oldPrompt: string;
+  newPremiumPrompt: string;
+  negativePrompt: string;
+  regenerationReason: string;
+  scores: {
+    before?: Record<string, number>;
+    expectedAfter?: Record<string, number>;
+    expectedImprovement?: Record<string, number>;
+  };
+  backupPath: string | null;
+  backupCreated: boolean;
+  placeholderPath: string;
+  newImagePath: string | null;
+  realImageGeneration: string;
+  applySafety: {
+    safeToApply: boolean;
+    blockReasons: string[];
+    affectedFields: string[];
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
 export function PremiumVisualQualityPanel() {
   const [report, setReport] = useState<PremiumVisualQualityReport | null>(null);
+  const [draftReport, setDraftReport] = useState<VisualRegenerationDraftReport | null>(null);
   const [loading, setLoading] = useState(true);
+  const [draftsLoading, setDraftsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   async function refresh() {
     setLoading(true);
+    setDraftsLoading(true);
     setError(null);
 
     try {
-      const response = await fetch("/api/admin/visual-quality/status", { cache: "no-store" });
-      const payload = (await response.json()) as PremiumVisualQualityReport | { message?: string };
-      if (!response.ok) {
-        throw new Error("message" in payload && payload.message ? payload.message : "Visual quality request failed.");
+      const [qualityResponse, draftsResponse] = await Promise.all([
+        fetch("/api/admin/visual-quality/status", { cache: "no-store" }),
+        fetch("/api/admin/visual-regeneration/status", { cache: "no-store" }),
+      ]);
+      const qualityPayload = (await qualityResponse.json()) as PremiumVisualQualityReport | { message?: string };
+      const draftsPayload = (await draftsResponse.json()) as VisualRegenerationDraftReport | { message?: string };
+      if (!qualityResponse.ok) {
+        throw new Error("message" in qualityPayload && qualityPayload.message ? qualityPayload.message : "Visual quality request failed.");
       }
-      setReport(payload as PremiumVisualQualityReport);
+      if (!draftsResponse.ok) {
+        throw new Error("message" in draftsPayload && draftsPayload.message ? draftsPayload.message : "Visual regeneration drafts request failed.");
+      }
+      setReport(qualityPayload as PremiumVisualQualityReport);
+      setDraftReport(draftsPayload as VisualRegenerationDraftReport);
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : String(requestError));
     } finally {
       setLoading(false);
+      setDraftsLoading(false);
+    }
+  }
+
+  async function refreshDrafts() {
+    setDraftsLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch("/api/admin/visual-regeneration/status", { cache: "no-store" });
+      const payload = (await response.json()) as VisualRegenerationDraftReport | { message?: string };
+      if (!response.ok) {
+        throw new Error("message" in payload && payload.message ? payload.message : "Visual regeneration drafts request failed.");
+      }
+      setDraftReport(payload as VisualRegenerationDraftReport);
+    } catch (requestError) {
+      setError(requestError instanceof Error ? requestError.message : String(requestError));
+    } finally {
+      setDraftsLoading(false);
     }
   }
 
@@ -129,6 +218,7 @@ export function PremiumVisualQualityPanel() {
   const profileRows = useMemo(() => Object.entries(report?.profiles ?? {}).slice(0, 6), [report]);
   const queueRows = report?.regenerationQueuePreview ?? [];
   const weakRows = report?.weakVisuals?.slice(0, 8) ?? [];
+  const visualDraftRows = draftReport?.drafts ?? [];
 
   return (
     <div className="space-y-4">
@@ -146,6 +236,7 @@ export function PremiumVisualQualityPanel() {
         <div className="flex flex-col gap-2 sm:flex-row">
           <RefreshButton loading={loading} onClick={refresh} label="Refresh visual quality" icon={<RefreshCw className={cn("h-4 w-4", loading && "animate-spin")} />} />
           <RefreshButton loading={loading} onClick={refresh} label="Refresh regeneration preview" icon={<Eye className="h-4 w-4" />} />
+          <RefreshButton loading={draftsLoading} onClick={refreshDrafts} label="Refresh drafts" icon={<ShieldCheck className={cn("h-4 w-4", draftsLoading && "animate-pulse")} />} />
         </div>
       </section>
 
@@ -200,6 +291,27 @@ export function PremiumVisualQualityPanel() {
         </div>
       </Panel>
 
+      <Panel title="Controlled Visual Regeneration" icon={<ShieldCheck className="h-4 w-4" />}>
+        <div className="space-y-3">
+          <div className="grid gap-2 text-xs text-slate-400 md:grid-cols-4">
+            <Chip label="Drafts" value={String(draftReport?.summary.totalDrafts ?? 0)} />
+            <Chip label="Approved" value={String(draftReport?.summary.approved ?? 0)} />
+            <Chip label="Backups" value={String(draftReport?.summary.withBackup ?? 0)} />
+            <Chip label="Real send" value={String(draftReport?.telegramRealSendWasNotRun ?? true)} />
+          </div>
+          <div className="grid gap-2 text-xs text-slate-400 md:grid-cols-3">
+            <Chip label="Store" value={draftReport?.storePath ?? "data/visual-regeneration-drafts/visual-regeneration-drafts.json"} />
+            <Chip label="Backup root" value={draftReport?.backupRoot ?? "data/visual-regeneration-drafts/backups"} />
+            <Chip label="Scheduler changed" value={String(draftReport?.publishSchedulerChanged ?? false)} />
+          </div>
+          {visualDraftRows.map((draft) => (
+            <VisualDraftCard key={draft.draftId} draft={draft} />
+          ))}
+          {draftReport && !visualDraftRows.length ? <p className="text-sm text-slate-500">No controlled visual drafts created yet.</p> : null}
+          <TextItems title="Draft warnings" items={draftReport?.warnings ?? []} empty="No draft warnings." />
+        </div>
+      </Panel>
+
       <Panel title="Weak visual samples" icon={<Eye className="h-4 w-4" />}>
         <div className="space-y-3">
           {weakRows.map((sample) => (
@@ -223,6 +335,46 @@ export function PremiumVisualQualityPanel() {
         </div>
       </Panel>
     </div>
+  );
+}
+
+function VisualDraftCard({ draft }: { draft: VisualRegenerationDraft }) {
+  return (
+    <article className="rounded-lg border border-cyan-300/20 bg-cyan-300/5 p-3">
+      <div className="flex flex-col gap-2 xl:flex-row xl:items-start xl:justify-between">
+        <div>
+          <p className="text-sm font-semibold text-white">{draft.draftId}</p>
+          <p className="mt-1 break-words text-sm text-slate-300">{draft.channelId} / {draft.postId}</p>
+          <p className="mt-1 break-words text-sm text-slate-400">{draft.title}</p>
+        </div>
+        <div className="grid shrink-0 grid-cols-2 gap-2 text-xs md:grid-cols-4">
+          <Chip label="Status" value={draft.status} />
+          <Chip label="Preview" value={String(draft.previewOnly)} />
+          <Chip label="Safe apply" value={String(draft.applySafety.safeToApply)} />
+          <Chip label="Backup" value={String(draft.backupCreated)} />
+        </div>
+      </div>
+      <div className="mt-3 grid gap-2 text-xs text-slate-400 md:grid-cols-3">
+        <Chip label="Source" value={draft.sourceStatus} />
+        <Chip label="Generated" value={draft.realImageGeneration} />
+        <Chip label="New image" value={draft.newImagePath ?? "not generated"} />
+      </div>
+      <PromptBlock title="Old visual/prompt" value={draft.oldPrompt || draft.oldImage || "-"} />
+      <PromptBlock title="New premium prompt" value={draft.newPremiumPrompt} />
+      <PromptBlock title="Negative prompt" value={draft.negativePrompt} />
+      <PromptBlock title="Regeneration reason" value={draft.regenerationReason} />
+      <div className="mt-3 grid gap-2 text-xs text-slate-400 md:grid-cols-3">
+        <Chip label="Before" value={formatScores(draft.scores.before)} />
+        <Chip label="Expected" value={formatScores(draft.scores.expectedAfter)} />
+        <Chip label="Improvement" value={formatScores(draft.scores.expectedImprovement)} />
+      </div>
+      <div className="mt-3 grid gap-2 text-xs text-slate-400 md:grid-cols-2">
+        <Chip label="Backup path" value={draft.backupPath ?? "not available"} />
+        <Chip label="Placeholder" value={draft.placeholderPath || "not available"} />
+      </div>
+      <TextItems title="Apply block reasons" items={draft.applySafety.blockReasons} empty="No apply block reasons." />
+      <TextItems title="Affected fields" items={draft.applySafety.affectedFields} empty="No affected fields." />
+    </article>
   );
 }
 
@@ -429,4 +581,10 @@ function toneClass(tone: Tone) {
     tone === "error" && "border-rose-300/25 bg-rose-300/10",
     tone === "info" && "border-sky-300/25 bg-sky-300/10",
   );
+}
+
+function formatScores(scores?: Record<string, number>) {
+  const entries = Object.entries(scores ?? {});
+  if (!entries.length) return "-";
+  return entries.map(([key, value]) => `${key.replace("Score", "")}: ${value}`).join(", ");
 }

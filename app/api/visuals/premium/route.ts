@@ -5,6 +5,8 @@ import { promisify } from "node:util";
 import { NextResponse } from "next/server";
 import { getProviderSafety, getVisualEngineConfig } from "@/lib/visual-engine-config";
 
+export const dynamic = "force-dynamic";
+
 const execFileAsync = promisify(execFile);
 const planPath = path.join(process.cwd(), "data", "runtime", "weekly-content-plan.json");
 const reportPath = path.join(process.cwd(), "data", "runtime", "premium-visual-report.json");
