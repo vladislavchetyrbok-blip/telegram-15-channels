@@ -31,7 +31,7 @@ export interface PremiumVisualValidation {
   fileSize: number;
 }
 
-const forbiddenVisuals = ["RUB", "₽", "руб", "ruble", "rouble", "watermark", "random logo", "local-model", "test post", "premium_v2", "telegram ready"];
+const forbiddenVisuals = ["RUB", "₽", "руб", "ruble", "rouble", "watermark", "random logo", "local-model", "test post", "premium_v2", "telegram ready", "service label", "template label"];
 
 export function buildPremiumVisualMetadata({
   channelId,

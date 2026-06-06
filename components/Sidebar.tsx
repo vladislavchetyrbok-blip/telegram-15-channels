@@ -62,6 +62,7 @@ const navItems = [
   { href: "/admin/production-safety", label: "Production Safety", icon: ShieldCheck },
   { href: "/admin/content-quality", label: "Content Quality", icon: ScanSearch },
   { href: "/admin/content-presentation", label: "Premium Presentation", icon: Sparkles },
+  { href: "/admin/visual-quality", label: "Premium Visual Quality", icon: ImageIcon },
   { href: "/admin/regeneration-queue", label: "Regeneration Queue", icon: RefreshCw },
   { href: "/admin/regeneration-drafts", label: "Regeneration Drafts", icon: FileText },
   { href: "/admin/regeneration-review", label: "Draft Review", icon: ShieldCheck },

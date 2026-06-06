@@ -22,6 +22,8 @@
     "content:quality:check": "node scripts/check-content-quality.mjs",
     "content:presentation:check": "node scripts/check-content-presentation.mjs",
     "content:presentation:preview": "node scripts/preview-content-presentation.mjs",
+    "visual:quality:check": "node scripts/check-premium-visual-quality.mjs",
+    "visual:regeneration:preview": "node scripts/preview-visual-regeneration.mjs",
     "content:regen:queue": "node scripts/check-regeneration-queue.mjs",
     "content:regen:drafts:dry": "node scripts/create-regeneration-drafts.mjs --dry-run",
     "content:regen:drafts:create": "node scripts/create-regeneration-drafts.mjs --create --confirm-draft-create",
