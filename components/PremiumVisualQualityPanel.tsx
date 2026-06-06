@@ -139,6 +139,36 @@ interface VisualRegenerationImageReport {
   lastCheckedAt: string;
 }
 
+interface VisualProviderReport {
+  status: Status;
+  currentProvider: string;
+  allowPlaceholderPremium: boolean;
+  manualImportEnabled: boolean;
+  externalAiConfigured: boolean;
+  localComfyUiConfigured: boolean;
+  providers: Record<string, {
+    label: string;
+    status: string;
+    available: boolean;
+    premiumEligible: boolean;
+    warning: string | null;
+    note: string;
+  }>;
+  manualImportStatus: {
+    enabled: boolean;
+    availableAssets: number;
+    message: string;
+  };
+  premiumLibraryStatus: {
+    count: number;
+    errors: string[];
+  };
+  candidatesByProvider: Record<string, number>;
+  warnings: string[];
+  recommendations: string[];
+  lastCheckedAt: string;
+}
+
 interface VisualRegenerationImageCandidate {
   draftId: string;
   postId: string;
@@ -148,6 +178,13 @@ interface VisualRegenerationImageCandidate {
   fileExists: boolean;
   generationStatus: string;
   generatorUsed: string;
+  provider: string;
+  providerLabel: string;
+  placeholderProviderUsed: boolean;
+  allowPlaceholderPremium: boolean;
+  visualQualityStatus: string;
+  premiumUsable: boolean;
+  providerWarnings: string[];
   prompt: string;
   newPremiumPrompt: string;
   negativePrompt: string;
@@ -199,6 +236,7 @@ export function PremiumVisualQualityPanel() {
   const [report, setReport] = useState<PremiumVisualQualityReport | null>(null);
   const [draftReport, setDraftReport] = useState<VisualRegenerationDraftReport | null>(null);
   const [imageReport, setImageReport] = useState<VisualRegenerationImageReport | null>(null);
+  const [providerReport, setProviderReport] = useState<VisualProviderReport | null>(null);
   const [loading, setLoading] = useState(true);
   const [draftsLoading, setDraftsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -209,14 +247,16 @@ export function PremiumVisualQualityPanel() {
     setError(null);
 
     try {
-      const [qualityResponse, draftsResponse, imagesResponse] = await Promise.all([
+      const [qualityResponse, draftsResponse, imagesResponse, providersResponse] = await Promise.all([
         fetch("/api/admin/visual-quality/status", { cache: "no-store" }),
         fetch("/api/admin/visual-regeneration/status", { cache: "no-store" }),
         fetch("/api/admin/visual-regeneration/images/status", { cache: "no-store" }),
+        fetch("/api/admin/visual-providers/status", { cache: "no-store" }),
       ]);
       const qualityPayload = (await qualityResponse.json()) as PremiumVisualQualityReport | { message?: string };
       const draftsPayload = (await draftsResponse.json()) as VisualRegenerationDraftReport | { message?: string };
       const imagesPayload = (await imagesResponse.json()) as VisualRegenerationImageReport | { message?: string };
+      const providersPayload = (await providersResponse.json()) as VisualProviderReport | { message?: string };
       if (!qualityResponse.ok) {
         throw new Error("message" in qualityPayload && qualityPayload.message ? qualityPayload.message : "Visual quality request failed.");
       }
@@ -226,9 +266,13 @@ export function PremiumVisualQualityPanel() {
       if (!imagesResponse.ok) {
         throw new Error("message" in imagesPayload && imagesPayload.message ? imagesPayload.message : "Visual regeneration image candidates request failed.");
       }
+      if (!providersResponse.ok) {
+        throw new Error("message" in providersPayload && providersPayload.message ? providersPayload.message : "Visual providers request failed.");
+      }
       setReport(qualityPayload as PremiumVisualQualityReport);
       setDraftReport(draftsPayload as VisualRegenerationDraftReport);
       setImageReport(imagesPayload as VisualRegenerationImageReport);
+      setProviderReport(providersPayload as VisualProviderReport);
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : String(requestError));
     } finally {
@@ -242,20 +286,26 @@ export function PremiumVisualQualityPanel() {
     setError(null);
 
     try {
-      const [response, imagesResponse] = await Promise.all([
+      const [response, imagesResponse, providersResponse] = await Promise.all([
         fetch("/api/admin/visual-regeneration/status", { cache: "no-store" }),
         fetch("/api/admin/visual-regeneration/images/status", { cache: "no-store" }),
+        fetch("/api/admin/visual-providers/status", { cache: "no-store" }),
       ]);
       const payload = (await response.json()) as VisualRegenerationDraftReport | { message?: string };
       const imagesPayload = (await imagesResponse.json()) as VisualRegenerationImageReport | { message?: string };
+      const providersPayload = (await providersResponse.json()) as VisualProviderReport | { message?: string };
       if (!response.ok) {
         throw new Error("message" in payload && payload.message ? payload.message : "Visual regeneration drafts request failed.");
       }
       if (!imagesResponse.ok) {
         throw new Error("message" in imagesPayload && imagesPayload.message ? imagesPayload.message : "Visual regeneration image candidates request failed.");
       }
+      if (!providersResponse.ok) {
+        throw new Error("message" in providersPayload && providersPayload.message ? providersPayload.message : "Visual providers request failed.");
+      }
       setDraftReport(payload as VisualRegenerationDraftReport);
       setImageReport(imagesPayload as VisualRegenerationImageReport);
+      setProviderReport(providersPayload as VisualProviderReport);
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : String(requestError));
     } finally {
@@ -272,6 +322,7 @@ export function PremiumVisualQualityPanel() {
   const weakRows = report?.weakVisuals?.slice(0, 8) ?? [];
   const visualDraftRows = draftReport?.drafts ?? [];
   const imageRows = imageReport?.imageCandidates ?? [];
+  const providerRows = useMemo(() => Object.entries(providerReport?.providers ?? {}), [providerReport]);
 
   return (
     <div className="space-y-4">
@@ -325,6 +376,35 @@ export function PremiumVisualQualityPanel() {
           <KeyValueList rows={report?.summary.flags ?? {}} />
         </Panel>
       </section>
+
+      <Panel title="Visual Provider System" icon={<ShieldCheck className="h-4 w-4" />}>
+        <div className="space-y-3">
+          <div className="grid gap-2 text-xs text-slate-400 md:grid-cols-4">
+            <Chip label="Current provider" value={providerReport?.currentProvider ?? "placeholder"} />
+            <Chip label="Placeholder premium" value={String(providerReport?.allowPlaceholderPremium ?? false)} />
+            <Chip label="Manual import" value={String(providerReport?.manualImportEnabled ?? true)} />
+            <Chip label="Library count" value={String(providerReport?.premiumLibraryStatus.count ?? 0)} />
+          </div>
+          <div className="grid gap-2 text-xs text-slate-400 md:grid-cols-4">
+            <Chip label="external_ai" value={String(providerReport?.externalAiConfigured ?? false)} />
+            <Chip label="local_comfyui" value={String(providerReport?.localComfyUiConfigured ?? false)} />
+            <Chip label="Manual assets" value={String(providerReport?.manualImportStatus.availableAssets ?? 0)} />
+            <Chip label="Last checked" value={providerReport?.lastCheckedAt ?? "not checked"} />
+          </div>
+          <KeyValueList rows={providerReport?.candidatesByProvider ?? {}} />
+          <div className="grid gap-2 xl:grid-cols-2">
+            {providerRows.map(([provider, info]) => (
+              <article key={provider} className="rounded-md border border-line bg-black/20 p-3">
+                <p className="text-sm font-semibold text-slate-200">{provider}</p>
+                <p className="mt-1 text-xs text-slate-400">{info.label} / {info.status}</p>
+                <p className="mt-2 text-xs leading-5 text-slate-500">{info.note}</p>
+              </article>
+            ))}
+          </div>
+          <TextItems title="Provider warnings" items={providerReport?.warnings ?? []} empty="No provider warnings." />
+          <TextItems title="Provider recommendations" items={providerReport?.recommendations ?? []} empty="No provider recommendations." />
+        </div>
+      </Panel>
 
       <section className="grid gap-3 xl:grid-cols-2">
         <Panel title="Issue summary" icon={<AlertTriangle className="h-4 w-4" />}>
@@ -414,14 +494,25 @@ function ImageCandidateCard({ candidate, draft }: { candidate: VisualRegeneratio
         <div>
           <p className="text-sm font-semibold text-white">{candidate.draftId}</p>
           <p className="mt-1 break-words text-sm text-slate-300">{candidate.channelId} / {candidate.postId}</p>
-          <p className="mt-1 text-xs text-slate-500">Generator: {candidate.generatorUsed}</p>
+          <p className="mt-1 text-xs text-slate-500">Provider: {candidate.provider} / Generator: {candidate.generatorUsed}</p>
         </div>
-        <div className="grid shrink-0 grid-cols-2 gap-2 text-xs md:grid-cols-4">
+        <div className="grid shrink-0 grid-cols-2 gap-2 text-xs md:grid-cols-5">
           <Chip label="Generation" value={candidate.generationStatus} />
           <Chip label="File exists" value={String(candidate.fileExists)} />
           <Chip label="Draft" value={candidate.draftStatus} />
           <Chip label="Comparable" value={String(candidate.previewComparable)} />
+          <Chip label="Premium usable" value={String(candidate.premiumUsable)} />
         </div>
+      </div>
+      {candidate.placeholderProviderUsed ? (
+        <p className="mt-3 rounded-md border border-amber-300/30 bg-amber-300/10 p-3 text-sm leading-6 text-amber-100">
+          This is a placeholder/demo visual and should not be used for production.
+        </p>
+      ) : null}
+      <div className="mt-3 grid gap-2 text-xs text-slate-400 md:grid-cols-3">
+        <Chip label="Provider" value={candidate.provider} />
+        <Chip label="Visual status" value={candidate.visualQualityStatus} />
+        <Chip label="Placeholder warning" value={String(candidate.placeholderProviderUsed)} />
       </div>
       <div className="mt-4 grid gap-3 lg:grid-cols-2">
         <PreviewImage title="Old image" src={candidate.publicOldImageUrl} fallback={candidate.oldImagePath || "old image not available"} />
@@ -435,6 +526,7 @@ function ImageCandidateCard({ candidate, draft }: { candidate: VisualRegeneratio
       <PromptBlock title="New premium prompt" value={candidate.newPremiumPrompt || candidate.prompt} />
       <PromptBlock title="Negative prompt" value={candidate.negativePrompt} />
       <PromptBlock title="Quality estimate" value={JSON.stringify(candidate.visualQualityEstimate)} />
+      <TextItems title="Provider warnings" items={candidate.providerWarnings} empty="No provider warnings." />
       <TextItems title="Quality reasons" items={candidate.qualityReasons} empty="No quality reasons." />
     </article>
   );

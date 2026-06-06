@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-06T13:20:35.696Z",
+  "updatedAt": "2026-06-06T13:54:25.292Z",
   "drafts": [
     {
       "id": "visual_draft_20260606105307036_weekly-2026-06-06-02-ai-technologies-02",
@@ -11,7 +11,7 @@
       "title": "Полезные приложения без хайпа: где это реально экономит время",
       "sourceStatus": "scheduled",
       "createdAt": "2026-06-06T10:53:07.036Z",
-      "updatedAt": "2026-06-06T13:20:35.696Z",
+      "updatedAt": "2026-06-06T13:54:25.292Z",
       "status": "draft",
       "approved": false,
       "approvedAt": null,
@@ -57,7 +57,7 @@
       "visualMode": "cover_card",
       "imageCount": 1,
       "realImageGeneration": "generated",
-      "realImageGenerationNote": "One controlled premium image candidate was generated as a draft asset only.",
+      "realImageGenerationNote": "Placeholder/demo candidate generated as a draft asset only; not premium eligible.",
       "applySafety": {
         "requiresDraftId": true,
         "requiresApplyFlag": true,
@@ -67,6 +67,22 @@
       },
       "applySummary": null,
       "imageCandidate": {
+        "provider": "placeholder",
+        "providerLabel": "Placeholder demo generator",
+        "providerStatus": "devOnly",
+        "placeholderProviderUsed": true,
+        "allowPlaceholderPremium": false,
+        "visualQualityStatus": "notPremium",
+        "premiumUsable": false,
+        "providerWarnings": [
+          "placeholderProviderUsed",
+          "placeholderPremiumDisabled"
+        ],
+        "providerApplyBlockReasons": [
+          "Candidate uses the placeholder/demo provider and ALLOW_PLACEHOLDER_PREMIUM is false."
+        ],
+        "originalFileName": null,
+        "sourceNote": null,
         "draftId": "visual_draft_20260606105307036_weekly-2026-06-06-02-ai-technologies-02",
         "postId": "weekly-2026-06-06-02-ai-technologies-02",
         "channelId": "ai-tech",
@@ -83,6 +99,7 @@
         ],
         "generationStatus": "generated",
         "generatorUsed": "local_draft_png",
+        "generationError": null,
         "createdAt": "2026-06-06T13:20:35.696Z",
         "visualQualityEstimate": {
           "expectedVisualQualityScore": 86,

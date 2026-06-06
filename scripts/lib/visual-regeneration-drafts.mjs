@@ -1,6 +1,7 @@
 import { copyFileSync, existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { getPremiumVisualQualityAnalysis } from "./premium-visual-quality.mjs";
+import { enrichCandidateProviderFields, premiumScoreThreshold } from "./visual-provider-system.mjs";
 
 const root = process.cwd();
 const runtimeDir = path.join(root, "data", "runtime");
@@ -449,6 +450,18 @@ function buildApplyRow(draft, posts) {
   if (sourcePost && isPublishedPost(sourcePost)) blockReasons.push("Source post is already published.");
   if (!isJsonProductionStoreMode()) blockReasons.push("Production store mode is not json.");
   if (!draft.newPremiumPrompt.trim()) blockReasons.push("New premium prompt is empty.");
+  const imageCandidate = draft.imageCandidate ? enrichCandidateProviderFields(draft.imageCandidate) : null;
+  if (imageCandidate) {
+    if (imageCandidate.provider === "placeholder") blockReasons.push("Image candidate uses placeholder provider and is not eligible for premium apply.");
+    if (imageCandidate.placeholderProviderUsed) blockReasons.push("Image candidate has placeholderProviderUsed=true.");
+    if (imageCandidate.visualQualityStatus !== "approved") blockReasons.push(`Image candidate visualQualityStatus is ${imageCandidate.visualQualityStatus}; expected approved.`);
+    if (imageCandidate.premiumUsable === false) blockReasons.push("Image candidate is not marked premiumUsable.");
+    for (const reason of imageCandidate.providerApplyBlockReasons ?? []) blockReasons.push(reason);
+    const premiumScore = Number(imageCandidate.visualQualityEstimate?.expectedPremiumScore ?? imageCandidate.visualQualityEstimate?.premiumScore ?? 0);
+    if (premiumScore > 0 && premiumScore < premiumScoreThreshold) blockReasons.push(`Image candidate premium score ${premiumScore} is below ${premiumScoreThreshold}.`);
+    if (imageCandidate.newImageCandidatePath && !fileExists(imageCandidate.newImageCandidatePath)) blockReasons.push("Image candidate file does not exist.");
+  }
+  if (draft.newImagePath && !fileExists(draft.newImagePath)) blockReasons.push("Draft newImagePath points to a missing file.");
 
   if (sourcePost && draft.newPremiumPrompt.trim() && draft.newPremiumPrompt.trim() !== String(sourcePost.imagePrompt ?? "")) {
     affectedFields.push("draftImagePrompt", "imagePrompt", "visualRegeneration");
@@ -519,6 +532,7 @@ function toStatusPreview(row) {
     placeholderPath: row.draft.placeholderPath,
     newImagePath: row.draft.newImagePath,
     realImageGeneration: row.draft.realImageGeneration,
+    imageCandidate: row.draft.imageCandidate ? enrichCandidateProviderFields(row.draft.imageCandidate) : null,
     applySafety: {
       safeToApply: row.safeToApply,
       blockReasons: row.blockReasons,
@@ -542,6 +556,8 @@ function toApplyPreview(row) {
     sourceStatus: row.sourcePost?.status ?? row.draft.sourceStatus,
     oldImage: row.draft.oldImage,
     newImagePath: row.draft.newImagePath,
+    imageCandidateProvider: row.draft.imageCandidate ? enrichCandidateProviderFields(row.draft.imageCandidate).provider : null,
+    imageCandidateVisualQualityStatus: row.draft.imageCandidate ? enrichCandidateProviderFields(row.draft.imageCandidate).visualQualityStatus : null,
     oldPrompt: row.draft.oldPrompt,
     newPremiumPrompt: row.draft.newPremiumPrompt,
     negativePrompt: row.draft.negativePrompt,
@@ -702,6 +718,7 @@ function normalizeDraft(draft) {
     imageCount: Number(draft?.imageCount ?? 1),
     realImageGeneration: String(draft?.realImageGeneration ?? "not_run"),
     realImageGenerationNote: String(draft?.realImageGenerationNote ?? ""),
+    imageCandidate: isPlainObject(draft?.imageCandidate) ? enrichCandidateProviderFields(draft.imageCandidate) : null,
     applySafety: isPlainObject(draft?.applySafety) ? draft.applySafety : {},
     applySummary: isPlainObject(draft?.applySummary) ? draft.applySummary : null,
   };
