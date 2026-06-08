@@ -1,43 +1,23 @@
-import { PostCard } from "@/components/PostCard";
-import { PostQualityPanel } from "@/components/PostQualityPanel";
-import { posts } from "@/data/posts";
-import type { PostStatus } from "@/types";
-
-const statuses: PostStatus[] = [
-  "draft",
-  "pending_review",
-  "approved",
-  "scheduled",
-  "published",
-  "failed",
-  "not_ready",
-  "invalid_text_encoding",
-  "failed_generation",
-];
+import { PenLine } from "lucide-react";
 
 export default function PostsPage() {
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-xs uppercase tracking-[0.18em] text-cyan-300">Content pipeline</p>
-          <h2 className="mt-2 text-3xl font-semibold text-white">Список постов</h2>
+      <div>
+        <p className="text-xs uppercase tracking-[0.18em] text-cyan-300">MVP Mode</p>
+        <h2 className="mt-2 text-3xl font-semibold text-white flex items-center gap-3">
+          <PenLine className="h-8 w-8 text-cyan-400" />
+          Посты
+        </h2>
+        <div className="mt-6 rounded-lg border border-line bg-panel/82 p-6 shadow-glow max-w-2xl">
+          <p className="text-sm leading-6 text-slate-300">
+            Раздел «Посты» находится в разработке (MVP-режим). 
+            Здесь будет отображаться полный список сгенерированных текстов для всех 15 каналов.
+          </p>
+          <p className="mt-3 text-sm leading-6 text-slate-500">
+            * Отправка в Telegram в данном разделе временно отключена для безопасности.
+          </p>
         </div>
-        <div className="flex flex-wrap gap-2">
-          {statuses.map((status) => (
-            <span key={status} className="rounded-md border border-line bg-panel px-3 py-2 text-xs text-slate-300">
-              {status}: {posts.filter((post) => post.status === status).length}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      <PostQualityPanel />
-
-      <div className="grid gap-4 xl:grid-cols-2">
-        {posts.map((post) => (
-          <PostCard key={post.id} post={post} />
-        ))}
       </div>
     </div>
   );
