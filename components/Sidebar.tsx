@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -40,59 +40,15 @@ import { cn } from "@/lib/utils";
 const githubActionsUrl = process.env.NEXT_PUBLIC_GITHUB_ACTIONS_URL;
 
 const navItems = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/telegram-connection", label: "Telegram подключение", icon: Bot },
-  { href: "/telegram-safety", label: "Telegram safety", icon: LockKeyhole },
-  { href: "/production-send", label: "Боевой запуск", icon: Rocket },
-  { href: "/single-channel-test", label: "Один канал", icon: SendHorizontal },
-  { href: "/telegram-control-test", label: "Control test", icon: ShieldCheck },
-  { href: "/preflight", label: "Preflight", icon: ScanSearch },
-  { href: "/publish-readiness", label: "Готово к публикации", icon: CheckCircle2 },
-  { href: "/admin/final-preview", label: "Final Preview", icon: Eye },
-  { href: "/admin/manual-test-send", label: "Manual Test Send", icon: SendHorizontal },
-  { href: "/admin/post-send-verification", label: "Post-Send Verification", icon: FileSearch },
-  { href: "/admin/one-channel-test-queue", label: "One-Channel Test Queue", icon: ListChecks },
-  { href: "/publishing-center", label: "Центр публикаций", icon: Rocket },
-  { href: "/admin/phone-dashboard", label: "Phone dashboard", icon: Smartphone },
-  { href: "/admin/phone-start", label: "Phone start", icon: Smartphone },
-  { href: "/admin/mobile-control", label: "Mobile control", icon: Smartphone },
-  { href: "/admin/publish-monitor", label: "Publish monitor", icon: RadioTower },
-  { href: "/admin/publish-scheduler", label: "Publish scheduler", icon: TimerReset },
-  { href: "/admin/actions-scheduler", label: "Actions Scheduler", icon: Github },
-  { href: "/admin/production-safety", label: "Production Safety", icon: ShieldCheck },
-  { href: "/admin/content-quality", label: "Content Quality", icon: ScanSearch },
-  { href: "/admin/content-presentation", label: "Premium Presentation", icon: Sparkles },
-  { href: "/admin/visual-quality", label: "Premium Visual Quality", icon: ImageIcon },
-  { href: "/admin/regeneration-queue", label: "Regeneration Queue", icon: RefreshCw },
-  { href: "/admin/regeneration-drafts", label: "Regeneration Drafts", icon: FileText },
-  { href: "/admin/regeneration-review", label: "Draft Review", icon: ShieldCheck },
-  { href: "/admin/draft-apply", label: "Draft Apply", icon: FileCheck2 },
-  { href: "/admin/operational-health", label: "Operational Health", icon: Activity },
-  { href: "/admin/deploy-readiness", label: "Deploy readiness", icon: Rocket },
-  { href: "/admin/vercel-setup", label: "Vercel setup", icon: Cloud },
-  { href: "/admin/system-status", label: "System status", icon: Activity },
-  { href: "/admin/supabase-readiness", label: "Supabase readiness", icon: ListChecks },
-  { href: "/admin/store-compare", label: "Store compare", icon: Database },
-  { href: "/admin/dual-read", label: "Dual-read status", icon: Database },
-  { href: "/admin/mirror-sync", label: "Mirror sync", icon: Database },
-  { href: "/admin/backups", label: "Backups", icon: Database },
-  ...(githubActionsUrl ? [{ href: githubActionsUrl, label: "GitHub Actions", icon: Github, external: true }] : []),
-  { href: "/network", label: "Пульт сети", icon: Gauge },
+  { href: "/dashboard", label: "Дашборд", icon: LayoutDashboard },
   { href: "/channels", label: "Каналы", icon: RadioTower },
-  { href: "/generation", label: "Генерация", icon: Wand2 },
-  { href: "/first-generation", label: "Первая генерация", icon: Wand2 },
-  { href: "/draft-review", label: "Проверка черновиков", icon: ListChecks },
-  { href: "/content-plan", label: "Контент-план", icon: Lightbulb },
-  { href: "/content-calendar", label: "Контент-календарь", icon: CalendarDays },
-  { href: "/editorial", label: "Редактура", icon: ShieldCheck },
-  { href: "/visuals", label: "Визуалы", icon: Palette },
-  { href: "/visual-preview", label: "Visual preview", icon: ImageIcon },
-  { href: "/logos", label: "Логотипы", icon: ImageIcon },
-  { href: "/queue", label: "Очередь", icon: ListChecks },
-  { href: "/drafts", label: "Черновики", icon: ListChecks },
+  { href: "/publishing-center", label: "Центр публикаций", icon: Rocket },
   { href: "/posts", label: "Посты", icon: PenLine },
-  { href: "/posts/new", label: "Создать пост", icon: PlusCircle },
-  { href: "/calendar", label: "Календарь", icon: CalendarDays },
+  { href: "/drafts", label: "Черновики", icon: FileText },
+  { href: "/queue", label: "Очередь", icon: ListChecks },
+  { href: "/content-plan", label: "Контент-план", icon: Lightbulb },
+  { href: "/content-calendar", label: "Календарь", icon: CalendarDays },
+  { href: "/visuals", label: "Визуалы", icon: Palette },
   { href: "/settings", label: "Настройки", icon: Settings },
 ];
 
@@ -147,7 +103,7 @@ export function Sidebar() {
 
         <div className="mt-6 hidden space-y-4 lg:block">
           <section className="rounded-lg border border-cyan-300/20 bg-cyan-300/5 p-4">
-            <p className="text-xs uppercase tracking-[0.18em] text-cyan-200">Status policy</p>
+            <p className="text-xs uppercase tracking-[0.18em] text-cyan-200">Политика статусов</p>
             <p className="mt-3 text-xs leading-5 text-slate-400">
               Telegram, worker, контент и readiness берутся из единого runtime-состояния. Логотипы и статистика не блокируют публикацию.
             </p>

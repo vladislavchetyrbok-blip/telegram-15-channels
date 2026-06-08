@@ -265,8 +265,8 @@ export function SingleChannelTestPanel() {
               <button
                 type="button"
                 onClick={confirmTest}
-                disabled
-                className="inline-flex h-10 w-full cursor-not-allowed items-center justify-center gap-2 rounded-md border border-slate-700 bg-slate-900/70 px-4 text-sm font-semibold text-slate-500"
+                disabled={Boolean(busy) || !confirmationPhrase}
+                className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-md bg-cyan-600 px-4 text-sm font-semibold text-white transition hover:bg-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Send className="h-4 w-4" />
                 Подтвердить тестовую отправку

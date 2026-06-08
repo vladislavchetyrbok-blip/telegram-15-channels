@@ -1,8 +1,10 @@
-﻿import { AlertTriangle, CalendarClock, CheckCircle2, RadioTower, Send, ShieldCheck } from "lucide-react";
+import { AlertTriangle, CalendarClock, CheckCircle2, RadioTower, Send, ShieldCheck } from "lucide-react";
 import { StatCard } from "@/components/StatCard";
 import { getUnifiedSystemStatus } from "@/lib/unified-system-status";
 import { canonicalChannelTitles } from "@/lib/channel-canonical";
+import { channels } from "@/data/channels";
 import { ScheduledAutopublishPanel } from "@/components/ScheduledAutopublishPanel";
+import { ChannelCard } from "@/components/ChannelCard";
 
 export const dynamic = "force-dynamic";
 
@@ -49,12 +51,9 @@ export default async function DashboardPage() {
       <section className="rounded-lg border border-line bg-panel/82 p-5 shadow-glow">
         <p className="text-xs uppercase tracking-[0.18em] text-cyan-300">Channels</p>
         <h2 className="mt-2 text-xl font-semibold text-white">15 каналов платформы</h2>
-        <div className="mt-4 grid gap-2 md:grid-cols-2 xl:grid-cols-3">
-          {channelRows.map(([id, title], index) => (
-            <div key={id} className="rounded-md border border-line bg-black/15 p-3">
-              <p className="text-xs text-slate-500">{String(index + 1).padStart(2, "0")} / {id}</p>
-              <p className="mt-1 font-semibold text-white">{title}</p>
-            </div>
+        <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {channels.map((channel) => (
+            <ChannelCard key={channel.id} channel={channel} />
           ))}
         </div>
       </section>

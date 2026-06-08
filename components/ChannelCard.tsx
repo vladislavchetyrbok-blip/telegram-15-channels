@@ -59,7 +59,24 @@ export function ChannelCard({ channel }: { channel: Channel }) {
       <div className="mt-4 rounded-md border border-line bg-black/15 p-3 text-sm">
         <Timer className="mb-2 h-4 w-4 text-blue-300" />
         <p className="font-semibold text-white">{channel.scheduledPosts}</p>
-        <p className="text-xs text-slate-500">постов запланировано в mock/dry-run очереди</p>
+        <p className="text-xs text-slate-500">постов запланировано в очереди</p>
+      </div>
+
+      <div className="mt-4 grid grid-cols-2 gap-2 text-xs font-medium">
+        <Link href={`/channels/${channel.id}`} className="flex items-center justify-center gap-1 rounded border border-line bg-slate-900 py-2 text-slate-300 transition hover:bg-slate-800 hover:text-white">
+          <ArrowUpRight className="h-3 w-3" />
+          Открыть
+        </Link>
+        <Link href={`/posts/new?channel=${channel.id}`} className="flex items-center justify-center gap-1 rounded border border-line bg-slate-900 py-2 text-slate-300 transition hover:bg-slate-800 hover:text-white">
+          <Send className="h-3 w-3" />
+          Новый пост
+        </Link>
+        <Link href={`/visual-preview?channel=${channel.id}`} className="flex items-center justify-center gap-1 rounded border border-line bg-slate-900 py-2 text-slate-300 transition hover:bg-slate-800 hover:text-white">
+          Превью
+        </Link>
+        <Link href={`/single-channel-test?channel=${channel.id}`} className="flex items-center justify-center gap-1 rounded border border-cyan-500/30 bg-cyan-500/10 py-2 text-cyan-200 transition hover:bg-cyan-500/20 hover:text-white">
+          Публикация
+        </Link>
       </div>
 
       <div className="mt-4 flex items-center justify-between border-t border-line pt-4 text-xs text-slate-500">
