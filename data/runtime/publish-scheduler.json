@@ -5,21 +5,21 @@
   "errors": 0,
   "details": [
     {
-      "channelId": "ukraine-market",
-      "postId": "weekly-2026-06-02-03-ukraine-opportunities-market-03",
+      "channelId": "mens-style",
+      "postId": "weekly-2026-06-02-04-men-style-things-04",
       "status": "success",
       "message": "published message_id=10",
       "messageId": 10
     }
   ],
   "message": "Processed 1 due post(s).",
-  "runId": "c73e65e5-7c5c-4743-baf6-ba1cd34ebf6c",
+  "runId": "cca3f826-292a-4d5b-8b82-1ed15ddd4b80",
   "source": "local",
-  "startedAt": "2026-06-09T18:25:13.876Z",
-  "finishedAt": "2026-06-09T18:25:15.664Z",
+  "startedAt": "2026-06-09T21:24:15.881Z",
+  "finishedAt": "2026-06-09T21:24:16.516Z",
   "storeMode": "json",
   "dryRun": false,
   "realPublishEnabled": true,
   "lastErrors": [],
-  "updatedAt": "2026-06-09T18:25:15.664Z"
+  "updatedAt": "2026-06-09T21:24:16.516Z"
 }

@@ -184,5 +184,31 @@
     "telegramMessageLink": "https://t.me/c/3980997401/10",
     "dryRun": false,
     "createdAt": "2026-06-09T18:25:15.655Z"
+  },
+  {
+    "id": "02bb3c89-6d31-4c1c-b808-970c3c2386ed",
+    "runId": "7e13fe5f-a301-4275-b48f-ea75b68ab40e",
+    "source": "local",
+    "channelId": "mens-style",
+    "postId": "weekly-2026-06-02-04-men-style-things-04",
+    "status": "skipped",
+    "message": "dry_run: due post was not sent",
+    "telegramMessageId": null,
+    "telegramMessageLink": null,
+    "dryRun": true,
+    "createdAt": "2026-06-09T21:24:10.427Z"
+  },
+  {
+    "id": "6b96d345-2b1d-49f9-8e6a-ccb776655c29",
+    "runId": "cca3f826-292a-4d5b-8b82-1ed15ddd4b80",
+    "source": "local",
+    "channelId": "mens-style",
+    "postId": "weekly-2026-06-02-04-men-style-things-04",
+    "status": "success",
+    "message": "published message_id=10",
+    "telegramMessageId": 10,
+    "telegramMessageLink": "https://t.me/c/3944130233/10",
+    "dryRun": false,
+    "createdAt": "2026-06-09T21:24:16.507Z"
   }
 ]
