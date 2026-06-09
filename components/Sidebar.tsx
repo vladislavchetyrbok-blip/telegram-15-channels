@@ -74,12 +74,12 @@ export function Sidebar() {
             const active = !external && (pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href)));
             const Icon = item.icon;
 
-            return (
+            return external ? (
               <a
                 key={item.href}
                 href={item.href}
-                target={external ? "_blank" : undefined}
-                rel={external ? "noreferrer" : undefined}
+                target="_blank"
+                rel="noreferrer"
                 className={cn(
                   "flex h-11 items-center gap-3 rounded-md px-3 text-sm font-medium text-slate-400 transition hover:bg-slate-800/60 hover:text-white",
                   active && "border border-cyan-300/30 bg-cyan-300/10 text-cyan-100",
@@ -88,6 +88,19 @@ export function Sidebar() {
                 <Icon className="h-4 w-4 shrink-0" />
                 <span className="truncate">{item.label}</span>
               </a>
+            ) : (
+              <Link
+                key={item.href}
+                href={item.href}
+                prefetch={false}
+                className={cn(
+                  "flex h-11 items-center gap-3 rounded-md px-3 text-sm font-medium text-slate-400 transition hover:bg-slate-800/60 hover:text-white",
+                  active && "border border-cyan-300/30 bg-cyan-300/10 text-cyan-100",
+                )}
+              >
+                <Icon className="h-4 w-4 shrink-0" />
+                <span className="truncate">{item.label}</span>
+              </Link>
             );
           })}
         </nav>
