@@ -13,6 +13,8 @@
     "autopilot:pause": "node scripts/autopilot-pause.mjs",
     "autopilot:resume": "node scripts/autopilot-resume.mjs",
     "publish:due": "node scripts/publish-due.mjs",
+    "publish:due:json:dry": "node scripts/publish-due-json.mjs dry",
+    "publish:due:json": "node scripts/publish-due-json.mjs real",
     "publish:preview:check": "node scripts/check-final-publish-preview.mjs",
     "publish:verify:last": "node scripts/check-post-send-verification.mjs",
     "publish:verify:controlled-channel": "node scripts/check-post-send-verification.mjs --mode=controlled-channel-test --expected-channel-id=ai-tech --expected-post-ids=weekly-2026-06-03-02-ai-technologies-02,weekly-2026-06-04-02-ai-technologies-02,weekly-2026-06-05-02-ai-technologies-02 --max-expected-posts=3 --window-minutes=60",
