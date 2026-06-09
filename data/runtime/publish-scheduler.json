@@ -5,21 +5,21 @@
   "errors": 0,
   "details": [
     {
-      "channelId": "money-opportunities",
-      "postId": "weekly-2026-06-02-01-money-opportunities-01",
+      "channelId": "ukraine-market",
+      "postId": "weekly-2026-06-02-03-ukraine-opportunities-market-03",
       "status": "success",
-      "message": "published message_id=11",
-      "messageId": 11
+      "message": "published message_id=10",
+      "messageId": 10
     }
   ],
   "message": "Processed 1 due post(s).",
-  "runId": "a981e595-8927-4062-9e41-a0db6f48f570",
+  "runId": "c73e65e5-7c5c-4743-baf6-ba1cd34ebf6c",
   "source": "local",
-  "startedAt": "2026-06-09T17:45:27.078Z",
-  "finishedAt": "2026-06-09T17:45:27.625Z",
+  "startedAt": "2026-06-09T18:25:13.876Z",
+  "finishedAt": "2026-06-09T18:25:15.664Z",
   "storeMode": "json",
   "dryRun": false,
   "realPublishEnabled": true,
   "lastErrors": [],
-  "updatedAt": "2026-06-09T17:45:27.625Z"
+  "updatedAt": "2026-06-09T18:25:15.664Z"
 }

@@ -145,5 +145,44 @@
     "telegramMessageLink": "https://t.me/c/3995852493/11",
     "dryRun": false,
     "createdAt": "2026-06-09T17:45:27.616Z"
+  },
+  {
+    "id": "74d10fa0-3a87-4ec9-b91d-dc95c6678a48",
+    "runId": "540a54d9-6fe1-4760-9512-54f04c09bf4c",
+    "source": "local",
+    "channelId": "ukraine-market",
+    "postId": "weekly-2026-06-02-03-ukraine-opportunities-market-03",
+    "status": "skipped",
+    "message": "dry_run: due post was not sent",
+    "telegramMessageId": null,
+    "telegramMessageLink": null,
+    "dryRun": true,
+    "createdAt": "2026-06-09T18:20:04.070Z"
+  },
+  {
+    "id": "a1dc9664-f7de-429c-93b0-91d7e8dfbe73",
+    "runId": "4f50fea2-d6cb-44e1-909c-85f0a0a63801",
+    "source": "local",
+    "channelId": "ukraine-market",
+    "postId": "weekly-2026-06-02-03-ukraine-opportunities-market-03",
+    "status": "skipped",
+    "message": "dry_run: due post was not sent",
+    "telegramMessageId": null,
+    "telegramMessageLink": null,
+    "dryRun": true,
+    "createdAt": "2026-06-09T18:25:02.967Z"
+  },
+  {
+    "id": "befc8e3d-11ce-45e4-8c7f-34543cd7be79",
+    "runId": "c73e65e5-7c5c-4743-baf6-ba1cd34ebf6c",
+    "source": "local",
+    "channelId": "ukraine-market",
+    "postId": "weekly-2026-06-02-03-ukraine-opportunities-market-03",
+    "status": "success",
+    "message": "published message_id=10",
+    "telegramMessageId": 10,
+    "telegramMessageLink": "https://t.me/c/3980997401/10",
+    "dryRun": false,
+    "createdAt": "2026-06-09T18:25:15.655Z"
   }
 ]
