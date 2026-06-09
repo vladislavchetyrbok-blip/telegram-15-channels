@@ -98,13 +98,13 @@ const profiles: Record<string, ChannelVisualProfile> = {
     goodDirectionExamples: ["Detailed car interior with climate controls and a clean comfort-focused focal point."],
     badDirectionExamples: ["Random glossy sports car in neon rain."],
   }),
-  "business-ideas": profile("premium_finance_dashboard", "dark_teal_gold", ["business board", "notebook", "chart", "sales funnel", "calendar"]),
-  "personal-progress": profile("fishing_rest_city", "dark_lifestyle_city", ["focus desk", "planner", "habit tracker", "progress line", "calm light"]),
-  "dnipro-real-estate-ru": profile("real_estate_premium", "dark_real_estate_gold", ["building", "map pin", "floor plan", "keys", "documents"]),
-  "dnipro-real-estate-ua": profile("real_estate_premium", "dark_real_estate_gold", ["building", "map pin", "floor plan", "keys", "documents"]),
-  "commercial-real-estate": profile("real_estate_premium", "dark_real_estate_gold", ["facade", "office", "warehouse", "floor plan", "traffic line"]),
-  "land-houses": profile("real_estate_premium", "dark_real_estate_gold", ["land plot", "house", "road", "utilities", "map plan"]),
-  "real-estate-investments": profile("premium_finance_dashboard", "dark_teal_gold", ["buildings", "yield chart", "documents", "calculator", "risk panel"]),
+  "business-ideas": profile("fishing_rest_city", "dark_lifestyle_city", ["gym equipment", "healthy food", "running shoes", "sleep tracker", "workout planner"]),
+  "personal-progress": profile("premium_finance_dashboard", "dark_teal_gold", ["books", "notebook", "desk", "coffee", "laptop"]),
+  "dnipro-real-estate-ru": profile("men_style_lifestyle", "dark_graphite_leather", ["notebook", "calm room", "tea", "clock", "journal"]),
+  "dnipro-real-estate-ua": profile("fishing_rest_city", "dark_lifestyle_city", ["map", "mountain", "airport", "suitcase", "train window"]),
+  "commercial-real-estate": profile("ai_tech_command_center", "dark_cyan_violet", ["tv screen", "popcorn", "dark room", "remote", "neon lights"]),
+  "land-houses": profile("men_style_lifestyle", "dark_graphite_leather", ["vinyl", "headphones", "speaker", "turntable", "instrument"]),
+  "real-estate-investments": profile("ai_tech_command_center", "dark_cyan_violet", ["controller", "monitor", "console", "gamepad", "gaming desk"]),
 };
 
 export function getPremiumVisualProfile(channelId: string) {
