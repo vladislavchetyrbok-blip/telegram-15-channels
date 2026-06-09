@@ -119,5 +119,31 @@
     "telegramMessageLink": "https://t.me/c/3504277183/14",
     "dryRun": false,
     "createdAt": "2026-06-05T22:47:54.296Z"
+  },
+  {
+    "id": "086a20fd-5335-4f0d-80bd-490a86d93978",
+    "runId": "e316aeb3-7fff-4a33-ac81-8f87eba881ea",
+    "source": "local",
+    "channelId": "money-opportunities",
+    "postId": "weekly-2026-06-02-01-money-opportunities-01",
+    "status": "skipped",
+    "message": "dry_run: due post was not sent",
+    "telegramMessageId": null,
+    "telegramMessageLink": null,
+    "dryRun": true,
+    "createdAt": "2026-06-09T17:45:18.819Z"
+  },
+  {
+    "id": "a6018a29-dc5b-4fb7-8ee7-f9092f3f5cb4",
+    "runId": "a981e595-8927-4062-9e41-a0db6f48f570",
+    "source": "local",
+    "channelId": "money-opportunities",
+    "postId": "weekly-2026-06-02-01-money-opportunities-01",
+    "status": "success",
+    "message": "published message_id=11",
+    "telegramMessageId": 11,
+    "telegramMessageLink": "https://t.me/c/3995852493/11",
+    "dryRun": false,
+    "createdAt": "2026-06-09T17:45:27.616Z"
   }
 ]

@@ -1,24 +1,25 @@
 {
   "checked": 1,
-  "published": 0,
-  "skipped": 1,
+  "published": 1,
+  "skipped": 0,
   "errors": 0,
   "details": [
     {
-      "channelId": "ai-tech",
-      "postId": "weekly-2026-05-31-02-ai-technologies-02",
-      "status": "skipped",
-      "message": "dry_run: due post was not sent"
+      "channelId": "money-opportunities",
+      "postId": "weekly-2026-06-02-01-money-opportunities-01",
+      "status": "success",
+      "message": "published message_id=11",
+      "messageId": 11
     }
   ],
   "message": "Processed 1 due post(s).",
-  "runId": "f4bebafb-418a-4669-905b-4f1657508ee3",
+  "runId": "a981e595-8927-4062-9e41-a0db6f48f570",
   "source": "local",
-  "startedAt": "2026-06-02T15:19:51.145Z",
-  "finishedAt": "2026-06-02T15:19:51.152Z",
+  "startedAt": "2026-06-09T17:45:27.078Z",
+  "finishedAt": "2026-06-09T17:45:27.625Z",
   "storeMode": "json",
-  "dryRun": true,
-  "realPublishEnabled": false,
+  "dryRun": false,
+  "realPublishEnabled": true,
   "lastErrors": [],
-  "updatedAt": "2026-06-02T15:19:51.152Z"
+  "updatedAt": "2026-06-09T17:45:27.625Z"
 }

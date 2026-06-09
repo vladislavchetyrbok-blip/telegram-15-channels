@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generatedAt": "2026-06-02T20:34:02.700Z",
-  "updatedAt": "2026-06-05T22:47:54.303Z",
+  "updatedAt": "2026-06-09T17:45:27.620Z",
   "items": [
     {
       "id": "2026-05-31-money-opportunities",
@@ -956,15 +956,18 @@
         "overlay": "channel/rubric/title only",
         "serviceLabels": false
       },
-      "status": "scheduled",
+      "status": "published",
       "qualityIssues": [],
       "duplicateTopic": false,
       "createdAt": "2026-06-02T20:34:02.700Z",
-      "updatedAt": "2026-06-02T20:35:18.046Z",
+      "updatedAt": "2026-06-09T17:45:27.616Z",
       "imageDimensions": {
         "width": 1080,
         "height": 1350
-      }
+      },
+      "publishResult": "success",
+      "telegramMessageId": 11,
+      "telegramPublishedAt": "2026-06-09T17:45:27.616Z"
     },
     {
       "id": "2026-06-02-ai-tech",
