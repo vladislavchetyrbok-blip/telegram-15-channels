@@ -1,7 +1,7 @@
 import type { TelegramAvatarStatus } from "@/types";
 
 export type GenerationLanguage = "ru" | "uk" | "ru-uk";
-export type GenerationChannelStatus = "draft" | "connected_mock";
+export type GenerationChannelStatus = "draft" | "connected_mock" | "paused_legacy";
 
 export interface ChannelGenerationConfig {
   id: string;
@@ -181,7 +181,7 @@ const baseSeeds = [
 
 const channelGenerationConfigSeeds: ChannelGenerationConfigSeed[] = baseSeeds.map((channel) => ({
   ...channel,
-  status: "connected_mock",
+  status: "paused_legacy",
   botAdded: true,
   telegramAvatarStatus: "manual_configured",
   dryRun: true,

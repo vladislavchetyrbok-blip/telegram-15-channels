@@ -47,6 +47,20 @@ export function ChannelGenerationPanel() {
 
     const channel = channelGenerationConfigs.find(c => c.id === channelId);
 
+    if (channel?.status === "paused_legacy") {
+      setResult({
+        ok: false,
+        text: "",
+        dryRun: true,
+        sent: false,
+        provider: "lmstudio",
+        message: "Legacy channel generation is paused.",
+        error: "This 15-channel legacy network is preserved but paused for Phase 1 Zodiac migration.",
+      });
+      setLoadingChannelId(null);
+      return;
+    }
+
     try {
       const response = await fetch("/api/ai/generate", {
         method: "POST",
@@ -91,6 +105,20 @@ export function ChannelGenerationPanel() {
     setDryRunResult(null);
 
     const channel = channelGenerationConfigs.find(c => c.id === selectedChannelId);
+
+    if (channel?.status === "paused_legacy") {
+      setDryRunResult({
+        ok: false,
+        mode: "dry-run",
+        aiProvider: "lmstudio",
+        telegramSent: false,
+        generatedText: "",
+        dryRunMessage: "Legacy channel generation is paused.",
+        error: "This 15-channel legacy network is preserved but paused for Phase 1 Zodiac migration.",
+      });
+      setDryRunLoading(false);
+      return;
+    }
 
     try {
       const response = await fetch("/api/ai/generate", {
@@ -155,6 +183,7 @@ export function ChannelGenerationPanel() {
           {channelGenerationConfigs.map((channel) => {
             const active = channel.id === selectedChannelId;
             const loading = loadingChannelId === channel.id;
+            const legacyPaused = channel.status === "paused_legacy";
 
             return (
               <div
@@ -179,11 +208,11 @@ export function ChannelGenerationPanel() {
                   <button
                     type="button"
                     onClick={() => generate(channel.id)}
-                    disabled={Boolean(loadingChannelId)}
-                    className="inline-flex h-9 items-center gap-2 rounded-md bg-cyan-300 px-3 text-xs font-semibold text-slate-950 transition hover:bg-cyan-200 disabled:cursor-wait disabled:opacity-60"
+                    disabled={Boolean(loadingChannelId) || legacyPaused}
+                    className="inline-flex h-9 items-center gap-2 rounded-md bg-cyan-300 px-3 text-xs font-semibold text-slate-950 transition hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Wand2 className="h-3.5 w-3.5" />}
-                    Сгенерировать тестовый пост
+                    {legacyPaused ? "Legacy paused" : "Сгенерировать тестовый пост"}
                   </button>
                 </div>
               </div>
@@ -225,8 +254,8 @@ export function ChannelGenerationPanel() {
             <button
               type="button"
               onClick={generateAndDryRun}
-              disabled={dryRunLoading || Boolean(loadingChannelId)}
-              className="inline-flex h-10 items-center justify-center gap-2 rounded-md bg-blue-300 px-4 text-sm font-semibold text-slate-950 transition hover:bg-blue-200 disabled:cursor-wait disabled:opacity-60"
+              disabled={dryRunLoading || Boolean(loadingChannelId) || selectedChannel.status === "paused_legacy"}
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-md bg-blue-300 px-4 text-sm font-semibold text-slate-950 transition hover:bg-blue-200 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {dryRunLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4" />}
               AI → Dry-run

@@ -1,4 +1,5 @@
 import { Settings } from "lucide-react";
+import { NetworkModeOverview } from "@/components/NetworkModeOverview";
 
 export default function SettingsPage() {
   return (
@@ -19,6 +20,7 @@ export default function SettingsPage() {
           </p>
         </div>
       </div>
+      <NetworkModeOverview />
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { ChannelCard } from "@/components/ChannelCard";
+import { NetworkModeOverview } from "@/components/NetworkModeOverview";
 import { TelegramDryRunTester } from "@/components/TelegramDryRunTester";
 import { channels, groupAChannels, groupBChannels } from "@/data/channels";
 import { checkTelegramChannelsConnection } from "@/lib/telegram";
@@ -18,6 +19,8 @@ export default function ChannelsPage() {
           <span className="rounded-md border border-line bg-panel px-3 py-2 text-slate-300">B: {groupBChannels.length}</span>
         </div>
       </div>
+
+      <NetworkModeOverview />
 
       <section className="rounded-lg border border-cyan-300/20 bg-cyan-300/5 p-4">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">

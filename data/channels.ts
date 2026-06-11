@@ -215,7 +215,7 @@ const baseChannels = [
 export const channels: Channel[] = baseChannels.map((channel) => ({
   ...channel,
   subscribers: 0,
-  active: true,
+  active: false,
   engagementRate: 0,
   growthRate: 0,
   customLogoUrl: undefined,

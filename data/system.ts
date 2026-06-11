@@ -24,21 +24,21 @@ export const telegramBot = {
 };
 
 export const channelRuntime = {
-  "money-opportunities": { username: "@money_opportunities_ru", autoposting: "on" },
-  "ai-tech": { username: "@ai_tech_ru", autoposting: "on" },
-  "ukraine-market": { username: "@ukraine_market_ua", autoposting: "on" },
+  "money-opportunities": { username: "@money_opportunities_ru", autoposting: "paused" },
+  "ai-tech": { username: "@ai_tech_ru", autoposting: "paused" },
+  "ukraine-market": { username: "@ukraine_market_ua", autoposting: "paused" },
   "mens-style": { username: "@mens_style_things", autoposting: "paused" },
-  "home-tech": { username: "@home_tech_ru", autoposting: "on" },
-  "fishing-rest": { username: "@fishing_rest_ru", autoposting: "on" },
-  "dnipro-city": { username: "@dnipro_city_live", autoposting: "on" },
-  "auto-comfort": { username: "@auto_comfort_ru", autoposting: "on" },
-  "business-ideas": { username: "@business_ideas_ua", autoposting: "on" },
-  "personal-progress": { username: "@personal_progress_ru", autoposting: "on" },
-  "dnipro-real-estate-ru": { username: "@dnipro_real_estate_ru", autoposting: "on" },
-  "dnipro-real-estate-ua": { username: "@dnipro_real_estate_ua", autoposting: "on" },
-  "commercial-real-estate": { username: "@commercial_realty_ru", autoposting: "on" },
-  "land-houses": { username: "@land_houses_dnipro", autoposting: "on" },
-  "real-estate-investments": { username: "@realty_investments_ru", autoposting: "on" },
+  "home-tech": { username: "@home_tech_ru", autoposting: "paused" },
+  "fishing-rest": { username: "@fishing_rest_ru", autoposting: "paused" },
+  "dnipro-city": { username: "@dnipro_city_live", autoposting: "paused" },
+  "auto-comfort": { username: "@auto_comfort_ru", autoposting: "paused" },
+  "business-ideas": { username: "@business_ideas_ua", autoposting: "paused" },
+  "personal-progress": { username: "@personal_progress_ru", autoposting: "paused" },
+  "dnipro-real-estate-ru": { username: "@dnipro_real_estate_ru", autoposting: "paused" },
+  "dnipro-real-estate-ua": { username: "@dnipro_real_estate_ua", autoposting: "paused" },
+  "commercial-real-estate": { username: "@commercial_realty_ru", autoposting: "paused" },
+  "land-houses": { username: "@land_houses_dnipro", autoposting: "paused" },
+  "real-estate-investments": { username: "@realty_investments_ru", autoposting: "paused" },
 } as const;
 
 export type ChannelRuntimeId = keyof typeof channelRuntime;

@@ -112,6 +112,11 @@ export function NetworkControlPanel() {
       }
 
       if (action === "dry-run") {
+        if (selectedChannel.status === "paused_legacy") {
+          setMessage("Legacy network is paused. AI dry-run generation is blocked for old mixed-topic channels.");
+          return;
+        }
+
         const response = await fetch("/api/ai/generate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },

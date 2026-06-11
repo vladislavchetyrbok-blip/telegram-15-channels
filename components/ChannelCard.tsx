@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowUpRight, Radio, Send, Timer } from "lucide-react";
+import { ArrowUpRight, PauseCircle, Radio, Send, Timer } from "lucide-react";
 import { channels } from "@/data/channels";
 import { getChannelGenerationConfig } from "@/data/channelGeneration";
 import { channelRuntime, type ChannelRuntimeId } from "@/data/system";
@@ -25,6 +25,12 @@ export function ChannelCard({ channel }: { channel: Channel }) {
           <div className="flex flex-wrap items-center gap-2">
             <LanguageBadge language={channel.language} />
             <AutopostingBadge status={autoposting} />
+            {!channel.active ? (
+              <span className="inline-flex items-center gap-1 rounded border border-amber-400/30 bg-amber-400/10 px-2 py-1 text-[11px] font-semibold text-amber-100">
+                <PauseCircle className="h-3 w-3" />
+                legacy paused
+              </span>
+            ) : null}
             {connection && <ConnectionBadge status={connection.status} />}
             <span className="rounded border border-slate-500/20 bg-slate-500/10 px-2 py-1 text-[11px] text-slate-300">
               {channel.category}
