@@ -9,7 +9,7 @@ export const systemLimits = [
 export const localAi = {
   provider: "LM Studio",
   apiUrl: "http://localhost:1234/v1",
-  model: "local-model",
+  model: "deepseek-r1-0528-qwen3-8b",
   status: "local mode",
   resource: 68,
   description: "Генерация выполняется на этом компьютере через локальную модель.",

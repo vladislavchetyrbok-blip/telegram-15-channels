@@ -37,6 +37,7 @@ export async function POST(request: Request) {
       text: result.text,
       provider: result.provider,
       mode: result.mode,
+      model: result.model,
       error: result.error,
     });
   } catch {
@@ -46,6 +47,7 @@ export async function POST(request: Request) {
         text: "",
         provider: "lmstudio",
         mode: "mock",
+        model: "unknown",
         error: "Invalid generation request",
       },
       { status: 400 },

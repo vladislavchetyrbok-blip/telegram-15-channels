@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { AlertTriangle, Bot, CalendarPlus, Loader2, Rocket, Save } from "lucide-react";
+import { useMemo, useState, useEffect } from "react";
+import { AlertTriangle, Bot, CalendarPlus, Loader2, Rocket, Save, Activity, CheckCircle2, ServerCrash } from "lucide-react";
 import { LanguageBadge } from "@/components/LanguageBadge";
 import { channels } from "@/data/channels";
 import { localAi } from "@/data/system";
@@ -12,6 +12,7 @@ interface GenerateApiResponse {
   text: string;
   provider: string;
   mode: AiMode;
+  model?: string;
   error?: string;
 }
 
@@ -30,15 +31,44 @@ export default function NewPostPage() {
   );
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [diagnostic, setDiagnostic] = useState<{
+    status: "idle" | "checking" | "ok" | "error";
+    message: string;
+  }>({ status: "idle", message: "" });
+  const [isProduction, setIsProduction] = useState(false);
+  const [lastModelUsed, setLastModelUsed] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setIsProduction(
+        window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1"
+      );
+    }
+  }, []);
 
   const selectedChannel = useMemo(
     () => channels.find((channel) => channel.id === selectedChannelId) ?? channels[0],
     [selectedChannelId],
   );
 
+  async function checkLMStudio() {
+    setDiagnostic({ status: "checking", message: "Проверка подключения..." });
+    try {
+      const res = await fetch(`${localAi.apiUrl}/models`, { method: "GET" });
+      if (res.ok) {
+        setDiagnostic({ status: "ok", message: "LM Studio доступен (локально)" });
+      } else {
+        setDiagnostic({ status: "error", message: `Ошибка сервера LM Studio (${res.status})` });
+      }
+    } catch {
+      setDiagnostic({ status: "error", message: "LM Studio не отвечает" });
+    }
+  }
+
   async function generatePost() {
     setLoading(true);
     setStatusMessage(null);
+    setLastModelUsed(null);
 
     try {
       const response = await fetch("/api/ai/generate", {
@@ -54,11 +84,19 @@ export default function NewPostPage() {
         }),
       });
 
+      if (!response.ok) {
+        setStatusMessage(`Ошибка сервера генерации (HTTP ${response.status}). Возможно, запрос упал по таймауту.`);
+        return;
+      }
+
       const payload = (await response.json()) as GenerateApiResponse;
+      if (payload.model) {
+        setLastModelUsed(payload.model);
+      }
 
       if (!payload.ok) {
         setStatusMessage(
-          payload.error ?? "LM Studio не запущен. Откройте LM Studio → Local Server → Start Server.",
+          payload.error ?? "LM Studio не запущен или модель не загружена. Откройте LM Studio → Local Server."
         );
         return;
       }
@@ -67,10 +105,10 @@ export default function NewPostPage() {
       setStatusMessage(
         payload.mode === "local"
           ? "Пост сгенерирован через локальный AI."
-          : "Пост сгенерирован в mock-режиме.",
+          : "Пост сгенерирован в mock-режиме."
       );
-    } catch {
-      setStatusMessage("LM Studio не запущен. Откройте LM Studio → Local Server → Start Server.");
+    } catch (error) {
+      setStatusMessage("Сетевая ошибка при вызове /api/ai/generate. Проверьте соединение.");
     } finally {
       setLoading(false);
     }
@@ -99,8 +137,60 @@ export default function NewPostPage() {
               </span>
             </div>
 
+            <div className="mt-5 rounded-md border border-slate-700 bg-slate-800/40 p-4">
+              <div className="flex items-center justify-between">
+                <h4 className="flex items-center gap-2 text-sm font-semibold text-slate-200">
+                  <Activity className="h-4 w-4" />
+                  Диагностика LM Studio
+                </h4>
+                <button
+                  type="button"
+                  onClick={checkLMStudio}
+                  className="rounded bg-slate-700 px-3 py-1 text-xs font-medium text-slate-200 hover:bg-slate-600 transition"
+                  disabled={diagnostic.status === "checking"}
+                >
+                  {diagnostic.status === "checking" ? "Проверка..." : "Проверить"}
+                </button>
+              </div>
+              <ul className="mt-3 space-y-1.5 text-xs text-slate-400">
+                <li className="flex justify-between">
+                  <span>Среда запуска UI:</span>
+                  <span className={isProduction ? "text-amber-300" : "text-emerald-300"}>
+                    {isProduction ? "Production (Vercel)" : "Local Development"}
+                  </span>
+                </li>
+                <li className="flex justify-between">
+                  <span>API URL:</span>
+                  <span className="text-slate-300">{localAi.apiUrl}</span>
+                </li>
+                <li className="flex justify-between">
+                  <span>Модель (ожидаемая):</span>
+                  <span className="text-slate-300">{localAi.model}</span>
+                </li>
+                {lastModelUsed && (
+                  <li className="flex justify-between">
+                    <span>Модель (фактическая):</span>
+                    <span className="text-cyan-300">{lastModelUsed}</span>
+                  </li>
+                )}
+                <li className="flex justify-between items-center border-t border-slate-700/50 pt-1.5 mt-1.5">
+                  <span>Пинг с клиента:</span>
+                  {diagnostic.status === "idle" && <span className="text-slate-500">Не проверялось</span>}
+                  {diagnostic.status === "checking" && <span className="text-cyan-300 flex items-center gap-1"><Loader2 className="h-3 w-3 animate-spin"/> Проверка</span>}
+                  {diagnostic.status === "ok" && <span className="text-emerald-400 flex items-center gap-1"><CheckCircle2 className="h-3 w-3"/> Работает</span>}
+                  {diagnostic.status === "error" && <span className="text-rose-400 flex items-center gap-1"><ServerCrash className="h-3 w-3"/> Ошибка</span>}
+                </li>
+              </ul>
+              {isProduction && (
+                <div className="mt-3 rounded bg-amber-500/10 border border-amber-500/20 p-2 text-xs text-amber-200">
+                  <strong>Внимание:</strong> Локальный LM Studio недоступен из Vercel. Запустите проект локально или подключите облачный AI provider.
+                </div>
+              )}
+            </div>
+
             <div className="mt-5 inline-flex flex-wrap rounded-md border border-line bg-black/20 p-1">
               <label
+                onClick={() => setMode("mock")}
                 className={`inline-flex h-9 cursor-pointer items-center gap-2 rounded px-3 text-sm font-semibold ${
                   mode === "mock" ? "bg-cyan-300 text-slate-950" : "text-slate-400"
                 }`}
@@ -115,6 +205,7 @@ export default function NewPostPage() {
                 Mock AI
               </label>
               <label
+                onClick={() => setMode("local")}
                 className={`inline-flex h-9 cursor-pointer items-center gap-2 rounded px-3 text-sm font-semibold ${
                   mode === "local" ? "bg-cyan-300 text-slate-950" : "text-slate-400"
                 }`}
@@ -185,7 +276,7 @@ export default function NewPostPage() {
             {statusMessage ? (
               <div
                 className={`mt-4 rounded-md border p-4 text-sm leading-6 ${
-                  statusMessage.includes("не запущен")
+                  statusMessage.includes("не запущен") || statusMessage.includes("Ошибка")
                     ? "border-amber-300/25 bg-amber-300/10 text-amber-100"
                     : "border-emerald-300/25 bg-emerald-300/10 text-emerald-100"
                 }`}

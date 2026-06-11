@@ -17,6 +17,7 @@ import {
   Wand2,
 } from "lucide-react";
 import { channelGenerationConfigs } from "@/data/channelGeneration";
+import { localAi } from "@/data/system";
 import { cn } from "@/lib/utils";
 import type { ChannelAnalytics, NetworkAnalytics, NetworkHealth } from "@/types";
 
@@ -79,9 +80,15 @@ export function NetworkControlPanel() {
       }
 
       if (action === "ai") {
-        const response = await fetch("/api/ai/check", { cache: "no-store" });
-        const payload = await response.json();
-        setMessage(payload.ok ? `LM Studio connected: ${(payload.models ?? []).join(", ") || "model available"}` : payload.message);
+        const response = await fetch(`${localAi.apiUrl}/models`, { cache: "no-store" });
+
+        if (!response.ok) {
+          throw new Error("LM Studio server is not available");
+        }
+
+        const payload = (await response.json()) as { data?: Array<{ id?: string }> };
+        const models = payload.data?.map((model) => model.id).filter(Boolean) as string[] | undefined;
+        setMessage(`LM Studio connected: ${models?.join(", ") || "model available"}`);
       }
 
       if (action === "idea") {
@@ -105,16 +112,21 @@ export function NetworkControlPanel() {
       }
 
       if (action === "dry-run") {
-        const response = await fetch("/api/posts/generate-and-dry-run", {
+        const response = await fetch("/api/ai/generate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ channelId: selectedChannel.id }),
+          body: JSON.stringify({
+            channelName: selectedChannel.name,
+            language: selectedChannel.language,
+            topic: selectedChannel.topic,
+            mode: "local",
+          }),
         });
         const payload = await response.json();
         setMessage(
           payload.ok
-            ? `AI -> dry-run готов. telegramSent=${String(payload.telegramSent)}. Черновик: ${payload.draftId}.`
-            : payload.error ?? payload.dryRunMessage,
+            ? `AI -> dry-run готов. telegramSent=false. model=${payload.model ?? "n/a"}.`
+            : payload.error ?? "AI dry-run не выполнен.",
         );
       }
 

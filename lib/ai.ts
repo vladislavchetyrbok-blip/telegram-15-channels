@@ -73,7 +73,7 @@ interface ChatCompletionResponse {
 
 export function getAiProviderConfig(): AiProviderConfig {
   const baseUrl = process.env.LOCAL_AI_BASE_URL ?? "http://localhost:1234/v1";
-  const model = process.env.LOCAL_AI_MODEL ?? "local-model";
+  const model = process.env.LOCAL_AI_MODEL ?? "deepseek-r1-0528-qwen3-8b";
   const temperature = Number(process.env.LOCAL_AI_TEMPERATURE ?? "0.7");
   const maxTokens = Number(process.env.LOCAL_AI_MAX_TOKENS ?? "800");
 
@@ -187,6 +187,17 @@ async function generateChatCompletion({
   maxTokens?: number;
 }): Promise<GenerateTextWithAIResult> {
   const config = getAiProviderConfig();
+
+  if (process.env.VERCEL === "1" || process.env.NEXT_PUBLIC_VERCEL_ENV !== undefined) {
+    return {
+      ok: false,
+      mode: "local",
+      provider: config.provider,
+      model: config.model,
+      text: "",
+      error: "LM Studio работает только локально. Откройте локальную версию проекта на ПК или подключите облачный AI provider.",
+    };
+  }
 
   try {
     const model = await resolveLocalModel(config);

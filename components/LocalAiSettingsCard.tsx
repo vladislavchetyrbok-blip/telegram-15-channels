@@ -33,9 +33,22 @@ export function LocalAiSettingsCard() {
     setChecking(true);
 
     try {
-      const response = await fetch("/api/ai/check", { method: "GET" });
-      const payload = (await response.json()) as AiCheckResponse;
-      setStatus(payload);
+      const response = await fetch(`${localAi.apiUrl}/models`, { method: "GET" });
+
+      if (!response.ok) {
+        throw new Error("LM Studio models endpoint failed");
+      }
+
+      const payload = (await response.json()) as { data?: Array<{ id?: string }> };
+      const models = payload.data?.map((model) => model.id).filter(Boolean) as string[] | undefined;
+
+      setStatus({
+        ok: true,
+        mode: "local",
+        provider: "lmstudio",
+        message: "LM Studio connected",
+        models: models ?? [],
+      });
     } catch {
       setStatus({
         ok: false,
@@ -53,13 +66,16 @@ export function LocalAiSettingsCard() {
     setGeneration(null);
 
     try {
-      const response = await fetch("/api/ai/generate-test", {
+      const response = await fetch("/api/ai/generate", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          prompt: testPrompt,
+          channelName: "LM Studio settings test",
+          language: "RU",
+          topic: testPrompt,
+          mode: "local",
         }),
       });
       const payload = (await response.json()) as AiGenerationTestResponse;
@@ -70,7 +86,7 @@ export function LocalAiSettingsCard() {
         text: "",
         provider: "lmstudio",
         mode: "local",
-        model: "local-model",
+        model: localAi.model,
         error: "LM Studio не ответил на тест генерации.",
       });
     } finally {

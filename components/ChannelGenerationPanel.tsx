@@ -45,12 +45,31 @@ export function ChannelGenerationPanel() {
     setResult(null);
     setDryRunResult(null);
 
+    const channel = channelGenerationConfigs.find(c => c.id === channelId);
+
     try {
-      const response = await fetch(`/api/channels/${channelId}/generate-post`, {
+      const response = await fetch("/api/ai/generate", {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          channelName: channel?.name ?? "Unknown",
+          language: channel?.language ?? "RU",
+          topic: channel?.topic ?? "Тема не задана",
+          mode: "local",
+        }),
       });
-      const payload = (await response.json()) as GenerationResponse;
-      setResult(payload);
+      const payload = await response.json();
+      
+      setResult({
+        ok: payload.ok,
+        text: payload.text ?? "",
+        dryRun: true,
+        sent: false,
+        provider: payload.provider ?? "lmstudio",
+        model: payload.model,
+        message: payload.ok ? "Сгенерировано через /api/ai/generate" : (payload.error ?? "Ошибка генерации"),
+        error: payload.error,
+      });
     } catch {
       setResult({
         ok: false,
@@ -58,8 +77,8 @@ export function ChannelGenerationPanel() {
         dryRun: true,
         sent: false,
         provider: "lmstudio",
-        message: "Generation request failed. Telegram was not touched.",
-        error: "LM Studio не ответил на запрос генерации.",
+        message: "Network request to /api/ai/generate failed.",
+        error: "Сетевая ошибка или 404 (сервер недоступен).",
       });
     } finally {
       setLoadingChannelId(null);
@@ -71,18 +90,35 @@ export function ChannelGenerationPanel() {
     setResult(null);
     setDryRunResult(null);
 
+    const channel = channelGenerationConfigs.find(c => c.id === selectedChannelId);
+
     try {
-      const response = await fetch("/api/posts/generate-and-dry-run", {
+      const response = await fetch("/api/ai/generate", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          channelId: selectedChannelId,
+          channelName: channel?.name ?? "Unknown",
+          language: channel?.language ?? "RU",
+          topic: channel?.topic ?? "Тема не задана",
+          mode: "local",
         }),
       });
-      const payload = (await response.json()) as GenerateAndDryRunResponse;
-      setDryRunResult(payload);
+      const payload = await response.json();
+      
+      setDryRunResult({
+        ok: payload.ok,
+        mode: "dry-run",
+        aiProvider: payload.provider ?? "lmstudio",
+        telegramSent: false,
+        channelTitle: channel?.name,
+        telegramChatId: channel?.telegramChatId,
+        generatedText: payload.text,
+        draftId: "disabled-endpoint-mock",
+        dryRunMessage: payload.ok 
+          ? "Текст сгенерирован. Отправка в Telegram отключена (Vercel Hobby limit)." 
+          : (payload.error ?? "Ошибка генерации"),
+        error: payload.error,
+      });
     } catch {
       setDryRunResult({
         ok: false,
@@ -90,8 +126,8 @@ export function ChannelGenerationPanel() {
         aiProvider: "lmstudio",
         telegramSent: false,
         generatedText: "",
-        dryRunMessage: "AI → Dry-run request failed. Telegram was not touched.",
-        error: "LM Studio не ответил на запрос генерации.",
+        dryRunMessage: "Сетевая ошибка к /api/ai/generate",
+        error: "Не удалось выполнить запрос.",
       });
     } finally {
       setDryRunLoading(false);
