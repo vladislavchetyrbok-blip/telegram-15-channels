@@ -140,14 +140,40 @@ export function ZodiacDailyPreviewPanel() {
                   <span className="inline-flex w-fit items-center gap-2 rounded-md border border-violet-300/30 bg-violet-300/10 px-3 py-1.5 text-xs font-semibold text-violet-200">
                     Style: {selectedPost.styleName ?? "Unknown"}
                   </span>
-                  <span className="inline-flex w-fit items-center gap-2 rounded-md border border-slate-600 bg-slate-900/80 px-3 py-1.5 text-xs text-slate-300">
-                    <Eye className="h-4 w-4" />
-                    preview only
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className={cn("inline-flex w-fit items-center gap-2 rounded-md border px-3 py-1.5 text-xs font-semibold", 
+                      selectedPost.editorialStatus === 'good_preview' ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400" :
+                      selectedPost.editorialStatus === 'needs_review' ? "border-amber-500/30 bg-amber-500/10 text-amber-400" :
+                      "border-red-500/30 bg-red-500/10 text-red-400"
+                    )}>
+                      Score: {selectedPost.qualityScore ?? 0}
+                    </span>
+                    <span className="inline-flex w-fit items-center gap-2 rounded-md border border-slate-600 bg-slate-900/80 px-3 py-1.5 text-xs text-slate-300">
+                      <Eye className="h-4 w-4" />
+                      preview only
+                    </span>
+                  </div>
                 </div>
               </div>
 
-              <pre className="max-h-[30rem] overflow-auto whitespace-pre-wrap rounded-md border border-line bg-slate-950/70 p-4 text-sm leading-6 text-slate-200">
+              {selectedPost.warnings && selectedPost.warnings.length > 0 && (
+                <div className="rounded-md border border-amber-500/30 bg-amber-500/10 p-3 mt-4">
+                  <p className="text-xs font-semibold text-amber-400 uppercase tracking-widest mb-2">Warnings</p>
+                  <ul className="list-inside list-disc text-sm text-amber-200/80">
+                    {selectedPost.warnings.map((w, i) => <li key={i}>{w}</li>)}
+                  </ul>
+                </div>
+              )}
+              {selectedPost.suggestions && selectedPost.suggestions.length > 0 && (
+                <div className="rounded-md border border-blue-500/30 bg-blue-500/10 p-3 mt-2">
+                  <p className="text-xs font-semibold text-blue-400 uppercase tracking-widest mb-2">Suggestions</p>
+                  <ul className="list-inside list-disc text-sm text-blue-200/80">
+                    {selectedPost.suggestions.map((s, i) => <li key={i}>{s}</li>)}
+                  </ul>
+                </div>
+              )}
+
+              <pre className="max-h-[30rem] overflow-auto whitespace-pre-wrap rounded-md border border-line bg-slate-950/70 p-4 text-sm leading-6 text-slate-200 mt-4">
                 {selectedPost.text}
               </pre>
 

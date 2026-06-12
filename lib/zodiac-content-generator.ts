@@ -10,6 +10,7 @@ import {
   defaultZodiacStylePresetId,
   type ZodiacStylePreset,
 } from "@/data/zodiacStyles";
+import { evaluateZodiacPostQuality } from "./zodiac-content-quality";
 
 export type ZodiacPreviewPostStatus = "preview";
 
@@ -35,6 +36,10 @@ export interface ZodiacPreviewPost {
   telegramUsername: null;
   stylePresetId?: string;
   styleName?: string;
+  qualityScore?: number;
+  editorialStatus?: "draft" | "needs_review" | "good_preview";
+  warnings?: string[];
+  suggestions?: string[];
 }
 
 export interface BuildZodiacDailyPreviewInput {
@@ -304,7 +309,7 @@ function createPreviewPost({
   visualPrompt: string;
   stylePreset: ZodiacStylePreset;
 }): ZodiacPreviewPost {
-  return {
+  const basePost = {
     id: `zodiac-preview-${date}-${channel.id}`,
     channelId: channel.id,
     channelName: channel.ruName,
@@ -315,12 +320,22 @@ function createPreviewPost({
     sections,
     text: composeText(title, sections, channel),
     visualPrompt,
-    status: "preview",
-    publishReady: false,
+    status: "preview" as const,
+    publishReady: false as const,
     telegramChannelId: channel.telegramChannelId,
     telegramUsername: channel.telegramUsername,
     stylePresetId: stylePreset.id,
     styleName: stylePreset.ruName,
+  };
+
+  const quality = evaluateZodiacPostQuality(basePost);
+
+  return {
+    ...basePost,
+    qualityScore: quality.qualityScore,
+    editorialStatus: quality.editorialStatus,
+    warnings: quality.warnings,
+    suggestions: quality.suggestions,
   };
 }
 

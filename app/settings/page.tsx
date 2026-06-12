@@ -1,6 +1,9 @@
 import { Settings } from "lucide-react";
 import { NetworkModeOverview } from "@/components/NetworkModeOverview";
 import { ZodiacLaunchKitOverview } from "@/components/ZodiacLaunchKitOverview";
+import { ZodiacChannelConnectionPanel } from "@/components/ZodiacChannelConnectionPanel";
+import { ZodiacVisualKitOverview } from "@/components/ZodiacVisualKitOverview";
+import { ZodiacPublishReadinessPanel } from "@/components/ZodiacPublishReadinessPanel";
 
 export default function SettingsPage() {
   return (
@@ -21,8 +24,14 @@ export default function SettingsPage() {
           </p>
         </div>
       </div>
-      <NetworkModeOverview />
-      <ZodiacLaunchKitOverview />
+      
+      <div className="space-y-12">
+        <ZodiacPublishReadinessPanel />
+        <NetworkModeOverview />
+        <ZodiacChannelConnectionPanel />
+        <ZodiacVisualKitOverview />
+        <ZodiacLaunchKitOverview />
+      </div>
     </div>
   );
 }

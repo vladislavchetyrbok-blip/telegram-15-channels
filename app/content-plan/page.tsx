@@ -1,5 +1,6 @@
 import { Lightbulb } from "lucide-react";
 import { ZodiacDailyPreviewPanel } from "@/components/ZodiacDailyPreviewPanel";
+import { ZodiacWeeklyPreviewPanel } from "@/components/ZodiacWeeklyPreviewPanel";
 
 export default function ContentPlanPage() {
   return (
@@ -12,12 +13,15 @@ export default function ContentPlanPage() {
         </h2>
         <div className="mt-6 max-w-2xl rounded-lg border border-line bg-panel/82 p-6 shadow-glow">
           <p className="text-sm leading-6 text-slate-300">
-            Phase 2 preview mode for the planned Zodiac Network. Generate 13 daily horoscope previews locally without Telegram, runtime writes, or AI dependency.
+            Preview mode for the planned Zodiac Network. Generate daily and weekly horoscope previews locally without Telegram, runtime writes, or AI dependency.
           </p>
         </div>
       </div>
 
-      <ZodiacDailyPreviewPanel />
+      <div className="space-y-12">
+        <ZodiacDailyPreviewPanel />
+        <ZodiacWeeklyPreviewPanel />
+      </div>
     </div>
   );
 }
