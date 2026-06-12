@@ -119,6 +119,7 @@ function parseArgs() {
   let startDate = new Date().toISOString().slice(0, 10);
   let daysCount = 7;
   let stylePresetId = "luxury-mystic";
+  let channelId = null;
   let outDir = path.join(process.cwd(), "exports");
   let outFile = "";
 
@@ -149,6 +150,9 @@ function parseArgs() {
         outDir = path.resolve(process.cwd(), outPath);
       }
       i++;
+    } else if (arg === "--channel" && args[i + 1]) {
+      channelId = args[i + 1];
+      i++;
     }
   }
 
@@ -156,11 +160,11 @@ function parseArgs() {
     outFile = path.join(outDir, `zodiac-weekly-plan-${startDate}.json`);
   }
 
-  return { startDate, daysCount, stylePresetId, outFile };
+  return { startDate, daysCount, stylePresetId, outFile, channelId };
 }
 
 function run() {
-  const { startDate, daysCount, stylePresetId, outFile } = parseArgs();
+  const { startDate, daysCount, stylePresetId, outFile, channelId } = parseArgs();
 
   console.log(`Generating Zodiac plan...`);
   console.log(`- Start Date: ${startDate}`);
@@ -177,6 +181,7 @@ function run() {
     
     for (let j = 0; j < zodiacChannels.length; j++) {
       const channel = zodiacChannels[j];
+      if (channelId && channel.id !== channelId) continue;
       const post = buildPost(channel, dateStr, j, zodiacStyles[stylePresetId]);
       post.dayIndex = i;
       runtimePosts.push(post);

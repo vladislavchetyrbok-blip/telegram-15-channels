@@ -40,21 +40,22 @@ if (!plan.daysCount) {
 if (!Array.isArray(plan.posts)) {
   blockingIssues.push("posts field is missing or not an array.");
 } else {
-  const expectedPostsCount = plan.daysCount ? plan.daysCount * 13 : 0;
-  if (expectedPostsCount > 0 && plan.posts.length !== expectedPostsCount) {
-    blockingIssues.push(`Expected ${expectedPostsCount} posts, found ${plan.posts.length}.`);
+  if (plan.posts.length > (plan.daysCount * 13)) {
+    blockingIssues.push(`Expected maximum ${plan.daysCount * 13} posts, found ${plan.posts.length}.`);
   }
 
-  // Check structure per day
-  const postsByDate = {};
-  for (const post of plan.posts) {
-    if (!postsByDate[post.date]) postsByDate[post.date] = [];
-    postsByDate[post.date].push(post);
+  // Validate dates
+  const dates = new Set(plan.posts.map(p => p.date));
+  if (dates.size !== plan.daysCount) {
+    warnings.push(`Expected posts for ${plan.daysCount} days, found ${dates.size} days.`);
   }
 
-  for (const [date, postsForDate] of Object.entries(postsByDate)) {
-    if (postsForDate.length !== 13) {
-      blockingIssues.push(`Expected exactly 13 posts for date ${date}, but found ${postsForDate.length}.`);
+  for (const date of dates) {
+    const dayPosts = plan.posts.filter(p => p.date === date);
+    if (dayPosts.length > 13) {
+      blockingIssues.push(`Expected maximum 13 posts for date ${date}, but found ${dayPosts.length}.`);
+    } else if (dayPosts.length < 13) {
+      warnings.push(`Date ${date} has ${dayPosts.length} posts (partial run).`);
     }
   }
 

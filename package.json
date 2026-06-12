@@ -88,6 +88,7 @@
     "zodiac:pipeline": "node scripts/zodiac-safe-pipeline.mjs",
     "zodiac:healthcheck": "node scripts/zodiac-healthcheck.mjs",
     "zodiac:prepare-connections": "node scripts/prepare-zodiac-connections.mjs",
+    "zodiac:connections:check": "node scripts/check-zodiac-connections.mjs",
     "zodiac:validate-assets": "node scripts/validate-zodiac-assets.mjs",
     "zodiac:assets:validate": "node scripts/validate-zodiac-assets.mjs",
     "zodiac:export-image-prompts": "node scripts/export-zodiac-image-prompts.mjs",

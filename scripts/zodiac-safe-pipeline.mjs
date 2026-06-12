@@ -14,6 +14,7 @@ function parseArgs() {
   let rewriteWeak = false;
   let rewriteThreshold = 70;
   let limit = Infinity;
+  let channel = null;
   let jsonOutput = false;
 
   for (let i = 0; i < args.length; i++) {
@@ -41,12 +42,15 @@ function parseArgs() {
     } else if (arg === "--limit" && args[i + 1]) {
       limit = parseInt(args[i + 1], 10);
       i++;
+    } else if (arg === "--channel" && args[i + 1]) {
+      channel = args[i + 1];
+      i++;
     } else if (arg === "--json") {
       jsonOutput = true;
     }
   }
 
-  return { startDate, days, style, skipReview, skipDryRun, enhance, rewriteWeak, rewriteThreshold, limit, jsonOutput };
+  return { startDate, days, style, skipReview, skipDryRun, enhance, rewriteWeak, rewriteThreshold, limit, channel, jsonOutput };
 }
 
 function runCommand(command, args) {
@@ -67,7 +71,7 @@ function runCommandCapture(command, args) {
 }
 
 function run() {
-  const { startDate, days, style, skipReview, skipDryRun, enhance, rewriteWeak, rewriteThreshold, limit, jsonOutput } = parseArgs();
+  const { startDate, days, style, skipReview, skipDryRun, enhance, rewriteWeak, rewriteThreshold, limit, channel, jsonOutput } = parseArgs();
 
   const report = {
     ok: true,
@@ -89,6 +93,9 @@ function run() {
     // 1. Generate Plan
     addStep("Generate Plan", "started");
     const generateArgs = ["run", "zodiac:generate-plan", "--", "--start-date", startDate, "--days", String(days), "--style", style];
+    if (channel) {
+      generateArgs.push("--channel", channel);
+    }
     // We capture stdout to find the generated file path easily, but the script prints it cleanly.
     // Wait, let's just use predictable paths: exports/zodiac-weekly-plan-YYYY-MM-DD.json
     let currentPlan = `./exports/zodiac-weekly-plan-${startDate}.json`;

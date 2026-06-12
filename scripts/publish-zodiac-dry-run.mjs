@@ -134,8 +134,10 @@ function run() {
   for (const date in postsByDate) {
     const dayPosts = postsByDate[date];
     report.perDaySummary[date] = dayPosts.length;
-    if (dayPosts.length !== 13) {
-      addIssue(`Date ${date} has ${dayPosts.length} posts. Expected exactly 13.`);
+    if (dayPosts.length > 13) {
+      addIssue(`Date ${date} has ${dayPosts.length} posts. Expected maximum 13.`);
+    } else if (dayPosts.length < 13) {
+      addWarning(`Date ${date} has ${dayPosts.length} posts (partial run).`);
     }
   }
 

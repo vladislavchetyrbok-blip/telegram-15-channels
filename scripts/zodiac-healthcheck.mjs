@@ -30,7 +30,11 @@ function checkGitStatus(pattern) {
   try {
     const status = execSync("git status --short", { encoding: "utf-8" });
     const lines = status.split("\n").filter(Boolean);
-    return !lines.some(line => line.includes(pattern));
+    return !lines.some(line => {
+      const parts = line.trim().split(/\s+/);
+      const file = parts[parts.length - 1];
+      return file === pattern;
+    });
   } catch (err) {
     return false;
   }
