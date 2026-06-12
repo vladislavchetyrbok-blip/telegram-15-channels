@@ -2,6 +2,8 @@ import { spawnSync } from "child_process";
 import fs from "fs";
 import path from "path";
 import process from "process";
+import { getZodiacVisualAsset } from "./zodiac-asset-resolver.mjs";
+import { getZodiacTelegramTarget, publishZodiacTelegramPost } from "./zodiac-telegram-publisher.mjs";
 
 function parseArgs() {
   const args = process.argv.slice(2);
@@ -14,7 +16,9 @@ function parseArgs() {
   let rewriteWeak = false;
   let rewriteThreshold = 70;
   let limit = Infinity;
+  let limitProvided = false;
   let channel = null;
+  let live = false;
   let jsonOutput = false;
 
   for (let i = 0; i < args.length; i++) {
@@ -41,16 +45,19 @@ function parseArgs() {
       i++;
     } else if (arg === "--limit" && args[i + 1]) {
       limit = parseInt(args[i + 1], 10);
+      limitProvided = true;
       i++;
     } else if (arg === "--channel" && args[i + 1]) {
       channel = args[i + 1];
       i++;
+    } else if (arg === "--live") {
+      live = true;
     } else if (arg === "--json") {
       jsonOutput = true;
     }
   }
 
-  return { startDate, days, style, skipReview, skipDryRun, enhance, rewriteWeak, rewriteThreshold, limit, channel, jsonOutput };
+  return { startDate, days, style, skipReview, skipDryRun, enhance, rewriteWeak, rewriteThreshold, limit, limitProvided, channel, live, jsonOutput };
 }
 
 function runCommand(command, args) {
@@ -101,8 +108,30 @@ function applyLimitToPlan(planPath, limit) {
   return plan.posts.length;
 }
 
-function run() {
-  const { startDate, days, style, skipReview, skipDryRun, enhance, rewriteWeak, rewriteThreshold, limit, channel, jsonOutput } = parseArgs();
+function readPlanPostForLive({ planPath, channel }) {
+  const absolutePath = path.resolve(process.cwd(), planPath);
+  const plan = JSON.parse(fs.readFileSync(absolutePath, "utf8"));
+  if (!Array.isArray(plan.posts) || plan.posts.length !== 1) {
+    throw new Error(`Live publishing blocked: expected exactly 1 post after --limit 1, found ${Array.isArray(plan.posts) ? plan.posts.length : 0}.`);
+  }
+
+  const post = plan.posts[0];
+  if (post.channelId !== channel) {
+    throw new Error(`Live publishing blocked: generated post channel ${post.channelId} does not match --channel ${channel}.`);
+  }
+
+  const assetType = post.title && post.title.toLowerCase().includes("недел") ? "weekly" : "daily";
+  const asset = getZodiacVisualAsset(post.channelId, assetType);
+  if (!asset.ok) {
+    throw new Error(`Live publishing blocked: ${asset.error}`);
+  }
+
+  return { post, imagePath: asset.path };
+}
+
+async function run() {
+  const { startDate, days, style, skipReview, skipDryRun, enhance, rewriteWeak, rewriteThreshold, limit, limitProvided, channel, live, jsonOutput } = parseArgs();
+  const isLive = live || process.env.TELEGRAM_LIVE_PUBLISH === "true";
 
   const report = {
     ok: true,
@@ -114,13 +143,25 @@ function run() {
     reviewReportPath: null,
     steps: [],
     warnings: [],
-    blockingIssues: []
+    blockingIssues: [],
+    realPublish: "disabled",
+    telegramCalls: "none",
+    liveMessageId: null
   };
 
   const addStep = (name, status) => { report.steps.push({ name, status }); };
   const fail = (issue) => { report.blockingIssues.push(issue); report.ok = false; };
 
   try {
+    if (isLive) {
+      if (!channel || !limitProvided || limit !== 1) {
+        throw new Error("Live publishing blocked: one-post test requires --channel <id> and --limit 1.");
+      }
+      if (skipReview || skipDryRun) {
+        throw new Error("Live publishing blocked: validation, editorial review, and dry-run must all pass before live send.");
+      }
+    }
+
     // 1. Generate Plan
     addStep("Generate Plan", "started");
     const generateArgs = ["run", "zodiac:generate-plan", "--", "--start-date", startDate, "--days", String(days), "--style", style];
@@ -188,12 +229,31 @@ function run() {
     }
 
     // 5. Live Publish (Guarded)
-    const isLive = process.argv.includes("--live") || process.env.TELEGRAM_LIVE_PUBLISH === "true";
     if (isLive) {
       addStep("Live Publisher", "started");
-      // Actually we don't have a live zodiac publisher script yet, so we just log it or fail gracefully.
-      console.log("\n[WARN] Live publishing is currently not implemented for Zodiac pipeline.");
-      addStep("Live Publisher", "skipped");
+      const target = getZodiacTelegramTarget(channel);
+      if (!target.ok) {
+        throw new Error(`Live publishing blocked: ${target.error}`);
+      }
+
+      const { post, imagePath } = readPlanPostForLive({ planPath: currentPlan, channel });
+      const publishResult = await publishZodiacTelegramPost({
+        channelId: channel,
+        text: post.text,
+        imagePath,
+        dryRun: false,
+        live: true,
+      });
+
+      if (!publishResult.ok || !publishResult.sent) {
+        throw new Error(`Live publishing failed: ${publishResult.error || "Telegram send was not completed."}`);
+      }
+
+      report.realPublish = "sent";
+      report.telegramCalls = "1 sendPhoto";
+      report.liveMessageId = publishResult.messageId;
+      console.log(`\nLive publishing completed for ${channel}. message_id=${publishResult.messageId}`);
+      addStep("Live Publisher", "passed");
     }
 
   } catch (err) {
@@ -228,9 +288,12 @@ function run() {
   console.log(`Dry-run: ${getStatus("Dry-Run Publisher")}`);
   console.log(`Enhance: ${enhance ? getStatus("Enhance Plan (LM Studio)") : "skipped"}`);
   console.log(`Rewrite weak: ${rewriteWeak ? getStatus("Rewrite Weak Posts (LM Studio)") : "skipped"}`);
-  console.log(`Real publish: disabled`);
+  console.log(`Real publish: ${report.realPublish}`);
   console.log(`Runtime writes: none`);
-  console.log(`Telegram calls: none`);
+  console.log(`Telegram calls: ${report.telegramCalls}`);
+  if (report.liveMessageId) {
+    console.log(`Live message id: ${report.liveMessageId}`);
+  }
 
   if (!report.ok) {
     console.log(`\nBlocking issues:`);
@@ -239,4 +302,7 @@ function run() {
   }
 }
 
-run();
+run().catch((err) => {
+  console.error(`Pipeline failed: ${err instanceof Error ? err.message : "Unknown error"}`);
+  process.exit(1);
+});
