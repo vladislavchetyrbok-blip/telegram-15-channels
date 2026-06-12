@@ -1,763 +1,1487 @@
 # Zodiac Weekly Image Prompts
 
-Copy-paste prompts for the 91 weekly Zodiac visuals. Use 1024x1024 JPG output. Do not add text to the image.
+Total: 91 prompts.
+Global requirements apply to all prompts.
 
-Shared negative prompt for every image:
+## ZODIAC-GENERAL
 
-```text
-no text, no letters, no numbers, no watermark, no logo, no distorted zodiac symbols, no extra limbs, no cheap cartoon style, no flat clipart, no low-quality AI artifacts, no blurry details, no messy composition
+### MONDAY
+
+**File:** `public/assets/zodiac-weekly/zodiac-general/monday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: universal zodiac wheel / cosmic astrolabe. Weekday mood: calm start, focus.
 ```
 
-## Zodiac general (zodiac-general)
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
 
-### Monday
+---
 
-Expected file: `public/assets/zodiac-weekly/zodiac-general/monday.jpg`
+### TUESDAY
 
-```text
-Luxury mystic astrology visual for Zodiac general, universal zodiac wheel, cosmic astrolabe, all twelve signs in one elegant composition. Weekday mood: monday - calm start, focus, clean beginning, grounded intention. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, antique gold, subtle violet highlights, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**File:** `public/assets/zodiac-weekly/zodiac-general/tuesday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: universal zodiac wheel / cosmic astrolabe. Weekday mood: action, momentum.
 ```
 
-### Tuesday
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
 
-Expected file: `public/assets/zodiac-weekly/zodiac-general/tuesday.jpg`
+---
 
-```text
-Luxury mystic astrology visual for Zodiac general, universal zodiac wheel, cosmic astrolabe, all twelve signs in one elegant composition. Weekday mood: tuesday - action, momentum, decisive energy, confident movement. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, antique gold, subtle violet highlights, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
-```
+### WEDNESDAY
 
-### Wednesday
+**File:** `public/assets/zodiac-weekly/zodiac-general/wednesday.jpg`
 
-Expected file: `public/assets/zodiac-weekly/zodiac-general/wednesday.jpg`
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: universal zodiac wheel / cosmic astrolabe. Weekday mood: communication, decisions.
+```
 
-```text
-Luxury mystic astrology visual for Zodiac general, universal zodiac wheel, cosmic astrolabe, all twelve signs in one elegant composition. Weekday mood: wednesday - communication, choices, decisions, precise signals. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, antique gold, subtle violet highlights, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-### Thursday
+### THURSDAY
 
-Expected file: `public/assets/zodiac-weekly/zodiac-general/thursday.jpg`
+**File:** `public/assets/zodiac-weekly/zodiac-general/thursday.jpg`
 
-```text
-Luxury mystic astrology visual for Zodiac general, universal zodiac wheel, cosmic astrolabe, all twelve signs in one elegant composition. Weekday mood: thursday - growth, opportunity, expansion, generous perspective. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, antique gold, subtle violet highlights, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Prompt:**
 ```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: universal zodiac wheel / cosmic astrolabe. Weekday mood: growth, opportunity.
+```
+
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-### Friday
+### FRIDAY
 
-Expected file: `public/assets/zodiac-weekly/zodiac-general/friday.jpg`
+**File:** `public/assets/zodiac-weekly/zodiac-general/friday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: universal zodiac wheel / cosmic astrolabe. Weekday mood: relationships, beauty, closure.
+```
 
-```text
-Luxury mystic astrology visual for Zodiac general, universal zodiac wheel, cosmic astrolabe, all twelve signs in one elegant composition. Weekday mood: friday - relationships, beauty, closure, elegant emotional clarity. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, antique gold, subtle violet highlights, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-### Saturday
+### SATURDAY
 
-Expected file: `public/assets/zodiac-weekly/zodiac-general/saturday.jpg`
+**File:** `public/assets/zodiac-weekly/zodiac-general/saturday.jpg`
 
-```text
-Luxury mystic astrology visual for Zodiac general, universal zodiac wheel, cosmic astrolabe, all twelve signs in one elegant composition. Weekday mood: saturday - rest, pleasure, personal energy, deep restoration. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, antique gold, subtle violet highlights, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: universal zodiac wheel / cosmic astrolabe. Weekday mood: rest, pleasure, personal energy.
+```
+
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
 
-### Sunday
+---
 
-Expected file: `public/assets/zodiac-weekly/zodiac-general/sunday.jpg`
+### SUNDAY
 
-```text
-Luxury mystic astrology visual for Zodiac general, universal zodiac wheel, cosmic astrolabe, all twelve signs in one elegant composition. Weekday mood: sunday - reflection, reset, intuition, quiet spiritual preparation. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, antique gold, subtle violet highlights, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**File:** `public/assets/zodiac-weekly/zodiac-general/sunday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: universal zodiac wheel / cosmic astrolabe. Weekday mood: reflection, reset, intuition.
+```
+
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
+
+---
+
+## ARIES
 
-## Aries (aries)
+### MONDAY
 
-### Monday
+**File:** `public/assets/zodiac-weekly/aries/monday.jpg`
 
-Expected file: `public/assets/zodiac-weekly/aries/monday.jpg`
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: ram / fire / courage. Weekday mood: calm start, focus.
+```
 
-```text
-Luxury mystic astrology visual for Aries, noble ram, fire, courage, controlled strength. Weekday mood: monday - calm start, focus, clean beginning, grounded intention. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, ember red, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
 
-### Tuesday
+---
 
-Expected file: `public/assets/zodiac-weekly/aries/tuesday.jpg`
+### TUESDAY
+
+**File:** `public/assets/zodiac-weekly/aries/tuesday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: ram / fire / courage. Weekday mood: action, momentum.
+```
 
-```text
-Luxury mystic astrology visual for Aries, noble ram, fire, courage, controlled strength. Weekday mood: tuesday - action, momentum, decisive energy, confident movement. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, ember red, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
+
+### WEDNESDAY
 
-### Wednesday
+**File:** `public/assets/zodiac-weekly/aries/wednesday.jpg`
 
-Expected file: `public/assets/zodiac-weekly/aries/wednesday.jpg`
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: ram / fire / courage. Weekday mood: communication, decisions.
+```
 
-```text
-Luxury mystic astrology visual for Aries, noble ram, fire, courage, controlled strength. Weekday mood: wednesday - communication, choices, decisions, precise signals. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, ember red, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-### Thursday
+### THURSDAY
 
-Expected file: `public/assets/zodiac-weekly/aries/thursday.jpg`
+**File:** `public/assets/zodiac-weekly/aries/thursday.jpg`
 
-```text
-Luxury mystic astrology visual for Aries, noble ram, fire, courage, controlled strength. Weekday mood: thursday - growth, opportunity, expansion, generous perspective. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, ember red, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Prompt:**
 ```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: ram / fire / courage. Weekday mood: growth, opportunity.
+```
+
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-### Friday
+### FRIDAY
 
-Expected file: `public/assets/zodiac-weekly/aries/friday.jpg`
+**File:** `public/assets/zodiac-weekly/aries/friday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: ram / fire / courage. Weekday mood: relationships, beauty, closure.
+```
 
-```text
-Luxury mystic astrology visual for Aries, noble ram, fire, courage, controlled strength. Weekday mood: friday - relationships, beauty, closure, elegant emotional clarity. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, ember red, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-### Saturday
+### SATURDAY
 
-Expected file: `public/assets/zodiac-weekly/aries/saturday.jpg`
+**File:** `public/assets/zodiac-weekly/aries/saturday.jpg`
 
-```text
-Luxury mystic astrology visual for Aries, noble ram, fire, courage, controlled strength. Weekday mood: saturday - rest, pleasure, personal energy, deep restoration. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, ember red, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: ram / fire / courage. Weekday mood: rest, pleasure, personal energy.
+```
+
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
 
-### Sunday
+---
 
-Expected file: `public/assets/zodiac-weekly/aries/sunday.jpg`
+### SUNDAY
 
-```text
-Luxury mystic astrology visual for Aries, noble ram, fire, courage, controlled strength. Weekday mood: sunday - reflection, reset, intuition, quiet spiritual preparation. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, ember red, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**File:** `public/assets/zodiac-weekly/aries/sunday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: ram / fire / courage. Weekday mood: reflection, reset, intuition.
+```
+
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
+
+---
+
+## TAURUS
 
-## Taurus (taurus)
+### MONDAY
 
-### Monday
+**File:** `public/assets/zodiac-weekly/taurus/monday.jpg`
 
-Expected file: `public/assets/zodiac-weekly/taurus/monday.jpg`
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: bull / earth / stability. Weekday mood: calm start, focus.
+```
 
-```text
-Luxury mystic astrology visual for Taurus, powerful bull, earth, stability, refined luxury. Weekday mood: monday - calm start, focus, clean beginning, grounded intention. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, deep emerald, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
 
-### Tuesday
+---
 
-Expected file: `public/assets/zodiac-weekly/taurus/tuesday.jpg`
+### TUESDAY
+
+**File:** `public/assets/zodiac-weekly/taurus/tuesday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: bull / earth / stability. Weekday mood: action, momentum.
+```
 
-```text
-Luxury mystic astrology visual for Taurus, powerful bull, earth, stability, refined luxury. Weekday mood: tuesday - action, momentum, decisive energy, confident movement. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, deep emerald, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
+
+### WEDNESDAY
 
-### Wednesday
+**File:** `public/assets/zodiac-weekly/taurus/wednesday.jpg`
 
-Expected file: `public/assets/zodiac-weekly/taurus/wednesday.jpg`
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: bull / earth / stability. Weekday mood: communication, decisions.
+```
 
-```text
-Luxury mystic astrology visual for Taurus, powerful bull, earth, stability, refined luxury. Weekday mood: wednesday - communication, choices, decisions, precise signals. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, deep emerald, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-### Thursday
+### THURSDAY
 
-Expected file: `public/assets/zodiac-weekly/taurus/thursday.jpg`
+**File:** `public/assets/zodiac-weekly/taurus/thursday.jpg`
 
-```text
-Luxury mystic astrology visual for Taurus, powerful bull, earth, stability, refined luxury. Weekday mood: thursday - growth, opportunity, expansion, generous perspective. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, deep emerald, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Prompt:**
 ```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: bull / earth / stability. Weekday mood: growth, opportunity.
+```
+
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-### Friday
+### FRIDAY
 
-Expected file: `public/assets/zodiac-weekly/taurus/friday.jpg`
+**File:** `public/assets/zodiac-weekly/taurus/friday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: bull / earth / stability. Weekday mood: relationships, beauty, closure.
+```
 
-```text
-Luxury mystic astrology visual for Taurus, powerful bull, earth, stability, refined luxury. Weekday mood: friday - relationships, beauty, closure, elegant emotional clarity. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, deep emerald, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-### Saturday
+### SATURDAY
 
-Expected file: `public/assets/zodiac-weekly/taurus/saturday.jpg`
+**File:** `public/assets/zodiac-weekly/taurus/saturday.jpg`
 
-```text
-Luxury mystic astrology visual for Taurus, powerful bull, earth, stability, refined luxury. Weekday mood: saturday - rest, pleasure, personal energy, deep restoration. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, deep emerald, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: bull / earth / stability. Weekday mood: rest, pleasure, personal energy.
+```
+
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
 
-### Sunday
+---
 
-Expected file: `public/assets/zodiac-weekly/taurus/sunday.jpg`
+### SUNDAY
 
-```text
-Luxury mystic astrology visual for Taurus, powerful bull, earth, stability, refined luxury. Weekday mood: sunday - reflection, reset, intuition, quiet spiritual preparation. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, deep emerald, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**File:** `public/assets/zodiac-weekly/taurus/sunday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: bull / earth / stability. Weekday mood: reflection, reset, intuition.
+```
+
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
+
+---
+
+## GEMINI
 
-## Gemini (gemini)
+### MONDAY
 
-### Monday
+**File:** `public/assets/zodiac-weekly/gemini/monday.jpg`
 
-Expected file: `public/assets/zodiac-weekly/gemini/monday.jpg`
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: twins / air / communication. Weekday mood: calm start, focus.
+```
 
-```text
-Luxury mystic astrology visual for Gemini, elegant twins, air, communication, mirror-like duality. Weekday mood: monday - calm start, focus, clean beginning, grounded intention. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, silver blue, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-### Tuesday
+### TUESDAY
 
-Expected file: `public/assets/zodiac-weekly/gemini/tuesday.jpg`
+**File:** `public/assets/zodiac-weekly/gemini/tuesday.jpg`
 
-```text
-Luxury mystic astrology visual for Gemini, elegant twins, air, communication, mirror-like duality. Weekday mood: tuesday - action, momentum, decisive energy, confident movement. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, silver blue, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: twins / air / communication. Weekday mood: action, momentum.
+```
+
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
 
-### Wednesday
+---
 
-Expected file: `public/assets/zodiac-weekly/gemini/wednesday.jpg`
+### WEDNESDAY
 
-```text
-Luxury mystic astrology visual for Gemini, elegant twins, air, communication, mirror-like duality. Weekday mood: wednesday - communication, choices, decisions, precise signals. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, silver blue, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**File:** `public/assets/zodiac-weekly/gemini/wednesday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: twins / air / communication. Weekday mood: communication, decisions.
+```
+
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
+
+---
+
+### THURSDAY
 
-### Thursday
+**File:** `public/assets/zodiac-weekly/gemini/thursday.jpg`
 
-Expected file: `public/assets/zodiac-weekly/gemini/thursday.jpg`
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: twins / air / communication. Weekday mood: growth, opportunity.
+```
 
-```text
-Luxury mystic astrology visual for Gemini, elegant twins, air, communication, mirror-like duality. Weekday mood: thursday - growth, opportunity, expansion, generous perspective. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, silver blue, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
 
-### Friday
+---
 
-Expected file: `public/assets/zodiac-weekly/gemini/friday.jpg`
+### FRIDAY
+
+**File:** `public/assets/zodiac-weekly/gemini/friday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: twins / air / communication. Weekday mood: relationships, beauty, closure.
+```
 
-```text
-Luxury mystic astrology visual for Gemini, elegant twins, air, communication, mirror-like duality. Weekday mood: friday - relationships, beauty, closure, elegant emotional clarity. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, silver blue, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
+
+### SATURDAY
 
-### Saturday
+**File:** `public/assets/zodiac-weekly/gemini/saturday.jpg`
 
-Expected file: `public/assets/zodiac-weekly/gemini/saturday.jpg`
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: twins / air / communication. Weekday mood: rest, pleasure, personal energy.
+```
 
-```text
-Luxury mystic astrology visual for Gemini, elegant twins, air, communication, mirror-like duality. Weekday mood: saturday - rest, pleasure, personal energy, deep restoration. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, silver blue, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-### Sunday
+### SUNDAY
 
-Expected file: `public/assets/zodiac-weekly/gemini/sunday.jpg`
+**File:** `public/assets/zodiac-weekly/gemini/sunday.jpg`
 
-```text
-Luxury mystic astrology visual for Gemini, elegant twins, air, communication, mirror-like duality. Weekday mood: sunday - reflection, reset, intuition, quiet spiritual preparation. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, silver blue, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Prompt:**
 ```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: twins / air / communication. Weekday mood: reflection, reset, intuition.
+```
+
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-## Cancer (cancer)
+## CANCER
 
-### Monday
+### MONDAY
 
-Expected file: `public/assets/zodiac-weekly/cancer/monday.jpg`
+**File:** `public/assets/zodiac-weekly/cancer/monday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: crab / moon / water. Weekday mood: calm start, focus.
+```
 
-```text
-Luxury mystic astrology visual for Cancer, crab, moon, water, protective intuition. Weekday mood: monday - calm start, focus, clean beginning, grounded intention. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, moonlit silver, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-### Tuesday
+### TUESDAY
 
-Expected file: `public/assets/zodiac-weekly/cancer/tuesday.jpg`
+**File:** `public/assets/zodiac-weekly/cancer/tuesday.jpg`
 
-```text
-Luxury mystic astrology visual for Cancer, crab, moon, water, protective intuition. Weekday mood: tuesday - action, momentum, decisive energy, confident movement. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, moonlit silver, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: crab / moon / water. Weekday mood: action, momentum.
+```
+
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
 
-### Wednesday
+---
 
-Expected file: `public/assets/zodiac-weekly/cancer/wednesday.jpg`
+### WEDNESDAY
 
-```text
-Luxury mystic astrology visual for Cancer, crab, moon, water, protective intuition. Weekday mood: wednesday - communication, choices, decisions, precise signals. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, moonlit silver, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**File:** `public/assets/zodiac-weekly/cancer/wednesday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: crab / moon / water. Weekday mood: communication, decisions.
+```
+
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
+
+---
+
+### THURSDAY
 
-### Thursday
+**File:** `public/assets/zodiac-weekly/cancer/thursday.jpg`
 
-Expected file: `public/assets/zodiac-weekly/cancer/thursday.jpg`
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: crab / moon / water. Weekday mood: growth, opportunity.
+```
 
-```text
-Luxury mystic astrology visual for Cancer, crab, moon, water, protective intuition. Weekday mood: thursday - growth, opportunity, expansion, generous perspective. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, moonlit silver, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
 
-### Friday
+---
 
-Expected file: `public/assets/zodiac-weekly/cancer/friday.jpg`
+### FRIDAY
+
+**File:** `public/assets/zodiac-weekly/cancer/friday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: crab / moon / water. Weekday mood: relationships, beauty, closure.
+```
 
-```text
-Luxury mystic astrology visual for Cancer, crab, moon, water, protective intuition. Weekday mood: friday - relationships, beauty, closure, elegant emotional clarity. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, moonlit silver, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-### Saturday
+### SATURDAY
 
-Expected file: `public/assets/zodiac-weekly/cancer/saturday.jpg`
+**File:** `public/assets/zodiac-weekly/cancer/saturday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: crab / moon / water. Weekday mood: rest, pleasure, personal energy.
+```
 
-```text
-Luxury mystic astrology visual for Cancer, crab, moon, water, protective intuition. Weekday mood: saturday - rest, pleasure, personal energy, deep restoration. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, moonlit silver, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
+
+---
+
+### SUNDAY
 
-### Sunday
+**File:** `public/assets/zodiac-weekly/cancer/sunday.jpg`
 
-Expected file: `public/assets/zodiac-weekly/cancer/sunday.jpg`
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: crab / moon / water. Weekday mood: reflection, reset, intuition.
+```
 
-```text
-Luxury mystic astrology visual for Cancer, crab, moon, water, protective intuition. Weekday mood: sunday - reflection, reset, intuition, quiet spiritual preparation. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, moonlit silver, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
 
-## Leo (leo)
+---
 
-### Monday
+## LEO
 
-Expected file: `public/assets/zodiac-weekly/leo/monday.jpg`
+### MONDAY
+
+**File:** `public/assets/zodiac-weekly/leo/monday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: lion / sun / confidence. Weekday mood: calm start, focus.
+```
 
-```text
-Luxury mystic astrology visual for Leo, regal lion, sun, confidence, warm authority. Weekday mood: monday - calm start, focus, clean beginning, grounded intention. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, solar amber, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
+
+### TUESDAY
 
-### Tuesday
+**File:** `public/assets/zodiac-weekly/leo/tuesday.jpg`
 
-Expected file: `public/assets/zodiac-weekly/leo/tuesday.jpg`
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: lion / sun / confidence. Weekday mood: action, momentum.
+```
 
-```text
-Luxury mystic astrology visual for Leo, regal lion, sun, confidence, warm authority. Weekday mood: tuesday - action, momentum, decisive energy, confident movement. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, solar amber, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-### Wednesday
+### WEDNESDAY
 
-Expected file: `public/assets/zodiac-weekly/leo/wednesday.jpg`
+**File:** `public/assets/zodiac-weekly/leo/wednesday.jpg`
 
-```text
-Luxury mystic astrology visual for Leo, regal lion, sun, confidence, warm authority. Weekday mood: wednesday - communication, choices, decisions, precise signals. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, solar amber, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Prompt:**
 ```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: lion / sun / confidence. Weekday mood: communication, decisions.
+```
+
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-### Thursday
+### THURSDAY
 
-Expected file: `public/assets/zodiac-weekly/leo/thursday.jpg`
+**File:** `public/assets/zodiac-weekly/leo/thursday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: lion / sun / confidence. Weekday mood: growth, opportunity.
+```
 
-```text
-Luxury mystic astrology visual for Leo, regal lion, sun, confidence, warm authority. Weekday mood: thursday - growth, opportunity, expansion, generous perspective. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, solar amber, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-### Friday
+### FRIDAY
 
-Expected file: `public/assets/zodiac-weekly/leo/friday.jpg`
+**File:** `public/assets/zodiac-weekly/leo/friday.jpg`
 
-```text
-Luxury mystic astrology visual for Leo, regal lion, sun, confidence, warm authority. Weekday mood: friday - relationships, beauty, closure, elegant emotional clarity. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, solar amber, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: lion / sun / confidence. Weekday mood: relationships, beauty, closure.
+```
+
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
 
-### Saturday
+---
 
-Expected file: `public/assets/zodiac-weekly/leo/saturday.jpg`
+### SATURDAY
 
-```text
-Luxury mystic astrology visual for Leo, regal lion, sun, confidence, warm authority. Weekday mood: saturday - rest, pleasure, personal energy, deep restoration. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, solar amber, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**File:** `public/assets/zodiac-weekly/leo/saturday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: lion / sun / confidence. Weekday mood: rest, pleasure, personal energy.
+```
+
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
+
+---
+
+### SUNDAY
 
-### Sunday
+**File:** `public/assets/zodiac-weekly/leo/sunday.jpg`
 
-Expected file: `public/assets/zodiac-weekly/leo/sunday.jpg`
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: lion / sun / confidence. Weekday mood: reflection, reset, intuition.
+```
 
-```text
-Luxury mystic astrology visual for Leo, regal lion, sun, confidence, warm authority. Weekday mood: sunday - reflection, reset, intuition, quiet spiritual preparation. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, solar amber, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
 
-## Virgo (virgo)
+---
 
-### Monday
+## VIRGO
 
-Expected file: `public/assets/zodiac-weekly/virgo/monday.jpg`
+### MONDAY
+
+**File:** `public/assets/zodiac-weekly/virgo/monday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: maiden / wheat / precision. Weekday mood: calm start, focus.
+```
 
-```text
-Luxury mystic astrology visual for Virgo, maiden, wheat, precision, calm order. Weekday mood: monday - calm start, focus, clean beginning, grounded intention. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, ivory wheat, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
+
+### TUESDAY
 
-### Tuesday
+**File:** `public/assets/zodiac-weekly/virgo/tuesday.jpg`
 
-Expected file: `public/assets/zodiac-weekly/virgo/tuesday.jpg`
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: maiden / wheat / precision. Weekday mood: action, momentum.
+```
 
-```text
-Luxury mystic astrology visual for Virgo, maiden, wheat, precision, calm order. Weekday mood: tuesday - action, momentum, decisive energy, confident movement. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, ivory wheat, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-### Wednesday
+### WEDNESDAY
 
-Expected file: `public/assets/zodiac-weekly/virgo/wednesday.jpg`
+**File:** `public/assets/zodiac-weekly/virgo/wednesday.jpg`
 
-```text
-Luxury mystic astrology visual for Virgo, maiden, wheat, precision, calm order. Weekday mood: wednesday - communication, choices, decisions, precise signals. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, ivory wheat, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Prompt:**
 ```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: maiden / wheat / precision. Weekday mood: communication, decisions.
+```
+
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
 
-### Thursday
+---
 
-Expected file: `public/assets/zodiac-weekly/virgo/thursday.jpg`
+### THURSDAY
+
+**File:** `public/assets/zodiac-weekly/virgo/thursday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: maiden / wheat / precision. Weekday mood: growth, opportunity.
+```
 
-```text
-Luxury mystic astrology visual for Virgo, maiden, wheat, precision, calm order. Weekday mood: thursday - growth, opportunity, expansion, generous perspective. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, ivory wheat, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
+
+### FRIDAY
 
-### Friday
+**File:** `public/assets/zodiac-weekly/virgo/friday.jpg`
 
-Expected file: `public/assets/zodiac-weekly/virgo/friday.jpg`
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: maiden / wheat / precision. Weekday mood: relationships, beauty, closure.
+```
 
-```text
-Luxury mystic astrology visual for Virgo, maiden, wheat, precision, calm order. Weekday mood: friday - relationships, beauty, closure, elegant emotional clarity. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, ivory wheat, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-### Saturday
+### SATURDAY
 
-Expected file: `public/assets/zodiac-weekly/virgo/saturday.jpg`
+**File:** `public/assets/zodiac-weekly/virgo/saturday.jpg`
 
-```text
-Luxury mystic astrology visual for Virgo, maiden, wheat, precision, calm order. Weekday mood: saturday - rest, pleasure, personal energy, deep restoration. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, ivory wheat, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Prompt:**
 ```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: maiden / wheat / precision. Weekday mood: rest, pleasure, personal energy.
+```
+
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-### Sunday
+### SUNDAY
 
-Expected file: `public/assets/zodiac-weekly/virgo/sunday.jpg`
+**File:** `public/assets/zodiac-weekly/virgo/sunday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: maiden / wheat / precision. Weekday mood: reflection, reset, intuition.
+```
 
-```text
-Luxury mystic astrology visual for Virgo, maiden, wheat, precision, calm order. Weekday mood: sunday - reflection, reset, intuition, quiet spiritual preparation. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, ivory wheat, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-## Libra (libra)
+## LIBRA
 
-### Monday
+### MONDAY
 
-Expected file: `public/assets/zodiac-weekly/libra/monday.jpg`
+**File:** `public/assets/zodiac-weekly/libra/monday.jpg`
 
-```text
-Luxury mystic astrology visual for Libra, balanced scales, elegance, symmetry, refined relationships. Weekday mood: monday - calm start, focus, clean beginning, grounded intention. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, soft rose, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: scales / balance / elegance. Weekday mood: calm start, focus.
+```
+
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
 
-### Tuesday
+---
 
-Expected file: `public/assets/zodiac-weekly/libra/tuesday.jpg`
+### TUESDAY
 
-```text
-Luxury mystic astrology visual for Libra, balanced scales, elegance, symmetry, refined relationships. Weekday mood: tuesday - action, momentum, decisive energy, confident movement. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, soft rose, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**File:** `public/assets/zodiac-weekly/libra/tuesday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: scales / balance / elegance. Weekday mood: action, momentum.
+```
+
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
+
+---
+
+### WEDNESDAY
 
-### Wednesday
+**File:** `public/assets/zodiac-weekly/libra/wednesday.jpg`
 
-Expected file: `public/assets/zodiac-weekly/libra/wednesday.jpg`
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: scales / balance / elegance. Weekday mood: communication, decisions.
+```
 
-```text
-Luxury mystic astrology visual for Libra, balanced scales, elegance, symmetry, refined relationships. Weekday mood: wednesday - communication, choices, decisions, precise signals. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, soft rose, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
 
-### Thursday
+---
 
-Expected file: `public/assets/zodiac-weekly/libra/thursday.jpg`
+### THURSDAY
+
+**File:** `public/assets/zodiac-weekly/libra/thursday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: scales / balance / elegance. Weekday mood: growth, opportunity.
+```
 
-```text
-Luxury mystic astrology visual for Libra, balanced scales, elegance, symmetry, refined relationships. Weekday mood: thursday - growth, opportunity, expansion, generous perspective. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, soft rose, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
+
+### FRIDAY
 
-### Friday
+**File:** `public/assets/zodiac-weekly/libra/friday.jpg`
 
-Expected file: `public/assets/zodiac-weekly/libra/friday.jpg`
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: scales / balance / elegance. Weekday mood: relationships, beauty, closure.
+```
 
-```text
-Luxury mystic astrology visual for Libra, balanced scales, elegance, symmetry, refined relationships. Weekday mood: friday - relationships, beauty, closure, elegant emotional clarity. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, soft rose, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-### Saturday
+### SATURDAY
 
-Expected file: `public/assets/zodiac-weekly/libra/saturday.jpg`
+**File:** `public/assets/zodiac-weekly/libra/saturday.jpg`
 
-```text
-Luxury mystic astrology visual for Libra, balanced scales, elegance, symmetry, refined relationships. Weekday mood: saturday - rest, pleasure, personal energy, deep restoration. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, soft rose, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Prompt:**
 ```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: scales / balance / elegance. Weekday mood: rest, pleasure, personal energy.
+```
+
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-### Sunday
+### SUNDAY
 
-Expected file: `public/assets/zodiac-weekly/libra/sunday.jpg`
+**File:** `public/assets/zodiac-weekly/libra/sunday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: scales / balance / elegance. Weekday mood: reflection, reset, intuition.
+```
 
-```text
-Luxury mystic astrology visual for Libra, balanced scales, elegance, symmetry, refined relationships. Weekday mood: sunday - reflection, reset, intuition, quiet spiritual preparation. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, soft rose, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
+
+---
+
+## SCORPIO
 
-## Scorpio (scorpio)
+### MONDAY
 
-### Monday
+**File:** `public/assets/zodiac-weekly/scorpio/monday.jpg`
 
-Expected file: `public/assets/zodiac-weekly/scorpio/monday.jpg`
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: scorpion / depth / mystery. Weekday mood: calm start, focus.
+```
 
-```text
-Luxury mystic astrology visual for Scorpio, scorpion, depth, mystery, magnetic shadow. Weekday mood: monday - calm start, focus, clean beginning, grounded intention. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, dark crimson, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-### Tuesday
+### TUESDAY
 
-Expected file: `public/assets/zodiac-weekly/scorpio/tuesday.jpg`
+**File:** `public/assets/zodiac-weekly/scorpio/tuesday.jpg`
 
-```text
-Luxury mystic astrology visual for Scorpio, scorpion, depth, mystery, magnetic shadow. Weekday mood: tuesday - action, momentum, decisive energy, confident movement. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, dark crimson, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Prompt:**
 ```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: scorpion / depth / mystery. Weekday mood: action, momentum.
+```
+
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-### Wednesday
+### WEDNESDAY
 
-Expected file: `public/assets/zodiac-weekly/scorpio/wednesday.jpg`
+**File:** `public/assets/zodiac-weekly/scorpio/wednesday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: scorpion / depth / mystery. Weekday mood: communication, decisions.
+```
 
-```text
-Luxury mystic astrology visual for Scorpio, scorpion, depth, mystery, magnetic shadow. Weekday mood: wednesday - communication, choices, decisions, precise signals. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, dark crimson, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-### Thursday
+### THURSDAY
 
-Expected file: `public/assets/zodiac-weekly/scorpio/thursday.jpg`
+**File:** `public/assets/zodiac-weekly/scorpio/thursday.jpg`
 
-```text
-Luxury mystic astrology visual for Scorpio, scorpion, depth, mystery, magnetic shadow. Weekday mood: thursday - growth, opportunity, expansion, generous perspective. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, dark crimson, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: scorpion / depth / mystery. Weekday mood: growth, opportunity.
+```
+
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
 
-### Friday
+---
 
-Expected file: `public/assets/zodiac-weekly/scorpio/friday.jpg`
+### FRIDAY
 
-```text
-Luxury mystic astrology visual for Scorpio, scorpion, depth, mystery, magnetic shadow. Weekday mood: friday - relationships, beauty, closure, elegant emotional clarity. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, dark crimson, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**File:** `public/assets/zodiac-weekly/scorpio/friday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: scorpion / depth / mystery. Weekday mood: relationships, beauty, closure.
+```
+
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
+
+---
+
+### SATURDAY
 
-### Saturday
+**File:** `public/assets/zodiac-weekly/scorpio/saturday.jpg`
 
-Expected file: `public/assets/zodiac-weekly/scorpio/saturday.jpg`
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: scorpion / depth / mystery. Weekday mood: rest, pleasure, personal energy.
+```
 
-```text
-Luxury mystic astrology visual for Scorpio, scorpion, depth, mystery, magnetic shadow. Weekday mood: saturday - rest, pleasure, personal energy, deep restoration. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, dark crimson, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
 
-### Sunday
+---
 
-Expected file: `public/assets/zodiac-weekly/scorpio/sunday.jpg`
+### SUNDAY
+
+**File:** `public/assets/zodiac-weekly/scorpio/sunday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: scorpion / depth / mystery. Weekday mood: reflection, reset, intuition.
+```
 
-```text
-Luxury mystic astrology visual for Scorpio, scorpion, depth, mystery, magnetic shadow. Weekday mood: sunday - reflection, reset, intuition, quiet spiritual preparation. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, dark crimson, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
+
+## SAGITTARIUS
 
-## Sagittarius (sagittarius)
+### MONDAY
 
-### Monday
+**File:** `public/assets/zodiac-weekly/sagittarius/monday.jpg`
 
-Expected file: `public/assets/zodiac-weekly/sagittarius/monday.jpg`
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: archer / movement / fire. Weekday mood: calm start, focus.
+```
 
-```text
-Luxury mystic astrology visual for Sagittarius, archer, movement, fire, horizon and direction. Weekday mood: monday - calm start, focus, clean beginning, grounded intention. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, flame orange, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-### Tuesday
+### TUESDAY
 
-Expected file: `public/assets/zodiac-weekly/sagittarius/tuesday.jpg`
+**File:** `public/assets/zodiac-weekly/sagittarius/tuesday.jpg`
 
-```text
-Luxury mystic astrology visual for Sagittarius, archer, movement, fire, horizon and direction. Weekday mood: tuesday - action, momentum, decisive energy, confident movement. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, flame orange, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Prompt:**
 ```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: archer / movement / fire. Weekday mood: action, momentum.
+```
+
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-### Wednesday
+### WEDNESDAY
 
-Expected file: `public/assets/zodiac-weekly/sagittarius/wednesday.jpg`
+**File:** `public/assets/zodiac-weekly/sagittarius/wednesday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: archer / movement / fire. Weekday mood: communication, decisions.
+```
 
-```text
-Luxury mystic astrology visual for Sagittarius, archer, movement, fire, horizon and direction. Weekday mood: wednesday - communication, choices, decisions, precise signals. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, flame orange, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-### Thursday
+### THURSDAY
 
-Expected file: `public/assets/zodiac-weekly/sagittarius/thursday.jpg`
+**File:** `public/assets/zodiac-weekly/sagittarius/thursday.jpg`
 
-```text
-Luxury mystic astrology visual for Sagittarius, archer, movement, fire, horizon and direction. Weekday mood: thursday - growth, opportunity, expansion, generous perspective. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, flame orange, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: archer / movement / fire. Weekday mood: growth, opportunity.
+```
+
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
 
-### Friday
+---
 
-Expected file: `public/assets/zodiac-weekly/sagittarius/friday.jpg`
+### FRIDAY
 
-```text
-Luxury mystic astrology visual for Sagittarius, archer, movement, fire, horizon and direction. Weekday mood: friday - relationships, beauty, closure, elegant emotional clarity. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, flame orange, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**File:** `public/assets/zodiac-weekly/sagittarius/friday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: archer / movement / fire. Weekday mood: relationships, beauty, closure.
+```
+
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-### Saturday
+### SATURDAY
 
-Expected file: `public/assets/zodiac-weekly/sagittarius/saturday.jpg`
+**File:** `public/assets/zodiac-weekly/sagittarius/saturday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: archer / movement / fire. Weekday mood: rest, pleasure, personal energy.
+```
 
-```text
-Luxury mystic astrology visual for Sagittarius, archer, movement, fire, horizon and direction. Weekday mood: saturday - rest, pleasure, personal energy, deep restoration. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, flame orange, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-### Sunday
+### SUNDAY
 
-Expected file: `public/assets/zodiac-weekly/sagittarius/sunday.jpg`
+**File:** `public/assets/zodiac-weekly/sagittarius/sunday.jpg`
 
-```text
-Luxury mystic astrology visual for Sagittarius, archer, movement, fire, horizon and direction. Weekday mood: sunday - reflection, reset, intuition, quiet spiritual preparation. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, flame orange, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: archer / movement / fire. Weekday mood: reflection, reset, intuition.
+```
+
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
 
-## Capricorn (capricorn)
+---
 
-### Monday
+## CAPRICORN
 
-Expected file: `public/assets/zodiac-weekly/capricorn/monday.jpg`
+### MONDAY
 
-```text
-Luxury mystic astrology visual for Capricorn, mountain goat, mountain peak, discipline, status. Weekday mood: monday - calm start, focus, clean beginning, grounded intention. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, stone grey, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**File:** `public/assets/zodiac-weekly/capricorn/monday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: goat / mountain / discipline. Weekday mood: calm start, focus.
+```
+
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
+
+---
+
+### TUESDAY
 
-### Tuesday
+**File:** `public/assets/zodiac-weekly/capricorn/tuesday.jpg`
 
-Expected file: `public/assets/zodiac-weekly/capricorn/tuesday.jpg`
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: goat / mountain / discipline. Weekday mood: action, momentum.
+```
 
-```text
-Luxury mystic astrology visual for Capricorn, mountain goat, mountain peak, discipline, status. Weekday mood: tuesday - action, momentum, decisive energy, confident movement. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, stone grey, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
 
-### Wednesday
+---
 
-Expected file: `public/assets/zodiac-weekly/capricorn/wednesday.jpg`
+### WEDNESDAY
+
+**File:** `public/assets/zodiac-weekly/capricorn/wednesday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: goat / mountain / discipline. Weekday mood: communication, decisions.
+```
 
-```text
-Luxury mystic astrology visual for Capricorn, mountain goat, mountain peak, discipline, status. Weekday mood: wednesday - communication, choices, decisions, precise signals. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, stone grey, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
+
+### THURSDAY
 
-### Thursday
+**File:** `public/assets/zodiac-weekly/capricorn/thursday.jpg`
 
-Expected file: `public/assets/zodiac-weekly/capricorn/thursday.jpg`
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: goat / mountain / discipline. Weekday mood: growth, opportunity.
+```
 
-```text
-Luxury mystic astrology visual for Capricorn, mountain goat, mountain peak, discipline, status. Weekday mood: thursday - growth, opportunity, expansion, generous perspective. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, stone grey, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-### Friday
+### FRIDAY
 
-Expected file: `public/assets/zodiac-weekly/capricorn/friday.jpg`
+**File:** `public/assets/zodiac-weekly/capricorn/friday.jpg`
 
-```text
-Luxury mystic astrology visual for Capricorn, mountain goat, mountain peak, discipline, status. Weekday mood: friday - relationships, beauty, closure, elegant emotional clarity. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, stone grey, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Prompt:**
 ```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: goat / mountain / discipline. Weekday mood: relationships, beauty, closure.
+```
+
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-### Saturday
+### SATURDAY
 
-Expected file: `public/assets/zodiac-weekly/capricorn/saturday.jpg`
+**File:** `public/assets/zodiac-weekly/capricorn/saturday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: goat / mountain / discipline. Weekday mood: rest, pleasure, personal energy.
+```
 
-```text
-Luxury mystic astrology visual for Capricorn, mountain goat, mountain peak, discipline, status. Weekday mood: saturday - rest, pleasure, personal energy, deep restoration. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, stone grey, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-### Sunday
+### SUNDAY
 
-Expected file: `public/assets/zodiac-weekly/capricorn/sunday.jpg`
+**File:** `public/assets/zodiac-weekly/capricorn/sunday.jpg`
 
-```text
-Luxury mystic astrology visual for Capricorn, mountain goat, mountain peak, discipline, status. Weekday mood: sunday - reflection, reset, intuition, quiet spiritual preparation. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, stone grey, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: goat / mountain / discipline. Weekday mood: reflection, reset, intuition.
+```
+
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
 
-## Aquarius (aquarius)
+---
 
-### Monday
+## AQUARIUS
 
-Expected file: `public/assets/zodiac-weekly/aquarius/monday.jpg`
+### MONDAY
 
-```text
-Luxury mystic astrology visual for Aquarius, water bearer, ideas, air-water symbolism, futuristic insight. Weekday mood: monday - calm start, focus, clean beginning, grounded intention. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, electric blue, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**File:** `public/assets/zodiac-weekly/aquarius/monday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: water bearer / ideas / air-water symbolism. Weekday mood: calm start, focus.
+```
+
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
+
+---
+
+### TUESDAY
 
-### Tuesday
+**File:** `public/assets/zodiac-weekly/aquarius/tuesday.jpg`
 
-Expected file: `public/assets/zodiac-weekly/aquarius/tuesday.jpg`
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: water bearer / ideas / air-water symbolism. Weekday mood: action, momentum.
+```
 
-```text
-Luxury mystic astrology visual for Aquarius, water bearer, ideas, air-water symbolism, futuristic insight. Weekday mood: tuesday - action, momentum, decisive energy, confident movement. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, electric blue, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-### Wednesday
+### WEDNESDAY
 
-Expected file: `public/assets/zodiac-weekly/aquarius/wednesday.jpg`
+**File:** `public/assets/zodiac-weekly/aquarius/wednesday.jpg`
 
-```text
-Luxury mystic astrology visual for Aquarius, water bearer, ideas, air-water symbolism, futuristic insight. Weekday mood: wednesday - communication, choices, decisions, precise signals. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, electric blue, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: water bearer / ideas / air-water symbolism. Weekday mood: communication, decisions.
+```
+
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
 
-### Thursday
+---
 
-Expected file: `public/assets/zodiac-weekly/aquarius/thursday.jpg`
+### THURSDAY
 
-```text
-Luxury mystic astrology visual for Aquarius, water bearer, ideas, air-water symbolism, futuristic insight. Weekday mood: thursday - growth, opportunity, expansion, generous perspective. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, electric blue, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**File:** `public/assets/zodiac-weekly/aquarius/thursday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: water bearer / ideas / air-water symbolism. Weekday mood: growth, opportunity.
+```
+
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
+
+---
+
+### FRIDAY
 
-### Friday
+**File:** `public/assets/zodiac-weekly/aquarius/friday.jpg`
 
-Expected file: `public/assets/zodiac-weekly/aquarius/friday.jpg`
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: water bearer / ideas / air-water symbolism. Weekday mood: relationships, beauty, closure.
+```
 
-```text
-Luxury mystic astrology visual for Aquarius, water bearer, ideas, air-water symbolism, futuristic insight. Weekday mood: friday - relationships, beauty, closure, elegant emotional clarity. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, electric blue, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
 
-### Saturday
+---
 
-Expected file: `public/assets/zodiac-weekly/aquarius/saturday.jpg`
+### SATURDAY
+
+**File:** `public/assets/zodiac-weekly/aquarius/saturday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: water bearer / ideas / air-water symbolism. Weekday mood: rest, pleasure, personal energy.
+```
 
-```text
-Luxury mystic astrology visual for Aquarius, water bearer, ideas, air-water symbolism, futuristic insight. Weekday mood: saturday - rest, pleasure, personal energy, deep restoration. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, electric blue, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
+
+### SUNDAY
 
-### Sunday
+**File:** `public/assets/zodiac-weekly/aquarius/sunday.jpg`
 
-Expected file: `public/assets/zodiac-weekly/aquarius/sunday.jpg`
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: water bearer / ideas / air-water symbolism. Weekday mood: reflection, reset, intuition.
+```
 
-```text
-Luxury mystic astrology visual for Aquarius, water bearer, ideas, air-water symbolism, futuristic insight. Weekday mood: sunday - reflection, reset, intuition, quiet spiritual preparation. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, electric blue, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-## Pisces (pisces)
+## PISCES
 
-### Monday
+### MONDAY
 
-Expected file: `public/assets/zodiac-weekly/pisces/monday.jpg`
+**File:** `public/assets/zodiac-weekly/pisces/monday.jpg`
 
-```text
-Luxury mystic astrology visual for Pisces, two fish, intuition, water, dreamlike depth. Weekday mood: monday - calm start, focus, clean beginning, grounded intention. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, ocean teal, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Prompt:**
 ```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: two fish / intuition / water. Weekday mood: calm start, focus.
+```
+
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-### Tuesday
+### TUESDAY
 
-Expected file: `public/assets/zodiac-weekly/pisces/tuesday.jpg`
+**File:** `public/assets/zodiac-weekly/pisces/tuesday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: two fish / intuition / water. Weekday mood: action, momentum.
+```
 
-```text
-Luxury mystic astrology visual for Pisces, two fish, intuition, water, dreamlike depth. Weekday mood: tuesday - action, momentum, decisive energy, confident movement. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, ocean teal, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-### Wednesday
+### WEDNESDAY
 
-Expected file: `public/assets/zodiac-weekly/pisces/wednesday.jpg`
+**File:** `public/assets/zodiac-weekly/pisces/wednesday.jpg`
 
-```text
-Luxury mystic astrology visual for Pisces, two fish, intuition, water, dreamlike depth. Weekday mood: wednesday - communication, choices, decisions, precise signals. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, ocean teal, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: two fish / intuition / water. Weekday mood: communication, decisions.
+```
+
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
 
-### Thursday
+---
 
-Expected file: `public/assets/zodiac-weekly/pisces/thursday.jpg`
+### THURSDAY
 
-```text
-Luxury mystic astrology visual for Pisces, two fish, intuition, water, dreamlike depth. Weekday mood: thursday - growth, opportunity, expansion, generous perspective. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, ocean teal, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**File:** `public/assets/zodiac-weekly/pisces/thursday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: two fish / intuition / water. Weekday mood: growth, opportunity.
+```
+
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
+
+---
+
+### FRIDAY
 
-### Friday
+**File:** `public/assets/zodiac-weekly/pisces/friday.jpg`
 
-Expected file: `public/assets/zodiac-weekly/pisces/friday.jpg`
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: two fish / intuition / water. Weekday mood: relationships, beauty, closure.
+```
 
-```text
-Luxury mystic astrology visual for Pisces, two fish, intuition, water, dreamlike depth. Weekday mood: friday - relationships, beauty, closure, elegant emotional clarity. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, ocean teal, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
 
-### Saturday
+---
 
-Expected file: `public/assets/zodiac-weekly/pisces/saturday.jpg`
+### SATURDAY
+
+**File:** `public/assets/zodiac-weekly/pisces/saturday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: two fish / intuition / water. Weekday mood: rest, pleasure, personal energy.
+```
 
-```text
-Luxury mystic astrology visual for Pisces, two fish, intuition, water, dreamlike depth. Weekday mood: saturday - rest, pleasure, personal energy, deep restoration. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, ocean teal, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
 ```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
+```
+
+---
 
-### Sunday
+### SUNDAY
 
-Expected file: `public/assets/zodiac-weekly/pisces/sunday.jpg`
+**File:** `public/assets/zodiac-weekly/pisces/sunday.jpg`
+
+**Prompt:**
+```
+premium luxury mystic astrology, high-quality Telegram visual, dark navy/black cosmic background, gold details, cinematic lighting, expensive editorial style, no text inside image, no watermark, no cheap cartoon style, no distorted symbols, no low-quality AI artifacts. Sign identity: two fish / intuition / water. Weekday mood: reflection, reset, intuition.
+```
 
-```text
-Luxury mystic astrology visual for Pisces, two fish, intuition, water, dreamlike depth. Weekday mood: sunday - reflection, reset, intuition, quiet spiritual preparation. High-quality Telegram square visual, 1024x1024, dark navy and black cosmic background, black, dark navy, ocean teal, antique gold, elegant gold details, cinematic lighting, expensive editorial magazine style, refined realistic symbolism, premium horoscope brand asset, centered composition, no text inside image.
+**Negative Prompt:**
+```
+text, watermark, logo, cartoon, cheap, ugly, distorted, messy, low quality, artifacts, 3d render plastic
 ```
+
+---
+
