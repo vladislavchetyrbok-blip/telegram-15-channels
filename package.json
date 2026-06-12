@@ -80,6 +80,7 @@
     "prepare:tomorrow": "node scripts/prepare-tomorrow.mjs",
     "start:all": "powershell -ExecutionPolicy Bypass -File .\\start-autopublish.ps1",
     "zodiac:validate-plan": "node scripts/validate-zodiac-plan.mjs",
+    "zodiac:generate-plan": "node scripts/generate-zodiac-plan.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
