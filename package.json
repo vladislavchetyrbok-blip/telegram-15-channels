@@ -88,6 +88,7 @@
     "zodiac:pipeline": "node scripts/zodiac-safe-pipeline.mjs",
     "zodiac:healthcheck": "node scripts/zodiac-healthcheck.mjs",
     "zodiac:prepare-connections": "node scripts/prepare-zodiac-connections.mjs",
+    "zodiac:validate-assets": "node scripts/validate-zodiac-assets.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

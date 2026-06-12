@@ -8,6 +8,7 @@ import { ZodiacVisualKitOverview } from "@/components/ZodiacVisualKitOverview";
 import { ZodiacPublishReadinessPanel } from "@/components/ZodiacPublishReadinessPanel";
 import { ZodiacCommandReference } from "@/components/ZodiacCommandReference";
 import { ZodiacManualSetupGuide } from "@/components/ZodiacManualSetupGuide";
+import { ZodiacVisualAssetsDashboard } from "@/components/ZodiacVisualAssetsDashboard";
 
 type TabId = "overview" | "launchkit" | "connections" | "visuals" | "readiness" | "tools";
 
@@ -70,6 +71,18 @@ export function ZodiacSettingsDashboard() {
         {activeTab === "visuals" && (
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
             <ZodiacVisualKitOverview />
+            <div className="rounded border border-blue-500/20 bg-blue-500/5 p-4 space-y-2">
+              <h3 className="text-sm font-semibold text-blue-300">Visual Asset Production Pack</h3>
+              <p className="text-xs text-blue-300/80">
+                Read <code>docs/ZODIAC_AVATAR_GENERATION_PACK.md</code> for Midjourney / DALL-E prompt templates.
+                Assets must be manually placed in <code>public/assets/zodiac/</code> following the 
+                naming conventions in <code>docs/ZODIAC_ASSET_NAMING.md</code>.
+              </p>
+              <p className="text-xs text-blue-300/80">
+                Use <code>npm run zodiac:validate-assets</code> to check if all expected visual assets are present and correctly named.
+              </p>
+            </div>
+            <ZodiacVisualAssetsDashboard />
           </div>
         )}
 

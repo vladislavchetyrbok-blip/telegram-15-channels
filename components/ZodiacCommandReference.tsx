@@ -40,6 +40,11 @@ export function ZodiacCommandReference() {
             cmd="npm run zodiac:dry-run -- ./exports/zodiac-weekly-plan-2026-06-13.json" 
           />
           <CommandBlock 
+            title="5. Validate Assets" 
+            desc="Check if all required images/avatars are present in public/assets/zodiac/"
+            cmd="npm run zodiac:validate-assets" 
+          />
+          <CommandBlock 
             title="Safe Pipeline (All-in-one)" 
             desc="Runs generate -> validate -> review -> dry-run."
             cmd="npm run zodiac:pipeline -- --start-date 2026-06-13 --days 7 --style luxury-mystic" 

@@ -1,0 +1,71 @@
+{
+  "project": "zodiac-network",
+  "totalChannels": 13,
+  "assets": [
+    {
+      "id": "zodiac-general",
+      "avatar": { "status": "pending", "file": "avatar-zodiac-general.png" },
+      "placeholder": { "status": "pending", "file": "placeholder-general.jpg" }
+    },
+    {
+      "id": "aries",
+      "avatar": { "status": "pending", "file": "avatar-aries.png" },
+      "placeholder": { "status": "pending", "file": "placeholder-aries.jpg" }
+    },
+    {
+      "id": "taurus",
+      "avatar": { "status": "pending", "file": "avatar-taurus.png" },
+      "placeholder": { "status": "pending", "file": "placeholder-taurus.jpg" }
+    },
+    {
+      "id": "gemini",
+      "avatar": { "status": "pending", "file": "avatar-gemini.png" },
+      "placeholder": { "status": "pending", "file": "placeholder-gemini.jpg" }
+    },
+    {
+      "id": "cancer",
+      "avatar": { "status": "pending", "file": "avatar-cancer.png" },
+      "placeholder": { "status": "pending", "file": "placeholder-cancer.jpg" }
+    },
+    {
+      "id": "leo",
+      "avatar": { "status": "pending", "file": "avatar-leo.png" },
+      "placeholder": { "status": "pending", "file": "placeholder-leo.jpg" }
+    },
+    {
+      "id": "virgo",
+      "avatar": { "status": "pending", "file": "avatar-virgo.png" },
+      "placeholder": { "status": "pending", "file": "placeholder-virgo.jpg" }
+    },
+    {
+      "id": "libra",
+      "avatar": { "status": "pending", "file": "avatar-libra.png" },
+      "placeholder": { "status": "pending", "file": "placeholder-libra.jpg" }
+    },
+    {
+      "id": "scorpio",
+      "avatar": { "status": "pending", "file": "avatar-scorpio.png" },
+      "placeholder": { "status": "pending", "file": "placeholder-scorpio.jpg" }
+    },
+    {
+      "id": "sagittarius",
+      "avatar": { "status": "pending", "file": "avatar-sagittarius.png" },
+      "placeholder": { "status": "pending", "file": "placeholder-sagittarius.jpg" }
+    },
+    {
+      "id": "capricorn",
+      "avatar": { "status": "pending", "file": "avatar-capricorn.png" },
+      "placeholder": { "status": "pending", "file": "placeholder-capricorn.jpg" }
+    },
+    {
+      "id": "aquarius",
+      "avatar": { "status": "pending", "file": "avatar-aquarius.png" },
+      "placeholder": { "status": "pending", "file": "placeholder-aquarius.jpg" }
+    },
+    {
+      "id": "pisces",
+      "avatar": { "status": "pending", "file": "avatar-pisces.png" },
+      "placeholder": { "status": "pending", "file": "placeholder-pisces.jpg" }
+    }
+  ]
+}
