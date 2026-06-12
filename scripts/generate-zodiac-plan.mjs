@@ -57,7 +57,9 @@ function pick(items, seed) {
 function formatRuDate(dateStr) {
   const [year, month, day] = dateStr.split("-").map(Number);
   const date = new Date(Date.UTC(year, month - 1, day));
-  return new Intl.DateTimeFormat("ru-RU", { day: "numeric", month: "long", timeZone: "UTC" }).format(date);
+  return new Intl.DateTimeFormat("ru-RU", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })
+    .format(date)
+    .replace(/\s*г\.$/, "");
 }
 
 function buildPost(channel, dateStr, index, stylePreset) {
@@ -68,7 +70,7 @@ function buildPost(channel, dateStr, index, stylePreset) {
   let visualPrompt = "";
   
   if (channel.type === "general") {
-    title = `Гороскоп на ${formatRuDate(dateStr)}`;
+    title = `${channel.emoji} Гороскоп на сегодня — ${formatRuDate(dateStr)}`;
     sections = [
       { title: "Общая энергия дня", body: pick(generalEnergy, seed) },
       { title: "Любовь", body: pick(loveLines, seed + 1) },
@@ -78,7 +80,7 @@ function buildPost(channel, dateStr, index, stylePreset) {
     ];
     visualPrompt = `${channel.visualPromptSeed} Date mood: ${formatRuDate(dateStr)}. Style Preset: ${stylePreset.visualStyle}. Addons: ${stylePreset.promptAddons}. General daily zodiac cover, 12-sign composition, premium dark magazine layout.`;
   } else {
-    title = `${channel.ruName} ${channel.emoji} | Гороскоп на сегодня`;
+    title = `${channel.emoji} ${channel.ruName} — гороскоп на ${formatRuDate(dateStr)}`;
     sections = [
       { title: "Главное", body: pick(generalEnergy, seed) },
       { title: "Любовь", body: pick(loveLines, seed + 1) },
