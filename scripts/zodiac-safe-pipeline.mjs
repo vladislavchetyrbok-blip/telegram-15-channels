@@ -70,6 +70,37 @@ function runCommandCapture(command, args) {
   return result.stdout;
 }
 
+function applyLimitToPlan(planPath, limit) {
+  if (!Number.isFinite(limit)) return null;
+  if (!Number.isInteger(limit) || limit <= 0) {
+    throw new Error("--limit must be a positive integer.");
+  }
+
+  const absolutePath = path.resolve(process.cwd(), planPath);
+  const plan = JSON.parse(fs.readFileSync(absolutePath, "utf8"));
+  if (!Array.isArray(plan.posts)) {
+    throw new Error(`Plan ${planPath} does not contain a posts array.`);
+  }
+
+  const originalCount = plan.posts.length;
+  if (originalCount <= limit) {
+    console.log(`[LIMIT] Plan already has ${originalCount} post(s); --limit ${limit} did not remove anything.`);
+    return null;
+  }
+
+  plan.posts = plan.posts.slice(0, limit);
+  plan.meta = {
+    ...(plan.meta || {}),
+    limitedFromPosts: originalCount,
+    limitedToPosts: plan.posts.length,
+    limitedAt: new Date().toISOString()
+  };
+
+  fs.writeFileSync(absolutePath, `${JSON.stringify(plan, null, 2)}\n`);
+  console.log(`[LIMIT] Trimmed plan from ${originalCount} to ${plan.posts.length} post(s).`);
+  return plan.posts.length;
+}
+
 function run() {
   const { startDate, days, style, skipReview, skipDryRun, enhance, rewriteWeak, rewriteThreshold, limit, channel, jsonOutput } = parseArgs();
 
@@ -102,6 +133,7 @@ function run() {
     runCommand("npm", generateArgs);
     report.generatedPlanPath = currentPlan;
     report.finalPlanPath = currentPlan;
+    applyLimitToPlan(currentPlan, limit);
     addStep("Generate Plan", "passed");
 
     // 2. Validate

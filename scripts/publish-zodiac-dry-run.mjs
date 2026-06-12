@@ -157,7 +157,8 @@ function printReport(report, jsonOutput, planFile, postsByDate = {}) {
   console.log(`Posts: ${report.totalPosts}`);
   
   if (Object.keys(postsByDate).length > 0) {
-    console.log(`Channels per day: 13`);
+    const channelsPerDay = Math.max(...Object.values(postsByDate).map(posts => posts.length));
+    console.log(`Channels per day: ${channelsPerDay}`);
   }
   
   console.log(`Media mode: text_only / image_optional (simulated)`);
@@ -173,7 +174,7 @@ function printReport(report, jsonOutput, planFile, postsByDate = {}) {
         const shortText = post.text ? post.text.slice(0, 40).replace(/\n/g, " ") + "..." : "";
         console.log(`  * ${post.channelId} | ${post.channelName} ${post.emoji} | ${shortText}`);
         if (post.imagePath) {
-          console.log(`    -> [ASSET] ${path.basename(post.imagePath)}`);
+          console.log(`    -> [ASSET] ${post.imagePath}`);
         }
       }
       console.log("");
