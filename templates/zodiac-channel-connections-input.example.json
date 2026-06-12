@@ -1,0 +1,132 @@
+[
+  {
+    "id": "zodiac-general",
+    "actualUsername": "zodiac_orbit",
+    "publicLink": "https://t.me/zodiac_orbit",
+    "telegramChannelId": null,
+    "botAdminStatus": "admin_added",
+    "creationStatus": "created",
+    "publishStatus": "not_ready",
+    "notes": "Created manually, channelId pending"
+  },
+  {
+    "id": "aries",
+    "actualUsername": "aries_orbit",
+    "publicLink": "https://t.me/aries_orbit",
+    "telegramChannelId": null,
+    "botAdminStatus": "admin_added",
+    "creationStatus": "created",
+    "publishStatus": "not_ready",
+    "notes": "Created manually, channelId pending"
+  },
+  {
+    "id": "taurus",
+    "actualUsername": "taurus_orbit",
+    "publicLink": "https://t.me/taurus_orbit",
+    "telegramChannelId": null,
+    "botAdminStatus": "admin_added",
+    "creationStatus": "created",
+    "publishStatus": "not_ready",
+    "notes": "Created manually, channelId pending"
+  },
+  {
+    "id": "gemini",
+    "actualUsername": "gemini_orbit",
+    "publicLink": "https://t.me/gemini_orbit",
+    "telegramChannelId": null,
+    "botAdminStatus": "admin_added",
+    "creationStatus": "created",
+    "publishStatus": "not_ready",
+    "notes": "Created manually, channelId pending"
+  },
+  {
+    "id": "cancer",
+    "actualUsername": "cancer_orbit",
+    "publicLink": "https://t.me/cancer_orbit",
+    "telegramChannelId": null,
+    "botAdminStatus": "admin_added",
+    "creationStatus": "created",
+    "publishStatus": "not_ready",
+    "notes": "Created manually, channelId pending"
+  },
+  {
+    "id": "leo",
+    "actualUsername": "leo_orbit",
+    "publicLink": "https://t.me/leo_orbit",
+    "telegramChannelId": null,
+    "botAdminStatus": "admin_added",
+    "creationStatus": "created",
+    "publishStatus": "not_ready",
+    "notes": "Created manually, channelId pending"
+  },
+  {
+    "id": "virgo",
+    "actualUsername": "virgo_orbit",
+    "publicLink": "https://t.me/virgo_orbit",
+    "telegramChannelId": null,
+    "botAdminStatus": "admin_added",
+    "creationStatus": "created",
+    "publishStatus": "not_ready",
+    "notes": "Created manually, channelId pending"
+  },
+  {
+    "id": "libra",
+    "actualUsername": "libra_orbit",
+    "publicLink": "https://t.me/libra_orbit",
+    "telegramChannelId": null,
+    "botAdminStatus": "admin_added",
+    "creationStatus": "created",
+    "publishStatus": "not_ready",
+    "notes": "Created manually, channelId pending"
+  },
+  {
+    "id": "scorpio",
+    "actualUsername": "scorpio_orbit",
+    "publicLink": "https://t.me/scorpio_orbit",
+    "telegramChannelId": null,
+    "botAdminStatus": "admin_added",
+    "creationStatus": "created",
+    "publishStatus": "not_ready",
+    "notes": "Created manually, channelId pending"
+  },
+  {
+    "id": "sagittarius",
+    "actualUsername": "sagittarius_orbit",
+    "publicLink": "https://t.me/sagittarius_orbit",
+    "telegramChannelId": null,
+    "botAdminStatus": "admin_added",
+    "creationStatus": "created",
+    "publishStatus": "not_ready",
+    "notes": "Created manually, channelId pending"
+  },
+  {
+    "id": "capricorn",
+    "actualUsername": "capricorn_orbit",
+    "publicLink": "https://t.me/capricorn_orbit",
+    "telegramChannelId": null,
+    "botAdminStatus": "admin_added",
+    "creationStatus": "created",
+    "publishStatus": "not_ready",
+    "notes": "Created manually, channelId pending"
+  },
+  {
+    "id": "aquarius",
+    "actualUsername": "aquarius_orbit",
+    "publicLink": "https://t.me/aquarius_orbit",
+    "telegramChannelId": null,
+    "botAdminStatus": "admin_added",
+    "creationStatus": "created",
+    "publishStatus": "not_ready",
+    "notes": "Created manually, channelId pending"
+  },
+  {
+    "id": "pisces",
+    "actualUsername": "pisces_orbit",
+    "publicLink": "https://t.me/pisces_orbit",
+    "telegramChannelId": null,
+    "botAdminStatus": "admin_added",
+    "creationStatus": "created",
+    "publishStatus": "not_ready",
+    "notes": "Created manually, channelId pending"
+  }
+]

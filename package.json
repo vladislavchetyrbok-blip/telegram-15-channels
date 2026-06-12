@@ -81,6 +81,13 @@
     "start:all": "powershell -ExecutionPolicy Bypass -File .\\start-autopublish.ps1",
     "zodiac:validate-plan": "node scripts/validate-zodiac-plan.mjs",
     "zodiac:generate-plan": "node scripts/generate-zodiac-plan.mjs",
+    "zodiac:enhance-plan": "node scripts/enhance-zodiac-plan-lmstudio.mjs",
+    "zodiac:review-plan": "node scripts/review-zodiac-plan.mjs",
+    "zodiac:rewrite-weak": "node scripts/rewrite-zodiac-weak-posts.mjs",
+    "zodiac:dry-run": "node scripts/publish-zodiac-dry-run.mjs",
+    "zodiac:pipeline": "node scripts/zodiac-safe-pipeline.mjs",
+    "zodiac:healthcheck": "node scripts/zodiac-healthcheck.mjs",
+    "zodiac:prepare-connections": "node scripts/prepare-zodiac-connections.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
