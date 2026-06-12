@@ -17,9 +17,19 @@ export default function ContentPlanPage() {
           </p>
         </div>
         
-        <div className="mt-4 max-w-2xl rounded-lg border border-blue-500/30 bg-blue-500/10 p-4">
+        <div className="mt-4 max-w-2xl rounded-lg border border-blue-500/30 bg-blue-500/10 p-6 space-y-4">
           <p className="text-sm text-blue-200">
-            <strong>Zodiac preview is not published automatically.</strong> Export JSON first, validate locally, then connect channels before dry-run.
+            <strong>Safe Local Workflow:</strong>
+          </p>
+          <ol className="list-decimal list-inside text-sm text-blue-200/80 space-y-1">
+            <li>Generate daily/weekly preview.</li>
+            <li>Export JSON.</li>
+            <li>Validate, review, and optionally enhance locally via <code>zodiac:pipeline</code>.</li>
+            <li>Connect real Telegram channels later.</li>
+            <li>Dry-run locally before real publish.</li>
+          </ol>
+          <p className="text-xs text-blue-300 border-t border-blue-500/20 pt-3 mt-3">
+            Real publish is disabled. Export does not publish.
           </p>
         </div>
       </div>
