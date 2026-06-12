@@ -27,6 +27,37 @@ const missingFields = [];
 const warnings = [];
 const blockingIssues = [];
 
+const zodiacSigns = [
+  { id: "aries", ruName: "Овен", emoji: "♈️" },
+  { id: "taurus", ruName: "Телец", emoji: "♉️" },
+  { id: "gemini", ruName: "Близнецы", emoji: "♊️" },
+  { id: "cancer", ruName: "Рак", emoji: "♋️" },
+  { id: "leo", ruName: "Лев", emoji: "♌️" },
+  { id: "virgo", ruName: "Дева", emoji: "♍️" },
+  { id: "libra", ruName: "Весы", emoji: "♎️" },
+  { id: "scorpio", ruName: "Скорпион", emoji: "♏️" },
+  { id: "sagittarius", ruName: "Стрелец", emoji: "♐️" },
+  { id: "capricorn", ruName: "Козерог", emoji: "♑️" },
+  { id: "aquarius", ruName: "Водолей", emoji: "♒️" },
+  { id: "pisces", ruName: "Рыбы", emoji: "♓️" },
+];
+
+function formatRuDate(dateStr) {
+  const [year, month, day] = dateStr.split("-").map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day));
+  return new Intl.DateTimeFormat("ru-RU", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })
+    .format(date)
+    .replace(/\s*г\.$/, "");
+}
+
+function countOccurrences(text, needle) {
+  return (text.match(new RegExp(escapeRegExp(needle), "g")) || []).length;
+}
+
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 if (plan.network !== "zodiac") {
   blockingIssues.push("network is not 'zodiac'.");
 }
@@ -66,6 +97,50 @@ if (!Array.isArray(plan.posts)) {
     if (!post.title) missingFields.push(`${postRef}: title`);
     if (!post.text) missingFields.push(`${postRef}: text`);
     if (!post.visualPrompt) missingFields.push(`${postRef}: visualPrompt`);
+
+    const expectedDate = post.date ? formatRuDate(post.date) : "";
+    const text = String(post.text || "");
+    const title = String(post.title || "");
+
+    if (expectedDate && !title.includes(expectedDate)) {
+      blockingIssues.push(`${postRef}: title does not include generated date '${expectedDate}'.`);
+    }
+
+    if (post.channelId === "zodiac-general") {
+      if (text.length < 900) {
+        blockingIssues.push(`${postRef}: zodiac-general text is too short for 12-sign daily format (${text.length} chars).`);
+      }
+
+      for (const sign of zodiacSigns) {
+        const marker = `${sign.emoji} ${sign.ruName} —`;
+        const count = countOccurrences(text, marker);
+        if (count !== 1) {
+          blockingIssues.push(`${postRef}: zodiac-general must include ${marker} exactly once, found ${count}.`);
+        }
+      }
+
+      if (!text.includes("Хэштеги:") || !text.includes("#ГороскопНаСегодня")) {
+        blockingIssues.push(`${postRef}: zodiac-general must include hashtag block.`);
+      }
+    } else {
+      const sign = zodiacSigns.find((item) => item.id === post.channelId);
+      if (sign) {
+        if (!title.includes(sign.ruName) || !title.includes(sign.emoji)) {
+          blockingIssues.push(`${postRef}: sign post title must include ${sign.emoji} ${sign.ruName}.`);
+        }
+
+        if (text.length < 850) {
+          blockingIssues.push(`${postRef}: sign post is too short for detailed format (${text.length} chars).`);
+        }
+
+        for (const otherSign of zodiacSigns.filter((item) => item.id !== post.channelId)) {
+          const otherMarker = `${otherSign.emoji} ${otherSign.ruName}`;
+          if (text.includes(otherMarker) || text.includes(`#${otherSign.ruName}`)) {
+            blockingIssues.push(`${postRef}: sign post should focus on ${sign.ruName}, but mentions ${otherSign.ruName}.`);
+          }
+        }
+      }
+    }
     
     if (post.qualityScore === undefined || post.qualityScore === null) {
       warnings.push(`${postRef}: missing qualityScore`);
