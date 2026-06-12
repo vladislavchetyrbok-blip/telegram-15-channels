@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Calendar, ChevronDown, ChevronUp, Image as ImageIcon } from "lucide-react";
 import { generateZodiacWeeklyPlan, type ZodiacWeeklyPlan } from "@/lib/zodiac-weekly-plan";
+import { ZodiacRuntimePlan, ZodiacRuntimePost } from "@/lib/zodiac-runtime-plan";
 import { zodiacStylePresets, defaultZodiacStylePresetId } from "@/data/zodiacStyles";
 import { cn } from "@/lib/utils";
 
@@ -20,6 +21,55 @@ export function ZodiacWeeklyPreviewPanel() {
 
   const toggleDay = (index: number) => {
     setExpandedDays(prev => ({ ...prev, [index]: !prev[index] }));
+  };
+
+  const handleExport = () => {
+    if (!plan) return;
+
+    const runtimePosts: ZodiacRuntimePost[] = plan.days.flatMap(day => 
+      day.posts.map(post => ({
+        id: post.id,
+        date: post.date,
+        dayIndex: day.dayIndex,
+        channelId: post.channelId,
+        channelName: post.channelName,
+        emoji: post.emoji,
+        type: post.type,
+        title: post.title,
+        text: post.text,
+        sections: post.sections,
+        visualPrompt: post.visualPrompt,
+        qualityScore: post.qualityScore,
+        editorialStatus: post.editorialStatus,
+        publishReady: false,
+        telegramUsername: null,
+        telegramChannelId: null,
+        mediaMode: "text_only",
+        imagePath: null,
+        status: "preview",
+      }))
+    );
+
+    const runtimePlan: ZodiacRuntimePlan = {
+      planId: `zodiac-${startDate}-${Date.now()}`,
+      network: "zodiac",
+      version: 1,
+      createdAt: new Date().toISOString(),
+      startDate: startDate,
+      daysCount: 7,
+      stylePresetId: stylePresetId,
+      posts: runtimePosts,
+    };
+
+    const blob = new Blob([JSON.stringify(runtimePlan, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `zodiac-weekly-plan-${startDate}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -62,6 +112,15 @@ export function ZodiacWeeklyPreviewPanel() {
           >
             Generate 7-Day Plan
           </button>
+          
+          {plan && (
+            <button
+              onClick={handleExport}
+              className="rounded-md bg-indigo-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-indigo-500 ml-auto"
+            >
+              Export Zodiac Plan JSON
+            </button>
+          )}
         </div>
       </div>
 

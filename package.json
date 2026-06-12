@@ -79,6 +79,7 @@
     "visuals:stamp-provider": "node scripts/stamp-image-provider-metadata.mjs",
     "prepare:tomorrow": "node scripts/prepare-tomorrow.mjs",
     "start:all": "powershell -ExecutionPolicy Bypass -File .\\start-autopublish.ps1",
+    "zodiac:validate-plan": "node scripts/validate-zodiac-plan.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

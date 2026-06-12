@@ -16,6 +16,12 @@ export default function ContentPlanPage() {
             Preview mode for the planned Zodiac Network. Generate daily and weekly horoscope previews locally without Telegram, runtime writes, or AI dependency.
           </p>
         </div>
+        
+        <div className="mt-4 max-w-2xl rounded-lg border border-blue-500/30 bg-blue-500/10 p-4">
+          <p className="text-sm text-blue-200">
+            <strong>Zodiac preview is not published automatically.</strong> Export JSON first, validate locally, then connect channels before dry-run.
+          </p>
+        </div>
       </div>
 
       <div className="space-y-12">
