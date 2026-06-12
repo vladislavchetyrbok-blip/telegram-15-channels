@@ -148,6 +148,15 @@ function run() {
       addStep("Dry-Run Publisher", "passed");
     }
 
+    // 5. Live Publish (Guarded)
+    const isLive = process.argv.includes("--live") || process.env.TELEGRAM_LIVE_PUBLISH === "true";
+    if (isLive) {
+      addStep("Live Publisher", "started");
+      // Actually we don't have a live zodiac publisher script yet, so we just log it or fail gracefully.
+      console.log("\n[WARN] Live publishing is currently not implemented for Zodiac pipeline.");
+      addStep("Live Publisher", "skipped");
+    }
+
   } catch (err) {
     fail(err.message);
     if (!jsonOutput) {

@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import process from "process";
+import { getZodiacVisualAsset } from "./zodiac-asset-resolver.mjs";
 
 const ZODIAC_CHANNEL_IDS = [
   "zodiac-general", "aries", "taurus", "gemini", "cancer", "leo",
@@ -110,6 +111,20 @@ function run() {
       addIssue(`Post [${i}] references legacy or unknown channel: ${post.channelId}`);
     }
 
+    // Resolve visual asset
+    let assetType = "daily";
+    if (post.title && post.title.toLowerCase().includes("недел")) {
+      assetType = "weekly";
+    }
+
+    const asset = getZodiacVisualAsset(post.channelId, assetType);
+    if (!asset.ok) {
+      addIssue(asset.error);
+    } else {
+      post.imagePath = asset.path;
+      post.mediaMode = "image_required";
+    }
+
     if (post.mediaMode === "image_required" && !post.imagePath) {
       addIssue(`Post [${i}] requires an image but imagePath is missing.`);
     }
@@ -155,6 +170,9 @@ function printReport(report, jsonOutput, planFile, postsByDate = {}) {
         // truncate text for display
         const shortText = post.text ? post.text.slice(0, 40).replace(/\n/g, " ") + "..." : "";
         console.log(`  * ${post.channelId} | ${post.channelName} ${post.emoji} | ${shortText}`);
+        if (post.imagePath) {
+          console.log(`    -> [ASSET] ${path.basename(post.imagePath)}`);
+        }
       }
       console.log("");
       dayCounter++;
