@@ -23,6 +23,26 @@ function parseArgs() {
   return { planFile };
 }
 
+function getWeeklyAssetPath(post) {
+  if (post.imagePath) return post.imagePath;
+
+  if (!post.channelId || !post.date) return null;
+
+  const weekdays = [
+    "sunday",
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+  ];
+
+  const weekday = weekdays[new Date(`${post.date}T00:00:00Z`).getUTCDay()];
+  // Ensure consistent forward slashes for output, though path.join works
+  return `public/assets/zodiac-weekly/${post.channelId}/${weekday}.jpg`;
+}
+
 function checkImage(imagePath) {
   if (!imagePath) return "MISSING (No path)";
   const fullPath = path.resolve(process.cwd(), "public", imagePath.replace(/^\//, ""));
@@ -67,9 +87,12 @@ function run() {
     console.log(`Snippet:  ${snippet}${snippet.length === 100 ? "..." : ""}`);
     console.log(`Length:   ${post.text ? post.text.length : 0} chars`);
     
-    const status = checkImage(post.imagePath);
-    console.log(`Image:    ${post.imagePath || "None"}`);
-    console.log(`Status:   ${status === "READY" ? "\x1b[32mREADY\x1b[0m" : "\x1b[31mMISSING\x1b[0m"}`);
+    const resolvedImagePath = getWeeklyAssetPath(post);
+    // On Windows, fs.existsSync needs backslashes or forward slashes, both work.
+    // However, if we built with path.join we might get backslashes. The template uses string.
+    const assetStatus = resolvedImagePath && fs.existsSync(resolvedImagePath) ? "READY" : "MISSING";
+    console.log(`Image:    ${resolvedImagePath || "None"}`);
+    console.log(`Status:   ${assetStatus === "READY" ? "\x1b[32mREADY\x1b[0m" : "\x1b[31mMISSING\x1b[0m"}`);
   }
   
   console.log(`--------------------------------------------------`);
