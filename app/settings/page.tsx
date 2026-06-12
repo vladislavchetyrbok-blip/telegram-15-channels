@@ -1,5 +1,6 @@
 import { Settings } from "lucide-react";
 import { NetworkModeOverview } from "@/components/NetworkModeOverview";
+import { ZodiacLaunchKitOverview } from "@/components/ZodiacLaunchKitOverview";
 
 export default function SettingsPage() {
   return (
@@ -21,6 +22,7 @@ export default function SettingsPage() {
         </div>
       </div>
       <NetworkModeOverview />
+      <ZodiacLaunchKitOverview />
     </div>
   );
 }

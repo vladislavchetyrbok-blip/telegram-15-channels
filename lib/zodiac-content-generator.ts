@@ -5,6 +5,11 @@ import {
   zodiacVisualStyle,
   type ZodiacChannelConfig,
 } from "@/data/zodiacNetwork";
+import {
+  zodiacStylePresets,
+  defaultZodiacStylePresetId,
+  type ZodiacStylePreset,
+} from "@/data/zodiacStyles";
 
 export type ZodiacPreviewPostStatus = "preview";
 
@@ -28,11 +33,14 @@ export interface ZodiacPreviewPost {
   publishReady: false;
   telegramChannelId: null;
   telegramUsername: null;
+  stylePresetId?: string;
+  styleName?: string;
 }
 
 export interface BuildZodiacDailyPreviewInput {
   date?: string;
   channels?: ZodiacChannelConfig[];
+  stylePresetId?: string;
 }
 
 export interface ZodiacPromptInput {
@@ -91,15 +99,15 @@ const closingLines = [
 
 const signMainLines: Record<string, string[]> = {
   aries: [
-    "Овен, сегодня не день для суеты. День проверяет не скорость, а выдержку.",
+    "Овен, сегодня не день для суеты. День проверяет не скорость, а выдержку. Скажешь лишнее — потом будешь чинить. Сделаешь паузу — выиграешь.",
     "Овен, импульс сильный, но победит тот, кто направит его в одно точное действие.",
   ],
   taurus: [
-    "Телец, день просит закрепить результат, а не искать новую гонку.",
+    "Телец, сегодня твоя сила — в спокойствии. Не доказывай то, что и так видно. Закрепи результат и не распыляйся.",
     "Телец, спокойная сила сегодня заметнее любых резких движений.",
   ],
   gemini: [
-    "Близнецы, не разбрасывайте внимание. Один честный фокус даст больше, чем десять разговоров.",
+    "Близнецы, разговор сегодня может решить больше, чем длинный план. Но выбирай слова точнее: лишняя фраза потянет за собой лишние объяснения.",
     "Близнецы, сегодня важен фильтр: не каждая мысль требует немедленного слова.",
   ],
   cancer: [
@@ -158,11 +166,13 @@ const signBriefLines: Record<string, string[]> = {
 export function buildZodiacDailyPreview(input: BuildZodiacDailyPreviewInput = {}): ZodiacPreviewPost[] {
   const channels = input.channels ?? zodiacChannels;
   const date = normalizeDate(input.date);
+  const stylePresetId = input.stylePresetId ?? defaultZodiacStylePresetId;
+  const stylePreset = zodiacStylePresets.find(s => s.id === stylePresetId) ?? zodiacStylePresets[0];
 
   return channels.map((channel, index) =>
     channel.type === "general"
-      ? buildGeneralPreviewPost({ channel, date, index })
-      : buildSignPreviewPost({ channel, date, index }),
+      ? buildGeneralPreviewPost({ channel, date, index, stylePreset })
+      : buildSignPreviewPost({ channel, date, index, stylePreset }),
   );
 }
 
@@ -203,10 +213,12 @@ function buildGeneralPreviewPost({
   channel,
   date,
   index,
+  stylePreset,
 }: {
   channel: ZodiacChannelConfig;
   date: string;
   index: number;
+  stylePreset: ZodiacStylePreset;
 }): ZodiacPreviewPost {
   const seed = createSeed(date, channel.id, index);
   const signChannels = zodiacChannels.filter((item) => item.type === "sign");
@@ -228,9 +240,11 @@ function buildGeneralPreviewPost({
     date,
     title,
     sections,
+    stylePreset,
     visualPrompt: [
       channel.visualPromptSeed,
       `Date mood: ${formatRuDate(date)}.`,
+      `Style Preset: ${stylePreset.visualStyle}. Addons: ${stylePreset.promptAddons}.`,
       "General daily zodiac cover, 12-sign composition, premium dark magazine layout.",
     ].join(" "),
   });
@@ -240,10 +254,12 @@ function buildSignPreviewPost({
   channel,
   date,
   index,
+  stylePreset,
 }: {
   channel: ZodiacChannelConfig;
   date: string;
   index: number;
+  stylePreset: ZodiacStylePreset;
 }): ZodiacPreviewPost {
   const seed = createSeed(date, channel.id, index);
   const mainPool = signMainLines[channel.id] ?? generalEnergy;
@@ -263,9 +279,11 @@ function buildSignPreviewPost({
     date,
     title,
     sections,
+    stylePreset,
     visualPrompt: [
       channel.visualPromptSeed,
       `Sign identity: ${channel.ruName}, ${channel.element}, ${channel.visualSymbols.join(", ")}.`,
+      `Style Preset: ${stylePreset.visualStyle}. Addons: ${stylePreset.promptAddons}.`,
       "Premium Telegram magazine cover, no cartoon style, no generic stock look.",
     ].join(" "),
   });
@@ -277,12 +295,14 @@ function createPreviewPost({
   title,
   sections,
   visualPrompt,
+  stylePreset,
 }: {
   channel: ZodiacChannelConfig;
   date: string;
   title: string;
   sections: ZodiacPreviewSection[];
   visualPrompt: string;
+  stylePreset: ZodiacStylePreset;
 }): ZodiacPreviewPost {
   return {
     id: `zodiac-preview-${date}-${channel.id}`,
@@ -299,6 +319,8 @@ function createPreviewPost({
     publishReady: false,
     telegramChannelId: channel.telegramChannelId,
     telegramUsername: channel.telegramUsername,
+    stylePresetId: stylePreset.id,
+    styleName: stylePreset.ruName,
   };
 }
 

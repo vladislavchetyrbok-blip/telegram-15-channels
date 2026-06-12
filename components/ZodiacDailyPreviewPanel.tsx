@@ -7,10 +7,12 @@ import {
   buildZodiacDailyPreview,
   type ZodiacPreviewPost,
 } from "@/lib/zodiac-content-generator";
+import { zodiacStylePresets, defaultZodiacStylePresetId } from "@/data/zodiacStyles";
 import { cn } from "@/lib/utils";
 
 export function ZodiacDailyPreviewPanel() {
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
+  const [stylePresetId, setStylePresetId] = useState(defaultZodiacStylePresetId);
   const [posts, setPosts] = useState<ZodiacPreviewPost[]>([]);
   const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
 
@@ -20,7 +22,7 @@ export function ZodiacDailyPreviewPanel() {
   );
 
   function generatePreview() {
-    const nextPosts = buildZodiacDailyPreview({ date });
+    const nextPosts = buildZodiacDailyPreview({ date, stylePresetId });
     setPosts(nextPosts);
     setSelectedPostId(nextPosts[0]?.id ?? null);
   }
@@ -56,6 +58,20 @@ export function ZodiacDailyPreviewPanel() {
               onChange={(event) => setDate(event.target.value)}
               className="bg-transparent text-slate-100 outline-none"
             />
+          </label>
+          <label className="flex h-11 items-center gap-2 rounded-md border border-line bg-slate-950 px-3 text-sm text-slate-300">
+            <span className="text-violet-200 text-xs font-semibold uppercase tracking-wider">Style</span>
+            <select
+              value={stylePresetId}
+              onChange={(e) => setStylePresetId(e.target.value)}
+              className="bg-transparent text-slate-100 outline-none focus:ring-0"
+            >
+              {zodiacStylePresets.map(preset => (
+                <option key={preset.id} value={preset.id} className="bg-slate-900">
+                  {preset.ruName}
+                </option>
+              ))}
+            </select>
           </label>
           <button
             type="button"
@@ -120,10 +136,15 @@ export function ZodiacDailyPreviewPanel() {
                     {selectedPost.channelName} · {selectedPost.date} · publishReady={String(selectedPost.publishReady)}
                   </p>
                 </div>
-                <span className="inline-flex w-fit items-center gap-2 rounded-md border border-slate-600 bg-slate-900/80 px-3 py-2 text-sm text-slate-300">
-                  <Eye className="h-4 w-4" />
-                  preview only
-                </span>
+                <div className="flex flex-col gap-2 items-end">
+                  <span className="inline-flex w-fit items-center gap-2 rounded-md border border-violet-300/30 bg-violet-300/10 px-3 py-1.5 text-xs font-semibold text-violet-200">
+                    Style: {selectedPost.styleName ?? "Unknown"}
+                  </span>
+                  <span className="inline-flex w-fit items-center gap-2 rounded-md border border-slate-600 bg-slate-900/80 px-3 py-1.5 text-xs text-slate-300">
+                    <Eye className="h-4 w-4" />
+                    preview only
+                  </span>
+                </div>
               </div>
 
               <pre className="max-h-[30rem] overflow-auto whitespace-pre-wrap rounded-md border border-line bg-slate-950/70 p-4 text-sm leading-6 text-slate-200">
