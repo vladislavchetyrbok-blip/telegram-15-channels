@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import process from "process";
-import { getZodiacVisualAsset } from "./zodiac-asset-resolver.mjs";
+import { resolveZodiacWeeklyVisualAsset } from "./zodiac-weekly-asset-resolver.mjs";
 
 const ZODIAC_CHANNEL_IDS = [
   "zodiac-general", "aries", "taurus", "gemini", "cancer", "leo",
@@ -111,18 +111,22 @@ function run() {
       addIssue(`Post [${i}] references legacy or unknown channel: ${post.channelId}`);
     }
 
-    // Resolve visual asset
     let assetType = "daily";
     if (post.title && post.title.toLowerCase().includes("недел")) {
       assetType = "weekly";
     }
 
-    const asset = getZodiacVisualAsset(post.channelId, assetType);
+    const asset = resolveZodiacWeeklyVisualAsset(post.channelId, post.date, assetType);
     if (!asset.ok) {
       addIssue(asset.error);
     } else {
       post.imagePath = asset.path;
+      post.imageAssetSource = asset.source;
+      post.imageAssetWeekday = asset.weekday;
       post.mediaMode = "image_required";
+      if (asset.fallback) {
+        addWarning(asset.warning);
+      }
     }
 
     if (post.mediaMode === "image_required" && !post.imagePath) {
@@ -175,6 +179,11 @@ function printReport(report, jsonOutput, planFile, postsByDate = {}) {
         console.log(`  * ${post.channelId} | ${post.channelName} ${post.emoji} | ${shortText}`);
         if (post.imagePath) {
           console.log(`    -> [ASSET] ${post.imagePath}`);
+          if (post.imageAssetSource === "fallback") {
+            console.log(`    -> Weekly zodiac asset missing, using fallback asset.`);
+          } else if (post.imageAssetSource === "weekly") {
+            console.log(`    -> [WEEKLY ASSET] ${post.imageAssetWeekday}`);
+          }
         }
       }
       console.log("");

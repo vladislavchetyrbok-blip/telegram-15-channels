@@ -2,7 +2,7 @@ import { spawnSync } from "child_process";
 import fs from "fs";
 import path from "path";
 import process from "process";
-import { getZodiacVisualAsset } from "./zodiac-asset-resolver.mjs";
+import { resolveZodiacWeeklyVisualAsset } from "./zodiac-weekly-asset-resolver.mjs";
 import { getZodiacTelegramTarget, planZodiacTelegramPublish, publishZodiacTelegramPost } from "./zodiac-telegram-publisher.mjs";
 
 function parseArgs() {
@@ -121,9 +121,13 @@ function readPlanPostForLive({ planPath, channel }) {
   }
 
   const assetType = post.title && post.title.toLowerCase().includes("недел") ? "weekly" : "daily";
-  const asset = getZodiacVisualAsset(post.channelId, assetType);
+  const asset = resolveZodiacWeeklyVisualAsset(post.channelId, post.date, assetType);
   if (!asset.ok) {
     throw new Error(`Live publishing blocked: ${asset.error}`);
+  }
+  if (asset.fallback) {
+    console.log(`Weekly zodiac asset missing, using fallback asset.`);
+    console.log(`Expected weekly asset: ${asset.expectedWeeklyPath}`);
   }
 
   return { post, imagePath: asset.path };
