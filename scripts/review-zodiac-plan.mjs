@@ -190,18 +190,18 @@ function run() {
       }
     }
 
-    for (const sentence of lowerText.split(/[.?!]/).map((item) => item.trim()).filter((item) => item.length > 30)) {
+    for (const sentence of lowerText.split(/[.?!]/).map((item) => item.trim()).filter((item) => item.length > 20)) {
       phraseFrequency[sentence] = (phraseFrequency[sentence] || 0) + 1;
     }
 
     if (post.channelId === "zodiac-general") {
-      if (text.length < 900) {
+      if (text.length < 1100) {
         report.issues.critical.push(`${context}: general post is too short for 12-sign format`);
         isWeak = true;
       }
 
       for (const sign of ZODIAC_SIGNS) {
-        const marker = `${sign.emoji} ${sign.ruName} —`;
+        const marker = `<b>${sign.emoji} ${sign.ruName}</b> —`;
         const count = countOccurrences(text, marker);
         if (count !== 1) {
           report.issues.critical.push(`${context}: ${marker} must appear exactly once, found ${count}`);
@@ -217,7 +217,7 @@ function run() {
           isWeak = true;
         }
 
-        if (text.length < 850) {
+        if (text.length < 950) {
           report.issues.critical.push(`${context}: sign post is too short for detailed format`);
           isWeak = true;
         }
@@ -245,7 +245,10 @@ function run() {
 
   report.qualityStats.average = Math.round(totalScore / plan.posts.length);
   for (const [phrase, count] of Object.entries(phraseFrequency)) {
-    if (count > 3) report.repeatedPhrases.push({ phrase, count });
+    if (count > 2) {
+      report.repeatedPhrases.push({ phrase, count });
+      report.issues.warnings.push(`Highly repeated phrase across days: "${phrase}" (${count} times)`);
+    }
   }
   report.topIssues = report.topIssues.slice(0, 10);
 

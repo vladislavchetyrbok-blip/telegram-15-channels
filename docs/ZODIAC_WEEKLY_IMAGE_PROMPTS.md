@@ -1,6 +1,22 @@
 # Zodiac Weekly Image Prompts
 
-Total: 91 prompts.
+**Status:** WAITING FOR IMAGES
+- **Expected Images:** 91
+- **Готово:** 7
+- **Missing:** 84
+- **Gemini:** COMPLETE
+- **Остальные:** WAITING FOR IMAGES
+
+**Внимание:** fake placeholders запрещены! Никаких заглушек.
+
+## Batch-Generation Стратегия
+Один знак = 7 изображений → validate → следующий знак.
+Для безопасной загрузки:
+1. Сгенерируйте 7 изображений для одного знака зодиака.
+2. Сохраните их в папку `public/assets/zodiac-weekly/<sign>/` под именами `monday.jpg` ... `sunday.jpg`.
+3. Запустите валидатор: `npm run zodiac:weekly-assets:validate`
+4. Если всё успешно, переходите к следующему знаку.
+
 Global requirements apply to all prompts.
 
 ## ZODIAC-GENERAL

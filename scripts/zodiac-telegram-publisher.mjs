@@ -231,6 +231,7 @@ async function sendPhoto({ token, telegramTarget, caption, imagePath }) {
   form.set("chat_id", telegramTarget);
   form.set("photo", new Blob([new Uint8Array(imageBuffer)], { type: getImageMime(imagePath) }), path.basename(imagePath));
   form.set("caption", caption);
+  form.set("parse_mode", "HTML");
 
   const response = await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
     method: "POST",
@@ -248,7 +249,7 @@ async function sendMessage({ token, telegramTarget, text }) {
   const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ chat_id: telegramTarget, text }),
+    body: JSON.stringify({ chat_id: telegramTarget, text, parse_mode: "HTML" }),
   });
   const body = await response.json().catch(() => null);
   if (!response.ok || !body?.ok) {

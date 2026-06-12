@@ -92,6 +92,8 @@
     "zodiac:validate-assets": "node scripts/validate-zodiac-assets.mjs",
     "zodiac:assets:validate": "node scripts/validate-zodiac-assets.mjs",
     "zodiac:weekly-assets:validate": "node scripts/validate-zodiac-weekly-assets.mjs",
+    "zodiac:preview:weekly": "node scripts/zodiac-weekly-preview.mjs",
+    "zodiac:report:latest": "node scripts/zodiac-latest-report.mjs",
     "zodiac:export-image-prompts": "node scripts/export-zodiac-image-prompts.mjs",
     "build": "next build",
     "start": "next start",

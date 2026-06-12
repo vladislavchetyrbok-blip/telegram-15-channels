@@ -28,20 +28,21 @@ async function run() {
 
   let ok = true;
   let botToken = process.env.TELEGRAM_BOT_TOKEN;
+  let botId = null;
 
   if (!botToken) {
-    console.error("❌ TELEGRAM_BOT_TOKEN is missing in environment.");
+    console.error("❌ Token missing (TELEGRAM_BOT_TOKEN is not set).");
     ok = false;
   } else {
-    console.log("✅ TELEGRAM_BOT_TOKEN is present (hidden for security).");
-    // Optionally call getMe
+    console.log("✅ Token configured (hidden for security).");
     try {
       const resp = await fetch(`https://api.telegram.org/bot${botToken}/getMe`);
       const data = await resp.json();
       if (data.ok) {
-        console.log(`✅ Bot Token authenticated successfully. Bot Name: @${data.result.username}`);
+        botId = data.result.id;
+        console.log(`✅ Bot Token authenticated. Bot: @${data.result.username}`);
       } else {
-        console.error("❌ Bot Token is invalid or Telegram API error.");
+        console.error("❌ Token invalid or Telegram API error.");
         ok = false;
       }
     } catch (err) {
@@ -50,29 +51,55 @@ async function run() {
     }
   }
 
-  console.log("\n--- Channel Mappings ---");
-  let missingChannels = [];
+  console.log("\n--- Channel Health & Diagnostics ---");
   
   for (const channel of EXPECTED_CHANNELS) {
     const val = process.env[channel.env];
     if (!val) {
-      console.error(`❌ Missing ${channel.env} for ${channel.id}`);
-      missingChannels.push(channel.env);
+      console.error(`❌ Channel missing: ${channel.env} is not set for ${channel.id}.`);
       ok = false;
-    } else {
-      console.log(`✅ ${channel.env} is configured.`);
+      continue;
+    }
+    
+    if (!botToken || !botId) {
+      console.log(`⚠️ ${channel.id}: configured as ${val}, skipping API checks (no bot token).`);
+      continue;
+    }
+
+    try {
+      const resp = await fetch(`https://api.telegram.org/bot${botToken}/getChatMember?chat_id=${val}&user_id=${botId}`);
+      const data = await resp.json();
+
+      if (data.ok) {
+        const status = data.result.status;
+        if (status === "administrator" || status === "creator") {
+          console.log(`✅ ${channel.id} is healthy (bot is admin).`);
+        } else {
+          console.error(`❌ Bot is not admin in ${channel.id} (status: ${status}).`);
+          ok = false;
+        }
+      } else {
+        if (data.description.includes("chat not found")) {
+          console.error(`❌ Invalid channel id: ${val} for ${channel.id}.`);
+        } else if (data.description.includes("member list is inaccessible")) {
+          console.error(`❌ Bot cannot access chat: ${channel.id}. Add bot as admin first.`);
+        } else {
+          console.error(`❌ Bot cannot access chat: ${channel.id} (${data.description}).`);
+        }
+        ok = false;
+      }
+    } catch (err) {
+      console.error(`❌ API Error for ${channel.id}: ${err.message}`);
+      ok = false;
     }
   }
 
   console.log("");
   if (!ok) {
     console.error("Zodiac connections are NOT fully ready.");
-    if (missingChannels.length > 0) {
-      console.error(`Missing channel IDs: ${missingChannels.length}`);
-    }
     process.exit(1);
   } else {
-    console.log("All required Zodiac Telegram connections are properly configured!");
+    console.log("All required Zodiac Telegram connections are healthy and verified!");
     process.exit(0);
   }
 }

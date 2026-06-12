@@ -20,6 +20,7 @@ function parseArgs() {
   let channel = null;
   let live = false;
   let jsonOutput = false;
+  let approved = false;
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
@@ -54,10 +55,12 @@ function parseArgs() {
       live = true;
     } else if (arg === "--json") {
       jsonOutput = true;
+    } else if (arg === "--approved") {
+      approved = true;
     }
   }
 
-  return { startDate, days, style, skipReview, skipDryRun, enhance, rewriteWeak, rewriteThreshold, limit, limitProvided, channel, live, jsonOutput };
+  return { startDate, days, style, skipReview, skipDryRun, enhance, rewriteWeak, rewriteThreshold, limit, limitProvided, channel, live, jsonOutput, approved };
 }
 
 function runCommand(command, args) {
@@ -159,7 +162,7 @@ function logTelegramDryRunPlan({ channel, limit, post, imagePath }) {
 }
 
 async function run() {
-  const { startDate, days, style, skipReview, skipDryRun, enhance, rewriteWeak, rewriteThreshold, limit, limitProvided, channel, live, jsonOutput } = parseArgs();
+  const { startDate, days, style, skipReview, skipDryRun, enhance, rewriteWeak, rewriteThreshold, limit, limitProvided, channel, live, jsonOutput, approved } = parseArgs();
   const isLive = live || process.env.TELEGRAM_LIVE_PUBLISH === "true";
 
   const report = {
@@ -188,6 +191,9 @@ async function run() {
       }
       if (skipReview || skipDryRun) {
         throw new Error("Live publishing blocked: validation, editorial review, and dry-run must all pass before live send.");
+      }
+      if (!approved) {
+        throw new Error("Live publishing blocked: missing --approved flag. You must explicitly approve the operation.");
       }
     }
 
@@ -310,6 +316,13 @@ async function run() {
     process.exit(report.ok ? 0 : 1);
   }
 
+  const runtimeDir = path.resolve(process.cwd(), "data", "runtime");
+  if (!fs.existsSync(runtimeDir)) {
+    fs.mkdirSync(runtimeDir, { recursive: true });
+  }
+  const reportPath = path.join(runtimeDir, `report-${new Date().toISOString().split("T")[0]}.json`);
+  fs.writeFileSync(reportPath, JSON.stringify(report, null, 2), "utf8");
+
   console.log(`\n=== Zodiac Safe Pipeline Result ===`);
   console.log(`Start date: ${report.startDate}`);
   console.log(`Days: ${report.days}`);
@@ -331,7 +344,7 @@ async function run() {
   console.log(`Enhance: ${enhance ? getStatus("Enhance Plan (LM Studio)") : "skipped"}`);
   console.log(`Rewrite weak: ${rewriteWeak ? getStatus("Rewrite Weak Posts (LM Studio)") : "skipped"}`);
   console.log(`Real publish: ${report.realPublish}`);
-  console.log(`Runtime writes: none`);
+  console.log(`Runtime writes: ${reportPath}`);
   console.log(`Telegram calls: ${report.telegramCalls}`);
   if (report.liveMessageId) {
     console.log(`Live message id: ${report.liveMessageId}`);

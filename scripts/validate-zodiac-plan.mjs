@@ -112,14 +112,14 @@ if (!Array.isArray(plan.posts)) {
       }
 
       for (const sign of zodiacSigns) {
-        const marker = `${sign.emoji} ${sign.ruName} —`;
+        const marker = `<b>${sign.emoji} ${sign.ruName}</b> —`;
         const count = countOccurrences(text, marker);
         if (count !== 1) {
           blockingIssues.push(`${postRef}: zodiac-general must include ${marker} exactly once, found ${count}.`);
         }
       }
 
-      if (!text.includes("Хэштеги:") || !text.includes("#ГороскопНаСегодня")) {
+      if (!text.includes("<b>Хэштеги:</b>") || !text.includes("#ГороскопНаСегодня")) {
         blockingIssues.push(`${postRef}: zodiac-general must include hashtag block.`);
       }
     } else {
