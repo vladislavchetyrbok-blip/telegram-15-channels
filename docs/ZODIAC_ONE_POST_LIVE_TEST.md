@@ -24,9 +24,10 @@ Expected result:
 
 - `Dry-run: passed`
 - `Real publish: disabled`
-- `Telegram calls: none`
+- `Telegram calls: 0`
 - one generated post
 - one resolved visual asset path
+- for long posts, the dry-run plan says it would send a photo with a short caption and then a full text message
 
 ## Guarded One-Post Live Command
 
@@ -38,15 +39,22 @@ npm run zodiac:pipeline -- --days 1 --style luxury-mystic --channel zodiac-gener
 
 The live guard requires both `--channel <id>` and `--limit 1`. Any live command without those arguments is blocked before sending.
 
+Long posts are sent as one controlled live test unit:
+
+- if the text fits safely in a Telegram photo caption, the pipeline sends `sendPhoto` with the full caption;
+- if the text is longer than the safe caption limit, the pipeline sends `sendPhoto` with a short dated caption and then `sendMessage` with the full horoscope text;
+- if no image is available, the pipeline sends the horoscope text with `sendMessage`.
+
 ## Verification
 
 After a live send:
 
 1. Open the target Telegram channel manually.
-2. Confirm exactly one new post exists.
+2. Confirm the post appears only in the requested channel.
 3. Confirm it has the resolved zodiac image.
-4. Confirm the caption starts with the dated horoscope header.
-5. Record the `message_id` printed by the pipeline if needed.
+4. For long posts, confirm the image has a short dated caption and the next message contains the full horoscope text.
+5. Confirm the text starts with the dated horoscope header.
+6. Record the printed `message_id` values if needed.
 
 ## Avoiding All-Channel Publishing
 

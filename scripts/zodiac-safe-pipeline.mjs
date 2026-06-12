@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 import process from "process";
 import { getZodiacVisualAsset } from "./zodiac-asset-resolver.mjs";
-import { getZodiacTelegramTarget, publishZodiacTelegramPost } from "./zodiac-telegram-publisher.mjs";
+import { getZodiacTelegramTarget, planZodiacTelegramPublish, publishZodiacTelegramPost } from "./zodiac-telegram-publisher.mjs";
 
 function parseArgs() {
   const args = process.argv.slice(2);
@@ -129,6 +129,31 @@ function readPlanPostForLive({ planPath, channel }) {
   return { post, imagePath: asset.path };
 }
 
+function logTelegramDryRunPlan({ channel, limit, post, imagePath }) {
+  const publishPlan = planZodiacTelegramPublish({ channelId: channel, text: post.text, imagePath });
+  if (!publishPlan.ok) {
+    throw new Error(`Telegram dry-run plan failed: ${publishPlan.error}`);
+  }
+
+  console.log(`\n=== Telegram Publish Plan (dry-run) ===`);
+  console.log(`Channel: ${channel}`);
+  console.log(`Limit: ${limit}`);
+  console.log(`Resolved visual asset: ${imagePath}`);
+
+  for (const call of publishPlan.calls) {
+    if (call.type === "sendPhoto" && call.captionMode === "short") {
+      console.log(`Would send photo with short caption.`);
+    } else if (call.type === "sendPhoto") {
+      console.log(`Would send photo with full caption.`);
+    } else if (call.type === "sendMessage") {
+      console.log(`Would send full text message.`);
+    }
+  }
+
+  console.log(`Telegram calls: 0`);
+  return publishPlan;
+}
+
 async function run() {
   const { startDate, days, style, skipReview, skipDryRun, enhance, rewriteWeak, rewriteThreshold, limit, limitProvided, channel, live, jsonOutput } = parseArgs();
   const isLive = live || process.env.TELEGRAM_LIVE_PUBLISH === "true";
@@ -226,6 +251,12 @@ async function run() {
       addStep("Dry-Run Publisher", "started");
       runCommand("npm", ["run", "zodiac:dry-run", "--", currentPlan]);
       addStep("Dry-Run Publisher", "passed");
+
+      if (!isLive && channel && limitProvided && limit === 1) {
+        const { post, imagePath } = readPlanPostForLive({ planPath: currentPlan, channel });
+        logTelegramDryRunPlan({ channel, limit, post, imagePath });
+        report.telegramCalls = "0";
+      }
     }
 
     // 5. Live Publish (Guarded)
@@ -250,9 +281,16 @@ async function run() {
       }
 
       report.realPublish = "sent";
-      report.telegramCalls = "1 sendPhoto";
-      report.liveMessageId = publishResult.messageId;
-      console.log(`\nLive publishing completed for ${channel}. message_id=${publishResult.messageId}`);
+      report.telegramCalls = String(publishResult.telegramCalls);
+      report.liveMessageId = publishResult.messageIds?.join(", ") || publishResult.messageId;
+      console.log(`\nLive publishing completed for ${channel}.`);
+      console.log(`Channel: ${channel}`);
+      console.log(`Limit: ${limit}`);
+      for (const action of publishResult.actions) {
+        console.log(`${action}: done`);
+      }
+      console.log(`Telegram calls: ${publishResult.telegramCalls}`);
+      console.log(`message_id=${report.liveMessageId}`);
       addStep("Live Publisher", "passed");
     }
 
