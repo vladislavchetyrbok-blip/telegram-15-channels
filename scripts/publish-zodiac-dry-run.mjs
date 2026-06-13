@@ -123,7 +123,7 @@ function run() {
       post.imagePath = asset.path;
       post.imageAssetSource = asset.source;
       post.imageAssetWeekday = asset.weekday;
-      post.mediaMode = "image_required";
+      post.mediaMode = asset.path ? "image_required" : "text_only";
       if (asset.fallback) {
         addWarning(asset.warning);
       }
@@ -176,7 +176,8 @@ function printReport(report, jsonOutput, planFile, postsByDate = {}) {
       for (const post of posts) {
         // truncate text for display
         const shortText = post.text ? post.text.slice(0, 40).replace(/\n/g, " ") + "..." : "";
-        console.log(`  * ${post.channelId} | ${post.channelName} ${post.emoji} | ${shortText}`);
+        const modeDisplay = post.mediaMode === "text_only" ? "text_only" : "image";
+        console.log(`  * ${post.channelId} | ${post.date} | Mode: ${modeDisplay} | ${shortText}`);
         if (post.imagePath) {
           console.log(`    -> [ASSET] ${post.imagePath}`);
           if (post.imageAssetSource === "fallback") {

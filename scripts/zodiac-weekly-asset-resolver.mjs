@@ -79,29 +79,16 @@ export function resolveZodiacWeeklyVisualAsset(channelId, dateString, fallbackAs
     };
   }
 
-  const fallbackAsset = getZodiacVisualAsset(channelId, fallbackAssetType);
-  if (!fallbackAsset.ok) {
-    return {
-      ok: false,
-      path: null,
-      relative: null,
-      weekday: expected.weekday,
-      source: "none",
-      fallback: false,
-      warning: null,
-      error: `Weekly zodiac asset missing and fallback failed: ${fallbackAsset.error}`,
-    };
-  }
-
+  // Safety patch: disable fallback images and enforce text-only mode
   return {
     ok: true,
-    path: fallbackAsset.path,
-    relative: fallbackAsset.relative,
+    path: null,
+    relative: null,
     weekday: expected.weekday,
-    source: "fallback",
+    source: "none",
     fallback: true,
     expectedWeeklyPath: expected.path,
-    warning: `Weekly zodiac asset missing, using fallback asset. Expected: ${expected.path}`,
+    warning: `Weekly zodiac asset missing. Falling back to text-only mode. Expected: ${expected.path}`,
     error: null,
   };
 }
