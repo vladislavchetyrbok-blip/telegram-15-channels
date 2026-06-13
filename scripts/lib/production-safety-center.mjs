@@ -143,7 +143,7 @@ function getSchedulerSafety(nowIso) {
       status: stringOrNull(post.status),
       scheduledAt: stringOrNull(post.scheduledAt) ?? stringOrNull(post.publishAt),
     }))
-    .filter((post) => post.scheduledAt && !["published", "cancelled", "canceled"].includes(post.status ?? ""))
+    .filter((post) => post.scheduledAt && !["published", "blocked", "failed", "skipped", "cancelled", "canceled"].includes(post.status ?? ""))
     .sort((left, right) => new Date(left.scheduledAt).getTime() - new Date(right.scheduledAt).getTime());
   const nextDue = dueCandidates.find((post) => new Date(post.scheduledAt).getTime() >= now.getTime()) ?? dueCandidates[0] ?? null;
 

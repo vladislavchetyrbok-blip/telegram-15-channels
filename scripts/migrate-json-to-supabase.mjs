@@ -382,6 +382,7 @@ function normalizePostStatus(status, problems, postId) {
   const value = String(status ?? "draft");
   if (["draft", "scheduled", "approved", "ready_to_publish", "published", "failed", "skipped", "blocked"].includes(value)) return value;
   if (value === "ready") return "ready_to_publish";
+  if (value === "cancelled" || value === "canceled") return "skipped";
   problems.push(`Post ${postId} has unsupported status "${value}" and will be imported as skipped.`);
   return "skipped";
 }
