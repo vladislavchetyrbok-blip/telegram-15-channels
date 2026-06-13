@@ -1,0 +1,36 @@
+export const networkCards = [
+  {
+    id: "main",
+    title: "Основная сеть",
+    channelCount: "15 тематических каналов",
+    description: "Деньги, AI, рынок, стиль, техника, Днепр, авто и другие.",
+    buttonLabel: "Открыть основную сеть",
+    href: "/channels?network=main",
+  },
+  {
+    id: "zodiac",
+    title: "Гороскопы",
+    channelCount: "13 каналов",
+    description: "Общий гороскоп + 12 знаков зодиака. Недельные картинки и предпросмотр.",
+    buttonLabel: "Открыть гороскопы",
+    href: "/channels?network=zodiac",
+  },
+];
+
+export const uiLabels: Record<string, string> = {
+  "dry-run": "Тестовый режим",
+  "live": "Боевой режим",
+  "scheduler": "Расписание",
+  "preview": "Предпросмотр",
+  "runtime": "Рабочие данные",
+  "publish": "Публикация",
+  "generation": "Генерация",
+  "logs": "Журнал",
+  "errors": "Ошибки",
+  "ready": "Готово",
+  "scheduled": "Запланировано",
+  "blocked": "Заблокировано",
+  "skipped": "Пропущено",
+  "failed": "Ошибка",
+  "published": "Опубликовано",
+};
