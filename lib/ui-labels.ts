@@ -13,7 +13,7 @@ export const networkCards = [
     channelCount: "13 каналов",
     description: "Общий гороскоп + 12 знаков зодиака. Недельные картинки и предпросмотр.",
     buttonLabel: "Открыть гороскопы",
-    href: "/channels?network=zodiac",
+    href: "/channels/zodiac",
   },
 ];
 
