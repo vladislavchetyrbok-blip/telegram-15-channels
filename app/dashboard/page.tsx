@@ -51,25 +51,34 @@ export default async function DashboardPage() {
 
       {/* DIAGNOSTICS */}
       <section className="mt-12 opacity-80 hover:opacity-100 transition-opacity">
-        <h3 className="text-sm font-medium uppercase tracking-wider text-slate-500 mb-4">Технические детали (Диагностика)</h3>
         
         <div className="space-y-6">
-          <ScheduledAutopublishPanel />
+          <details className="group rounded-xl border border-line bg-panel/20 p-4">
+            <summary className="cursor-pointer text-sm font-medium uppercase tracking-wider text-slate-500 hover:text-white transition-colors">
+              Техническая панель автопубликации
+            </summary>
+            <p className="mt-2 text-xs text-slate-400">
+              Этот блок предназначен для диагностики и ручного контроля процессов. По умолчанию скрыт.
+            </p>
+            <div className="mt-4">
+              <ScheduledAutopublishPanel />
+            </div>
+          </details>
 
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            <StatCard title="Targets linked" value={`${status.telegram.targetsLinked}/15`} caption="Telegram state" icon={CheckCircle2} tone={status.telegram.targetsLinked === 15 ? "emerald" : "amber"} />
-            <StatCard title="Bot access" value={`${status.telegram.botAccessOk}/15`} caption={status.telegram.getMeOk ? status.telegram.botUsername ?? "OK" : status.telegram.lastError ?? "not checked"} icon={ShieldCheck} tone={status.telegram.botAccessOk > 0 ? "emerald" : "rose"} />
-            <StatCard title="Published" value={`${status.autopublish.publishedToday}/15`} caption="Сегодня" icon={Send} tone="cyan" />
-            <StatCard title="Worker" value={status.autopublish.workerRunning ? "running" : "not running"} caption="Background task" icon={RadioTower} tone={status.autopublish.workerRunning ? "emerald" : "amber"} />
+            <StatCard title={uiLabels["targets-linked"]} value={`${status.telegram.targetsLinked}/15`} caption="Telegram state" icon={CheckCircle2} tone={status.telegram.targetsLinked === 15 ? "emerald" : "amber"} />
+            <StatCard title={uiLabels["bot-access"]} value={`${status.telegram.botAccessOk}/15`} caption={status.telegram.getMeOk ? status.telegram.botUsername ?? "OK" : status.telegram.lastError ?? "not checked"} icon={ShieldCheck} tone={status.telegram.botAccessOk > 0 ? "emerald" : "rose"} />
+            <StatCard title={uiLabels["published"]} value={`${status.autopublish.publishedToday}/15`} caption="Сегодня" icon={Send} tone="cyan" />
+            <StatCard title={uiLabels["worker"]} value={status.autopublish.workerRunning ? "running" : "not running"} caption="Background task" icon={RadioTower} tone={status.autopublish.workerRunning ? "emerald" : "amber"} />
           </div>
 
           <div className="grid gap-3 md:grid-cols-3 xl:grid-cols-6 rounded-lg border border-line bg-black/20 p-4">
-            <Info label="Weekly plan" value={String(status.content.weeklyPlanTotal)} />
-            <Info label="Ready" value={String(status.content.readyToPublish)} />
-            <Info label="Scheduled" value={String(status.content.scheduled)} />
-            <Info label="Blocked" value={String(status.content.blocked)} />
-            <Info label="Weak text" value={String(status.content.weakText)} />
-            <Info label="Weak image" value={String(status.content.weakImage)} />
+            <Info label={uiLabels["weekly-plan"]} value={String(status.content.weeklyPlanTotal)} />
+            <Info label={uiLabels["ready"]} value={String(status.content.readyToPublish)} />
+            <Info label={uiLabels["scheduled"]} value={String(status.content.scheduled)} />
+            <Info label={uiLabels["blocked"]} value={String(status.content.blocked)} />
+            <Info label={uiLabels["weak-text"]} value={String(status.content.weakText)} />
+            <Info label={uiLabels["weak-image"]} value={String(status.content.weakImage)} />
           </div>
         </div>
       </section>

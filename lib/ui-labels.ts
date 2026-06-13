@@ -33,4 +33,10 @@ export const uiLabels: Record<string, string> = {
   "skipped": "Пропущено",
   "failed": "Ошибка",
   "published": "Опубликовано",
+  "targets-linked": "Связанные боты",
+  "bot-access": "Доступ ботов",
+  "weekly-plan": "План на неделю",
+  "weak-text": "Слабый текст",
+  "weak-image": "Слабая картинка",
+  "worker": "Фоновая задача",
 };
