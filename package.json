@@ -97,7 +97,9 @@
     "zodiac:export-image-prompts": "node scripts/export-zodiac-image-prompts.mjs",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:reconciliation:plan:dry": "node scripts/apply-supabase-reconciliation-plan.mjs --dry-run",
+    "db:reconciliation:plan:apply": "node scripts/apply-supabase-reconciliation-plan.mjs --apply"
   },
   "dependencies": {
     "clsx": "^2.1.1",
