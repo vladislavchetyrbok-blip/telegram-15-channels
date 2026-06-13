@@ -99,6 +99,7 @@
     "zodiac:ledger:backfill": "node scripts/backfill-zodiac-publish-ledger.mjs",
     "zodiac:publish-date:dry": "node scripts/publish-zodiac-by-date.mjs --dry-run",
     "zodiac:publish-date:live": "node scripts/publish-zodiac-by-date.mjs --live --approved",
+    "zodiac:publish-date:check": "node scripts/check-zodiac-publish-date.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
