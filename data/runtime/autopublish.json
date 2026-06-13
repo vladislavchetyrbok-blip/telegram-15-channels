@@ -303,37 +303,6 @@
       "telegramSendMs": 0
     },
     {
-      "id": "2026-05-31T17:52:05.597Z-autopublish-11",
-      "date": "2026-05-31",
-      "attemptedAt": "2026-05-31T17:52:05.597Z",
-      "mode": "autopublish",
-      "channelId": "ai-tech",
-      "channelName": "AI Рё С‚РµС…РЅРѕР»РѕРіРёРё",
-      "telegramTarget": "-1003504277183",
-      "postId": "weekly-2026-05-31-02-ai-technologies-02",
-      "title": "AI-РїСЂР°РєС‚РёРєР°: AI-РёРЅСЃС‚СЂСѓРјРµРЅС‚С‹ СЃ РїРѕР»СЊР·РѕР№ РґР»СЏ СЂР°Р±РѕС‚С‹",
-      "imagePath": "G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-05-31\\02-ai-technologies\\weekly-2026-05-31-02-ai-technologies-02.png",
-      "telegramImagePath": "G:\\telegram-15-channels\\public\\assets\\telegram-posts\\2026-05-31\\02-ai-technologies\\weekly-2026-05-31-02-ai-technologies-02.png",
-      "scheduledAt": "2026-05-31T06:51:00.000Z",
-      "result": "blocked",
-      "telegramMessageId": null,
-      "error": "caption too long",
-      "duration": 4973,
-      "retryCount": 0,
-      "active": false,
-      "resolvedAt": "2026-05-31T18:17:32.781Z",
-      "resolution": "telegramCaption regenerated <= 900 chars",
-      "timestamp": "2026-05-31T17:52:05.597Z",
-      "status": "error",
-      "messageId": null,
-      "telegramMessageLink": null,
-      "reason": "caption too long",
-      "durationMs": 4973,
-      "generationTextMs": 0,
-      "generationImageMs": 0,
-      "telegramSendMs": 0
-    },
-    {
       "id": "2026-05-31T17:53:34.629Z-manual-12",
       "date": "2026-05-31",
       "attemptedAt": "2026-05-31T17:53:34.629Z",
@@ -2754,5 +2723,7 @@
     "success": 15,
     "skipped": 38,
     "errors": 11
-  }
+  },
+  "queue": [],
+  "history": []
 }
