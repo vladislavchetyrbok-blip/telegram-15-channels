@@ -1,0 +1,91 @@
+{
+  "mode": "preflight_only",
+  "createdAt": "2026-06-13T11:08:00Z",
+  "sourceOfTruth": "local-json",
+  "supabaseWritesPerformed": false,
+  "localDataModified": false,
+  "actions": [
+    {
+      "type": "insert_to_supabase",
+      "id": "02bb3c89-6d31-4c1c-b808-970c3c2386ed",
+      "recordType": "publication_log",
+      "risk": "low",
+      "reason": "Missing in Supabase. Local is source of truth.",
+      "applyNow": false
+    },
+    {
+      "type": "insert_to_supabase",
+      "id": "086a20fd-5335-4f0d-80bd-490a86d93978",
+      "recordType": "publication_log",
+      "risk": "low",
+      "reason": "Missing in Supabase. Local is source of truth.",
+      "applyNow": false
+    },
+    {
+      "type": "insert_to_supabase",
+      "id": "6b96d345-2b1d-49f9-8e6a-ccb776655c29",
+      "recordType": "publication_log",
+      "risk": "low",
+      "reason": "Missing in Supabase. Local is source of truth.",
+      "applyNow": false
+    },
+    {
+      "type": "insert_to_supabase",
+      "id": "74d10fa0-3a87-4ec9-b91d-dc95c6678a48",
+      "recordType": "publication_log",
+      "risk": "low",
+      "reason": "Missing in Supabase. Local is source of truth.",
+      "applyNow": false
+    },
+    {
+      "type": "insert_to_supabase",
+      "id": "a1dc9664-f7de-429c-93b0-91d7e8dfbe73",
+      "recordType": "publication_log",
+      "risk": "low",
+      "reason": "Missing in Supabase. Local is source of truth.",
+      "applyNow": false
+    },
+    {
+      "type": "insert_to_supabase",
+      "id": "a6018a29-dc5b-4fb7-8ee7-f9092f3f5cb4",
+      "recordType": "publication_log",
+      "risk": "low",
+      "reason": "Missing in Supabase. Local is source of truth.",
+      "applyNow": false
+    },
+    {
+      "type": "insert_to_supabase",
+      "id": "befc8e3d-11ce-45e4-8c7f-34543cd7be79",
+      "recordType": "publication_log",
+      "risk": "low",
+      "reason": "Missing in Supabase. Local is source of truth.",
+      "applyNow": false
+    },
+    {
+      "type": "insert_to_supabase",
+      "id": "cca3f826-292a-4d5b-8b82-1ed15ddd4b80",
+      "recordType": "scheduler_run",
+      "risk": "low",
+      "reason": "Missing in Supabase. Local is source of truth.",
+      "applyNow": false
+    },
+    {
+      "type": "delete_from_supabase",
+      "id": "f4bebafb-418a-4669-905b-4f1657508ee3",
+      "recordType": "scheduler_run",
+      "risk": "medium",
+      "reason": "Extra in Supabase mirror without local equivalent. Breaks safety check.",
+      "applyNow": false
+    },
+    {
+      "type": "delete_from_local_json",
+      "id": "weekly-2026-05-31-02-ai-technologies-02",
+      "recordType": "publication_log_reference",
+      "risk": "medium",
+      "reason": "Orphan reference. Post does not exist locally or in latest Supabase export.",
+      "applyNow": false
+    }
+  ],
+  "blockedActions": [],
+  "requiresApprovalBeforeApply": true
+}
