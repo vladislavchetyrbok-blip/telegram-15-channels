@@ -95,6 +95,8 @@
     "zodiac:preview:weekly": "node scripts/zodiac-weekly-preview.mjs",
     "zodiac:report:latest": "node scripts/zodiac-latest-report.mjs",
     "zodiac:export-image-prompts": "node scripts/export-zodiac-image-prompts.mjs",
+    "zodiac:ledger:check": "node scripts/check-zodiac-publish-ledger.mjs",
+    "zodiac:ledger:backfill": "node scripts/backfill-zodiac-publish-ledger.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
