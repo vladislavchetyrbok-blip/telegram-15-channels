@@ -1,8 +1,8 @@
-name: Publish due Telegram posts
+name: Publish due Telegram posts (PAUSED / DRY-RUN ONLY until production:safety:check is green)
 
 on:
-  schedule:
-    - cron: "17 * * * *"
+  # schedule:
+  #   - cron: "17 * * * *"
   workflow_dispatch:
 
 concurrency:
@@ -18,13 +18,13 @@ jobs:
       NODE_ENV: "production"
       PUBLISH_DUE_STORE: "json"
       PUBLISH_DUE_SOURCE: "github"
-      PUBLISH_DUE_DRY_RUN: "false"
-      PUBLISH_DUE_REAL_PUBLISH_ENABLED: "true"
+      PUBLISH_DUE_DRY_RUN: "true"
+      PUBLISH_DUE_REAL_PUBLISH_ENABLED: "false"
       PUBLISH_DUE_MAX_PER_RUN: "15"
 
       TELEGRAM_BOT_TOKEN: "${{ secrets.TELEGRAM_BOT_TOKEN }}"
-      TELEGRAM_DRY_RUN: "false"
-      TELEGRAM_REAL_PUBLISH_ENABLED: "true"
+      TELEGRAM_DRY_RUN: "true"
+      TELEGRAM_REAL_PUBLISH_ENABLED: "false"
 
       AUTOPUBLISH_ENABLED: "${{ secrets.AUTOPUBLISH_ENABLED }}"
       AUTOPUBLISH_DAILY_LIMIT_PER_CHANNEL: "${{ secrets.AUTOPUBLISH_DAILY_LIMIT_PER_CHANNEL }}"
