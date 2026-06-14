@@ -187,6 +187,9 @@ async function run() {
 
   try {
     if (isLive) {
+      if (!startDate || days !== 1) {
+        throw new Error("Live publishing blocked: must specify --start-date and --days 1.");
+      }
       if (!channel || !limitProvided || limit !== 1) {
         throw new Error("Live publishing blocked: one-post test requires --channel <id> and --limit 1.");
       }
