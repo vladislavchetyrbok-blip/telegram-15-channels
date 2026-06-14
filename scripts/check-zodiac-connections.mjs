@@ -61,8 +61,10 @@ async function run() {
       continue;
     }
     
+    const maskedVal = val.length > 4 ? `****${val.slice(-4)}` : "****";
+
     if (!botToken || !botId) {
-      console.log(`⚠️ ${channel.id}: configured as ${val}, skipping API checks (no bot token).`);
+      console.log(`⚠️ ${channel.id}: configured as ${maskedVal}, skipping API checks (no bot token).`);
       continue;
     }
 
@@ -80,7 +82,7 @@ async function run() {
         }
       } else {
         if (data.description.includes("chat not found")) {
-          console.error(`❌ Invalid channel id: ${val} for ${channel.id}.`);
+          console.error(`❌ Invalid channel id: ${maskedVal} for ${channel.id}.`);
         } else if (data.description.includes("member list is inaccessible")) {
           console.error(`❌ Bot cannot access chat: ${channel.id}. Add bot as admin first.`);
         } else {

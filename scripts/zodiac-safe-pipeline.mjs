@@ -4,6 +4,7 @@ import path from "path";
 import process from "process";
 import { resolveZodiacWeeklyVisualAsset } from "./zodiac-weekly-asset-resolver.mjs";
 import { getZodiacTelegramTarget, planZodiacTelegramPublish, publishZodiacTelegramPost } from "./zodiac-telegram-publisher.mjs";
+import { loadLedger, getPublishKey } from "./lib/zodiac-publish-ledger.mjs";
 
 function parseArgs() {
   const args = process.argv.slice(2);
@@ -194,6 +195,15 @@ async function run() {
       }
       if (!approved) {
         throw new Error("Live publishing blocked: missing --approved flag. You must explicitly approve the operation.");
+      }
+      if (process.env.ZODIAC_PUBLISH_BY_DATE_CHILD !== "true") {
+        throw new Error("Blocked direct live zodiac publish. Use npm run zodiac:publish-date:live -- --date YYYY-MM-DD --approved");
+      }
+      const ledger = loadLedger();
+      const key = getPublishKey(startDate, channel);
+      const entry = ledger.entries[key];
+      if (!entry || entry.status !== "pending") {
+        throw new Error("Blocked direct live zodiac publish. Use npm run zodiac:publish-date:live -- --date YYYY-MM-DD --approved");
       }
     }
 

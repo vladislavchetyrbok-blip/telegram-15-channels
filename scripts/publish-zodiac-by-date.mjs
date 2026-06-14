@@ -86,9 +86,26 @@ function main() {
       markPending(options.date, slug, { mediaMode, source: "pipeline" });
 
       try {
-        const cmd = `npm run zodiac:pipeline -- --start-date ${options.date} --days 1 --style luxury-mystic --channel ${slug} --limit 1 --live --approved`;
-        // Use stdio inherit so we can see the pipeline output if it fails
-        child_process.execSync(cmd, { stdio: 'inherit' });
+        const env = { ...process.env, ZODIAC_PUBLISH_BY_DATE_CHILD: "true" };
+        const childArgs = [
+          "run", "zodiac:pipeline", "--",
+          "--start-date", options.date,
+          "--days", "1",
+          "--style", "luxury-mystic",
+          "--channel", slug,
+          "--limit", "1",
+          "--live", "--approved"
+        ];
+        
+        const result = child_process.spawnSync("npm", childArgs, { 
+          stdio: 'inherit', 
+          env, 
+          shell: process.platform === "win32" 
+        });
+
+        if (result.error || result.status !== 0) {
+          throw new Error(`Child process failed with status ${result.status}`);
+        }
         
         console.log(`[sent] ${slug} | ${options.date}`);
         markSent(options.date, slug, { mediaMode, source: "pipeline" });
