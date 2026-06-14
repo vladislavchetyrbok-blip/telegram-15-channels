@@ -1,0 +1,71 @@
+name: Zodiac Daily Publisher
+
+on:
+  schedule:
+    # 06:00 UTC = 09:00 Europe/Kyiv (Summer EEST)
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: zodiac-daily-publish
+  cancel-in-progress: false
+
+jobs:
+  publish-zodiac:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    env:
+      NODE_ENV: "production"
+      TELEGRAM_BOT_TOKEN: "${{ secrets.TELEGRAM_BOT_TOKEN }}"
+      ZODIAC_GENERAL_CHANNEL_ID: "${{ secrets.ZODIAC_GENERAL_CHANNEL_ID }}"
+      ZODIAC_ARIES_CHANNEL_ID: "${{ secrets.ZODIAC_ARIES_CHANNEL_ID }}"
+      ZODIAC_TAURUS_CHANNEL_ID: "${{ secrets.ZODIAC_TAURUS_CHANNEL_ID }}"
+      ZODIAC_GEMINI_CHANNEL_ID: "${{ secrets.ZODIAC_GEMINI_CHANNEL_ID }}"
+      ZODIAC_CANCER_CHANNEL_ID: "${{ secrets.ZODIAC_CANCER_CHANNEL_ID }}"
+      ZODIAC_LEO_CHANNEL_ID: "${{ secrets.ZODIAC_LEO_CHANNEL_ID }}"
+      ZODIAC_VIRGO_CHANNEL_ID: "${{ secrets.ZODIAC_VIRGO_CHANNEL_ID }}"
+      ZODIAC_LIBRA_CHANNEL_ID: "${{ secrets.ZODIAC_LIBRA_CHANNEL_ID }}"
+      ZODIAC_SCORPIO_CHANNEL_ID: "${{ secrets.ZODIAC_SCORPIO_CHANNEL_ID }}"
+      ZODIAC_SAGITTARIUS_CHANNEL_ID: "${{ secrets.ZODIAC_SAGITTARIUS_CHANNEL_ID }}"
+      ZODIAC_CAPRICORN_CHANNEL_ID: "${{ secrets.ZODIAC_CAPRICORN_CHANNEL_ID }}"
+      ZODIAC_AQUARIUS_CHANNEL_ID: "${{ secrets.ZODIAC_AQUARIUS_CHANNEL_ID }}"
+      ZODIAC_PISCES_CHANNEL_ID: "${{ secrets.ZODIAC_PISCES_CHANNEL_ID }}"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Restore ledger cache
+        uses: actions/cache/restore@v4
+        with:
+          path: data/runtime/zodiac-publish-ledger.json
+          key: zodiac-ledger-${{ github.run_id }}
+          restore-keys: |
+            zodiac-ledger-
+
+      - name: Execute Zodiac Daily Publish
+        run: |
+          # Calculate current date in Europe/Kyiv
+          TODAY=$(TZ="Europe/Kyiv" date +%Y-%m-%d)
+          echo "Triggering zodiac publishing for date: $TODAY"
+          
+          # Run the existing live publish command
+          # The script automatically loops over all 13 channels
+          npm run zodiac:publish-date:live -- --date $TODAY
+
+      - name: Save ledger cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: data/runtime/zodiac-publish-ledger.json
+          key: zodiac-ledger-${{ github.run_id }}
