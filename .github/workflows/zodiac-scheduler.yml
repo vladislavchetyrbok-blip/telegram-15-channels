@@ -2,9 +2,23 @@ name: Zodiac Daily Publisher
 
 on:
   schedule:
-    # 06:00 UTC = 09:00 Europe/Kyiv (Summer EEST)
+    # 06:00 UTC = 09:00 Europe/Kyiv during summer time, 08:00 during winter time.
+    # GitHub Actions cron is UTC-only; see docs/zodiac-year-autopilot-runbook.md.
     - cron: "0 6 * * *"
   workflow_dispatch:
+    inputs:
+      mode:
+        description: "Run mode for manual dispatch"
+        required: true
+        default: "dry-run"
+        type: choice
+        options:
+          - dry-run
+          - live
+      date:
+        description: "Optional target date YYYY-MM-DD. Empty uses current Europe/Kyiv date."
+        required: false
+        default: ""
 
 concurrency:
   group: zodiac-daily-publish
@@ -13,7 +27,7 @@ concurrency:
 jobs:
   publish-zodiac:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 35
 
     env:
       NODE_ENV: "production"
@@ -53,15 +67,53 @@ jobs:
           restore-keys: |
             zodiac-ledger-
 
-      - name: Execute Zodiac Daily Publish
+      - name: Determine target date and mode
+        id: target
+        shell: bash
         run: |
-          # Calculate current date in Europe/Kyiv
-          TODAY=$(TZ="Europe/Kyiv" date +%Y-%m-%d)
-          echo "Triggering zodiac publishing for date: $TODAY"
-          
-          # Run the existing live publish command
-          # The script automatically loops over all 13 channels
-          npm run zodiac:publish-date:live -- --date $TODAY
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ inputs.date }}" ]; then
+            TARGET_DATE="${{ inputs.date }}"
+          else
+            TARGET_DATE=$(TZ="Europe/Kyiv" date +%Y-%m-%d)
+          fi
+
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            RUN_MODE="live"
+          else
+            RUN_MODE="${{ inputs.mode }}"
+          fi
+
+          echo "date=$TARGET_DATE" >> "$GITHUB_OUTPUT"
+          echo "mode=$RUN_MODE" >> "$GITHUB_OUTPUT"
+          echo "Zodiac target date: $TARGET_DATE"
+          echo "Zodiac mode: $RUN_MODE"
+
+      - name: Scheduler preflight
+        run: npm run zodiac:scheduler:preflight -- --date "${{ steps.target.outputs.date }}" --year-days 365
+
+      - name: Execute Zodiac daily command
+        run: |
+          if [ "${{ steps.target.outputs.mode }}" = "live" ]; then
+            npm run zodiac:publish-date:live -- --date "${{ steps.target.outputs.date }}"
+          else
+            npm run zodiac:publish-date:dry -- --date "${{ steps.target.outputs.date }}"
+          fi
+
+      - name: Generate post-run daily report
+        if: always()
+        run: |
+          mkdir -p data/runtime
+          npm run zodiac:report:daily -- --date "${{ steps.target.outputs.date }}" --out "data/runtime/zodiac-daily-report-${{ steps.target.outputs.date }}.json"
+
+      - name: Upload zodiac reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: zodiac-reports-${{ steps.target.outputs.date }}
+          path: |
+            data/runtime/zodiac-daily-report-${{ steps.target.outputs.date }}.json
+            data/runtime/zodiac-scheduler-preflight-${{ steps.target.outputs.date }}.json
+          if-no-files-found: warn
 
       - name: Save ledger cache
         if: always()

@@ -1,0 +1,237 @@
+# Zodiac Year Autopilot Runbook
+
+## Mission
+
+The Zodiac Engine publishes 13 posts per publishing date:
+
+- 1 general horoscope post.
+- 12 zodiac sign posts.
+- 13 posts per day.
+- 4,745 expected posts per 365-day year.
+
+The live path must stay ledger-protected, retry-safe, reportable, and able to fall back to `text_only` when an exact weekly image is missing.
+
+## What Runs Daily
+
+The GitHub Actions workflow `.github/workflows/zodiac-scheduler.yml` is the daily scheduler.
+
+Daily sequence:
+
+1. Restore the JSON ledger cache.
+2. Calculate the target date in `Europe/Kyiv`.
+3. Run `npm run zodiac:scheduler:preflight -- --date YYYY-MM-DD --year-days 365`.
+4. Run the ledger-backed publish-by-date command.
+5. Generate `data/runtime/zodiac-daily-report-YYYY-MM-DD.json`.
+6. Upload the daily report and scheduler preflight report as workflow artifacts.
+7. Save the updated ledger cache.
+
+Manual `workflow_dispatch` defaults to `dry-run`. Scheduled runs use `live` mode after preflight passes.
+
+## Cron Time
+
+Current cron:
+
+```text
+0 6 * * *
+```
+
+GitHub Actions cron is UTC-only.
+
+- During Kyiv summer time, 06:00 UTC is 09:00 Kyiv.
+- During Kyiv winter time, 06:00 UTC is 08:00 Kyiv.
+
+If a stable 09:00 Kyiv wall-clock time is mandatory year-round, update the cron seasonally or move the scheduler to a runtime with timezone-aware cron, such as VPS/Coolify.
+
+## How Ledger Prevents Duplicates
+
+The key is always:
+
+```text
+YYYY-MM-DD:slug
+```
+
+Live publish by date checks the ledger before each slug:
+
+- `sent`: skip, never republish.
+- `pending`: skip, protected until stale recovery.
+- `failed`: retryable through explicit retry flow.
+- missing entry: publishable for the target date.
+
+The low-level zodiac pipeline blocks direct live use unless it is called as an approved child of the publish-by-date orchestrator and the ledger entry is already `pending`.
+
+## Daily Status
+
+Check current autonomy state:
+
+```bash
+npm run zodiac:status -- --date YYYY-MM-DD
+```
+
+Check a specific publish date:
+
+```bash
+npm run zodiac:publish-date:check -- --date YYYY-MM-DD
+```
+
+Generate a daily report:
+
+```bash
+npm run zodiac:report:daily -- --date YYYY-MM-DD
+```
+
+Generate an artifact-ready JSON report:
+
+```bash
+npm run zodiac:report:daily -- --date YYYY-MM-DD --out data/runtime/zodiac-daily-report-YYYY-MM-DD.json
+```
+
+## Retry Failed Posts
+
+Dry-run first:
+
+```bash
+npm run zodiac:retry:failed -- --date YYYY-MM-DD --dry-run
+```
+
+Live retry requires explicit approval:
+
+```bash
+npm run zodiac:retry:failed -- --date YYYY-MM-DD --live --approved
+```
+
+Rules:
+
+- Only `failed` ledger entries are retried.
+- `sent` entries are never retried.
+- `pending` entries require stale pending recovery first.
+- Missing images still publish as `text_only`.
+
+## Recover Stale Pending
+
+Inspect stale pending entries:
+
+```bash
+npm run zodiac:recover:stale -- --date YYYY-MM-DD --stale-minutes 60 --dry-run
+```
+
+Mark stale pending entries as failed so they can be retried:
+
+```bash
+npm run zodiac:recover:stale -- --date YYYY-MM-DD --stale-minutes 60 --mark-failed --approved
+```
+
+This does not publish anything and does not call Telegram.
+
+## Pause Scheduler
+
+Pause by editing `.github/workflows/zodiac-scheduler.yml` and commenting out the `schedule:` block, or by disabling the workflow in GitHub Actions.
+
+For emergency local safety, do not run:
+
+```bash
+npm run zodiac:publish-date:live -- --date YYYY-MM-DD
+```
+
+## Resume Scheduler
+
+Before resuming:
+
+```bash
+npm run zodiac:weekly-assets:validate
+npm run zodiac:ledger:check
+npm run zodiac:year:preflight -- --from YYYY-MM-DD --days 365
+npm run zodiac:publish-date:dry -- --date YYYY-MM-DD
+npm run zodiac:scheduler:preflight -- --date YYYY-MM-DD --year-days 365
+```
+
+Resume only if all commands pass and the scheduler workflow is configured as expected.
+
+## Regenerate Reports
+
+Daily report:
+
+```bash
+npm run zodiac:report:daily -- --date YYYY-MM-DD
+```
+
+History report:
+
+```bash
+npm run zodiac:report:history -- --days 30
+```
+
+Or an explicit period:
+
+```bash
+npm run zodiac:report:history -- --from YYYY-MM-DD --to YYYY-MM-DD
+```
+
+## 365-Day Preflight
+
+Run:
+
+```bash
+npm run zodiac:year:preflight -- --from YYYY-MM-DD --days 365
+```
+
+Expected:
+
+- Days checked: 365.
+- Slugs per day: 13.
+- Total expected posts: 4,745.
+- Duplicate date/slug keys: 0.
+- Fatal errors: 0.
+- Missing images allowed only as `text_only`.
+- Telegram API calls: 0.
+- Live publish calls: 0.
+- Ledger writes: 0.
+
+## Required Secrets
+
+Required for live publishing:
+
+- `TELEGRAM_BOT_TOKEN`
+- `ZODIAC_GENERAL_CHANNEL_ID`
+- `ZODIAC_ARIES_CHANNEL_ID`
+- `ZODIAC_TAURUS_CHANNEL_ID`
+- `ZODIAC_GEMINI_CHANNEL_ID`
+- `ZODIAC_CANCER_CHANNEL_ID`
+- `ZODIAC_LEO_CHANNEL_ID`
+- `ZODIAC_VIRGO_CHANNEL_ID`
+- `ZODIAC_LIBRA_CHANNEL_ID`
+- `ZODIAC_SCORPIO_CHANNEL_ID`
+- `ZODIAC_SAGITTARIUS_CHANNEL_ID`
+- `ZODIAC_CAPRICORN_CHANNEL_ID`
+- `ZODIAC_AQUARIUS_CHANNEL_ID`
+- `ZODIAC_PISCES_CHANNEL_ID`
+
+Optional admin alert hook:
+
+- `ZODIAC_ADMIN_ALERT_CHAT_ID`
+
+Never print secret values in reports or logs.
+
+## GO / NO-GO For Live Mode
+
+GO only when all are true:
+
+- `npm run build` passes.
+- `npm run lint` passes.
+- `npm run zodiac:weekly-assets:validate` reports 91/91.
+- `npm run zodiac:ledger:check` reports 0 problems.
+- `npm run zodiac:year:preflight -- --from YYYY-MM-DD --days 365` passes.
+- `npm run zodiac:scheduler:preflight -- --date YYYY-MM-DD --year-days 365` passes.
+- Required secret names are configured in the deployment runtime.
+- Workflow runs preflight before live publish.
+- Ledger has no stale `pending` entries unless intentionally recovered.
+- Failed entries have been reviewed and retried through the retry command.
+
+NO-GO when any are true:
+
+- Build or lint fails.
+- Year preflight has fatal errors.
+- Ledger check reports malformed or duplicate entries.
+- Required channel targets are missing.
+- Workflow would call live publish without preflight.
+- Any direct live helper bypasses the ledger.
+- Operator is unsure whether the target date already published.

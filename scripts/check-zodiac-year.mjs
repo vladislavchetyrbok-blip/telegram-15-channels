@@ -160,6 +160,65 @@ function validatePlannerSource(fatalErrors, warnings) {
   return { ok: missingSlugs.length === 0, mode: "source_checked" };
 }
 
+function validateAutomationSurface(fatalErrors) {
+  const packagePath = path.join(process.cwd(), "package.json");
+  const ledgerPath = path.join(process.cwd(), "scripts", "lib", "zodiac-publish-ledger.mjs");
+  const workflowPath = path.join(process.cwd(), ".github", "workflows", "zodiac-scheduler.yml");
+  const status = {
+    packageScripts: "missing",
+    ledgerPrimitives: "missing",
+    schedulerWorkflow: "missing",
+  };
+
+  if (!fs.existsSync(packagePath)) {
+    fatalErrors.push("Missing package.json; cannot validate scheduler command surface.");
+  } else {
+    const parsed = JSON.parse(fs.readFileSync(packagePath, "utf8"));
+    const scripts = parsed.scripts || {};
+    const requiredScripts = [
+      "zodiac:scheduler:preflight",
+      "zodiac:publish-date:dry",
+      "zodiac:publish-date:live",
+      "zodiac:report:daily",
+      "zodiac:ledger:check",
+      "zodiac:retry:failed",
+      "zodiac:recover:stale",
+    ];
+    const missingScripts = requiredScripts.filter((scriptName) => !scripts[scriptName]);
+    if (missingScripts.length > 0) {
+      fatalErrors.push(`Missing required npm scripts: ${missingScripts.join(", ")}`);
+    }
+    status.packageScripts = missingScripts.length === 0 ? "ok" : "incomplete";
+  }
+
+  if (!fs.existsSync(ledgerPath)) {
+    fatalErrors.push("Missing ledger module: scripts/lib/zodiac-publish-ledger.mjs");
+  } else {
+    const source = fs.readFileSync(ledgerPath, "utf8");
+    const requiredLedgerFns = ["getPublishKey", "markPending", "markSent", "markFailed"];
+    const missingLedgerFns = requiredLedgerFns.filter((fnName) => !source.includes(`function ${fnName}`) && !source.includes(` ${fnName}(`));
+    if (missingLedgerFns.length > 0) {
+      fatalErrors.push(`Ledger module missing required primitives: ${missingLedgerFns.join(", ")}`);
+    }
+    status.ledgerPrimitives = missingLedgerFns.length === 0 ? "ok" : "incomplete";
+  }
+
+  if (!fs.existsSync(workflowPath)) {
+    fatalErrors.push("Missing scheduler workflow: .github/workflows/zodiac-scheduler.yml");
+  } else {
+    const workflow = fs.readFileSync(workflowPath, "utf8");
+    if (!workflow.includes("zodiac:scheduler:preflight")) {
+      fatalErrors.push("Scheduler workflow does not run zodiac:scheduler:preflight before live publish.");
+    }
+    if (!workflow.includes("zodiac:publish-date:live")) {
+      fatalErrors.push("Scheduler workflow does not call the ledger-backed live publish-by-date command.");
+    }
+    status.schedulerWorkflow = workflow.includes("zodiac:scheduler:preflight") && workflow.includes("zodiac:publish-date:live") ? "ok" : "incomplete";
+  }
+
+  return status;
+}
+
 function addMissingImage(grouped, slug, weekday) {
   if (!grouped[slug]) grouped[slug] = {};
   grouped[slug][weekday] = (grouped[slug][weekday] || 0) + 1;
@@ -208,6 +267,7 @@ function run() {
   const expectedPosts = days * ZODIAC_SLUGS.length;
 
   const plannerStatus = validatePlannerSource(fatalErrors, warnings);
+  const automationStatus = validateAutomationSurface(fatalErrors);
 
   const missingTargetSlugs = ZODIAC_SLUGS.filter((slug) => {
     const envName = CHANNEL_TARGET_ENV_BY_SLUG[slug];
@@ -215,6 +275,10 @@ function run() {
   });
   if (missingTargetSlugs.length > 0) {
     fatalErrors.push(`Missing channel target for slugs: ${missingTargetSlugs.join(", ")}`);
+  }
+  const botTokenConfigured = Boolean(String(process.env.TELEGRAM_BOT_TOKEN || "").trim());
+  if (!botTokenConfigured) {
+    fatalErrors.push("Missing TELEGRAM_BOT_TOKEN.");
   }
 
   const seenKeys = new Set();
@@ -293,7 +357,11 @@ function run() {
   console.log(`Fatal Errors Count   : ${fatalErrors.length}`);
   console.log(`Warning Count        : ${warnings.length}`);
   console.log(`Planner Check        : ${plannerStatus.mode}`);
+  console.log(`Package Scripts      : ${automationStatus.packageScripts}`);
+  console.log(`Ledger Primitives    : ${automationStatus.ledgerPrimitives}`);
+  console.log(`Scheduler Workflow   : ${automationStatus.schedulerWorkflow}`);
   console.log(`Channel Targets      : ${ZODIAC_SLUGS.length - missingTargetSlugs.length}/${ZODIAC_SLUGS.length} configured (values hidden)`);
+  console.log(`Bot Token            : ${botTokenConfigured ? "configured (value hidden)" : "missing"}`);
   console.log("Telegram API Calls   : 0");
   console.log("Live Publish Calls   : 0");
   console.log("Scheduler Calls      : 0");
