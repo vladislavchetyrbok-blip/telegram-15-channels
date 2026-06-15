@@ -1,5 +1,11 @@
 import process from "process";
-import { loadLedger, getPublishKey } from "./lib/zodiac-publish-ledger.mjs";
+import {
+  getLedgerEntry,
+  isActiveLockStatus,
+  isProtectedPublishStatus,
+  loadLedger,
+  normalizeLedgerStatus
+} from "./lib/zodiac-publish-ledger.mjs";
 import { resolveZodiacWeeklyVisualAsset } from "./zodiac-weekly-asset-resolver.mjs";
 
 const ZODIAC_SLUGS = [
@@ -32,27 +38,31 @@ function main() {
     totalSlugs: ZODIAC_SLUGS.length,
     sentCount: 0,
     pendingCount: 0,
+    lockedInProgressCount: 0,
     failedCount: 0,
     missingLedgerCount: 0,
     protectedSkippedCount: 0,
     imageCount: 0,
     textOnlyCount: 0,
     missingExactImageList: [],
+    suppressedMediaList: [],
     wouldPublishList: [],
     duplicateProtectedList: []
   };
 
   for (const slug of ZODIAC_SLUGS) {
-    const key = getPublishKey(options.date, slug);
-    const entry = ledger.entries[key];
-    const status = entry ? entry.status : null;
+    const entry = getLedgerEntry(ledger, options.date, slug);
+    const status = normalizeLedgerStatus(entry?.status);
 
-    if (status === "sent") report.sentCount++;
-    else if (status === "pending") report.pendingCount++;
+    if (status === "sent" || status === "published") report.sentCount++;
+    else if (isActiveLockStatus(status)) {
+      report.pendingCount++;
+      report.lockedInProgressCount++;
+    }
     else if (status === "failed") report.failedCount++;
     else report.missingLedgerCount++;
 
-    if (status === "sent" || status === "pending") {
+    if (isProtectedPublishStatus(status)) {
       report.protectedSkippedCount++;
       report.duplicateProtectedList.push(slug);
     } else {
@@ -64,7 +74,11 @@ function main() {
       report.imageCount++;
     } else {
       report.textOnlyCount++;
-      report.missingExactImageList.push(slug);
+      if (asset.suppressed) {
+        report.suppressedMediaList.push(`${slug} (${asset.suppressionReason})`);
+      } else {
+        report.missingExactImageList.push(slug);
+      }
     }
   }
 
@@ -73,6 +87,7 @@ function main() {
   console.log(`Total Slugs            : ${report.totalSlugs}`);
   console.log(`Sent Count             : ${report.sentCount}`);
   console.log(`Pending Count          : ${report.pendingCount}`);
+  console.log(`Locked/InProgress Count: ${report.lockedInProgressCount}`);
   console.log(`Failed Count           : ${report.failedCount}`);
   console.log(`Missing Ledger Count   : ${report.missingLedgerCount}`);
   console.log(`Protected/Skipped      : ${report.protectedSkippedCount}`);
@@ -81,6 +96,9 @@ function main() {
   
   console.log("\n--- Missing Exact Image List ---");
   console.log(report.missingExactImageList.length > 0 ? report.missingExactImageList.join(", ") : "none");
+
+  console.log("\n--- Suppressed Media List ---");
+  console.log(report.suppressedMediaList.length > 0 ? report.suppressedMediaList.join(", ") : "none");
   
   console.log("\n--- Duplicate Protected List (Skipped) ---");
   console.log(report.duplicateProtectedList.length > 0 ? report.duplicateProtectedList.join(", ") : "none");

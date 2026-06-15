@@ -38,6 +38,7 @@ function printReport(report, warning, outPath) {
   console.log(`Sent Count              : ${report.sentCount}`);
   console.log(`Failed Count            : ${report.failedCount}`);
   console.log(`Pending Count           : ${report.pendingCount}`);
+  console.log(`Locked/InProgress Count : ${report.lockedInProgressCount}`);
   console.log(`Skipped Count           : ${report.skippedCount}`);
   console.log(`Image Count             : ${report.imageCount}`);
   console.log(`TextOnly Count          : ${report.textOnlyCount}`);
@@ -48,7 +49,8 @@ function printReport(report, warning, outPath) {
   console.log("Scheduler Calls         : 0");
   console.log("\n--- Per-Channel Result ---");
   for (const row of report.perChannel) {
-    console.log(`- ${row.slug}: status=${row.status}, media=${row.mediaMode}, ledger=${row.hasLedgerEntry ? "yes" : "no"}`);
+    const suppression = row.suppressed ? `, suppressed=${row.suppressionReason}` : "";
+    console.log(`- ${row.slug}: status=${row.status}, media=${row.mediaMode}, ledger=${row.hasLedgerEntry ? "yes" : "no"}${suppression}`);
   }
   if (warning) {
     console.log(`Warning                 : ${warning}`);

@@ -1,7 +1,7 @@
 import process from "process";
-import { loadLedger, summarizeLedger } from "./lib/zodiac-publish-ledger.mjs";
+import { loadLedger, normalizeLedgerStatus, summarizeLedger } from "./lib/zodiac-publish-ledger.mjs";
 
-const VALID_STATUSES = new Set(["pending", "sent", "failed", "skipped"]);
+const VALID_STATUSES = new Set(["pending", "locked", "in_progress", "publishing", "sent", "published", "failed", "skipped"]);
 
 function validateLedger() {
   const ledger = loadLedger();
@@ -25,7 +25,7 @@ function validateLedger() {
     if (!entry.slug) {
       problems.push(`Entry ${key} has missing slug.`);
     }
-    if (!VALID_STATUSES.has(String(entry.status || ""))) {
+    if (!VALID_STATUSES.has(normalizeLedgerStatus(entry.status))) {
       problems.push(`Entry ${key} has invalid status: ${entry.status ?? "missing"}.`);
     }
 

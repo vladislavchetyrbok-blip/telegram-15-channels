@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import { resolveZodiacWeeklyVisualAsset } from "../zodiac-weekly-asset-resolver.mjs";
 
 export const ZODIAC_SLUGS = [
   "zodiac-general",
@@ -34,8 +35,13 @@ export const CHANNEL_TARGET_ENV_BY_SLUG = {
 };
 
 export const RUNTIME_DIR = path.resolve(process.cwd(), "data", "runtime");
-export const LEDGER_PATH = path.join(RUNTIME_DIR, "zodiac-publish-ledger.json");
+export const STATE_DIR = path.resolve(process.cwd(), "data", "state");
+export const LEDGER_PATH = path.join(STATE_DIR, "zodiac-publish-ledger.json");
+export const LEGACY_LEDGER_PATH = path.join(RUNTIME_DIR, "zodiac-publish-ledger.json");
 export const KYIV_TIME_ZONE = "Europe/Kyiv";
+const ACTIVE_LOCK_STATUSES = new Set(["pending", "locked", "in_progress", "publishing"]);
+const SENT_STATUSES = new Set(["sent", "published"]);
+const DUPLICATE_PROTECTED_STATUSES = new Set(["sent", "published", "pending", "locked", "in_progress", "publishing"]);
 
 export function getPublishKey(date, slug) {
   return `${date}:${slug}`;
@@ -76,20 +82,21 @@ export function getKyivDate(offsetDays = 0) {
 }
 
 export function readLedgerReadOnly() {
-  if (!fs.existsSync(LEDGER_PATH)) {
+  const ledgerPath = fs.existsSync(LEDGER_PATH) ? LEDGER_PATH : LEGACY_LEDGER_PATH;
+  if (!fs.existsSync(ledgerPath)) {
     return { entries: {}, warning: "Ledger file not found; treating ledger as empty." };
   }
 
-  const parsed = JSON.parse(fs.readFileSync(LEDGER_PATH, "utf8"));
+  const parsed = JSON.parse(fs.readFileSync(ledgerPath, "utf8"));
   return {
     entries: parsed && typeof parsed.entries === "object" && parsed.entries !== null ? parsed.entries : {},
-    warning: null,
+    warning: ledgerPath === LEGACY_LEDGER_PATH ? "Using legacy runtime ledger; tracked durable ledger is missing." : null,
   };
 }
 
 export function readLedgerForWrite() {
-  if (!fs.existsSync(RUNTIME_DIR)) {
-    fs.mkdirSync(RUNTIME_DIR, { recursive: true });
+  if (!fs.existsSync(STATE_DIR)) {
+    fs.mkdirSync(STATE_DIR, { recursive: true });
   }
   if (!fs.existsSync(LEDGER_PATH)) {
     return { entries: {} };
@@ -100,8 +107,8 @@ export function readLedgerForWrite() {
 }
 
 export function writeLedger(ledger) {
-  if (!fs.existsSync(RUNTIME_DIR)) {
-    fs.mkdirSync(RUNTIME_DIR, { recursive: true });
+  if (!fs.existsSync(STATE_DIR)) {
+    fs.mkdirSync(STATE_DIR, { recursive: true });
   }
   fs.writeFileSync(LEDGER_PATH, `${JSON.stringify(ledger, null, 2)}\n`, "utf8");
 }
@@ -123,11 +130,17 @@ export function getLedgerEntry(entries, date, slug) {
 export function summarizeDate(entries, date) {
   const rows = ZODIAC_SLUGS.map((slug) => {
     const entry = getLedgerEntry(entries, date, slug);
+    const asset = resolveZodiacWeeklyVisualAsset(slug, date, "weekly");
+    const plannedMediaMode = asset.path ? "image" : "text_only";
     return {
       slug,
       key: getPublishKey(date, slug),
       status: normalizeStatus(entry?.status) || "missing",
-      mediaMode: normalizeMediaMode(entry?.mediaMode) || "unknown",
+      mediaMode: normalizeMediaMode(entry?.mediaMode) || plannedMediaMode,
+      mediaSource: entry?.mediaMode ? "ledger" : asset.source,
+      fallback: Boolean(asset.fallback),
+      suppressed: Boolean(asset.suppressed),
+      suppressionReason: asset.suppressionReason ?? null,
       hasLedgerEntry: Boolean(entry),
       updatedAt: entry?.updatedAt ?? null,
     };
@@ -136,14 +149,15 @@ export function summarizeDate(entries, date) {
   return {
     date,
     expectedCount: ZODIAC_SLUGS.length,
-    sentCount: rows.filter((row) => row.status === "sent").length,
+    sentCount: rows.filter((row) => SENT_STATUSES.has(row.status)).length,
     failedCount: rows.filter((row) => row.status === "failed").length,
-    pendingCount: rows.filter((row) => row.status === "pending").length,
+    pendingCount: rows.filter((row) => ACTIVE_LOCK_STATUSES.has(row.status)).length,
+    lockedInProgressCount: rows.filter((row) => ACTIVE_LOCK_STATUSES.has(row.status)).length,
     skippedCount: rows.filter((row) => row.status === "missing" || row.status === "skipped").length,
     imageCount: rows.filter((row) => row.mediaMode === "image").length,
     textOnlyCount: rows.filter((row) => row.mediaMode === "text_only").length,
     fallbackCount: rows.filter((row) => row.mediaMode === "text_only").length,
-    duplicateBlockedCount: rows.filter((row) => row.status === "sent" || row.status === "pending").length,
+    duplicateBlockedCount: rows.filter((row) => DUPLICATE_PROTECTED_STATUSES.has(row.status)).length,
     perChannel: rows,
   };
 }
@@ -152,8 +166,8 @@ export function summarizeLedger(entries) {
   const rows = Object.entries(entries).map(([key, entry]) => ({ key, ...entry }));
   return {
     totalEntries: rows.length,
-    sentCount: rows.filter((row) => normalizeStatus(row.status) === "sent").length,
-    pendingCount: rows.filter((row) => normalizeStatus(row.status) === "pending").length,
+    sentCount: rows.filter((row) => SENT_STATUSES.has(normalizeStatus(row.status))).length,
+    pendingCount: rows.filter((row) => ACTIVE_LOCK_STATUSES.has(normalizeStatus(row.status))).length,
     failedCount: rows.filter((row) => normalizeStatus(row.status) === "failed").length,
     datesCovered: Array.from(new Set(rows.map((row) => row.date).filter(Boolean))).sort(),
     slugsCovered: Array.from(new Set(rows.map((row) => row.slug).filter(Boolean))).sort(),
@@ -164,7 +178,7 @@ export function findStalePending(entries, staleMinutes, now = new Date()) {
   const cutoffMs = now.getTime() - staleMinutes * 60 * 1000;
   return Object.entries(entries)
     .map(([key, entry]) => ({ key, ...entry }))
-    .filter((entry) => normalizeStatus(entry.status) === "pending")
+    .filter((entry) => ACTIVE_LOCK_STATUSES.has(normalizeStatus(entry.status)))
     .filter((entry) => {
       const time = Date.parse(entry.updatedAt ?? entry.createdAt ?? "");
       return Number.isNaN(time) || time <= cutoffMs;

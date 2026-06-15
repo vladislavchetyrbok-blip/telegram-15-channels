@@ -1,6 +1,7 @@
 import process from "process";
 import {
   findStalePending,
+  normalizeStatus,
   readLedgerForWrite,
   readLedgerReadOnly,
   validateIsoDate,
@@ -79,7 +80,7 @@ function main() {
   const now = new Date().toISOString();
   for (const row of staleRows) {
     const existing = ledger.entries[row.key];
-    if (!existing || existing.status !== "pending") continue;
+    if (!existing || !["pending", "locked", "in_progress", "publishing"].includes(normalizeStatus(existing.status))) continue;
     ledger.entries[row.key] = {
       ...existing,
       status: "failed",

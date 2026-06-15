@@ -16,9 +16,12 @@ on:
           - dry-run
           - live
       date:
-        description: "Optional target date YYYY-MM-DD. Empty uses current Europe/Kyiv date."
+        description: "Target date YYYY-MM-DD. Required for manual live; optional for dry-run."
         required: false
         default: ""
+
+permissions:
+  contents: write
 
 concurrency:
   group: zodiac-daily-publish
@@ -49,6 +52,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: true
+
+      - name: Refresh main
+        run: git pull --ff-only origin main
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -59,34 +68,46 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Restore ledger cache
-        uses: actions/cache/restore@v4
-        with:
-          path: data/runtime/zodiac-publish-ledger.json
-          key: zodiac-ledger-${{ github.run_id }}
-          restore-keys: |
-            zodiac-ledger-
-
       - name: Determine target date and mode
         id: target
         shell: bash
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ inputs.date }}" ]; then
-            TARGET_DATE="${{ inputs.date }}"
-          else
-            TARGET_DATE=$(TZ="Europe/Kyiv" date +%Y-%m-%d)
-          fi
-
           if [ "${{ github.event_name }}" = "schedule" ]; then
             RUN_MODE="live"
           else
             RUN_MODE="${{ inputs.mode }}"
           fi
 
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "$RUN_MODE" = "live" ] && [ -z "${{ inputs.date }}" ]; then
+            echo "Manual live dispatch requires explicit date YYYY-MM-DD."
+            exit 1
+          fi
+
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ inputs.date }}" ]; then
+            TARGET_DATE="${{ inputs.date }}"
+          else
+            TARGET_DATE=$(TZ="Europe/Kyiv" date +%Y-%m-%d)
+          fi
+
+          UTC_NOW=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          KYIV_NOW=$(TZ="Europe/Kyiv" date +%Y-%m-%dT%H:%M:%S%z)
+
           echo "date=$TARGET_DATE" >> "$GITHUB_OUTPUT"
           echo "mode=$RUN_MODE" >> "$GITHUB_OUTPUT"
+          echo "timezone_policy=Europe/Kyiv calendar date" >> "$GITHUB_OUTPUT"
+          echo "utc_now=$UTC_NOW" >> "$GITHUB_OUTPUT"
+          echo "kyiv_now=$KYIV_NOW" >> "$GITHUB_OUTPUT"
           echo "Zodiac target date: $TARGET_DATE"
           echo "Zodiac mode: $RUN_MODE"
+          echo "Timezone policy: Europe/Kyiv calendar date"
+          echo "UTC now: $UTC_NOW"
+          echo "Kyiv now: $KYIV_NOW"
+
+      - name: Configure git identity for durable ledger persistence
+        if: steps.target.outputs.mode == 'live'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Scheduler preflight
         run: npm run zodiac:scheduler:preflight -- --date "${{ steps.target.outputs.date }}" --year-days 365
@@ -94,7 +115,7 @@ jobs:
       - name: Execute Zodiac daily command
         run: |
           if [ "${{ steps.target.outputs.mode }}" = "live" ]; then
-            npm run zodiac:publish-date:live -- --date "${{ steps.target.outputs.date }}"
+            ZODIAC_LEDGER_GIT_PERSIST=true npm run zodiac:publish-date:live -- --date "${{ steps.target.outputs.date }}"
           else
             npm run zodiac:publish-date:dry -- --date "${{ steps.target.outputs.date }}"
           fi
@@ -114,10 +135,3 @@ jobs:
             data/runtime/zodiac-daily-report-${{ steps.target.outputs.date }}.json
             data/runtime/zodiac-scheduler-preflight-${{ steps.target.outputs.date }}.json
           if-no-files-found: warn
-
-      - name: Save ledger cache
-        if: always()
-        uses: actions/cache/save@v4
-        with:
-          path: data/runtime/zodiac-publish-ledger.json
-          key: zodiac-ledger-${{ github.run_id }}

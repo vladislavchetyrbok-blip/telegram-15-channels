@@ -224,13 +224,19 @@ function addMissingImage(grouped, slug, weekday) {
   grouped[slug][weekday] = (grouped[slug][weekday] || 0) + 1;
 }
 
+function addSuppressedMedia(grouped, slug, weekday) {
+  if (!grouped[slug]) grouped[slug] = {};
+  grouped[slug][weekday] = (grouped[slug][weekday] || 0) + 1;
+}
+
 function summarizeDay(date, rows) {
   return {
     date,
     total: rows.length,
     image: rows.filter((row) => row.mediaMode === "image").length,
     text_only: rows.filter((row) => row.mediaMode === "text_only").length,
-    missingImageSlugs: rows.filter((row) => row.mediaMode === "text_only").map((row) => row.slug),
+    missingImageSlugs: rows.filter((row) => row.mediaMode === "text_only" && !row.suppressed).map((row) => row.slug),
+    suppressedMediaSlugs: rows.filter((row) => row.mediaMode === "text_only" && row.suppressed).map((row) => row.slug),
   };
 }
 
@@ -242,6 +248,23 @@ function printGroupedMissingImages(grouped) {
   }
 
   console.log("Missing Images By Slug :");
+  for (const slug of slugs) {
+    const weekdays = Object.entries(grouped[slug])
+      .sort(([a], [b]) => WEEKDAY_ORDER.indexOf(a) - WEEKDAY_ORDER.indexOf(b))
+      .map(([weekday, count]) => `${weekday}=${count}`)
+      .join(", ");
+    console.log(`  - ${slug}: ${weekdays}`);
+  }
+}
+
+function printGroupedSuppressedMedia(grouped) {
+  const slugs = Object.keys(grouped).sort((a, b) => ZODIAC_SLUGS.indexOf(a) - ZODIAC_SLUGS.indexOf(b));
+  if (slugs.length === 0) {
+    console.log("Suppressed Media By Slug: none");
+    return;
+  }
+
+  console.log("Suppressed Media By Slug:");
   for (const slug of slugs) {
     const weekdays = Object.entries(grouped[slug])
       .sort(([a], [b]) => WEEKDAY_ORDER.indexOf(a) - WEEKDAY_ORDER.indexOf(b))
@@ -286,7 +309,9 @@ function run() {
   let imageCount = 0;
   let textOnlyCount = 0;
   let missingImageCount = 0;
+  let suppressedMediaCount = 0;
   const missingImagesBySlug = {};
+  const suppressedMediaBySlug = {};
   let firstDayRows = [];
   let lastDayRows = [];
 
@@ -323,14 +348,19 @@ function run() {
           }
         } else {
           textOnlyCount++;
-          missingImageCount++;
-          addMissingImage(missingImagesBySlug, slug, asset.weekday || "unknown");
-          if (asset.source !== "none" || !asset.fallback) {
+          if (asset.suppressed) {
+            suppressedMediaCount++;
+            addSuppressedMedia(suppressedMediaBySlug, slug, asset.weekday || "unknown");
+          } else {
+            missingImageCount++;
+            addMissingImage(missingImagesBySlug, slug, asset.weekday || "unknown");
+          }
+          if (!asset.fallback || (asset.source !== "none" && asset.source !== "suppressed")) {
             fatalErrors.push(`Missing image did not resolve to text_only for ${slug} on ${date}`);
           }
         }
 
-        dayRows.push({ date, slug, mediaMode });
+        dayRows.push({ date, slug, mediaMode, suppressed: Boolean(asset.suppressed) });
       }
 
       if (dayIndex === 0) firstDayRows = dayRows;
@@ -353,6 +383,7 @@ function run() {
   console.log(`Image Count          : ${imageCount}`);
   console.log(`Text Only Count      : ${textOnlyCount}`);
   console.log(`Missing Image Count  : ${missingImageCount}`);
+  console.log(`Suppressed Media Count: ${suppressedMediaCount}`);
   console.log(`Duplicate Keys Count : ${duplicateKeysCount}`);
   console.log(`Fatal Errors Count   : ${fatalErrors.length}`);
   console.log(`Warning Count        : ${warnings.length}`);
@@ -368,6 +399,7 @@ function run() {
   console.log("Ledger Writes        : 0");
   console.log("");
   printGroupedMissingImages(missingImagesBySlug);
+  printGroupedSuppressedMedia(suppressedMediaBySlug);
   console.log("");
   console.log("--- Sample First Day ---");
   console.log(JSON.stringify(firstDay, null, 2));

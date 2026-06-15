@@ -48,13 +48,18 @@ function summarizeAssets(date) {
       mediaMode: asset.path ? "image" : "text_only",
       weekday: asset.weekday ?? "unknown",
       ok: asset.ok,
+      suppressed: Boolean(asset.suppressed),
+      suppressionReason: asset.suppressionReason ?? null,
     };
   });
 
   return {
     imageCount: rows.filter((row) => row.mediaMode === "image").length,
     textOnlyCount: rows.filter((row) => row.mediaMode === "text_only").length,
-    missingImageSlugs: rows.filter((row) => row.mediaMode === "text_only").map((row) => row.slug),
+    missingImageSlugs: rows.filter((row) => row.mediaMode === "text_only" && !row.suppressed).map((row) => row.slug),
+    suppressedMediaSlugs: rows
+      .filter((row) => row.mediaMode === "text_only" && row.suppressed)
+      .map((row) => `${row.slug} (${row.suppressionReason})`),
   };
 }
 
@@ -98,10 +103,12 @@ function main() {
   console.log(`Sent Today              : ${dateSummary.sentCount}`);
   console.log(`Failed Today            : ${dateSummary.failedCount}`);
   console.log(`Pending Today           : ${dateSummary.pendingCount}`);
+  console.log(`Locked/InProgress Today : ${dateSummary.lockedInProgressCount}`);
   console.log(`Skipped/Missing Today   : ${dateSummary.skippedCount}`);
   console.log(`Image Assets Today      : ${assetSummary.imageCount}`);
   console.log(`TextOnly Assets Today   : ${assetSummary.textOnlyCount}`);
   console.log(`Missing Image Slugs     : ${assetSummary.missingImageSlugs.length ? assetSummary.missingImageSlugs.join(", ") : "none"}`);
+  console.log(`Suppressed Media Slugs  : ${assetSummary.suppressedMediaSlugs.length ? assetSummary.suppressedMediaSlugs.join(", ") : "none"}`);
   console.log(`Stale Pending Threshold : ${options.staleMinutes} minutes`);
   console.log(`Stale Pending Count     : ${stalePending.length}`);
   console.log("Telegram API Calls      : 0");

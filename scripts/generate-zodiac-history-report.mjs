@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import process from "process";
+import { LEDGER_PATH, LEGACY_LEDGER_PATH } from "./lib/zodiac-autonomy.mjs";
 
 const EXPECTED_SLUGS = [
   "zodiac-general",
@@ -19,8 +20,6 @@ const EXPECTED_SLUGS = [
 ];
 
 const ZODIAC_ONLY_SLUGS = EXPECTED_SLUGS.filter((slug) => slug !== "zodiac-general");
-const LEDGER_PATH = path.resolve(process.cwd(), "data", "runtime", "zodiac-publish-ledger.json");
-
 function parseArgs() {
   const args = process.argv.slice(2);
   const options = { days: null, from: null, to: null };
@@ -70,15 +69,16 @@ function validateDays(value) {
 }
 
 function readLedger() {
-  if (!fs.existsSync(LEDGER_PATH)) {
+  const ledgerPath = fs.existsSync(LEDGER_PATH) ? LEDGER_PATH : LEGACY_LEDGER_PATH;
+  if (!fs.existsSync(ledgerPath)) {
     return { entries: {}, warning: "Ledger file not found; treating ledger as empty." };
   }
 
-  const raw = fs.readFileSync(LEDGER_PATH, "utf8");
+  const raw = fs.readFileSync(ledgerPath, "utf8");
   const parsed = JSON.parse(raw);
   return {
     entries: parsed && typeof parsed.entries === "object" && parsed.entries !== null ? parsed.entries : {},
-    warning: null,
+    warning: ledgerPath === LEGACY_LEDGER_PATH ? "Using legacy runtime ledger; tracked durable ledger is missing." : null,
   };
 }
 

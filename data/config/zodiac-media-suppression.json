@@ -1,0 +1,9 @@
+{
+  "enabled": true,
+  "reason": "visual_quality_no_go_pending_replacement",
+  "weeklySuppressedSlugs": [
+    "aquarius",
+    "pisces"
+  ],
+  "weeklySuppressedPaths": []
+}

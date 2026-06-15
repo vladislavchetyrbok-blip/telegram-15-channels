@@ -1,12 +1,35 @@
 import fs from "fs";
 import path from "path";
 
-const RUNTIME_DIR = path.resolve(process.cwd(), "data/runtime");
-const LEDGER_PATH = path.join(RUNTIME_DIR, "zodiac-publish-ledger.json");
+export const STATE_DIR = path.resolve(process.cwd(), "data/state");
+export const LEDGER_PATH = path.join(STATE_DIR, "zodiac-publish-ledger.json");
+export const LEGACY_RUNTIME_DIR = path.resolve(process.cwd(), "data/runtime");
+export const LEGACY_LEDGER_PATH = path.join(LEGACY_RUNTIME_DIR, "zodiac-publish-ledger.json");
+const RUNTIME_DIR = LEGACY_RUNTIME_DIR;
 const LOCK_PATH = path.join(RUNTIME_DIR, "zodiac-publish.lock");
+const PROTECTED_STATUSES = new Set(["sent", "published", "pending", "locked", "in_progress", "publishing"]);
+const ACTIVE_LOCK_STATUSES = new Set(["pending", "locked", "in_progress", "publishing"]);
 
 export function getPublishKey(date, slug) {
   return `${date}:${slug}`;
+}
+
+export function normalizeLedgerStatus(status) {
+  return String(status || "").trim().toLowerCase();
+}
+
+export function isProtectedPublishStatus(status) {
+  return PROTECTED_STATUSES.has(normalizeLedgerStatus(status));
+}
+
+export function isActiveLockStatus(status) {
+  return ACTIVE_LOCK_STATUSES.has(normalizeLedgerStatus(status));
+}
+
+export function getLedgerEntry(ledger, date, slug) {
+  const entries = ledger?.entries && typeof ledger.entries === "object" ? ledger.entries : {};
+  const key = getPublishKey(date, slug);
+  return entries[key] ?? Object.values(entries).find((entry) => entry?.date === date && entry?.slug === slug) ?? null;
 }
 
 export function acquireLock() {
@@ -26,33 +49,29 @@ export function releaseLock() {
 }
 
 export function loadLedger() {
-  if (!fs.existsSync(RUNTIME_DIR)) {
-    fs.mkdirSync(RUNTIME_DIR, { recursive: true });
-  }
-  if (!fs.existsSync(LEDGER_PATH)) {
-    return { entries: {} };
-  }
+  const ledgerPath = fs.existsSync(LEDGER_PATH) ? LEDGER_PATH : LEGACY_LEDGER_PATH;
+  if (!fs.existsSync(ledgerPath)) return { entries: {} };
+
   try {
-    const data = fs.readFileSync(LEDGER_PATH, "utf8");
+    const data = fs.readFileSync(ledgerPath, "utf8");
     return JSON.parse(data);
   } catch (error) {
-    console.error(`Failed to parse ledger at ${LEDGER_PATH}:`, error);
+    console.error(`Failed to parse ledger at ${ledgerPath}:`, error);
     return { entries: {} };
   }
 }
 
 export function saveLedger(ledgerData) {
-  if (!fs.existsSync(RUNTIME_DIR)) {
-    fs.mkdirSync(RUNTIME_DIR, { recursive: true });
+  if (!fs.existsSync(STATE_DIR)) {
+    fs.mkdirSync(STATE_DIR, { recursive: true });
   }
-  fs.writeFileSync(LEDGER_PATH, JSON.stringify(ledgerData, null, 2), "utf8");
+  fs.writeFileSync(LEDGER_PATH, `${JSON.stringify(ledgerData, null, 2)}\n`, "utf8");
 }
 
 export function hasSent(date, slug) {
   const ledger = loadLedger();
-  const key = getPublishKey(date, slug);
-  const entry = ledger.entries[key];
-  return entry && entry.status === "sent";
+  const entry = getLedgerEntry(ledger, date, slug);
+  return ["sent", "published"].includes(normalizeLedgerStatus(entry?.status));
 }
 
 function updateEntry(date, slug, status, metadata = {}) {
@@ -81,6 +100,10 @@ export function markPending(date, slug, metadata = {}) {
   updateEntry(date, slug, "pending", metadata);
 }
 
+export function markLocked(date, slug, metadata = {}) {
+  updateEntry(date, slug, "locked", metadata);
+}
+
 export function markSent(date, slug, metadata = {}) {
   updateEntry(date, slug, "sent", metadata);
 }
@@ -104,9 +127,10 @@ export function summarizeLedger() {
     const entry = ledger.entries[key];
     summary.totalEntries++;
     
-    if (entry.status === "sent") summary.sentCount++;
-    if (entry.status === "pending") summary.pendingCount++;
-    if (entry.status === "failed") summary.failedCount++;
+    const status = normalizeLedgerStatus(entry.status);
+    if (status === "sent" || status === "published") summary.sentCount++;
+    if (ACTIVE_LOCK_STATUSES.has(status)) summary.pendingCount++;
+    if (status === "failed") summary.failedCount++;
     
     if (entry.date) summary.dates.add(entry.date);
     if (entry.slug) summary.slugs.add(entry.slug);

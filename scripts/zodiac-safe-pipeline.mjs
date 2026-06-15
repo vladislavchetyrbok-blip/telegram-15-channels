@@ -4,7 +4,7 @@ import path from "path";
 import process from "process";
 import { resolveZodiacWeeklyVisualAsset } from "./zodiac-weekly-asset-resolver.mjs";
 import { getZodiacTelegramTarget, planZodiacTelegramPublish, publishZodiacTelegramPost } from "./zodiac-telegram-publisher.mjs";
-import { loadLedger, getPublishKey } from "./lib/zodiac-publish-ledger.mjs";
+import { getLedgerEntry, isActiveLockStatus, loadLedger } from "./lib/zodiac-publish-ledger.mjs";
 
 function parseArgs() {
   const args = process.argv.slice(2);
@@ -130,8 +130,11 @@ function readPlanPostForLive({ planPath, channel }) {
     throw new Error(`Live publishing blocked: ${asset.error}`);
   }
   if (asset.fallback) {
-    console.log(`Weekly zodiac asset missing, using fallback asset.`);
+    console.log(asset.suppressed ? `Weekly zodiac asset suppressed, using text-only mode.` : `Weekly zodiac asset missing, using text-only mode.`);
     console.log(`Expected weekly asset: ${asset.expectedWeeklyPath}`);
+    if (asset.suppressionReason) {
+      console.log(`Suppression reason: ${asset.suppressionReason}`);
+    }
   }
 
   return { post, imagePath: asset.path };
@@ -203,9 +206,8 @@ async function run() {
         throw new Error("Blocked direct live zodiac publish. Use npm run zodiac:publish-date:live -- --date YYYY-MM-DD --approved");
       }
       const ledger = loadLedger();
-      const key = getPublishKey(startDate, channel);
-      const entry = ledger.entries[key];
-      if (!entry || entry.status !== "pending") {
+      const entry = getLedgerEntry(ledger, startDate, channel);
+      if (!entry || !isActiveLockStatus(entry.status)) {
         throw new Error("Blocked direct live zodiac publish. Use npm run zodiac:publish-date:live -- --date YYYY-MM-DD --approved");
       }
     }
