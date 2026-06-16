@@ -1,0 +1,47 @@
+{
+  "networks": [
+    {
+      "id": "zodiac",
+      "title": "Знаки зодиака",
+      "emoji": "🔮",
+      "status": "active",
+      "channelCount": 13,
+      "description": "Ежедневные гороскопы, совместимость, визуалы и навигация по 12 знакам.",
+      "features": [
+        "daily_autopublish",
+        "durable_ledger",
+        "backup_cron",
+        "visual_assets",
+        "cross_navigation",
+        "compatibility"
+      ]
+    },
+    {
+      "id": "real-estate",
+      "title": "Недвижимость",
+      "emoji": "🏙️",
+      "status": "planned",
+      "channelCount": 0,
+      "description": "Будущая сеть каналов по недвижимости.",
+      "features": []
+    },
+    {
+      "id": "general-media",
+      "title": "Общие медиа",
+      "emoji": "📰",
+      "status": "planned",
+      "channelCount": 0,
+      "description": "Будущие тематические медиа-каналы.",
+      "features": []
+    },
+    {
+      "id": "experiments",
+      "title": "Эксперименты",
+      "emoji": "🧪",
+      "status": "planned",
+      "channelCount": 0,
+      "description": "Тестовые идеи, новые форматы и MVP.",
+      "features": []
+    }
+  ]
+}
