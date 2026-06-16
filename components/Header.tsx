@@ -40,11 +40,11 @@ export function Header() {
           <p className="text-xs font-medium uppercase tracking-[0.2em] text-cyan-300">Telegram network dashboard</p>
           <p className="mt-2 flex max-w-full items-start gap-2 rounded-lg border border-slate-600 bg-slate-900/80 px-3 py-2 text-xs font-medium leading-5 text-slate-300 sm:inline-flex sm:items-center sm:rounded-full sm:py-1">
             <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-slate-400 sm:mt-0" />
-            <span className="min-w-0 break-words">Реальная массовая публикация не запускается автоматически. Автопубликация включается только после preflight.</span>
+            <span className="min-w-0 break-words [overflow-wrap:anywhere]">Реальная массовая публикация не запускается автоматически. Автопубликация включается только после preflight.</span>
           </p>
-          <h1 className="mt-1 text-2xl font-semibold text-white">Управление сетью из {status.channelsTotal} каналов</h1>
+          <h1 className="mt-1 break-words text-xl font-semibold text-white [overflow-wrap:anywhere] sm:text-2xl">Управление сетью из {status.channelsTotal} каналов</h1>
         </div>
-        <div className="-mx-1 flex min-w-0 max-w-full gap-2 overflow-x-auto px-1 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0 xl:w-auto xl:justify-end">
+        <div className="flex min-w-0 max-w-full flex-wrap gap-2 xl:w-auto xl:justify-end">
           <Link
             href="/posts/new"
             className="inline-flex h-10 shrink-0 items-center gap-2 rounded-md bg-cyan-300 px-4 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200"

@@ -20,6 +20,7 @@ import {
   validateZodiacDailyGuidanceUniqueness,
   validateZodiacDailyPostGuidance,
 } from "./lib/zodiac-daily-guidance.mjs";
+import { getCompatibilityButtonReport } from "./lib/zodiac-compatibility-bot.mjs";
 
 function parseArgs() {
   const args = process.argv.slice(2);
@@ -199,6 +200,17 @@ function logSampleOutput(slug, post) {
   }
 }
 
+function logCompatibilityButtonPreview(slug) {
+  const report = getCompatibilityButtonReport(slug);
+  console.log(`  -> compatibility mode: interactive_only`);
+  console.log(`  -> compatibility start: ${report.start}`);
+  console.log(`  -> compatibility target: ${report.targetType}`);
+  console.log(`  -> compatibility URL: ${report.url || report.previewUrl}`);
+  if (report.warning) {
+    console.log(`  -> compatibility warning: ${report.warning}`);
+  }
+}
+
 function main() {
   const options = parseArgs();
   
@@ -284,6 +296,7 @@ function main() {
           console.log(`  -> button URL presence: ${buttons.every(b => !!b.url)}`);
           console.log(`  -> reply_markup preview: ${JSON.stringify(replyMarkup)}`);
         }
+        logCompatibilityButtonPreview(slug);
         
         continue;
       }

@@ -46,7 +46,7 @@ const workspaceSections = [
   { title: "Контент", icon: FileText, status: "ежедневный", description: "Ежедневные тексты гороскопов и будущие контентные форматы.", href: "/content-plan" },
   { title: "Навигация", icon: Navigation, status: "13/13", description: "Inline-кнопки и закрепленные cross-navigation посты во всех каналах.", href: "/channels/zodiac" },
   { title: "Визуалы", icon: ImageIcon, status: "91/91", description: "Готовые weekly JPG-изображения для всех знаков и дней недели.", href: "/visuals" },
-  { title: "Совместимость", icon: HeartHandshake, status: "78 пар", description: "Dry-run модуль для публикаций вроде «Водолей + Лев».", href: "/dashboard/networks/zodiac#compatibility" },
+  { title: "Совместимость", icon: HeartHandshake, status: "interactive", description: "Bot/Mini App preview для fast, personal и precise расчетов без публикации в каналы.", href: "/dashboard/networks/zodiac/compatibility-preview" },
   { title: "Еженедельный", icon: ClipboardList, status: "dry-run", description: "Пайплайн еженедельных гороскопов готов для ревью без live-публикации.", href: "/dashboard/networks/zodiac#weekly" },
   { title: "Отчеты", icon: BarChart3, status: "daily/history", description: "Ежедневные отчеты, историческая аналитика и будущие витрины метрик.", href: "/dashboard/networks/zodiac#reports" },
   { title: "Настройки", icon: Settings, status: "безопасно", description: "Описания каналов, комментарии, dev-инструменты и операционный runbook.", href: "/dashboard/networks/zodiac#settings" },
@@ -101,7 +101,7 @@ export default function ZodiacNetworkWorkspacePage() {
             icon={HeartHandshake}
             tone="coral"
           >
-            Модуль готовит 78 пар для будущих публикаций в общем канале, Mini App или VIP-формате. Сейчас безопасный режим: generate + dry-run.
+            Совместимость теперь готовится как интерактивный bot/Mini App сервис: fast, personal и precise режимы без публикации результатов в каналы.
           </InfoPanel>
           <InfoPanel
             id="weekly"

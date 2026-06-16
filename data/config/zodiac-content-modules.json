@@ -25,15 +25,28 @@
     ]
   },
   "compatibility": {
-    "status": "separate_planned_module",
+    "status": "interactive_service_planned",
     "titleRu": "Совместимость знаков зодиака",
     "examplePair": {
       "pairId": "gemini-leo",
       "titleRu": "Близнецы + Лев"
     },
     "configPath": "data/config/zodiac-compatibility-pairs.json",
+    "botConfigPath": "data/config/zodiac-compatibility-bot.json",
+    "previewRoute": "/dashboard/networks/zodiac/compatibility-preview",
     "publishLedgerPath": "data/state/zodiac-compatibility-publish-ledger.json",
-    "mustNotBeMixedIntoDailyHoroscopeBody": true
+    "mustNotBeMixedIntoDailyHoroscopeBody": true,
+    "dailyChannelFeedPostsEnabled": false,
+    "scheduledChannelPostsEnabled": false,
+    "separateCompatibilityChannel": false,
+    "openFromChannelButton": true,
+    "modes": [
+      "fast",
+      "personal",
+      "precise"
+    ],
+    "personalDataPersistence": "disabled",
+    "unknownBirthTimeSupported": true
   },
   "weeklyForecast": {
     "status": "later_module",

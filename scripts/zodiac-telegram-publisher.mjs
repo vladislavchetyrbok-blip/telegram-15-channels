@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import process from "process";
+import { buildCompatibilityInlineButton } from "./lib/zodiac-compatibility-bot.mjs";
 
 const ZODIAC_EMOJIS = {
   aries: "♈", taurus: "♉", gemini: "♊", cancer: "♋",
@@ -44,12 +45,16 @@ export function buildZodiacNavigationKeyboard(channelId) {
       }
       if (row.length > 0) keyboard.push(row);
     }
+    const compatibilityButton = buildCompatibilityInlineButton("zodiac-general");
+    if (compatibilityButton) keyboard.push([compatibilityButton]);
     return { inline_keyboard: keyboard };
   } else {
     const keyboard = [];
     if (links["general"]) {
       keyboard.push([{ text: "🔮 Общий гороскоп", url: links["general"] }]);
     }
+    const compatibilityButton = buildCompatibilityInlineButton(channelId);
+    if (compatibilityButton) keyboard.push([compatibilityButton]);
     const otherSigns = ZODIAC_ORDER.filter(s => s !== channelId);
     for (let i = 0; i < otherSigns.length; i += 2) {
       const row = [];

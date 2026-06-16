@@ -136,6 +136,10 @@ export function selectCompatibilityPairs({ pairId = null, sign = null, all = fal
   throw new Error("Provide --pair, --sign, or --all.");
 }
 
+export function canonicalizeCompatibilityPairId(pairId, pairs = loadCompatibilityConfig().pairs) {
+  return findCompatibilityPair(pairId, pairs).pairId;
+}
+
 export function findCompatibilityPair(pairId, pairs = loadCompatibilityConfig().pairs) {
   const normalized = normalizePairId(pairId);
   const [left, right] = normalized.split("-");

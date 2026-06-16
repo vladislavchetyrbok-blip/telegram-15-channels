@@ -17,12 +17,12 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <body>
-        <div className="min-h-screen bg-[#070b14] text-slate-100 grid-surface">
+        <div className="min-h-screen overflow-x-hidden bg-[#070b14] text-slate-100 grid-surface">
           <Sidebar />
-          <div className="min-h-screen lg:pl-72">
+          <div className="min-h-screen min-w-0 lg:pl-72">
             <Header />
             <UnifiedStatusStrip />
-            <main className="px-4 py-6 sm:px-6 lg:px-8">{children}</main>
+            <main className="min-w-0 overflow-x-hidden px-4 py-6 sm:px-6 lg:px-8">{children}</main>
           </div>
         </div>
       </body>

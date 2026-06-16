@@ -1,161 +1,156 @@
 import process from "process";
-import path from "path";
 import {
-  generateCompatibilityPost,
-  getCompatibilityLedgerEntry,
-  getGeneralChannelEnv,
-  isProtectedCompatibilityStatus,
-  loadCompatibilityLedger,
-  markCompatibilityEntry,
-  normalizeCompatibilityStatus,
-  selectCompatibilityPairs,
-  todayKyivDate,
-  validateCompatibilityKeyboard,
-  validateDateString,
+  canonicalizeCompatibilityPairId,
+  loadCompatibilityConfig,
+  validateCompatibilityConfig,
 } from "./lib/zodiac-compatibility-pipeline.mjs";
+import {
+  createCompatibilityRequest,
+  createFastCompatibilityRequest,
+  renderCompatibilityResult,
+  validateCompatibilityRequest,
+} from "./lib/zodiac-compatibility-request.mjs";
+import { getCompatibilityButtonReport } from "./lib/zodiac-compatibility-bot.mjs";
 
 function parseArgs() {
   const args = process.argv.slice(2);
-  const options = { pair: null, date: todayKyivDate(), dryRun: false, live: false, approved: false };
+  const options = {
+    pair: null,
+    mode: "fast",
+    firstSign: null,
+    secondSign: null,
+    firstGender: "unspecified",
+    secondGender: "unspecified",
+    firstBirthDate: null,
+    secondBirthDate: null,
+    firstKnowsTime: false,
+    secondKnowsTime: false,
+    firstBirthTime: null,
+    secondBirthTime: null,
+    firstBirthCity: null,
+    secondBirthCity: null,
+    dryRun: false,
+    live: false,
+    approved: false,
+  };
   const errors = [];
 
   for (let index = 0; index < args.length; index += 1) {
     const arg = args[index];
     if (arg === "--pair") options.pair = args[++index] ?? null;
-    else if (arg === "--date") options.date = args[++index] ?? null;
+    else if (arg === "--mode") options.mode = args[++index] ?? "fast";
+    else if (arg === "--first-sign") options.firstSign = args[++index] ?? null;
+    else if (arg === "--second-sign") options.secondSign = args[++index] ?? null;
+    else if (arg === "--first-gender") options.firstGender = args[++index] ?? "unspecified";
+    else if (arg === "--second-gender") options.secondGender = args[++index] ?? "unspecified";
+    else if (arg === "--first-birth-date") options.firstBirthDate = args[++index] ?? null;
+    else if (arg === "--second-birth-date") options.secondBirthDate = args[++index] ?? null;
+    else if (arg === "--first-birth-time") options.firstBirthTime = args[++index] ?? null;
+    else if (arg === "--second-birth-time") options.secondBirthTime = args[++index] ?? null;
+    else if (arg === "--first-birth-city") options.firstBirthCity = args[++index] ?? null;
+    else if (arg === "--second-birth-city") options.secondBirthCity = args[++index] ?? null;
+    else if (arg === "--first-knows-time") options.firstKnowsTime = true;
+    else if (arg === "--second-knows-time") options.secondKnowsTime = true;
+    else if (arg === "--first-unknown-time") options.firstKnowsTime = false;
+    else if (arg === "--second-unknown-time") options.secondKnowsTime = false;
     else if (arg === "--dry-run") options.dryRun = true;
     else if (arg === "--live") options.live = true;
     else if (arg === "--approved") options.approved = true;
     else errors.push(`Unknown argument: ${arg}`);
   }
 
-  if (!options.pair) errors.push("Missing --pair pair-id.");
-  if (!validateDateString(options.date)) errors.push("Invalid --date YYYY-MM-DD.");
   if (!options.dryRun && !options.live) options.dryRun = true;
   if (options.dryRun && options.live) errors.push("Use either --dry-run or --live, not both.");
+  if (options.live) errors.push("Live compatibility channel publishing is disabled. Use the bot/Mini App flow after explicit implementation approval.");
   if (options.live && !options.approved) errors.push("Live mode requires --approved.");
 
   return { options, errors };
 }
 
-function printPreview({ post, date, action, ledgerStatus, mode, keyboardStatus }) {
-  console.log("=== Zodiac Compatibility Publish ===");
-  console.log(`Mode              : ${mode}`);
-  console.log(`Target Channel    : general`);
-  console.log(`Date              : ${date}`);
-  console.log(`Pair              : ${post.pairId}`);
-  console.log(`Score             : ${post.score}/100`);
-  console.log(`Element Dynamic   : ${post.elementDynamic}`);
-  console.log(`Action            : ${action}`);
-  console.log(`Ledger Status     : ${ledgerStatus}`);
-  console.log(`Button Status     : ${keyboardStatus.ok ? "OK" : "PROBLEMS"}`);
-  console.log(`Button Count      : ${keyboardStatus.buttonCount}`);
-  console.log("");
-  console.log("--- Message Preview ---");
-  console.log(post.text);
-  console.log("");
-  console.log("--- Inline Keyboard Preview ---");
-  post.keyboard.inline_keyboard.forEach((row, index) => {
-    const display = row.map((button) => `${button.text} -> ${button.url}`).join(" | ");
-    console.log(`Row ${index + 1}: ${display}`);
+function requestFromOptions(options) {
+  if (options.pair && (!options.firstSign || !options.secondSign)) {
+    const [firstSign, secondSign] = String(options.pair).trim().toLowerCase().split("-");
+    return createFastCompatibilityRequest(firstSign, secondSign);
+  }
+
+  return createCompatibilityRequest({
+    source: options.mode,
+    first: {
+      signSlug: options.firstSign,
+      gender: options.firstGender,
+      birthDate: options.firstBirthDate,
+      knowsBirthTime: options.firstKnowsTime,
+      birthTime: options.firstBirthTime,
+      birthCity: options.firstBirthCity,
+    },
+    second: {
+      signSlug: options.secondSign,
+      gender: options.secondGender,
+      birthDate: options.secondBirthDate,
+      knowsBirthTime: options.secondKnowsTime,
+      birthTime: options.secondBirthTime,
+      birthCity: options.secondBirthCity,
+    },
   });
-  if (keyboardStatus.errors.length > 0) {
-    console.log("--- Button Errors ---");
-    keyboardStatus.errors.forEach((error) => console.log(`- ${error}`));
-  }
-  console.log(`Telegram API Calls: ${mode === "DRY-RUN" ? 0 : "pending live execution"}`);
-  console.log(`Ledger Writes     : ${mode === "DRY-RUN" ? 0 : "pending live execution"}`);
-  console.log("====================================");
 }
 
-function loadLocalEnvForLive() {
-  for (const fileName of [".env.local", ".env"]) {
-    try {
-      process.loadEnvFile(path.resolve(process.cwd(), fileName));
-    } catch {
-      // Optional local env files may be absent in CI or operator environments.
-    }
-  }
-}
+function printPreview({ request, result, requestedPair }) {
+  const firstButton = getCompatibilityButtonReport(request.first.signSlug);
+  const generalButton = getCompatibilityButtonReport("zodiac-general");
+  const validation = validateCompatibilityRequest(request);
 
-async function postTelegramJson({ token, method, body }) {
-  const response = await fetch(`https://api.telegram.org/bot${token}/${method}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  });
-  const result = await response.json().catch(() => null);
-  if (!response.ok || !result?.ok) {
-    throw new Error(result?.description || `Telegram ${method} returned HTTP ${response.status}`);
-  }
-  return result.result;
-}
+  console.log("=== Zodiac Compatibility Interactive Preview ===");
+  console.log("Mode                    : DRY-RUN");
+  console.log("Concept                 : interactive_bot_or_mini_app");
+  console.log("Channel Feed Publishing : disabled");
+  console.log("Scheduled Posts         : disabled");
+  console.log(`Request Mode            : ${request.source}`);
+  console.log(`Requested Pair          : ${requestedPair}`);
+  console.log(`Canonical Pair          : ${result.canonicalPairId}`);
+  console.log(`Input Valid             : ${validation.ok ? "YES" : "NO"}`);
+  console.log(`Birth Data Persistence  : disabled`);
+  console.log(`Unknown Birth Time Note : ${result.unknownTimeNote ? "YES" : "NO"}`);
+  console.log(`Button Target Type      : ${firstButton.targetType}`);
+  console.log(`First Sign Button       : ${firstButton.url || firstButton.previewUrl}`);
+  console.log(`General Entry Link      : ${generalButton.url || generalButton.previewUrl}`);
+  if (firstButton.warning) console.log(`Button Warning          : ${firstButton.warning}`);
+  console.log("");
+  console.log("--- Result Preview ---");
+  console.log(result.text);
+  console.log("");
+  console.log("Telegram API Calls      : 0");
+  console.log("Ledger Writes           : 0");
+  console.log("==============================================");
 
-async function publishLive({ post, date }) {
-  loadLocalEnvForLive();
-  const token = process.env.TELEGRAM_BOT_TOKEN?.trim();
-  const envName = getGeneralChannelEnv();
-  const chatId = process.env[envName]?.trim();
-  if (!token) throw new Error("TELEGRAM_BOT_TOKEN is missing.");
-  if (!chatId) throw new Error(`${envName} is missing.`);
-
-  markCompatibilityEntry(date, post.pairId, "locked", { target: "general", score: post.score });
-  try {
-    const message = await postTelegramJson({
-      token,
-      method: "sendMessage",
-      body: {
-        chat_id: chatId,
-        text: post.text,
-        reply_markup: post.keyboard,
-      },
-    });
-    markCompatibilityEntry(date, post.pairId, "sent", {
-      target: "general",
-      score: post.score,
-      messageId: message.message_id ?? null,
-      sentAt: new Date().toISOString(),
-    });
-    console.log(`[sent] ${post.pairId} | message_id=${message.message_id ?? "unknown"}`);
-    console.log("Telegram API Calls: 1");
-    console.log("Ledger Writes     : 2");
-  } catch (error) {
-    markCompatibilityEntry(date, post.pairId, "failed", {
-      target: "general",
-      score: post.score,
-      error: error instanceof Error ? error.message : String(error),
-    });
-    throw error;
+  if (!validation.ok) {
+    validation.errors.forEach((error) => console.error(error));
+    process.exit(1);
   }
 }
 
-async function main() {
+function main() {
   const { options, errors } = parseArgs();
   if (errors.length > 0) {
     errors.forEach((error) => console.error(error));
     process.exit(1);
   }
 
-  const [pair] = selectCompatibilityPairs({ pairId: options.pair });
-  const post = generateCompatibilityPost(pair);
-  const keyboardStatus = validateCompatibilityKeyboard(post);
-  const ledger = loadCompatibilityLedger();
-  const entry = getCompatibilityLedgerEntry(ledger, options.date, post.pairId);
-  const ledgerStatus = normalizeCompatibilityStatus(entry?.status) || "missing";
-  const duplicateBlocked = isProtectedCompatibilityStatus(ledgerStatus);
-  const action = duplicateBlocked ? "skip_duplicate" : ledgerStatus === "failed" ? "skip_failed_requires_review" : options.dryRun ? "dry_run_would_publish" : "publish_live";
-  const mode = options.live ? "LIVE" : "DRY-RUN";
+  const config = loadCompatibilityConfig();
+  const configProblems = validateCompatibilityConfig(config);
+  if (configProblems.length > 0) {
+    configProblems.forEach((problem) => console.error(problem));
+    process.exit(1);
+  }
 
-  printPreview({ post, date: options.date, action, ledgerStatus, mode, keyboardStatus });
+  const request = requestFromOptions(options);
+  const result = renderCompatibilityResult(request);
+  const requestedPair = options.pair || `${request.first.signSlug}-${request.second.signSlug}`;
+  const canonicalPair = canonicalizeCompatibilityPairId(requestedPair, config.pairs);
+  if (canonicalPair !== result.canonicalPairId) {
+    throw new Error(`Canonical pair mismatch: ${canonicalPair} !== ${result.canonicalPairId}`);
+  }
 
-  if (!keyboardStatus.ok) throw new Error("Compatibility keyboard validation failed.");
-  if (duplicateBlocked || ledgerStatus === "failed") return;
-  if (options.dryRun) return;
-
-  await publishLive({ post, date: options.date });
+  printPreview({ request, result, requestedPair });
 }
 
-main().catch((error) => {
-  console.error(`Unable to process zodiac compatibility publish: ${error instanceof Error ? error.message : String(error)}`);
-  process.exit(1);
-});
+main();
