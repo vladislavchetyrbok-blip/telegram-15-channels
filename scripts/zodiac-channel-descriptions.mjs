@@ -5,7 +5,20 @@ import { fileURLToPath } from "url";
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const configPath = path.join(rootDir, "data", "config", "zodiac-channel-descriptions.json");
+const linkConfigPath = path.join(rootDir, "data", "config", "zodiac-channel-links.json");
 const TELEGRAM_DESCRIPTION_LIMIT = 255;
+const FORBIDDEN_PUBLIC_TEXT = [
+  "TODO",
+  "FIXME",
+  "placeholder",
+  "test",
+  "mock",
+  "dry-run",
+  "dry run",
+  "debug",
+  "MVP",
+  "internal",
+];
 
 const CHANNELS = [
   { slug: "general", env: "ZODIAC_GENERAL_CHANNEL_ID" },
@@ -56,8 +69,16 @@ function loadDescriptions() {
   return JSON.parse(fs.readFileSync(configPath, "utf8"));
 }
 
+function loadChannelLinks() {
+  return JSON.parse(fs.readFileSync(linkConfigPath, "utf8"));
+}
+
 function countCharacters(value) {
   return Array.from(value).length;
+}
+
+function normalizeTargetSlug(slug) {
+  return slug === "zodiac-general" ? "general" : slug;
 }
 
 function selectChannels(channelFilter) {
@@ -65,9 +86,20 @@ function selectChannels(channelFilter) {
   return CHANNELS.filter((channel) => channel.slug === channelFilter);
 }
 
-function validateDescriptions(descriptions, channels) {
+function findForbiddenPublicText(value) {
+  const text = String(value || "");
+  return FORBIDDEN_PUBLIC_TEXT.filter((word) => new RegExp(`\\b${escapeRegExp(word)}\\b`, "i").test(text));
+}
+
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function validateDescriptions(descriptions, channelLinks, channels) {
   const missing = [];
   const invalid = [];
+  const warnings = [];
+  const seenDescriptions = new Map();
 
   for (const channel of channels) {
     const item = descriptions[channel.slug];
@@ -89,28 +121,64 @@ function validateDescriptions(descriptions, channels) {
     if (length > TELEGRAM_DESCRIPTION_LIMIT) {
       invalid.push(`${channel.slug}: description is ${length}/${TELEGRAM_DESCRIPTION_LIMIT} characters`);
     }
+
+    const forbidden = findForbiddenPublicText(`${item.title}\n${item.description}`);
+    if (forbidden.length > 0) {
+      invalid.push(`${channel.slug}: contains public placeholder/debug text (${forbidden.join(", ")})`);
+    }
+
+    const targetSlug = normalizeTargetSlug(channel.slug);
+    const publicTarget = channelLinks[targetSlug];
+    if (typeof publicTarget !== "string" || !publicTarget.startsWith("https://t.me/")) {
+      invalid.push(`${channel.slug}: missing Telegram public target in ${path.relative(rootDir, linkConfigPath).replaceAll("\\", "/")}`);
+    }
+
+    const normalizedDescription = item.description.trim().replace(/\s+/g, " ");
+    const duplicateOf = seenDescriptions.get(normalizedDescription);
+    if (duplicateOf) {
+      warnings.push(`${channel.slug}: exact duplicate description of ${duplicateOf}`);
+    } else {
+      seenDescriptions.set(normalizedDescription, channel.slug);
+    }
   }
 
-  return { missing, invalid };
+  return { missing, invalid, warnings };
 }
 
-function printPreview({ descriptions, channels, missing, invalid, mode, channelFilter }) {
+function printPreview({ descriptions, channelLinks, channels, missing, invalid, warnings, mode, channelFilter }) {
+  const validCount = channels.length - missing.length - invalid.length;
   console.log("=== Zodiac Channel Descriptions ===");
   console.log(`Mode              : ${mode}`);
   console.log(`Config            : ${path.relative(rootDir, configPath).replaceAll("\\", "/")}`);
+  console.log(`Targets Config    : ${path.relative(rootDir, linkConfigPath).replaceAll("\\", "/")}`);
   console.log(`Channel Filter    : ${channelFilter ?? "all"}`);
   console.log(`Channels          : ${channels.length}`);
   console.log(`Missing           : ${missing.length}`);
   console.log(`Invalid           : ${invalid.length}`);
+  console.log(`Warnings          : ${warnings.length}`);
+  console.log(`Valid Channels    : ${validCount}/${channels.length}`);
   console.log("");
 
   for (const channel of channels) {
     const item = descriptions[channel.slug];
     if (!item) continue;
     const length = countCharacters(item.description);
+    const targetSlug = normalizeTargetSlug(channel.slug);
+    const target = channelLinks[targetSlug] ?? null;
+    const forbidden = findForbiddenPublicText(`${item.title}\n${item.description}`);
+    const isValid = length <= TELEGRAM_DESCRIPTION_LIMIT
+      && item.title.trim().length > 0
+      && item.description.trim().length > 0
+      && forbidden.length === 0
+      && typeof target === "string"
+      && target.startsWith("https://t.me/");
     console.log(`--- ${channel.slug} ---`);
-    console.log(`Title       : ${item.title}`);
-    console.log(`Length      : ${length}/${TELEGRAM_DESCRIPTION_LIMIT}`);
+    console.log(`Title           : ${item.title}`);
+    console.log(`Target Exists   : ${target ? "YES" : "NO"}`);
+    console.log(`Target          : ${target ?? "missing"}`);
+    console.log(`Length          : ${length}/${TELEGRAM_DESCRIPTION_LIMIT}`);
+    console.log(`Valid           : ${isValid ? "YES" : "NO"}`);
+    console.log(`Forbidden Text  : ${forbidden.length > 0 ? forbidden.join(", ") : "none"}`);
     console.log("Description :");
     console.log(item.description);
     console.log("");
@@ -118,11 +186,17 @@ function printPreview({ descriptions, channels, missing, invalid, mode, channelF
 
   if (missing.length > 0) console.log(`Missing: ${missing.join(", ")}`);
   if (invalid.length > 0) {
-    console.log("Invalid:");
+      console.log("Invalid:");
     invalid.forEach((error) => console.log(`- ${error}`));
   }
-  console.log(`Telegram API Calls: ${mode === "DRY-RUN" ? 0 : "pending live execution"}`);
-  console.log("Ledger Writes: 0");
+  if (warnings.length > 0) {
+    console.log("Warnings:");
+    warnings.forEach((warning) => console.log(`- ${warning}`));
+  }
+  console.log(`Telegram API Calls     : ${mode === "DRY-RUN" ? 0 : "pending live execution"}`);
+  console.log(`Live Description Updates: ${mode === "DRY-RUN" ? 0 : "pending live execution"}`);
+  console.log("Live Publish Calls     : 0");
+  console.log("Ledger Writes          : 0");
   console.log("====================================");
 }
 
@@ -187,15 +261,18 @@ async function main() {
   }
 
   const descriptions = loadDescriptions();
+  const channelLinks = loadChannelLinks();
   const channels = selectChannels(options.channel);
-  const { missing, invalid } = validateDescriptions(descriptions, channels);
+  const { missing, invalid, warnings } = validateDescriptions(descriptions, channelLinks, channels);
   const mode = options.live ? "LIVE" : "DRY-RUN";
 
   printPreview({
     descriptions,
+    channelLinks,
     channels,
     missing,
     invalid,
+    warnings,
     mode,
     channelFilter: options.channel,
   });
