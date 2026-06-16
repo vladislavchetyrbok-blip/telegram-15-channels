@@ -5,6 +5,9 @@
   "usernameEnv": "COMPATIBILITY_BOT_USERNAME",
   "miniAppUrlEnv": "COMPATIBILITY_MINI_APP_URL",
   "miniAppNameEnv": "COMPATIBILITY_MINI_APP_NAME",
+  "compatibilityBotUsername": null,
+  "compatibilityMiniAppUrl": null,
+  "compatibilityMiniAppName": null,
   "username": null,
   "miniAppUrl": null,
   "miniAppName": null,
@@ -40,6 +43,8 @@
     "Do not create a separate compatibility channel for the MVP.",
     "Fast mode uses signs only. Personal and precise modes collect birth data in memory only.",
     "Unknown birth time is supported and must not block calculation.",
-    "Set COMPATIBILITY_BOT_USERNAME only when the bot is created and approved."
+    "Set COMPATIBILITY_BOT_USERNAME only when the bot is created and approved.",
+    "Set COMPATIBILITY_MINI_APP_URL to the public /compatibility HTTPS route after deployment.",
+    "Set COMPATIBILITY_MINI_APP_NAME only after Telegram Mini App setup is approved."
   ]
 }

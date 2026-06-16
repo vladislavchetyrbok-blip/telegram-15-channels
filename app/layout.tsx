@@ -1,12 +1,15 @@
-﻿import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import { Header } from "@/components/Header";
-import { Sidebar } from "@/components/Sidebar";
-import { UnifiedStatusStrip } from "@/components/UnifiedStatusStrip";
+import { AppShell } from "@/components/AppShell";
 
 export const metadata: Metadata = {
   title: "Telegram 15 Channels",
   description: "Панель управления сетью из 15 Telegram-каналов",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
@@ -17,14 +20,7 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <body>
-        <div className="min-h-screen overflow-x-hidden bg-[#070b14] text-slate-100 grid-surface">
-          <Sidebar />
-          <div className="min-h-screen min-w-0 lg:pl-72">
-            <Header />
-            <UnifiedStatusStrip />
-            <main className="min-w-0 overflow-x-hidden px-4 py-6 sm:px-6 lg:px-8">{children}</main>
-          </div>
-        </div>
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );

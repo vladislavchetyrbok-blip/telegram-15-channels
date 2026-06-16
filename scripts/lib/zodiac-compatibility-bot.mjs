@@ -30,6 +30,9 @@ export function loadCompatibilityBotConfig() {
       usernameEnv: DEFAULT_COMPATIBILITY_BOT_USERNAME_ENV,
       miniAppUrlEnv: DEFAULT_COMPATIBILITY_MINI_APP_URL_ENV,
       miniAppNameEnv: DEFAULT_COMPATIBILITY_MINI_APP_NAME_ENV,
+      compatibilityBotUsername: null,
+      compatibilityMiniAppUrl: null,
+      compatibilityMiniAppName: null,
       username: null,
       miniAppUrl: null,
       miniAppName: null,
@@ -46,6 +49,12 @@ export function loadCompatibilityBotConfig() {
     usernameEnv: parsed.usernameEnv || DEFAULT_COMPATIBILITY_BOT_USERNAME_ENV,
     miniAppUrlEnv: parsed.miniAppUrlEnv || DEFAULT_COMPATIBILITY_MINI_APP_URL_ENV,
     miniAppNameEnv: parsed.miniAppNameEnv || DEFAULT_COMPATIBILITY_MINI_APP_NAME_ENV,
+    compatibilityBotUsername: parsed.compatibilityBotUsername ?? parsed.username ?? null,
+    compatibilityMiniAppUrl: parsed.compatibilityMiniAppUrl ?? parsed.miniAppUrl ?? null,
+    compatibilityMiniAppName: parsed.compatibilityMiniAppName ?? parsed.miniAppName ?? null,
+    username: parsed.username ?? parsed.compatibilityBotUsername ?? null,
+    miniAppUrl: parsed.miniAppUrl ?? parsed.compatibilityMiniAppUrl ?? null,
+    miniAppName: parsed.miniAppName ?? parsed.compatibilityMiniAppName ?? null,
     buttonText: parsed.buttonText || DEFAULT_COMPATIBILITY_BUTTON_TEXT,
     startParameters: {
       general: parsed.startParameters?.general || "compat",
@@ -83,7 +92,7 @@ export function resolveCompatibilityBotUsername({ env = process.env } = {}) {
     return { ok: true, username: envUsername, source: envName, envName, config };
   }
 
-  const configUsername = normalizeCompatibilityBotUsername(config.username);
+  const configUsername = normalizeCompatibilityBotUsername(config.compatibilityBotUsername) || normalizeCompatibilityBotUsername(config.username);
   if (configUsername) {
     return { ok: true, username: configUsername, source: COMPATIBILITY_BOT_CONFIG_PATH, envName, config };
   }
@@ -118,21 +127,9 @@ export function resolveCompatibilityLaunchTarget(channelId, { env = process.env 
   const miniAppUrlEnv = config.miniAppUrlEnv || DEFAULT_COMPATIBILITY_MINI_APP_URL_ENV;
   const miniAppNameEnv = config.miniAppNameEnv || DEFAULT_COMPATIBILITY_MINI_APP_NAME_ENV;
   const usernameResult = resolveCompatibilityBotUsername({ env });
-  const miniAppUrl = normalizeCompatibilityMiniAppUrl(env[miniAppUrlEnv]) || normalizeCompatibilityMiniAppUrl(config.miniAppUrl);
-  const miniAppName = normalizeCompatibilityMiniAppName(env[miniAppNameEnv]) || normalizeCompatibilityMiniAppName(config.miniAppName);
-
-  if (miniAppUrl) {
-    return {
-      ok: true,
-      url: appendQuery(miniAppUrl, "startapp", start),
-      previewUrl: appendQuery(miniAppUrl, "startapp", start),
-      start,
-      text: config.buttonText,
-      targetType: "mini_app_url",
-      warning: null,
-      envName: miniAppUrlEnv,
-    };
-  }
+  const miniAppUrl = normalizeCompatibilityMiniAppUrl(env[miniAppUrlEnv]) || normalizeCompatibilityMiniAppUrl(config.compatibilityMiniAppUrl) || normalizeCompatibilityMiniAppUrl(config.miniAppUrl);
+  const miniAppName = normalizeCompatibilityMiniAppName(env[miniAppNameEnv]) || normalizeCompatibilityMiniAppName(config.compatibilityMiniAppName) || normalizeCompatibilityMiniAppName(config.miniAppName);
+  const publicPreviewUrl = miniAppUrl ? appendQuery(miniAppUrl, "startapp", start) : null;
 
   if (usernameResult.ok && miniAppName) {
     const url = `https://t.me/${usernameResult.username}/${miniAppName}?startapp=${encodeURIComponent(start)}`;
@@ -162,7 +159,7 @@ export function resolveCompatibilityLaunchTarget(channelId, { env = process.env 
     };
   }
 
-  const previewUrl = `https://t.me/${usernameResult.envName}?start=${encodeURIComponent(start)}`;
+  const previewUrl = publicPreviewUrl || `https://t.me/${usernameResult.envName}?start=${encodeURIComponent(start)}`;
   return {
     ok: false,
     url: null,
@@ -170,7 +167,7 @@ export function resolveCompatibilityLaunchTarget(channelId, { env = process.env 
     start,
     text: config.buttonText,
     targetType: "missing_configuration",
-    warning: `${miniAppUrlEnv}, ${miniAppNameEnv}, or ${usernameResult.envName} must be configured before live compatibility buttons appear.`,
+    warning: `${usernameResult.envName} must be configured before live compatibility buttons appear. ${miniAppNameEnv} enables the Telegram Mini App path; ${miniAppUrlEnv} is the public /compatibility URL for Mini App setup.`,
     envName: usernameResult.envName,
   };
 }
