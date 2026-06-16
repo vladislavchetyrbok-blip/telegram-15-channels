@@ -13,7 +13,9 @@
         "backup_cron",
         "visual_assets",
         "cross_navigation",
-        "compatibility"
+        "daily_buttons",
+        "compatibility",
+        "channel_descriptions"
       ]
     },
     {
