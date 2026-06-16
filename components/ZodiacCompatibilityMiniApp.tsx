@@ -374,9 +374,12 @@ function PersonPanel({
               <input
                 type="text"
                 inputMode="numeric"
+                autoComplete="off"
+                autoCorrect="off"
+                spellCheck={false}
                 value={value.birthDate}
                 onChange={(event) => updateBirthDate(value, event.target.value, onChange)}
-                placeholder="15.06.1998"
+                placeholder="дд.мм.гггг"
                 className={`h-12 w-full rounded-lg border bg-white px-3 text-base text-slate-900 ${
                   value.birthDate && !parsedDate.ok ? "border-rose-300" : "border-slate-200"
                 }`}
@@ -420,6 +423,9 @@ function PersonPanel({
                   <input
                     type="text"
                     inputMode="numeric"
+                    autoComplete="off"
+                    autoCorrect="off"
+                    spellCheck={false}
                     placeholder="чч:мм"
                     value={value.birthTime}
                     onChange={(event) => onChange({ ...value, birthTime: formatTimeInput(event.target.value) })}
