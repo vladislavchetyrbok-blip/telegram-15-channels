@@ -129,7 +129,7 @@ export default async function DashboardPage() {
   const plannedNetworks = channelNetworks.filter((item) => item.status === "planned");
 
   return (
-    <div className="-mx-4 -my-6 min-h-screen bg-[#f8fafc] px-4 py-6 text-slate-950 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+    <div className="-mx-4 -my-6 min-h-screen overflow-x-hidden bg-[#f8fafc] px-4 py-6 text-slate-950 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
       <div className="mx-auto max-w-7xl space-y-8">
         <header className="relative overflow-hidden rounded-lg border border-violet-100 bg-gradient-to-br from-white via-violet-50 to-cyan-50 p-6 shadow-sm sm:p-8">
           <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-violet-400 via-cyan-300 to-amber-300" />
@@ -139,10 +139,10 @@ export default async function DashboardPage() {
                 <Compass className="h-3.5 w-3.5" />
                 Media Control Center
               </p>
-              <h1 className="mt-5 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
+              <h1 className="mt-5 break-words text-2xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
                 Пульт управления каналами
               </h1>
-              <p className="mt-3 max-w-2xl text-base leading-7 text-slate-600">
+              <p className="mt-3 max-w-2xl break-words text-base leading-7 text-slate-600">
                 Единый центр для Telegram-сетей, автопубликаций и контент-планов.
               </p>
             </div>

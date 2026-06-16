@@ -54,7 +54,7 @@ const workspaceSections = [
 
 export default function ZodiacNetworkWorkspacePage() {
   return (
-    <div className="-mx-4 -my-6 min-h-screen bg-[#f8fafc] px-4 py-6 text-slate-950 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+    <div className="-mx-4 -my-6 min-h-screen overflow-x-hidden bg-[#f8fafc] px-4 py-6 text-slate-950 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
       <div className="mx-auto max-w-7xl space-y-8">
         <header className="space-y-5">
           <Link href="/dashboard" className="inline-flex items-center gap-2 text-sm font-semibold text-violet-700 transition hover:text-violet-900">
@@ -67,8 +67,8 @@ export default function ZodiacNetworkWorkspacePage() {
               <Sparkles className="h-3.5 w-3.5" />
               active network
             </p>
-            <h1 className="mt-5 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">🔮 Знаки зодиака</h1>
-            <p className="mt-3 max-w-3xl text-base leading-7 text-slate-600">
+            <h1 className="mt-5 break-words text-2xl font-semibold tracking-tight text-slate-950 sm:text-4xl">🔮 Знаки зодиака</h1>
+            <p className="mt-3 max-w-3xl break-words text-base leading-7 text-slate-600">
               Рабочая панель сети гороскопов: ежедневные публикации, визуалы, навигация и совместимость.
             </p>
           </div>

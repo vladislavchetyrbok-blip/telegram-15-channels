@@ -45,19 +45,46 @@ export function UnifiedStatusStrip() {
 
   return (
     <section className="border-b border-line bg-[#08101f]/86 px-4 py-3 sm:px-6 lg:px-8">
-      <div className="grid gap-2 md:grid-cols-3 xl:grid-cols-6">
-        <MiniStatus label="Telegram token" value={status ? (status.telegram.tokenConfigured ? "configured" : "missing") : "loading"} ok={Boolean(status?.telegram.tokenConfigured)} />
-        <MiniStatus label="getMe" value={status ? (status.telegram.getMeOk ? "OK" : "not checked/error") : "loading"} ok={Boolean(status?.telegram.getMeOk)} />
-        <MiniStatus label="Bot access" value={status ? `${status.telegram.botAccessOk}/15` : "loading"} ok={(status?.telegram.botAccessOk ?? 0) > 0} />
-        <MiniStatus label="Ready posts" value={status?.content.readyToPublish ?? "loading"} ok={(status?.content.readyToPublish ?? 0) > 0} />
-        <MiniStatus label="Worker" value={status ? (status.autopublish.workerRunning ? "running" : "not running") : "loading"} ok={Boolean(status?.autopublish.workerRunning)} />
-        <MiniStatus label="Scheduler" value={schedulerLabel} ok={status ? (status.autopublish.enabled ? status.autopublish.schedulerStatus !== "error" : true) : false} />
+      <details className="md:hidden">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 rounded-lg border border-line bg-black/20 px-3 py-2 text-sm font-semibold text-slate-200">
+          <span>Диагностика системы</span>
+          <span className="text-xs font-medium text-slate-500">раскрыть</span>
+        </summary>
+        <div className="mt-2 grid gap-2">
+          <StatusGrid status={status} schedulerLabel={schedulerLabel} />
+        </div>
+        <StatusNote lastError={status?.telegram.lastError ?? null} />
+      </details>
+
+      <div className="hidden md:block">
+        <div className="grid gap-2 md:grid-cols-3 xl:grid-cols-6">
+          <StatusGrid status={status} schedulerLabel={schedulerLabel} />
+        </div>
+        <StatusNote lastError={status?.telegram.lastError ?? null} />
       </div>
-      <p className="mt-2 text-xs text-slate-500">
-        Logos: not blocking. Statistics: not blocking. Real publish is controlled by preflight and is not started automatically.
-        {status?.telegram.lastError ? <span className="ml-2 text-amber-200">Last Telegram issue: {status.telegram.lastError}</span> : null}
-      </p>
     </section>
+  );
+}
+
+function StatusGrid({ status, schedulerLabel }: { status: UnifiedStatus | null; schedulerLabel: string }) {
+  return (
+    <>
+      <MiniStatus label="Telegram token" value={status ? (status.telegram.tokenConfigured ? "configured" : "missing") : "loading"} ok={Boolean(status?.telegram.tokenConfigured)} />
+      <MiniStatus label="getMe" value={status ? (status.telegram.getMeOk ? "OK" : "not checked/error") : "loading"} ok={Boolean(status?.telegram.getMeOk)} />
+      <MiniStatus label="Bot access" value={status ? `${status.telegram.botAccessOk}/15` : "loading"} ok={(status?.telegram.botAccessOk ?? 0) > 0} />
+      <MiniStatus label="Ready posts" value={status?.content.readyToPublish ?? "loading"} ok={(status?.content.readyToPublish ?? 0) > 0} />
+      <MiniStatus label="Worker" value={status ? (status.autopublish.workerRunning ? "running" : "not running") : "loading"} ok={Boolean(status?.autopublish.workerRunning)} />
+      <MiniStatus label="Scheduler" value={schedulerLabel} ok={status ? (status.autopublish.enabled ? status.autopublish.schedulerStatus !== "error" : true) : false} />
+    </>
+  );
+}
+
+function StatusNote({ lastError }: { lastError: string | null }) {
+  return (
+    <p className="mt-2 text-xs text-slate-500">
+      Logos: not blocking. Statistics: not blocking. Real publish is controlled by preflight and is not started automatically.
+      {lastError ? <span className="ml-2 text-amber-200">Last Telegram issue: {lastError}</span> : null}
+    </p>
   );
 }
 
