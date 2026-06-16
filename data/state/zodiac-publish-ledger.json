@@ -389,6 +389,18 @@
       "source": "pipeline",
       "status": "sent",
       "updatedAt": "2026-06-15T06:19:41.904Z"
+    },
+    "2026-06-16:zodiac-general": {
+      "key": "2026-06-16:zodiac-general",
+      "date": "2026-06-16",
+      "slug": "zodiac-general",
+      "createdAt": "2026-06-16T08:42:38.067Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-06-16T08:42:38.067Z"
     }
   }
 }
