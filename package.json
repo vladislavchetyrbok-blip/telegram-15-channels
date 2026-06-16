@@ -109,6 +109,8 @@
     "zodiac:publish-date:dry": "node scripts/publish-zodiac-by-date.mjs --dry-run",
     "zodiac:publish-date:live": "node scripts/publish-zodiac-by-date.mjs --live --approved",
     "zodiac:publish-date:check": "node scripts/check-zodiac-publish-date.mjs",
+    "zodiac:navigation:dry": "node scripts/publish-zodiac-navigation.mjs --dry-run",
+    "zodiac:navigation:publish": "node scripts/publish-zodiac-navigation.mjs --live",
     "zodiac:year:preflight": "node scripts/check-zodiac-year.mjs",
     "zodiac:year:check": "node scripts/check-zodiac-year.mjs",
     "build": "next build",
