@@ -553,8 +553,10 @@
       "source": "pipeline",
       "mediaSuppressed": true,
       "suppressionReason": "visual_quality_no_go_pending_replacement",
-      "status": "locked",
-      "updatedAt": "2026-06-16T08:43:27.601Z"
+      "status": "sent",
+      "updatedAt": "2026-06-16T08:43:29.896Z",
+      "messageId": "9",
+      "sentAt": "2026-06-16T08:43:29.896Z"
     }
   }
 }
