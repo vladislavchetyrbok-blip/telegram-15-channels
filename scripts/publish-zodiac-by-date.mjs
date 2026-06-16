@@ -15,6 +15,11 @@ import {
 } from "./lib/zodiac-publish-ledger.mjs";
 import { resolveZodiacWeeklyVisualAsset } from "./zodiac-weekly-asset-resolver.mjs";
 import { buildZodiacNavigationKeyboard } from "./zodiac-telegram-publisher.mjs";
+import { buildZodiacPost } from "./generate-zodiac-plan.mjs";
+import {
+  validateZodiacDailyGuidanceUniqueness,
+  validateZodiacDailyPostGuidance,
+} from "./lib/zodiac-daily-guidance.mjs";
 
 function parseArgs() {
   const args = process.argv.slice(2);
@@ -38,6 +43,8 @@ const ZODIAC_SLUGS = [
   "zodiac-general", "aries", "taurus", "gemini", "cancer", "leo", 
   "virgo", "libra", "scorpio", "sagittarius", "capricorn", "aquarius", "pisces"
 ];
+
+const SAMPLE_OUTPUT_SLUGS = new Set(["zodiac-general", "gemini", "leo"]);
 
 function persistLedgerIfEnabled(reason) {
   if (process.env.ZODIAC_LEDGER_GIT_PERSIST !== "true") {
@@ -128,6 +135,7 @@ function createReport(date, mode) {
     image: 0,
     textOnly: 0,
     fallbackTextOnly: 0,
+    contentValidationErrors: [],
     ledgerWrites: 0,
     livePublishCalls: 0,
     telegramApiCalls: mode === "DRY-RUN" ? 0 : "live mode requested",
@@ -150,6 +158,7 @@ function printSummary(report) {
   console.log(`Image Posts          : ${report.image}`);
   console.log(`TextOnly Posts       : ${report.textOnly}`);
   console.log(`Fallback/TextOnly    : ${report.fallbackTextOnly}`);
+  console.log(`Content Errors       : ${report.contentValidationErrors.length}`);
   console.log(`Ledger Writes        : ${report.ledgerWrites}`);
   console.log(`Live Publish Calls   : ${report.livePublishCalls}`);
   console.log(`Telegram API Calls   : ${report.telegramApiCalls}`);
@@ -159,7 +168,35 @@ function printSummary(report) {
     const note = row.note ? ` ${row.note}` : "";
     console.log(`- ${row.slug}: action=${row.action}, media=${row.mediaMode}${status}${note}`);
   }
+  if (report.contentValidationErrors.length > 0) {
+    console.log("--- Content Validation Errors ---");
+    for (const error of report.contentValidationErrors) {
+      console.log(`- ${error}`);
+    }
+  }
   console.log("======================================");
+}
+
+function buildDryRunContentPreview(date, slug, report) {
+  const post = buildZodiacPost({ date, channelId: slug, stylePresetId: "luxury-mystic" });
+  const issues = validateZodiacDailyPostGuidance(post);
+  for (const issue of issues) {
+    report.contentValidationErrors.push(`${slug}: ${issue}`);
+  }
+  return post;
+}
+
+function logSampleOutput(slug, post) {
+  if (!SAMPLE_OUTPUT_SLUGS.has(slug) || !post) return;
+
+  const preview = String(post.text || "")
+    .split(/\r?\n/)
+    .slice(0, 10)
+    .join("\n");
+  console.log(`  -> sample output (${slug}):`);
+  for (const line of preview.split(/\r?\n/)) {
+    console.log(`     ${line}`);
+  }
 }
 
 function main() {
@@ -195,6 +232,7 @@ function main() {
 
   try {
     const ledger = loadLedger();
+    const dryRunPreviewPosts = [];
     
     for (const slug of ZODIAC_SLUGS) {
       const entry = getLedgerEntry(ledger, options.date, slug);
@@ -203,6 +241,8 @@ function main() {
       const asset = resolveZodiacWeeklyVisualAsset(slug, options.date, "weekly");
       const mediaMode = asset.path ? "image" : "text_only";
       const mediaNote = asset.suppressed ? ` | Suppressed: ${asset.suppressionReason}` : "";
+      const previewPost = options.dryRun ? buildDryRunContentPreview(options.date, slug, report) : null;
+      if (previewPost) dryRunPreviewPosts.push(previewPost);
       if (mediaMode === "image") report.image++;
       else report.textOnly++;
       if (asset.fallback) report.fallbackTextOnly++;
@@ -215,6 +255,9 @@ function main() {
         if (isActiveLockStatus(status)) report.lockedInProgress++;
         report.perSlug.push({ slug, action, mediaMode, ledgerStatus: status, note: mediaNote.trim() });
         console.log(`[${action}] ${slug} | ${options.date} | Mode: ${mediaMode} | Ledger: ${status}${mediaNote}`);
+        if (options.dryRun) {
+          logSampleOutput(slug, previewPost);
+        }
         continue;
       }
 
@@ -223,12 +266,16 @@ function main() {
         report.failed++;
         report.perSlug.push({ slug, action: "skip_failed_requires_retry", mediaMode, ledgerStatus: status, note: mediaNote.trim() });
         console.log(`[skip_failed] ${slug} | ${options.date} | Mode: ${mediaMode} (use zodiac:retry:failed)${mediaNote}`);
+        if (options.dryRun) {
+          logSampleOutput(slug, previewPost);
+        }
         continue;
       }
 
       if (options.dryRun) {
         report.perSlug.push({ slug, action: "dry_run_would_publish", mediaMode, ledgerStatus: status || "missing", note: mediaNote.trim() });
         console.log(`[dry_run_would_publish] ${slug} | ${options.date} | Mode: ${mediaMode}${mediaNote}`);
+        logSampleOutput(slug, previewPost);
         
         const replyMarkup = buildZodiacNavigationKeyboard(slug);
         if (replyMarkup && replyMarkup.inline_keyboard) {
@@ -290,7 +337,15 @@ function main() {
         report.perSlug.push({ slug, action: "failed", mediaMode, ledgerStatus: "failed", note: mediaNote.trim() });
       }
     }
+    if (options.dryRun) {
+      for (const issue of validateZodiacDailyGuidanceUniqueness(dryRunPreviewPosts)) {
+        report.contentValidationErrors.push(`duplicate guidance: ${issue}`);
+      }
+    }
     printSummary(report);
+    if (report.contentValidationErrors.length > 0) {
+      process.exit(1);
+    }
   } finally {
     if (options.live) {
       releaseLock();

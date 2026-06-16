@@ -151,6 +151,11 @@ function validatePlannerSource(fatalErrors, warnings) {
   if (!source.includes("text") || !source.includes("visualPrompt")) {
     fatalErrors.push("Content planner source does not contain required text/visualPrompt fields.");
   }
+  for (const field of ["adviceOfDay", "shouldDoToday", "shouldAvoidToday"]) {
+    if (!source.includes(field)) {
+      fatalErrors.push(`Content planner source does not contain required guidance field: ${field}`);
+    }
+  }
 
   const missingSlugs = ZODIAC_SLUGS.filter((slug) => !source.includes(`id: "${slug}"`));
   if (missingSlugs.length > 0) {

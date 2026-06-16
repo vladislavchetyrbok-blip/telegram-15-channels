@@ -1,5 +1,9 @@
 import fs from "fs";
 import process from "process";
+import {
+  validateZodiacDailyGuidanceUniqueness,
+  validateZodiacDailyPostGuidance,
+} from "./lib/zodiac-daily-guidance.mjs";
 
 const args = process.argv.slice(2);
 const filePath = args[0];
@@ -42,14 +46,6 @@ const zodiacSigns = [
   { id: "pisces", ruName: "Рыбы", emoji: "♓️" },
 ];
 
-function formatRuDate(dateStr) {
-  const [year, month, day] = dateStr.split("-").map(Number);
-  const date = new Date(Date.UTC(year, month - 1, day));
-  return new Intl.DateTimeFormat("ru-RU", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })
-    .format(date)
-    .replace(/\s*г\.$/, "");
-}
-
 function countOccurrences(text, needle) {
   return (text.match(new RegExp(escapeRegExp(needle), "g")) || []).length;
 }
@@ -90,6 +86,10 @@ if (!Array.isArray(plan.posts)) {
     }
   }
 
+  for (const issue of validateZodiacDailyGuidanceUniqueness(plan.posts)) {
+    blockingIssues.push(`Duplicate guidance: ${issue}.`);
+  }
+
   // Validate posts content
   for (const [index, post] of plan.posts.entries()) {
     const postRef = `Post ID ${post.id || index}`;
@@ -98,15 +98,18 @@ if (!Array.isArray(plan.posts)) {
     if (!post.text) missingFields.push(`${postRef}: text`);
     if (!post.visualPrompt) missingFields.push(`${postRef}: visualPrompt`);
 
-    const expectedDate = post.date ? formatRuDate(post.date) : "";
+    for (const issue of validateZodiacDailyPostGuidance(post)) {
+      blockingIssues.push(`${postRef}: ${issue}.`);
+    }
+
     const text = String(post.text || "");
     const title = String(post.title || "");
 
-    if (expectedDate && !title.includes(expectedDate)) {
-      blockingIssues.push(`${postRef}: title does not include generated date '${expectedDate}'.`);
-    }
-
     if (post.channelId === "zodiac-general") {
+      if (!title.includes("Общий гороскоп") || !title.includes("на сегодня")) {
+        blockingIssues.push(`${postRef}: zodiac-general title must include 'Общий гороскоп' and 'на сегодня'.`);
+      }
+
       if (text.length < 900) {
         blockingIssues.push(`${postRef}: zodiac-general text is too short for 12-sign daily format (${text.length} chars).`);
       }
@@ -127,6 +130,10 @@ if (!Array.isArray(plan.posts)) {
       if (sign) {
         if (!title.includes(sign.ruName) || !title.includes(sign.emoji)) {
           blockingIssues.push(`${postRef}: sign post title must include ${sign.emoji} ${sign.ruName}.`);
+        }
+
+        if (!title.includes("гороскоп на сегодня")) {
+          blockingIssues.push(`${postRef}: sign post title must include 'гороскоп на сегодня'.`);
         }
 
         if (text.length < 850) {

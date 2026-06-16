@@ -11,6 +11,8 @@
 import fs from "fs";
 import path from "path";
 import process from "process";
+import { fileURLToPath } from "url";
+import { getZodiacDailyGuidance, renderZodiacDailyGuidanceBlock } from "./lib/zodiac-daily-guidance.mjs";
 
 const zodiacChannels = [
   { id: "zodiac-general", ruName: "Гороскоп на сегодня", emoji: "✨", type: "general", element: "cosmic", visualPromptSeed: "Luxury mystic daily horoscope cover, dark zodiac wheel, cosmic gold details, black deep-blue violet palette, cinematic light, premium Telegram magazine aesthetic." },
@@ -272,13 +274,14 @@ function italic(value) {
 function formatRuDate(dateStr) {
   const [year, month, day] = dateStr.split("-").map(Number);
   const date = new Date(Date.UTC(year, month - 1, day));
-  return new Intl.DateTimeFormat("ru-RU", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })
+  return new Intl.DateTimeFormat("ru-RU", { day: "numeric", month: "long", timeZone: "UTC" })
     .format(date)
     .replace(/\s*г\.$/, "");
 }
 
 function buildPost(channel, dateStr, index, stylePreset) {
   const seed = createSeed(dateStr, channel.id, index);
+  const guidance = getZodiacDailyGuidance(channel.id, dateStr);
   
   let sections = [];
   let title = "";
@@ -286,7 +289,7 @@ function buildPost(channel, dateStr, index, stylePreset) {
   let visualPrompt = "";
   
   if (channel.type === "general") {
-    title = `${channel.emoji} Гороскоп на сегодня — ${formatRuDate(dateStr)}`;
+    title = `${channel.emoji} Общий гороскоп — на сегодня`;
     const signChannels = zodiacChannels.filter((item) => item.type === "sign");
     const intro = pick(generalIntroLines, seed);
     const signSections = signChannels.map((sign, signIndex) => ({
@@ -302,6 +305,10 @@ function buildPost(channel, dateStr, index, stylePreset) {
     text = [
       bold(title),
       "",
+      renderZodiacDailyGuidanceBlock(guidance),
+      "",
+      bold("Гороскоп:"),
+      "",
       escapeHtml(intro),
       "",
       ...signSections.map((section) => `${bold(section.title)} — ${escapeHtml(section.body)}`),
@@ -314,7 +321,7 @@ function buildPost(channel, dateStr, index, stylePreset) {
     ].join("\n");
     visualPrompt = `${channel.visualPromptSeed} Date mood: ${formatRuDate(dateStr)}. Style Preset: ${stylePreset.visualStyle}. Addons: ${stylePreset.promptAddons}. General daily zodiac cover, 12-sign composition, premium dark magazine layout.`;
   } else {
-    title = `${channel.emoji} ${channel.ruName} — гороскоп на ${formatRuDate(dateStr)}`;
+    title = `${channel.emoji} ${channel.ruName} — гороскоп на сегодня`;
     sections = [
       { title: "Общая энергия дня", body: pick(signMainLines[channel.id] ?? generalEnergy, seed) },
       { title: "Любовь", body: pick(loveDeepLines, seed + 1) },
@@ -325,6 +332,8 @@ function buildPost(channel, dateStr, index, stylePreset) {
     const closing = `${channel.ruName} сегодня сильнее, когда выбирает точность без лишнего напряжения.`;
     text = [
       bold(title),
+      renderZodiacDailyGuidanceBlock(guidance),
+      bold("Гороскоп:"),
       ...sections.map((section) => `${bold(`${section.title}:`)}\n${escapeHtml(section.body)}`),
       italic(closing),
       `${bold("Хэштеги:")}\n${escapeHtml(`#${channel.ruName.replace(/\s+/g, "")} #Гороскоп #Зодиак #ГороскопНаСегодня`)}`,
@@ -340,6 +349,9 @@ function buildPost(channel, dateStr, index, stylePreset) {
     emoji: channel.emoji,
     type: channel.type,
     title,
+    adviceOfDay: guidance.adviceOfDay,
+    shouldDoToday: guidance.shouldDoToday,
+    shouldAvoidToday: guidance.shouldAvoidToday,
     text,
     sections,
     visualPrompt,
@@ -352,6 +364,18 @@ function buildPost(channel, dateStr, index, stylePreset) {
     imagePath: null,
     status: "preview"
   };
+}
+
+export function buildZodiacPost({ date, channelId, stylePresetId = "luxury-mystic" }) {
+  const channelIndex = zodiacChannels.findIndex((channel) => channel.id === channelId);
+  if (channelIndex === -1) {
+    throw new Error(`Unknown zodiac channel: ${channelId}`);
+  }
+  const stylePreset = zodiacStyles[stylePresetId];
+  if (!stylePreset) {
+    throw new Error(`Unknown zodiac style preset: ${stylePresetId}`);
+  }
+  return buildPost(zodiacChannels[channelIndex], date, channelIndex, stylePreset);
 }
 
 function parseArgs() {
@@ -450,4 +474,7 @@ function run() {
   console.log(`Total Posts: ${runtimePosts.length}`);
 }
 
-run();
+const currentFilePath = fileURLToPath(import.meta.url);
+if (process.argv[1] && path.resolve(process.argv[1]) === currentFilePath) {
+  run();
+}

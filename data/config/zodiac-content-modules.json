@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "dailyHoroscope": {
+    "status": "active",
+    "description": "Daily horoscope posts for the general zodiac channel and 12 sign channels.",
+    "requiredTopGuidanceFields": [
+      "adviceOfDay",
+      "shouldDoToday",
+      "shouldAvoidToday"
+    ],
+    "telegramFormatRules": {
+      "parseMode": "HTML",
+      "usesCustomColors": false,
+      "usesCustomFonts": false,
+      "guidanceEmojiMarkers": {
+        "adviceOfDay": "💡",
+        "shouldDoToday": "✅",
+        "shouldAvoidToday": "⚠️"
+      },
+      "maxGuidanceCharacters": 120
+    },
+    "excludedModules": [
+      "compatibility",
+      "weeklyForecast"
+    ]
+  },
+  "compatibility": {
+    "status": "separate_planned_module",
+    "titleRu": "Совместимость знаков зодиака",
+    "examplePair": {
+      "pairId": "gemini-leo",
+      "titleRu": "Близнецы + Лев"
+    },
+    "configPath": "data/config/zodiac-compatibility-pairs.json",
+    "publishLedgerPath": "data/state/zodiac-compatibility-publish-ledger.json",
+    "mustNotBeMixedIntoDailyHoroscopeBody": true
+  },
+  "weeklyForecast": {
+    "status": "later_module",
+    "description": "Weekly forecast posts are separate from the daily horoscope pipeline.",
+    "publishLedgerPath": "data/state/zodiac-weekly-publish-ledger.json",
+    "notPartOfTodayPublish": true
+  },
+  "channelDescriptions": {
+    "status": "configured_dry_run_first",
+    "configPath": "data/config/zodiac-channel-descriptions.json",
+    "expectedChannels": 13,
+    "includesGeneralChannel": true,
+    "liveTelegramChangesRequireExplicitApproval": true
+  },
+  "commentsDiscussion": {
+    "status": "planned_manual_setup",
+    "primaryTarget": "general",
+    "notesPath": "docs/zodiac-comments-setup.md",
+    "storePrivateDiscussionIdsInSourceControl": false,
+    "liveTelegramChangesRequireExplicitApproval": true
+  }
+}

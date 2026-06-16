@@ -2,11 +2,17 @@ import fs from "fs";
 import path from "path";
 import process from "process";
 import { resolveZodiacWeeklyVisualAsset } from "./zodiac-weekly-asset-resolver.mjs";
+import {
+  validateZodiacDailyGuidanceUniqueness,
+  validateZodiacDailyPostGuidance,
+} from "./lib/zodiac-daily-guidance.mjs";
 
 const ZODIAC_CHANNEL_IDS = [
   "zodiac-general", "aries", "taurus", "gemini", "cancer", "leo",
   "virgo", "libra", "scorpio", "sagittarius", "capricorn", "aquarius", "pisces"
 ];
+
+const SAMPLE_OUTPUT_SLUGS = new Set(["zodiac-general", "gemini", "leo"]);
 
 function parseArgs() {
   const args = process.argv.slice(2);
@@ -111,6 +117,10 @@ function run() {
       addIssue(`Post [${i}] references legacy or unknown channel: ${post.channelId}`);
     }
 
+    for (const issue of validateZodiacDailyPostGuidance(post)) {
+      addIssue(`Post [${i}] (${post.id || "unknown"}) guidance invalid: ${issue}`);
+    }
+
     let assetType = "daily";
     if (post.title && post.title.toLowerCase().includes("недел")) {
       assetType = "weekly";
@@ -143,6 +153,10 @@ function run() {
     } else if (dayPosts.length < 13) {
       addWarning(`Date ${date} has ${dayPosts.length} posts (partial run).`);
     }
+  }
+
+  for (const issue of validateZodiacDailyGuidanceUniqueness(plan.posts)) {
+    addIssue(`Duplicate guidance: ${issue}`);
   }
 
   printReport(report, jsonOutput, planFile, postsByDate);
@@ -190,6 +204,16 @@ function printReport(report, jsonOutput, planFile, postsByDate = {}) {
       console.log("");
       dayCounter++;
     }
+
+    console.log("--- Sample Message Output ---");
+    const samplePosts = Object.values(postsByDate)
+      .flat()
+      .filter((post) => SAMPLE_OUTPUT_SLUGS.has(post.channelId));
+    for (const post of samplePosts) {
+      console.log(`\n[${post.channelId}]`);
+      console.log(createSampleMessagePreview(post.text));
+    }
+    console.log("");
   }
 
   console.log(`Blocking issues: ${report.blockingIssues.length}`);
@@ -208,6 +232,13 @@ function printReport(report, jsonOutput, planFile, postsByDate = {}) {
   if (!report.ok) {
     process.exit(1);
   }
+}
+
+function createSampleMessagePreview(text) {
+  return String(text || "")
+    .split(/\r?\n/)
+    .slice(0, 10)
+    .join("\n");
 }
 
 run();
