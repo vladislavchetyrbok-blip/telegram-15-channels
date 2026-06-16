@@ -1,10 +1,18 @@
 "use client";
 
 import cityCatalogData from "@/data/config/zodiac-city-catalog.json";
+import {
+  DEFAULT_ZODIAC_TIME_ZONE,
+  addDaysToDateKey,
+  formatZodiacDisplayDate,
+  getCurrentZodiacDateKey,
+  getLuckyDaysStartDate,
+  getWeekRangeForDate,
+} from "@/lib/zodiac-date";
 import { ArrowLeft, ArrowRight, CalendarDays, Crown, Gift, HeartHandshake, Lock, MapPin, RotateCcw, ShieldCheck, Sparkles, Star } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 type Mode = "fast" | "personal" | "precise";
 type Gender = "male" | "female" | "unspecified";
@@ -98,7 +106,7 @@ export function ZodiacCompatibilityMiniApp({
   const resolvedMode = normalizeMode(initialMode);
   const hintSignSlug = useMemo(() => resolveInitialSign(initialSign, startParam), [initialSign, startParam]);
   const hintSign = hintSignSlug ? findSign(hintSignSlug) : null;
-  const todayIso = useMemo(() => getTodayIso(), []);
+  const [appDateKey, setAppDateKey] = useState<string | null>(null);
   const [selectedSignSlug, setSelectedSignSlug] = useState("");
   const [activeTab, setActiveTab] = useState<HubTab>("today");
   const [mode, setMode] = useState<Mode>(resolvedMode);
@@ -109,6 +117,26 @@ export function ZodiacCompatibilityMiniApp({
   const result = useMemo(() => buildCompatibilityResult(mode, self, partner), [mode, partner, self]);
   const selectedSign = selectedSignSlug ? findSign(selectedSignSlug) : null;
   const stepTitle = step === 1 ? "Вы" : step === 2 ? "Партнёр" : "Результат";
+
+  useEffect(() => {
+    function refreshAppDate() {
+      const nextDateKey = getCurrentZodiacDateKey(DEFAULT_ZODIAC_TIME_ZONE);
+      setAppDateKey((currentDateKey) => (currentDateKey === nextDateKey ? currentDateKey : nextDateKey));
+    }
+
+    refreshAppDate();
+    const intervalId = window.setInterval(refreshAppDate, 60000);
+    const handleVisibilityChange = () => {
+      if (!document.hidden) refreshAppDate();
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      window.clearInterval(intervalId);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
 
   function chooseSign(slug: string) {
     setSelectedSignSlug(slug);
@@ -201,9 +229,15 @@ export function ZodiacCompatibilityMiniApp({
             <HubNavigation publicMode={publicMode} activeTab={activeTab} onChange={setActiveTab} />
 
             <section className="min-w-0 flex-1">
-              {activeTab === "today" ? <TodaySection publicMode={publicMode} sign={selectedSign} dateIso={todayIso} /> : null}
-              {activeTab === "week" ? <WeekSection publicMode={publicMode} sign={selectedSign} dateIso={todayIso} /> : null}
-              {activeTab === "lucky" ? <LuckyDaysSection publicMode={publicMode} sign={selectedSign} dateIso={todayIso} /> : null}
+              {activeTab === "today" ? (
+                appDateKey ? <TodaySection publicMode={publicMode} sign={selectedSign} dateKey={appDateKey} /> : <DateLoadingSection publicMode={publicMode} title="Сегодня" />
+              ) : null}
+              {activeTab === "week" ? (
+                appDateKey ? <WeekSection publicMode={publicMode} sign={selectedSign} dateKey={appDateKey} /> : <DateLoadingSection publicMode={publicMode} title="Неделя" />
+              ) : null}
+              {activeTab === "lucky" ? (
+                appDateKey ? <LuckyDaysSection publicMode={publicMode} sign={selectedSign} dateKey={appDateKey} /> : <DateLoadingSection publicMode={publicMode} title="Удачные дни" />
+              ) : null}
               {activeTab === "more" ? <MoreSection publicMode={publicMode} /> : null}
               {activeTab === "compatibility" ? (
                 <div className="space-y-4">
@@ -331,12 +365,12 @@ function HubNavigation({ publicMode, activeTab, onChange }: { publicMode: boolea
   );
 }
 
-function TodaySection({ publicMode, sign, dateIso }: { publicMode: boolean; sign: ZodiacSign; dateIso: string }) {
-  const forecast = buildDailyForecast(sign, dateIso);
+function TodaySection({ publicMode, sign, dateKey }: { publicMode: boolean; sign: ZodiacSign; dateKey: string }) {
+  const forecast = buildDailyForecast(sign, dateKey);
 
   return (
     <section className={panelClass(publicMode)}>
-      <SectionHeader publicMode={publicMode} icon={<Sparkles className="h-5 w-5" />} title="Сегодня" subtitle={`${sign.emoji} ${sign.name} · ${formatHumanDate(dateIso)}`} />
+      <SectionHeader publicMode={publicMode} icon={<Sparkles className="h-5 w-5" />} title="Сегодня" subtitle={`${sign.emoji} ${sign.name} · ${formatZodiacDisplayDate(dateKey)}`} />
 
       <div className="mt-5 space-y-3">
         <InfoRow publicMode={publicMode} label="💡 Совет дня" text={forecast.advice} />
@@ -352,12 +386,18 @@ function TodaySection({ publicMode, sign, dateIso }: { publicMode: boolean; sign
   );
 }
 
-function WeekSection({ publicMode, sign, dateIso }: { publicMode: boolean; sign: ZodiacSign; dateIso: string }) {
-  const forecast = buildWeekForecast(sign, dateIso);
+function WeekSection({ publicMode, sign, dateKey }: { publicMode: boolean; sign: ZodiacSign; dateKey: string }) {
+  const forecast = buildWeekForecast(sign, dateKey);
+  const weekRange = getWeekRangeForDate(dateKey, DEFAULT_ZODIAC_TIME_ZONE);
 
   return (
     <section className={panelClass(publicMode)}>
-      <SectionHeader publicMode={publicMode} icon={<Star className="h-5 w-5" />} title="Неделя" subtitle={`${sign.emoji} ${sign.name}`} />
+      <SectionHeader
+        publicMode={publicMode}
+        icon={<Star className="h-5 w-5" />}
+        title="Неделя"
+        subtitle={`${sign.emoji} ${sign.name} · ${formatZodiacDisplayDate(weekRange.startDateKey)} - ${formatZodiacDisplayDate(weekRange.endDateKey)}`}
+      />
 
       <div className="mt-5 grid gap-3">
         <InfoRow publicMode={publicMode} label="Главная тема недели" text={forecast.theme} />
@@ -370,12 +410,18 @@ function WeekSection({ publicMode, sign, dateIso }: { publicMode: boolean; sign:
   );
 }
 
-function LuckyDaysSection({ publicMode, sign, dateIso }: { publicMode: boolean; sign: ZodiacSign; dateIso: string }) {
-  const days = buildLuckyDays(sign, dateIso, 7);
+function LuckyDaysSection({ publicMode, sign, dateKey }: { publicMode: boolean; sign: ZodiacSign; dateKey: string }) {
+  const startDateKey = getLuckyDaysStartDate(dateKey);
+  const days = buildLuckyDays(sign, startDateKey, 7);
 
   return (
     <section className={panelClass(publicMode)}>
-      <SectionHeader publicMode={publicMode} icon={<CalendarDays className="h-5 w-5" />} title="Удачные дни" subtitle={`${sign.emoji} ${sign.name} · ближайшие 7 дней`} />
+      <SectionHeader
+        publicMode={publicMode}
+        icon={<CalendarDays className="h-5 w-5" />}
+        title="Удачные дни"
+        subtitle={`${sign.emoji} ${sign.name} · с ${formatZodiacDisplayDate(startDateKey)}`}
+      />
 
       <div className="mt-5 grid max-h-[520px] gap-3 overflow-y-auto pr-1">
         {days.map((day) => (
@@ -391,6 +437,15 @@ function LuckyDaysSection({ publicMode, sign, dateIso }: { publicMode: boolean; 
           </div>
         ))}
       </div>
+    </section>
+  );
+}
+
+function DateLoadingSection({ publicMode, title }: { publicMode: boolean; title: string }) {
+  return (
+    <section className={panelClass(publicMode)}>
+      <SectionHeader publicMode={publicMode} icon={<CalendarDays className="h-5 w-5" />} title={title} subtitle="Обновляем дату" />
+      <div className="mt-5 h-28 animate-pulse rounded-lg border border-white/12 bg-white/8" />
     </section>
   );
 }
@@ -1080,10 +1135,6 @@ function parseCompatibilityStartParam(value?: string | null) {
   return signSlugs.has(match[1]) ? match[1] : null;
 }
 
-function getTodayIso() {
-  return new Date().toISOString().slice(0, 10);
-}
-
 function getDateOrdinal(dateIso: string) {
   const date = parseIsoDate(dateIso);
   return Math.floor(date.getTime() / 86400000);
@@ -1092,16 +1143,6 @@ function getDateOrdinal(dateIso: string) {
 function parseIsoDate(dateIso: string) {
   const [year, month, day] = dateIso.split("-").map(Number);
   return new Date(Date.UTC(year, month - 1, day));
-}
-
-function addDays(dateIso: string, days: number) {
-  const date = parseIsoDate(dateIso);
-  date.setUTCDate(date.getUTCDate() + days);
-  return date.toISOString().slice(0, 10);
-}
-
-function formatHumanDate(dateIso: string) {
-  return parseIsoDate(dateIso).toLocaleDateString("ru-RU", { day: "numeric", month: "long" });
 }
 
 function formatShortDate(dateIso: string) {
@@ -1113,11 +1154,7 @@ function formatWeekday(dateIso: string) {
 }
 
 function getWeekKey(dateIso: string) {
-  const date = parseIsoDate(dateIso);
-  const year = date.getUTCFullYear();
-  const firstDay = Date.UTC(year, 0, 1);
-  const dayOfYear = Math.floor((date.getTime() - firstDay) / 86400000) + 1;
-  return `${year}-${Math.ceil(dayOfYear / 7)}`;
+  return getWeekRangeForDate(dateIso, DEFAULT_ZODIAC_TIME_ZONE).startDateKey;
 }
 
 function pickByKey(items: string[], key: string, offset: number) {
@@ -1149,7 +1186,7 @@ function buildWeekForecast(sign: ZodiacSign, dateIso: string) {
 
 function buildLuckyDays(sign: ZodiacSign, dateIso: string, count: number) {
   return Array.from({ length: count }, (_, index) => {
-    const iso = addDays(dateIso, index);
+    const iso = addDaysToDateKey(dateIso, index);
     const key = `${sign.slug}:${iso}:lucky`;
     const seed = hashString(key);
     return {
