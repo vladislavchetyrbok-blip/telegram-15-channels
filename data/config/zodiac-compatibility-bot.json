@@ -5,7 +5,7 @@
   "usernameEnv": "COMPATIBILITY_BOT_USERNAME",
   "miniAppUrlEnv": "COMPATIBILITY_MINI_APP_URL",
   "miniAppNameEnv": "COMPATIBILITY_MINI_APP_NAME",
-  "compatibilityBotUsername": null,
+  "compatibilityBotUsername": "zodiac_love_check_bot",
   "compatibilityMiniAppUrl": null,
   "compatibilityMiniAppName": null,
   "username": null,

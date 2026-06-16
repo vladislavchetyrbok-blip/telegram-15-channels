@@ -127,20 +127,22 @@ export function resolveCompatibilityLaunchTarget(channelId, { env = process.env 
   const miniAppUrlEnv = config.miniAppUrlEnv || DEFAULT_COMPATIBILITY_MINI_APP_URL_ENV;
   const miniAppNameEnv = config.miniAppNameEnv || DEFAULT_COMPATIBILITY_MINI_APP_NAME_ENV;
   const usernameResult = resolveCompatibilityBotUsername({ env });
+  const liveButtonEnabled = config.liveChannelPostsEnabled === true;
   const miniAppUrl = normalizeCompatibilityMiniAppUrl(env[miniAppUrlEnv]) || normalizeCompatibilityMiniAppUrl(config.compatibilityMiniAppUrl) || normalizeCompatibilityMiniAppUrl(config.miniAppUrl);
   const miniAppName = normalizeCompatibilityMiniAppName(env[miniAppNameEnv]) || normalizeCompatibilityMiniAppName(config.compatibilityMiniAppName) || normalizeCompatibilityMiniAppName(config.miniAppName);
   const publicPreviewUrl = miniAppUrl ? appendQuery(miniAppUrl, "startapp", start) : null;
+  const disabledWarning = "Compatibility launch target is configured, but liveChannelPostsEnabled=false; daily live buttons remain omitted until explicit approval.";
 
   if (usernameResult.ok && miniAppName) {
     const url = `https://t.me/${usernameResult.username}/${miniAppName}?startapp=${encodeURIComponent(start)}`;
     return {
-      ok: true,
-      url,
+      ok: liveButtonEnabled,
+      url: liveButtonEnabled ? url : null,
       previewUrl: url,
       start,
       text: config.buttonText,
-      targetType: "mini_app_name",
-      warning: null,
+      targetType: liveButtonEnabled ? "mini_app_name" : "mini_app_name_disabled",
+      warning: liveButtonEnabled ? null : disabledWarning,
       envName: `${usernameResult.envName}+${miniAppNameEnv}`,
     };
   }
@@ -148,13 +150,13 @@ export function resolveCompatibilityLaunchTarget(channelId, { env = process.env 
   if (usernameResult.ok) {
     const url = `https://t.me/${usernameResult.username}?start=${encodeURIComponent(start)}`;
     return {
-      ok: true,
-      url,
+      ok: liveButtonEnabled,
+      url: liveButtonEnabled ? url : null,
       previewUrl: url,
       start,
       text: config.buttonText,
-      targetType: "bot_deep_link",
-      warning: null,
+      targetType: liveButtonEnabled ? "bot_deep_link" : "bot_deep_link_disabled",
+      warning: liveButtonEnabled ? null : disabledWarning,
       envName: usernameResult.envName,
     };
   }
