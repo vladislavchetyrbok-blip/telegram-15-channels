@@ -601,7 +601,7 @@ function PersonPanel({
   const detectedSign = parsedDate.ok ? findSign(parsedDate.signSlug) : null;
   const isSelfPanel = title === "Вы";
   const nameLabel = isSelfPanel ? "Ваше имя" : "Имя партнёра";
-  const namePlaceholder = isSelfPanel ? "например, Владислав" : "например, Анна";
+  const namePlaceholder = "необязательно";
 
   return (
     <div className={publicMode ? "min-w-0 space-y-4" : "min-w-0 space-y-4"}>
