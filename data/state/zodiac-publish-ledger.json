@@ -543,6 +543,18 @@
       "updatedAt": "2026-06-16T08:43:26.634Z",
       "messageId": "9,",
       "sentAt": "2026-06-16T08:43:26.634Z"
+    },
+    "2026-06-16:aquarius": {
+      "key": "2026-06-16:aquarius",
+      "date": "2026-06-16",
+      "slug": "aquarius",
+      "createdAt": "2026-06-16T08:43:27.601Z",
+      "mediaMode": "text_only",
+      "source": "pipeline",
+      "mediaSuppressed": true,
+      "suppressionReason": "visual_quality_no_go_pending_replacement",
+      "status": "locked",
+      "updatedAt": "2026-06-16T08:43:27.601Z"
     }
   }
 }
