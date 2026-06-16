@@ -571,6 +571,136 @@
       "updatedAt": "2026-06-16T08:43:32.955Z",
       "messageId": "9",
       "sentAt": "2026-06-16T08:43:32.955Z"
+    },
+    "2026-06-17-compat-announcement:zodiac-general": {
+      "key": "2026-06-17-compat-announcement:zodiac-general",
+      "date": "2026-06-17-compat-announcement",
+      "slug": "zodiac-general",
+      "createdAt": "2026-06-16T21:18:01.335Z",
+      "status": "sent",
+      "updatedAt": "2026-06-16T21:18:01.686Z",
+      "messageId": 24,
+      "url": "https://t.me/zodiac_love_check_bot?startapp=compat"
+    },
+    "2026-06-17-compat-announcement:aries": {
+      "key": "2026-06-17-compat-announcement:aries",
+      "date": "2026-06-17-compat-announcement",
+      "slug": "aries",
+      "createdAt": "2026-06-16T21:18:01.691Z",
+      "status": "sent",
+      "updatedAt": "2026-06-16T21:18:01.905Z",
+      "messageId": 15,
+      "url": "https://t.me/zodiac_love_check_bot?startapp=compat_aries"
+    },
+    "2026-06-17-compat-announcement:taurus": {
+      "key": "2026-06-17-compat-announcement:taurus",
+      "date": "2026-06-17-compat-announcement",
+      "slug": "taurus",
+      "createdAt": "2026-06-16T21:18:01.911Z",
+      "status": "sent",
+      "updatedAt": "2026-06-16T21:18:02.013Z",
+      "messageId": 15,
+      "url": "https://t.me/zodiac_love_check_bot?startapp=compat_taurus"
+    },
+    "2026-06-17-compat-announcement:gemini": {
+      "key": "2026-06-17-compat-announcement:gemini",
+      "date": "2026-06-17-compat-announcement",
+      "slug": "gemini",
+      "createdAt": "2026-06-16T21:18:02.017Z",
+      "status": "sent",
+      "updatedAt": "2026-06-16T21:18:02.127Z",
+      "messageId": 17,
+      "url": "https://t.me/zodiac_love_check_bot?startapp=compat_gemini"
+    },
+    "2026-06-17-compat-announcement:cancer": {
+      "key": "2026-06-17-compat-announcement:cancer",
+      "date": "2026-06-17-compat-announcement",
+      "slug": "cancer",
+      "createdAt": "2026-06-16T21:18:02.133Z",
+      "status": "sent",
+      "updatedAt": "2026-06-16T21:18:02.245Z",
+      "messageId": 15,
+      "url": "https://t.me/zodiac_love_check_bot?startapp=compat_cancer"
+    },
+    "2026-06-17-compat-announcement:leo": {
+      "key": "2026-06-17-compat-announcement:leo",
+      "date": "2026-06-17-compat-announcement",
+      "slug": "leo",
+      "createdAt": "2026-06-16T21:18:02.249Z",
+      "status": "sent",
+      "updatedAt": "2026-06-16T21:18:02.359Z",
+      "messageId": 15,
+      "url": "https://t.me/zodiac_love_check_bot?startapp=compat_leo"
+    },
+    "2026-06-17-compat-announcement:virgo": {
+      "key": "2026-06-17-compat-announcement:virgo",
+      "date": "2026-06-17-compat-announcement",
+      "slug": "virgo",
+      "createdAt": "2026-06-16T21:18:02.364Z",
+      "status": "sent",
+      "updatedAt": "2026-06-16T21:18:02.468Z",
+      "messageId": 15,
+      "url": "https://t.me/zodiac_love_check_bot?startapp=compat_virgo"
+    },
+    "2026-06-17-compat-announcement:libra": {
+      "key": "2026-06-17-compat-announcement:libra",
+      "date": "2026-06-17-compat-announcement",
+      "slug": "libra",
+      "createdAt": "2026-06-16T21:18:02.476Z",
+      "status": "sent",
+      "updatedAt": "2026-06-16T21:18:02.616Z",
+      "messageId": 15,
+      "url": "https://t.me/zodiac_love_check_bot?startapp=compat_libra"
+    },
+    "2026-06-17-compat-announcement:scorpio": {
+      "key": "2026-06-17-compat-announcement:scorpio",
+      "date": "2026-06-17-compat-announcement",
+      "slug": "scorpio",
+      "createdAt": "2026-06-16T21:18:02.620Z",
+      "status": "sent",
+      "updatedAt": "2026-06-16T21:18:02.721Z",
+      "messageId": 13,
+      "url": "https://t.me/zodiac_love_check_bot?startapp=compat_scorpio"
+    },
+    "2026-06-17-compat-announcement:sagittarius": {
+      "key": "2026-06-17-compat-announcement:sagittarius",
+      "date": "2026-06-17-compat-announcement",
+      "slug": "sagittarius",
+      "createdAt": "2026-06-16T21:18:02.730Z",
+      "status": "sent",
+      "updatedAt": "2026-06-16T21:18:03.019Z",
+      "messageId": 13,
+      "url": "https://t.me/zodiac_love_check_bot?startapp=compat_sagittarius"
+    },
+    "2026-06-17-compat-announcement:capricorn": {
+      "key": "2026-06-17-compat-announcement:capricorn",
+      "date": "2026-06-17-compat-announcement",
+      "slug": "capricorn",
+      "createdAt": "2026-06-16T21:18:03.024Z",
+      "status": "sent",
+      "updatedAt": "2026-06-16T21:18:03.180Z",
+      "messageId": 13,
+      "url": "https://t.me/zodiac_love_check_bot?startapp=compat_capricorn"
+    },
+    "2026-06-17-compat-announcement:aquarius": {
+      "key": "2026-06-17-compat-announcement:aquarius",
+      "date": "2026-06-17-compat-announcement",
+      "slug": "aquarius",
+      "createdAt": "2026-06-16T21:18:03.185Z",
+      "status": "sent",
+      "updatedAt": "2026-06-16T21:18:03.407Z",
+      "messageId": 12,
+      "url": "https://t.me/zodiac_love_check_bot?startapp=compat_aquarius"
+    },
+    "2026-06-17-compat-announcement:pisces": {
+      "key": "2026-06-17-compat-announcement:pisces",
+      "date": "2026-06-17-compat-announcement",
+      "slug": "pisces",
+      "createdAt": "2026-06-16T21:18:03.414Z",
+      "status": "sent",
+      "updatedAt": "2026-06-16T21:18:03.643Z",
+      "messageId": 12,
+      "url": "https://t.me/zodiac_love_check_bot?startapp=compat_pisces"
     }
   }
 }

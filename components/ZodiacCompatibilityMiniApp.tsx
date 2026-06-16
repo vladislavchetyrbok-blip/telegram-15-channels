@@ -83,21 +83,19 @@ export function ZodiacCompatibilityMiniApp({
   startParam,
 }: ZodiacCompatibilityMiniAppProps) {
   const publicMode = variant === "public";
-  const resolvedSign = resolveInitialSign(initialSign, startParam);
   const resolvedMode = normalizeMode(initialMode);
-  const partnerSign = resolvedSign === "leo" ? "gemini" : "leo";
   const [mode, setMode] = useState<Mode>(resolvedMode);
   const [step, setStep] = useState<WizardStep>(1);
-  const [self, setSelf] = useState<PersonState>(() => createInitialPerson(resolvedSign, "male", true, "kyiv-ua"));
-  const [partner, setPartner] = useState<PersonState>(() => createInitialPerson(partnerSign, "female", false, ""));
+  const [self, setSelf] = useState<PersonState>(() => createInitialPerson("", "unspecified", false, ""));
+  const [partner, setPartner] = useState<PersonState>(() => createInitialPerson("", "unspecified", false, ""));
 
   const result = useMemo(() => buildCompatibilityResult(mode, self, partner), [mode, partner, self]);
   const stepTitle = step === 1 ? "Вы" : step === 2 ? "Партнёр" : "Результат";
 
   function resetFlow() {
     setMode(resolvedMode);
-    setSelf(createInitialPerson(resolvedSign, "male", true, "kyiv-ua"));
-    setPartner(createInitialPerson(partnerSign, "female", false, ""));
+    setSelf(createInitialPerson("", "unspecified", false, ""));
+    setPartner(createInitialPerson("", "unspecified", false, ""));
     setStep(1);
   }
 
@@ -166,11 +164,6 @@ export function ZodiacCompatibilityMiniApp({
             </div>
           </div>
 
-          {publicMode && source === "telegram" ? (
-            <p className="mt-4 max-w-[18rem] break-words rounded-md border border-violet-300/20 bg-violet-300/10 px-3 py-2 text-xs text-violet-100 [overflow-wrap:anywhere] sm:max-w-full">
-              Открыто из Telegram. Первый знак выбран из ссылки, если он был передан.
-            </p>
-          ) : null}
         </header>
 
         <StepProgress publicMode={publicMode} step={step} />
@@ -212,7 +205,19 @@ export function ZodiacCompatibilityMiniApp({
 
             {step === 3 ? (
               <WizardCard publicMode={publicMode} stepLabel="Шаг 3 из 3" title={stepTitle}>
-                <ResultPanel publicMode={publicMode} result={result} onEdit={() => setStep(1)} onReset={resetFlow} />
+                {isReadyToCalculate(mode, self, partner) ? (
+                  <ResultPanel publicMode={publicMode} result={result} onEdit={() => setStep(1)} onReset={resetFlow} />
+                ) : (
+                  <div className="py-8 text-center">
+                    <p className={publicMode ? "text-slate-300" : "text-slate-600"}>Заполните данные, чтобы увидеть совместимость.</p>
+                    <div className="mt-6 flex justify-center">
+                      <button type="button" onClick={() => setStep(1)} className={secondaryButtonClass(publicMode)}>
+                        <ArrowLeft className="mr-2 h-4 w-4" />
+                        Вернуться к заполнению
+                      </button>
+                    </div>
+                  </div>
+                )}
               </WizardCard>
             ) : null}
           </div>
@@ -338,6 +343,7 @@ function PersonPanel({
             onChange={(event) => onChange({ ...value, sign: event.target.value })}
             className="h-12 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900"
           >
+            <option value="" disabled>Выберите знак...</option>
             {signs.map((sign) => (
               <option key={sign.slug} value={sign.slug}>
                 {sign.emoji} {sign.name}
@@ -412,11 +418,16 @@ function PersonPanel({
               <div className="grid gap-3 sm:grid-cols-2">
                 <Field label="Время" publicMode={publicMode}>
                   <input
-                    type="time"
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="чч:мм"
                     value={value.birthTime}
-                    onChange={(event) => onChange({ ...value, birthTime: event.target.value })}
+                    onChange={(event) => onChange({ ...value, birthTime: formatTimeInput(event.target.value) })}
                     className="h-12 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900"
                   />
+                  {value.knowsTime && value.birthTime && !isValidTime(value.birthTime) ? (
+                    <p className="mt-2 text-xs font-semibold text-rose-700">Укажите корректное время (00:00 - 23:59).</p>
+                  ) : null}
                 </Field>
                 <CitySelector publicMode={publicMode} value={value} onChange={onChange} />
               </div>
@@ -571,23 +582,56 @@ function Field({ label, publicMode, children }: { label: string; publicMode?: bo
 }
 
 function createInitialPerson(sign: string, gender: Gender, knowsTime: boolean, cityId: string): PersonState {
-  const birthDate = gender === "female" ? "10.08.1998" : "15.06.1998";
   const selectedCity = getCityById(cityId);
-  const parsed = parseBirthDate(birthDate);
   return {
-    sign: parsed.ok ? parsed.signSlug : sign,
+    sign,
     gender,
-    birthDate,
+    birthDate: "",
     knowsTime,
-    birthTime: knowsTime ? "14:30" : "",
+    birthTime: "",
     cityQuery: selectedCity ? cityLabel(selectedCity) : "",
     selectedCityId: selectedCity?.cityId ?? "",
   };
 }
 
-function updateBirthDate(value: PersonState, birthDate: string, onChange: (value: PersonState) => void) {
-  const parsed = parseBirthDate(birthDate);
-  onChange({ ...value, birthDate, sign: parsed.ok ? parsed.signSlug : value.sign });
+function formatDateInput(value: string) {
+  const digits = value.replace(/\D/g, "").slice(0, 8);
+  if (digits.length <= 2) return digits;
+  if (digits.length <= 4) return `${digits.slice(0, 2)}.${digits.slice(2)}`;
+  return `${digits.slice(0, 2)}.${digits.slice(2, 4)}.${digits.slice(4)}`;
+}
+
+function formatTimeInput(value: string) {
+  const digits = value.replace(/\D/g, "").slice(0, 4);
+  if (digits.length <= 2) return digits;
+  return `${digits.slice(0, 2)}:${digits.slice(2)}`;
+}
+
+function isValidTime(value: string) {
+  const match = value.match(/^(\d{2}):(\d{2})$/);
+  if (!match) return false;
+  const h = Number(match[1]);
+  const m = Number(match[2]);
+  return h >= 0 && h <= 23 && m >= 0 && m <= 59;
+}
+
+function isReadyToCalculate(mode: Mode, self: PersonState, partner: PersonState) {
+  if (!self.sign || !partner.sign) return false;
+  if (mode !== "fast") {
+    if (!parseBirthDate(self.birthDate).ok) return false;
+    if (!parseBirthDate(partner.birthDate).ok) return false;
+  }
+  if (mode === "precise") {
+    if (self.knowsTime && (!isValidTime(self.birthTime) || !self.selectedCityId)) return false;
+    if (partner.knowsTime && (!isValidTime(partner.birthTime) || !partner.selectedCityId)) return false;
+  }
+  return true;
+}
+
+function updateBirthDate(value: PersonState, rawValue: string, onChange: (value: PersonState) => void) {
+  const formatted = formatDateInput(rawValue);
+  const parsed = parseBirthDate(formatted);
+  onChange({ ...value, birthDate: formatted, sign: parsed.ok ? parsed.signSlug : value.sign });
 }
 
 interface CompatibilityResult {
