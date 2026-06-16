@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { ZodiacCompatibilityMiniApp } from "@/components/ZodiacCompatibilityMiniApp";
 
 export const metadata: Metadata = {
-  title: "Совместимость знаков зодиака",
-  description: "Интерактивный расчёт совместимости знаков зодиака для Telegram Mini App.",
+  title: "Гороскопы и совместимость",
+  description: "Зодиакальный Mini App с прогнозами, совместимостью и удачными днями.",
 };
 
 interface CompatibilityPageProps {
