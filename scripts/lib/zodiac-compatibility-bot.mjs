@@ -33,6 +33,7 @@ export function loadCompatibilityBotConfig() {
       compatibilityBotUsername: null,
       compatibilityMiniAppUrl: null,
       compatibilityMiniAppName: null,
+      namedDirectLinkMiniAppEnabled: false,
       username: null,
       miniAppUrl: null,
       miniAppName: null,
@@ -52,6 +53,7 @@ export function loadCompatibilityBotConfig() {
     compatibilityBotUsername: parsed.compatibilityBotUsername ?? parsed.username ?? null,
     compatibilityMiniAppUrl: parsed.compatibilityMiniAppUrl ?? parsed.miniAppUrl ?? null,
     compatibilityMiniAppName: parsed.compatibilityMiniAppName ?? parsed.miniAppName ?? null,
+    namedDirectLinkMiniAppEnabled: parsed.namedDirectLinkMiniAppEnabled === true,
     username: parsed.username ?? parsed.compatibilityBotUsername ?? null,
     miniAppUrl: parsed.miniAppUrl ?? parsed.compatibilityMiniAppUrl ?? null,
     miniAppName: parsed.miniAppName ?? parsed.compatibilityMiniAppName ?? null,
@@ -130,10 +132,11 @@ export function resolveCompatibilityLaunchTarget(channelId, { env = process.env 
   const liveButtonEnabled = config.liveChannelPostsEnabled === true;
   const miniAppUrl = normalizeCompatibilityMiniAppUrl(env[miniAppUrlEnv]) || normalizeCompatibilityMiniAppUrl(config.compatibilityMiniAppUrl) || normalizeCompatibilityMiniAppUrl(config.miniAppUrl);
   const miniAppName = normalizeCompatibilityMiniAppName(env[miniAppNameEnv]) || normalizeCompatibilityMiniAppName(config.compatibilityMiniAppName) || normalizeCompatibilityMiniAppName(config.miniAppName);
+  const namedDirectLinkEnabled = config.namedDirectLinkMiniAppEnabled === true;
   const publicPreviewUrl = miniAppUrl ? appendQuery(miniAppUrl, "startapp", start) : null;
   const disabledWarning = "Compatibility launch target is configured, but liveChannelPostsEnabled=false; daily live buttons remain omitted until explicit approval.";
 
-  if (usernameResult.ok && miniAppName) {
+  if (usernameResult.ok && namedDirectLinkEnabled && miniAppName) {
     const url = `https://t.me/${usernameResult.username}/${miniAppName}?startapp=${encodeURIComponent(start)}`;
     return {
       ok: liveButtonEnabled,
@@ -141,9 +144,23 @@ export function resolveCompatibilityLaunchTarget(channelId, { env = process.env 
       previewUrl: url,
       start,
       text: config.buttonText,
-      targetType: liveButtonEnabled ? "mini_app_name" : "mini_app_name_disabled",
+      targetType: liveButtonEnabled ? "named_mini_app" : "named_mini_app_disabled",
       warning: liveButtonEnabled ? null : disabledWarning,
       envName: `${usernameResult.envName}+${miniAppNameEnv}`,
+    };
+  }
+
+  if (usernameResult.ok && miniAppUrl) {
+    const url = `https://t.me/${usernameResult.username}?startapp=${encodeURIComponent(start)}`;
+    return {
+      ok: liveButtonEnabled,
+      url: liveButtonEnabled ? url : null,
+      previewUrl: url,
+      start,
+      text: config.buttonText,
+      targetType: liveButtonEnabled ? "main_mini_app" : "main_mini_app_disabled",
+      warning: liveButtonEnabled ? null : disabledWarning,
+      envName: `${usernameResult.envName}+${miniAppUrlEnv}`,
     };
   }
 

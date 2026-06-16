@@ -6,8 +6,9 @@
   "miniAppUrlEnv": "COMPATIBILITY_MINI_APP_URL",
   "miniAppNameEnv": "COMPATIBILITY_MINI_APP_NAME",
   "compatibilityBotUsername": "zodiac_love_check_bot",
-  "compatibilityMiniAppUrl": null,
+  "compatibilityMiniAppUrl": "https://telegram-15-channels.vercel.app/compatibility",
   "compatibilityMiniAppName": null,
+  "namedDirectLinkMiniAppEnabled": false,
   "username": null,
   "miniAppUrl": null,
   "miniAppName": null,
@@ -44,7 +45,8 @@
     "Fast mode uses signs only. Personal and precise modes collect birth data in memory only.",
     "Unknown birth time is supported and must not block calculation.",
     "Set COMPATIBILITY_BOT_USERNAME only when the bot is created and approved.",
-    "Set COMPATIBILITY_MINI_APP_URL to the public /compatibility HTTPS route after deployment.",
-    "Set COMPATIBILITY_MINI_APP_NAME only after Telegram Mini App setup is approved."
+    "COMPATIBILITY_MINI_APP_URL is the public /compatibility HTTPS route used by BotFather Main Mini App.",
+    "Main Mini App links use https://t.me/{bot}?startapp=compat_{slug}.",
+    "Set COMPATIBILITY_MINI_APP_NAME and namedDirectLinkMiniAppEnabled=true only if a separate named Direct Link Mini App is explicitly created."
   ]
 }
