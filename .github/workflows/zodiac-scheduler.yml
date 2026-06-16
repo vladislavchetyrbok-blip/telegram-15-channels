@@ -5,6 +5,7 @@ on:
     # 06:00 UTC = 09:00 Europe/Kyiv during summer time, 08:00 during winter time.
     # GitHub Actions cron is UTC-only; see docs/zodiac-year-autopilot-runbook.md.
     - cron: "0 6 * * *"
+    - cron: "30 6 * * *"
   workflow_dispatch:
     inputs:
       mode:
@@ -92,6 +93,12 @@ jobs:
           UTC_NOW=$(date -u +%Y-%m-%dT%H:%M:%SZ)
           KYIV_NOW=$(TZ="Europe/Kyiv" date +%Y-%m-%dT%H:%M:%S%z)
 
+          if [ -f "data/state/zodiac-publish-ledger.json" ]; then
+            BLOCKED_COUNT=$(grep -c '"status": "sent"' data/state/zodiac-publish-ledger.json || echo "0")
+          else
+            BLOCKED_COUNT="0"
+          fi
+
           echo "date=$TARGET_DATE" >> "$GITHUB_OUTPUT"
           echo "mode=$RUN_MODE" >> "$GITHUB_OUTPUT"
           echo "timezone_policy=Europe/Kyiv calendar date" >> "$GITHUB_OUTPUT"
@@ -102,6 +109,10 @@ jobs:
           echo "Timezone policy: Europe/Kyiv calendar date"
           echo "UTC now: $UTC_NOW"
           echo "Kyiv now: $KYIV_NOW"
+          echo "Schedule event name: ${{ github.event_name }}"
+          echo "Cron context: ${{ github.event.schedule }}"
+          echo "Ledger source: data/state/zodiac-publish-ledger.json"
+          echo "Duplicate-blocked count: $BLOCKED_COUNT"
 
       - name: Configure git identity for durable ledger persistence
         if: steps.target.outputs.mode == 'live'
