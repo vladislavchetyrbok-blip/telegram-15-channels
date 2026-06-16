@@ -14,6 +14,7 @@ import {
   releaseLock
 } from "./lib/zodiac-publish-ledger.mjs";
 import { resolveZodiacWeeklyVisualAsset } from "./zodiac-weekly-asset-resolver.mjs";
+import { buildZodiacNavigationKeyboard } from "./zodiac-telegram-publisher.mjs";
 
 function parseArgs() {
   const args = process.argv.slice(2);
@@ -228,6 +229,15 @@ function main() {
       if (options.dryRun) {
         report.perSlug.push({ slug, action: "dry_run_would_publish", mediaMode, ledgerStatus: status || "missing", note: mediaNote.trim() });
         console.log(`[dry_run_would_publish] ${slug} | ${options.date} | Mode: ${mediaMode}${mediaNote}`);
+        
+        const replyMarkup = buildZodiacNavigationKeyboard(slug);
+        if (replyMarkup && replyMarkup.inline_keyboard) {
+          const buttons = replyMarkup.inline_keyboard.flat();
+          console.log(`  -> button labels: ${buttons.map(b => b.text).join(" | ")}`);
+          console.log(`  -> button URL presence: ${buttons.every(b => !!b.url)}`);
+          console.log(`  -> reply_markup preview: ${JSON.stringify(replyMarkup)}`);
+        }
+        
         continue;
       }
 

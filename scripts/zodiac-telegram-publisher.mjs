@@ -2,6 +2,70 @@ import fs from "fs";
 import path from "path";
 import process from "process";
 
+const ZODIAC_EMOJIS = {
+  aries: "♈", taurus: "♉", gemini: "♊", cancer: "♋",
+  leo: "♌", virgo: "♍", libra: "♎", scorpio: "♏",
+  sagittarius: "♐", capricorn: "♑", aquarius: "♒", pisces: "♓"
+};
+
+const ZODIAC_NAMES = {
+  aries: "Овен", taurus: "Телец", gemini: "Близнецы", cancer: "Рак",
+  leo: "Лев", virgo: "Дева", libra: "Весы", scorpio: "Скорпион",
+  sagittarius: "Стрелец", capricorn: "Козерог", aquarius: "Водолей", pisces: "Рыбы"
+};
+
+const ZODIAC_ORDER = [
+  "aries", "taurus", "gemini", "cancer", "leo", "virgo",
+  "libra", "scorpio", "sagittarius", "capricorn", "aquarius", "pisces"
+];
+
+function loadChannelLinks() {
+  try {
+    const configPath = path.join(process.cwd(), "data", "config", "zodiac-channel-links.json");
+    if (fs.existsSync(configPath)) {
+      return JSON.parse(fs.readFileSync(configPath, "utf-8"));
+    }
+  } catch (e) {}
+  return {};
+}
+
+export function buildZodiacNavigationKeyboard(channelId) {
+  const links = loadChannelLinks();
+  
+  if (channelId === "zodiac-general") {
+    const keyboard = [];
+    for (let i = 0; i < ZODIAC_ORDER.length; i += 2) {
+      const row = [];
+      for (let j = 0; j < 2; j++) {
+        const slug = ZODIAC_ORDER[i + j];
+        if (slug && links[slug]) {
+          row.push({ text: `${ZODIAC_EMOJIS[slug]} ${ZODIAC_NAMES[slug]}`, url: links[slug] });
+        }
+      }
+      if (row.length > 0) keyboard.push(row);
+    }
+    return { inline_keyboard: keyboard };
+  } else {
+    const keyboard = [];
+    if (links["general"]) {
+      keyboard.push([{ text: "🔮 Общий гороскоп", url: links["general"] }]);
+    }
+    const otherSigns = ZODIAC_ORDER.filter(s => s !== channelId);
+    for (let i = 0; i < otherSigns.length; i += 2) {
+      const row = [];
+      for (let j = 0; j < 2; j++) {
+        const slug = otherSigns[i + j];
+        if (slug && links[slug]) {
+          row.push({ text: `${ZODIAC_EMOJIS[slug]} ${ZODIAC_NAMES[slug]}`, url: links[slug] });
+        }
+      }
+      if (row.length > 0) keyboard.push(row);
+    }
+    return { inline_keyboard: keyboard };
+  }
+}
+
+
 try {
   process.loadEnvFile(".env.local");
 } catch {
@@ -95,12 +159,20 @@ export function planZodiacTelegramPublish({ channelId, text, imagePath }) {
     return { ok: false, error: "Telegram text/caption missing", strategy: "none", calls: [] };
   }
 
+  const replyMarkup = buildZodiacNavigationKeyboard(channelId);
+  const addMarkupToLastCall = (callsArray) => {
+    if (callsArray.length > 0) {
+      callsArray[callsArray.length - 1].replyMarkup = replyMarkup;
+    }
+    return callsArray;
+  };
+
   if (hasImage && cleanText.length <= SAFE_PHOTO_CAPTION_LIMIT) {
     return {
       ok: true,
       error: null,
       strategy: "photo_full_caption",
-      calls: [{ type: "sendPhoto", caption: cleanText, captionMode: "full" }],
+      calls: addMarkupToLastCall([{ type: "sendPhoto", caption: cleanText, captionMode: "full" }]),
     };
   }
 
@@ -124,10 +196,10 @@ export function planZodiacTelegramPublish({ channelId, text, imagePath }) {
       ok: true,
       error: null,
       strategy: "photo_short_caption_plus_text",
-      calls: [
+      calls: addMarkupToLastCall([
         { type: "sendPhoto", caption: shortCaption, captionMode: "short" },
         ...messageChunks.map((chunk) => ({ type: "sendMessage", text: chunk })),
-      ],
+      ]),
     };
   }
 
@@ -135,7 +207,7 @@ export function planZodiacTelegramPublish({ channelId, text, imagePath }) {
     ok: true,
     error: null,
     strategy: "text_messages",
-    calls: messageChunks.map((chunk) => ({ type: "sendMessage", text: chunk })),
+    calls: addMarkupToLastCall(messageChunks.map((chunk) => ({ type: "sendMessage", text: chunk }))),
   };
 }
 
@@ -192,8 +264,8 @@ export async function publishZodiacTelegramPost({
 
     for (const call of publishPlan.calls) {
       const result = call.type === "sendPhoto"
-        ? await sendPhoto({ token, telegramTarget: target.telegramTarget, caption: call.caption, imagePath })
-        : await sendMessage({ token, telegramTarget: target.telegramTarget, text: call.text });
+        ? await sendPhoto({ token, telegramTarget: target.telegramTarget, caption: call.caption, imagePath, replyMarkup: call.replyMarkup })
+        : await sendMessage({ token, telegramTarget: target.telegramTarget, text: call.text, replyMarkup: call.replyMarkup });
 
       results.push({ ...result, type: call.type });
       if (!result.ok) {
@@ -225,13 +297,16 @@ export async function publishZodiacTelegramPost({
   }
 }
 
-async function sendPhoto({ token, telegramTarget, caption, imagePath }) {
+async function sendPhoto({ token, telegramTarget, caption, imagePath, replyMarkup }) {
   const imageBuffer = fs.readFileSync(imagePath);
   const form = new FormData();
   form.set("chat_id", telegramTarget);
   form.set("photo", new Blob([new Uint8Array(imageBuffer)], { type: getImageMime(imagePath) }), path.basename(imagePath));
   form.set("caption", caption);
   form.set("parse_mode", "HTML");
+  if (replyMarkup) {
+    form.set("reply_markup", JSON.stringify(replyMarkup));
+  }
 
   const response = await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
     method: "POST",
@@ -245,11 +320,15 @@ async function sendPhoto({ token, telegramTarget, caption, imagePath }) {
   return { ok: true, messageId: body.result?.message_id ?? null, error: null };
 }
 
-async function sendMessage({ token, telegramTarget, text }) {
+async function sendMessage({ token, telegramTarget, text, replyMarkup }) {
+  const bodyObj = { chat_id: telegramTarget, text, parse_mode: "HTML" };
+  if (replyMarkup) {
+    bodyObj.reply_markup = replyMarkup;
+  }
   const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ chat_id: telegramTarget, text, parse_mode: "HTML" }),
+    body: JSON.stringify(bodyObj),
   });
   const body = await response.json().catch(() => null);
   if (!response.ok || !body?.ok) {
