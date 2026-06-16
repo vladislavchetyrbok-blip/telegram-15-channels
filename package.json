@@ -113,6 +113,8 @@
     "zodiac:navigation:publish": "node scripts/publish-zodiac-navigation.mjs --live",
     "zodiac:navigation:all:dry": "node scripts/publish-zodiac-navigation-all.mjs --dry-run",
     "zodiac:navigation:all:publish": "node scripts/publish-zodiac-navigation-all.mjs",
+    "zodiac:descriptions:dry": "node scripts/zodiac-channel-descriptions.mjs --dry-run",
+    "zodiac:descriptions:apply": "node scripts/zodiac-channel-descriptions.mjs",
     "zodiac:year:preflight": "node scripts/check-zodiac-year.mjs",
     "zodiac:year:check": "node scripts/check-zodiac-year.mjs",
     "build": "next build",
