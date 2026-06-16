@@ -197,8 +197,12 @@ export function buildCompatibilityDeepLink(channelId, options = {}) {
 
 export function buildCompatibilityInlineButton(channelId, options = {}) {
   const link = buildCompatibilityDeepLink(channelId, options);
-  if (!link.ok) return null;
-  return { text: link.text, url: link.url };
+  const preview = options.preview === true || options.allowPreview === true;
+  if (!link.ok && !preview) return null;
+
+  const url = link.url || (preview ? link.previewUrl : null);
+  if (!url) return null;
+  return { text: link.text, url };
 }
 
 export function getCompatibilityButtonReport(channelId, options = {}) {

@@ -289,7 +289,7 @@ function main() {
         console.log(`[dry_run_would_publish] ${slug} | ${options.date} | Mode: ${mediaMode}${mediaNote}`);
         logSampleOutput(slug, previewPost);
         
-        const replyMarkup = buildZodiacNavigationKeyboard(slug);
+        const replyMarkup = buildZodiacNavigationKeyboard(slug, { previewCompatibilityButton: true });
         if (replyMarkup && replyMarkup.inline_keyboard) {
           const buttons = replyMarkup.inline_keyboard.flat();
           console.log(`  -> button labels: ${buttons.map(b => b.text).join(" | ")}`);

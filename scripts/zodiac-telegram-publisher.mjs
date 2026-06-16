@@ -30,8 +30,9 @@ function loadChannelLinks() {
   return {};
 }
 
-export function buildZodiacNavigationKeyboard(channelId) {
+export function buildZodiacNavigationKeyboard(channelId, options = {}) {
   const links = loadChannelLinks();
+  const compatibilityButtonOptions = options.previewCompatibilityButton ? { preview: true } : {};
   
   if (channelId === "zodiac-general") {
     const keyboard = [];
@@ -45,7 +46,7 @@ export function buildZodiacNavigationKeyboard(channelId) {
       }
       if (row.length > 0) keyboard.push(row);
     }
-    const compatibilityButton = buildCompatibilityInlineButton("zodiac-general");
+    const compatibilityButton = buildCompatibilityInlineButton("zodiac-general", compatibilityButtonOptions);
     if (compatibilityButton) keyboard.push([compatibilityButton]);
     return { inline_keyboard: keyboard };
   } else {
@@ -53,7 +54,7 @@ export function buildZodiacNavigationKeyboard(channelId) {
     if (links["general"]) {
       keyboard.push([{ text: "🔮 Общий гороскоп", url: links["general"] }]);
     }
-    const compatibilityButton = buildCompatibilityInlineButton(channelId);
+    const compatibilityButton = buildCompatibilityInlineButton(channelId, compatibilityButtonOptions);
     if (compatibilityButton) keyboard.push([compatibilityButton]);
     const otherSigns = ZODIAC_ORDER.filter(s => s !== channelId);
     for (let i = 0; i < otherSigns.length; i += 2) {
