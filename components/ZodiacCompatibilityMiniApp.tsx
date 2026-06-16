@@ -1,7 +1,7 @@
 "use client";
 
 import cityCatalogData from "@/data/config/zodiac-city-catalog.json";
-import { HeartHandshake, MapPin, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, HeartHandshake, MapPin, RotateCcw, ShieldCheck, Sparkles } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
@@ -9,6 +9,7 @@ import { useMemo, useState } from "react";
 type Mode = "fast" | "personal" | "precise";
 type Gender = "male" | "female" | "unspecified";
 type Variant = "dashboard" | "public";
+type WizardStep = 1 | 2 | 3;
 
 interface City {
   cityId: string;
@@ -86,24 +87,33 @@ export function ZodiacCompatibilityMiniApp({
   const resolvedMode = normalizeMode(initialMode);
   const partnerSign = resolvedSign === "leo" ? "gemini" : "leo";
   const [mode, setMode] = useState<Mode>(resolvedMode);
+  const [step, setStep] = useState<WizardStep>(1);
   const [self, setSelf] = useState<PersonState>(() => createInitialPerson(resolvedSign, "male", true, "kyiv-ua"));
   const [partner, setPartner] = useState<PersonState>(() => createInitialPerson(partnerSign, "female", false, ""));
 
   const result = useMemo(() => buildCompatibilityResult(mode, self, partner), [mode, partner, self]);
+  const stepTitle = step === 1 ? "Вы" : step === 2 ? "Партнёр" : "Результат";
+
+  function resetFlow() {
+    setMode(resolvedMode);
+    setSelf(createInitialPerson(resolvedSign, "male", true, "kyiv-ua"));
+    setPartner(createInitialPerson(partnerSign, "female", false, ""));
+    setStep(1);
+  }
 
   return (
     <div
       className={
         publicMode
-          ? "min-h-screen w-full max-w-full overflow-x-hidden bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.24),transparent_18rem),radial-gradient(circle_at_top_right,rgba(168,85,247,0.24),transparent_18rem),#070b14] px-4 py-5 text-slate-100 sm:px-6"
+          ? "min-h-screen w-full max-w-full overflow-x-hidden bg-[radial-gradient(circle_at_top,rgba(168,85,247,0.24),transparent_22rem),linear-gradient(180deg,#080712_0%,#12081d_42%,#070b14_100%)] px-4 py-5 text-slate-100 sm:px-6"
           : "-mx-4 -my-6 min-h-screen overflow-x-hidden bg-[#f8fafc] px-4 py-6 text-slate-950 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
       }
     >
-      <div className={publicMode ? "mx-auto w-full max-w-5xl space-y-4" : "mx-auto max-w-7xl space-y-6"}>
+      <div className={publicMode ? "mx-auto flex min-h-[calc(100vh-2.5rem)] w-full max-w-md flex-col space-y-4" : "mx-auto flex min-h-screen max-w-3xl flex-col space-y-5"}>
         <header
           className={
             publicMode
-              ? "w-full max-w-[calc(100vw-2rem)] overflow-hidden rounded-lg border border-cyan-300/20 bg-slate-950/78 p-5 shadow-[0_24px_80px_rgba(8,13,30,0.45)] backdrop-blur sm:max-w-full"
+              ? "w-full overflow-hidden rounded-lg border border-fuchsia-200/15 bg-white/8 p-4 shadow-[0_24px_80px_rgba(8,13,30,0.45)] backdrop-blur"
               : "rounded-lg border border-violet-100 bg-gradient-to-br from-white via-violet-50 to-cyan-50 p-6 shadow-sm"
           }
         >
@@ -113,41 +123,41 @@ export function ZodiacCompatibilityMiniApp({
             </Link>
           ) : null}
 
-          <div className={publicMode ? "flex flex-col gap-4" : "mt-5 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between"}>
+          <div className={publicMode ? "flex flex-col gap-4" : "mt-5 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between"}>
             <div className="min-w-0">
               <p
                 className={
                   publicMode
-                    ? "inline-flex items-center gap-2 rounded-full border border-cyan-300/25 bg-cyan-300/10 px-3 py-1 text-xs font-semibold text-cyan-100"
+                    ? "inline-flex items-center gap-2 rounded-full border border-amber-200/25 bg-amber-200/10 px-3 py-1 text-xs font-semibold text-amber-100"
                     : "inline-flex items-center gap-2 rounded-full border border-violet-200 bg-white px-3 py-1 text-xs font-semibold text-violet-700"
                 }
               >
                 <Sparkles className="h-3.5 w-3.5" />
-                {publicMode ? "Mini App" : "Mini App preview"}
+                {publicMode ? "Шаг " + step + " из 3" : "Mini App preview"}
               </p>
               <h1
                 className={
                   publicMode
-                    ? "mt-4 max-w-[18rem] break-words text-xl font-semibold leading-tight text-white [overflow-wrap:anywhere] sm:max-w-none sm:text-4xl"
+                    ? "mt-3 break-words text-2xl font-semibold leading-tight text-white [overflow-wrap:anywhere]"
                     : "mt-4 break-words text-xl font-semibold leading-tight text-slate-950 [overflow-wrap:anywhere] sm:text-4xl"
                 }
               >
-                Совместимость знаков зодиака
+                Совместимость знаков
               </h1>
               <p
                 className={
                   publicMode
-                    ? "mt-3 max-w-[18rem] break-words text-sm leading-6 text-slate-300 [overflow-wrap:anywhere] sm:max-w-3xl"
+                    ? "mt-2 break-words text-sm leading-6 text-slate-300 [overflow-wrap:anywhere]"
                     : "mt-3 max-w-3xl break-words text-sm leading-6 text-slate-600 [overflow-wrap:anywhere] sm:text-base sm:leading-7"
                 }
               >
-                Выберите режим и сравните пару. Расчёт детерминированный, данные остаются только на экране и не сохраняются.
+                Ваши данные не сохраняются. Выберите формат и пройдите три коротких шага.
               </p>
             </div>
             <div
               className={
                 publicMode
-                  ? "inline-flex w-fit items-center rounded-lg border border-emerald-300/25 bg-emerald-300/10 px-4 py-3 text-sm font-semibold text-emerald-100"
+                  ? "inline-flex w-fit items-center rounded-lg border border-emerald-300/25 bg-emerald-300/10 px-3 py-2 text-xs font-semibold text-emerald-100"
                   : "rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700"
               }
             >
@@ -163,36 +173,141 @@ export function ZodiacCompatibilityMiniApp({
           ) : null}
         </header>
 
-        <section className="grid gap-3 md:grid-cols-3">
-          {modes.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => setMode(item.id)}
-              className={
-                publicMode
-                  ? `min-w-0 w-full max-w-[calc(100vw-2rem)] rounded-lg border p-4 text-left shadow-sm transition sm:max-w-full ${
-                      mode === item.id ? "border-cyan-300/70 bg-cyan-300/15 text-cyan-50" : "border-white/10 bg-white/6 text-slate-300 hover:border-cyan-300/40"
-                    }`
-                  : `min-w-0 rounded-lg border p-4 text-left shadow-sm transition ${
-                      mode === item.id ? "border-violet-300 bg-violet-50 text-violet-900" : "border-slate-200 bg-white text-slate-700 hover:border-cyan-200"
-                    }`
-              }
-            >
-              <span className="block font-semibold">{item.label}</span>
-              <span className="mt-1 block text-sm">{item.caption}</span>
-            </button>
-          ))}
-        </section>
+        <StepProgress publicMode={publicMode} step={step} />
+        <ModeSelector publicMode={publicMode} mode={mode} onChange={setMode} />
 
-        <section className={publicMode ? "grid min-w-0 max-w-full gap-4 lg:grid-cols-[1fr_1fr] xl:grid-cols-[1fr_1fr_0.95fr]" : "grid gap-5 lg:grid-cols-[1fr_1fr_0.95fr]"}>
-          <PersonPanel publicMode={publicMode} title="Вы" mode={mode} value={self} onChange={setSelf} />
-          <PersonPanel publicMode={publicMode} title="Партнёр" mode={mode} value={partner} onChange={setPartner} />
-          <ResultPanel publicMode={publicMode} result={result} />
+        <section className={publicMode ? "flex flex-1 flex-col" : "flex flex-1 flex-col"}>
+          <div className="min-w-0 flex-1 transition-all duration-300">
+            {step === 1 ? (
+              <WizardCard publicMode={publicMode} stepLabel="Шаг 1 из 3" title="Вы">
+                <PersonPanel publicMode={publicMode} title="Вы" mode={mode} value={self} onChange={setSelf} />
+                <div className="mt-5">
+                  <button
+                    type="button"
+                    onClick={() => setStep(2)}
+                    className={primaryButtonClass(publicMode)}
+                  >
+                    Далее
+                    <ArrowRight className="h-4 w-4" />
+                  </button>
+                </div>
+              </WizardCard>
+            ) : null}
+
+            {step === 2 ? (
+              <WizardCard publicMode={publicMode} stepLabel="Шаг 2 из 3" title="Партнёр">
+                <PersonPanel publicMode={publicMode} title="Партнёр" mode={mode} value={partner} onChange={setPartner} />
+                <div className="mt-5 grid grid-cols-2 gap-3">
+                  <button type="button" onClick={() => setStep(1)} className={secondaryButtonClass(publicMode)}>
+                    <ArrowLeft className="h-4 w-4" />
+                    Назад
+                  </button>
+                  <button type="button" onClick={() => setStep(3)} className={primaryButtonClass(publicMode)}>
+                    Рассчитать
+                    <ArrowRight className="h-4 w-4" />
+                  </button>
+                </div>
+              </WizardCard>
+            ) : null}
+
+            {step === 3 ? (
+              <WizardCard publicMode={publicMode} stepLabel="Шаг 3 из 3" title={stepTitle}>
+                <ResultPanel publicMode={publicMode} result={result} onEdit={() => setStep(1)} onReset={resetFlow} />
+              </WizardCard>
+            ) : null}
+          </div>
         </section>
       </div>
     </div>
   );
+}
+
+function StepProgress({ publicMode, step }: { publicMode: boolean; step: WizardStep }) {
+  return (
+    <div className={publicMode ? "grid grid-cols-3 gap-2" : "grid grid-cols-3 gap-2"}>
+      {[1, 2, 3].map((item) => (
+        <div
+          key={item}
+          className={
+            item <= step
+              ? publicMode
+                ? "h-1.5 rounded-full bg-gradient-to-r from-fuchsia-300 via-rose-300 to-amber-200"
+                : "h-1.5 rounded-full bg-violet-500"
+              : publicMode
+                ? "h-1.5 rounded-full bg-white/12"
+                : "h-1.5 rounded-full bg-slate-200"
+          }
+        />
+      ))}
+    </div>
+  );
+}
+
+function ModeSelector({ publicMode, mode, onChange }: { publicMode: boolean; mode: Mode; onChange: (mode: Mode) => void }) {
+  return (
+    <section className="grid grid-cols-3 gap-2">
+      {modes.map((item) => (
+        <button
+          key={item.id}
+          type="button"
+          onClick={() => onChange(item.id)}
+          className={
+            publicMode
+              ? `min-w-0 rounded-lg border px-2 py-3 text-center text-xs shadow-sm transition ${
+                  mode === item.id ? "border-amber-200/70 bg-amber-200/15 text-amber-50" : "border-white/10 bg-white/6 text-slate-300 hover:border-fuchsia-200/40"
+                }`
+              : `min-w-0 rounded-lg border px-2 py-3 text-center text-xs shadow-sm transition ${
+                  mode === item.id ? "border-violet-300 bg-violet-50 text-violet-900" : "border-slate-200 bg-white text-slate-700 hover:border-cyan-200"
+                }`
+          }
+        >
+          <span className="block font-semibold">{item.label}</span>
+          <span className="mt-1 block leading-snug">{item.caption}</span>
+        </button>
+      ))}
+    </section>
+  );
+}
+
+function WizardCard({ publicMode, stepLabel, title, children }: { publicMode: boolean; stepLabel: string; title: string; children: ReactNode }) {
+  return (
+    <div
+      className={
+        publicMode
+          ? "min-w-0 rounded-lg border border-white/12 bg-white/10 p-4 shadow-[0_18px_60px_rgba(8,13,30,0.38)] backdrop-blur transition-all duration-300"
+          : "min-w-0 rounded-lg border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300"
+      }
+    >
+      <div className="mb-5 flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <p className={publicMode ? "text-xs font-semibold text-amber-100" : "text-xs font-semibold text-violet-700"}>{stepLabel}</p>
+          <h2 className={publicMode ? "mt-1 text-xl font-semibold text-white" : "mt-1 text-xl font-semibold text-slate-950"}>{title}</h2>
+        </div>
+        <span
+          className={
+            publicMode
+              ? "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-fuchsia-200/20 bg-fuchsia-200/10 text-fuchsia-100"
+              : "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-violet-100 bg-violet-50 text-violet-700"
+          }
+        >
+          <HeartHandshake className="h-5 w-5" />
+        </span>
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function primaryButtonClass(publicMode: boolean) {
+  return publicMode
+    ? "inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg border border-amber-100/40 bg-gradient-to-r from-fuchsia-500 via-rose-500 to-amber-400 px-4 text-sm font-semibold text-white shadow-lg shadow-rose-950/30 transition hover:brightness-110"
+    : "inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg border border-violet-500 bg-violet-600 px-4 text-sm font-semibold text-white transition hover:bg-violet-700";
+}
+
+function secondaryButtonClass(publicMode: boolean) {
+  return publicMode
+    ? "inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg border border-white/15 bg-white/8 px-4 text-sm font-semibold text-slate-100 transition hover:bg-white/12"
+    : "inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50";
 }
 
 function PersonPanel({
@@ -214,14 +329,14 @@ function PersonPanel({
   const detectedSign = parsedDate.ok ? findSign(parsedDate.signSlug) : null;
 
   return (
-    <div className={publicMode ? "min-w-0 w-full max-w-[calc(100vw-2rem)] rounded-lg border border-white/10 bg-white/95 p-5 text-slate-950 shadow-sm sm:max-w-full" : "min-w-0 rounded-lg border border-slate-200 bg-white p-5 shadow-sm"}>
-      <h2 className="text-lg font-semibold text-slate-950">{title}</h2>
+    <div className={publicMode ? "min-w-0 space-y-4" : "min-w-0 space-y-4"}>
+      {!publicMode ? <h2 className="text-lg font-semibold text-slate-950">{title}</h2> : null}
       <div className="mt-5 space-y-4">
-        <Field label="Знак">
+        <Field label="Знак" publicMode={publicMode}>
           <select
             value={value.sign}
             onChange={(event) => onChange({ ...value, sign: event.target.value })}
-            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900"
+            className="h-12 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900"
           >
             {signs.map((sign) => (
               <option key={sign.slug} value={sign.slug}>
@@ -233,14 +348,14 @@ function PersonPanel({
 
         {showBirthDate ? (
           <>
-            <Field label="Пол">
+            <Field label="Пол" publicMode={publicMode}>
               <div className="grid gap-2 sm:grid-cols-3">
                 {(Object.keys(genderLabels) as Gender[]).map((gender) => (
                   <button
                     key={gender}
                     type="button"
                     onClick={() => onChange({ ...value, gender })}
-                    className={`rounded-lg border px-3 py-2 text-sm ${
+                    className={`min-h-11 rounded-lg border px-3 py-2 text-sm font-semibold transition ${
                       value.gender === gender ? "border-cyan-300 bg-cyan-50 text-cyan-900" : "border-slate-200 bg-slate-50 text-slate-600"
                     }`}
                   >
@@ -249,14 +364,14 @@ function PersonPanel({
                 ))}
               </div>
             </Field>
-            <Field label="Дата рождения">
+            <Field label="Дата рождения" publicMode={publicMode}>
               <input
                 type="text"
                 inputMode="numeric"
                 value={value.birthDate}
                 onChange={(event) => updateBirthDate(value, event.target.value, onChange)}
                 placeholder="15.06.1998"
-                className={`w-full rounded-lg border bg-white px-3 py-2 text-sm text-slate-900 ${
+                className={`h-12 w-full rounded-lg border bg-white px-3 text-base text-slate-900 ${
                   value.birthDate && !parsedDate.ok ? "border-rose-300" : "border-slate-200"
                 }`}
               />
@@ -271,28 +386,39 @@ function PersonPanel({
         ) : null}
 
         {showPrecise ? (
-          <div className="space-y-3 rounded-lg border border-amber-200 bg-amber-50 p-3">
-            <label className="flex items-center gap-3 text-sm font-medium text-slate-800">
-              <input
-                type="checkbox"
-                checked={value.knowsTime}
-                onChange={(event) => onChange({ ...value, knowsTime: event.target.checked })}
-                className="h-4 w-4 rounded border-slate-300"
-              />
-              Знаю точное время рождения
-            </label>
+          <div className={publicMode ? "space-y-3 rounded-lg border border-amber-200/25 bg-amber-200/10 p-3" : "space-y-3 rounded-lg border border-amber-200 bg-amber-50 p-3"}>
+            <div className="grid gap-2">
+              <button
+                type="button"
+                onClick={() => onChange({ ...value, knowsTime: true })}
+                className={`min-h-11 rounded-lg border px-3 py-2 text-left text-sm font-semibold transition ${
+                  value.knowsTime ? "border-amber-300 bg-amber-50 text-amber-950" : "border-white/10 bg-white/90 text-slate-700"
+                }`}
+              >
+                Знаю точное время
+              </button>
+              <button
+                type="button"
+                onClick={() => onChange({ ...value, knowsTime: false })}
+                className={`min-h-11 rounded-lg border px-3 py-2 text-left text-sm font-semibold transition ${
+                  !value.knowsTime ? "border-amber-300 bg-amber-50 text-amber-950" : "border-white/10 bg-white/90 text-slate-700"
+                }`}
+              >
+                Не знаю точное время
+              </button>
+            </div>
             {!value.knowsTime ? <p className="text-sm text-amber-800">{unknownBirthTimeNote}</p> : null}
             {value.knowsTime ? (
               <div className="grid gap-3 sm:grid-cols-2">
-                <Field label="Время">
+                <Field label="Время" publicMode={publicMode}>
                   <input
                     type="time"
                     value={value.birthTime}
                     onChange={(event) => onChange({ ...value, birthTime: event.target.value })}
-                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900"
+                    className="h-12 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900"
                   />
                 </Field>
-                <CitySelector value={value} onChange={onChange} />
+                <CitySelector publicMode={publicMode} value={value} onChange={onChange} />
               </div>
             ) : null}
           </div>
@@ -302,7 +428,7 @@ function PersonPanel({
   );
 }
 
-function CitySelector({ value, onChange }: { value: PersonState; onChange: (value: PersonState) => void }) {
+function CitySelector({ publicMode, value, onChange }: { publicMode: boolean; value: PersonState; onChange: (value: PersonState) => void }) {
   const selectedCity = getCityById(value.selectedCityId);
   const suggestions = searchCities(value.cityQuery).slice(0, 5);
   const needsSelection = value.knowsTime && value.cityQuery.trim() && !selectedCity;
@@ -310,12 +436,12 @@ function CitySelector({ value, onChange }: { value: PersonState; onChange: (valu
 
   return (
     <div>
-      <Field label="Город">
+      <Field label="Город" publicMode={publicMode}>
         <input
           value={value.cityQuery}
           onChange={(event) => onChange({ ...value, cityQuery: event.target.value, selectedCityId: "" })}
           placeholder="Воронеж или Voronezh"
-          className={`w-full rounded-lg border bg-white px-3 py-2 text-sm text-slate-900 ${needsSelection || missingCity ? "border-amber-300" : "border-slate-200"}`}
+          className={`h-12 w-full rounded-lg border bg-white px-3 text-base text-slate-900 ${needsSelection || missingCity ? "border-amber-300" : "border-slate-200"}`}
         />
       </Field>
 
@@ -349,57 +475,96 @@ function CitySelector({ value, onChange }: { value: PersonState; onChange: (valu
   );
 }
 
-function ResultPanel({ publicMode, result }: { publicMode: boolean; result: CompatibilityResult }) {
+function ResultPanel({
+  publicMode,
+  result,
+  onEdit,
+  onReset,
+}: {
+  publicMode: boolean;
+  result: CompatibilityResult;
+  onEdit: () => void;
+  onReset: () => void;
+}) {
+  const levelLabel = compatibilityLevelLabel(result.scores.total);
+
   return (
-    <div className={publicMode ? "min-w-0 w-full max-w-[calc(100vw-2rem)] rounded-lg border border-white/10 bg-white/95 p-5 text-slate-950 shadow-sm sm:max-w-full lg:col-span-2 xl:col-span-1" : "min-w-0 rounded-lg border border-slate-200 bg-white p-5 shadow-sm"}>
-      <div className="flex items-center gap-3">
-        <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-rose-200 bg-rose-50 text-rose-700">
-          <HeartHandshake className="h-5 w-5" />
-        </span>
-        <div>
-          <h2 className="font-semibold text-slate-950">Результат совместимости</h2>
-          <p className="text-sm text-slate-500">{result.modeLabel}</p>
+    <div className="min-w-0 space-y-4">
+      <div className={publicMode ? "rounded-lg border border-amber-200/20 bg-gradient-to-br from-fuchsia-300/12 via-rose-300/12 to-amber-200/12 p-4 text-white" : "rounded-lg border border-violet-100 bg-violet-50 p-4 text-slate-950"}>
+        <p className="text-sm font-semibold opacity-80">{result.modeLabel}</p>
+        <p className="mt-2 break-words text-lg font-semibold [overflow-wrap:anywhere]">{result.title}</p>
+        <div className="mt-4 flex items-end justify-between gap-3">
+          <div>
+            <p className={publicMode ? "text-5xl font-semibold text-amber-100" : "text-5xl font-semibold text-violet-700"}>{result.scores.total}%</p>
+            <p className={publicMode ? "mt-1 text-sm font-semibold text-fuchsia-100" : "mt-1 text-sm font-semibold text-violet-800"}>{levelLabel}</p>
+          </div>
+          <HeartHandshake className={publicMode ? "h-12 w-12 text-rose-200" : "h-12 w-12 text-violet-400"} />
         </div>
       </div>
-      <div className={publicMode ? "mt-5 max-w-[18rem] space-y-3 break-words text-sm leading-6 text-slate-700 [overflow-wrap:anywhere] sm:max-w-full" : "mt-5 space-y-3 break-words text-sm leading-6 text-slate-700 [overflow-wrap:anywhere]"}>
-        <p className="font-semibold text-slate-950">{result.title}</p>
-        <div className="grid grid-cols-2 gap-2 text-xs sm:grid-cols-3">
-          <ScorePill label="Итог" value={result.scores.total} />
-          <ScorePill label="Притяжение" value={result.scores.attraction} />
-          <ScorePill label="Общение" value={result.scores.communication} />
-          <ScorePill label="Любовь" value={result.scores.love} />
-          <ScorePill label="Быт" value={result.scores.household} />
-        </div>
-        <p><b>Формат:</b> {result.modeLabel}. {result.dataUseLabel}</p>
-        <p><b>Притяжение:</b> {result.attractionText}</p>
-        <p><b>Общение:</b> {result.communicationText}</p>
-        <p><b>В любви:</b> {result.loveText}</p>
-        <p><b>Быт и ритм:</b> {result.householdText}</p>
-        <p><b>Слабое место:</b> {result.weakSpotText}</p>
-        <p><b>Совет паре:</b> {result.adviceText}</p>
-        <p><b>Итог:</b> {result.conclusionText}</p>
-        {result.validationMessages.map((message) => (
-          <p key={message} className="rounded-lg border border-rose-200 bg-rose-50 p-3 text-rose-800">{message}</p>
-        ))}
-        {result.note ? <p className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-amber-800">{result.note}</p> : null}
+
+      <div className="space-y-3">
+        <ScoreBar publicMode={publicMode} label="🔥 Притяжение" value={result.scores.attraction} text={result.attractionText} />
+        <ScoreBar publicMode={publicMode} label="💬 Общение" value={result.scores.communication} text={result.communicationText} />
+        <ScoreBar publicMode={publicMode} label="❤️ В любви" value={result.scores.love} text={result.loveText} />
+        <ScoreBar publicMode={publicMode} label="🏠 Быт и ритм" value={result.scores.household} text={result.householdText} />
+      </div>
+
+      <div className="space-y-3">
+        <ResultTextCard publicMode={publicMode} title="⚠️ Слабое место" text={result.weakSpotText} />
+        <ResultTextCard publicMode={publicMode} title="⭐ Совет паре" text={result.adviceText} />
+        <ResultTextCard publicMode={publicMode} title="🎯 Итог" text={result.conclusionText} />
+      </div>
+
+      {result.validationMessages.map((message) => (
+        <p key={message} className="rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm font-semibold text-rose-800">{message}</p>
+      ))}
+      {result.note ? <p className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">{result.note}</p> : null}
+
+      <div className="grid grid-cols-2 gap-3 pt-1">
+        <button type="button" onClick={onEdit} className={secondaryButtonClass(publicMode)}>
+          <ArrowLeft className="h-4 w-4" />
+          Изменить данные
+        </button>
+        <button type="button" onClick={onReset} className={primaryButtonClass(publicMode)}>
+          <RotateCcw className="h-4 w-4" />
+          Новый расчёт
+        </button>
       </div>
     </div>
   );
 }
 
-function ScorePill({ label, value }: { label: string; value: number }) {
+function ScoreBar({ publicMode, label, value, text }: { publicMode: boolean; label: string; value: number; text: string }) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
-      <span className="block text-slate-500">{label}</span>
-      <span className="text-base font-semibold text-slate-950">{value}%</span>
+    <div className={publicMode ? "rounded-lg border border-white/12 bg-white/8 p-3 text-slate-100" : "rounded-lg border border-slate-200 bg-white p-3 text-slate-700"}>
+      <div className="flex items-center justify-between gap-3">
+        <span className="text-sm font-semibold">{label}</span>
+        <span className={publicMode ? "text-sm font-semibold text-amber-100" : "text-sm font-semibold text-violet-700"}>{value}%</span>
+      </div>
+      <div className={publicMode ? "mt-2 h-2 rounded-full bg-white/12" : "mt-2 h-2 rounded-full bg-slate-100"}>
+        <div
+          className={publicMode ? "h-2 rounded-full bg-gradient-to-r from-fuchsia-300 via-rose-300 to-amber-200" : "h-2 rounded-full bg-violet-500"}
+          style={{ width: `${value}%` }}
+        />
+      </div>
+      <p className={publicMode ? "mt-2 text-sm leading-5 text-slate-300" : "mt-2 text-sm leading-5 text-slate-600"}>{text}</p>
     </div>
   );
 }
 
-function Field({ label, children }: { label: string; children: ReactNode }) {
+function ResultTextCard({ publicMode, title, text }: { publicMode: boolean; title: string; text: string }) {
+  return (
+    <div className={publicMode ? "rounded-lg border border-white/12 bg-white/8 p-3 text-slate-100" : "rounded-lg border border-slate-200 bg-white p-3 text-slate-700"}>
+      <p className={publicMode ? "text-sm font-semibold text-amber-100" : "text-sm font-semibold text-violet-800"}>{title}</p>
+      <p className={publicMode ? "mt-2 text-sm leading-5 text-slate-300" : "mt-2 text-sm leading-5 text-slate-600"}>{text}</p>
+    </div>
+  );
+}
+
+function Field({ label, publicMode, children }: { label: string; publicMode?: boolean; children: ReactNode }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-sm font-medium text-slate-700">{label}</span>
+      <span className={publicMode ? "mb-1 block text-sm font-medium text-slate-200" : "mb-1 block text-sm font-medium text-slate-700"}>{label}</span>
       {children}
     </label>
   );
@@ -646,15 +811,21 @@ function clampScore(value: number) {
   return Math.max(45, Math.min(98, value));
 }
 
+function compatibilityLevelLabel(score: number) {
+  if (score >= 84) return "Высокая совместимость";
+  if (score >= 70) return "Хорошая совместимость";
+  return "Бережная совместимость";
+}
+
 function pickLine(items: string[], seed: number, offset: number) {
   return items[variance(seed, offset, items.length)];
 }
 
 function buildConclusion(score: number, mode: Mode) {
   const grade = score >= 84 ? "сильный потенциал" : score >= 70 ? "хороший потенциал при внимании к диалогу" : "бережный потенциал, которому нужен спокойный темп";
-  if (mode === "fast") return `${grade}; быстрый режим показывает общий вектор пары.`;
-  if (mode === "personal") return `${grade}; персональные даты делают расчёт чувствительнее к ритму каждого человека.`;
-  return `${grade}; точный режим остаётся rule-based MVP и помогает аккуратнее сравнить вводные.`;
+  if (mode === "fast") return `${grade}; совместимость хорошая, если вы поддерживаете спокойный диалог и уважаете личное пространство.`;
+  if (mode === "personal") return `${grade}; отношениям помогает внимание к ритму друг друга, честные просьбы и регулярные знаки тепла.`;
+  return `${grade}; у пары хороший потенциал, если оба готовы слышать друг друга и не превращать разницу характеров в спор.`;
 }
 
 const attractionLines = [
