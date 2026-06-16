@@ -1,0 +1,137 @@
+{
+  "version": 1,
+  "cities": [
+    {
+      "cityId": "dnipro-ua",
+      "nameRu": "Днепр",
+      "nameEn": "Dnipro",
+      "countryRu": "Украина",
+      "countryCode": "UA",
+      "timezone": "Europe/Kyiv",
+      "latitude": 48.4647,
+      "longitude": 35.0462,
+      "aliases": ["днепр", "dnipro", "dnepr"]
+    },
+    {
+      "cityId": "kyiv-ua",
+      "nameRu": "Киев",
+      "nameEn": "Kyiv",
+      "countryRu": "Украина",
+      "countryCode": "UA",
+      "timezone": "Europe/Kyiv",
+      "latitude": 50.4501,
+      "longitude": 30.5234,
+      "aliases": ["киев", "київ", "kyiv", "kiev"]
+    },
+    {
+      "cityId": "lviv-ua",
+      "nameRu": "Львов",
+      "nameEn": "Lviv",
+      "countryRu": "Украина",
+      "countryCode": "UA",
+      "timezone": "Europe/Kyiv",
+      "latitude": 49.8397,
+      "longitude": 24.0297,
+      "aliases": ["львов", "львів", "lviv", "lvov"]
+    },
+    {
+      "cityId": "odesa-ua",
+      "nameRu": "Одесса",
+      "nameEn": "Odesa",
+      "countryRu": "Украина",
+      "countryCode": "UA",
+      "timezone": "Europe/Kyiv",
+      "latitude": 46.4825,
+      "longitude": 30.7233,
+      "aliases": ["одесса", "одеса", "odesa", "odessa"]
+    },
+    {
+      "cityId": "kharkiv-ua",
+      "nameRu": "Харьков",
+      "nameEn": "Kharkiv",
+      "countryRu": "Украина",
+      "countryCode": "UA",
+      "timezone": "Europe/Kyiv",
+      "latitude": 49.9935,
+      "longitude": 36.2304,
+      "aliases": ["харьков", "харків", "kharkiv", "kharkov"]
+    },
+    {
+      "cityId": "zaporizhzhia-ua",
+      "nameRu": "Запорожье",
+      "nameEn": "Zaporizhzhia",
+      "countryRu": "Украина",
+      "countryCode": "UA",
+      "timezone": "Europe/Kyiv",
+      "latitude": 47.8388,
+      "longitude": 35.1396,
+      "aliases": ["запорожье", "запоріжжя", "zaporizhzhia", "zaporozhye"]
+    },
+    {
+      "cityId": "voronezh-ru",
+      "nameRu": "Воронеж",
+      "nameEn": "Voronezh",
+      "countryRu": "Россия",
+      "countryCode": "RU",
+      "timezone": "Europe/Moscow",
+      "latitude": 51.6608,
+      "longitude": 39.2003,
+      "aliases": ["воронеж", "voronezh"]
+    },
+    {
+      "cityId": "moscow-ru",
+      "nameRu": "Москва",
+      "nameEn": "Moscow",
+      "countryRu": "Россия",
+      "countryCode": "RU",
+      "timezone": "Europe/Moscow",
+      "latitude": 55.7558,
+      "longitude": 37.6173,
+      "aliases": ["москва", "moscow", "moskva"]
+    },
+    {
+      "cityId": "saint-petersburg-ru",
+      "nameRu": "Санкт-Петербург",
+      "nameEn": "Saint Petersburg",
+      "countryRu": "Россия",
+      "countryCode": "RU",
+      "timezone": "Europe/Moscow",
+      "latitude": 59.9311,
+      "longitude": 30.3609,
+      "aliases": ["санкт-петербург", "петербург", "saint petersburg", "st petersburg", "spb"]
+    },
+    {
+      "cityId": "warsaw-pl",
+      "nameRu": "Варшава",
+      "nameEn": "Warsaw",
+      "countryRu": "Польша",
+      "countryCode": "PL",
+      "timezone": "Europe/Warsaw",
+      "latitude": 52.2297,
+      "longitude": 21.0122,
+      "aliases": ["варшава", "warsaw", "warszawa"]
+    },
+    {
+      "cityId": "london-gb",
+      "nameRu": "Лондон",
+      "nameEn": "London",
+      "countryRu": "Великобритания",
+      "countryCode": "GB",
+      "timezone": "Europe/London",
+      "latitude": 51.5072,
+      "longitude": -0.1276,
+      "aliases": ["лондон", "london"]
+    },
+    {
+      "cityId": "new-york-us",
+      "nameRu": "Нью-Йорк",
+      "nameEn": "New York",
+      "countryRu": "США",
+      "countryCode": "US",
+      "timezone": "America/New_York",
+      "latitude": 40.7128,
+      "longitude": -74.006,
+      "aliases": ["нью-йорк", "нью йорк", "new york", "nyc"]
+    }
+  ]
+}
