@@ -9,10 +9,12 @@ import {
   getLuckyDaysStartDate,
   getWeekRangeForDate,
 } from "@/lib/zodiac-date";
+import { trackZodiacMiniAppEvent } from "@/lib/zodiac-mini-app-analytics-client";
+import { zodiacAnalyticsScoreTier, zodiacAnalyticsStartappType, type ZodiacAnalyticsPayload } from "@/lib/zodiac-mini-app-analytics-shared";
 import { ArrowLeft, ArrowRight, CalendarDays, Crown, Gift, HeartHandshake, Lock, MapPin, RotateCcw, ShieldCheck, Sparkles, Star } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 type Mode = "fast" | "personal" | "precise";
 type RelationshipMode = "love" | "friendship" | "work" | "family" | "passion" | "reconciliation";
@@ -101,6 +103,19 @@ const hubTabs: Array<{ id: HubTab; label: string; shortLabel: string; icon: type
   { id: "more", label: "Ещё", shortLabel: "Ещё", icon: Crown },
 ];
 
+const tabAnalytics: Record<Exclude<HubTab, "more">, { event: "section_open_today" | "section_open_week" | "section_open_compatibility" | "section_open_lucky_days"; section: string }> = {
+  today: { event: "section_open_today", section: "today" },
+  week: { event: "section_open_week", section: "week" },
+  compatibility: { event: "section_open_compatibility", section: "compatibility" },
+  lucky: { event: "section_open_lucky_days", section: "lucky_days" },
+};
+
+const modeAnalyticsEvents: Record<Mode, "compatibility_mode_fast" | "compatibility_mode_personal" | "compatibility_mode_precise"> = {
+  fast: "compatibility_mode_fast",
+  personal: "compatibility_mode_personal",
+  precise: "compatibility_mode_precise",
+};
+
 const unknownBirthTimeNote = "Расчёт выполнен без точного времени рождения. Некоторые детали могут быть приблизительными.";
 const exactBirthDataNote = "Расчёт выполнен с учётом времени и города рождения.";
 const citySelectionWarning = "Выберите город из списка, чтобы расчёт был точнее.";
@@ -124,10 +139,24 @@ export function ZodiacCompatibilityMiniApp({
   const [step, setStep] = useState<WizardStep>(1);
   const [self, setSelf] = useState<PersonState>(() => createInitialPerson("", "unspecified", false, ""));
   const [partner, setPartner] = useState<PersonState>(() => createInitialPerson("", "unspecified", false, ""));
+  const appOpenTrackedRef = useRef(false);
+  const lastTabTrackedRef = useRef("");
+  const lastMoreTrackedRef = useRef("");
 
   const result = useMemo(() => buildCompatibilityResult(mode, relationshipMode, self, partner), [mode, partner, relationshipMode, self]);
   const selectedSign = selectedSignSlug ? findSign(selectedSignSlug) : null;
   const stepTitle = step === 1 ? "Вы" : step === 2 ? "Партнёр" : "Результат";
+  const analyticsSource = source ?? (publicMode ? "telegram_mini_app" : "dashboard_preview");
+  const analyticsStartappType = zodiacAnalyticsStartappType(startParam);
+  const analyticsPayload = useCallback(
+    (payload: ZodiacAnalyticsPayload = {}): ZodiacAnalyticsPayload => ({
+      source: analyticsSource,
+      startappType: analyticsStartappType,
+      dateKey: appDateKey ?? undefined,
+      ...payload,
+    }),
+    [analyticsSource, analyticsStartappType, appDateKey],
+  );
 
   useEffect(() => {
     function refreshAppDate() {
@@ -155,15 +184,94 @@ export function ZodiacCompatibilityMiniApp({
     if (warnings.length > 0) console.warn("Zodiac Mini App content validation", warnings);
   }, [appDateKey]);
 
+  useEffect(() => {
+    if (!appDateKey || appOpenTrackedRef.current) return;
+    appOpenTrackedRef.current = true;
+    trackZodiacMiniAppEvent("app_open", analyticsPayload({ sign: hintSignSlug ?? undefined }));
+  }, [analyticsPayload, appDateKey, hintSignSlug]);
+
+  useEffect(() => {
+    if (!appDateKey || !selectedSign || activeTab === "more") return;
+    const tab = tabAnalytics[activeTab];
+    const trackKey = `${appDateKey}:${selectedSign.slug}:${activeTab}`;
+    if (lastTabTrackedRef.current === trackKey) return;
+    lastTabTrackedRef.current = trackKey;
+    trackZodiacMiniAppEvent(tab.event, analyticsPayload({ section: tab.section, sign: selectedSign.slug, mode }));
+  }, [activeTab, analyticsPayload, appDateKey, mode, selectedSign]);
+
+  useEffect(() => {
+    if (!appDateKey || !selectedSign || activeTab !== "more") return;
+    const scoreTier = zodiacAnalyticsScoreTier(result.scores.total);
+    const trackKey = `${appDateKey}:${self.sign}:${partner.sign}:${relationshipMode}:${scoreTier}`;
+    if (lastMoreTrackedRef.current === trackKey) return;
+    lastMoreTrackedRef.current = trackKey;
+
+    trackZodiacMiniAppEvent("section_open_natal_chart", analyticsPayload({ section: "natal_chart", sign: self.sign || selectedSign.slug }));
+    trackZodiacMiniAppEvent("natal_chart_started", analyticsPayload({ section: "natal_chart", sign: self.sign || selectedSign.slug }));
+    if (buildNatalChart(self)) trackZodiacMiniAppEvent("natal_chart_completed", analyticsPayload({ section: "natal_chart", sign: self.sign }));
+
+    if (self.sign && partner.sign) {
+      const pairPayload = analyticsPayload({
+        firstSign: self.sign,
+        secondSign: partner.sign,
+        scoreTier,
+        mode,
+        relationshipMode,
+      });
+      trackZodiacMiniAppEvent("section_open_couple_horoscope", { ...pairPayload, section: "couple_horoscope" });
+      trackZodiacMiniAppEvent("couple_horoscope_viewed", { ...pairPayload, section: "couple_horoscope" });
+      trackZodiacMiniAppEvent("section_open_relationship_map", { ...pairPayload, section: "relationship_map" });
+      trackZodiacMiniAppEvent("relationship_map_viewed", { ...pairPayload, section: "relationship_map" });
+    }
+
+    trackZodiacMiniAppEvent("section_open_vip", analyticsPayload({ section: "vip", sign: selectedSign.slug }));
+    trackZodiacMiniAppEvent("section_open_giveaways", analyticsPayload({ section: "giveaways", sign: selectedSign.slug }));
+  }, [activeTab, analyticsPayload, appDateKey, mode, partner.sign, relationshipMode, result.scores.total, selectedSign, self]);
+
   function chooseSign(slug: string) {
     setSelectedSignSlug(slug);
     setActiveTab("today");
     setSelf((current) => ({ ...current, sign: !current.sign || current.sign === selectedSignSlug ? slug : current.sign }));
+    trackZodiacMiniAppEvent("sign_selected", analyticsPayload({ sign: slug }));
   }
 
   function clearSelectedSign() {
     setSelectedSignSlug("");
     setActiveTab("today");
+  }
+
+  function changeMode(nextMode: Mode) {
+    setMode(nextMode);
+    trackZodiacMiniAppEvent(modeAnalyticsEvents[nextMode], analyticsPayload({ mode: nextMode, sign: selectedSignSlug || undefined, section: "compatibility" }));
+  }
+
+  function calculateCompatibility() {
+    if (isReadyToCalculate(mode, self, partner)) {
+      const scoreTier = zodiacAnalyticsScoreTier(result.scores.total);
+      const payload = analyticsPayload({
+        mode,
+        relationshipMode,
+        firstSign: self.sign,
+        secondSign: partner.sign,
+        scoreTier,
+        section: "compatibility",
+      });
+      trackZodiacMiniAppEvent("compatibility_calculated", payload);
+      if (result.nameResonance) trackZodiacMiniAppEvent("name_resonance_shown", payload);
+    }
+    setStep(3);
+  }
+
+  function trackLuckyDayClick(_dateKey: string) {
+    trackZodiacMiniAppEvent("lucky_day_clicked", analyticsPayload({ sign: selectedSignSlug || undefined, section: "lucky_days" }));
+  }
+
+  function trackPreviewClick(kind: "vip" | "giveaway") {
+    trackZodiacMiniAppEvent(kind === "vip" ? "vip_clicked" : "giveaway_clicked", analyticsPayload({ section: kind === "vip" ? "vip" : "giveaways", sign: selectedSignSlug || undefined }));
+  }
+
+  function trackMessageHelperUse() {
+    trackZodiacMiniAppEvent("message_helper_used", analyticsPayload({ section: "message_helper", firstSign: self.sign, secondSign: partner.sign, mode, scoreTier: zodiacAnalyticsScoreTier(result.scores.total) }));
   }
 
   function resetFlow() {
@@ -254,15 +362,25 @@ export function ZodiacCompatibilityMiniApp({
                 appDateKey ? <WeekSection publicMode={publicMode} sign={selectedSign} dateKey={appDateKey} /> : <DateLoadingSection publicMode={publicMode} title="Неделя" />
               ) : null}
               {activeTab === "lucky" ? (
-                appDateKey ? <LuckyDaysSection publicMode={publicMode} sign={selectedSign} dateKey={appDateKey} /> : <DateLoadingSection publicMode={publicMode} title="Удачные дни" />
+                appDateKey ? <LuckyDaysSection publicMode={publicMode} sign={selectedSign} dateKey={appDateKey} onLuckyDayClick={trackLuckyDayClick} /> : <DateLoadingSection publicMode={publicMode} title="Удачные дни" />
               ) : null}
               {activeTab === "more" ? (
-                <MoreSection publicMode={publicMode} appDateKey={appDateKey} self={self} partner={partner} result={result} relationshipMode={relationshipMode} />
+                <MoreSection
+                  publicMode={publicMode}
+                  appDateKey={appDateKey}
+                  self={self}
+                  partner={partner}
+                  result={result}
+                  relationshipMode={relationshipMode}
+                  onVipClick={() => trackPreviewClick("vip")}
+                  onGiveawayClick={() => trackPreviewClick("giveaway")}
+                  onMessageHelperUsed={trackMessageHelperUse}
+                />
               ) : null}
               {activeTab === "compatibility" ? (
                 <div className="space-y-4">
                   <StepProgress publicMode={publicMode} step={step} />
-                  <ModeSelector publicMode={publicMode} mode={mode} onChange={setMode} />
+                  <ModeSelector publicMode={publicMode} mode={mode} onChange={changeMode} />
                   <RelationshipModeSelector publicMode={publicMode} mode={relationshipMode} onChange={setRelationshipMode} />
                   <div className="min-w-0 flex-1 transition-all duration-300">
                     {step === 1 ? (
@@ -285,7 +403,7 @@ export function ZodiacCompatibilityMiniApp({
                             <ArrowLeft className="h-4 w-4" />
                             Назад
                           </button>
-                          <button type="button" onClick={() => setStep(3)} className={primaryButtonClass(publicMode)}>
+                          <button type="button" onClick={calculateCompatibility} className={primaryButtonClass(publicMode)}>
                             Рассчитать
                             <ArrowRight className="h-4 w-4" />
                           </button>
@@ -433,7 +551,17 @@ function WeekSection({ publicMode, sign, dateKey }: { publicMode: boolean; sign:
   );
 }
 
-function LuckyDaysSection({ publicMode, sign, dateKey }: { publicMode: boolean; sign: ZodiacSign; dateKey: string }) {
+function LuckyDaysSection({
+  publicMode,
+  sign,
+  dateKey,
+  onLuckyDayClick,
+}: {
+  publicMode: boolean;
+  sign: ZodiacSign;
+  dateKey: string;
+  onLuckyDayClick: (dateKey: string) => void;
+}) {
   const startDateKey = getLuckyDaysStartDate(dateKey);
   const days = buildLuckyDays(sign, startDateKey, 7);
   const dayEnergy = buildDayEnergy(dateKey, sign.slug);
@@ -453,7 +581,7 @@ function LuckyDaysSection({ publicMode, sign, dateKey }: { publicMode: boolean; 
 
       <div className="mt-4 grid max-h-[520px] gap-3 overflow-y-auto pr-1">
         {days.map((day) => (
-          <div key={day.iso} className="rounded-lg border border-white/12 bg-white/8 p-3">
+          <button key={day.iso} type="button" onClick={() => onLuckyDayClick(day.iso)} className="rounded-lg border border-white/12 bg-white/8 p-3 text-left transition hover:border-amber-200/40 hover:bg-white/12">
             <div className="flex items-start justify-between gap-3">
               <div>
                 <p className="text-sm font-semibold text-white">{day.date}</p>
@@ -462,7 +590,7 @@ function LuckyDaysSection({ publicMode, sign, dateKey }: { publicMode: boolean; 
               <span className="rounded-full border border-amber-200/25 bg-amber-200/10 px-3 py-1 text-xs font-semibold text-amber-50">{day.status}</span>
             </div>
             <p className="mt-3 text-sm leading-5 text-slate-300">Лучше всего: {day.area}</p>
-          </div>
+          </button>
         ))}
       </div>
     </section>
@@ -498,6 +626,9 @@ function MoreSection({
   partner,
   result,
   relationshipMode,
+  onVipClick,
+  onGiveawayClick,
+  onMessageHelperUsed,
 }: {
   publicMode: boolean;
   appDateKey: string | null;
@@ -505,6 +636,9 @@ function MoreSection({
   partner: PersonState;
   result: CompatibilityResult;
   relationshipMode: RelationshipMode;
+  onVipClick: () => void;
+  onGiveawayClick: () => void;
+  onMessageHelperUsed: () => void;
 }) {
   const [messageTone, setMessageTone] = useState<MessageTone>("soft");
   const dateKey = appDateKey ?? getCurrentZodiacDateKey(DEFAULT_ZODIAC_TIME_ZONE);
@@ -526,7 +660,7 @@ function MoreSection({
         <RelationshipMapCard publicMode={publicMode} result={result} pairReady={pairReady} />
         <CoupleCalendarCard publicMode={publicMode} days={coupleCalendar} pairReady={pairReady} />
         <ReconciliationDayCard publicMode={publicMode} reconciliation={reconciliation} />
-        <PartnerMessageCard publicMode={publicMode} message={message} tone={messageTone} onToneChange={setMessageTone} pairReady={pairReady} />
+        <PartnerMessageCard publicMode={publicMode} message={message} tone={messageTone} onToneChange={setMessageTone} onUsed={onMessageHelperUsed} pairReady={pairReady} />
         <NatalChartCard publicMode={publicMode} chart={natalChart} />
         <LockedPreviewCard
           publicMode={publicMode}
@@ -541,6 +675,7 @@ function MoreSection({
             "подсказки для сообщений партнёру",
             "прогноз на месяц без обещаний точности",
           ]}
+          onPreviewClick={onVipClick}
         />
         <LockedPreviewCard
           publicMode={publicMode}
@@ -554,6 +689,7 @@ function MoreSection({
             "участие через Mini App",
             "активности по каналам без сбора участников сейчас",
           ]}
+          onPreviewClick={onGiveawayClick}
         />
       </div>
     </section>
@@ -636,12 +772,14 @@ function PartnerMessageCard({
   message,
   tone,
   onToneChange,
+  onUsed,
   pairReady,
 }: {
   publicMode: boolean;
   message: string | null;
   tone: MessageTone;
   onToneChange: (tone: MessageTone) => void;
+  onUsed: () => void;
   pairReady: boolean;
 }) {
   if (!pairReady) return <EmptyFeatureCard publicMode={publicMode} title="💌 Что написать партнёру" text="Заполните данные пары, чтобы получить уважительную подсказку для сообщения." />;
@@ -653,7 +791,10 @@ function PartnerMessageCard({
           <button
             key={item.id}
             type="button"
-            onClick={() => onToneChange(item.id)}
+            onClick={() => {
+              onToneChange(item.id);
+              onUsed();
+            }}
             className={
               publicMode
                 ? `rounded-lg border px-3 py-2 text-left text-xs font-semibold transition ${tone === item.id ? "border-rose-200/70 bg-rose-200/15 text-rose-50" : "border-white/10 bg-white/6 text-slate-300"}`
@@ -730,7 +871,21 @@ function InfoRow({ publicMode, label, text }: { publicMode: boolean; label: stri
   );
 }
 
-function LockedPreviewCard({ publicMode, icon, title, text, items }: { publicMode: boolean; icon: ReactNode; title: string; text: string; items: string[] }) {
+function LockedPreviewCard({
+  publicMode,
+  icon,
+  title,
+  text,
+  items,
+  onPreviewClick,
+}: {
+  publicMode: boolean;
+  icon: ReactNode;
+  title: string;
+  text: string;
+  items: string[];
+  onPreviewClick?: () => void;
+}) {
   return (
     <div className={publicMode ? "rounded-lg border border-amber-200/20 bg-amber-200/10 p-4" : "rounded-lg border border-amber-200/20 bg-amber-200/10 p-4"}>
       <div className="flex items-start justify-between gap-3">
@@ -746,6 +901,11 @@ function LockedPreviewCard({ publicMode, icon, title, text, items }: { publicMod
         <Lock className="h-4 w-4 text-amber-100" />
         только превью
       </div>
+      {onPreviewClick ? (
+        <button type="button" onClick={onPreviewClick} className="mt-3 inline-flex min-h-10 w-full items-center justify-center rounded-lg border border-amber-200/30 bg-amber-200/12 px-3 text-sm font-semibold text-amber-50 transition hover:bg-amber-200/18">
+          Открыть превью
+        </button>
+      ) : null}
       <ul className="mt-4 space-y-2 text-sm leading-5 text-slate-300">
         {items.map((item) => (
           <li key={item} className="flex gap-2">
