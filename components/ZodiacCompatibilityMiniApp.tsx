@@ -171,7 +171,6 @@ const menuFeatureTabs: Array<{ id: MoreFeatureId; label: string; shortLabel: str
   { id: "lunarCalendar", label: "🌙 Лунный календарь", shortLabel: "Луна", group: "forecasts", requirement: "sign" },
   { id: "dailyTalisman", label: "🧿 Талисман дня", shortLabel: "Талисман", group: "forecasts", requirement: "sign" },
   { id: "angelNumbers", label: "👼 Ангельские числа", shortLabel: "11:11", group: "forecasts" },
-  { id: "dreamDictionary", label: "🌙 Сонник", shortLabel: "Сонник", group: "forecasts" },
   { id: "giftBySign", label: "🎁 Подарок по знаку", shortLabel: "Подарок", group: "forecasts", requirement: "sign" },
   { id: "vip", label: "👑 VIP бесплатно", shortLabel: "VIP", group: "vip" },
   { id: "mentalMap", label: "🧠 Карта пары+", shortLabel: "Карта+", group: "vip", requirement: "pair" },
