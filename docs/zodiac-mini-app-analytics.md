@@ -79,6 +79,14 @@ The adapter is implemented in `lib/zodiac-mini-app-analytics-store.ts` and uses 
 
 Use an Upstash Redis database, Vercel KV Redis database, or compatible Redis REST endpoint. Configure the REST URL and REST token from that provider; do not use a raw TCP Redis URL.
 
+Creation checklist:
+
+1. Create a Redis database in Upstash, Vercel KV, or another provider with Redis REST support.
+2. Open the database connection settings.
+3. Copy the REST URL, not the TCP Redis URL.
+4. Copy the REST token/password value for server-side use.
+5. Store those two values only as deployment environment variables. Do not commit them to the repository.
+
 Expected value shapes:
 
 ```text
@@ -174,6 +182,6 @@ After setting Redis REST env vars in Vercel and redeploying:
 1. Open `/dashboard/networks/zodiac/analytics`.
 2. Confirm Analytics mode is `active`.
 3. Confirm Storage configured is `YES`.
-4. Open `/compatibility` and perform a non-sensitive interaction.
+4. Trigger a safe event by opening `/compatibility` and selecting a sign, or by posting an allowed non-sensitive event to `/api/zodiac/analytics/event`.
 5. Refresh the dashboard and confirm aggregate counters move.
 6. Confirm no names, birth dates, birth times, birth cities, message text, bot token, or raw sensitive Telegram `initData` appear in logs, responses, or stored analytics.
