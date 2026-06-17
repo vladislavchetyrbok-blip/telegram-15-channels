@@ -23,6 +23,7 @@ type Gender = "male" | "female" | "unspecified";
 type Variant = "dashboard" | "public";
 type WizardStep = 1 | 2 | 3;
 type HubTab = "today" | "week" | "compatibility" | "lucky" | "more";
+type MoreFeatureId = "coupleHoroscope" | "mentalMap" | "coupleCalendar" | "reconciliation" | "messageHelper" | "natalChart" | "vip" | "giveaways";
 
 interface City {
   cityId: string;
@@ -116,6 +117,17 @@ const hubTabs: Array<{ id: HubTab; label: string; shortLabel: string; icon: type
   { id: "compatibility", label: "Совместимость", shortLabel: "Совмест.", icon: HeartHandshake },
   { id: "lucky", label: "Удачные дни", shortLabel: "Дни", icon: CalendarDays },
   { id: "more", label: "Ещё", shortLabel: "Ещё", icon: Crown },
+];
+
+const moreFeatureTabs: Array<{ id: MoreFeatureId; label: string; shortLabel: string; requirement?: "pair" | "natal" }> = [
+  { id: "coupleHoroscope", label: "💑 Гороскоп пары", shortLabel: "Пара", requirement: "pair" },
+  { id: "mentalMap", label: "🧠 Ментальная карта", shortLabel: "Карта", requirement: "pair" },
+  { id: "coupleCalendar", label: "📅 Календарь пары", shortLabel: "30 дней", requirement: "pair" },
+  { id: "reconciliation", label: "🕊 Примирение", shortLabel: "Мир", requirement: "pair" },
+  { id: "messageHelper", label: "💌 Сообщение", shortLabel: "Текст", requirement: "pair" },
+  { id: "natalChart", label: "🌌 Натальная карта", shortLabel: "Натал", requirement: "natal" },
+  { id: "vip", label: "👑 VIP бесплатно", shortLabel: "VIP" },
+  { id: "giveaways", label: "🎁 Розыгрыши", shortLabel: "Подарки" },
 ];
 
 const tabAnalytics: Record<Exclude<HubTab, "more">, { event: "section_open_today" | "section_open_week" | "section_open_compatibility" | "section_open_lucky_days"; section: string }> = {
@@ -538,6 +550,7 @@ function HubNavigation({ publicMode, activeTab, onChange }: { publicMode: boolea
                 : "flex min-h-[58px] min-w-0 flex-col items-center justify-center gap-1 rounded-lg border border-white/10 bg-white/7 px-1 text-center text-[11px] font-semibold leading-tight text-slate-300 transition hover:border-fuchsia-200/35 hover:bg-white/10"
             }
             aria-label={tab.label}
+            aria-current={active ? "page" : undefined}
           >
             <Icon className="h-4 w-4 shrink-0" />
             <span className="block max-w-full break-words">{tab.shortLabel}</span>
@@ -689,6 +702,7 @@ function MoreSection({
   onRelationshipMapCategoryOpen: (category: string) => void;
 }) {
   const [messageTone, setMessageTone] = useState<MessageTone>("soft");
+  const [activeMoreFeature, setActiveMoreFeature] = useState<MoreFeatureId>("coupleHoroscope");
   const dateKey = appDateKey ?? getCurrentZodiacDateKey(DEFAULT_ZODIAC_TIME_ZONE);
   const pairReady = Boolean(self.sign && partner.sign);
   const vipFreeAccess = zodiacVipConfig.vipFreeAccessEnabled && !zodiacVipConfig.vipPaymentsEnabled && !zodiacVipConfig.telegramStarsEnabled;
@@ -700,53 +714,105 @@ function MoreSection({
   const selfSign = self.sign ? findSign(self.sign) : null;
   const vipLuckyDays = selfSign ? buildLuckyDays(selfSign, getLuckyDaysStartDate(dateKey), 14) : [];
   const monthForecast = selfSign ? buildPersonalMonthForecast(selfSign, dateKey, result) : null;
+  const selectedMoreFeature = moreFeatureTabs.find((item) => item.id === activeMoreFeature) ?? moreFeatureTabs[0];
 
   return (
     <section className={panelClass(publicMode)}>
-      <SectionHeader publicMode={publicMode} icon={<Crown className="h-5 w-5" />} title="Ещё" subtitle="Карта пары, календарь, примирение и натальная подсказка" />
-      <p className={publicMode ? "mt-3 rounded-lg border border-emerald-200/20 bg-emerald-200/10 p-3 text-sm leading-5 text-emerald-50" : "mt-3 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm leading-5 text-emerald-900"}>
-        Имена, даты, время и город используются только на этом экране и не сохраняются.
-      </p>
-      <div className="mt-5 space-y-4">
-        <CoupleHoroscopeCard publicMode={publicMode} horoscope={coupleHoroscope} />
-        <RelationshipMapCard publicMode={publicMode} result={result} pairReady={pairReady} onCategoryOpen={onRelationshipMapCategoryOpen} />
-        <CoupleCalendarCard publicMode={publicMode} days={coupleCalendar} pairReady={pairReady} />
-        <ReconciliationDayCard publicMode={publicMode} reconciliation={reconciliation} />
-        <PartnerMessageCard publicMode={publicMode} message={message} tone={messageTone} onToneChange={setMessageTone} onUsed={onMessageHelperUsed} pairReady={pairReady} />
-        <NatalChartCard publicMode={publicMode} chart={natalChart} />
-        <VipFreeAccessCard
-          publicMode={publicMode}
-          config={zodiacVipConfig}
-          untilLabel={formatVipFreeAccessDate(zodiacVipConfig.vipFreeAccessUntil)}
-          pairReady={pairReady}
-          natalReady={Boolean(natalChart)}
-          calendarDays={coupleCalendar}
-          luckyDays={vipLuckyDays}
-          monthForecast={monthForecast}
-          onFeatureOpen={onVipFeatureOpen}
-          onFutureSubscriptionClick={onVipFutureSubscriptionClick}
-        />
-        <LockedPreviewCard
-          publicMode={publicMode}
-          icon={<Gift className="h-5 w-5" />}
-          title="🎁 Розыгрыши запланированы"
-          text="Это только превью: механики участия появятся позже."
-          items={[
-            "задания для подписчиков",
-            "бонусы за активность",
-            "призы и сезонные события",
-            "участие через Mini App",
-            "активности по каналам без сбора участников сейчас",
-          ]}
-          onPreviewClick={onGiveawayClick}
-        />
+      <SectionHeader publicMode={publicMode} icon={<Crown className="h-5 w-5" />} title="Ещё" subtitle="Выберите один инструмент и двигайтесь без длинной прокрутки" />
+      <div className={publicMode ? "mt-3 flex gap-2 rounded-lg border border-emerald-200/20 bg-emerald-200/10 p-3 text-sm leading-5 text-emerald-50" : "mt-3 flex gap-2 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm leading-5 text-emerald-900"}>
+        <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0" />
+        <p>без сохранения данных: имена, даты, время и город остаются только на этом экране.</p>
+      </div>
+      <MoreFeatureNavigation activeFeature={activeMoreFeature} pairReady={pairReady} natalReady={Boolean(natalChart)} onChange={setActiveMoreFeature} />
+      <div className={publicMode ? "mt-3 rounded-lg border border-white/10 bg-white/7 p-3" : "mt-3 rounded-lg border border-slate-200 bg-white p-3"}>
+        <p className={publicMode ? "text-xs font-semibold text-amber-100" : "text-xs font-semibold text-violet-800"}>Открыт раздел</p>
+        <p className={publicMode ? "mt-1 text-base font-semibold text-white" : "mt-1 text-base font-semibold text-slate-950"}>{selectedMoreFeature.label}</p>
+      </div>
+      <div className="mt-4">
+        {activeMoreFeature === "coupleHoroscope" ? <CoupleHoroscopeCard publicMode={publicMode} horoscope={coupleHoroscope} /> : null}
+        {activeMoreFeature === "mentalMap" ? <RelationshipMapCard publicMode={publicMode} result={result} pairReady={pairReady} onCategoryOpen={onRelationshipMapCategoryOpen} /> : null}
+        {activeMoreFeature === "coupleCalendar" ? <CoupleCalendarCard publicMode={publicMode} days={coupleCalendar} pairReady={pairReady} /> : null}
+        {activeMoreFeature === "reconciliation" ? <ReconciliationDayCard publicMode={publicMode} reconciliation={reconciliation} /> : null}
+        {activeMoreFeature === "messageHelper" ? <PartnerMessageCard publicMode={publicMode} message={message} tone={messageTone} onToneChange={setMessageTone} onUsed={onMessageHelperUsed} pairReady={pairReady} /> : null}
+        {activeMoreFeature === "natalChart" ? <NatalChartCard publicMode={publicMode} chart={natalChart} /> : null}
+        {activeMoreFeature === "vip" ? (
+          <VipFreeAccessCard
+            publicMode={publicMode}
+            config={zodiacVipConfig}
+            untilLabel={formatVipFreeAccessDate(zodiacVipConfig.vipFreeAccessUntil)}
+            pairReady={pairReady}
+            natalReady={Boolean(natalChart)}
+            calendarDays={coupleCalendar}
+            luckyDays={vipLuckyDays}
+            monthForecast={monthForecast}
+            onFeatureOpen={onVipFeatureOpen}
+            onFutureSubscriptionClick={onVipFutureSubscriptionClick}
+          />
+        ) : null}
+        {activeMoreFeature === "giveaways" ? (
+          <LockedPreviewCard
+            publicMode={publicMode}
+            icon={<Gift className="h-5 w-5" />}
+            title="🎁 Розыгрыши запланированы"
+            text="Это отдельный раздел: механики участия появятся позже."
+            items={[
+              "задания для подписчиков",
+              "бонусы за активность",
+              "призы и сезонные события",
+              "участие через Mini App",
+              "активности по каналам без сбора участников сейчас",
+            ]}
+            onPreviewClick={onGiveawayClick}
+          />
+        ) : null}
       </div>
     </section>
   );
 }
 
+function MoreFeatureNavigation({
+  activeFeature,
+  pairReady,
+  natalReady,
+  onChange,
+}: {
+  activeFeature: MoreFeatureId;
+  pairReady: boolean;
+  natalReady: boolean;
+  onChange: (feature: MoreFeatureId) => void;
+}) {
+  return (
+    <div className="-mx-1 mt-4 overflow-x-auto pb-1">
+      <div className="flex min-w-max gap-2 px-1">
+        {moreFeatureTabs.map((feature) => {
+          const active = activeFeature === feature.id;
+          const blockedHint = feature.requirement === "pair" && !pairReady ? "нужна пара" : feature.requirement === "natal" && !natalReady ? "нужна дата" : null;
+          return (
+            <button
+              key={feature.id}
+              type="button"
+              onClick={() => onChange(feature.id)}
+              className={
+                active
+                  ? "min-h-[58px] min-w-[92px] rounded-lg border border-amber-200/60 bg-amber-200/15 px-3 py-2 text-left shadow-sm"
+                  : "min-h-[58px] min-w-[92px] rounded-lg border border-white/10 bg-white/7 px-3 py-2 text-left transition hover:border-fuchsia-200/35 hover:bg-white/10"
+              }
+              aria-current={active ? "page" : undefined}
+            >
+              <span className={active ? "block text-sm font-semibold leading-4 text-white" : "block text-sm font-semibold leading-4 text-slate-200"}>{feature.shortLabel}</span>
+              <span className={blockedHint ? "mt-1 block text-[11px] font-semibold leading-4 text-amber-100" : active ? "mt-1 block text-[11px] leading-4 text-amber-100" : "mt-1 block text-[11px] leading-4 text-slate-400"}>
+                {blockedHint ?? (active ? "открыто" : "перейти")}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function CoupleHoroscopeCard({ publicMode, horoscope }: { publicMode: boolean; horoscope: CoupleHoroscope | null }) {
-  if (!horoscope) return <EmptyFeatureCard publicMode={publicMode} title="💑 Гороскоп пары" text="Заполните данные пары, чтобы увидеть гороскоп пары." />;
+  if (!horoscope) return <EmptyFeatureCard publicMode={publicMode} title="💑 Гороскоп пары" text="Выберите два знака в разделе «Совместимость», чтобы открыть гороскоп пары." />;
 
   return (
     <FeatureCard publicMode={publicMode} title="💑 Гороскоп пары на сегодня" subtitle={horoscope.summary}>
@@ -774,11 +840,11 @@ function RelationshipMapCard({
   pairReady: boolean;
   onCategoryOpen: (category: string) => void;
 }) {
-  if (!pairReady) return <EmptyFeatureCard publicMode={publicMode} title="🧠 Ментальная карта пары" text="Выберите два знака, чтобы увидеть карту отношений." />;
+  if (!pairReady) return <EmptyFeatureCard publicMode={publicMode} title="🧠 Ментальная карта пары" text="Выберите два знака в разделе «Совместимость», чтобы увидеть карту отношений." />;
 
   return (
     <FeatureCard publicMode={publicMode} title="🧠 Ментальная карта пары" subtitle="Как вы думаете, спорите, миритесь и поддерживаете друг друга">
-      <div className="space-y-4">
+      <div className="space-y-3">
         <div className={publicMode ? "rounded-lg border border-amber-200/20 bg-amber-200/10 p-3" : "rounded-lg border border-amber-200 bg-amber-50 p-3"}>
           <p className={publicMode ? "text-xs font-semibold uppercase tracking-wide text-amber-100" : "text-xs font-semibold uppercase tracking-wide text-amber-800"}>Карта отношений</p>
           <p className={publicMode ? "mt-2 text-sm leading-5 text-slate-200" : "mt-2 text-sm leading-5 text-slate-700"}>{result.mapSummary}</p>
@@ -845,8 +911,8 @@ function MentalMapCategoryTile({ publicMode, item, onOpen }: { publicMode: boole
       onClick={() => onOpen(item.id)}
       className={
         publicMode
-          ? "min-h-[156px] w-full rounded-lg border border-white/12 bg-white/8 p-3 text-left text-slate-100 transition hover:border-fuchsia-200/30 hover:bg-white/12 focus:outline-none focus:ring-2 focus:ring-fuchsia-200/50"
-          : "min-h-[156px] w-full rounded-lg border border-slate-200 bg-white p-3 text-left text-slate-700 transition hover:border-violet-200 hover:bg-violet-50/50 focus:outline-none focus:ring-2 focus:ring-violet-200"
+          ? "min-h-[136px] w-full rounded-lg border border-white/12 bg-white/8 p-3 text-left text-slate-100 transition hover:border-fuchsia-200/30 hover:bg-white/12 focus:outline-none focus:ring-2 focus:ring-fuchsia-200/50"
+          : "min-h-[136px] w-full rounded-lg border border-slate-200 bg-white p-3 text-left text-slate-700 transition hover:border-violet-200 hover:bg-violet-50/50 focus:outline-none focus:ring-2 focus:ring-violet-200"
       }
       aria-label={`${item.label}: ${item.value}%`}
     >
@@ -897,7 +963,7 @@ function MentalMapAdviceCard({ publicMode, title, items }: { publicMode: boolean
 }
 
 function CoupleCalendarCard({ publicMode, days, pairReady }: { publicMode: boolean; days: CoupleCalendarDay[]; pairReady: boolean }) {
-  if (!pairReady) return <EmptyFeatureCard publicMode={publicMode} title="📅 Календарь пары" text="Заполните данные пары, чтобы увидеть календарь пары." />;
+  if (!pairReady) return <EmptyFeatureCard publicMode={publicMode} title="📅 Календарь пары" text="Выберите два знака, чтобы открыть календарь пары без лишних данных." />;
 
   return (
     <FeatureCard publicMode={publicMode} title="📅 Календарь пары" subtitle={`Ближайшие ${days.length} дней`}>
@@ -920,7 +986,7 @@ function CoupleCalendarCard({ publicMode, days, pairReady }: { publicMode: boole
 }
 
 function ReconciliationDayCard({ publicMode, reconciliation }: { publicMode: boolean; reconciliation: ReconciliationDay | null }) {
-  if (!reconciliation) return <EmptyFeatureCard publicMode={publicMode} title="🕊 День для примирения" text="Заполните данные пары, чтобы увидеть мягкую подсказку для примирения." />;
+  if (!reconciliation) return <EmptyFeatureCard publicMode={publicMode} title="🕊 День для примирения" text="Выберите два знака, чтобы увидеть мягкую подсказку для примирения." />;
 
   return (
     <FeatureCard publicMode={publicMode} title="🕊 День для примирения" subtitle={reconciliation.status}>
@@ -948,7 +1014,7 @@ function PartnerMessageCard({
   onUsed: () => void;
   pairReady: boolean;
 }) {
-  if (!pairReady) return <EmptyFeatureCard publicMode={publicMode} title="💌 Что написать партнёру" text="Заполните данные пары, чтобы получить уважительную подсказку для сообщения." />;
+  if (!pairReady) return <EmptyFeatureCard publicMode={publicMode} title="💌 Что написать партнёру" text="Выберите два знака, чтобы получить уважительную подсказку для сообщения." />;
 
   return (
     <FeatureCard publicMode={publicMode} title="💌 Что написать партнёру" subtitle="Текст можно скопировать вручную и изменить под себя">
@@ -979,7 +1045,7 @@ function PartnerMessageCard({
 }
 
 function NatalChartCard({ publicMode, chart }: { publicMode: boolean; chart: NatalChart | null }) {
-  if (!chart) return <EmptyFeatureCard publicMode={publicMode} title="🌌 Натальная карта" text="Заполните дату рождения в блоке «Вы», чтобы увидеть натальную подсказку." />;
+  if (!chart) return <EmptyFeatureCard publicMode={publicMode} title="🌌 Натальная карта" text="Дата рождения необязательна, но если добавить её в блоке «Вы», появится натальная подсказка." />;
 
   return (
     <FeatureCard publicMode={publicMode} title="🌌 Натальная карта" subtitle={`${chart.sign.emoji} ${chart.sign.name} · ${chart.element} · ${chart.modality}`}>
@@ -1040,7 +1106,7 @@ function VipFreeAccessCard({
     { id: "extended_mental_map", title: "Ментальная карта+", text: "расширенная карта пары уже открыта в этом разделе" },
     { id: "couple_calendar_30_days", title: "30 дней пары", text: pairReady ? `${calendarDays.length} дней открыты без оплаты` : "выберите два знака, чтобы открыть календарь" },
     { id: "extended_lucky_days", title: "Удачные дни+", text: luckyDays.length > 0 ? `14 дней для ${luckyDays[0].date}` : "выберите знак, чтобы увидеть расширение" },
-    { id: "natal_mvp", title: "Натальная подсказка", text: natalReady ? "MVP-интерпретация открыта" : "добавьте дату рождения, если хотите персонализацию" },
+    { id: "natal_interpretation", title: "Натальная подсказка", text: natalReady ? "Расширенная подсказка открыта" : "добавьте дату рождения, если хотите персонализацию" },
     { id: "message_variants", title: "Варианты сообщений", text: `${messageTones.length} тонов для мягкого текста партнёру` },
     { id: "best_days", title: "Дни для свидания/примирения", text: pairReady ? "лучшие дни подсвечены в календаре пары" : "появятся после выбора двух знаков" },
     { id: "month_forecast", title: "Прогноз на месяц", text: monthForecast ? monthForecast.title : "появится после выбора знака" },
@@ -1053,7 +1119,7 @@ function VipFreeAccessCard({
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className={publicMode ? "text-lg font-semibold text-white" : "text-lg font-semibold text-slate-950"}>👑 VIP открыт бесплатно</p>
-          <p className={publicMode ? "mt-1 text-sm font-semibold text-amber-100" : "mt-1 text-sm font-semibold text-amber-800"}>Ранний доступ на 3 месяца</p>
+          <p className={publicMode ? "mt-1 text-sm font-semibold text-amber-100" : "mt-1 text-sm font-semibold text-amber-800"}>Ранний доступ до {untilLabel}</p>
           <p className={publicMode ? "mt-2 text-sm leading-6 text-slate-300" : "mt-2 text-sm leading-6 text-slate-700"}>
             Мы открыли VIP-функции бесплатно на период запуска. Пользуйтесь расширенными прогнозами, а позже здесь появится подписка.
           </p>
@@ -1064,9 +1130,9 @@ function VipFreeAccessCard({
       </div>
 
       <div className="mt-4 grid gap-2 sm:grid-cols-3">
-        <VipStatusPill publicMode={publicMode} label="Бесплатно до" value={untilLabel} />
-        <VipStatusPill publicMode={publicMode} label="Оплата" value={config.vipPaymentsEnabled ? "включена" : "не требуется"} />
-        <VipStatusPill publicMode={publicMode} label="Telegram Stars" value={config.telegramStarsEnabled ? "включены" : "позже"} />
+        <VipStatusPill publicMode={publicMode} label="Сейчас" value="бесплатно" />
+        <VipStatusPill publicMode={publicMode} label="Доступ до" value={untilLabel} />
+        <VipStatusPill publicMode={publicMode} label="Платежи" value={config.vipPaymentsEnabled || config.telegramStarsEnabled ? "позже" : "не нужны"} />
       </div>
 
       <div className="mt-4 grid gap-2 sm:grid-cols-2">
@@ -1090,7 +1156,7 @@ function VipFreeAccessCard({
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         <VipPreviewPanel publicMode={publicMode} title="📅 30-дневный календарь" text={pairReady ? formatVipDayPreview(bestCoupleDays, "Открыт расширенный календарь пары.") : "Выберите два знака, чтобы увидеть 30 дней пары без оплаты."} />
         <VipPreviewPanel publicMode={publicMode} title="🍀 Удачные дни+" text={bestLuckyDays.length > 0 ? formatVipLuckyPreview(bestLuckyDays) : "Выберите знак, чтобы увидеть расширенные удачные дни."} />
-        <VipPreviewPanel publicMode={publicMode} title="🌌 Натальная интерпретация MVP" text={natalReady ? "Открыты архетип, сильные стороны, зона роста, любовь и общение." : "Дата рождения необязательна, но открывает натальную подсказку."} />
+        <VipPreviewPanel publicMode={publicMode} title="🌌 Натальная подсказка" text={natalReady ? "Открыты архетип, сильные стороны, зона роста, любовь и общение." : "Дата рождения необязательна, но открывает натальную подсказку."} />
         <VipPreviewPanel publicMode={publicMode} title="💌 Сообщения партнёру" text={`Открыты варианты: ${messageTones.map((tone) => tone.label).join(", ")}.`} />
         <VipPreviewPanel publicMode={publicMode} title="🕊 Лучшие дни" text={pairReady ? "Дни для примирения и свидания доступны в календаре пары." : "После выбора пары появятся дни для мягкого разговора и свидания."} />
         <VipPreviewPanel publicMode={publicMode} title="🗓 Прогноз на месяц" text={monthForecast ? `${monthForecast.love} ${monthForecast.rhythm} ${monthForecast.advice}` : "Выберите знак, чтобы открыть персональный месячный прогноз."} />
@@ -1104,8 +1170,8 @@ function VipFreeAccessCard({
       </div>
 
       <div className="mt-3">
-        <button type="button" onClick={onFutureSubscriptionClick} className={secondaryButtonClass(publicMode)}>
-          Позже здесь появится подписка
+        <button type="button" onClick={onFutureSubscriptionClick} className={publicMode ? "inline-flex min-h-10 w-full items-center justify-center rounded-lg border border-white/12 bg-white/7 px-3 text-sm font-semibold text-slate-100 transition hover:bg-white/12" : "inline-flex min-h-10 w-full items-center justify-center rounded-lg border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"}>
+          Что будет позже
         </button>
       </div>
       <p className={publicMode ? "mt-3 text-xs leading-5 text-slate-400" : "mt-3 text-xs leading-5 text-slate-600"}>

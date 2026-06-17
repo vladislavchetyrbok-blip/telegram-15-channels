@@ -40,7 +40,7 @@ The temporary free VIP surface can include:
 - Extended relationship map / mental map.
 - 30-day couple calendar preview.
 - Extended lucky days.
-- Extended natal chart interpretation MVP.
+- Extended natal chart interpretation.
 - Message helper variants.
 - Best days for reconciliation or dates.
 - Personal month forecast preview.
