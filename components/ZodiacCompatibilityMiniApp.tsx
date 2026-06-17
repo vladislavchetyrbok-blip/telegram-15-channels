@@ -14,6 +14,17 @@ import { trackZodiacMiniAppEvent } from "@/lib/zodiac-mini-app-analytics-client"
 import { zodiacAnalyticsScoreTier, zodiacAnalyticsStartappType, type ZodiacAnalyticsEventName, type ZodiacAnalyticsPayload } from "@/lib/zodiac-mini-app-analytics-shared";
 import { ArrowLeft, ArrowRight, CalendarDays, Crown, Gift, HeartHandshake, Lock, MapPin, RotateCcw, ShieldCheck, Sparkles, Star } from "lucide-react";
 import Link from "next/link";
+import {
+  AuraColorFeature,
+  BirthMatrixFeature,
+  DailyCardFeature,
+  IntuitiveSignFeature,
+  KarmicLessonsFeature,
+  LunarRitualFeature,
+  RuneDayFeature,
+  TalismansFeature,
+  TarotCardFeature,
+} from "./ZodiacMysticSections";
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
@@ -1184,6 +1195,42 @@ function MoreSection({
       lastPersonalToolTrackedRef.current = trackKey;
       onPersonalToolEvent("gift_by_sign_opened", payload);
     }
+    if (activeMoreFeature === "dailyCard") {
+      lastPersonalToolTrackedRef.current = trackKey;
+      onPersonalToolEvent("daily_card_opened", payload);
+    }
+    if (activeMoreFeature === "tarotCard") {
+      lastPersonalToolTrackedRef.current = trackKey;
+      onPersonalToolEvent("tarot_card_opened", payload);
+    }
+    if (activeMoreFeature === "runeDay") {
+      lastPersonalToolTrackedRef.current = trackKey;
+      onPersonalToolEvent("rune_day_opened", payload);
+    }
+    if (activeMoreFeature === "intuitiveSign") {
+      lastPersonalToolTrackedRef.current = trackKey;
+      onPersonalToolEvent("intuitive_sign_opened", payload);
+    }
+    if (activeMoreFeature === "talismans") {
+      lastPersonalToolTrackedRef.current = trackKey;
+      onPersonalToolEvent("talismans_opened", payload);
+    }
+    if (activeMoreFeature === "auraColor") {
+      lastPersonalToolTrackedRef.current = trackKey;
+      onPersonalToolEvent("aura_color_opened", payload);
+    }
+    if (activeMoreFeature === "lunarRitual") {
+      lastPersonalToolTrackedRef.current = trackKey;
+      onPersonalToolEvent("lunar_ritual_opened", payload);
+    }
+    if (activeMoreFeature === "karmicLessons") {
+      lastPersonalToolTrackedRef.current = trackKey;
+      onPersonalToolEvent("karmic_lessons_opened", payload);
+    }
+    if (activeMoreFeature === "birthMatrix") {
+      lastPersonalToolTrackedRef.current = trackKey;
+      onPersonalToolEvent("birth_matrix_opened", payload);
+    }
     if (activeMoreFeature === "nameCompatibility") {
       lastPersonalToolTrackedRef.current = trackKey;
       onPersonalToolEvent("name_compatibility_opened", payload);
@@ -1295,32 +1342,20 @@ function MoreSection({
         {activeMoreFeature === "dreamDictionary" ? <DreamDictionaryCard publicMode={publicMode} symbolKey={dreamSymbolKey} dreamText={dreamText} profile={dreamProfile} onSymbolChange={setDreamSymbolKey} onDreamTextChange={setDreamText} /> : null}
         {activeMoreFeature === "giftBySign" ? <GiftBySignCard publicMode={publicMode} recipientType={giftRecipientType} profile={giftProfile} onRecipientTypeChange={setGiftRecipientType} /> : null}
         {activeMoreFeature === "archetype" ? <PersonalityArchetypeCard publicMode={publicMode} person={natalPerson} profile={archetype} onPersonChange={setNatalPerson} vipFreeAccess={vipFreeAccess} /> : null}
-        {activeMoreFeature === "dailyCard" ? (
-          <LockedPreviewCard publicMode={publicMode} icon={<Sparkles className="h-5 w-5" />} title="🔮 Карта дня" text="Скоро появится" items={["Символическая карта дня скоро появится здесь."]} onPreviewClick={() => {}} />
-        ) : null}
-        {activeMoreFeature === "tarotCard" ? (
-          <LockedPreviewCard publicMode={publicMode} icon={<Star className="h-5 w-5" />} title="🃏 Таро дня" text="Скоро появится" items={["Расклад Таро дня скоро появится здесь."]} onPreviewClick={() => {}} />
-        ) : null}
-        {activeMoreFeature === "runeDay" ? (
-          <LockedPreviewCard publicMode={publicMode} icon={<Sparkles className="h-5 w-5" />} title="ᚱ Руны дня" text="Скоро появится" items={["Символика рун дня скоро появится здесь."]} onPreviewClick={() => {}} />
-        ) : null}
-        {activeMoreFeature === "intuitiveSign" ? (
-          <LockedPreviewCard publicMode={publicMode} icon={<HeartHandshake className="h-5 w-5" />} title="👁 Интуитивный знак дня" text="Скоро появится" items={["Подсказки вашей интуиции скоро появятся здесь."]} onPreviewClick={() => {}} />
-        ) : null}
-        {activeMoreFeature === "talismans" ? (
-          <LockedPreviewCard publicMode={publicMode} icon={<Crown className="h-5 w-5" />} title="🧿 Талисманы и символы силы" text="Скоро появится" items={["Усиленные талисманы скоро появятся здесь."]} onPreviewClick={() => {}} />
-        ) : null}
-        {activeMoreFeature === "auraColor" ? (
-          <LockedPreviewCard publicMode={publicMode} icon={<Sparkles className="h-5 w-5" />} title="🌈 Цвет / аура дня" text="Скоро появится" items={["Цвет и аура дня скоро появятся здесь."]} onPreviewClick={() => {}} />
-        ) : null}
-        {activeMoreFeature === "lunarRitual" ? (
-          <LockedPreviewCard publicMode={publicMode} icon={<CalendarDays className="h-5 w-5" />} title="🌙 Лунный ритуал" text="Скоро появится" items={["Лунный ритуал скоро появится здесь."]} onPreviewClick={() => {}} />
-        ) : null}
-        {activeMoreFeature === "karmicLessons" ? (
-          <LockedPreviewCard publicMode={publicMode} icon={<Star className="h-5 w-5" />} title="🧬 Кармические уроки" text="Скоро появится" items={["Осмысление кармических уроков скоро появится здесь."]} onPreviewClick={() => {}} />
-        ) : null}
+        {activeMoreFeature === "dailyCard" ? <DailyCardFeature publicMode={publicMode} dateKey={dateKey} sign={(selfSign?.slug as any) || "aries"} /> : null}
+        {activeMoreFeature === "tarotCard" ? <TarotCardFeature publicMode={publicMode} dateKey={dateKey} sign={(selfSign?.slug as any) || "aries"} /> : null}
+        {activeMoreFeature === "runeDay" ? <RuneDayFeature publicMode={publicMode} dateKey={dateKey} sign={(selfSign?.slug as any) || "aries"} /> : null}
+        {activeMoreFeature === "intuitiveSign" ? <IntuitiveSignFeature publicMode={publicMode} dateKey={dateKey} sign={(selfSign?.slug as any) || "aries"} /> : null}
+        {activeMoreFeature === "talismans" ? <TalismansFeature publicMode={publicMode} sign={(selfSign?.slug as any) || ""} /> : null}
+        {activeMoreFeature === "auraColor" ? <AuraColorFeature publicMode={publicMode} dateKey={dateKey} sign={(selfSign?.slug as any) || "aries"} /> : null}
+        {activeMoreFeature === "lunarRitual" ? <LunarRitualFeature publicMode={publicMode} dateKey={dateKey} /> : null}
+        {activeMoreFeature === "karmicLessons" ? <KarmicLessonsFeature publicMode={publicMode} sign={(selfSign?.slug as any) || ""} birthDateKey={self.birthDate} /> : null}
         {activeMoreFeature === "birthMatrix" ? (
-          <LockedPreviewCard publicMode={publicMode} icon={<CalendarDays className="h-5 w-5" />} title="🔢 Матрица даты рождения" text="Скоро появится" items={["Матрица даты рождения скоро появится здесь."]} onPreviewClick={() => {}} />
+          <BirthMatrixFeature
+            publicMode={publicMode}
+            birthDateString={natalPerson.birthDate}
+            onBirthDateChange={(val) => setNatalPerson((s) => ({ ...s, birthDate: val }))}
+          />
         ) : null}
         {activeMoreFeature === "vip" ? (
           <VipFreeAccessCard
@@ -2481,7 +2516,7 @@ function NameProfileCard({
   );
 }
 
-function EmptyFeatureCard({ publicMode, title, text }: { publicMode: boolean; title: string; text: string }) {
+export function EmptyFeatureCard({ publicMode, title, text }: { publicMode: boolean; title: string; text: string }) {
   return (
     <FeatureCard publicMode={publicMode} title={title} subtitle={text}>
       <p className={publicMode ? "text-sm leading-5 text-slate-400" : "text-sm leading-5 text-slate-500"}>Данные остаются только на экране и не сохраняются.</p>
@@ -2489,7 +2524,7 @@ function EmptyFeatureCard({ publicMode, title, text }: { publicMode: boolean; ti
   );
 }
 
-function FeatureCard({ publicMode, title, subtitle, children }: { publicMode: boolean; title: string; subtitle: string; children: ReactNode }) {
+export function FeatureCard({ publicMode, title, subtitle, children }: { publicMode: boolean; title: string; subtitle: string; children: ReactNode }) {
   return (
     <div className={publicMode ? "rounded-lg border border-white/12 bg-white/8 p-4 text-slate-100" : "rounded-lg border border-slate-200 bg-white p-4 text-slate-700"}>
       <p className={publicMode ? "text-base font-semibold text-white" : "text-base font-semibold text-slate-950"}>{title}</p>

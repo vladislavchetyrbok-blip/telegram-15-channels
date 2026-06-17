@@ -55,6 +55,15 @@ export const ZODIAC_ANALYTICS_EVENTS = [
   "archetype_result_viewed",
   "hub_category_opened",
   "mystic_category_opened",
+  "daily_card_opened",
+  "tarot_card_opened",
+  "rune_day_opened",
+  "intuitive_sign_opened",
+  "talismans_opened",
+  "aura_color_opened",
+  "lunar_ritual_opened",
+  "karmic_lessons_opened",
+  "birth_matrix_opened",
 ] as const;
 
 export type ZodiacAnalyticsEventName = (typeof ZODIAC_ANALYTICS_EVENTS)[number];
