@@ -46,7 +46,7 @@ async function main() {
     const zodiacStonesEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "zodiac_stones_sign_viewed", { section: "zodiac_stones", hasBirthDate: false, hasName: false, freeVipActive: true });
     const nameProfileEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "name_profile_result_viewed", { section: "name_profile", hasBirthDate: false, hasName: true, freeVipActive: true });
     const numerologyEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "numerology_result_viewed", { section: "numerology", hasBirthDate: true, hasName: true, freeVipActive: true });
-    const angelEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "angel_number_viewed", { section: "angel_numbers", selectedPresetKey: "angel_1111", freeVipActive: true });
+    const angelEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "angel_number_viewed", { section: "angel_numbers", featureKey: "angelNumbers", selectedPresetKey: "angel_1111", patternType: "amplified", hasName: true, hasBirthDate: true, freeVipActive: true });
     const lunarEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "lunar_calendar_opened", { section: "lunar_calendar", freeVipActive: true });
     const talismanEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "daily_talisman_opened", { section: "daily_talisman", freeVipActive: true });
     const dreamEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "dream_symbol_viewed", { section: "dream_dictionary", selectedPresetKey: "water", freeVipActive: true });
@@ -54,6 +54,7 @@ async function main() {
     const nameCompatibilityEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "name_compatibility_result_viewed", { section: "name_compatibility", hasName: true, hasSecondName: true, freeVipActive: true });
     const archetypeEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "archetype_result_viewed", { section: "archetype", hasBirthDate: true, hasName: true, freeVipActive: true });
     const hubCategoryEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "hub_category_opened", { section: "hub", category: "forecasts", freeVipActive: true });
+    const giveawayLockedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "giveaway_locked_viewed", { section: "giveaways", featureKey: "giveaways_locked", freeVipActive: true });
     const disallowedEvent = await checkDisallowedEvent(`${baseUrl}/api/zodiac/analytics/event`);
     const afterLedgerStats = await collectLedgerStats();
     const ledgerWrites = countLedgerWrites(beforeLedgerStats, afterLedgerStats);
@@ -82,6 +83,7 @@ async function main() {
       nameCompatibilityEvent,
       archetypeEvent,
       hubCategoryEvent,
+      giveawayLockedEvent,
       disallowedEvent,
       sensitiveFieldsStripped:
         allowedEvent.sensitiveFieldsStripped &&
@@ -98,7 +100,8 @@ async function main() {
         giftEvent.sensitiveFieldsStripped &&
         nameCompatibilityEvent.sensitiveFieldsStripped &&
         archetypeEvent.sensitiveFieldsStripped &&
-        hubCategoryEvent.sensitiveFieldsStripped,
+        hubCategoryEvent.sensitiveFieldsStripped &&
+        giveawayLockedEvent.sensitiveFieldsStripped,
       noSecretsPrinted: true,
       telegramApiCalls,
       ledgerWrites,

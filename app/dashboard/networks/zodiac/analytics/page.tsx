@@ -271,7 +271,7 @@ const trackedAnalyticsItems = [
   "vip_clicked / vip_opened",
   "vip_free_access_viewed / vip_feature_opened",
   "vip_future_subscription_clicked",
-  "giveaway_clicked",
+  "giveaway_clicked / giveaway_locked_viewed",
   "message_helper_used",
   "hub_category_opened",
   "numerology_opened / numerology_result_viewed",
@@ -292,6 +292,7 @@ const privateAnalyticsItems = [
   "message text",
   "dream text",
   "raw angel number input",
+  "raw custom angel number input",
   "bot token",
   "raw sensitive Telegram initData",
 ];

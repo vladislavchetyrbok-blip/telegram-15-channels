@@ -170,7 +170,7 @@ const menuFeatureTabs: Array<{ id: MoreFeatureId; label: string; shortLabel: str
   { id: "luckyDays", label: "📆 Удачные дни", shortLabel: "Дни", group: "forecasts", requirement: "sign" },
   { id: "lunarCalendar", label: "🌙 Лунный календарь", shortLabel: "Луна", group: "forecasts", requirement: "sign" },
   { id: "dailyTalisman", label: "🧿 Талисман дня", shortLabel: "Талисман", group: "forecasts", requirement: "sign" },
-  { id: "angelNumbers", label: "11:11 Ангельские числа", shortLabel: "11:11", group: "forecasts" },
+  { id: "angelNumbers", label: "👼 Ангельские числа", shortLabel: "11:11", group: "forecasts" },
   { id: "dreamDictionary", label: "🌙 Сонник", shortLabel: "Сонник", group: "forecasts" },
   { id: "giftBySign", label: "🎁 Подарок по знаку", shortLabel: "Подарок", group: "forecasts", requirement: "sign" },
   { id: "vip", label: "👑 VIP бесплатно", shortLabel: "VIP", group: "vip" },
@@ -178,7 +178,7 @@ const menuFeatureTabs: Array<{ id: MoreFeatureId; label: string; shortLabel: str
   { id: "coupleCalendar", label: "📅 30 дней пары", shortLabel: "30 дней", group: "vip", requirement: "pair" },
   { id: "natalChart", label: "🌌 Натал+", shortLabel: "Натал+", group: "vip", requirement: "natal" },
   { id: "nameProfile", label: "🔤 Имя+", shortLabel: "Имя+", group: "vip" },
-  { id: "giveaways", label: "🎁 Розыгрыши", shortLabel: "Подарки", group: "vip" },
+  { id: "giveaways", label: "🔒 Розыгрыши", shortLabel: "Скоро", group: "vip" },
 ];
 
 const menuFeatureGroups: Array<{ id: MenuFeatureGroup; title: string; subtitle: string }> = [
@@ -377,11 +377,13 @@ export function ZodiacCompatibilityMiniApp({
   }
 
   function trackGiveawayPreviewClick() {
-    trackZodiacMiniAppEvent("giveaway_clicked", analyticsPayload({ section: "giveaways", sign: selectedSignSlug || undefined }));
+    const payload = analyticsPayload({ section: "giveaways", featureKey: "giveaways_locked", sign: selectedSignSlug || undefined });
+    trackZodiacMiniAppEvent("giveaway_locked_viewed", payload);
+    trackZodiacMiniAppEvent("giveaway_clicked", payload);
   }
 
   function trackVipFeatureOpen(feature: string) {
-    trackZodiacMiniAppEvent("vip_feature_opened", analyticsPayload({ section: "vip", category: feature, sign: selectedSignSlug || undefined }));
+    trackZodiacMiniAppEvent("vip_feature_opened", analyticsPayload({ section: "vip", category: feature, featureKey: feature, sign: selectedSignSlug || undefined }));
   }
 
   function trackVipFutureSubscriptionClick() {
@@ -777,6 +779,7 @@ function HomeQuickSection({
     { title: "VIP бесплатно", text: "до 17.09.2026", action: onOpenVip, icon: <Crown className="h-4 w-4" /> },
     { title: "Ментальная карта", text: "карта отношений", action: onOpenLove, icon: <Sparkles className="h-4 w-4" /> },
     { title: "Натальная карта", text: "профиль рождения", action: onOpenProfile, icon: <CalendarDays className="h-4 w-4" /> },
+    { title: "Ангельские числа", text: "10:10, 12:12, 02:22", action: onOpenForecasts, icon: <Star className="h-4 w-4" /> },
   ];
 
   return (
@@ -990,6 +993,7 @@ function MoreSection({
 }) {
   const [messageTone, setMessageTone] = useState<MessageTone>("soft");
   const [angelNumberInput, setAngelNumberInput] = useState("11:11");
+  const [angelNumberPresetKey, setAngelNumberPresetKey] = useState("11:11");
   const [dreamSymbolKey, setDreamSymbolKey] = useState("water");
   const [dreamText, setDreamText] = useState("");
   const [giftRecipientType, setGiftRecipientType] = useState<GiftRecipientType>("partner");
@@ -1017,14 +1021,15 @@ function MoreSection({
   const zodiacStoneProfile = selfSign ? buildZodiacStoneProfile(selfSign) : null;
   const nameProfile = buildNameProfile(natalPerson, selfSign, dateKey, vipFreeAccess);
   const numerology = buildNumerologyProfile(natalPerson, dateKey);
-  const angelNumber = buildAngelNumberProfile(angelNumberInput, dateKey);
   const lunarCalendar = selfSign ? buildLunarCalendarProfile(selfSign, dateKey) : null;
   const dailyTalisman = selfSign ? buildDailyTalismanProfile(selfSign, dateKey) : null;
+  const hasNatalName = Boolean(normalizeName(natalPerson.name));
+  const angelNumber = buildAngelNumberProfile(angelNumberInput, dateKey, selfSign, hasNatalName, dailyTalisman, numerology, vipFreeAccess);
+  const angelNumberSafePresetKey = angelNumberPresetKey && normalizeAngelTimeInput(angelNumberPresetKey).label === angelNumber.label ? angelNumber.safeKey : undefined;
   const dreamProfile = buildDreamProfile(dreamSymbolKey, dreamText, selfSign, dateKey);
   const giftProfile = selfSign ? buildGiftBySignProfile(selfSign, giftRecipientType, dateKey) : null;
   const nameCompatibility = buildNameCompatibilityProfile(nameCompatibilitySelf, nameCompatibilityPartner, selfSign, dateKey);
   const archetype = buildPersonalityArchetypeProfile(natalPerson, selfSign, chineseHoroscope, numerology, dailyTalisman, dateKey);
-  const vipLuckyDays = selfSign ? buildLuckyDays(selfSign, getLuckyDaysStartDate(dateKey), 14) : [];
   const monthForecast = selfSign ? buildPersonalMonthForecast(selfSign, dateKey, result) : null;
   const categoryFeatures = menuFeatureTabs.filter((item) => item.group === category);
   const selectedMoreFeature = categoryFeatures.find((item) => item.id === activeMoreFeature) ?? categoryFeatures[0] ?? menuFeatureTabs[0];
@@ -1102,10 +1107,11 @@ function MoreSection({
     const sign = selfSign?.slug || (hasBirthDate ? parsedDate.signSlug : selectedSignSlug);
     const selectedPresetKey =
       activeMoreFeature === "angelNumbers"
-        ? angelNumber.safeKey
+        ? angelNumberSafePresetKey
         : activeMoreFeature === "dreamDictionary"
           ? dreamProfile.safeKey
           : undefined;
+    const patternType = activeMoreFeature === "angelNumbers" ? angelNumber.patternType : undefined;
     const trackKey = [
       activeMoreFeature,
       sign,
@@ -1115,6 +1121,7 @@ function MoreSection({
       hasName ? "name" : "no-name",
       hasSecondName ? "second-name" : "no-second-name",
       selectedPresetKey ?? "no-preset",
+      patternType ?? "no-pattern",
       vipFreeAccess ? "vip-free" : "vip-closed",
     ].join(":");
 
@@ -1123,6 +1130,7 @@ function MoreSection({
     const payload = {
       section: sectionForFeature(activeMoreFeature),
       category,
+      featureKey: activeMoreFeature,
       sign,
       hasBirthDate,
       hasBirthTime,
@@ -1130,6 +1138,7 @@ function MoreSection({
       hasName,
       hasSecondName,
       selectedPresetKey,
+      patternType,
       freeVipActive: vipFreeAccess,
     };
 
@@ -1170,9 +1179,20 @@ function MoreSection({
       onPersonalToolEvent("archetype_opened", payload);
       onPersonalToolEvent("archetype_result_viewed", payload);
     }
+    if (activeMoreFeature === "vip") {
+      lastPersonalToolTrackedRef.current = trackKey;
+      onPersonalToolEvent("vip_opened", payload);
+      onPersonalToolEvent("vip_free_access_viewed", payload);
+    }
+    if (activeMoreFeature === "giveaways") {
+      lastPersonalToolTrackedRef.current = trackKey;
+      onPersonalToolEvent("giveaway_locked_viewed", { ...payload, featureKey: "giveaways_locked" });
+    }
   }, [
     activeMoreFeature,
+    angelNumber.patternType,
     angelNumber.safeKey,
+    angelNumberSafePresetKey,
     category,
     dreamProfile.safeKey,
     nameCompatibility,
@@ -1239,7 +1259,22 @@ function MoreSection({
         {activeMoreFeature === "zodiacStones" ? <ZodiacStonesCard publicMode={publicMode} profile={zodiacStoneProfile} /> : null}
         {activeMoreFeature === "nameProfile" ? <NameProfileCard publicMode={publicMode} person={natalPerson} profile={nameProfile} onPersonChange={setNatalPerson} vipFreeAccess={vipFreeAccess} /> : null}
         {activeMoreFeature === "numerology" ? <NumerologyCard publicMode={publicMode} person={natalPerson} profile={numerology} onPersonChange={setNatalPerson} vipFreeAccess={vipFreeAccess} /> : null}
-        {activeMoreFeature === "angelNumbers" ? <AngelNumbersCard publicMode={publicMode} value={angelNumberInput} profile={angelNumber} onChange={setAngelNumberInput} /> : null}
+        {activeMoreFeature === "angelNumbers" ? (
+          <AngelNumbersCard
+            publicMode={publicMode}
+            value={angelNumberInput}
+            profile={angelNumber}
+            selectedPresetKey={angelNumberSafePresetKey}
+            onChange={(nextValue) => {
+              setAngelNumberInput(formatAngelTimeInputForDisplay(nextValue));
+              setAngelNumberPresetKey("");
+            }}
+            onPresetSelect={(preset) => {
+              setAngelNumberInput(preset);
+              setAngelNumberPresetKey(preset);
+            }}
+          />
+        ) : null}
         {activeMoreFeature === "lunarCalendar" ? <LunarCalendarCard publicMode={publicMode} profile={lunarCalendar} /> : null}
         {activeMoreFeature === "dailyTalisman" ? <DailyTalismanCard publicMode={publicMode} profile={dailyTalisman} /> : null}
         {activeMoreFeature === "dreamDictionary" ? <DreamDictionaryCard publicMode={publicMode} symbolKey={dreamSymbolKey} dreamText={dreamText} profile={dreamProfile} onSymbolChange={setDreamSymbolKey} onDreamTextChange={setDreamText} /> : null}
@@ -1252,8 +1287,18 @@ function MoreSection({
             untilLabel={formatVipFreeAccessDate(zodiacVipConfig.vipFreeAccessUntil)}
             pairReady={pairReady}
             natalReady={Boolean(natalChart)}
+            result={result}
+            natalChart={natalChart}
+            nameProfile={nameProfile}
+            numerology={numerology}
+            angelNumber={angelNumber}
+            dailyTalisman={dailyTalisman}
+            selfSign={selfSign}
+            messageVariants={messageTones.map((tone) => ({
+              label: tone.label,
+              text: pairReady ? buildPartnerMessage(self, partner, dateKey, tone.id, result) : "выберите два знака, чтобы открыть вариант сообщения",
+            }))}
             calendarDays={coupleCalendar}
-            luckyDays={vipLuckyDays}
             monthForecast={monthForecast}
             onFeatureOpen={onVipFeatureOpen}
             onFutureSubscriptionClick={onVipFutureSubscriptionClick}
@@ -1263,14 +1308,12 @@ function MoreSection({
           <LockedPreviewCard
             publicMode={publicMode}
             icon={<Gift className="h-5 w-5" />}
-            title="🎁 Розыгрыши запланированы"
-            text="Это отдельный раздел: механики участия появятся позже."
+            title="🔒 Розыгрыши"
+            text="Скоро появится"
             items={[
-              "задания для подписчиков",
-              "бонусы за активность",
-              "призы и сезонные события",
-              "участие через Mini App",
-              "активности по каналам без сбора участников сейчас",
+              "Розыгрыши появятся позже: задания, бонусы и призы для активных подписчиков.",
+              "Сейчас это только превью без участия, аккаунтов и выбора победителей.",
+              "Проверки подписки, призовая логика и хранение участников не реализованы.",
             ]}
             onPreviewClick={onGiveawayClick}
           />
@@ -1630,30 +1673,83 @@ function NumerologyCard({
   );
 }
 
-function AngelNumbersCard({ publicMode, value, profile, onChange }: { publicMode: boolean; value: string; profile: AngelNumberProfile; onChange: (value: string) => void }) {
-  const presets = ["11:11", "12:12", "15:15", "22:22", "02:22"];
+function AngelNumbersCard({
+  publicMode,
+  value,
+  profile,
+  selectedPresetKey,
+  onChange,
+  onPresetSelect,
+}: {
+  publicMode: boolean;
+  value: string;
+  profile: AngelNumberProfile;
+  selectedPresetKey?: string;
+  onChange: (value: string) => void;
+  onPresetSelect: (value: string) => void;
+}) {
   return (
-    <FeatureCard publicMode={publicMode} title="11:11 Ангельские числа" subtitle="мягкая подсказка по повторяющимся и зеркальным числам">
+    <FeatureCard publicMode={publicMode} title="👼 Ангельские числа" subtitle="Значение зеркальных и повторяющихся комбинаций времени">
       <div className="grid gap-4">
-        <div className="flex flex-wrap gap-2">
-          {presets.map((preset) => (
-            <button key={preset} type="button" onClick={() => onChange(preset)} className={preset === profile.label ? primaryTinyButtonClass(publicMode) : secondaryTinyButtonClass(publicMode)}>
-              {preset}
-            </button>
+        <div className={publicMode ? "rounded-lg border border-amber-200/20 bg-amber-200/10 p-3" : "rounded-lg border border-amber-200 bg-amber-50 p-3"}>
+          <p className={publicMode ? "text-sm font-semibold text-amber-50" : "text-sm font-semibold text-amber-950"}>👑 Расширенное толкование открыто бесплатно до {formatVipFreeAccessDate(zodiacVipConfig.vipFreeAccessUntil)}</p>
+          <p className={publicMode ? "mt-1 text-xs leading-5 text-amber-100" : "mt-1 text-xs leading-5 text-amber-900"}>Без оплаты: любовь, дела, личное действие, талисман и связь с числами доступны в раннем доступе.</p>
+        </div>
+        <div className="grid gap-3">
+          {angelNumberPresetGroups.map((group) => (
+            <div key={group.id} className={publicMode ? "rounded-lg border border-white/10 bg-white/7 p-3" : "rounded-lg border border-slate-200 bg-slate-50 p-3"}>
+              <p className={publicMode ? "text-xs font-semibold uppercase tracking-wide text-slate-300" : "text-xs font-semibold uppercase tracking-wide text-slate-500"}>{group.title}</p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {group.items.map((preset) => {
+                  const safePresetKey = angelSafeKey(preset);
+                  const active = selectedPresetKey === safePresetKey || (!selectedPresetKey && preset === profile.label);
+                  return (
+                    <button key={`${group.id}-${preset}`} type="button" onClick={() => onPresetSelect(preset)} className={active ? primaryTinyButtonClass(publicMode) : secondaryTinyButtonClass(publicMode)}>
+                      {preset}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           ))}
         </div>
-        <Field label="Своё число" publicMode={publicMode}>
-          <input value={value} onChange={(event) => onChange(event.target.value.replace(/[^\d:]/g, "").slice(0, 5))} placeholder="11:11" inputMode="numeric" autoComplete="off" className="h-12 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900" />
-          <p className={publicMode ? "mt-2 text-xs font-semibold text-emerald-100" : "mt-2 text-xs font-semibold text-emerald-800"}>в аналитику уходит только безопасный ключ пресета</p>
+        <Field label="Своя комбинация времени" publicMode={publicMode}>
+          <input value={value} onChange={(event) => onChange(event.target.value)} placeholder="10:10" inputMode="numeric" autoComplete="off" className="h-12 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900" />
+          <p className={publicMode ? "mt-2 text-xs font-semibold text-emerald-100" : "mt-2 text-xs font-semibold text-emerald-800"}>можно ввести 1010, 10-10, 10 10, 10:10, 222 или 1111; своя комбинация и имя не отправляются в аналитику</p>
         </Field>
-        <div className="grid gap-2 sm:grid-cols-2">
-          <InfoRow publicMode={publicMode} label="Значение" text={profile.meaning} />
-          <InfoRow publicMode={publicMode} label="Сигнал дня" text={profile.signal} />
-          <InfoRow publicMode={publicMode} label="Действие" text={profile.action} />
-          <InfoRow publicMode={publicMode} label="Избегать" text={profile.avoid} />
-          <InfoRow publicMode={publicMode} label="Любовь" text={profile.love} />
-          <InfoRow publicMode={publicMode} label="Дела и деньги" text={profile.workMoney} />
-        </div>
+        {!profile.isValid ? (
+          <div className={publicMode ? "rounded-lg border border-rose-200/30 bg-rose-200/10 p-3 text-sm font-semibold text-rose-50" : "rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm font-semibold text-rose-800"}>
+            {profile.prompt}
+          </div>
+        ) : (
+          <div className="grid gap-3">
+            <div className={publicMode ? "rounded-lg border border-white/12 bg-white/8 p-3" : "rounded-lg border border-slate-200 bg-white p-3"}>
+              <p className={publicMode ? "text-xs font-semibold uppercase tracking-wide text-slate-300" : "text-xs font-semibold uppercase tracking-wide text-slate-500"}>{formatAngelPatternLabel(profile.patternType)}</p>
+              <p className={publicMode ? "mt-1 text-3xl font-semibold text-white" : "mt-1 text-3xl font-semibold text-slate-950"}>{profile.label}</p>
+            </div>
+            <div className="grid gap-2 sm:grid-cols-2">
+              <InfoRow publicMode={publicMode} label="🔢 Главное значение" text={profile.meaning} />
+              <InfoRow publicMode={publicMode} label="👁 Что это может подсвечивать" text={profile.highlights} />
+              <InfoRow publicMode={publicMode} label="❤️ В любви" text={profile.love} />
+              <InfoRow publicMode={publicMode} label="💼 В деньгах и делах" text={profile.workMoney} />
+              <InfoRow publicMode={publicMode} label="🌙 Интуитивный сигнал" text={profile.intuition} />
+              <InfoRow publicMode={publicMode} label="✅ Что стоит сделать" text={profile.actions.join(" · ")} />
+              <InfoRow publicMode={publicMode} label="⚠️ Чего избегать" text={profile.avoid.join(" · ")} />
+              <InfoRow publicMode={publicMode} label="🧘 Фраза настройки" text={profile.phrase} />
+              <InfoRow publicMode={publicMode} label="🧭 Совет на ближайшие 24 часа" text={profile.next24Hours} />
+            </div>
+            {profile.vipBlocks.length ? (
+              <div className={publicMode ? "rounded-lg border border-amber-200/20 bg-white/8 p-3" : "rounded-lg border border-amber-200 bg-amber-50 p-3"}>
+                <p className={publicMode ? "text-sm font-semibold text-amber-50" : "text-sm font-semibold text-amber-950"}>VIP-детали раннего доступа</p>
+                <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                  {profile.vipBlocks.map((block) => (
+                    <InfoRow key={block.title} publicMode={publicMode} label={block.title} text={block.text} />
+                  ))}
+                </div>
+              </div>
+            ) : null}
+          </div>
+        )}
       </div>
     </FeatureCard>
   );
@@ -2367,8 +2463,15 @@ function VipFreeAccessCard({
   untilLabel,
   pairReady,
   natalReady,
+  result,
+  natalChart,
+  nameProfile,
+  numerology,
+  angelNumber,
+  dailyTalisman,
+  selfSign,
+  messageVariants,
   calendarDays,
-  luckyDays,
   monthForecast,
   onFeatureOpen,
   onFutureSubscriptionClick,
@@ -2378,27 +2481,31 @@ function VipFreeAccessCard({
   untilLabel: string;
   pairReady: boolean;
   natalReady: boolean;
+  result: CompatibilityResult;
+  natalChart: NatalChart | null;
+  nameProfile: NameProfile | null;
+  numerology: NumerologyProfile;
+  angelNumber: AngelNumberProfile;
+  dailyTalisman: DailyTalismanProfile | null;
+  selfSign: ZodiacSign | null;
+  messageVariants: Array<{ label: string; text: string }>;
   calendarDays: CoupleCalendarDay[];
-  luckyDays: ReturnType<typeof buildLuckyDays>;
   monthForecast: MonthForecast | null;
   onFeatureOpen: (feature: string) => void;
   onFutureSubscriptionClick: () => void;
 }) {
   const features: VipFeature[] = [
-    { id: "extended_mental_map", title: "Ментальная карта+", text: "расширенная карта пары уже открыта в этом разделе" },
-    { id: "couple_calendar_30_days", title: "30 дней пары", text: pairReady ? `${calendarDays.length} дней открыты без оплаты` : "выберите два знака, чтобы открыть календарь" },
-    { id: "extended_lucky_days", title: "Удачные дни+", text: luckyDays.length > 0 ? `14 дней для ${luckyDays[0].date}` : "выберите знак, чтобы увидеть расширение" },
-    { id: "natal_interpretation", title: "Натальная подсказка", text: natalReady ? "Расширенная подсказка открыта" : "добавьте дату рождения, если хотите персонализацию" },
-    { id: "chinese_horoscope", title: "Китайский гороскоп", text: natalReady ? "знак года и стихия открыты без оплаты" : "добавьте дату рождения, чтобы открыть восточный профиль" },
-    { id: "zodiac_stones", title: "Камни знака", text: luckyDays.length > 0 ? "талисманы и символы знака уже доступны" : "выберите знак, чтобы открыть камни" },
-    { id: "name_profile", title: "Именной профиль", text: "расширенный профиль имени открыт бесплатно" },
-    { id: "message_variants", title: "Варианты сообщений", text: `${messageTones.length} тонов для мягкого текста партнёру` },
-    { id: "best_days", title: "Дни для свидания/примирения", text: pairReady ? "лучшие дни подсвечены в календаре пары" : "появятся после выбора двух знаков" },
-    { id: "month_forecast", title: "Прогноз на месяц", text: monthForecast ? monthForecast.title : "появится после выбора знака" },
+    { id: "extended_natal_chart", title: "👑 Расширенная натальная карта", text: natalReady ? "личность, эмоции, любовь, деньги, тени и компас открыты" : "частичный режим: добавьте дату рождения для глубины" },
+    { id: "extended_compatibility", title: "💞 Расширенная совместимость", text: pairReady ? `${result.scores.total}% · ${compatibilityLevelLabel(result.scores.total)}` : "выберите два знака, чтобы открыть разбор пары" },
+    { id: "vip_mental_map", title: "🧠 VIP Ментальная карта пары", text: pairReady ? "динамика мыслей, споров, доверия и примирения открыта" : "появится после выбора пары" },
+    { id: "couple_calendar_30_days", title: "📅 30-дневный календарь пары", text: pairReady ? `${calendarDays.length} дней открыты без оплаты` : "выберите два знака, чтобы открыть календарь" },
+    { id: "month_forecast", title: "🌙 Месячный прогноз", text: monthForecast ? monthForecast.title : "выберите знак, чтобы увидеть месяц" },
+    { id: "message_variants", title: "💌 Расширенный помощник сообщений", text: `${messageVariants.length} вариантов для разных ситуаций` },
+    { id: "extended_name_profile", title: "🔤 Расширенный именной профиль", text: nameProfile ? "сильные стороны, риски, любовь и стиль общения открыты" : "добавьте имя, чтобы открыть профиль" },
+    { id: "extended_numerology", title: "🔢 Расширенная нумерология", text: `число дня ${numerology.dayNumber}${numerology.lifePath ? ` · путь ${numerology.lifePath}` : ""}` },
+    { id: "extended_angel_numbers", title: "👼 Расширенное толкование ангельских чисел", text: angelNumber.isValid ? `${angelNumber.label} · ${formatAngelPatternLabel(angelNumber.patternType)}` : "введите комбинацию времени" },
+    { id: "vip_talismans", title: "🧿 VIP талисманы и символы силы", text: dailyTalisman ? `${dailyTalisman.stone}, ${dailyTalisman.color}` : "выберите знак, чтобы открыть талисман" },
   ];
-  const bestCoupleDays = calendarDays.filter((day) => !day.status.includes("осторожнее")).slice(0, 3);
-  const bestLuckyDays = luckyDays.filter((day) => !day.status.includes("осторожнее")).slice(0, 3);
-
   return (
     <div className={publicMode ? "rounded-lg border border-amber-200/25 bg-amber-200/10 p-4" : "rounded-lg border border-amber-200 bg-amber-50 p-4"}>
       <div className="flex items-start justify-between gap-3">
@@ -2417,7 +2524,7 @@ function VipFreeAccessCard({
       <div className="mt-4 grid gap-2 sm:grid-cols-3">
         <VipStatusPill publicMode={publicMode} label="Сейчас" value="бесплатно" />
         <VipStatusPill publicMode={publicMode} label="Доступ до" value={untilLabel} />
-        <VipStatusPill publicMode={publicMode} label="Платежи" value={config.vipPaymentsEnabled || config.telegramStarsEnabled ? "позже" : "не нужны"} />
+        <VipStatusPill publicMode={publicMode} label="Подписка" value={config.vipPaymentsEnabled || config.telegramStarsEnabled ? "позже" : "не нужна сейчас"} />
       </div>
 
       <div className="mt-4 grid gap-2 sm:grid-cols-2">
@@ -2439,12 +2546,16 @@ function VipFreeAccessCard({
       </div>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        <VipPreviewPanel publicMode={publicMode} title="📅 30-дневный календарь" text={pairReady ? formatVipDayPreview(bestCoupleDays, "Открыт расширенный календарь пары.") : "Выберите два знака, чтобы увидеть 30 дней пары без оплаты."} />
-        <VipPreviewPanel publicMode={publicMode} title="🍀 Удачные дни+" text={bestLuckyDays.length > 0 ? formatVipLuckyPreview(bestLuckyDays) : "Выберите знак, чтобы увидеть расширенные удачные дни."} />
-        <VipPreviewPanel publicMode={publicMode} title="🌌 Натальная подсказка" text={natalReady ? "Открыты архетип, сильные стороны, зона роста, любовь и общение." : "Дата рождения необязательна, но открывает натальную подсказку."} />
-        <VipPreviewPanel publicMode={publicMode} title="💌 Сообщения партнёру" text={`Открыты варианты: ${messageTones.map((tone) => tone.label).join(", ")}.`} />
-        <VipPreviewPanel publicMode={publicMode} title="🕊 Лучшие дни" text={pairReady ? "Дни для примирения и свидания доступны в календаре пары." : "После выбора пары появятся дни для мягкого разговора и свидания."} />
-        <VipPreviewPanel publicMode={publicMode} title="🗓 Прогноз на месяц" text={monthForecast ? `${monthForecast.love} ${monthForecast.rhythm} ${monthForecast.advice}` : "Выберите знак, чтобы открыть персональный месячный прогноз."} />
+        <VipPreviewPanel publicMode={publicMode} title="👑 Расширенная натальная карта" text={natalChart ? `Личность: ${natalChart.archetype} Эмоции и стиль: ${natalChart.communicationStyle} Любовь: ${natalChart.loveStyle} Деньги и реализация: ${natalChart.sections[0]?.items[0]?.text ?? natalChart.strengths} Тени: ${natalChart.compass.risks.join("; ")} Зона роста: ${natalChart.growth} Личный компас: ${natalChart.compass.actions.join("; ")} Совет месяца: ${natalChart.vipBlocks[0]?.text ?? natalChart.precisionNote}` : "Частичный режим открыт: выберите знак, а дату рождения можно добавить для более глубокого профиля."} />
+        <VipPreviewPanel publicMode={publicMode} title="💞 Расширенная совместимость" text={pairReady ? `${result.scores.total}% · ${compatibilityLevelLabel(result.scores.total)}. Любовь: ${result.loveText} Общение: ${result.communicationText} Конфликты: ${result.weakSpotText} Быт: ${result.householdText} Деньги и решения: ${result.attractionText} Примирение: ${result.mentalMapDynamics.find((item) => item.label.includes("мир"))?.text ?? result.adviceText} Сильные стороны: ${result.strengthText} Зоны риска: ${result.riskText} Главный совет: ${result.adviceText}` : "Выберите два знака в разделе «Любовь», чтобы открыть расширенную совместимость без оплаты."} />
+        <VipPreviewPanel publicMode={publicMode} title="🧠 VIP Ментальная карта пары" text={pairReady ? `Как думаете: ${result.mentalMapDynamics[0]?.text ?? result.mentalMapSummary.strengths} Как спорите: ${result.mentalMapDynamics[1]?.text ?? result.mentalMapSummary.risks} Как миритесь: ${result.mentalMapDynamics[2]?.text ?? result.mentalMapSummary.advice} Где сильная связь: ${result.mentalMapSummary.strengths} Что разрушает доверие: ${result.mentalMapSummary.risks} Что укрепляет контакт: ${result.mentalMapSummary.helps.join("; ")}.` : "После выбора пары появится динамика мыслей, споров, примирения и доверия."} />
+        <VipPreviewPanel publicMode={publicMode} title="📅 30-дневный календарь пары" text={pairReady ? formatVipCalendarHighlights(calendarDays) : "Выберите два знака, чтобы увидеть 30 дней пары: разговоры, свидания, примирение, осторожность и решения."} />
+        <VipPreviewPanel publicMode={publicMode} title="🌙 Месячный прогноз" text={monthForecast ? `Тема: ${monthForecast.theme} Любовь: ${monthForecast.love} Деньги и дела: ${monthForecast.money} Энергия: ${monthForecast.energy} Риск: ${monthForecast.risk} Лучший период: ${monthForecast.bestPeriod} Совет: ${monthForecast.advice}` : "Выберите знак, чтобы открыть тему месяца, любовь, деньги, энергию, риск и лучший период."} />
+        <VipPreviewPanel publicMode={publicMode} title="💌 Расширенный помощник сообщений" text={messageVariants.map((variant) => `${variant.label}: ${variant.text}`).join(" ")} />
+        <VipPreviewPanel publicMode={publicMode} title="🔤 Расширенный именной профиль" text={nameProfile ? `Сильные стороны: ${nameProfile.sections[0]?.items[0]?.text ?? nameProfile.portrait} Риски: ${nameProfile.sections[1]?.items[0]?.text ?? "не делать вывод по одному впечатлению"}. Стиль общения, любовь, работа и внутренний характер: ${nameProfile.vipBlocks.map((block) => `${block.title}: ${block.text}`).join(" ")}` : "Добавьте имя, чтобы открыть сильные стороны, риски, стиль общения, любовь, работу и личный резонанс без сохранения данных."} />
+        <VipPreviewPanel publicMode={publicMode} title="🔢 Расширенная нумерология" text={`Число жизненного пути: ${numerology.lifePath ?? "добавьте дату рождения"}. Число имени: ${numerology.nameNumber ?? "добавьте имя"}. Личный месяц: ${numerology.personalMonth ?? "появится с датой рождения"}. Сильные стороны: ${numerology.strengths} Риски: ${numerology.risks} Деньги/любовь: ${numerology.summary} Совет месяца: ${numerology.advice}`} />
+        <VipPreviewPanel publicMode={publicMode} title="👼 Расширенное толкование ангельских чисел" text={angelNumber.isValid ? `${angelNumber.label}: ${angelNumber.vipBlocks.map((block) => `${block.title}: ${block.text}`).join(" ")}` : "Введите комбинацию времени, чтобы открыть любовь, дела, интуицию, действие, осторожность, знак и текущий день."} />
+        <VipPreviewPanel publicMode={publicMode} title="🧿 VIP талисманы и символы силы" text={dailyTalisman ? `Камень силы: ${dailyTalisman.stone}. Цвет силы: ${dailyTalisman.color}. Число силы: ${dailyTalisman.number}. Символ: ${selfSign ? buildZodiacStoneProfile(selfSign).symbol : "личный знак"}. Тотем: ${selfSign ? `${selfSign.emoji} ${selfSign.name}` : "выберите знак"}. Фраза силы: ${dailyTalisman.phrase}. Действие дня: ${dailyTalisman.action}` : "Выберите знак, чтобы открыть камень, цвет, число, символ, тотем, фразу силы и действие дня."} />
       </div>
 
       <div className={publicMode ? "mt-4 rounded-lg border border-emerald-200/20 bg-emerald-200/10 p-3 text-sm leading-5 text-emerald-50" : "mt-4 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm leading-5 text-emerald-900"}>
@@ -3232,8 +3343,12 @@ interface NameProfile {
 
 interface MonthForecast {
   title: string;
+  theme: string;
   love: string;
-  rhythm: string;
+  money: string;
+  energy: string;
+  risk: string;
+  bestPeriod: string;
   advice: string;
 }
 
@@ -3251,13 +3366,22 @@ interface NumerologyProfile {
 interface AngelNumberProfile {
   label: string;
   safeKey: string;
+  isValid: boolean;
+  prompt?: string;
+  patternType: AngelNumberPatternType;
   meaning: string;
-  signal: string;
-  action: string;
-  avoid: string;
+  highlights: string;
   love: string;
   workMoney: string;
+  intuition: string;
+  actions: string[];
+  avoid: string[];
+  phrase: string;
+  next24Hours: string;
+  vipBlocks: NatalVipBlock[];
 }
+
+type AngelNumberPatternType = "repeated" | "mirror" | "amplified" | "custom" | "fallback";
 
 interface LunarCalendarProfile {
   title: string;
@@ -3323,7 +3447,7 @@ interface PersonalityArchetypeProfile {
   completeness: string;
 }
 
-type MessageTone = "soft" | "romantic" | "afterFight" | "longSilence" | "invite" | "reconciliation";
+type MessageTone = "soft" | "romantic" | "afterFight" | "longSilence" | "invite" | "reconciliation" | "short" | "honest";
 
 function buildCompatibilityResult(mode: Mode, relationshipMode: RelationshipMode, self: PersonState, partner: PersonState): CompatibilityResult {
   const selfSign = findSign(self.sign);
@@ -3737,13 +3861,25 @@ function formatVipFreeAccessDate(dateKey: string) {
   }).format(new Date(`${dateKey}T12:00:00Z`));
 }
 
-function formatVipDayPreview(days: CoupleCalendarDay[], fallback: string) {
-  if (days.length === 0) return fallback;
-  return `Ближайшие мягкие дни: ${days.map((day) => `${day.date} - ${day.status}`).join("; ")}.`;
+function formatVipCalendarHighlights(days: CoupleCalendarDay[]) {
+  const sample = days.slice(0, 30);
+  const talks = sample.filter((day) => day.advice.includes("разговор") || day.advice.includes("вопрос")).slice(0, 3);
+  const dates = sample.filter((day) => day.status.includes("искр") || day.advice.includes("свид") || day.advice.includes("тепл")).slice(0, 3);
+  const reconciliation = sample.filter((day) => day.advice.includes("пауза") || day.advice.includes("поддерж")).slice(0, 3);
+  const caution = sample.filter((day) => day.status.includes("осторожнее")).slice(0, 3);
+  const decisions = sample.filter((day) => day.status.includes("ясность") || day.advice.includes("реш")).slice(0, 3);
+  return [
+    `Лучшие дни для разговора: ${formatCalendarGroup(talks)}.`,
+    `Для свидания: ${formatCalendarGroup(dates)}.`,
+    `Для примирения: ${formatCalendarGroup(reconciliation)}.`,
+    `Дни осторожности: ${formatCalendarGroup(caution)}.`,
+    `Для решений: ${formatCalendarGroup(decisions)}.`,
+  ].join(" ");
 }
 
-function formatVipLuckyPreview(days: ReturnType<typeof buildLuckyDays>) {
-  return `Расширенный список: ${days.map((day) => `${day.date} - ${day.status}`).join("; ")}.`;
+function formatCalendarGroup(days: CoupleCalendarDay[]) {
+  if (days.length === 0) return "появятся в списке по мере выбора пары";
+  return days.map((day) => `${day.date} ${day.status}`).join("; ");
 }
 
 function getWeekKey(dateIso: string) {
@@ -3792,8 +3928,12 @@ function buildPersonalMonthForecast(sign: ZodiacSign, dateIso: string, result: C
 
   return {
     title: `${sign.emoji} ${sign.name} · ${monthLabel}`,
+    theme: pickByKey(signSet.theme, key, 2),
     love: pickByKey(elementSet.love, key, 1),
-    rhythm: `${pickByKey(signSet.theme, key, 2)}: ${pickByKey(elementSet.energy, key, 3)}`,
+    money: pickByKey(elementSet.money, key, 3),
+    energy: pickByKey(elementSet.energy, key, 4),
+    risk: result.riskText,
+    bestPeriod: pickByKey(["первая неделя месяца", "середина месяца", "последняя неделя месяца", "период после спокойного разговора"], key, 5),
     advice: pickByKey(elementSet.advice, key, 4),
   };
 }
@@ -4289,53 +4429,131 @@ const numerologyLines = {
   ],
 };
 
-const angelNumberLines = [
-  {
-    keys: ["1111", "11:11"],
-    meaning: "момент фокуса: день просит ясной формулировки желания",
-    signal: "заметьте, где вы распыляетесь",
-    action: "запишите одну цель на сегодня",
-    avoid: "не обещайте больше, чем сможете поддержать",
-    love: "в любви помогает честный короткий жест внимания",
-    workMoney: "в делах лучше выбрать один приоритет и убрать лишнее",
-  },
-  {
-    keys: ["1212", "12:12"],
-    meaning: "баланс пары и личного пространства",
-    signal: "день подсказывает договариваться без давления",
-    action: "сверьте планы и ожидания",
-    avoid: "не угадывайте за другого человека",
-    love: "мягкий вопрос сработает лучше проверки",
-    workMoney: "поддержит аккуратный обмен задачами",
-  },
-  {
-    keys: ["1515", "15:15"],
-    meaning: "обновление привычек и смелость менять маршрут",
-    signal: "полезно выйти из повторяющегося сценария",
-    action: "сделайте шаг, который давно откладывали",
-    avoid: "не спорьте ради скорости",
-    love: "подойдёт тёплое приглашение вместо претензии",
-    workMoney: "проверьте, где нужна свежая договорённость",
-  },
-  {
-    keys: ["2222", "22:22"],
-    meaning: "терпение, доверие и спокойная сборка будущего",
-    signal: "день поддерживает длинные решения",
-    action: "закрепите важную договорённость",
-    avoid: "не требуйте мгновенного ответа",
-    love: "лучше говорить о поддержке, а не о доказательствах",
-    workMoney: "хорошо работает план с запасом",
-  },
-  {
-    keys: ["0222", "02:22"],
-    meaning: "мягкое восстановление контакта",
-    signal: "можно вернуться к теме бережно",
-    action: "начните с признания эмоций",
-    avoid: "не поднимайте старую обиду без цели",
-    love: "подходит короткое примиряющее сообщение",
-    workMoney: "лучше уточнить детали до решения",
-  },
+const angelRepeatingTimes = [
+  "00:00",
+  "01:01",
+  "02:02",
+  "03:03",
+  "04:04",
+  "05:05",
+  "06:06",
+  "07:07",
+  "08:08",
+  "09:09",
+  "10:10",
+  "11:11",
+  "12:12",
+  "13:13",
+  "14:14",
+  "15:15",
+  "16:16",
+  "17:17",
+  "18:18",
+  "19:19",
+  "20:20",
+  "21:21",
+  "22:22",
+  "23:23",
 ];
+
+const angelMirrorTimes = ["01:10", "02:20", "03:30", "04:40", "05:50", "10:01", "12:21", "13:31", "14:41", "15:51", "20:02", "21:12", "23:32"];
+const angelAmplifiedTimes = ["01:11", "02:22", "03:33", "04:44", "05:55", "11:11", "22:22"];
+
+const angelNumberPresetGroups: Array<{ id: AngelNumberPatternType; title: string; items: string[] }> = [
+  { id: "repeated", title: "Повторяющиеся числа", items: angelRepeatingTimes },
+  { id: "mirror", title: "Зеркальные числа", items: angelMirrorTimes },
+  { id: "amplified", title: "Усиленные комбинации", items: angelAmplifiedTimes },
+];
+
+const angelRepeatingSet = new Set(angelRepeatingTimes);
+const angelMirrorSet = new Set(angelMirrorTimes);
+const angelAmplifiedSet = new Set(angelAmplifiedTimes);
+
+const angelPatternProfiles: Record<AngelNumberPatternType, {
+  label: string;
+  meaning: string[];
+  highlights: string[];
+  love: string[];
+  workMoney: string[];
+  intuition: string[];
+  phrase: string[];
+  next24Hours: string[];
+  actions: string[];
+  avoid: string[];
+}> = {
+  repeated: {
+    label: "повторяющаяся комбинация",
+    meaning: ["в эзотерической трактовке повтор может означать просьбу усилить фокус", "повторяющиеся числа символически связаны с темой, которую важно заметить сегодня"],
+    highlights: ["где мысль ходит по кругу и просит ясного решения", "какая тема возвращается не случайно, а как мягкое напоминание"],
+    love: ["в любви может подсвечивать привычный сценарий: лучше выбрать один тёплый поступок", "отношениям поможет повторить важное простыми словами без давления"],
+    workMoney: ["в делах полезно проверить одну повторяющуюся задачу", "деньги и решения лучше вести через порядок, а не через спешку"],
+    intuition: ["обратите внимание на мысль, с которой вы увидели время", "тело может подсказать, где нужен более спокойный темп"],
+    phrase: ["я замечаю главное и выбираю один ясный шаг", "я возвращаю фокус туда, где есть смысл"],
+    next24Hours: ["закройте одну маленькую петлю: сообщение, договорённость или задачу", "запишите повторяющуюся мысль и выберите для неё мягкое действие"],
+    actions: ["сформулировать один приоритет", "повторить важную просьбу спокойно", "убрать одну лишнюю задачу"],
+    avoid: ["не делать вывод по одному совпадению", "не ждать идеального знака вместо действия", "не давить на человека повторными проверками"],
+  },
+  mirror: {
+    label: "зеркальная комбинация",
+    meaning: ["зеркальные числа могут означать встречу с отражением своих ожиданий", "символически связано с балансом: что вы отдаёте и что хотите получить"],
+    highlights: ["где вы смотрите на другого, но на самом деле видите свой страх", "какой разговор просит больше честности и меньше догадок"],
+    love: ["в любви лучше уточнять, а не проверять", "может быть знаком обратить внимание на равновесие между близостью и свободой"],
+    workMoney: ["в делах поддержит честный обмен задачами", "в решениях полезно сверить две стороны: желание и реальность"],
+    intuition: ["если внутри появилась пауза, не заполняйте её тревогой", "отражение дня может подсказать, где нужна мягкая корректировка"],
+    phrase: ["я вижу ситуацию спокойнее и выбираю честный баланс", "я не додумываю за других и говорю яснее"],
+    next24Hours: ["задайте один уточняющий вопрос вместо вывода", "сравните ожидание и факт, затем выберите спокойный шаг"],
+    actions: ["уточнить договорённость", "сверить ожидания", "сделать паузу перед ответом"],
+    avoid: ["не читать молчание как окончательный ответ", "не зеркалить резкость резкостью", "не торопить признания"],
+  },
+  amplified: {
+    label: "усиленная комбинация",
+    meaning: ["усиленная комбинация может означать, что тема дня стала громче обычного", "в эзотерической трактовке это акцент на намерении, эмоции и личной ответственности"],
+    highlights: ["где энергия сильная, но ей нужен бережный канал", "какое желание просит не драму, а точную формулировку"],
+    love: ["в любви помогает честное, но мягкое сообщение", "сильное чувство лучше переводить в действие заботы"],
+    workMoney: ["в делах поддержит смелый, но проверенный шаг", "деньги требуют ясного приоритета и отказа от лишнего риска"],
+    intuition: ["интуиция звучит громче, если убрать шум и спешку", "первый внутренний отклик может быть важнее длинного анализа"],
+    phrase: ["я направляю силу спокойно и с уважением к себе", "моя энергия становится действием, а не тревогой"],
+    next24Hours: ["выберите сильное намерение и сделайте один измеримый шаг", "не распыляйтесь: важна одна точная просьба или задача"],
+    actions: ["записать намерение", "сделать один смелый шаг", "поддержать тело отдыхом и водой"],
+    avoid: ["не превращать знак в требование к миру", "не обещать на эмоциональном пике", "не подменять действие ожиданием"],
+  },
+  custom: {
+    label: "особая комбинация",
+    meaning: ["особая комбинация может означать личный ритм момента", "символически связано с темой дня, которую заметили именно вы"],
+    highlights: ["какая мысль была рядом с этим временем", "где нужен не общий ответ, а свой честный ориентир"],
+    love: ["в любви лучше выбрать простой знак внимания", "отношениям поможет мягкая формулировка без давления"],
+    workMoney: ["в делах полезно сверить маршрут и ресурсы", "небольшая проверка деталей даст больше спокойствия"],
+    intuition: ["личный смысл важнее громкой трактовки", "прислушайтесь к первому спокойному ощущению"],
+    phrase: ["я доверяю спокойному внутреннему ориентиру", "я выбираю свой темп и ясное действие"],
+    next24Hours: ["свяжите увиденное время с одним практическим шагом", "запишите мысль и вернитесь к ней вечером"],
+    actions: ["сделать короткую заметку", "выбрать маленькое действие", "проверить своё настроение"],
+    avoid: ["не искать страшный смысл", "не принимать решение только из-за совпадения", "не обесценивать обычный день"],
+  },
+  fallback: {
+    label: "личная комбинация времени",
+    meaning: ["любой допустимый ритм времени может быть личной подсказкой, если он зацепил внимание", "может быть знаком обратить внимание на контекст, в котором вы увидели часы"],
+    highlights: ["не само число, а ваша мысль в этот момент", "где день просит больше ясности и меньше автоматизма"],
+    love: ["в любви подойдёт маленький честный жест", "лучше не ждать идеального момента, а выбрать уважительный тон"],
+    workMoney: ["в делах помогает спокойная проверка плана", "решения лучше принимать после короткой паузы"],
+    intuition: ["интуитивный сигнал здесь мягкий: заметьте настроение, а не ищите точное обещание", "внутренний отклик стоит записать и проверить позже"],
+    phrase: ["я замечаю знак, но выбираю действие осознанно", "мой ориентир внутри, а число лишь помогает остановиться"],
+    next24Hours: ["сделайте одну практическую вещь, которую давно откладывали", "переведите ощущение в маленький ясный шаг"],
+    actions: ["остановиться на минуту", "назвать своё желание", "сделать одну полезную вещь"],
+    avoid: ["не искать обещаний результата", "не пугать себя трактовкой", "не отдавать числу право решать за вас"],
+  },
+};
+
+const angelDigitThemes: Record<number, { meaning: string; action: string; avoid: string }> = {
+  1: { meaning: "единица добавляет тему начала, выбора и личной инициативы", action: "начать с короткого первого шага", avoid: "не давить на себя требованием идеального старта" },
+  2: { meaning: "двойка связана с диалогом, доверием и мягкими договорённостями", action: "задать вопрос вместо вывода", avoid: "не проверять чувства молчанием" },
+  3: { meaning: "тройка подсвечивает общение, лёгкость и творческое выражение", action: "сказать мысль проще и теплее", avoid: "не распыляться на слишком много вариантов" },
+  4: { meaning: "четвёрка напоминает о границах, порядке и устойчивости", action: "разложить задачу на понятные части", avoid: "не превращать контроль в напряжение" },
+  5: { meaning: "пятёрка символически связана с переменами и свежим маршрутом", action: "попробовать новый подход без резкого шага", avoid: "не менять всё только из-за эмоций" },
+  6: { meaning: "шестёрка усиливает тему заботы, красоты и домашнего тепла", action: "сделать жест внимания", avoid: "не брать на себя чужие эмоции полностью" },
+  7: { meaning: "семёрка зовёт к тишине, наблюдению и внутренней честности", action: "выделить время без шума", avoid: "не уходить в холодную закрытость" },
+  8: { meaning: "восьмёрка связана с ресурсами, ответственностью и зрелым обменом", action: "проверить баланс сил и денег", avoid: "не мерить ценность только результатом" },
+  9: { meaning: "девятка помогает завершать, благодарить и отпускать лишнее", action: "закрыть одну старую тему", avoid: "не возвращаться к спору без новой цели" },
+};
 
 const dreamSymbols = [
   { key: "water", label: "Вода", general: "эмоции, обновление и необходимость услышать себя", emotional: "чувства могут быть сильнее слов", highlight: "где нужна мягкость", advice: "не торопите разговор" },
@@ -4384,28 +4602,78 @@ function buildNumerologyProfile(person: PersonState, dateKey: string): Numerolog
   };
 }
 
-function buildAngelNumberProfile(value: string, dateKey: string): AngelNumberProfile {
-  const normalizedDigits = normalizeAngelDigits(value);
-  const matched = angelNumberLines.find((item) => item.keys.includes(normalizedDigits) || item.keys.includes(formatAngelLabel(normalizedDigits)));
-  const seed = hashString(`${normalizedDigits}:${dateKey}`);
-  const fallback = {
-    meaning: "повторяющийся ритм напоминает остановиться и услышать себя",
-    signal: "смотрите не на знак сам по себе, а на мысль, с которой вы его заметили",
-    action: pickLine(numerologyLines.advice, seed, 1),
-    avoid: pickLine(numerologyLines.risks, seed, 2),
-    love: "в любви лучше выбрать один честный жест внимания",
-    workMoney: "в делах помогает спокойная проверка приоритетов",
-  };
-  const profile = matched ?? fallback;
+function buildAngelNumberProfile(
+  value: string,
+  dateKey: string,
+  sign: ZodiacSign | null,
+  hasName: boolean,
+  talisman: DailyTalismanProfile | null,
+  numerology: NumerologyProfile,
+  vipFreeAccess: boolean,
+): AngelNumberProfile {
+  const normalized = normalizeAngelTimeInput(value);
+  if (!normalized.ok) {
+    return {
+      label: "",
+      safeKey: "angel_invalid",
+      isValid: false,
+      prompt: "Введите комбинацию в формате 10:10, 12:12 или 02:22.",
+      patternType: "fallback",
+      meaning: "",
+      highlights: "",
+      love: "",
+      workMoney: "",
+      intuition: "",
+      actions: [],
+      avoid: [],
+      phrase: "",
+      next24Hours: "",
+      vipBlocks: [],
+    };
+  }
+
+  const patternType = classifyAngelNumberPattern(normalized.label);
+  const pattern = angelPatternProfiles[patternType];
+  const digits = normalized.label.replace(":", "");
+  const digitRoot = reduceNumber(digits.split("").reduce((total, digit) => total + Number(digit), 0));
+  const digitTheme = angelDigitThemes[digitRoot] ?? angelDigitThemes[1];
+  const seed = hashString(`${digits}:${dateKey}:${patternType}:${sign?.slug ?? "no-sign"}:${hasName ? "name" : "no-name"}`);
+  const exactMeaning = buildExactAngelMeaning(normalized.label);
+  const phrase = pickLine(pattern.phrase, seed, 6);
+  const talismanLine = talisman
+    ? `${talisman.stone}, цвет ${talisman.color}, число ${talisman.number}`
+    : `число ${numerology.dayNumber} и любой спокойный символ дня`;
+  const signLine = sign
+    ? `${sign.emoji} ${sign.name}: ${pickLine(signDailyProfiles[sign.slug].focus, seed, 9)}`
+    : "если выбрать знак, появится личный оттенок трактовки";
+
   return {
-    label: formatAngelLabel(normalizedDigits),
-    safeKey: normalizedDigits ? `angel_${normalizedDigits}` : "angel_custom",
-    meaning: profile.meaning,
-    signal: profile.signal,
-    action: profile.action,
-    avoid: profile.avoid,
-    love: profile.love,
-    workMoney: profile.workMoney,
+    label: normalized.label,
+    safeKey: angelSafeKey(normalized.label),
+    isValid: true,
+    patternType,
+    meaning: exactMeaning ?? `${pickLine(pattern.meaning, seed, 1)}: ${digitTheme.meaning}.`,
+    highlights: pickLine(pattern.highlights, seed, 2),
+    love: pickLine(pattern.love, seed, 3),
+    workMoney: pickLine(pattern.workMoney, seed, 4),
+    intuition: pickLine(pattern.intuition, seed, 5),
+    actions: pickUniqueLines([...pattern.actions, digitTheme.action, ...numerologyLines.advice], seed, 6, 3),
+    avoid: pickUniqueLines([...pattern.avoid, digitTheme.avoid, ...numerologyLines.risks], seed, 7, 3),
+    phrase,
+    next24Hours: pickLine(pattern.next24Hours, seed, 8),
+    vipBlocks: vipFreeAccess
+      ? [
+          { title: "❤️ Любовь глубже", text: `${pickLine(pattern.love, seed, 10)} Лучший формат: спокойное сообщение без проверки чувств.` },
+          { title: "💼 Дела и деньги", text: `${pickLine(pattern.workMoney, seed, 11)} Символически число ${digitRoot} просит зрелого выбора.` },
+          { title: "🌙 Интуиция", text: `${pickLine(pattern.intuition, seed, 12)} Свяжите знак с мыслью, которая была рядом.` },
+          { title: "✅ Личное действие", text: pickLine([...pattern.actions, digitTheme.action], seed, 13) },
+          { title: "⚠️ Осторожность", text: pickLine([...pattern.avoid, digitTheme.avoid], seed, 14) },
+          { title: "♈ Связь со знаком", text: signLine },
+          { title: "🧿 Талисман дня", text: talismanLine },
+          { title: "🔢 Нумерология", text: `Число дня ${numerology.dayNumber}${numerology.lifePath ? `, число пути ${numerology.lifePath}` : ""}: ${numerology.advice}` },
+          { title: "🔤 Именной резонанс", text: hasName ? "имя учтено только на экране: резонанс усиливает личный смысл фразы настройки" : "добавьте имя, если хотите увидеть именной оттенок без сохранения данных" },
+        ]
+      : [],
   };
 }
 
@@ -4561,16 +4829,69 @@ function reduceNumber(value: number) {
   return current || 1;
 }
 
-function normalizeAngelDigits(value: string) {
-  const digits = String(value || "").replace(/\D/g, "").slice(0, 4);
-  if (digits.length >= 4) return digits.slice(0, 4);
-  if (digits.length >= 2) return `${digits}${digits}`.slice(0, 4);
-  return "1111";
+function normalizeAngelTimeInput(value: string): { ok: true; label: string; hour: number; minute: number } | { ok: false; label: "" } {
+  const raw = String(value || "").trim();
+  const directMatch = raw.match(/^(\d{1,2})\D+(\d{1,2})$/);
+  const digits = raw.replace(/\D/g, "");
+  let hour: number | null = null;
+  let minute: number | null = null;
+
+  if (directMatch) {
+    hour = Number(directMatch[1]);
+    minute = Number(directMatch[2]);
+  } else if (digits.length === 3) {
+    hour = Number(digits.slice(0, 1));
+    minute = Number(digits.slice(1, 3));
+  } else if (digits.length === 4) {
+    hour = Number(digits.slice(0, 2));
+    minute = Number(digits.slice(2, 4));
+  }
+
+  if (hour === null || minute === null || hour < 0 || hour > 23 || minute < 0 || minute > 59) return { ok: false, label: "" };
+  return {
+    ok: true,
+    label: `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`,
+    hour,
+    minute,
+  };
 }
 
-function formatAngelLabel(digits: string) {
-  const normalized = normalizeAngelDigits(digits);
-  return `${normalized.slice(0, 2)}:${normalized.slice(2, 4)}`;
+function formatAngelTimeInputForDisplay(value: string) {
+  const digits = String(value || "").replace(/\D/g, "").slice(0, 4);
+  if (digits.length <= 2) return digits;
+  if (digits.length === 3) return `${digits.slice(0, 1)}:${digits.slice(1)}`;
+  return `${digits.slice(0, 2)}:${digits.slice(2)}`;
+}
+
+function angelSafeKey(label: string) {
+  const normalized = normalizeAngelTimeInput(label);
+  return normalized.ok ? `angel_${normalized.label.replace(":", "")}` : "angel_custom";
+}
+
+function classifyAngelNumberPattern(label: string): AngelNumberPatternType {
+  if (angelAmplifiedSet.has(label)) return "amplified";
+  if (angelMirrorSet.has(label)) return "mirror";
+  if (angelRepeatingSet.has(label)) return "repeated";
+  return "fallback";
+}
+
+function formatAngelPatternLabel(patternType: AngelNumberPatternType) {
+  return angelPatternProfiles[patternType]?.label ?? angelPatternProfiles.fallback.label;
+}
+
+function buildExactAngelMeaning(label: string) {
+  const lines: Record<string, string> = {
+    "00:00": "00:00 может означать символическую точку перезапуска: сначала тишина, потом новый выбор.",
+    "10:10": "10:10 может подсвечивать момент ясного старта: мысль уже созрела, осталось выбрать спокойный первый шаг.",
+    "11:11": "11:11 в эзотерической трактовке связано с намерением, фокусом и честной формулировкой желания.",
+    "12:12": "12:12 символически связано с балансом: личное пространство и близость просят мягкой настройки.",
+    "15:15": "15:15 может означать обновление привычки и бережный выход из старого сценария.",
+    "20:20": "20:20 подсвечивает терпение, диалог и важность не торопить ответ.",
+    "21:12": "21:12 может быть зеркальным напоминанием: сначала услышать себя, потом другого человека.",
+    "22:22": "22:22 связано с доверием, устойчивостью и решениями, которые строятся не за один разговор.",
+    "02:22": "02:22 может подсвечивать мягкое восстановление контакта и бережную просьбу о диалоге.",
+  };
+  return lines[label];
 }
 
 function isNameVowel(value: string) {
@@ -6095,6 +6416,8 @@ const messageTones: Array<{ id: MessageTone; label: string }> = [
   { id: "longSilence", label: "давно не общались" },
   { id: "invite", label: "пригласить" },
   { id: "reconciliation", label: "для примирения" },
+  { id: "short", label: "коротко" },
+  { id: "honest", label: "глубже и честнее" },
 ];
 
 const messageTemplates: Record<MessageTone, string[]> = {
@@ -6104,6 +6427,8 @@ const messageTemplates: Record<MessageTone, string[]> = {
   longSilence: ["давно не общались, но я хочу написать бережно. Как ты? Если будет желание, я буду рад(а) поговорить.", "не хочу врываться в твоё пространство, просто хочу узнать, как ты себя чувствуешь."],
   invite: ["хочу увидеться без суеты. Давай выберем время для прогулки или спокойного кофе?", "если тебе откликается, давай встретимся и просто побудем рядом без лишних ожиданий."],
   reconciliation: ["мне жаль, что между нами появилось напряжение. Я хочу поговорить спокойно и с уважением к тебе.", "я хочу сделать шаг навстречу. Давай начнём с честного разговора без обвинений."],
+  short: ["думаю о тебе. Если захочешь, давай спокойно поговорим.", "хочу сохранить тепло между нами. Напиши, когда будет удобно."],
+  honest: ["мне важно быть честным(ой): я скучаю по нашему спокойному контакту и хочу понять, как ты сейчас.", "я не хочу давить, но хочу сказать прямо: мне важны мы, и я готов(а) говорить мягко и честно."],
 };
 
 const natalArchetypes: Record<string, string[]> = Object.fromEntries(

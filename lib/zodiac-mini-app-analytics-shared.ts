@@ -38,6 +38,7 @@ export const ZODIAC_ANALYTICS_EVENTS = [
   "vip_feature_opened",
   "vip_future_subscription_clicked",
   "giveaway_clicked",
+  "giveaway_locked_viewed",
   "message_helper_used",
   "numerology_opened",
   "numerology_result_viewed",
@@ -79,7 +80,9 @@ export interface ZodiacAnalyticsPayload {
   timeKnown?: boolean;
   hasName?: boolean;
   hasSecondName?: boolean;
+  featureKey?: string;
   selectedPresetKey?: string;
+  patternType?: string;
   freeVipActive?: boolean;
 }
 
@@ -111,6 +114,7 @@ const zodiacSignSlugs = new Set([
 const modes = new Set(["fast", "personal", "precise"]);
 const scoreTiers = new Set(["strong", "good", "medium", "difficult", "tense"]);
 const relationshipModes = new Set(["love", "friendship", "work", "family", "passion", "reconciliation"]);
+const patternTypes = new Set(["repeated", "mirror", "amplified", "custom", "fallback"]);
 const sections = new Set([
   "today",
   "week",
@@ -163,7 +167,9 @@ export function sanitizeZodiacAnalyticsPayload(input: unknown): ZodiacAnalyticsP
   const timeKnown = sanitizeBoolean(raw.timeKnown);
   const hasName = sanitizeBoolean(raw.hasName);
   const hasSecondName = sanitizeBoolean(raw.hasSecondName);
+  const featureKey = sanitizeToken(raw.featureKey, 64);
   const selectedPresetKey = sanitizeToken(raw.selectedPresetKey, 64);
+  const patternType = sanitizeEnum(raw.patternType, patternTypes);
   const freeVipActive = sanitizeBoolean(raw.freeVipActive);
 
   if (dateKey) payload.dateKey = dateKey;
@@ -184,7 +190,9 @@ export function sanitizeZodiacAnalyticsPayload(input: unknown): ZodiacAnalyticsP
   if (typeof timeKnown === "boolean") payload.timeKnown = timeKnown;
   if (typeof hasName === "boolean") payload.hasName = hasName;
   if (typeof hasSecondName === "boolean") payload.hasSecondName = hasSecondName;
+  if (featureKey) payload.featureKey = featureKey;
   if (selectedPresetKey) payload.selectedPresetKey = selectedPresetKey;
+  if (patternType) payload.patternType = patternType;
   if (typeof freeVipActive === "boolean") payload.freeVipActive = freeVipActive;
 
   return payload;
