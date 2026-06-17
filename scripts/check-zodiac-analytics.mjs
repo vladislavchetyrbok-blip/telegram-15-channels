@@ -1,0 +1,311 @@
+import { spawn, spawnSync } from "node:child_process";
+import { createServer } from "node:net";
+import { readdir, readFile, stat } from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const scriptDir = path.dirname(fileURLToPath(import.meta.url));
+const projectRoot = path.resolve(scriptDir, "..");
+const secretEnvNames = [
+  "ZODIAC_ANALYTICS_REDIS_URL",
+  "ZODIAC_ANALYTICS_REDIS_TOKEN",
+  "TELEGRAM_BOT_TOKEN",
+  "TELEGRAM_ADMIN_CHAT_ID",
+  "SUPABASE_SERVICE_ROLE_KEY",
+  "DATABASE_URL",
+];
+const sensitiveValues = ["SHOULD_BE_STRIPPED_NAME", "1990-01-02", "12:34", "SHOULD_BE_STRIPPED_CITY"];
+const sensitiveFields = ["name", "birthDate", "birthTime", "birthCity"];
+
+let telegramApiCalls = 0;
+let livePublishCalls = 0;
+
+main().catch((error) => {
+  console.error(`[zodiac-analytics-check] FAILED: ${redactSecrets(error instanceof Error ? error.message : String(error))}`);
+  process.exitCode = 1;
+});
+
+async function main() {
+  const sharedSource = await readFile(path.join(projectRoot, "lib", "zodiac-mini-app-analytics-shared.ts"), "utf8");
+  assertSensitiveFieldsNotAllowed(sharedSource);
+
+  const beforeLedgerStats = await collectLedgerStats();
+  const port = await getFreePort();
+  const server = startNextServer(port);
+
+  try {
+    const baseUrl = `http://127.0.0.1:${port}`;
+    await waitForRoute(`${baseUrl}/compatibility`, server);
+
+    const compatibilityRoute = await checkRoute(`${baseUrl}/compatibility`);
+    const dashboardRoute = await checkRoute(`${baseUrl}/dashboard/networks/zodiac/analytics`);
+    const allowedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`);
+    const disallowedEvent = await checkDisallowedEvent(`${baseUrl}/api/zodiac/analytics/event`);
+    const afterLedgerStats = await collectLedgerStats();
+    const ledgerWrites = countLedgerWrites(beforeLedgerStats, afterLedgerStats);
+
+    assert(ledgerWrites === 0, `expected 0 ledger writes, got ${ledgerWrites}`);
+
+    const report = {
+      ok: true,
+      mode: allowedEvent.mode,
+      routes: {
+        compatibility: compatibilityRoute,
+        dashboard: dashboardRoute,
+      },
+      allowedEvent,
+      disallowedEvent,
+      sensitiveFieldsStripped: allowedEvent.sensitiveFieldsStripped,
+      noSecretsPrinted: true,
+      telegramApiCalls,
+      ledgerWrites,
+      livePublishCalls,
+    };
+    const output = JSON.stringify(report, null, 2);
+    assertNoSecrets(output);
+    console.log(output);
+  } finally {
+    stopNextServer(server);
+  }
+}
+
+function startNextServer(port) {
+  const nextBin = path.join(projectRoot, "node_modules", "next", "dist", "bin", "next");
+  const output = { stdout: "", stderr: "" };
+  const child = spawn(process.execPath, [nextBin, "start", "-p", String(port), "-H", "127.0.0.1"], {
+    cwd: projectRoot,
+    env: {
+      ...getSpawnSafeEnv(),
+      NEXT_TELEMETRY_DISABLED: "1",
+      ZODIAC_ANALYTICS_REDIS_URL: "",
+      ZODIAC_ANALYTICS_REDIS_TOKEN: "",
+      TELEGRAM_BOT_TOKEN: "",
+      TELEGRAM_LIVE_PUBLISH: "false",
+      ALLOW_REAL_PUBLISH: "false",
+    },
+    stdio: ["ignore", "pipe", "pipe"],
+    windowsHide: true,
+  });
+
+  child.stdout.on("data", (chunk) => {
+    output.stdout += chunk.toString();
+    output.stdout = output.stdout.slice(-8000);
+  });
+  child.stderr.on("data", (chunk) => {
+    output.stderr += chunk.toString();
+    output.stderr = output.stderr.slice(-8000);
+  });
+
+  return { child, output };
+}
+
+function getSpawnSafeEnv() {
+  return Object.fromEntries(
+    Object.entries(process.env).filter(([key, value]) => key && !key.includes("=") && typeof value === "string"),
+  );
+}
+
+async function waitForRoute(url, server, timeoutMs = 60000) {
+  const startedAt = Date.now();
+
+  while (Date.now() - startedAt < timeoutMs) {
+    assertServerStillRunning(server);
+    try {
+      const response = await fetch(url, { cache: "no-store" });
+      if (response.ok) return;
+    } catch {
+    }
+    await delay(500);
+  }
+
+  throw new Error(`Next server did not become ready. stdout=${redactSecrets(server.output.stdout)} stderr=${redactSecrets(server.output.stderr)}`);
+}
+
+async function checkRoute(url) {
+  const response = await trackedFetch(url, { cache: "no-store" });
+  await response.arrayBuffer();
+  assert(response.status === 200, `${url} expected 200, got ${response.status}`);
+  return `${response.status} OK`;
+}
+
+async function checkAllowedEvent(url) {
+  const response = await trackedFetch(url, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      event: "compatibility_calculated",
+      dateKey: "2026-06-18",
+      section: "compatibility",
+      sign: "gemini",
+      mode: "fast",
+      source: "analytics_smoke",
+      startappType: "compat_sign",
+      sessionId: "zma-smoke-session",
+      firstSign: "gemini",
+      secondSign: "leo",
+      scoreTier: "good",
+      relationshipMode: "love",
+      name: "SHOULD_BE_STRIPPED_NAME",
+      birthDate: "1990-01-02",
+      birthTime: "12:34",
+      birthCity: "SHOULD_BE_STRIPPED_CITY",
+      payload: {
+        name: "SHOULD_BE_STRIPPED_NAME",
+        birthDate: "1990-01-02",
+        birthTime: "12:34",
+        birthCity: "SHOULD_BE_STRIPPED_CITY",
+      },
+    }),
+  });
+  const text = await response.text();
+  const payload = parseJson(text, "allowed event response");
+
+  assert(response.status === 200, `allowed event expected 200, got ${response.status}: ${text}`);
+  assert(payload.ok === true, "allowed event did not return ok=true");
+  assert(payload.mode === "noop", `allowed event expected noop mode, got ${payload.mode}`);
+  assert(payload.stored === false, "allowed event should not store in noop mode");
+
+  const sensitiveFieldsStripped = sensitiveValues.every((value) => !text.includes(value));
+  assert(sensitiveFieldsStripped, "allowed event response echoed a sensitive value");
+
+  return {
+    status: `${response.status} OK`,
+    mode: payload.mode,
+    stored: payload.stored,
+    sensitiveFieldsStripped,
+  };
+}
+
+async function checkDisallowedEvent(url) {
+  const response = await trackedFetch(url, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ event: "not_allowed", name: "SHOULD_BE_STRIPPED_NAME" }),
+  });
+  const text = await response.text();
+  const payload = parseJson(text, "disallowed event response");
+
+  assert(response.status === 400, `disallowed event expected 400, got ${response.status}: ${text}`);
+  assert(payload.ok === false, "disallowed event did not return ok=false");
+  assert(payload.reason === "event_not_allowed", `disallowed event expected event_not_allowed, got ${payload.reason}`);
+  assert(!text.includes("SHOULD_BE_STRIPPED_NAME"), "disallowed event response echoed a sensitive value");
+
+  return {
+    status: `${response.status} ${payload.reason}`,
+    rejected: true,
+  };
+}
+
+async function trackedFetch(url, init) {
+  const target = typeof url === "string" ? url : url.toString();
+  if (target.includes("api.telegram.org")) telegramApiCalls += 1;
+  if (target.includes("--live") || target.includes("publish:date:live")) livePublishCalls += 1;
+  return fetch(url, init);
+}
+
+function parseJson(text, label) {
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new Error(`${label} was not valid JSON: ${text}`);
+  }
+}
+
+function assertSensitiveFieldsNotAllowed(source) {
+  for (const field of sensitiveFields) {
+    const fieldPattern = new RegExp(`\\b${field}\\??:`);
+    assert(!fieldPattern.test(source), `sensitive field ${field} is present in the analytics payload allowlist`);
+  }
+}
+
+async function collectLedgerStats() {
+  const dataRoot = path.join(projectRoot, "data");
+  const files = await listFiles(dataRoot).catch(() => []);
+  const ledgerFiles = files.filter((filePath) => /ledger/i.test(path.basename(filePath)));
+  const entries = await Promise.all(
+    ledgerFiles.map(async (filePath) => {
+      const fileStat = await stat(filePath);
+      return [path.relative(projectRoot, filePath), `${fileStat.size}:${fileStat.mtimeMs}`];
+    }),
+  );
+  return new Map(entries);
+}
+
+async function listFiles(dir) {
+  const entries = await readdir(dir, { withFileTypes: true });
+  const results = [];
+
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      results.push(...(await listFiles(fullPath)));
+    } else if (entry.isFile()) {
+      results.push(fullPath);
+    }
+  }
+
+  return results;
+}
+
+function countLedgerWrites(before, after) {
+  let writes = 0;
+  const keys = new Set([...before.keys(), ...after.keys()]);
+  for (const key of keys) {
+    if (before.get(key) !== after.get(key)) writes += 1;
+  }
+  return writes;
+}
+
+function assertServerStillRunning(server) {
+  const { child, output } = server;
+  if (child.exitCode === null && !child.killed) return;
+  throw new Error(`Next server exited early with code ${child.exitCode}. stdout=${redactSecrets(output.stdout)} stderr=${redactSecrets(output.stderr)}`);
+}
+
+function stopNextServer(server) {
+  const { child } = server;
+  if (!child.pid || child.exitCode !== null) return;
+
+  if (process.platform === "win32") {
+    spawnSync("taskkill", ["/PID", String(child.pid), "/T", "/F"], { stdio: "ignore", windowsHide: true });
+    return;
+  }
+
+  child.kill("SIGTERM");
+}
+
+function getFreePort() {
+  return new Promise((resolve, reject) => {
+    const server = createServer();
+    server.on("error", reject);
+    server.listen(0, "127.0.0.1", () => {
+      const address = server.address();
+      const port = typeof address === "object" && address ? address.port : null;
+      server.close(() => (port ? resolve(port) : reject(new Error("Could not allocate a free port"))));
+    });
+  });
+}
+
+function assertNoSecrets(output) {
+  for (const secret of getKnownSecretValues()) {
+    assert(!output.includes(secret), "check output contains a configured secret value");
+  }
+}
+
+function redactSecrets(value) {
+  return getKnownSecretValues().reduce((text, secret) => text.split(secret).join("[redacted]"), value);
+}
+
+function getKnownSecretValues() {
+  return secretEnvNames
+    .map((name) => process.env[name])
+    .filter((value) => typeof value === "string" && value.length >= 8);
+}
+
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function assert(condition, message) {
+  if (!condition) throw new Error(message);
+}

@@ -76,7 +76,7 @@ export async function getZodiacMiniAppAnalyticsDashboard(): Promise<ZodiacMiniAp
       configured: false,
       storageMode: "noop",
       todayDateKey,
-      warning: "Аналитика ещё не подключена",
+      warning: "Аналитика ещё не подключена. События принимаются в безопасном noop-режиме.",
     });
   }
 

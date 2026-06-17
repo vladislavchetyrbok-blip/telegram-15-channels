@@ -1,60 +1,117 @@
 # Zodiac Mini App Analytics
 
-This feature adds internal, privacy-safe analytics for the Zodiac Mini App.
+This feature adds internal, privacy-safe analytics for the Zodiac Mini App. It is production-ready from code, but storage stays disabled until the required Redis REST environment variables are configured.
+
+## Routes
+
+Dashboard:
+
+```text
+/dashboard/networks/zodiac/analytics
+```
+
+Event API:
+
+```text
+POST /api/zodiac/analytics/event
+```
+
+## Current Modes
+
+- `noop`: default when storage env vars are missing. Events are accepted and sanitized, but not persisted.
+- `active`: enabled when both Redis REST env vars are present. Sanitized counters are written through the Redis REST pipeline.
+
+When storage is missing, the dashboard shows:
+
+```text
+Аналитика ещё не подключена. События принимаются в безопасном noop-режиме.
+```
 
 ## What Is Tracked
 
-- Event name from the allowlist.
+- `app_open`
+- `sign_selected`
+- Section opens.
+- `compatibility_calculated`
+- `natal_chart_started` and `natal_chart_completed`
+- `couple_horoscope_viewed`
+- `relationship_map_viewed`
+- `lucky_day_clicked`
+- `vip_clicked`
+- `giveaway_clicked`
+- `message_helper_used`
 - Server timestamp and date key.
-- Section name.
-- Sign slug.
-- Compatibility mode.
-- Source and startapp category.
-- Anonymous in-memory session id for the current browser page.
-- Pair sign slugs for compatibility checks.
-- Compatibility score tier.
+- Sign slugs, section slugs, compatibility mode, source category, startapp category, anonymous in-memory session id, pair sign slugs, relationship mode, and compatibility score tier.
 
-Allowed events live in `lib/zodiac-mini-app-analytics-shared.ts`.
+Allowed events and payload fields live in `lib/zodiac-mini-app-analytics-shared.ts`.
 
-## What Is Not Tracked
+## Privacy Rules
+
+The analytics system must not store:
 
 - Names.
 - Partner names.
 - Birth dates.
 - Birth times.
 - Birth cities.
-- Raw Telegram `initData`.
 - Message helper text.
+- Bot token.
+- Raw sensitive Telegram `initData`.
 - Exact personal profile data.
 - Any unrecognized payload fields.
 
-The client strips fields before sending, and the API route sanitizes again before storage.
+The client strips fields before sending, and the API route sanitizes again before storage. The analytics session id is in-memory only and is not written to local storage or session storage.
 
-## Storage
+## Storage Activation
 
 Storage is optional. Without storage, the API returns `ok` in noop mode and the Mini App keeps working.
 
-Optional Redis REST env vars:
+Required env vars:
 
 ```text
 ZODIAC_ANALYTICS_REDIS_URL
 ZODIAC_ANALYTICS_REDIS_TOKEN
 ```
 
-The adapter is implemented in `lib/zodiac-mini-app-analytics-store.ts` and uses Redis REST pipeline commands only when both env vars are present. No SDK or external analytics service is required.
+The adapter is implemented in `lib/zodiac-mini-app-analytics-store.ts` and uses Redis REST pipeline commands only when both env vars are present. No SDK or external analytics service is required in the app bundle.
+
+## Upstash / Vercel KV Notes
+
+Use an Upstash Redis database, Vercel KV Redis database, or compatible Redis REST endpoint. Configure the REST URL and REST token from that provider; do not use a raw TCP Redis URL.
+
+Expected value shapes:
+
+```text
+ZODIAC_ANALYTICS_REDIS_URL=https://your-redis-rest-endpoint
+ZODIAC_ANALYTICS_REDIS_TOKEN=your-redacted-rest-token
+```
+
+The examples above are placeholders. Do not commit real values.
+
+## Vercel Env Setup
+
+Add the variables in the Vercel project settings:
+
+1. Open the project in Vercel.
+2. Go to Settings -> Environment Variables.
+3. Add `ZODIAC_ANALYTICS_REDIS_URL`.
+4. Add `ZODIAC_ANALYTICS_REDIS_TOKEN`.
+5. Select the intended environments, usually Production and Preview.
+6. Redeploy so the server runtime receives the new values.
+
+For local testing, use a local env file only if needed and keep it untracked. Never commit `.env*` files with secrets.
 
 ## Dashboard
 
-Internal dashboard route:
+The dashboard shows:
 
-```text
-/dashboard/networks/zodiac/analytics
-```
-
-When storage is missing, it shows `Аналитика ещё не подключена` and lists the required env variables.
-
-When storage is configured, it shows:
-
+- Analytics mode: `noop` or `active`.
+- Storage configured: `YES` or `NO`.
+- Events accepted: `YES`.
+- Sensitive data stored: `NO`.
+- Required setup checklist.
+- What is tracked.
+- What is not tracked.
 - Today app opens.
 - Last 7 days app opens.
 - Top sections.
@@ -64,13 +121,9 @@ When storage is configured, it shows:
 - Natal chart, couple horoscope, relationship map, lucky days, and message helper counters.
 - Funnel: `app_open -> sign_selected -> section_open -> calculation`.
 
+When storage is missing, metric panels stay visible with zero/sample placeholders so the activation state is obvious without hiding the dashboard structure.
+
 ## API
-
-Event endpoint:
-
-```text
-POST /api/zodiac/analytics/event
-```
 
 Allowed event example:
 
@@ -84,34 +137,43 @@ Allowed event example:
 }
 ```
 
-Disallowed events return a safe rejected response and are not stored.
+Disallowed events return a safe rejected response and are not stored:
+
+```json
+{
+  "ok": false,
+  "ignored": true,
+  "reason": "event_not_allowed"
+}
+```
 
 ## Verification
 
-Run:
+Before activation or release:
 
 ```bash
 npm run lint
 npm run build
+npm run zodiac:analytics:check
 ```
 
-Route checks:
+The analytics smoke script starts the built app locally in noop mode, checks:
 
-```text
-/compatibility
-/dashboard/networks/zodiac/analytics
-```
+- `/compatibility`
+- `/dashboard/networks/zodiac/analytics`
+- Allowed event returns safe `ok` / `noop` when storage is missing.
+- Disallowed event returns safe rejection.
+- Sensitive fields are not part of the analytics payload allowlist and are not echoed.
+- Telegram API calls: `0`.
+- Ledger writes: `0`.
+- Live publish calls: `0`.
+- Configured secret values are not printed.
 
-API checks:
+After setting Redis REST env vars in Vercel and redeploying:
 
-```bash
-curl -X POST http://127.0.0.1:3000/api/zodiac/analytics/event \
-  -H "content-type: application/json" \
-  -d '{"event":"app_open","source":"telegram_mini_app","startappType":"compat_sign","name":"SHOULD_BE_STRIPPED"}'
-
-curl -X POST http://127.0.0.1:3000/api/zodiac/analytics/event \
-  -H "content-type: application/json" \
-  -d '{"event":"not_allowed"}'
-```
-
-With storage disabled, the allowed event returns `mode: "noop"` and does not crash.
+1. Open `/dashboard/networks/zodiac/analytics`.
+2. Confirm Analytics mode is `active`.
+3. Confirm Storage configured is `YES`.
+4. Open `/compatibility` and perform a non-sensitive interaction.
+5. Refresh the dashboard and confirm aggregate counters move.
+6. Confirm no names, birth dates, birth times, birth cities, message text, bot token, or raw sensitive Telegram `initData` appear in logs, responses, or stored analytics.

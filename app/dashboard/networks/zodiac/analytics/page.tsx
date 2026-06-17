@@ -1,15 +1,20 @@
 import {
   BarChart3,
   CalendarDays,
+  CheckCircle2,
   ChevronLeft,
   Crown,
+  Database,
   Gift,
   HeartHandshake,
+  ListChecks,
+  LockKeyhole,
   MessageSquareText,
   ShieldCheck,
   Sparkles,
   Star,
   UsersRound,
+  XCircle,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
@@ -19,6 +24,7 @@ export const dynamic = "force-dynamic";
 
 export default async function ZodiacMiniAppAnalyticsPage() {
   const analytics = await getZodiacMiniAppAnalyticsDashboard();
+  const analyticsMode = analytics.storageMode === "redis" ? "active" : "noop";
 
   return (
     <div className="-mx-4 -my-6 min-h-screen overflow-x-hidden bg-[#f8fafc] px-4 py-6 text-slate-950 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
@@ -65,6 +71,13 @@ export default async function ZodiacMiniAppAnalyticsPage() {
           </section>
         ) : null}
 
+        <section className="grid gap-4 lg:grid-cols-2 xl:grid-cols-4">
+          <ReadinessStatusCard analyticsMode={analyticsMode} storageConfigured={analytics.configured} />
+          <SetupChecklistCard requiredEnv={analytics.requiredEnv} configured={analytics.configured} />
+          <ReadinessListCard title="What we track" items={trackedAnalyticsItems} icon={ListChecks} tone="cyan" />
+          <ReadinessListCard title="What we do NOT track" items={privateAnalyticsItems} icon={LockKeyhole} tone="emerald" />
+        </section>
+
         <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <MetricCard title="Открытия сегодня" value={analytics.todayAppOpens} caption={analytics.todayDateKey} icon={Sparkles} tone="violet" />
           <MetricCard title="Открытия за 7 дней" value={analytics.last7DaysAppOpens} caption="app_open" icon={CalendarDays} tone="cyan" />
@@ -90,6 +103,87 @@ export default async function ZodiacMiniAppAnalyticsPage() {
           <RankPanel title="Daily app opens" items={analytics.dailyAppOpens} emptyText="Открытий пока нет." />
         </section>
       </div>
+    </div>
+  );
+}
+
+function ReadinessStatusCard({ analyticsMode, storageConfigured }: { analyticsMode: "active" | "noop"; storageConfigured: boolean }) {
+  const rows = [
+    { label: "Analytics mode", value: analyticsMode, ok: true },
+    { label: "Storage configured", value: storageConfigured ? "YES" : "NO", ok: storageConfigured },
+    { label: "Events accepted", value: "YES", ok: true },
+    { label: "Sensitive data stored", value: "NO", ok: true },
+  ];
+
+  return (
+    <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <h2 className="text-lg font-semibold text-slate-950">Analytics readiness</h2>
+          <p className="mt-2 text-sm leading-6 text-slate-500">Production activation status without exposing secrets.</p>
+        </div>
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-violet-200 bg-violet-50 text-violet-700">
+          <Database className="h-5 w-5" />
+        </span>
+      </div>
+      <div className="mt-5 space-y-3">
+        {rows.map((row) => (
+          <div key={row.label} className="flex items-center justify-between gap-3 rounded-md border border-slate-100 bg-slate-50 px-3 py-2">
+            <span className="min-w-0 break-words text-sm font-semibold text-slate-600">{row.label}</span>
+            <span className={`inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold ${row.ok ? "text-emerald-700" : "text-amber-700"}`}>
+              {row.ok ? <CheckCircle2 className="h-4 w-4" /> : <XCircle className="h-4 w-4" />}
+              {row.value}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function SetupChecklistCard({ requiredEnv, configured }: { requiredEnv: string[]; configured: boolean }) {
+  return (
+    <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <h2 className="text-lg font-semibold text-slate-950">Setup checklist</h2>
+          <p className="mt-2 text-sm leading-6 text-slate-500">{configured ? "Redis REST storage is configured." : "Add both env vars to activate storage."}</p>
+        </div>
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-amber-200 bg-amber-50 text-amber-700">
+          <ListChecks className="h-5 w-5" />
+        </span>
+      </div>
+      <div className="mt-5 space-y-2">
+        {requiredEnv.map((envName) => (
+          <div key={envName} className="flex items-center justify-between gap-3 rounded-md border border-slate-100 bg-slate-50 px-3 py-2">
+            <code className="min-w-0 break-words text-xs font-semibold text-slate-800 sm:text-sm">{envName}</code>
+            <span className={`shrink-0 text-xs font-semibold uppercase ${configured ? "text-emerald-700" : "text-amber-700"}`}>
+              {configured ? "set" : "needed"}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ReadinessListCard({ title, items, icon: Icon, tone }: { title: string; items: string[]; icon: LucideIcon; tone: Tone }) {
+  return (
+    <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="flex items-start justify-between gap-4">
+        <h2 className="text-lg font-semibold text-slate-950">{title}</h2>
+        <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border ${toneClasses[tone]}`}>
+          <Icon className="h-5 w-5" />
+        </span>
+      </div>
+      <ul className="mt-5 space-y-2">
+        {items.map((item) => (
+          <li key={item} className="flex items-start gap-2 text-sm font-semibold leading-5 text-slate-600">
+            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+            <span className="min-w-0 break-words">{item}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
@@ -157,3 +251,27 @@ const toneClasses: Record<Tone, string> = {
   rose: "border-rose-200 bg-rose-50 text-rose-700",
   slate: "border-slate-200 bg-slate-50 text-slate-700",
 };
+
+const trackedAnalyticsItems = [
+  "app_open",
+  "sign_selected",
+  "section opens",
+  "compatibility_calculated",
+  "natal_chart_started/completed",
+  "couple_horoscope_viewed",
+  "relationship_map_viewed",
+  "lucky_day_clicked",
+  "vip_clicked",
+  "giveaway_clicked",
+  "message_helper_used",
+];
+
+const privateAnalyticsItems = [
+  "names",
+  "birth dates",
+  "birth times",
+  "birth cities",
+  "message text",
+  "bot token",
+  "raw sensitive Telegram initData",
+];
