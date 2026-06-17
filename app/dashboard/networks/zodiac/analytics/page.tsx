@@ -81,7 +81,7 @@ export default async function ZodiacMiniAppAnalyticsPage() {
         <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <MetricCard title="Открытия сегодня" value={analytics.todayAppOpens} caption={analytics.todayDateKey} icon={Sparkles} tone="violet" />
           <MetricCard title="Открытия за 7 дней" value={analytics.last7DaysAppOpens} caption="app_open" icon={CalendarDays} tone="cyan" />
-          <MetricCard title="VIP клики" value={analytics.counters.vipClicks} caption="vip_clicked" icon={Crown} tone="amber" />
+          <MetricCard title="VIP активность" value={analytics.counters.vipClicks} caption="views / free access / feature taps" icon={Crown} tone="amber" />
           <MetricCard title="Расчёты" value={analytics.funnel.find((item) => item.label === "calculation")?.value ?? 0} caption="compatibility_calculated" icon={HeartHandshake} tone="rose" />
         </section>
 
@@ -262,7 +262,9 @@ const trackedAnalyticsItems = [
   "relationship_map_viewed / mental_map_viewed",
   "relationship_map_category_opened",
   "lucky_day_clicked",
-  "vip_clicked",
+  "vip_clicked / vip_opened",
+  "vip_free_access_viewed / vip_feature_opened",
+  "vip_future_subscription_clicked",
   "giveaway_clicked",
   "message_helper_used",
 ];

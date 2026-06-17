@@ -1,6 +1,7 @@
 "use client";
 
 import cityCatalogData from "@/data/config/zodiac-city-catalog.json";
+import zodiacVipConfigData from "@/data/config/zodiac-vip-config.json";
 import {
   DEFAULT_ZODIAC_TIME_ZONE,
   addDaysToDateKey,
@@ -54,6 +55,19 @@ interface ZodiacCompatibilityMiniAppProps {
   startParam?: string | null;
 }
 
+interface ZodiacVipConfig {
+  vipFreeAccessEnabled: boolean;
+  vipFreeAccessUntil: string;
+  vipPaymentsEnabled: boolean;
+  telegramStarsEnabled: boolean;
+}
+
+interface VipFeature {
+  id: string;
+  title: string;
+  text: string;
+}
+
 const signs = [
   { slug: "aries", emoji: "♈", name: "Овен", range: "21 марта - 19 апреля", element: "fire" },
   { slug: "taurus", emoji: "♉", name: "Телец", range: "20 апреля - 20 мая", element: "earth" },
@@ -73,6 +87,7 @@ type ZodiacSign = (typeof signs)[number];
 
 const signSlugs = new Set(signs.map((sign) => sign.slug));
 const cityCatalog = cityCatalogData.cities as City[];
+const zodiacVipConfig = zodiacVipConfigData as ZodiacVipConfig;
 
 const genderLabels: Record<Gender, string> = {
   male: "Мужчина",
@@ -226,6 +241,8 @@ export function ZodiacCompatibilityMiniApp({
     }
 
     trackZodiacMiniAppEvent("section_open_vip", analyticsPayload({ section: "vip", sign: selectedSign.slug }));
+    trackZodiacMiniAppEvent("vip_opened", analyticsPayload({ section: "vip", sign: selectedSign.slug }));
+    if (zodiacVipConfig.vipFreeAccessEnabled) trackZodiacMiniAppEvent("vip_free_access_viewed", analyticsPayload({ section: "vip", sign: selectedSign.slug }));
     trackZodiacMiniAppEvent("section_open_giveaways", analyticsPayload({ section: "giveaways", sign: selectedSign.slug }));
   }, [activeTab, analyticsPayload, appDateKey, mode, partner.sign, relationshipMode, result.scores.total, selectedSign, self]);
 
@@ -267,8 +284,16 @@ export function ZodiacCompatibilityMiniApp({
     trackZodiacMiniAppEvent("lucky_day_clicked", analyticsPayload({ sign: selectedSignSlug || undefined, section: "lucky_days" }));
   }
 
-  function trackPreviewClick(kind: "vip" | "giveaway") {
-    trackZodiacMiniAppEvent(kind === "vip" ? "vip_clicked" : "giveaway_clicked", analyticsPayload({ section: kind === "vip" ? "vip" : "giveaways", sign: selectedSignSlug || undefined }));
+  function trackGiveawayPreviewClick() {
+    trackZodiacMiniAppEvent("giveaway_clicked", analyticsPayload({ section: "giveaways", sign: selectedSignSlug || undefined }));
+  }
+
+  function trackVipFeatureOpen(feature: string) {
+    trackZodiacMiniAppEvent("vip_feature_opened", analyticsPayload({ section: "vip", category: feature, sign: selectedSignSlug || undefined }));
+  }
+
+  function trackVipFutureSubscriptionClick() {
+    trackZodiacMiniAppEvent("vip_future_subscription_clicked", analyticsPayload({ section: "vip", sign: selectedSignSlug || undefined }));
   }
 
   function trackMessageHelperUse() {
@@ -389,8 +414,9 @@ export function ZodiacCompatibilityMiniApp({
                   partner={partner}
                   result={result}
                   relationshipMode={relationshipMode}
-                  onVipClick={() => trackPreviewClick("vip")}
-                  onGiveawayClick={() => trackPreviewClick("giveaway")}
+                  onVipFeatureOpen={trackVipFeatureOpen}
+                  onVipFutureSubscriptionClick={trackVipFutureSubscriptionClick}
+                  onGiveawayClick={trackGiveawayPreviewClick}
                   onMessageHelperUsed={trackMessageHelperUse}
                   onRelationshipMapCategoryOpen={trackRelationshipMapCategoryOpen}
                 />
@@ -644,7 +670,8 @@ function MoreSection({
   partner,
   result,
   relationshipMode,
-  onVipClick,
+  onVipFeatureOpen,
+  onVipFutureSubscriptionClick,
   onGiveawayClick,
   onMessageHelperUsed,
   onRelationshipMapCategoryOpen,
@@ -655,7 +682,8 @@ function MoreSection({
   partner: PersonState;
   result: CompatibilityResult;
   relationshipMode: RelationshipMode;
-  onVipClick: () => void;
+  onVipFeatureOpen: (feature: string) => void;
+  onVipFutureSubscriptionClick: () => void;
   onGiveawayClick: () => void;
   onMessageHelperUsed: () => void;
   onRelationshipMapCategoryOpen: (category: string) => void;
@@ -663,11 +691,15 @@ function MoreSection({
   const [messageTone, setMessageTone] = useState<MessageTone>("soft");
   const dateKey = appDateKey ?? getCurrentZodiacDateKey(DEFAULT_ZODIAC_TIME_ZONE);
   const pairReady = Boolean(self.sign && partner.sign);
+  const vipFreeAccess = zodiacVipConfig.vipFreeAccessEnabled && !zodiacVipConfig.vipPaymentsEnabled && !zodiacVipConfig.telegramStarsEnabled;
   const coupleHoroscope = pairReady ? buildCoupleHoroscope(self, partner, dateKey, relationshipMode, result) : null;
-  const coupleCalendar = pairReady ? buildCoupleCalendar(self, partner, dateKey, result) : [];
+  const coupleCalendar = pairReady ? buildCoupleCalendar(self, partner, dateKey, result, vipFreeAccess ? 30 : 7) : [];
   const reconciliation = pairReady ? buildReconciliationDay(self, partner, dateKey, result) : null;
   const message = pairReady ? buildPartnerMessage(self, partner, dateKey, messageTone, result) : null;
   const natalChart = buildNatalChart(self);
+  const selfSign = self.sign ? findSign(self.sign) : null;
+  const vipLuckyDays = selfSign ? buildLuckyDays(selfSign, getLuckyDaysStartDate(dateKey), 14) : [];
+  const monthForecast = selfSign ? buildPersonalMonthForecast(selfSign, dateKey, result) : null;
 
   return (
     <section className={panelClass(publicMode)}>
@@ -682,20 +714,17 @@ function MoreSection({
         <ReconciliationDayCard publicMode={publicMode} reconciliation={reconciliation} />
         <PartnerMessageCard publicMode={publicMode} message={message} tone={messageTone} onToneChange={setMessageTone} onUsed={onMessageHelperUsed} pairReady={pairReady} />
         <NatalChartCard publicMode={publicMode} chart={natalChart} />
-        <LockedPreviewCard
+        <VipFreeAccessCard
           publicMode={publicMode}
-          icon={<Crown className="h-5 w-5" />}
-          title="👑 VIP превью"
-          text="Это только превью: расширенные разборы останутся закрытыми до запуска подписки и Telegram Stars."
-          items={[
-            "полная натальная карта: асцендент, дома и аспекты",
-            "расширенная совместимость и карта пары",
-            "календарь пары на 30 дней",
-            "лучшие дни для примирения и свиданий",
-            "подсказки для сообщений партнёру",
-            "прогноз на месяц без обещаний точности",
-          ]}
-          onPreviewClick={onVipClick}
+          config={zodiacVipConfig}
+          untilLabel={formatVipFreeAccessDate(zodiacVipConfig.vipFreeAccessUntil)}
+          pairReady={pairReady}
+          natalReady={Boolean(natalChart)}
+          calendarDays={coupleCalendar}
+          luckyDays={vipLuckyDays}
+          monthForecast={monthForecast}
+          onFeatureOpen={onVipFeatureOpen}
+          onFutureSubscriptionClick={onVipFutureSubscriptionClick}
         />
         <LockedPreviewCard
           publicMode={publicMode}
@@ -871,7 +900,7 @@ function CoupleCalendarCard({ publicMode, days, pairReady }: { publicMode: boole
   if (!pairReady) return <EmptyFeatureCard publicMode={publicMode} title="📅 Календарь пары" text="Заполните данные пары, чтобы увидеть календарь пары." />;
 
   return (
-    <FeatureCard publicMode={publicMode} title="📅 Календарь пары" subtitle="Ближайшие 7 дней">
+    <FeatureCard publicMode={publicMode} title="📅 Календарь пары" subtitle={`Ближайшие ${days.length} дней`}>
       <div className="grid max-h-[430px] gap-3 overflow-y-auto pr-1">
         {days.map((day) => (
           <div key={day.dateKey} className={publicMode ? "rounded-lg border border-white/12 bg-white/8 p-3" : "rounded-lg border border-slate-200 bg-white p-3"}>
@@ -980,6 +1009,126 @@ function FeatureCard({ publicMode, title, subtitle, children }: { publicMode: bo
       <p className={publicMode ? "text-base font-semibold text-white" : "text-base font-semibold text-slate-950"}>{title}</p>
       <p className={publicMode ? "mt-1 text-sm leading-5 text-slate-300" : "mt-1 text-sm leading-5 text-slate-600"}>{subtitle}</p>
       <div className="mt-4">{children}</div>
+    </div>
+  );
+}
+
+function VipFreeAccessCard({
+  publicMode,
+  config,
+  untilLabel,
+  pairReady,
+  natalReady,
+  calendarDays,
+  luckyDays,
+  monthForecast,
+  onFeatureOpen,
+  onFutureSubscriptionClick,
+}: {
+  publicMode: boolean;
+  config: ZodiacVipConfig;
+  untilLabel: string;
+  pairReady: boolean;
+  natalReady: boolean;
+  calendarDays: CoupleCalendarDay[];
+  luckyDays: ReturnType<typeof buildLuckyDays>;
+  monthForecast: MonthForecast | null;
+  onFeatureOpen: (feature: string) => void;
+  onFutureSubscriptionClick: () => void;
+}) {
+  const features: VipFeature[] = [
+    { id: "extended_mental_map", title: "Ментальная карта+", text: "расширенная карта пары уже открыта в этом разделе" },
+    { id: "couple_calendar_30_days", title: "30 дней пары", text: pairReady ? `${calendarDays.length} дней открыты без оплаты` : "выберите два знака, чтобы открыть календарь" },
+    { id: "extended_lucky_days", title: "Удачные дни+", text: luckyDays.length > 0 ? `14 дней для ${luckyDays[0].date}` : "выберите знак, чтобы увидеть расширение" },
+    { id: "natal_mvp", title: "Натальная подсказка", text: natalReady ? "MVP-интерпретация открыта" : "добавьте дату рождения, если хотите персонализацию" },
+    { id: "message_variants", title: "Варианты сообщений", text: `${messageTones.length} тонов для мягкого текста партнёру` },
+    { id: "best_days", title: "Дни для свидания/примирения", text: pairReady ? "лучшие дни подсвечены в календаре пары" : "появятся после выбора двух знаков" },
+    { id: "month_forecast", title: "Прогноз на месяц", text: monthForecast ? monthForecast.title : "появится после выбора знака" },
+  ];
+  const bestCoupleDays = calendarDays.filter((day) => !day.status.includes("осторожнее")).slice(0, 3);
+  const bestLuckyDays = luckyDays.filter((day) => !day.status.includes("осторожнее")).slice(0, 3);
+
+  return (
+    <div className={publicMode ? "rounded-lg border border-amber-200/25 bg-amber-200/10 p-4" : "rounded-lg border border-amber-200 bg-amber-50 p-4"}>
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className={publicMode ? "text-lg font-semibold text-white" : "text-lg font-semibold text-slate-950"}>👑 VIP открыт бесплатно</p>
+          <p className={publicMode ? "mt-1 text-sm font-semibold text-amber-100" : "mt-1 text-sm font-semibold text-amber-800"}>Ранний доступ на 3 месяца</p>
+          <p className={publicMode ? "mt-2 text-sm leading-6 text-slate-300" : "mt-2 text-sm leading-6 text-slate-700"}>
+            Мы открыли VIP-функции бесплатно на период запуска. Пользуйтесь расширенными прогнозами, а позже здесь появится подписка.
+          </p>
+        </div>
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-amber-200/25 bg-black/20 text-amber-100">
+          <Crown className="h-5 w-5" />
+        </span>
+      </div>
+
+      <div className="mt-4 grid gap-2 sm:grid-cols-3">
+        <VipStatusPill publicMode={publicMode} label="Бесплатно до" value={untilLabel} />
+        <VipStatusPill publicMode={publicMode} label="Оплата" value={config.vipPaymentsEnabled ? "включена" : "не требуется"} />
+        <VipStatusPill publicMode={publicMode} label="Telegram Stars" value={config.telegramStarsEnabled ? "включены" : "позже"} />
+      </div>
+
+      <div className="mt-4 grid gap-2 sm:grid-cols-2">
+        {features.map((feature) => (
+          <button
+            key={feature.id}
+            type="button"
+            onClick={() => onFeatureOpen(feature.id)}
+            className={
+              publicMode
+                ? "min-h-[88px] rounded-lg border border-white/12 bg-white/8 p-3 text-left transition hover:border-amber-200/35 hover:bg-white/12 focus:outline-none focus:ring-2 focus:ring-amber-200/40"
+                : "min-h-[88px] rounded-lg border border-amber-100 bg-white p-3 text-left transition hover:border-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-200"
+            }
+          >
+            <p className={publicMode ? "text-sm font-semibold text-white" : "text-sm font-semibold text-slate-950"}>{feature.title}</p>
+            <p className={publicMode ? "mt-1 text-sm leading-5 text-slate-300" : "mt-1 text-sm leading-5 text-slate-600"}>{feature.text}</p>
+          </button>
+        ))}
+      </div>
+
+      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+        <VipPreviewPanel publicMode={publicMode} title="📅 30-дневный календарь" text={pairReady ? formatVipDayPreview(bestCoupleDays, "Открыт расширенный календарь пары.") : "Выберите два знака, чтобы увидеть 30 дней пары без оплаты."} />
+        <VipPreviewPanel publicMode={publicMode} title="🍀 Удачные дни+" text={bestLuckyDays.length > 0 ? formatVipLuckyPreview(bestLuckyDays) : "Выберите знак, чтобы увидеть расширенные удачные дни."} />
+        <VipPreviewPanel publicMode={publicMode} title="🌌 Натальная интерпретация MVP" text={natalReady ? "Открыты архетип, сильные стороны, зона роста, любовь и общение." : "Дата рождения необязательна, но открывает натальную подсказку."} />
+        <VipPreviewPanel publicMode={publicMode} title="💌 Сообщения партнёру" text={`Открыты варианты: ${messageTones.map((tone) => tone.label).join(", ")}.`} />
+        <VipPreviewPanel publicMode={publicMode} title="🕊 Лучшие дни" text={pairReady ? "Дни для примирения и свидания доступны в календаре пары." : "После выбора пары появятся дни для мягкого разговора и свидания."} />
+        <VipPreviewPanel publicMode={publicMode} title="🗓 Прогноз на месяц" text={monthForecast ? `${monthForecast.love} ${monthForecast.rhythm} ${monthForecast.advice}` : "Выберите знак, чтобы открыть персональный месячный прогноз."} />
+      </div>
+
+      <div className={publicMode ? "mt-4 rounded-lg border border-emerald-200/20 bg-emerald-200/10 p-3 text-sm leading-5 text-emerald-50" : "mt-4 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm leading-5 text-emerald-900"}>
+        <div className="flex gap-2">
+          <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0" />
+          <p>Без логина, без платежей, без хранения имён, дат, времени или городов.</p>
+        </div>
+      </div>
+
+      <div className="mt-3">
+        <button type="button" onClick={onFutureSubscriptionClick} className={secondaryButtonClass(publicMode)}>
+          Позже здесь появится подписка
+        </button>
+      </div>
+      <p className={publicMode ? "mt-3 text-xs leading-5 text-slate-400" : "mt-3 text-xs leading-5 text-slate-600"}>
+        Позже часть расширенных функций может перейти в подписку, но сейчас ранний доступ открыт бесплатно.
+      </p>
+    </div>
+  );
+}
+
+function VipStatusPill({ publicMode, label, value }: { publicMode: boolean; label: string; value: string }) {
+  return (
+    <div className={publicMode ? "rounded-lg border border-white/12 bg-white/8 p-3" : "rounded-lg border border-amber-100 bg-white p-3"}>
+      <p className={publicMode ? "text-xs font-semibold text-amber-100" : "text-xs font-semibold text-amber-800"}>{label}</p>
+      <p className={publicMode ? "mt-1 text-sm font-semibold text-white" : "mt-1 text-sm font-semibold text-slate-950"}>{value}</p>
+    </div>
+  );
+}
+
+function VipPreviewPanel({ publicMode, title, text }: { publicMode: boolean; title: string; text: string }) {
+  return (
+    <div className={publicMode ? "rounded-lg border border-white/12 bg-white/8 p-3" : "rounded-lg border border-amber-100 bg-white p-3"}>
+      <p className={publicMode ? "text-sm font-semibold text-amber-100" : "text-sm font-semibold text-amber-800"}>{title}</p>
+      <p className={publicMode ? "mt-2 text-sm leading-5 text-slate-300" : "mt-2 text-sm leading-5 text-slate-600"}>{text}</p>
     </div>
   );
 }
@@ -1645,6 +1794,13 @@ interface NatalChart {
   precisionNote: string;
 }
 
+interface MonthForecast {
+  title: string;
+  love: string;
+  rhythm: string;
+  advice: string;
+}
+
 type MessageTone = "soft" | "romantic" | "afterFight" | "longSilence" | "invite" | "reconciliation";
 
 function buildCompatibilityResult(mode: Mode, relationshipMode: RelationshipMode, self: PersonState, partner: PersonState): CompatibilityResult {
@@ -2050,6 +2206,24 @@ function formatWeekday(dateIso: string) {
   return parseIsoDate(dateIso).toLocaleDateString("ru-RU", { weekday: "long" });
 }
 
+function formatVipFreeAccessDate(dateKey: string) {
+  return new Intl.DateTimeFormat("ru-RU", {
+    timeZone: DEFAULT_ZODIAC_TIME_ZONE,
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  }).format(new Date(`${dateKey}T12:00:00Z`));
+}
+
+function formatVipDayPreview(days: CoupleCalendarDay[], fallback: string) {
+  if (days.length === 0) return fallback;
+  return `Ближайшие мягкие дни: ${days.map((day) => `${day.date} - ${day.status}`).join("; ")}.`;
+}
+
+function formatVipLuckyPreview(days: ReturnType<typeof buildLuckyDays>) {
+  return `Расширенный список: ${days.map((day) => `${day.date} - ${day.status}`).join("; ")}.`;
+}
+
 function getWeekKey(dateIso: string) {
   return getWeekRangeForDate(dateIso, DEFAULT_ZODIAC_TIME_ZONE).startDateKey;
 }
@@ -2080,6 +2254,25 @@ function buildWeekForecast(sign: ZodiacSign, dateIso: string) {
     money: pickByKey(elementSet.money, key, 3),
     energy: pickByKey(elementSet.energy, key, 4),
     advice: pickByKey(elementSet.advice, key, 5),
+  };
+}
+
+function buildPersonalMonthForecast(sign: ZodiacSign, dateIso: string, result: CompatibilityResult): MonthForecast {
+  const monthKey = dateIso.slice(0, 7);
+  const key = `${sign.slug}:${monthKey}:vip-month:${result.scores.total}`;
+  const elementSet = weeklyGuidanceByElement[sign.element] ?? weeklyGuidanceByElement.fire;
+  const signSet = signWeeklyProfiles[sign.slug];
+  const monthLabel = new Intl.DateTimeFormat("ru-RU", {
+    timeZone: DEFAULT_ZODIAC_TIME_ZONE,
+    month: "long",
+    year: "numeric",
+  }).format(new Date(`${dateIso}T12:00:00Z`));
+
+  return {
+    title: `${sign.emoji} ${sign.name} · ${monthLabel}`,
+    love: pickByKey(elementSet.love, key, 1),
+    rhythm: `${pickByKey(signSet.theme, key, 2)}: ${pickByKey(elementSet.energy, key, 3)}`,
+    advice: pickByKey(elementSet.advice, key, 4),
   };
 }
 
@@ -2157,8 +2350,8 @@ function buildCoupleHoroscope(self: PersonState, partner: PersonState, dateKey: 
   };
 }
 
-function buildCoupleCalendar(self: PersonState, partner: PersonState, dateKey: string, result: CompatibilityResult): CoupleCalendarDay[] {
-  return Array.from({ length: 7 }, (_, index) => {
+function buildCoupleCalendar(self: PersonState, partner: PersonState, dateKey: string, result: CompatibilityResult, count = 7): CoupleCalendarDay[] {
+  return Array.from({ length: count }, (_, index) => {
     const currentDateKey = addDaysToDateKey(dateKey, index);
     const seed = pairSeed(self, partner, currentDateKey, "calendar");
     const status = pickLine(coupleCalendarStatuses, seed + result.scores.total, 1);

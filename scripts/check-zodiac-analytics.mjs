@@ -41,6 +41,7 @@ async function main() {
     const dashboardRoute = await checkRoute(`${baseUrl}/dashboard/networks/zodiac/analytics`);
     const allowedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "relationship_map_category_opened", { category: "communication" });
     const mentalMapEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "mental_map_viewed");
+    const vipFeatureEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "vip_feature_opened", { category: "month_forecast" });
     const disallowedEvent = await checkDisallowedEvent(`${baseUrl}/api/zodiac/analytics/event`);
     const afterLedgerStats = await collectLedgerStats();
     const ledgerWrites = countLedgerWrites(beforeLedgerStats, afterLedgerStats);
@@ -56,8 +57,9 @@ async function main() {
       },
       allowedEvent,
       mentalMapEvent,
+      vipFeatureEvent,
       disallowedEvent,
-      sensitiveFieldsStripped: allowedEvent.sensitiveFieldsStripped && mentalMapEvent.sensitiveFieldsStripped,
+      sensitiveFieldsStripped: allowedEvent.sensitiveFieldsStripped && mentalMapEvent.sensitiveFieldsStripped && vipFeatureEvent.sensitiveFieldsStripped,
       noSecretsPrinted: true,
       telegramApiCalls,
       ledgerWrites,
@@ -137,7 +139,7 @@ async function checkAllowedEvent(url, event = "compatibility_calculated", extraP
     body: JSON.stringify({
       event,
       dateKey: "2026-06-18",
-      section: event === "compatibility_calculated" ? "compatibility" : "relationship_map",
+      section: event === "compatibility_calculated" ? "compatibility" : event.startsWith("vip_") ? "vip" : "relationship_map",
       sign: "gemini",
       mode: "fast",
       source: "analytics_smoke",

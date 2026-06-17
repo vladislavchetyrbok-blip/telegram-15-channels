@@ -161,7 +161,7 @@ function parseDashboardResults(results: unknown[], dateKeys: string[], todayDate
       coupleHoroscopeOpens: countEvents(events, ["section_open_couple_horoscope", "couple_horoscope_viewed"]),
       relationshipMapOpens: countEvents(events, ["section_open_relationship_map", "relationship_map_viewed", "mental_map_viewed"]),
       luckyDaysOpens: countEvents(events, ["section_open_lucky_days"]),
-      vipClicks: countEvents(events, ["vip_clicked"]),
+      vipClicks: countEvents(events, ["vip_clicked", "vip_opened", "vip_free_access_viewed", "vip_feature_opened", "vip_future_subscription_clicked"]),
       giveawayClicks: countEvents(events, ["giveaway_clicked"]),
       messageHelperUse: countEvents(events, ["message_helper_used"]),
     },

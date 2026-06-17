@@ -23,6 +23,10 @@ export const ZODIAC_ANALYTICS_EVENTS = [
   "relationship_map_category_opened",
   "lucky_day_clicked",
   "vip_clicked",
+  "vip_opened",
+  "vip_free_access_viewed",
+  "vip_feature_opened",
+  "vip_future_subscription_clicked",
   "giveaway_clicked",
   "message_helper_used",
 ] as const;
