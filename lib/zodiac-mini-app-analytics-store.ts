@@ -157,7 +157,15 @@ function parseDashboardResults(results: unknown[], dateKeys: string[], todayDate
     compatibilityModes: rankItems(modes),
     topPairs: rankItems(pairs),
     counters: {
-      natalChartOpens: countEvents(events, ["section_open_natal_chart", "natal_chart_started", "natal_chart_completed"]),
+      natalChartOpens: countEvents(events, [
+        "section_open_natal_chart",
+        "natal_chart_started",
+        "natal_chart_completed",
+        "natal_chart_opened",
+        "natal_chart_result_viewed",
+        "natal_chart_section_opened",
+        "natal_chart_vip_free_opened",
+      ]),
       coupleHoroscopeOpens: countEvents(events, ["section_open_couple_horoscope", "couple_horoscope_viewed"]),
       relationshipMapOpens: countEvents(events, ["section_open_relationship_map", "relationship_map_viewed", "mental_map_viewed"]),
       luckyDaysOpens: countEvents(events, ["section_open_lucky_days"]),

@@ -17,6 +17,10 @@ export const ZODIAC_ANALYTICS_EVENTS = [
   "name_resonance_shown",
   "natal_chart_started",
   "natal_chart_completed",
+  "natal_chart_opened",
+  "natal_chart_result_viewed",
+  "natal_chart_section_opened",
+  "natal_chart_vip_free_opened",
   "couple_horoscope_viewed",
   "relationship_map_viewed",
   "mental_map_viewed",
@@ -49,6 +53,10 @@ export interface ZodiacAnalyticsPayload {
   scoreTier?: ZodiacAnalyticsScoreTier;
   relationshipMode?: string;
   category?: string;
+  hasBirthDate?: boolean;
+  hasBirthTime?: boolean;
+  hasBirthCity?: boolean;
+  timeKnown?: boolean;
 }
 
 export interface SanitizedZodiacAnalyticsEvent extends ZodiacAnalyticsPayload {
@@ -111,6 +119,10 @@ export function sanitizeZodiacAnalyticsPayload(input: unknown): ZodiacAnalyticsP
   const scoreTier = sanitizeEnum(raw.scoreTier, scoreTiers) as ZodiacAnalyticsScoreTier | undefined;
   const relationshipMode = sanitizeEnum(raw.relationshipMode, relationshipModes);
   const category = sanitizeToken(raw.category, 64);
+  const hasBirthDate = sanitizeBoolean(raw.hasBirthDate);
+  const hasBirthTime = sanitizeBoolean(raw.hasBirthTime);
+  const hasBirthCity = sanitizeBoolean(raw.hasBirthCity);
+  const timeKnown = sanitizeBoolean(raw.timeKnown);
 
   if (dateKey) payload.dateKey = dateKey;
   if (section) payload.section = section;
@@ -124,6 +136,10 @@ export function sanitizeZodiacAnalyticsPayload(input: unknown): ZodiacAnalyticsP
   if (scoreTier) payload.scoreTier = scoreTier;
   if (relationshipMode) payload.relationshipMode = relationshipMode;
   if (category) payload.category = category;
+  if (typeof hasBirthDate === "boolean") payload.hasBirthDate = hasBirthDate;
+  if (typeof hasBirthTime === "boolean") payload.hasBirthTime = hasBirthTime;
+  if (typeof hasBirthCity === "boolean") payload.hasBirthCity = hasBirthCity;
+  if (typeof timeKnown === "boolean") payload.timeKnown = timeKnown;
 
   return payload;
 }
@@ -178,6 +194,10 @@ function sanitizeToken(value: unknown, maxLength: number) {
   if (typeof value !== "string") return undefined;
   const normalized = value.trim().replace(/[^A-Za-z0-9_.:-]/g, "_").slice(0, maxLength);
   return normalized || undefined;
+}
+
+function sanitizeBoolean(value: unknown) {
+  return typeof value === "boolean" ? value : undefined;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

@@ -169,6 +169,8 @@ export function ZodiacCompatibilityMiniApp({
   const appOpenTrackedRef = useRef(false);
   const lastTabTrackedRef = useRef("");
   const lastMoreTrackedRef = useRef("");
+  const lastNatalOpenedTrackedRef = useRef("");
+  const lastNatalResultTrackedRef = useRef("");
 
   const result = useMemo(() => buildCompatibilityResult(mode, relationshipMode, self, partner), [mode, partner, relationshipMode, self]);
   const selectedSign = selectedSignSlug ? findSign(selectedSignSlug) : null;
@@ -328,6 +330,44 @@ export function ZodiacCompatibilityMiniApp({
     );
   }
 
+  function natalSafePayload(person: PersonState, chart: NatalChart | null, category?: string): ZodiacAnalyticsPayload {
+    const parsed = parseBirthDate(person.birthDate);
+    const hasBirthTime = person.knowsTime && isValidTime(person.birthTime);
+    const hasBirthCity = person.knowsTime && Boolean(getCityById(person.selectedCityId));
+    return analyticsPayload({
+      section: "natal_chart",
+      sign: chart?.sign.slug || (parsed.ok ? parsed.signSlug : person.sign || selectedSignSlug || undefined),
+      category,
+      hasBirthDate: parsed.ok,
+      hasBirthTime,
+      hasBirthCity,
+      timeKnown: person.knowsTime,
+    });
+  }
+
+  function trackNatalChartOpened(person: PersonState, chart: NatalChart | null) {
+    const parsed = parseBirthDate(person.birthDate);
+    const trackKey = `${appDateKey ?? "no-date"}:${parsed.ok ? "valid" : "empty"}:${chart?.sign.slug ?? person.sign ?? selectedSignSlug}:${person.knowsTime ? "time-known" : "time-unknown"}`;
+    if (lastNatalOpenedTrackedRef.current === trackKey) return;
+    lastNatalOpenedTrackedRef.current = trackKey;
+    trackZodiacMiniAppEvent("natal_chart_opened", natalSafePayload(person, chart));
+  }
+
+  function trackNatalChartResultViewed(person: PersonState, chart: NatalChart) {
+    const trackKey = `${appDateKey ?? "no-date"}:${chart.sign.slug}:${chart.hasBirthTime ? "time" : "no-time"}:${chart.hasBirthCity ? "city" : "no-city"}`;
+    if (lastNatalResultTrackedRef.current === trackKey) return;
+    lastNatalResultTrackedRef.current = trackKey;
+    trackZodiacMiniAppEvent("natal_chart_result_viewed", natalSafePayload(person, chart));
+  }
+
+  function trackNatalChartSectionOpen(person: PersonState, chart: NatalChart, category: string) {
+    trackZodiacMiniAppEvent("natal_chart_section_opened", natalSafePayload(person, chart, category));
+  }
+
+  function trackNatalChartVipFreeOpen(person: PersonState, chart: NatalChart) {
+    trackZodiacMiniAppEvent("natal_chart_vip_free_opened", natalSafePayload(person, chart, "vip_free_natal"));
+  }
+
   function resetFlow() {
     setMode(resolvedMode);
     setRelationshipMode("love");
@@ -431,6 +471,10 @@ export function ZodiacCompatibilityMiniApp({
                   onGiveawayClick={trackGiveawayPreviewClick}
                   onMessageHelperUsed={trackMessageHelperUse}
                   onRelationshipMapCategoryOpen={trackRelationshipMapCategoryOpen}
+                  onNatalChartOpened={trackNatalChartOpened}
+                  onNatalChartResultViewed={trackNatalChartResultViewed}
+                  onNatalChartSectionOpen={trackNatalChartSectionOpen}
+                  onNatalChartVipFreeOpen={trackNatalChartVipFreeOpen}
                 />
               ) : null}
               {activeTab === "compatibility" ? (
@@ -688,6 +732,10 @@ function MoreSection({
   onGiveawayClick,
   onMessageHelperUsed,
   onRelationshipMapCategoryOpen,
+  onNatalChartOpened,
+  onNatalChartResultViewed,
+  onNatalChartSectionOpen,
+  onNatalChartVipFreeOpen,
 }: {
   publicMode: boolean;
   appDateKey: string | null;
@@ -700,9 +748,14 @@ function MoreSection({
   onGiveawayClick: () => void;
   onMessageHelperUsed: () => void;
   onRelationshipMapCategoryOpen: (category: string) => void;
+  onNatalChartOpened: (person: PersonState, chart: NatalChart | null) => void;
+  onNatalChartResultViewed: (person: PersonState, chart: NatalChart) => void;
+  onNatalChartSectionOpen: (person: PersonState, chart: NatalChart, category: string) => void;
+  onNatalChartVipFreeOpen: (person: PersonState, chart: NatalChart) => void;
 }) {
   const [messageTone, setMessageTone] = useState<MessageTone>("soft");
   const [activeMoreFeature, setActiveMoreFeature] = useState<MoreFeatureId>("coupleHoroscope");
+  const [natalPerson, setNatalPerson] = useState<PersonState>(() => createInitialPerson(self.sign, "unspecified", false, ""));
   const dateKey = appDateKey ?? getCurrentZodiacDateKey(DEFAULT_ZODIAC_TIME_ZONE);
   const pairReady = Boolean(self.sign && partner.sign);
   const vipFreeAccess = zodiacVipConfig.vipFreeAccessEnabled && !zodiacVipConfig.vipPaymentsEnabled && !zodiacVipConfig.telegramStarsEnabled;
@@ -710,11 +763,16 @@ function MoreSection({
   const coupleCalendar = pairReady ? buildCoupleCalendar(self, partner, dateKey, result, vipFreeAccess ? 30 : 7) : [];
   const reconciliation = pairReady ? buildReconciliationDay(self, partner, dateKey, result) : null;
   const message = pairReady ? buildPartnerMessage(self, partner, dateKey, messageTone, result) : null;
-  const natalChart = buildNatalChart(self);
+  const natalChart = buildNatalChart(natalPerson);
   const selfSign = self.sign ? findSign(self.sign) : null;
   const vipLuckyDays = selfSign ? buildLuckyDays(selfSign, getLuckyDaysStartDate(dateKey), 14) : [];
   const monthForecast = selfSign ? buildPersonalMonthForecast(selfSign, dateKey, result) : null;
   const selectedMoreFeature = moreFeatureTabs.find((item) => item.id === activeMoreFeature) ?? moreFeatureTabs[0];
+
+  useEffect(() => {
+    if (!self.sign) return;
+    setNatalPerson((current) => (current.sign || current.birthDate ? current : { ...current, sign: self.sign }));
+  }, [self.sign]);
 
   return (
     <section className={panelClass(publicMode)}>
@@ -734,7 +792,18 @@ function MoreSection({
         {activeMoreFeature === "coupleCalendar" ? <CoupleCalendarCard publicMode={publicMode} days={coupleCalendar} pairReady={pairReady} /> : null}
         {activeMoreFeature === "reconciliation" ? <ReconciliationDayCard publicMode={publicMode} reconciliation={reconciliation} /> : null}
         {activeMoreFeature === "messageHelper" ? <PartnerMessageCard publicMode={publicMode} message={message} tone={messageTone} onToneChange={setMessageTone} onUsed={onMessageHelperUsed} pairReady={pairReady} /> : null}
-        {activeMoreFeature === "natalChart" ? <NatalChartCard publicMode={publicMode} chart={natalChart} /> : null}
+        {activeMoreFeature === "natalChart" ? (
+          <NatalChartV1Card
+            publicMode={publicMode}
+            person={natalPerson}
+            chart={natalChart}
+            onPersonChange={setNatalPerson}
+            onOpened={onNatalChartOpened}
+            onResultViewed={onNatalChartResultViewed}
+            onSectionOpen={onNatalChartSectionOpen}
+            onVipFreeOpen={onNatalChartVipFreeOpen}
+          />
+        ) : null}
         {activeMoreFeature === "vip" ? (
           <VipFreeAccessCard
             publicMode={publicMode}
@@ -1058,6 +1127,270 @@ function NatalChartCard({ publicMode, chart }: { publicMode: boolean; chart: Nat
         <p className={publicMode ? "rounded-lg border border-amber-200/20 bg-amber-200/10 p-3 text-sm leading-5 text-amber-50" : "rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm leading-5 text-amber-900"}>{chart.precisionNote}</p>
       </div>
     </FeatureCard>
+  );
+}
+
+function NatalChartV1Card({
+  publicMode,
+  person,
+  chart,
+  onPersonChange,
+  onOpened,
+  onResultViewed,
+  onSectionOpen,
+  onVipFreeOpen,
+}: {
+  publicMode: boolean;
+  person: PersonState;
+  chart: NatalChart | null;
+  onPersonChange: (value: PersonState) => void;
+  onOpened: (person: PersonState, chart: NatalChart | null) => void;
+  onResultViewed: (person: PersonState, chart: NatalChart) => void;
+  onSectionOpen: (person: PersonState, chart: NatalChart, category: string) => void;
+  onVipFreeOpen: (person: PersonState, chart: NatalChart) => void;
+}) {
+  const [openSectionId, setOpenSectionId] = useState("core");
+  const openedTrackedRef = useRef("");
+  const resultTrackedRef = useRef("");
+  const parsedDate = parseBirthDate(person.birthDate);
+  const dateError = person.birthDate && !parsedDate.ok ? parsedDate.error : "";
+  const openedTrackKey = `${parsedDate.ok ? "date" : "no-date"}:${person.knowsTime ? "time-known" : "time-unknown"}:${chart?.sign.slug ?? person.sign}`;
+  const resultTrackKey = chart ? `${chart.sign.slug}:${chart.hasBirthTime ? "time" : "no-time"}:${chart.hasBirthCity ? "city" : "no-city"}` : "";
+
+  useEffect(() => {
+    if (openedTrackedRef.current === openedTrackKey) return;
+    openedTrackedRef.current = openedTrackKey;
+    onOpened(person, chart);
+  }, [chart, onOpened, openedTrackKey, person]);
+
+  useEffect(() => {
+    if (!chart || resultTrackedRef.current === resultTrackKey) return;
+    resultTrackedRef.current = resultTrackKey;
+    onResultViewed(person, chart);
+  }, [chart, onResultViewed, person, resultTrackKey]);
+
+  function setTimeKnown(knowsTime: boolean) {
+    onPersonChange({
+      ...person,
+      knowsTime,
+      birthTime: knowsTime ? person.birthTime : "",
+      cityQuery: knowsTime ? person.cityQuery : "",
+      selectedCityId: knowsTime ? person.selectedCityId : "",
+    });
+  }
+
+  function openNatalSection(sectionId: string) {
+    setOpenSectionId((current) => (current === sectionId ? "" : sectionId));
+    if (chart) onSectionOpen(person, chart, sectionId);
+  }
+
+  return (
+    <FeatureCard publicMode={publicMode} title="🔮 Натальная карта" subtitle="Личный астрологический профиль">
+      <div className="grid gap-4">
+        <div className={publicMode ? "rounded-lg border border-fuchsia-200/20 bg-fuchsia-200/10 p-3" : "rounded-lg border border-violet-100 bg-violet-50 p-3"}>
+          <p className={publicMode ? "text-sm leading-6 text-slate-100" : "text-sm leading-6 text-slate-700"}>
+            Разбор характера, эмоций, отношений, сильных сторон и зон роста по дате рождения.
+          </p>
+          <p className={publicMode ? "mt-2 text-xs font-semibold text-emerald-100" : "mt-2 text-xs font-semibold text-emerald-800"}>
+            без сохранения данных: имя, дата, время и город остаются только на этом экране
+          </p>
+        </div>
+
+        <div className={publicMode ? "grid gap-3 rounded-lg border border-white/12 bg-white/8 p-3" : "grid gap-3 rounded-lg border border-slate-200 bg-white p-3"}>
+          <Field label="Имя (необязательно)" publicMode={publicMode}>
+            <input
+              value={person.name}
+              onChange={(event) => onPersonChange({ ...person, name: sanitizeNameInput(event.target.value) })}
+              placeholder="можно оставить пустым"
+              autoComplete="off"
+              autoCorrect="off"
+              spellCheck={false}
+              className="h-12 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900"
+            />
+          </Field>
+
+          <Field label="Дата рождения" publicMode={publicMode}>
+            <input
+              value={person.birthDate}
+              onChange={(event) => updateBirthDate(person, event.target.value, onPersonChange)}
+              placeholder="дд.мм.гггг"
+              inputMode="numeric"
+              autoComplete="off"
+              className={`h-12 w-full rounded-lg border bg-white px-3 text-base text-slate-900 ${dateError ? "border-rose-300" : "border-slate-200"}`}
+            />
+            {dateError ? <p className="mt-2 text-xs font-semibold text-rose-600">{dateError}</p> : null}
+          </Field>
+
+          <label className={publicMode ? "flex items-center gap-3 rounded-lg border border-amber-200/20 bg-amber-200/10 p-3 text-sm font-semibold text-amber-50" : "flex items-center gap-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm font-semibold text-amber-900"}>
+            <input type="checkbox" checked={!person.knowsTime} onChange={(event) => setTimeKnown(!event.target.checked)} className="h-4 w-4 rounded border-slate-300 text-violet-700" />
+            Не знаю время рождения
+          </label>
+
+          {person.knowsTime ? (
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Field label="Время рождения (необязательно)" publicMode={publicMode}>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  autoComplete="off"
+                  autoCorrect="off"
+                  spellCheck={false}
+                  placeholder="чч:мм"
+                  value={person.birthTime}
+                  onChange={(event) => onPersonChange({ ...person, birthTime: formatTimeInput(event.target.value) })}
+                  className="h-12 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900"
+                />
+                {person.birthTime && !isValidTime(person.birthTime) ? <p className="mt-2 text-xs font-semibold text-amber-700">Если время неизвестно, оставьте поле пустым или включите режим без времени.</p> : null}
+              </Field>
+              <NatalCitySelector publicMode={publicMode} value={person} onChange={onPersonChange} />
+            </div>
+          ) : (
+            <p className={publicMode ? "rounded-lg border border-white/10 bg-white/6 p-3 text-sm leading-5 text-slate-300" : "rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm leading-5 text-slate-600"}>
+              Расчёт выполнится по дате рождения. Некоторые детали будут мягче и шире, потому что время и место не указаны.
+            </p>
+          )}
+        </div>
+
+        {!chart ? (
+          <div className={publicMode ? "rounded-lg border border-white/12 bg-white/8 p-4 text-sm leading-6 text-slate-300" : "rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-600"}>
+            {dateError ? "Проверьте дату рождения, и профиль появится здесь." : "Введите дату рождения, чтобы открыть личный астрологический профиль. Имя, время и город можно не указывать."}
+          </div>
+        ) : (
+          <div className="grid gap-4">
+            <div className={publicMode ? "rounded-lg border border-amber-200/25 bg-amber-200/10 p-4" : "rounded-lg border border-amber-200 bg-amber-50 p-4"}>
+              <p className={publicMode ? "text-sm font-semibold text-amber-100" : "text-sm font-semibold text-amber-800"}>{chart.profileLabel}</p>
+              <p className={publicMode ? "mt-2 text-xs font-semibold text-slate-300" : "mt-2 text-xs font-semibold text-slate-600"}>{chart.calculationLabel}</p>
+              <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                {chart.summary.map((item) => (
+                  <InfoRow key={item.label} publicMode={publicMode} label={item.label} text={item.value} />
+                ))}
+              </div>
+              <p className={publicMode ? "mt-3 rounded-lg border border-white/12 bg-black/15 p-3 text-sm leading-5 text-slate-200" : "mt-3 rounded-lg border border-amber-100 bg-white p-3 text-sm leading-5 text-slate-700"}>{chart.accuracyNote}</p>
+            </div>
+
+            <div className="grid gap-2">
+              {chart.sections.map((section) => (
+                <NatalInsightSectionCard
+                  key={section.id}
+                  publicMode={publicMode}
+                  section={section}
+                  open={openSectionId === section.id}
+                  onToggle={() => openNatalSection(section.id)}
+                />
+              ))}
+            </div>
+
+            <NatalCompassCard publicMode={publicMode} compass={chart.compass} />
+
+            <div className={publicMode ? "rounded-lg border border-amber-200/25 bg-gradient-to-br from-amber-200/12 via-fuchsia-300/10 to-cyan-300/10 p-4" : "rounded-lg border border-amber-200 bg-amber-50 p-4"}>
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className={publicMode ? "text-base font-semibold text-white" : "text-base font-semibold text-slate-950"}>👑 VIP-разбор открыт бесплатно до {formatVipFreeAccessDate(zodiacVipConfig.vipFreeAccessUntil)}</p>
+                  <p className={publicMode ? "mt-1 text-sm leading-5 text-slate-300" : "mt-1 text-sm leading-5 text-slate-700"}>Ранний доступ открыт без оплаты. Позже часть расширенных функций может перейти в подписку.</p>
+                </div>
+                <Crown className={publicMode ? "h-5 w-5 shrink-0 text-amber-100" : "h-5 w-5 shrink-0 text-amber-700"} />
+              </div>
+              <button type="button" onClick={() => onVipFreeOpen(person, chart)} className={publicMode ? "mt-3 rounded-lg border border-amber-200/30 bg-amber-200/10 px-3 py-2 text-sm font-semibold text-amber-50" : "mt-3 rounded-lg border border-amber-300 bg-white px-3 py-2 text-sm font-semibold text-amber-900"}>
+                Смотреть бесплатные расширения
+              </button>
+              <div className="mt-3 grid gap-2">
+                {chart.vipBlocks.map((block) => (
+                  <InfoRow key={block.title} publicMode={publicMode} label={block.title} text={block.text} />
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </FeatureCard>
+  );
+}
+
+function NatalCitySelector({ publicMode, value, onChange }: { publicMode: boolean; value: PersonState; onChange: (value: PersonState) => void }) {
+  const selectedCity = getCityById(value.selectedCityId);
+  const suggestions = value.cityQuery.trim() && !selectedCity ? searchCities(value.cityQuery).slice(0, 5) : [];
+
+  return (
+    <div>
+      <Field label="Город рождения (необязательно)" publicMode={publicMode}>
+        <input
+          value={value.cityQuery}
+          onChange={(event) => onChange({ ...value, cityQuery: event.target.value, selectedCityId: "" })}
+          placeholder="Киев или Kyiv"
+          autoComplete="off"
+          className="h-12 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900"
+        />
+      </Field>
+
+      {suggestions.length > 0 ? (
+        <div className="mt-2 max-h-44 overflow-y-auto rounded-lg border border-slate-200 bg-white p-1 shadow-sm">
+          {suggestions.map((city) => (
+            <button
+              key={city.cityId}
+              type="button"
+              onClick={() => onChange({ ...value, selectedCityId: city.cityId, cityQuery: cityLabel(city) })}
+              className="flex w-full items-start gap-2 rounded-md px-3 py-2 text-left text-sm text-slate-700 hover:bg-cyan-50"
+            >
+              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-cyan-700" />
+              <span>
+                <span className="block font-semibold text-slate-950">{city.nameRu}, {city.countryRu}</span>
+                <span className="block text-xs text-slate-500">{city.nameEn} · {city.timezone}</span>
+              </span>
+            </button>
+          ))}
+        </div>
+      ) : null}
+
+      {selectedCity ? (
+        <div className="mt-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-900">
+          {cityLabel(selectedCity)} · {selectedCity.timezone}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function NatalInsightSectionCard({ publicMode, section, open, onToggle }: { publicMode: boolean; section: NatalInsightSection; open: boolean; onToggle: () => void }) {
+  return (
+    <div className={publicMode ? "rounded-lg border border-white/12 bg-white/8" : "rounded-lg border border-slate-200 bg-white"}>
+      <button type="button" onClick={onToggle} aria-expanded={open} className={publicMode ? "flex w-full items-center justify-between gap-3 px-3 py-3 text-left text-sm font-semibold text-white" : "flex w-full items-center justify-between gap-3 px-3 py-3 text-left text-sm font-semibold text-slate-950"}>
+        <span>{section.title}</span>
+        <span className={publicMode ? "text-xs text-slate-300" : "text-xs text-slate-500"}>{open ? "Свернуть" : "Открыть"}</span>
+      </button>
+      {open ? (
+        <div className="grid gap-2 px-3 pb-3">
+          {section.items.map((item) => (
+            <InfoRow key={item.label} publicMode={publicMode} label={item.label} text={item.text} />
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function NatalCompassCard({ publicMode, compass }: { publicMode: boolean; compass: NatalCompass }) {
+  return (
+    <div className={publicMode ? "rounded-lg border border-cyan-200/20 bg-cyan-200/10 p-4" : "rounded-lg border border-cyan-100 bg-cyan-50 p-4"}>
+      <p className={publicMode ? "text-base font-semibold text-white" : "text-base font-semibold text-slate-950"}>🧭 Личный компас</p>
+      <div className="mt-3 grid gap-3">
+        <NatalCompassList publicMode={publicMode} title="3 сильные стороны" items={compass.strengths} />
+        <NatalCompassList publicMode={publicMode} title="3 зоны риска" items={compass.risks} />
+        <NatalCompassList publicMode={publicMode} title="3 действия на ближайший месяц" items={compass.actions} />
+      </div>
+    </div>
+  );
+}
+
+function NatalCompassList({ publicMode, title, items }: { publicMode: boolean; title: string; items: string[] }) {
+  return (
+    <div>
+      <p className={publicMode ? "text-xs font-semibold uppercase tracking-[0.08em] text-cyan-100" : "text-xs font-semibold uppercase tracking-[0.08em] text-cyan-800"}>{title}</p>
+      <ul className="mt-2 grid gap-2">
+        {items.map((item) => (
+          <li key={item} className={publicMode ? "rounded-lg border border-white/10 bg-white/7 px-3 py-2 text-sm leading-5 text-slate-200" : "rounded-lg border border-cyan-100 bg-white px-3 py-2 text-sm leading-5 text-slate-700"}>{item}</li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
@@ -1858,6 +2191,44 @@ interface NatalChart {
   loveStyle: string;
   communicationStyle: string;
   precisionNote: string;
+  calculationLabel: string;
+  accuracyNote: string;
+  profileLabel: string;
+  summary: NatalSummaryItem[];
+  sections: NatalInsightSection[];
+  compass: NatalCompass;
+  vipBlocks: NatalVipBlock[];
+  hasBirthDate: boolean;
+  hasBirthTime: boolean;
+  hasBirthCity: boolean;
+  timeKnown: boolean;
+}
+
+interface NatalSummaryItem {
+  label: string;
+  value: string;
+}
+
+interface NatalInsightItem {
+  label: string;
+  text: string;
+}
+
+interface NatalInsightSection {
+  id: string;
+  title: string;
+  items: NatalInsightItem[];
+}
+
+interface NatalCompass {
+  strengths: string[];
+  risks: string[];
+  actions: string[];
+}
+
+interface NatalVipBlock {
+  title: string;
+  text: string;
 }
 
 interface MonthForecast {
@@ -2457,6 +2828,7 @@ function buildNatalChart(person: PersonState): NatalChart | null {
   const traits = signTraits[sign.slug];
   const seed = hashString(`${sign.slug}:${parsed.iso}:${normalizeName(person.name)}`);
   const hasPreciseData = person.knowsTime && isValidTime(person.birthTime) && Boolean(getCityById(person.selectedCityId));
+  const v1Details = buildNatalV1Details(person, parsed, sign, seed);
 
   return {
     sign,
@@ -2468,9 +2840,157 @@ function buildNatalChart(person: PersonState): NatalChart | null {
     growth: pickLine(natalGrowth[traits.modality], seed, 3),
     loveStyle: pickLine(natalLoveStyles[sign.element], seed, 4),
     communicationStyle: pickLine(natalCommunicationStyles[traits.polarity], seed, 5),
+    ...v1Details,
     precisionNote: hasPreciseData
       ? "Точность выше, потому что указаны время и город рождения. Асцендент и дома не рассчитываются в этой версии."
       : "Расчёт выполнен без точного времени рождения. Асцендент и дома могут быть приблизительными.",
+  };
+}
+
+function buildNatalV1Details(person: PersonState, parsed: Extract<ParsedDate, { ok: true }>, sign: ZodiacSign, baseSeed: number): Omit<NatalChart, "sign" | "element" | "modality" | "polarity" | "archetype" | "strengths" | "growth" | "loveStyle" | "communicationStyle" | "precisionNote"> {
+  const traits = signTraits[sign.slug];
+  const selectedCity = getCityById(person.selectedCityId);
+  const timeKnown = person.knowsTime;
+  const hasBirthTime = timeKnown && isValidTime(person.birthTime);
+  const hasBirthCity = timeKnown && Boolean(selectedCity);
+  const timeTone = hasBirthTime ? natalTimeTone(person.birthTime) : "unknown";
+  const cityTone = hasBirthCity ? natalCityTone(selectedCity) : "open";
+  const nameTone = normalizeName(person.name) ? "name_present" : "name_absent";
+  const seed = hashString([
+    sign.slug,
+    parsed.iso,
+    hasBirthTime ? person.birthTime : "unknown_time",
+    hasBirthCity ? selectedCity?.cityId : "unknown_city",
+    nameTone,
+  ].join("|"));
+  const element = natalElementProfiles[sign.element];
+  const modality = natalModalityProfiles[traits.modality];
+  const polarity = natalPolarityProfiles[traits.polarity];
+  const timeProfile = natalTimeProfiles[timeTone];
+  const cityProfile = natalCityProfiles[cityTone];
+  const nameResonance = nameTone === "name_present" ? pickLine(natalNameResonanceLines, baseSeed, 2) : pickLine(natalNoNameLines, baseSeed, 2);
+  const monthAdvice = pickLine([...element.monthAdvice, ...modality.monthAdvice], seed, 7);
+  const mainRisk = pickLine([...element.risks, ...modality.risks, ...polarity.risks], seed, 8);
+  const mainStrength = pickLine([...element.strengths, ...modality.strengths, ...polarity.strengths], seed, 9);
+  const relationshipNeed = pickLine([...element.relationshipNeeds, ...polarity.relationshipNeeds], seed, 10);
+  const energyType = pickLine([...element.energyTypes, timeProfile.energy], seed, 11);
+  const emotionalStyle = pickLine([...element.emotionalStyles, timeProfile.emotion], seed, 12);
+  const profileLabel = `${sign.emoji} ${sign.name} · ${elementLabels[sign.element]} · ${modalityLabels[traits.modality]}`;
+  const accuracyNote = hasBirthTime && hasBirthCity
+    ? "Время и город добавляют личные нюансы, но результат остаётся мягкой астрологической подсказкой."
+    : "Расчёт выполнен без точного времени и места рождения. Некоторые детали могут быть приблизительными.";
+
+  const summary: NatalSummaryItem[] = [
+    { label: "Тип энергии", value: energyType },
+    { label: "Эмоциональный стиль", value: emotionalStyle },
+    { label: "В отношениях", value: relationshipNeed },
+    { label: "Главная сила", value: mainStrength },
+    { label: "Главный риск", value: mainRisk },
+    { label: "Совет месяца", value: monthAdvice },
+  ];
+
+  const sections: NatalInsightSection[] = [
+    {
+      id: "core",
+      title: "☀️ Ядро личности",
+      items: [
+        { label: "Базовый характер", text: pickLine(natalArchetypes[sign.slug], seed, 1) },
+        { label: "Источник силы", text: mainStrength },
+        { label: "Как проявляется", text: pickLine([...modality.selfExpression, ...cityProfile.expression], seed, 13) },
+      ],
+    },
+    {
+      id: "emotions",
+      title: "🌙 Эмоции и внутренний мир",
+      items: [
+        { label: "В стрессе", text: pickLine(element.stress, seed, 14) },
+        { label: "Чувство безопасности", text: pickLine([...element.safety, timeProfile.safety], seed, 15) },
+        { label: "Уязвимость", text: pickLine([...polarity.vulnerabilities, ...cityProfile.vulnerabilities], seed, 16) },
+      ],
+    },
+    {
+      id: "thinking",
+      title: "💬 Мышление и общение",
+      items: [
+        { label: "Решения", text: pickLine([...modality.decisions, timeProfile.decisions], seed, 17) },
+        { label: "В споре", text: pickLine([...element.arguments, ...polarity.arguments], seed, 18) },
+        { label: "Как объяснять мысли", text: pickLine([...polarity.communication, ...natalCommunicationStyles[traits.polarity]], seed, 19) },
+      ],
+    },
+    {
+      id: "love",
+      title: "❤️ Любовь и отношения",
+      items: [
+        { label: "Что важно", text: relationshipNeed },
+        { label: "Привязанность", text: pickLine([...element.attachment, timeProfile.attachment], seed, 20) },
+        { label: "Что может ранить", text: pickLine(element.loveWounds, seed, 21) },
+        { label: "Подходящий партнёр", text: pickLine([...element.partnerStyle, ...modality.partnerStyle], seed, 22) },
+      ],
+    },
+    {
+      id: "energy",
+      title: "🔥 Энергия и мотивация",
+      items: [
+        { label: "Что заряжает", text: pickLine([...element.motivation, timeProfile.motivation], seed, 23) },
+        { label: "Где выгорает", text: pickLine([...element.burnout, ...modality.burnout], seed, 24) },
+        { label: "Как действовать", text: pickLine([...modality.actionStyle, ...cityProfile.actionStyle], seed, 25) },
+      ],
+    },
+    {
+      id: "money",
+      title: "💼 Деньги и реализация",
+      items: [
+        { label: "Рабочий стиль", text: pickLine([...element.workStyle, ...modality.workStyle], seed, 26) },
+        { label: "Сильная сторона в делах", text: pickLine(element.businessStrengths, seed, 27) },
+        { label: "Финансовый риск", text: pickLine([...element.moneyRisks, ...polarity.moneyRisks], seed, 28) },
+      ],
+    },
+    {
+      id: "shadow",
+      title: "🧩 Тени характера",
+      items: [
+        { label: "Слабое место", text: mainRisk },
+        { label: "Защитная реакция", text: pickLine([...polarity.defenses, timeProfile.defenses], seed, 29) },
+        { label: "Что может мешать", text: pickLine([...modality.risks, ...element.risks], seed, 30) },
+      ],
+    },
+    {
+      id: "growth",
+      title: "🌱 Зона роста",
+      items: [
+        { label: "Главный урок", text: pickLine(natalGrowth[traits.modality], seed, 31) },
+        { label: "Что развивать", text: pickLine([...modality.growth, ...element.growth], seed, 32) },
+        { label: "Мягкий совет", text: monthAdvice },
+      ],
+    },
+  ];
+
+  const compass: NatalCompass = {
+    strengths: pickUniqueLines([...element.strengths, ...modality.strengths, ...polarity.strengths], seed, 40, 3),
+    risks: pickUniqueLines([...element.risks, ...modality.risks, ...polarity.risks], seed, 50, 3),
+    actions: pickUniqueLines([...element.monthAdvice, ...modality.monthAdvice, ...timeProfile.monthActions], seed, 60, 3),
+  };
+
+  const vipBlocks: NatalVipBlock[] = [
+    { title: "Глубже про отношения", text: `${relationshipNeed}. ${pickLine(element.relationshipAdvice, seed, 70)}` },
+    { title: "Фокус месяца", text: monthAdvice },
+    { title: "Стиль лучших дней", text: pickLine([...timeProfile.bestDays, ...cityProfile.bestDays], seed, 71) },
+    { title: "План роста", text: pickLine([...modality.growthPlan, ...element.growthPlan], seed, 72) },
+    { title: "Как использовать в паре", text: pickLine([...element.compatibilityHints, nameResonance], seed, 73) },
+  ];
+
+  return {
+    calculationLabel: "интерпретационный расчёт по введённым данным",
+    accuracyNote,
+    profileLabel,
+    summary,
+    sections,
+    compass,
+    vipBlocks,
+    hasBirthDate: true,
+    hasBirthTime,
+    hasBirthCity,
+    timeKnown,
   };
 }
 
@@ -2822,6 +3342,357 @@ const weeklyGuidanceByElement: Record<string, { theme: string[]; love: string[];
 
 const luckyStatuses = ["🍀 удачный день", "⚖️ нейтральный день", "⚠️ осторожнее"];
 const luckyAreas = ["любовь", "деньги", "дела", "отдых", "разговоры", "покупки", "документы"];
+
+type NatalTimeTone = "morning" | "day" | "evening" | "night" | "unknown";
+type NatalCityTone = "north" | "south" | "east" | "west" | "open";
+
+function natalTimeTone(value: string): NatalTimeTone {
+  if (!isValidTime(value)) return "unknown";
+  const hour = Number(value.slice(0, 2));
+  if (hour >= 5 && hour < 11) return "morning";
+  if (hour >= 11 && hour < 17) return "day";
+  if (hour >= 17 && hour < 23) return "evening";
+  return "night";
+}
+
+function natalCityTone(city: City | null): NatalCityTone {
+  if (!city) return "open";
+  if (city.latitude >= 50) return "north";
+  if (city.latitude <= 35) return "south";
+  if (city.longitude >= 50) return "east";
+  if (city.longitude <= 20) return "west";
+  return "open";
+}
+
+function pickUniqueLines(items: string[], seed: number, offset: number, count: number) {
+  const available = Array.from(new Set(items));
+  return Array.from({ length: Math.min(count, available.length) }, (_, index) => {
+    const item = pickLine(available, seed, offset + index);
+    available.splice(available.indexOf(item), 1);
+    return item;
+  });
+}
+
+const natalElementProfiles: Record<string, {
+  energyTypes: string[];
+  emotionalStyles: string[];
+  strengths: string[];
+  risks: string[];
+  relationshipNeeds: string[];
+  monthAdvice: string[];
+  stress: string[];
+  safety: string[];
+  arguments: string[];
+  attachment: string[];
+  loveWounds: string[];
+  partnerStyle: string[];
+  motivation: string[];
+  burnout: string[];
+  workStyle: string[];
+  businessStrengths: string[];
+  moneyRisks: string[];
+  growth: string[];
+  relationshipAdvice: string[];
+  growthPlan: string[];
+  compatibilityHints: string[];
+}> = {
+  fire: {
+    energyTypes: ["быстрая, живая, инициативная", "искренняя и смелая, когда есть ясная цель"],
+    emotionalStyles: ["переживает ярко и быстро, поэтому помогает пауза перед ответом", "чувства включаются через действие и честный разговор"],
+    strengths: ["смелость начинать", "умение вдохновлять", "прямота без лишней игры"],
+    risks: ["поспешные решения", "резкий тон на эмоциях", "усталость от ожидания"],
+    relationshipNeeds: ["важны искра, свобода и честное желание быть рядом", "нужен партнёр, который не гасит инициативу"],
+    monthAdvice: ["выберите один смелый шаг и не распыляйте энергию", "сначала направление, потом скорость"],
+    stress: ["в стрессе может давить темпом, хотя внутри просто хочет ясности"],
+    safety: ["безопасность появляется, когда есть честность и право действовать"],
+    arguments: ["в споре лучше говорить короче и не повышать градус"],
+    attachment: ["привязанность проявляется через инициативу, защиту и живые жесты"],
+    loveWounds: ["может ранить равнодушие, холодный тон и ощущение, что инициативу не замечают"],
+    partnerStyle: ["подходит тёплый, самостоятельный партнёр с уважением к свободе"],
+    motivation: ["заряжает вызов, движение и ощущение выбранного пути"],
+    burnout: ["быстро выгорает там, где нужно долго ждать без обратной связи"],
+    workStyle: ["работает сильнее, когда есть короткая цель и пространство для решения"],
+    businessStrengths: ["умеет запускать процессы и брать ответственность в моменте"],
+    moneyRisks: ["риск импульсивных покупок и решений на подъёме"],
+    growth: ["важно развивать терпение и мягкую силу"],
+    relationshipAdvice: ["в отношениях помогает сначала назвать желание, а потом просить ответ"],
+    growthPlan: ["один день в неделю оставляйте для восстановления, а не для нового старта"],
+    compatibilityHints: ["в паре полезно заранее договариваться о темпе и паузах"],
+  },
+  earth: {
+    energyTypes: ["устойчивая, практичная, телесная", "спокойная и надёжная, когда есть понятная опора"],
+    emotionalStyles: ["переживает глубоко, но раскрывается постепенно", "чувства становятся яснее через заботу и стабильность"],
+    strengths: ["надёжность", "терпение", "умение доводить до результата"],
+    risks: ["упрямство", "страх перемен", "желание контролировать детали"],
+    relationshipNeeds: ["важны стабильность, верность и простые регулярные поступки", "нужен партнёр, который ценит спокойный ритм"],
+    monthAdvice: ["укрепите базу: режим, деньги, дом или рабочий порядок", "выберите практичный шаг вместо долгих сомнений"],
+    stress: ["в стрессе может замыкаться на контроле и привычных схемах"],
+    safety: ["безопасность дают факты, повторяемая забота и телесный комфорт"],
+    arguments: ["в споре важно не превращать принцип в стену"],
+    attachment: ["привязанность проявляется через верность, помощь и постоянство"],
+    loveWounds: ["может ранить нестабильность, обещания без действий и пренебрежение бытом"],
+    partnerStyle: ["подходит партнёр, который умеет быть рядом спокойно и предсказуемо"],
+    motivation: ["заряжает ощутимый результат и понятная польза"],
+    burnout: ["быстро выгорает от хаоса, спешки и постоянной смены правил"],
+    workStyle: ["работает сильнее через план, качество и аккуратный темп"],
+    businessStrengths: ["видит слабые места в системе и умеет укреплять основу"],
+    moneyRisks: ["риск держаться за старый финансовый сценарий дольше, чем нужно"],
+    growth: ["важно развивать гибкость и доверие к новому опыту"],
+    relationshipAdvice: ["в отношениях помогает говорить о потребностях до накопления усталости"],
+    growthPlan: ["раз в неделю пробуйте маленькое новое действие без давления на идеальный результат"],
+    compatibilityHints: ["в паре полезно разделять заботу и контроль, чтобы тепло не становилось обязанностью"],
+  },
+  air: {
+    energyTypes: ["лёгкая, интеллектуальная, подвижная", "быстрая на идеи и контакты"],
+    emotionalStyles: ["чувства легче понимать через разговор и ясные формулировки", "внутренний мир оживает, когда есть пространство для мысли"],
+    strengths: ["ясность мысли", "любопытство", "умение договариваться"],
+    risks: ["перегруз идеями", "уход от чувств в объяснения", "нехватка завершения"],
+    relationshipNeeds: ["важны интерес, диалог и свобода быть собой", "нужен партнёр, который слышит слова и не душит контролем"],
+    monthAdvice: ["сократите список идей до одной главной темы", "договоритесь письменно о том, что важно не забыть"],
+    stress: ["в стрессе может говорить слишком быстро или уходить в анализ"],
+    safety: ["безопасность появляется через ясные слова, честные вопросы и уважение к дистанции"],
+    arguments: ["в споре лучше не выигрывать логикой, а уточнять чувства"],
+    attachment: ["привязанность проявляется через интерес, переписку и желание делиться мыслями"],
+    loveWounds: ["может ранить молчание без объяснений и давление на свободу"],
+    partnerStyle: ["подходит партнёр, с которым можно разговаривать легко и честно"],
+    motivation: ["заряжают новые идеи, люди и ощущение выбора"],
+    burnout: ["быстро выгорает от рутины без смысла и бесконечных обещаний"],
+    workStyle: ["работает сильнее через коммуникацию, анализ и быстрые связки"],
+    businessStrengths: ["умеет видеть варианты и превращать хаос в понятную схему"],
+    moneyRisks: ["риск тратить из любопытства или держать слишком много открытых планов"],
+    growth: ["важно развивать глубину, последовательность и контакт с телом"],
+    relationshipAdvice: ["в отношениях помогает говорить не только мысли, но и чувства"],
+    growthPlan: ["каждую неделю завершайте одну маленькую задачу до конца"],
+    compatibilityHints: ["в паре полезно фиксировать договорённости и не додумывать за партнёра"],
+  },
+  water: {
+    energyTypes: ["чувствительная, глубокая, интуитивная", "мягкая и сильная через эмоциональную честность"],
+    emotionalStyles: ["переживает глубоко и нуждается в бережном темпе", "чувства становятся опорой, когда есть границы"],
+    strengths: ["эмпатия", "интуиция", "умение создавать близость"],
+    risks: ["растворение в чужих эмоциях", "молчаливые ожидания", "уход в обиду"],
+    relationshipNeeds: ["важны безопасность, нежность и эмоциональная честность", "нужен партнёр, который бережно относится к чувствам"],
+    monthAdvice: ["сначала позаботьтесь о внутреннем ритме, затем принимайте решения", "назовите чувство простыми словами и не ждите угадывания"],
+    stress: ["в стрессе может закрываться или принимать чужое настроение на себя"],
+    safety: ["безопасность дают тепло, доверие и право быть чувствительным человеком"],
+    arguments: ["в споре важно говорить прямо, не проверяя чувства молчанием"],
+    attachment: ["привязанность проявляется через заботу, память о деталях и мягкое присутствие"],
+    loveWounds: ["может ранить холодность, грубость и обесценивание переживаний"],
+    partnerStyle: ["подходит внимательный партнёр, который не пугается глубины"],
+    motivation: ["заряжает смысл, близость и ощущение нужности"],
+    burnout: ["быстро выгорает от эмоциональной перегрузки и чужих драм"],
+    workStyle: ["работает сильнее там, где есть доверие, красота и человеческий смысл"],
+    businessStrengths: ["умеет чувствовать настроение людей и создавать поддерживающую среду"],
+    moneyRisks: ["риск финансовых решений из тревоги или желания всем помочь"],
+    growth: ["важно развивать границы, прямоту и спокойное различение своих чувств"],
+    relationshipAdvice: ["в отношениях помогает просить поддержку прямо и вовремя"],
+    growthPlan: ["каждую неделю выделяйте время на тишину, восстановление и честный разговор с собой"],
+    compatibilityHints: ["в паре полезно договариваться о границах заботы и не угадывать молча"],
+  },
+};
+
+const natalModalityProfiles: Record<"cardinal" | "fixed" | "mutable", {
+  strengths: string[];
+  risks: string[];
+  monthAdvice: string[];
+  selfExpression: string[];
+  decisions: string[];
+  partnerStyle: string[];
+  burnout: string[];
+  actionStyle: string[];
+  workStyle: string[];
+  growth: string[];
+  growthPlan: string[];
+}> = {
+  cardinal: {
+    strengths: ["умение начинать", "готовность брать инициативу", "смелость делать первый шаг"],
+    risks: ["желание решить всё сразу", "нетерпение к чужому темпу", "перегруз ответственностью"],
+    monthAdvice: ["начинайте с одного шага, который можно спокойно завершить", "перед стартом оставьте место для чужого мнения"],
+    selfExpression: ["проявляется через действие и ясное направление", "лучше раскрывается, когда не тащит всё в одиночку"],
+    decisions: ["решения принимает быстрее, если видит цель и ближайший шаг"],
+    partnerStyle: ["подходит партнёр, который уважает инициативу, но умеет мягко замедлять"],
+    burnout: ["выгорает, когда всё держится только на личной инициативе"],
+    actionStyle: ["действовать лучше по схеме: старт, пауза, сверка, продолжение"],
+    workStyle: ["сильнее всего в запуске, переговорах и выборе направления"],
+    growth: ["развивать завершение, делегирование и спокойную паузу"],
+    growthPlan: ["планируйте не только старт, но и точку отдыха после него"],
+  },
+  fixed: {
+    strengths: ["устойчивость", "верность выбранному пути", "умение удерживать качество"],
+    risks: ["застревание в привычном", "сопротивление переменам", "накопление напряжения молча"],
+    monthAdvice: ["оставьте одну привычку, которая поддерживает, и обновите одну, которая мешает", "проверьте, где стабильность стала тесной"],
+    selfExpression: ["проявляется через постоянство и сильное внутреннее ядро", "лучше раскрывается, когда есть право менять форму без потери себя"],
+    decisions: ["решения принимает глубоко и редко любит давление"],
+    partnerStyle: ["подходит партнёр, который не ломает ритм, а договаривается о постепенных изменениях"],
+    burnout: ["выгорает от долгого напряжения без возможности обновиться"],
+    actionStyle: ["действовать лучше через маленькие устойчивые изменения"],
+    workStyle: ["сильнее всего в долгих задачах, качестве и сохранении результата"],
+    growth: ["развивать гибкость, обновление и мягкое отпускание старого"],
+    growthPlan: ["раз в неделю меняйте одну мелкую привычку и наблюдайте, что стало легче"],
+  },
+  mutable: {
+    strengths: ["гибкость", "адаптация", "умение видеть разные стороны"],
+    risks: ["распыление", "сомнения перед выбором", "усталость от чужих ожиданий"],
+    monthAdvice: ["выберите один фокус и защищайте его от лишнего шума", "меньше вариантов, больше маленьких завершений"],
+    selfExpression: ["проявляется через живую настройку под ситуацию", "лучше раскрывается, когда есть ясная рамка"],
+    decisions: ["решения принимает легче, если сократить выбор до двух вариантов"],
+    partnerStyle: ["подходит партнёр, который даёт свободу, но помогает держать общий курс"],
+    burnout: ["выгорает от слишком многих ролей и незавершённых обещаний"],
+    actionStyle: ["действовать лучше короткими циклами: выбрать, сделать, зафиксировать"],
+    workStyle: ["сильнее всего в адаптации, обучении и соединении разных идей"],
+    growth: ["развивать устойчивость, личные границы и простую систему выбора"],
+    growthPlan: ["каждую неделю закрывайте один хвост, чтобы освободить внимание"],
+  },
+};
+
+const natalPolarityProfiles: Record<"active" | "receptive", {
+  strengths: string[];
+  risks: string[];
+  relationshipNeeds: string[];
+  vulnerabilities: string[];
+  arguments: string[];
+  communication: string[];
+  moneyRisks: string[];
+  defenses: string[];
+}> = {
+  active: {
+    strengths: ["умение проявляться открыто", "быстрая реакция", "инициатива в контакте"],
+    risks: ["спешка с выводами", "давление на ответ", "желание быть услышанным первым"],
+    relationshipNeeds: ["важна ясная обратная связь", "нужна свобода говорить прямо"],
+    vulnerabilities: ["уязвимость возникает, когда инициативу встречают холодом"],
+    arguments: ["в споре важно не ускорять другого человека"],
+    communication: ["лучше начинать с мягкого факта и вопроса, а не с требования"],
+    moneyRisks: ["финансовый риск связан с быстрыми решениями без паузы"],
+    defenses: ["защита может включаться через резкость или уход в действие"],
+  },
+  receptive: {
+    strengths: ["глубина восприятия", "чуткость", "умение замечать подтекст"],
+    risks: ["молчаливые ожидания", "накопление обиды", "сложность попросить прямо"],
+    relationshipNeeds: ["важны безопасность и бережный тон", "нужно время, чтобы раскрыться без давления"],
+    vulnerabilities: ["уязвимость возникает, когда чувства торопят или обесценивают"],
+    arguments: ["в споре важно не уходить в молчание вместо просьбы"],
+    communication: ["лучше заранее назвать потребность простыми словами"],
+    moneyRisks: ["финансовый риск связан с тревогой или желанием сохранить комфорт любой ценой"],
+    defenses: ["защита может включаться через закрытость или проверку настроения"],
+  },
+};
+
+const natalTimeProfiles: Record<NatalTimeTone, {
+  energy: string;
+  emotion: string;
+  safety: string;
+  decisions: string;
+  attachment: string;
+  motivation: string;
+  defenses: string;
+  monthActions: string[];
+  bestDays: string[];
+}> = {
+  morning: {
+    energy: "утренний импульс: легче начинать и быстро собираться",
+    emotion: "эмоции яснее после движения и простого плана",
+    safety: "чувство безопасности усиливает понятное начало дня",
+    decisions: "решения лучше принимать после короткой проверки фактов",
+    attachment: "привязанность проявляется через заботливую инициативу",
+    motivation: "заряжает ощущение свежего старта",
+    defenses: "в защите может торопиться с ответом",
+    monthActions: ["начинайте важные дела с утра", "ставьте короткий первый шаг", "планируйте отдых до перегруза"],
+    bestDays: ["лучшие дни — те, где есть ранний понятный старт", "хорошо работают встречи без затяжного ожидания"],
+  },
+  day: {
+    energy: "дневная энергия: сильнее в ясных задачах и контактах",
+    emotion: "эмоции становятся устойчивее через структуру",
+    safety: "безопасность дают понятные правила и обратная связь",
+    decisions: "решения лучше принимать, когда виден практический результат",
+    attachment: "привязанность проявляется через участие в реальных делах",
+    motivation: "заряжает видимый прогресс",
+    defenses: "в защите может уходить в контроль деталей",
+    monthActions: ["закрывайте дела по одному", "фиксируйте договорённости", "оставляйте окно для восстановления"],
+    bestDays: ["лучшие дни — с понятной задачей и спокойным темпом", "подойдут дни для деловых разговоров и планов"],
+  },
+  evening: {
+    energy: "вечерний ритм: сильнее в близости и творческом настрое",
+    emotion: "эмоции раскрываются через атмосферу и мягкий разговор",
+    safety: "безопасность усиливает тёплый контакт без спешки",
+    decisions: "решения лучше принимать после паузы и внутренней сверки",
+    attachment: "привязанность проявляется через внимание и присутствие",
+    motivation: "заряжает красота, контакт и ощущение смысла",
+    defenses: "в защите может ждать, что другой сам почувствует настроение",
+    monthActions: ["планируйте важные разговоры без спешки", "добавляйте в неделю творческий вечер", "не решайте всё на пике эмоций"],
+    bestDays: ["лучшие дни — с мягкой атмосферой и временем на разговор", "подойдут дни для свиданий и восстановления связи"],
+  },
+  night: {
+    energy: "ночной ритм: глубже чувствует скрытые мотивы и тишину",
+    emotion: "эмоции нуждаются в бережном выходе, а не в резких выводах",
+    safety: "безопасность дают границы, сон и честная тишина",
+    decisions: "решения лучше переносить на момент, когда меньше тревоги",
+    attachment: "привязанность проявляется через глубокое доверие",
+    motivation: "заряжает смысл и внутреннее сосредоточение",
+    defenses: "в защите может уходить в молчание или подозрения",
+    monthActions: ["берегите сон", "проверяйте тревожные мысли фактами", "оставляйте место для тихого восстановления"],
+    bestDays: ["лучшие дни — без перегруза и с правом на тишину", "подойдут дни для глубоких разговоров без давления"],
+  },
+  unknown: {
+    energy: "общий ритм знака без уточнения времени",
+    emotion: "эмоциональный стиль описан мягко, без деталей по времени",
+    safety: "безопасность усиливают ясные границы и спокойный темп",
+    decisions: "решения лучше принимать после паузы и проверки ощущения",
+    attachment: "привязанность проявляется через поступки, которые повторяются",
+    motivation: "заряжает то, что совпадает с личным смыслом",
+    defenses: "в защите важно не действовать на эмоциях",
+    monthActions: ["наблюдайте, в какое время дня больше сил", "не требуйте от себя постоянного одинакового темпа", "выберите один бережный ритуал недели"],
+    bestDays: ["лучшие дни — те, где есть гибкость и меньше давления", "подойдут дни с возможностью менять темп"],
+  },
+};
+
+const natalCityProfiles: Record<NatalCityTone, {
+  expression: string[];
+  vulnerabilities: string[];
+  actionStyle: string[];
+  bestDays: string[];
+}> = {
+  north: {
+    expression: ["проявляется спокойнее, когда есть выдержка и долгий горизонт"],
+    vulnerabilities: ["уязвимость усиливается от эмоционального холода"],
+    actionStyle: ["действовать лучше через выдержку и ясный план"],
+    bestDays: ["лучше выбирать дни, где есть запас времени и меньше спешки"],
+  },
+  south: {
+    expression: ["проявляется теплее, когда есть живой контакт и движение"],
+    vulnerabilities: ["уязвимость усиливается от резкого обрыва общения"],
+    actionStyle: ["действовать лучше через короткий живой шаг"],
+    bestDays: ["лучше выбирать дни для встреч, движения и лёгкого контакта"],
+  },
+  east: {
+    expression: ["проявляется через поиск смысла, обучения и нового маршрута"],
+    vulnerabilities: ["уязвимость усиливается, когда нет пространства для роста"],
+    actionStyle: ["действовать лучше через расширение кругозора и один новый опыт"],
+    bestDays: ["лучше выбирать дни для обучения, поездок и обновления планов"],
+  },
+  west: {
+    expression: ["проявляется через диалог, социальный такт и чувство формы"],
+    vulnerabilities: ["уязвимость усиливается, когда нарушается баланс и уважение"],
+    actionStyle: ["действовать лучше через переговоры и красивую простую форму"],
+    bestDays: ["лучше выбирать дни для договорённостей и спокойных встреч"],
+  },
+  open: {
+    expression: ["проявляется через личный темп без привязки к месту рождения"],
+    vulnerabilities: ["уязвимость лучше смотреть через реальные реакции, а не догадки"],
+    actionStyle: ["действовать лучше через простую проверку: что сейчас действительно помогает"],
+    bestDays: ["лучше выбирать дни, где меньше давления и больше ясности"],
+  },
+};
+
+const natalNameResonanceLines = [
+  "Имя добавляет лёгкий личный оттенок: полезно замечать, какие обращения дают больше тепла.",
+  "Личный ритм имени усиливает тему мягкого самовыражения и честного тона.",
+  "Имя здесь используется только как лёгкий резонанс, без хранения и без передачи куда-либо.",
+];
+
+const natalNoNameLines = [
+  "Имя можно не указывать: профиль всё равно строится по дате и выбранным дополнительным данным.",
+  "Без имени результат остаётся нейтральнее и не теряет основную логику.",
+  "Если не хочется вводить имя, достаточно даты рождения.",
+];
 
 const signTraits: Record<string, { modality: "cardinal" | "fixed" | "mutable"; polarity: "active" | "receptive" }> = {
   aries: { modality: "cardinal", polarity: "active" },

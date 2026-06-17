@@ -86,7 +86,7 @@ export default async function ZodiacMiniAppAnalyticsPage() {
         </section>
 
         <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          <MetricCard title="Натальная карта" value={analytics.counters.natalChartOpens} caption="opens / completed" icon={Star} tone="violet" />
+          <MetricCard title="Натальная карта" value={analytics.counters.natalChartOpens} caption="opens / result / sections" icon={Star} tone="violet" />
           <MetricCard title="Гороскоп пары" value={analytics.counters.coupleHoroscopeOpens} caption="couple horoscope" icon={UsersRound} tone="cyan" />
           <MetricCard title="Карта отношений" value={analytics.counters.relationshipMapOpens} caption="relationship / mental map" icon={BarChart3} tone="emerald" />
           <MetricCard title="Удачные дни" value={analytics.counters.luckyDaysOpens} caption="lucky days opens" icon={CalendarDays} tone="amber" />
@@ -258,6 +258,9 @@ const trackedAnalyticsItems = [
   "section opens",
   "compatibility_calculated",
   "natal_chart_started/completed",
+  "natal_chart_opened / natal_chart_result_viewed",
+  "natal_chart_section_opened",
+  "natal_chart_vip_free_opened",
   "couple_horoscope_viewed",
   "relationship_map_viewed / mental_map_viewed",
   "relationship_map_category_opened",
