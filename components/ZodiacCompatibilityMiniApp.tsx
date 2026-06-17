@@ -15,6 +15,7 @@ import type { ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
 
 type Mode = "fast" | "personal" | "precise";
+type RelationshipMode = "love" | "friendship" | "work" | "family" | "passion" | "reconciliation";
 type Gender = "male" | "female" | "unspecified";
 type Variant = "dashboard" | "public";
 type WizardStep = 1 | 2 | 3;
@@ -83,6 +84,15 @@ const modes: Array<{ id: Mode; label: string; caption: string; resultLabel: stri
   { id: "precise", label: "Точный", caption: "время и город, если известны", resultLabel: "Точный расчёт" },
 ];
 
+const relationshipModes: Array<{ id: RelationshipMode; label: string; caption: string }> = [
+  { id: "love", label: "❤️ Любовь", caption: "чувства и близость" },
+  { id: "friendship", label: "💬 Дружба", caption: "поддержка и доверие" },
+  { id: "work", label: "💼 Работа", caption: "дела и решения" },
+  { id: "family", label: "🏠 Семья / быт", caption: "ритм и забота" },
+  { id: "passion", label: "🔥 Страсть", caption: "искра и притяжение" },
+  { id: "reconciliation", label: "🕊 Примирение", caption: "мягкий диалог" },
+];
+
 const hubTabs: Array<{ id: HubTab; label: string; shortLabel: string; icon: typeof Sparkles }> = [
   { id: "today", label: "Сегодня", shortLabel: "Сегодня", icon: Sparkles },
   { id: "week", label: "Неделя", shortLabel: "Неделя", icon: Star },
@@ -110,11 +120,12 @@ export function ZodiacCompatibilityMiniApp({
   const [selectedSignSlug, setSelectedSignSlug] = useState("");
   const [activeTab, setActiveTab] = useState<HubTab>("today");
   const [mode, setMode] = useState<Mode>(resolvedMode);
+  const [relationshipMode, setRelationshipMode] = useState<RelationshipMode>("love");
   const [step, setStep] = useState<WizardStep>(1);
   const [self, setSelf] = useState<PersonState>(() => createInitialPerson("", "unspecified", false, ""));
   const [partner, setPartner] = useState<PersonState>(() => createInitialPerson("", "unspecified", false, ""));
 
-  const result = useMemo(() => buildCompatibilityResult(mode, self, partner), [mode, partner, self]);
+  const result = useMemo(() => buildCompatibilityResult(mode, relationshipMode, self, partner), [mode, partner, relationshipMode, self]);
   const selectedSign = selectedSignSlug ? findSign(selectedSignSlug) : null;
   const stepTitle = step === 1 ? "Вы" : step === 2 ? "Партнёр" : "Результат";
 
@@ -138,6 +149,12 @@ export function ZodiacCompatibilityMiniApp({
     };
   }, []);
 
+  useEffect(() => {
+    if (!appDateKey || process.env.NODE_ENV === "production") return;
+    const warnings = validateZodiacMiniAppContent(appDateKey);
+    if (warnings.length > 0) console.warn("Zodiac Mini App content validation", warnings);
+  }, [appDateKey]);
+
   function chooseSign(slug: string) {
     setSelectedSignSlug(slug);
     setActiveTab("today");
@@ -151,6 +168,7 @@ export function ZodiacCompatibilityMiniApp({
 
   function resetFlow() {
     setMode(resolvedMode);
+    setRelationshipMode("love");
     setSelf(createInitialPerson(selectedSignSlug, "unspecified", false, ""));
     setPartner(createInitialPerson("", "unspecified", false, ""));
     setStep(1);
@@ -206,7 +224,7 @@ export function ZodiacCompatibilityMiniApp({
                     : "mt-3 max-w-3xl break-words text-sm leading-6 text-slate-300 [overflow-wrap:anywhere] sm:text-base sm:leading-7"
                 }
               >
-                Выберите знак и откройте прогнозы, совместимость и удачные дни
+                Выберите знак и откройте прогнозы, совместимость, карту пары и натальную подсказку
               </p>
             </div>
             {selectedSign ? (
@@ -238,11 +256,14 @@ export function ZodiacCompatibilityMiniApp({
               {activeTab === "lucky" ? (
                 appDateKey ? <LuckyDaysSection publicMode={publicMode} sign={selectedSign} dateKey={appDateKey} /> : <DateLoadingSection publicMode={publicMode} title="Удачные дни" />
               ) : null}
-              {activeTab === "more" ? <MoreSection publicMode={publicMode} /> : null}
+              {activeTab === "more" ? (
+                <MoreSection publicMode={publicMode} appDateKey={appDateKey} self={self} partner={partner} result={result} relationshipMode={relationshipMode} />
+              ) : null}
               {activeTab === "compatibility" ? (
                 <div className="space-y-4">
                   <StepProgress publicMode={publicMode} step={step} />
                   <ModeSelector publicMode={publicMode} mode={mode} onChange={setMode} />
+                  <RelationshipModeSelector publicMode={publicMode} mode={relationshipMode} onChange={setRelationshipMode} />
                   <div className="min-w-0 flex-1 transition-all duration-300">
                     {step === 1 ? (
                       <WizardCard publicMode={publicMode} stepLabel="Шаг 1 из 3" title="Вы">
@@ -367,12 +388,14 @@ function HubNavigation({ publicMode, activeTab, onChange }: { publicMode: boolea
 
 function TodaySection({ publicMode, sign, dateKey }: { publicMode: boolean; sign: ZodiacSign; dateKey: string }) {
   const forecast = buildDailyForecast(sign, dateKey);
+  const dayEnergy = buildDayEnergy(dateKey, sign.slug);
 
   return (
     <section className={panelClass(publicMode)}>
       <SectionHeader publicMode={publicMode} icon={<Sparkles className="h-5 w-5" />} title="Сегодня" subtitle={`${sign.emoji} ${sign.name} · ${formatZodiacDisplayDate(dateKey)}`} />
 
       <div className="mt-5 space-y-3">
+        <EnergyCard publicMode={publicMode} energy={dayEnergy} />
         <InfoRow publicMode={publicMode} label="💡 Совет дня" text={forecast.advice} />
         <InfoRow publicMode={publicMode} label="✅ Стоит сделать" text={forecast.action} />
         <InfoRow publicMode={publicMode} label="⚠️ Лучше избегать" text={forecast.avoid} />
@@ -413,6 +436,7 @@ function WeekSection({ publicMode, sign, dateKey }: { publicMode: boolean; sign:
 function LuckyDaysSection({ publicMode, sign, dateKey }: { publicMode: boolean; sign: ZodiacSign; dateKey: string }) {
   const startDateKey = getLuckyDaysStartDate(dateKey);
   const days = buildLuckyDays(sign, startDateKey, 7);
+  const dayEnergy = buildDayEnergy(dateKey, sign.slug);
 
   return (
     <section className={panelClass(publicMode)}>
@@ -423,7 +447,11 @@ function LuckyDaysSection({ publicMode, sign, dateKey }: { publicMode: boolean; 
         subtitle={`${sign.emoji} ${sign.name} · с ${formatZodiacDisplayDate(startDateKey)}`}
       />
 
-      <div className="mt-5 grid max-h-[520px] gap-3 overflow-y-auto pr-1">
+      <div className="mt-5 space-y-3">
+        <EnergyCard publicMode={publicMode} energy={dayEnergy} />
+      </div>
+
+      <div className="mt-4 grid max-h-[520px] gap-3 overflow-y-auto pr-1">
         {days.map((day) => (
           <div key={day.iso} className="rounded-lg border border-white/12 bg-white/8 p-3">
             <div className="flex items-start justify-between gap-3">
@@ -441,6 +469,19 @@ function LuckyDaysSection({ publicMode, sign, dateKey }: { publicMode: boolean; 
   );
 }
 
+function EnergyCard({ publicMode, energy }: { publicMode: boolean; energy: DayEnergy }) {
+  return (
+    <div className={publicMode ? "rounded-lg border border-indigo-200/15 bg-indigo-200/10 p-3 text-slate-100" : "rounded-lg border border-indigo-100 bg-indigo-50 p-3 text-slate-700"}>
+      <p className={publicMode ? "text-sm font-semibold text-indigo-100" : "text-sm font-semibold text-indigo-800"}>🌙 Энергия дня: {energy.type}</p>
+      <div className="mt-2 grid gap-2 text-sm leading-5">
+        <p><span className="font-semibold">Лучше для:</span> {energy.bestFor}</p>
+        <p><span className="font-semibold">Тон:</span> {energy.relationshipTone}</p>
+        <p><span className="font-semibold">Избегать:</span> {energy.avoid}</p>
+      </div>
+    </div>
+  );
+}
+
 function DateLoadingSection({ publicMode, title }: { publicMode: boolean; title: string }) {
   return (
     <section className={panelClass(publicMode)}>
@@ -450,38 +491,218 @@ function DateLoadingSection({ publicMode, title }: { publicMode: boolean; title:
   );
 }
 
-function MoreSection({ publicMode }: { publicMode: boolean }) {
+function MoreSection({
+  publicMode,
+  appDateKey,
+  self,
+  partner,
+  result,
+  relationshipMode,
+}: {
+  publicMode: boolean;
+  appDateKey: string | null;
+  self: PersonState;
+  partner: PersonState;
+  result: CompatibilityResult;
+  relationshipMode: RelationshipMode;
+}) {
+  const [messageTone, setMessageTone] = useState<MessageTone>("soft");
+  const dateKey = appDateKey ?? getCurrentZodiacDateKey(DEFAULT_ZODIAC_TIME_ZONE);
+  const pairReady = Boolean(self.sign && partner.sign);
+  const coupleHoroscope = pairReady ? buildCoupleHoroscope(self, partner, dateKey, relationshipMode, result) : null;
+  const coupleCalendar = pairReady ? buildCoupleCalendar(self, partner, dateKey, result) : [];
+  const reconciliation = pairReady ? buildReconciliationDay(self, partner, dateKey, result) : null;
+  const message = pairReady ? buildPartnerMessage(self, partner, dateKey, messageTone, result) : null;
+  const natalChart = buildNatalChart(self);
+
   return (
     <section className={panelClass(publicMode)}>
-      <SectionHeader publicMode={publicMode} icon={<Crown className="h-5 w-5" />} title="Ещё" subtitle="Новые разделы появятся позже" />
+      <SectionHeader publicMode={publicMode} icon={<Crown className="h-5 w-5" />} title="Ещё" subtitle="Карта пары, календарь, примирение и натальная подсказка" />
+      <p className={publicMode ? "mt-3 rounded-lg border border-emerald-200/20 bg-emerald-200/10 p-3 text-sm leading-5 text-emerald-50" : "mt-3 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm leading-5 text-emerald-900"}>
+        Имена, даты, время и город используются только на этом экране и не сохраняются.
+      </p>
       <div className="mt-5 space-y-4">
+        <CoupleHoroscopeCard publicMode={publicMode} horoscope={coupleHoroscope} />
+        <RelationshipMapCard publicMode={publicMode} result={result} pairReady={pairReady} />
+        <CoupleCalendarCard publicMode={publicMode} days={coupleCalendar} pairReady={pairReady} />
+        <ReconciliationDayCard publicMode={publicMode} reconciliation={reconciliation} />
+        <PartnerMessageCard publicMode={publicMode} message={message} tone={messageTone} onToneChange={setMessageTone} pairReady={pairReady} />
+        <NatalChartCard publicMode={publicMode} chart={natalChart} />
         <LockedPreviewCard
           publicMode={publicMode}
           icon={<Crown className="h-5 w-5" />}
-          title="👑 VIP скоро"
-          text="Расширенные персональные прогнозы появятся позже."
+          title="👑 VIP превью"
+          text="Это только превью: расширенные разборы останутся закрытыми до запуска подписки и Telegram Stars."
           items={[
-            "личный прогноз на месяц",
-            "расширенная совместимость",
-            "точный календарь удачных дней",
-            "персональные советы",
-            "больше деталей по любви, деньгам и решениям",
+            "полная натальная карта: асцендент, дома и аспекты",
+            "расширенная совместимость и карта пары",
+            "календарь пары на 30 дней",
+            "лучшие дни для примирения и свиданий",
+            "подсказки для сообщений партнёру",
+            "прогноз на месяц без обещаний точности",
           ]}
         />
         <LockedPreviewCard
           publicMode={publicMode}
           icon={<Gift className="h-5 w-5" />}
-          title="🎁 Розыгрыши скоро"
-          text="Позже здесь появятся задания, бонусы и призы для подписчиков."
+          title="🎁 Розыгрыши запланированы"
+          text="Это только превью: механики участия появятся позже."
           items={[
+            "задания для подписчиков",
+            "бонусы за активность",
+            "призы и сезонные события",
             "участие через Mini App",
-            "призы для подписчиков",
-            "задания и бонусы",
-            "активности по каналам",
+            "активности по каналам без сбора участников сейчас",
           ]}
         />
       </div>
     </section>
+  );
+}
+
+function CoupleHoroscopeCard({ publicMode, horoscope }: { publicMode: boolean; horoscope: CoupleHoroscope | null }) {
+  if (!horoscope) return <EmptyFeatureCard publicMode={publicMode} title="💑 Гороскоп пары" text="Заполните данные пары, чтобы увидеть гороскоп пары." />;
+
+  return (
+    <FeatureCard publicMode={publicMode} title="💑 Гороскоп пары на сегодня" subtitle={horoscope.summary}>
+      <div className="grid gap-3">
+        <InfoRow publicMode={publicMode} label="❤️ Для отношений" text={horoscope.relationship} />
+        <InfoRow publicMode={publicMode} label="💬 Для разговора" text={horoscope.talk} />
+        <InfoRow publicMode={publicMode} label="🌹 Для свидания" text={horoscope.date} />
+        <InfoRow publicMode={publicMode} label="🕊 Для примирения" text={horoscope.reconciliation} />
+        <InfoRow publicMode={publicMode} label="✅ Стоит сделать" text={horoscope.action} />
+        <InfoRow publicMode={publicMode} label="⚠️ Лучше избегать" text={horoscope.avoid} />
+        <EnergyCard publicMode={publicMode} energy={horoscope.energy} />
+      </div>
+    </FeatureCard>
+  );
+}
+
+function RelationshipMapCard({ publicMode, result, pairReady }: { publicMode: boolean; result: CompatibilityResult; pairReady: boolean }) {
+  if (!pairReady) return <EmptyFeatureCard publicMode={publicMode} title="🧭 Карта отношений" text="Заполните данные пары, чтобы увидеть карту отношений." />;
+
+  return (
+    <FeatureCard publicMode={publicMode} title="🧭 Карта отношений" subtitle={result.mapSummary}>
+      <div className="space-y-3">
+        {result.mapScores.map((item) => (
+          <ScoreBar key={item.label} publicMode={publicMode} label={item.label} value={item.value} text={item.text} />
+        ))}
+        <ResultTextCard publicMode={publicMode} title="Сильная сторона" text={result.strengthText} />
+        <ResultTextCard publicMode={publicMode} title="Зона внимания" text={result.riskText} />
+      </div>
+    </FeatureCard>
+  );
+}
+
+function CoupleCalendarCard({ publicMode, days, pairReady }: { publicMode: boolean; days: CoupleCalendarDay[]; pairReady: boolean }) {
+  if (!pairReady) return <EmptyFeatureCard publicMode={publicMode} title="📅 Календарь пары" text="Заполните данные пары, чтобы увидеть календарь пары." />;
+
+  return (
+    <FeatureCard publicMode={publicMode} title="📅 Календарь пары" subtitle="Ближайшие 7 дней">
+      <div className="grid max-h-[430px] gap-3 overflow-y-auto pr-1">
+        {days.map((day) => (
+          <div key={day.dateKey} className={publicMode ? "rounded-lg border border-white/12 bg-white/8 p-3" : "rounded-lg border border-slate-200 bg-white p-3"}>
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className={publicMode ? "text-sm font-semibold text-white" : "text-sm font-semibold text-slate-950"}>{day.date}</p>
+                <p className={publicMode ? "mt-1 text-xs text-slate-400" : "mt-1 text-xs text-slate-500"}>{day.weekday}</p>
+              </div>
+              <span className={publicMode ? "rounded-full border border-amber-200/25 bg-amber-200/10 px-3 py-1 text-xs font-semibold text-amber-50" : "rounded-full border border-violet-100 bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-800"}>{day.status}</span>
+            </div>
+            <p className={publicMode ? "mt-3 text-sm leading-5 text-slate-300" : "mt-3 text-sm leading-5 text-slate-600"}>{day.advice}</p>
+          </div>
+        ))}
+      </div>
+    </FeatureCard>
+  );
+}
+
+function ReconciliationDayCard({ publicMode, reconciliation }: { publicMode: boolean; reconciliation: ReconciliationDay | null }) {
+  if (!reconciliation) return <EmptyFeatureCard publicMode={publicMode} title="🕊 День для примирения" text="Заполните данные пары, чтобы увидеть мягкую подсказку для примирения." />;
+
+  return (
+    <FeatureCard publicMode={publicMode} title="🕊 День для примирения" subtitle={reconciliation.status}>
+      <div className="grid gap-3">
+        <InfoRow publicMode={publicMode} label="Как подойти" text={reconciliation.approach} />
+        <InfoRow publicMode={publicMode} label="Чего избегать" text={reconciliation.avoid} />
+        <EnergyCard publicMode={publicMode} energy={reconciliation.energy} />
+      </div>
+    </FeatureCard>
+  );
+}
+
+function PartnerMessageCard({
+  publicMode,
+  message,
+  tone,
+  onToneChange,
+  pairReady,
+}: {
+  publicMode: boolean;
+  message: string | null;
+  tone: MessageTone;
+  onToneChange: (tone: MessageTone) => void;
+  pairReady: boolean;
+}) {
+  if (!pairReady) return <EmptyFeatureCard publicMode={publicMode} title="💌 Что написать партнёру" text="Заполните данные пары, чтобы получить уважительную подсказку для сообщения." />;
+
+  return (
+    <FeatureCard publicMode={publicMode} title="💌 Что написать партнёру" subtitle="Текст можно скопировать вручную и изменить под себя">
+      <div className="grid grid-cols-2 gap-2">
+        {messageTones.map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            onClick={() => onToneChange(item.id)}
+            className={
+              publicMode
+                ? `rounded-lg border px-3 py-2 text-left text-xs font-semibold transition ${tone === item.id ? "border-rose-200/70 bg-rose-200/15 text-rose-50" : "border-white/10 bg-white/6 text-slate-300"}`
+                : `rounded-lg border px-3 py-2 text-left text-xs font-semibold transition ${tone === item.id ? "border-rose-300 bg-rose-50 text-rose-900" : "border-slate-200 bg-white text-slate-700"}`
+            }
+          >
+            {item.label}
+          </button>
+        ))}
+      </div>
+      <div className={publicMode ? "mt-3 rounded-lg border border-white/12 bg-white/8 p-3 text-sm leading-6 text-slate-100" : "mt-3 rounded-lg border border-slate-200 bg-white p-3 text-sm leading-6 text-slate-700"}>
+        {message}
+      </div>
+    </FeatureCard>
+  );
+}
+
+function NatalChartCard({ publicMode, chart }: { publicMode: boolean; chart: NatalChart | null }) {
+  if (!chart) return <EmptyFeatureCard publicMode={publicMode} title="🌌 Натальная карта" text="Заполните дату рождения в блоке «Вы», чтобы увидеть натальную подсказку." />;
+
+  return (
+    <FeatureCard publicMode={publicMode} title="🌌 Натальная карта" subtitle={`${chart.sign.emoji} ${chart.sign.name} · ${chart.element} · ${chart.modality}`}>
+      <div className="grid gap-3">
+        <InfoRow publicMode={publicMode} label="База" text={chart.archetype} />
+        <InfoRow publicMode={publicMode} label="Сильные стороны" text={chart.strengths} />
+        <InfoRow publicMode={publicMode} label="Зона роста" text={chart.growth} />
+        <InfoRow publicMode={publicMode} label="В любви" text={chart.loveStyle} />
+        <InfoRow publicMode={publicMode} label="В общении" text={chart.communicationStyle} />
+        <p className={publicMode ? "rounded-lg border border-amber-200/20 bg-amber-200/10 p-3 text-sm leading-5 text-amber-50" : "rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm leading-5 text-amber-900"}>{chart.precisionNote}</p>
+      </div>
+    </FeatureCard>
+  );
+}
+
+function EmptyFeatureCard({ publicMode, title, text }: { publicMode: boolean; title: string; text: string }) {
+  return (
+    <FeatureCard publicMode={publicMode} title={title} subtitle={text}>
+      <p className={publicMode ? "text-sm leading-5 text-slate-400" : "text-sm leading-5 text-slate-500"}>Данные остаются только на экране и не сохраняются.</p>
+    </FeatureCard>
+  );
+}
+
+function FeatureCard({ publicMode, title, subtitle, children }: { publicMode: boolean; title: string; subtitle: string; children: ReactNode }) {
+  return (
+    <div className={publicMode ? "rounded-lg border border-white/12 bg-white/8 p-4 text-slate-100" : "rounded-lg border border-slate-200 bg-white p-4 text-slate-700"}>
+      <p className={publicMode ? "text-base font-semibold text-white" : "text-base font-semibold text-slate-950"}>{title}</p>
+      <p className={publicMode ? "mt-1 text-sm leading-5 text-slate-300" : "mt-1 text-sm leading-5 text-slate-600"}>{subtitle}</p>
+      <div className="mt-4">{children}</div>
+    </div>
   );
 }
 
@@ -585,6 +806,32 @@ function ModeSelector({ publicMode, mode, onChange }: { publicMode: boolean; mod
                 }`
               : `min-w-0 rounded-lg border px-2 py-3 text-center text-xs shadow-sm transition ${
                   mode === item.id ? "border-violet-300 bg-violet-50 text-violet-900" : "border-slate-200 bg-white text-slate-700 hover:border-cyan-200"
+                }`
+          }
+        >
+          <span className="block font-semibold">{item.label}</span>
+          <span className="mt-1 block leading-snug">{item.caption}</span>
+        </button>
+      ))}
+    </section>
+  );
+}
+
+function RelationshipModeSelector({ publicMode, mode, onChange }: { publicMode: boolean; mode: RelationshipMode; onChange: (mode: RelationshipMode) => void }) {
+  return (
+    <section className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+      {relationshipModes.map((item) => (
+        <button
+          key={item.id}
+          type="button"
+          onClick={() => onChange(item.id)}
+          className={
+            publicMode
+              ? `min-w-0 rounded-lg border px-2 py-3 text-left text-xs shadow-sm transition ${
+                  mode === item.id ? "border-rose-200/70 bg-rose-200/15 text-rose-50" : "border-white/10 bg-white/6 text-slate-300 hover:border-rose-200/40"
+                }`
+              : `min-w-0 rounded-lg border px-2 py-3 text-left text-xs shadow-sm transition ${
+                  mode === item.id ? "border-rose-300 bg-rose-50 text-rose-900" : "border-slate-200 bg-white text-slate-700 hover:border-rose-200"
                 }`
           }
         >
@@ -1003,9 +1250,16 @@ interface NameResonance {
   loveShift: number;
 }
 
+interface RelationshipMapScore {
+  label: string;
+  value: number;
+  text: string;
+}
+
 interface CompatibilityResult {
   title: string;
   modeLabel: string;
+  relationshipMode: RelationshipMode;
   dataUseLabel: string;
   note: string | null;
   validationMessages: string[];
@@ -1024,9 +1278,62 @@ interface CompatibilityResult {
   adviceText: string;
   conclusionText: string;
   nameResonance: NameResonance | null;
+  mapScores: RelationshipMapScore[];
+  mapSummary: string;
+  strengthText: string;
+  riskText: string;
 }
 
-function buildCompatibilityResult(mode: Mode, self: PersonState, partner: PersonState): CompatibilityResult {
+interface DayEnergy {
+  type: string;
+  bestFor: string;
+  avoid: string;
+  mood: string;
+  relationshipTone: string;
+}
+
+interface CoupleHoroscope {
+  summary: string;
+  relationship: string;
+  talk: string;
+  date: string;
+  reconciliation: string;
+  action: string;
+  avoid: string;
+  energy: DayEnergy;
+}
+
+interface CoupleCalendarDay {
+  dateKey: string;
+  date: string;
+  weekday: string;
+  status: string;
+  advice: string;
+}
+
+interface ReconciliationDay {
+  status: string;
+  approach: string;
+  avoid: string;
+  energy: DayEnergy;
+}
+
+interface NatalChart {
+  sign: ZodiacSign;
+  element: string;
+  modality: string;
+  polarity: string;
+  archetype: string;
+  strengths: string;
+  growth: string;
+  loveStyle: string;
+  communicationStyle: string;
+  precisionNote: string;
+}
+
+type MessageTone = "soft" | "romantic" | "afterFight" | "longSilence" | "invite" | "reconciliation";
+
+function buildCompatibilityResult(mode: Mode, relationshipMode: RelationshipMode, self: PersonState, partner: PersonState): CompatibilityResult {
   const selfSign = findSign(self.sign);
   const partnerSign = findSign(partner.sign);
   const selfDate = parseBirthDate(self.birthDate);
@@ -1034,11 +1341,13 @@ function buildCompatibilityResult(mode: Mode, self: PersonState, partner: Person
   const selfCity = self.knowsTime ? getCityById(self.selectedCityId) : null;
   const partnerCity = partner.knowsTime ? getCityById(partner.selectedCityId) : null;
   const modeLabel = modes.find((item) => item.id === mode)?.resultLabel ?? "Расчёт";
+  const relationshipLabel = relationshipModes.find((item) => item.id === relationshipMode)?.label ?? "❤️ Любовь";
   const title = `${selfSign.emoji} ${selfSign.name}${genderSuffix(self.gender)} + ${partnerSign.emoji} ${partnerSign.name}${genderSuffix(partner.gender)}`;
   const validationMessages = buildValidationMessages(mode, self, partner, selfDate, partnerDate, selfCity, partnerCity);
   const nameResonance = buildNameResonance(self.name, partner.name);
   const seed = hashString([
     mode,
+    relationshipMode,
     self.gender,
     mode === "fast" ? "" : selfDate.iso ?? self.birthDate,
     self.sign,
@@ -1050,34 +1359,43 @@ function buildCompatibilityResult(mode: Mode, self: PersonState, partner: Person
     mode === "precise" && partner.knowsTime ? partner.birthTime : "",
     mode === "precise" && partner.knowsTime ? partnerCity?.cityId ?? "" : "",
   ].join("|"));
-  const base = baseCompatibilityScore(selfSign.element, partnerSign.element);
-  const modeBoost = mode === "fast" ? 0 : mode === "personal" ? 3 : 5;
-  const nameTotalShift = nameResonance ? Math.round((nameResonance.communicationShift + nameResonance.loveShift) / 4) : 0;
-  const total = clampScore(base + modeBoost + variance(seed, 0, 15) - 7 + nameTotalShift);
+  const base = baseCompatibilityScore(selfSign, partnerSign);
+  const modeBoost = mode === "fast" ? 0 : mode === "personal" ? 2 : 4;
+  const relationshipShift = relationshipModeScoreShift(relationshipMode, selfSign, partnerSign, seed);
+  const personalShift = mode === "fast" ? 0 : birthDateCompatibilityShift(selfDate, partnerDate);
+  const preciseShift = mode === "precise" ? preciseCompatibilityShift(self, partner, selfCity, partnerCity) : 0;
+  const nameTotalShift = nameResonance ? Math.round((nameResonance.communicationShift + nameResonance.loveShift) / 2) : 0;
+  const total = clampScore(base + modeBoost + relationshipShift + personalShift + preciseShift + variance(seed, 0, 13) - 6 + nameTotalShift);
   const scores = {
     total,
-    attraction: clampScore(total + variance(seed, 1, 17) - 8),
-    communication: clampScore(total + variance(seed, 2, 19) - 9 + (nameResonance?.communicationShift ?? 0)),
-    love: clampScore(total + variance(seed, 3, 21) - 10 + (nameResonance?.loveShift ?? 0)),
-    household: clampScore(total + variance(seed, 4, 17) - 8),
+    attraction: clampScore(total + relationshipScoreNudge(relationshipMode, "attraction") + variance(seed, 1, 17) - 8),
+    communication: clampScore(total + relationshipScoreNudge(relationshipMode, "communication") + variance(seed, 2, 19) - 9 + (nameResonance?.communicationShift ?? 0)),
+    love: clampScore(total + relationshipScoreNudge(relationshipMode, "love") + variance(seed, 3, 21) - 10 + (nameResonance?.loveShift ?? 0)),
+    household: clampScore(total + relationshipScoreNudge(relationshipMode, "household") + variance(seed, 4, 17) - 8),
   };
+  const mapScores = buildRelationshipMapScores(scores, seed, relationshipMode);
   const preciseKnown = mode === "precise" && self.knowsTime && partner.knowsTime && Boolean(selfCity && partnerCity);
   const unknownPreciseTime = mode === "precise" && (!self.knowsTime || !partner.knowsTime);
   return {
     title,
-    modeLabel,
+    modeLabel: `${modeLabel} · ${relationshipLabel}`,
+    relationshipMode,
     dataUseLabel: buildDataUseLabel(mode, preciseKnown),
     note: preciseKnown ? exactBirthDataNote : unknownPreciseTime ? unknownBirthTimeNote : null,
     validationMessages,
     scores,
-    attractionText: pickLine(attractionLines, seed, 1),
-    communicationText: pickLine(communicationLines, seed, 2),
-    loveText: pickLine(loveLines, seed, 3),
-    householdText: pickLine(householdLines, seed, 4),
-    weakSpotText: pickLine(weakSpotLines, seed, 5),
-    adviceText: nameResonance ? `${pickLine(adviceLines, seed, 6)}. ${nameResonance.adviceText}` : pickLine(adviceLines, seed, 6),
-    conclusionText: buildConclusion(total, mode),
+    attractionText: buildScoreText("attraction", scores.attraction, seed),
+    communicationText: buildScoreText("communication", scores.communication, seed),
+    loveText: buildScoreText("love", scores.love, seed),
+    householdText: buildScoreText("household", scores.household, seed),
+    weakSpotText: buildRiskText(total, seed),
+    adviceText: nameResonance ? `${buildAdviceText(total, relationshipMode, seed)}. ${nameResonance.adviceText}` : buildAdviceText(total, relationshipMode, seed),
+    conclusionText: buildConclusion(total, mode, relationshipMode),
     nameResonance,
+    mapScores,
+    mapSummary: buildMapSummary(total, relationshipMode),
+    strengthText: buildStrengthText(scores, seed),
+    riskText: buildRiskText(total, seed + 11),
   };
 }
 
@@ -1108,12 +1426,146 @@ function buildDataUseLabel(mode: Mode, preciseKnown: boolean) {
   return preciseKnown ? "Учитываются пол, дата, время и выбранный город." : "Точный режим работает приблизительно, если время или город не выбраны.";
 }
 
-function baseCompatibilityScore(firstElement: string, secondElement: string) {
-  if (firstElement === secondElement) return 82;
-  const key = [firstElement, secondElement].sort().join("+");
-  if (key === "air+fire" || key === "earth+water") return 86;
-  if (key === "air+water" || key === "earth+fire") return 72;
-  return 76;
+function baseCompatibilityScore(firstSign: ZodiacSign, secondSign: ZodiacSign) {
+  const firstTraits = signTraits[firstSign.slug];
+  const secondTraits = signTraits[secondSign.slug];
+  const elementKey = [firstSign.element, secondSign.element].sort().join("+");
+  const elementShift =
+    firstSign.element === secondSign.element
+      ? 10
+      : elementKey === "air+fire" || elementKey === "earth+water"
+        ? 16
+        : elementKey === "air+water" || elementKey === "earth+fire"
+          ? -8
+          : -2;
+  const distance = zodiacDistance(firstSign.slug, secondSign.slug);
+  const aspectShift = aspectScoreShift(distance);
+  const modalityShift = firstTraits.modality === secondTraits.modality ? -5 : 3;
+  const polarityShift = firstTraits.polarity === secondTraits.polarity ? 3 : -2;
+
+  return 58 + elementShift + aspectShift + modalityShift + polarityShift;
+}
+
+function zodiacDistance(firstSlug: string, secondSlug: string) {
+  const firstIndex = signIndex(firstSlug);
+  const secondIndex = signIndex(secondSlug);
+  const direct = Math.abs(firstIndex - secondIndex);
+  return Math.min(direct, 12 - direct);
+}
+
+function signIndex(slug: string) {
+  return signs.findIndex((sign) => sign.slug === slug);
+}
+
+function aspectScoreShift(distance: number) {
+  if (distance === 0) return 0;
+  if (distance === 1) return -9;
+  if (distance === 2) return 9;
+  if (distance === 3) return -14;
+  if (distance === 4) return 13;
+  if (distance === 5) return -7;
+  if (distance === 6) return -3;
+  return 0;
+}
+
+function relationshipModeScoreShift(mode: RelationshipMode, firstSign: ZodiacSign, secondSign: ZodiacSign, seed: number) {
+  const firstTraits = signTraits[firstSign.slug];
+  const secondTraits = signTraits[secondSign.slug];
+  const sameElement = firstSign.element === secondSign.element;
+  const sameModality = firstTraits.modality === secondTraits.modality;
+
+  if (mode === "friendship") return (sameElement ? 5 : 0) + (variance(seed, 9, 5) - 2);
+  if (mode === "work") return (firstTraits.modality !== secondTraits.modality ? 5 : -2) + (variance(seed, 10, 5) - 2);
+  if (mode === "family") return (firstSign.element === "earth" || secondSign.element === "earth" ? 4 : 0) + (sameModality ? -2 : 2);
+  if (mode === "passion") return (zodiacDistance(firstSign.slug, secondSign.slug) === 1 ? 6 : 0) + (variance(seed, 11, 7) - 3);
+  if (mode === "reconciliation") return (sameElement ? 2 : -1) + (sameModality ? -4 : 3);
+  return variance(seed, 8, 5) - 2;
+}
+
+function relationshipScoreNudge(mode: RelationshipMode, score: "attraction" | "communication" | "love" | "household") {
+  const nudges: Record<RelationshipMode, Record<typeof score, number>> = {
+    love: { attraction: 2, communication: 0, love: 5, household: 0 },
+    friendship: { attraction: -2, communication: 6, love: 0, household: 1 },
+    work: { attraction: -4, communication: 5, love: -2, household: 4 },
+    family: { attraction: -1, communication: 1, love: 2, household: 7 },
+    passion: { attraction: 8, communication: -2, love: 1, household: -3 },
+    reconciliation: { attraction: -2, communication: 7, love: 1, household: 0 },
+  };
+
+  return nudges[mode][score];
+}
+
+function birthDateCompatibilityShift(selfDate: ParsedDate, partnerDate: ParsedDate) {
+  if (!selfDate.ok || !partnerDate.ok) return 0;
+  const distance = Math.abs(getDateOrdinal(selfDate.iso) - getDateOrdinal(partnerDate.iso));
+  const rhythm = distance % 9;
+  if (rhythm === 0 || rhythm === 3) return 4;
+  if (rhythm === 1 || rhythm === 8) return -4;
+  return rhythm === 5 ? -2 : 1;
+}
+
+function preciseCompatibilityShift(self: PersonState, partner: PersonState, selfCity: City | null, partnerCity: City | null) {
+  let shift = 0;
+  if (self.knowsTime && isValidTime(self.birthTime)) shift += 1;
+  if (partner.knowsTime && isValidTime(partner.birthTime)) shift += 1;
+  if (selfCity && partnerCity) shift += selfCity.timezone === partnerCity.timezone ? 2 : 0;
+  return shift;
+}
+
+function buildRelationshipMapScores(scores: CompatibilityResult["scores"], seed: number, relationshipMode: RelationshipMode): RelationshipMapScore[] {
+  const conflict = clampScore(100 - scores.communication + variance(seed, 12, 13) - 6);
+  const money = clampScore(Math.round((scores.household + scores.communication) / 2) + relationshipScoreNudge(relationshipMode, "household") + variance(seed, 13, 11) - 5);
+  const mental = clampScore(scores.communication + variance(seed, 14, 11) - 5);
+  const reconciliation = clampScore(Math.round((scores.communication + scores.love) / 2) + relationshipScoreNudge("reconciliation", "communication") + variance(seed, 15, 9) - 4);
+  const potential = clampScore(Math.round((scores.total + scores.communication + scores.love) / 3) + variance(seed, 16, 9) - 4);
+
+  return [
+    { label: "❤️ Любовь", value: scores.love, text: buildScoreText("love", scores.love, seed + 1) },
+    { label: "🔥 Притяжение", value: scores.attraction, text: buildScoreText("attraction", scores.attraction, seed + 2) },
+    { label: "💬 Общение", value: scores.communication, text: buildScoreText("communication", scores.communication, seed + 3) },
+    { label: "🏠 Быт и ритм", value: scores.household, text: buildScoreText("household", scores.household, seed + 4) },
+    { label: "💰 Деньги", value: money, text: money >= 65 ? "можно договариваться о планах и бюджете" : "деньги лучше обсуждать заранее и без намёков" },
+    { label: "🧠 Ментальная связь", value: mental, text: mental >= 65 ? "идеи хорошо цепляются друг за друга" : "есть риск недопонимания, важны короткие формулировки" },
+    { label: "⚠️ Конфликты", value: conflict, text: conflict >= 65 ? "напряжение возможно, особенно при резком тоне" : "споры легче остановить честным вопросом" },
+    { label: "🕊 Примирение", value: reconciliation, text: reconciliation >= 65 ? "мягкий разговор может быстро снизить напряжение" : "лучше идти маленькими шагами и не требовать ответа сразу" },
+    { label: "⭐ Потенциал", value: potential, text: potential >= 70 ? "у пары есть хороший запас роста" : "потенциал зависит от границ, терпения и ясных просьб" },
+  ];
+}
+
+function buildScoreText(kind: "attraction" | "communication" | "love" | "household", score: number, seed: number) {
+  const lineSet = kind === "attraction" ? attractionLines : kind === "communication" ? communicationLines : kind === "love" ? loveLines : householdLines;
+  if (score >= 70) return pickLine(lineSet.strong, seed, 1);
+  if (score >= 55) return pickLine(lineSet.medium, seed, 2);
+  return pickLine(lineSet.tense, seed, 3);
+}
+
+function buildAdviceText(score: number, mode: RelationshipMode, seed: number) {
+  const lines = score >= 70 ? adviceLines.strong : score >= 55 ? adviceLines.medium : adviceLines.tense;
+  const modeTip = relationshipModeAdvice[mode];
+  return `${pickLine(lines, seed, 6)}. ${pickLine(modeTip, seed, 7)}`;
+}
+
+function buildRiskText(score: number, seed: number) {
+  const lines = score >= 70 ? weakSpotLines.strong : score >= 55 ? weakSpotLines.medium : weakSpotLines.tense;
+  return pickLine(lines, seed, 5);
+}
+
+function buildStrengthText(scores: CompatibilityResult["scores"], seed: number) {
+  const ranked = [
+    { key: "love", value: scores.love, text: "тепло и желание поддерживать друг друга" },
+    { key: "communication", value: scores.communication, text: "диалог, если говорить прямо и без проверок" },
+    { key: "attraction", value: scores.attraction, text: "искренний интерес и живая искра" },
+    { key: "household", value: scores.household, text: "способность выстраивать общий ритм" },
+  ].sort((first, second) => second.value - first.value);
+
+  return `${ranked[0].text}; ${pickLine(strengthLines, seed, 4)}`;
+}
+
+function buildMapSummary(score: number, mode: RelationshipMode) {
+  const modeLabel = relationshipModes.find((item) => item.id === mode)?.label ?? "❤️ Любовь";
+  if (score >= 70) return `${modeLabel}: сильные стороны заметны, но привычки всё равно важно проговаривать.`;
+  if (score >= 55) return `${modeLabel}: есть ресурс, если не копить обиды и держать границы.`;
+  return `${modeLabel}: потребуется больше терпения, честный разговор и уважение к разному темпу.`;
 }
 
 function normalizeMode(value?: string | null): Mode {
@@ -1164,19 +1616,21 @@ function pickByKey(items: string[], key: string, offset: number) {
 function buildDailyForecast(sign: ZodiacSign, dateIso: string) {
   const key = `${sign.slug}:${dateIso}:today`;
   const elementSet = dailyGuidanceByElement[sign.element] ?? dailyGuidanceByElement.fire;
+  const signSet = signDailyProfiles[sign.slug];
   return {
     advice: pickByKey(elementSet.advice, key, 1),
     action: pickByKey(elementSet.action, key, 2),
     avoid: pickByKey(elementSet.avoid, key, 3),
-    text: `${sign.name}: ${pickByKey(dailyForecastLines, key, 4)}`,
+    text: `${sign.name}: ${pickByKey(signSet.openers, key, 4)} ${pickByKey(dailyForecastLines, key, 5)} ${pickByKey(signSet.focus, key, 6)}`,
   };
 }
 
 function buildWeekForecast(sign: ZodiacSign, dateIso: string) {
   const key = `${sign.slug}:${getWeekKey(dateIso)}:week`;
   const elementSet = weeklyGuidanceByElement[sign.element] ?? weeklyGuidanceByElement.fire;
+  const signSet = signWeeklyProfiles[sign.slug];
   return {
-    theme: pickByKey(elementSet.theme, key, 1),
+    theme: `${pickByKey(signSet.theme, key, 1)}: ${pickByKey(elementSet.theme, key, 2)}`,
     love: pickByKey(elementSet.love, key, 2),
     money: pickByKey(elementSet.money, key, 3),
     energy: pickByKey(elementSet.energy, key, 4),
@@ -1189,14 +1643,151 @@ function buildLuckyDays(sign: ZodiacSign, dateIso: string, count: number) {
     const iso = addDaysToDateKey(dateIso, index);
     const key = `${sign.slug}:${iso}:lucky`;
     const seed = hashString(key);
+    const signSet = signLuckyProfiles[sign.slug];
     return {
       iso,
       date: formatShortDate(iso),
       weekday: formatWeekday(iso),
       status: luckyStatuses[variance(seed, 1, luckyStatuses.length)],
-      area: luckyAreas[variance(seed, 2, luckyAreas.length)],
+      area: `${luckyAreas[variance(seed, 2, luckyAreas.length)]}: ${pickLine(signSet, seed, 3)}`,
     };
   });
+}
+
+function validateZodiacMiniAppContent(dateKey: string) {
+  const todayTexts = new Map<string, string[]>();
+  const weekTexts = new Map<string, string[]>();
+  const luckyTexts = new Map<string, string[]>();
+
+  for (const sign of signs) {
+    const today = buildDailyForecast(sign, dateKey).text;
+    const week = buildWeekForecast(sign, dateKey).theme;
+    const lucky = buildLuckyDays(sign, dateKey, 7).map((day) => `${day.status}|${day.area}`).join(";");
+    addContentValidationValue(todayTexts, today, sign.name);
+    addContentValidationValue(weekTexts, week, sign.name);
+    addContentValidationValue(luckyTexts, lucky, sign.name);
+  }
+
+  return [
+    ...buildDuplicateWarnings("Today short forecast", todayTexts),
+    ...buildDuplicateWarnings("Week main theme", weekTexts),
+    ...buildDuplicateWarnings("Lucky Days summary", luckyTexts),
+  ];
+}
+
+function addContentValidationValue(map: Map<string, string[]>, value: string, signName: string) {
+  map.set(value, [...(map.get(value) ?? []), signName]);
+}
+
+function buildDuplicateWarnings(label: string, values: Map<string, string[]>) {
+  return Array.from(values.entries())
+    .filter(([, signNames]) => signNames.length > 1)
+    .map(([text, signNames]) => `${label} duplicate for ${signNames.join(", ")}: ${text}`);
+}
+
+function buildDayEnergy(dateKey: string, scope = "general"): DayEnergy {
+  const seed = hashString(`${dateKey}:${scope}:energy`);
+  return {
+    type: pickLine(dayEnergyTypes, seed, 1),
+    bestFor: pickLine(dayEnergyBestFor, seed, 2),
+    avoid: pickLine(dayEnergyAvoid, seed, 3),
+    mood: pickLine(dayEnergyMoods, seed, 4),
+    relationshipTone: pickLine(dayEnergyRelationshipTone, seed, 5),
+  };
+}
+
+function buildCoupleHoroscope(self: PersonState, partner: PersonState, dateKey: string, relationshipMode: RelationshipMode, result: CompatibilityResult): CoupleHoroscope {
+  const seed = pairSeed(self, partner, dateKey, `couple:${relationshipMode}`);
+  const energy = buildDayEnergy(dateKey, pairKey(self, partner));
+  const reconciliationStatus = buildReconciliationStatus(result.scores.communication, seed);
+  return {
+    summary: `${formatZodiacDisplayDate(dateKey)} · ${compatibilityLevelLabel(result.scores.total)}`,
+    relationship: pickLine(coupleRelationshipLines[scoreBand(result.scores.love)], seed, 1),
+    talk: pickLine(coupleTalkLines[scoreBand(result.scores.communication)], seed, 2),
+    date: pickLine(coupleDateLines[scoreBand(result.scores.attraction)], seed, 6),
+    reconciliation: `${reconciliationStatus}: ${pickLine(coupleReconciliationLines[scoreBand(result.mapScores.find((item) => item.label.includes("Примирение"))?.value ?? result.scores.communication)], seed, 3)}`,
+    action: pickLine(coupleActionLines, seed, 4),
+    avoid: pickLine(coupleAvoidLines[scoreBand(result.scores.total)], seed, 5),
+    energy,
+  };
+}
+
+function buildCoupleCalendar(self: PersonState, partner: PersonState, dateKey: string, result: CompatibilityResult): CoupleCalendarDay[] {
+  return Array.from({ length: 7 }, (_, index) => {
+    const currentDateKey = addDaysToDateKey(dateKey, index);
+    const seed = pairSeed(self, partner, currentDateKey, "calendar");
+    const status = pickLine(coupleCalendarStatuses, seed + result.scores.total, 1);
+    const advice = pickLine(coupleCalendarAdvice[status] ?? coupleCalendarAdvice["🌙 спокойный день"], seed, 2);
+    return {
+      dateKey: currentDateKey,
+      date: formatShortDate(currentDateKey),
+      weekday: formatWeekday(currentDateKey),
+      status,
+      advice,
+    };
+  });
+}
+
+function buildReconciliationDay(self: PersonState, partner: PersonState, dateKey: string, result: CompatibilityResult): ReconciliationDay {
+  const seed = pairSeed(self, partner, dateKey, "reconciliation");
+  const reconciliationScore = result.mapScores.find((item) => item.label.includes("Примирение"))?.value ?? result.scores.communication;
+  return {
+    status: buildReconciliationStatus(reconciliationScore, seed),
+    approach: pickLine(reconciliationApproachLines[scoreBand(reconciliationScore)], seed, 1),
+    avoid: pickLine(reconciliationAvoidLines[scoreBand(result.scores.total)], seed, 2),
+    energy: buildDayEnergy(dateKey, `${pairKey(self, partner)}:reconciliation`),
+  };
+}
+
+function buildPartnerMessage(self: PersonState, partner: PersonState, dateKey: string, tone: MessageTone, result: CompatibilityResult) {
+  const seed = pairSeed(self, partner, dateKey, `message:${tone}:${result.scores.total}`);
+  const partnerName = normalizeName(partner.name);
+  const prefix = partnerName ? `${partnerName}, ` : "";
+  return `${prefix}${pickLine(messageTemplates[tone], seed, 1)}`;
+}
+
+function buildNatalChart(person: PersonState): NatalChart | null {
+  const parsed = parseBirthDate(person.birthDate);
+  if (!parsed.ok) return null;
+  const sign = findSign(parsed.signSlug);
+  const traits = signTraits[sign.slug];
+  const seed = hashString(`${sign.slug}:${parsed.iso}:${normalizeName(person.name)}`);
+  const hasPreciseData = person.knowsTime && isValidTime(person.birthTime) && Boolean(getCityById(person.selectedCityId));
+
+  return {
+    sign,
+    element: elementLabels[sign.element],
+    modality: modalityLabels[traits.modality],
+    polarity: polarityLabels[traits.polarity],
+    archetype: pickLine(natalArchetypes[sign.slug], seed, 1),
+    strengths: pickLine(natalStrengths[sign.element], seed, 2),
+    growth: pickLine(natalGrowth[traits.modality], seed, 3),
+    loveStyle: pickLine(natalLoveStyles[sign.element], seed, 4),
+    communicationStyle: pickLine(natalCommunicationStyles[traits.polarity], seed, 5),
+    precisionNote: hasPreciseData
+      ? "Точность выше, потому что указаны время и город рождения. Асцендент и дома не рассчитываются в этой версии."
+      : "Расчёт выполнен без точного времени рождения. Асцендент и дома могут быть приблизительными.",
+  };
+}
+
+function pairSeed(self: PersonState, partner: PersonState, dateKey: string, scope: string) {
+  return hashString(`${pairKey(self, partner)}:${dateKey}:${scope}`);
+}
+
+function pairKey(self: PersonState, partner: PersonState) {
+  return [self.sign, partner.sign, normalizeName(self.name), normalizeName(partner.name)].join("|");
+}
+
+function buildReconciliationStatus(score: number, seed: number) {
+  if (score >= 70) return "да";
+  if (score >= 50) return variance(seed, 1, 2) === 0 ? "осторожно" : "да, но мягко";
+  return "лучше позже";
+}
+
+function scoreBand(score: number): "strong" | "medium" | "tense" {
+  if (score >= 70) return "strong";
+  if (score >= 55) return "medium";
+  return "tense";
 }
 
 function buildNameResonance(selfNameRaw: string, partnerNameRaw: string): NameResonance | null {
@@ -1309,24 +1900,30 @@ function variance(seed: number, offset: number, spread: number) {
 }
 
 function clampScore(value: number) {
-  return Math.max(45, Math.min(98, value));
+  return Math.max(28, Math.min(98, value));
 }
 
 function compatibilityLevelLabel(score: number) {
-  if (score >= 84) return "Высокая совместимость";
-  if (score >= 70) return "Хорошая совместимость";
-  return "Бережная совместимость";
+  if (score >= 85) return "сильная совместимость";
+  if (score >= 70) return "хорошая совместимость";
+  if (score >= 55) return "средняя совместимость";
+  if (score >= 40) return "сложная совместимость";
+  return "напряжённая совместимость";
 }
 
 function pickLine(items: string[], seed: number, offset: number) {
   return items[variance(seed, offset, items.length)];
 }
 
-function buildConclusion(score: number, mode: Mode) {
-  const grade = score >= 84 ? "сильный потенциал" : score >= 70 ? "хороший потенциал при внимании к диалогу" : "бережный потенциал, которому нужен спокойный темп";
-  if (mode === "fast") return `${grade}; совместимость хорошая, если вы поддерживаете спокойный диалог и уважаете личное пространство.`;
-  if (mode === "personal") return `${grade}; отношениям помогает внимание к ритму друг друга, честные просьбы и регулярные знаки тепла.`;
-  return `${grade}; у пары хороший потенциал, если оба готовы слышать друг друга и не превращать разницу характеров в спор.`;
+function buildConclusion(score: number, mode: Mode, relationshipMode: RelationshipMode) {
+  const modeLabel = relationshipModes.find((item) => item.id === relationshipMode)?.label ?? "отношения";
+  const precision = mode === "precise" ? "Расчёт остаётся подсказкой: время и город повышают точность, но не заменяют живой разговор." : "Это мягкий ориентир для разговора.";
+
+  if (score >= 85) return `${modeLabel}: сильная совместимость. ${precision} Берегите доверие и не забывайте о границах.`;
+  if (score >= 70) return `${modeLabel}: хорошая совместимость. ${precision} Лучший результат даст спокойный диалог и уважение к разному темпу.`;
+  if (score >= 55) return `${modeLabel}: средняя совместимость. ${precision} Есть ресурс, но важны границы, честные просьбы и внимание к бытовым мелочам.`;
+  if (score >= 40) return `${modeLabel}: сложная совместимость. ${precision} Потребуется больше терпения, меньше резких выводов и регулярный честный разговор.`;
+  return `${modeLabel}: напряжённая совместимость. ${precision} Есть риск недопонимания, поэтому особенно важны мягкий тон, паузы и ясные договорённости.`;
 }
 
 const dailyGuidanceByElement: Record<string, { advice: string[]; action: string[]; avoid: string[] }> = {
@@ -1522,6 +2119,120 @@ const weeklyGuidanceByElement: Record<string, { theme: string[]; love: string[];
 const luckyStatuses = ["🍀 удачный день", "⚖️ нейтральный день", "⚠️ осторожнее"];
 const luckyAreas = ["любовь", "деньги", "дела", "отдых", "разговоры", "покупки", "документы"];
 
+const signTraits: Record<string, { modality: "cardinal" | "fixed" | "mutable"; polarity: "active" | "receptive" }> = {
+  aries: { modality: "cardinal", polarity: "active" },
+  taurus: { modality: "fixed", polarity: "receptive" },
+  gemini: { modality: "mutable", polarity: "active" },
+  cancer: { modality: "cardinal", polarity: "receptive" },
+  leo: { modality: "fixed", polarity: "active" },
+  virgo: { modality: "mutable", polarity: "receptive" },
+  libra: { modality: "cardinal", polarity: "active" },
+  scorpio: { modality: "fixed", polarity: "receptive" },
+  sagittarius: { modality: "mutable", polarity: "active" },
+  capricorn: { modality: "cardinal", polarity: "receptive" },
+  aquarius: { modality: "fixed", polarity: "active" },
+  pisces: { modality: "mutable", polarity: "receptive" },
+};
+
+const elementLabels: Record<string, string> = {
+  fire: "огонь",
+  earth: "земля",
+  air: "воздух",
+  water: "вода",
+};
+
+const modalityLabels: Record<string, string> = {
+  cardinal: "инициатор",
+  fixed: "устойчивый ритм",
+  mutable: "гибкость",
+};
+
+const polarityLabels: Record<string, string> = {
+  active: "внешний фокус",
+  receptive: "внутренняя опора",
+};
+
+const signDailyProfiles: Record<string, { openers: string[]; focus: string[] }> = {
+  aries: {
+    openers: ["импульс дня просит смелого, но короткого шага", "сегодня важна инициатива без давления", "энергия включается через честное действие"],
+    focus: ["Держите темп, но не превращайте разговор в соревнование.", "Лучше один точный старт, чем пять обещаний.", "Мягкий тон усилит вашу уверенность."],
+  },
+  taurus: {
+    openers: ["день поддерживает устойчивость и заботу о базе", "лучше выбирать надёжное, а не шумное", "практичный шаг вернёт ощущение контроля"],
+    focus: ["Деньги, тело и быт требуют спокойного внимания.", "Не спорьте из упрямства, если можно договориться проще.", "Красота простых решений сегодня особенно заметна."],
+  },
+  gemini: {
+    openers: ["день раскрывается через ясные слова и быстрые уточнения", "новая мысль может стать полезной договорённостью", "общение работает лучше, если убрать лишний шум"],
+    focus: ["Пишите короче, слушайте внимательнее.", "Не обещайте больше, чем готовы сделать.", "Одна точная фраза снимет больше напряжения, чем длинное объяснение."],
+  },
+  cancer: {
+    openers: ["день просит беречь чувства и не копить молчание", "дом, близкие и внутренний ритм становятся главной опорой", "мягкость сегодня сильна, если рядом есть границы"],
+    focus: ["Скажите о важном спокойно и без намёков.", "Не принимайте чужую усталость на свой счёт.", "Поддержка начинается с честного вопроса."],
+  },
+  leo: {
+    openers: ["день помогает проявиться, если не давить на внимание", "тепло и достоинство работают лучше громких жестов", "ваша щедрость заметна, когда в ней нет ожидания ответа"],
+    focus: ["Похвала и уважение откроют нужную дверь.", "Не спорьте за центр сцены.", "Покажите результат, а не только намерение."],
+  },
+  virgo: {
+    openers: ["день подходит для точности, порядка и аккуратного выбора", "детали сегодня помогают увидеть реальную картину", "спокойная настройка процессов даст быстрый эффект"],
+    focus: ["Не превращайте заботу в критику.", "Список дел лучше сократить до главного.", "Тёплая формулировка сделает просьбу сильнее."],
+  },
+  libra: {
+    openers: ["день зовёт к балансу, но не к удобному молчанию", "важно выбрать честную гармонию, а не красивую уступку", "отношения выигрывают от ясной договорённости"],
+    focus: ["Говорите прямо, но оставляйте место для другого мнения.", "Не соглашайтесь только ради спокойствия.", "Красивый жест сработает, если за ним есть смысл."],
+  },
+  scorpio: {
+    openers: ["день усиливает глубину и просит честности без давления", "скрытое напряжение лучше назвать мягко", "интуиция работает, если не подменять её подозрением"],
+    focus: ["Не проверяйте чувства молчанием.", "Границы сегодня важнее контроля.", "Откровенность будет сильнее резких выводов."],
+  },
+  sagittarius: {
+    openers: ["день расширяет горизонт, но просит не разбрасываться", "свобода станет полезной, если есть понятный маршрут", "идея оживает через действие и честный разговор"],
+    focus: ["Обещайте меньше, делайте яснее.", "Не уходите от деталей, если они держат доверие.", "Разговор о будущем лучше связать с конкретным шагом."],
+  },
+  capricorn: {
+    openers: ["день поддерживает зрелые решения и спокойную ответственность", "структура вернёт уверенность и снизит суету", "лучше укреплять основу, чем спорить о форме"],
+    focus: ["Не берите всё на себя молча.", "Чёткий план поможет и в делах, и в отношениях.", "Тепло можно показать поступком, но слова тоже важны."],
+  },
+  aquarius: {
+    openers: ["день поднимает свежие идеи и просит уважать дистанцию", "нестандартный взгляд поможет, если не спорить ради свободы", "общение оживает через честность и лёгкость"],
+    focus: ["Дайте людям понять ваш замысел простыми словами.", "Не исчезайте из диалога без объяснения.", "Совместная идея может стать точкой сближения."],
+  },
+  pisces: {
+    openers: ["день тонкий и мягкий, поэтому особенно важны границы", "интуиция подсказывает верно, если рядом есть факт", "эмпатия сегодня сильна, когда вы не растворяетесь в чужом настроении"],
+    focus: ["Не додумывайте за партнёра.", "Пауза поможет услышать себя.", "Мягкая просьба будет лучше долгого ожидания."],
+  },
+};
+
+const signWeeklyProfiles: Record<string, { theme: string[] }> = Object.fromEntries(
+  signs.map((sign) => [
+    sign.slug,
+    {
+      theme: [
+        `${sign.name}: главный акцент недели`,
+        `${sign.name}: что стоит настроить в ближайшие дни`,
+        `${sign.name}: где появится точка роста`,
+      ],
+    },
+  ]),
+) as Record<string, { theme: string[] }>;
+
+const signLuckyProfiles: Record<string, string[]> = Object.fromEntries(
+  signs.map((sign) => [
+    sign.slug,
+    [
+      `${sign.name} выигрывает через спокойный выбор времени`,
+      `${sign.name} стоит выбирать шаг без лишнего давления`,
+      `${sign.name} полезно заранее проговорить ожидания`,
+    ],
+  ]),
+) as Record<string, string[]>;
+
+const dayEnergyTypes = ["мягкая волна", "ясный фокус", "живой диалог", "тихое восстановление", "смелый импульс", "день настройки"];
+const dayEnergyBestFor = ["коротких договорённостей", "заботы о себе и близких", "планов без спешки", "честного разговора", "маленького шага к примирению", "встречи без давления"];
+const dayEnergyAvoid = ["резких выводов", "разговора на повышенном тоне", "обещаний из эмоций", "молчаливых проверок", "спора ради правоты", "попытки решить всё сразу"];
+const dayEnergyMoods = ["спокойное любопытство", "чуткость", "собранность", "лёгкая романтика", "бережная честность"];
+const dayEnergyRelationshipTone = ["говорить проще и теплее", "сначала услышать, потом отвечать", "оставить место для паузы", "не давить на быстрый ответ", "поддержать делом и мягким словом"];
+
 const nameResonanceLines: Record<string, string[]> = {
   warm: [
     "Ваши имена усиливают ощущение интереса и живого общения. Важно не спорить за лидерство, а поддерживать лёгкость и уважение.",
@@ -1555,44 +2266,231 @@ const nameResonanceAdvice: Record<string, string[]> = {
   ],
 };
 
-const attractionLines = [
-  "есть живая искра, но ей нужен мягкий темп",
-  "интерес усиливается через уважение к личному пространству",
-  "притяжение ярче, когда оба не соревнуются за внимание",
-  "пара раскрывается через игру, любопытство и честность",
+const attractionLines: Record<"strong" | "medium" | "tense", string[]> = {
+  strong: [
+    "искры достаточно, чтобы поддерживать интерес без лишнего давления",
+    "притяжение заметное, особенно если оба сохраняют уважение к свободе",
+    "интерес легко оживить через игру, внимание и честные комплименты",
+  ],
+  medium: [
+    "притяжение есть, но ему нужен спокойный темп и меньше проверок",
+    "искра появляется волнами: помогает тёплая инициатива без ожиданий",
+    "интерес держится на любопытстве, но резкость быстро снижает тепло",
+  ],
+  tense: [
+    "притяжение может смешиваться с раздражением, поэтому важны паузы",
+    "искра есть, но её легко погасить давлением или соревнованием",
+    "интересу нужна безопасность: меньше резких выводов, больше уважения к границам",
+  ],
+};
+
+const communicationLines: Record<"strong" | "medium" | "tense", string[]> = {
+  strong: [
+    "диалог получается живым, если говорить прямо и слушать до конца",
+    "пара хорошо раскрывается через ясные просьбы и короткие договорённости",
+    "общение может стать сильной опорой, когда нет намёков и проверок",
+  ],
+  medium: [
+    "разговор возможен, но важно не додумывать мотивы друг друга",
+    "есть риск недопонимания, если говорить слишком быстро или слишком резко",
+    "диалогу помогает простая структура: факт, чувство, просьба",
+  ],
+  tense: [
+    "общение требует терпения: слова могут восприниматься острее, чем задумано",
+    "есть риск недопонимания, поэтому важны границы и спокойные вопросы",
+    "лучше обсуждать одну тему за раз и не требовать мгновенной реакции",
+  ],
+};
+
+const loveLines: Record<"strong" | "medium" | "tense", string[]> = {
+  strong: [
+    "тепло растёт через регулярные знаки внимания и доверие",
+    "романтика раскрывается, когда рядом есть уважение и свобода",
+    "чувства легче укреплять через заботу, благодарность и мягкую инициативу",
+  ],
+  medium: [
+    "чувствам нужна ясность: меньше догадок, больше прямого тепла",
+    "близость может расти, если не сравнивать темпы и ожидания",
+    "романтика становится устойчивее через маленькие повторяемые жесты",
+  ],
+  tense: [
+    "в любви возможны качели, если копить обиды или проверять чувства",
+    "чувствам нужны границы и честный разговор без давления",
+    "тепло лучше возвращать маленькими шагами, не требуя быстрых обещаний",
+  ],
+};
+
+const householdLines: Record<"strong" | "medium" | "tense", string[]> = {
+  strong: [
+    "общий ритм можно выстроить через понятные правила и заботу",
+    "быт легче, когда обязанности проговорены заранее",
+    "домашние вопросы становятся точкой опоры, если не копить мелкие претензии",
+  ],
+  medium: [
+    "ритм пары требует настройки: привычки могут отличаться сильнее, чем кажется",
+    "быт лучше обсуждать фактами, а не намёками",
+    "помогают списки, ясные зоны ответственности и право на отдых",
+  ],
+  tense: [
+    "домашний ритм может стать источником споров, если молчать о нагрузке",
+    "важно разделить ответственность и не ждать, что партнёр сам догадается",
+    "быт потребует больше терпения, честных правил и бережного тона",
+  ],
+};
+
+const weakSpotLines: Record<"strong" | "medium" | "tense", string[]> = {
+  strong: [
+    "даже сильной паре вредят молчаливые ожидания и спешка в выводах",
+    "главный риск — принять привычное тепло за само собой разумеющееся",
+    "не стоит спорить за лидерство там, где помогает партнёрство",
+  ],
+  medium: [
+    "разный темп решений может восприниматься как равнодушие",
+    "молчаливые ожидания быстро превращаются в напряжение",
+    "попытка переделать партнёра снижает доверие",
+  ],
+  tense: [
+    "есть риск недопонимания, если оба защищаются вместо разговора",
+    "резкие слова могут закрыть диалог быстрее, чем кажется",
+    "важны границы: без них напряжение будет возвращаться по кругу",
+  ],
+};
+
+const adviceLines: Record<"strong" | "medium" | "tense", string[]> = {
+  strong: [
+    "выберите один общий фокус на ближайшие дни и укрепите то, что уже работает",
+    "добавьте больше благодарности и не откладывайте простые тёплые слова",
+    "поддерживайте баланс между инициативой и личным пространством",
+  ],
+  medium: [
+    "проговорите ожидания простыми словами и не превращайте разговор в экзамен",
+    "сравнивайте не только знаки, но и реальные привычки: отдых, спор, просьбы о поддержке",
+    "сначала договоритесь о тоне, потом обсуждайте сложную тему",
+  ],
+  tense: [
+    "нужен честный разговор, но лучше начать с короткой мягкой фразы",
+    "потребуется больше терпения: не решайте всё одним разговором",
+    "важны границы, паузы и отказ от резких обвинений",
+  ],
+};
+
+const relationshipModeAdvice: Record<RelationshipMode, string[]> = {
+  love: ["для любви сейчас важнее тепло, чем проверка чувств", "романтика растёт через простые знаки внимания"],
+  friendship: ["для дружбы важны надёжность и честное присутствие", "не обесценивайте поддержку, даже если она выглядит простой"],
+  work: ["в рабочих делах фиксируйте договорённости письменно", "разделите роли, чтобы не спорить о мелочах"],
+  family: ["для быта помогает ясный режим и честное распределение нагрузки", "забота не должна превращаться в контроль"],
+  passion: ["для страсти важна игра без давления и ревности", "не подменяйте близость соревнованием"],
+  reconciliation: ["для примирения начните с признания чувства, а не с доказательств", "мягкий тон сейчас важнее идеальной формулировки"],
+};
+
+const strengthLines = [
+  "это можно развивать через маленькие повторяемые жесты",
+  "эта зона станет опорой, если не ждать угадывания",
+  "здесь паре полезно чаще замечать хорошее",
 ];
 
-const communicationLines = [
-  "лучше работают короткие договорённости и ясные просьбы",
-  "важно не додумывать мотивы, а задавать прямые вопросы",
-  "разговор становится легче, если сначала признать разные темпы",
-  "сильная сторона пары — обмен идеями без давления",
+const coupleRelationshipLines: Record<"strong" | "medium" | "tense", string[]> = {
+  strong: ["сегодня можно укрепить близость через внимание и спокойную инициативу", "подходит день для тёплого жеста и честного разговора"],
+  medium: ["отношениям поможет мягкая ясность: меньше намёков, больше простых слов", "лучше не проверять чувства, а прямо сказать о потребности"],
+  tense: ["сегодня важно не давить на ответ и не спорить за правоту", "если есть напряжение, начните с паузы и короткой спокойной фразы"],
+};
+
+const coupleTalkLines: Record<"strong" | "medium" | "tense", string[]> = {
+  strong: ["разговор может быстро стать ближе, если слушать без перебивания", "хорошо обсуждать планы и желания без скрытых проверок"],
+  medium: ["говорите по одной теме за раз и уточняйте смысл", "диалогу поможет формула: факт, чувство, просьба"],
+  tense: ["лучше избегать длинных переписок на эмоциях", "важны паузы и фразы без обвинений"],
+};
+
+const coupleDateLines: Record<"strong" | "medium" | "tense", string[]> = {
+  strong: ["подойдёт встреча с лёгкой романтикой и живым разговором", "хороший день для свидания без сложных тем"],
+  medium: ["лучше выбрать спокойный формат без спешки и ожиданий", "подойдёт короткая встреча, если заранее договориться о настроении"],
+  tense: ["свидание лучше делать тихим и коротким, без выяснения отношений", "если есть напряжение, начните с простой прогулки или перенесите встречу"],
+};
+
+const coupleReconciliationLines: Record<"strong" | "medium" | "tense", string[]> = {
+  strong: ["подойдёт мягкий шаг навстречу", "можно начать с признания своей части напряжения"],
+  medium: ["лучше идти осторожно и не требовать быстрых обещаний", "подойдёт короткое сообщение без давления"],
+  tense: ["сначала снизьте тон и выберите спокойное время", "лучше позже, если разговор сейчас легко сорвётся в спор"],
+};
+
+const coupleActionLines = ["предложить небольшой общий план", "сказать спасибо за конкретный поступок", "выбрать спокойный формат разговора", "сделать один тёплый жест без ожидания ответа"];
+const coupleAvoidLines: Record<"strong" | "medium" | "tense", string[]> = {
+  strong: ["не принимать тепло как должное", "не спорить из-за мелкой формы"],
+  medium: ["не копить ожидания молча", "не проверять партнёра намёками"],
+  tense: ["не начинать разговор с обвинения", "не требовать немедленного решения"],
+};
+
+const coupleCalendarStatuses = ["❤️ день для любви", "💬 день для разговора", "🕊 день для примирения", "⚠️ осторожнее", "🌙 спокойный день"];
+const coupleCalendarAdvice: Record<string, string[]> = {
+  "❤️ день для любви": ["подойдёт тёплая встреча или маленький знак внимания", "лучше говорить о приятном и укреплять доверие"],
+  "💬 день для разговора": ["обсудите одну тему и заранее договоритесь о спокойном тоне", "подойдёт честная переписка без проверок"],
+  "🕊 день для примирения": ["начните с мягкой фразы и не требуйте ответа сразу", "лучше признать чувство, а не спорить о деталях"],
+  "⚠️ осторожнее": ["сегодня легко обострить мелочь, поэтому важны паузы", "сложные темы лучше сократить до одного вопроса"],
+  "🌙 спокойный день": ["подойдёт тихая поддержка без больших решений", "лучше восстановить силы и не торопить события"],
+};
+
+const reconciliationApproachLines: Record<"strong" | "medium" | "tense", string[]> = {
+  strong: ["напишите коротко и тепло: начните с желания понять, а не доказать", "подойдите спокойно и назовите, что именно хотите исправить"],
+  medium: ["лучше начать с мягкой просьбы о разговоре и дать время на ответ", "скажите о своём чувстве без обвинения и предложите маленький шаг"],
+  tense: ["сначала выдержите паузу и выберите нейтральное время", "лучше написать очень коротко, без спора и давления"],
+};
+
+const reconciliationAvoidLines: Record<"strong" | "medium" | "tense", string[]> = {
+  strong: ["не превращайте примирение в длинный разбор прошлого", "не проверяйте, кто первым сделает шаг"],
+  medium: ["избегайте сарказма и слов «всегда» или «никогда»", "не смешивайте одну обиду со всеми старыми темами"],
+  tense: ["не требуйте немедленного ответа", "не начинайте с обвинений и ультиматумов"],
+};
+
+const messageTones: Array<{ id: MessageTone; label: string }> = [
+  { id: "soft", label: "мягко" },
+  { id: "romantic", label: "романтично" },
+  { id: "afterFight", label: "после ссоры" },
+  { id: "longSilence", label: "давно не общались" },
+  { id: "invite", label: "пригласить" },
+  { id: "reconciliation", label: "для примирения" },
 ];
 
-const loveLines = [
-  "тепло растёт через маленькие регулярные знаки внимания",
-  "романтика сильнее там, где меньше проверок и сравнений",
-  "чувства раскрываются через доверие и спокойную инициативу",
-  "важно оставлять место и для близости, и для свободы",
-];
+const messageTemplates: Record<MessageTone, string[]> = {
+  soft: ["хочу спокойно поговорить и лучше понять тебя. Давай без спешки и без давления.", "мне важно сохранить тепло между нами. Напиши, когда тебе будет удобно поговорить."],
+  romantic: ["я сегодня поймал(а) себя на мысли, что мне хочется быть к тебе ближе. Давай устроим спокойный вечер?", "мне приятно думать о нас. Хочу добавить в день немного тепла и увидеться, если ты тоже хочешь."],
+  afterFight: ["я не хочу продолжать спор. Мне важно понять тебя и спокойно объяснить свою сторону.", "давай попробуем вернуться к разговору мягче. Я готов(а) слушать и не давить."],
+  longSilence: ["давно не общались, но я хочу написать бережно. Как ты? Если будет желание, я буду рад(а) поговорить.", "не хочу врываться в твоё пространство, просто хочу узнать, как ты себя чувствуешь."],
+  invite: ["хочу увидеться без суеты. Давай выберем время для прогулки или спокойного кофе?", "если тебе откликается, давай встретимся и просто побудем рядом без лишних ожиданий."],
+  reconciliation: ["мне жаль, что между нами появилось напряжение. Я хочу поговорить спокойно и с уважением к тебе.", "я хочу сделать шаг навстречу. Давай начнём с честного разговора без обвинений."],
+};
 
-const householdLines = [
-  "общий режим лучше согласовать заранее",
-  "быт станет легче, если разделить зоны ответственности",
-  "ритм пары держится на простых повторяемых привычках",
-  "домашние вопросы стоит решать фактами, а не намёками",
-];
+const natalArchetypes: Record<string, string[]> = Object.fromEntries(
+  signs.map((sign) => [
+    sign.slug,
+    [
+      `${sign.name} ищет свой способ проявлять силу мягко и честно`,
+      `${sign.name} раскрывается, когда рядом есть смысл, доверие и личный темп`,
+      `${sign.name} лучше всего растёт через осознанный выбор, а не через давление`,
+    ],
+  ]),
+) as Record<string, string[]>;
 
-const weakSpotLines = [
-  "молчаливые ожидания быстро превращаются в напряжение",
-  "разный темп решений может восприниматься как равнодушие",
-  "попытка переделать партнёра снижает доверие",
-  "излишняя резкость в разговоре может закрыть диалог",
-];
+const natalStrengths: Record<string, string[]> = {
+  fire: ["инициатива, смелость и способность зажигать других", "быстрый старт, честность и живое вдохновение"],
+  earth: ["надёжность, практичность и умение доводить до результата", "терпение, вкус к качеству и уважение к реальности"],
+  air: ["ясное мышление, любопытство и способность договариваться", "идеи, лёгкость контакта и умение видеть варианты"],
+  water: ["эмпатия, глубина и тонкое чувство атмосферы", "забота, интуиция и способность создавать эмоциональную опору"],
+};
 
-const adviceLines = [
-  "выберите один общий фокус на ближайшие дни и проверьте, где вам легче договориться",
-  "проговорите ожидания простыми словами и не превращайте разговор в экзамен",
-  "сравнивайте не только знаки, но и реальные привычки: отдых, спор, просьбы о поддержке",
-  "держите баланс между инициативой и уважением к личному пространству",
-];
+const natalGrowth: Record<string, string[]> = {
+  cardinal: ["не брать на себя всё сразу и оставлять другим право на свой темп", "учиться начинать без давления и завершать без спешки"],
+  fixed: ["мягче отпускать старые схемы, если они перестали помогать", "оставлять место для гибкости и нового взгляда"],
+  mutable: ["не распыляться и чаще выбирать один главный фокус", "переводить идеи и чувства в понятные действия"],
+};
+
+const natalLoveStyles: Record<string, string[]> = {
+  fire: ["в любви важны искра, честность и ощущение живого выбора", "тепло проявляется через инициативу и прямоту"],
+  earth: ["любовь крепнет через надёжность, заботу и простые регулярные поступки", "важны стабильность, телесное тепло и доверие"],
+  air: ["любовь начинается с интереса, диалога и свободы быть собой", "важны разговор, чувство лёгкости и уважение к пространству"],
+  water: ["любовь раскрывается через безопасность, нежность и эмоциональную честность", "важны поддержка, тишина и бережный контакт"],
+};
+
+const natalCommunicationStyles: Record<string, string[]> = {
+  active: ["лучше говорить прямо, но проверять, не звучит ли это слишком резко", "важно оставлять место для ответа и не ускорять собеседника"],
+  receptive: ["лучше не ждать, что другие сами догадаются о чувствах", "важно называть потребность простыми словами и держать границы"],
+};
