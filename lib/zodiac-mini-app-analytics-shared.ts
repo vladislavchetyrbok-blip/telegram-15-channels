@@ -19,6 +19,8 @@ export const ZODIAC_ANALYTICS_EVENTS = [
   "natal_chart_completed",
   "couple_horoscope_viewed",
   "relationship_map_viewed",
+  "mental_map_viewed",
+  "relationship_map_category_opened",
   "lucky_day_clicked",
   "vip_clicked",
   "giveaway_clicked",
@@ -42,6 +44,7 @@ export interface ZodiacAnalyticsPayload {
   secondSign?: string;
   scoreTier?: ZodiacAnalyticsScoreTier;
   relationshipMode?: string;
+  category?: string;
 }
 
 export interface SanitizedZodiacAnalyticsEvent extends ZodiacAnalyticsPayload {
@@ -103,6 +106,7 @@ export function sanitizeZodiacAnalyticsPayload(input: unknown): ZodiacAnalyticsP
   const secondSign = sanitizeSign(raw.secondSign);
   const scoreTier = sanitizeEnum(raw.scoreTier, scoreTiers) as ZodiacAnalyticsScoreTier | undefined;
   const relationshipMode = sanitizeEnum(raw.relationshipMode, relationshipModes);
+  const category = sanitizeToken(raw.category, 64);
 
   if (dateKey) payload.dateKey = dateKey;
   if (section) payload.section = section;
@@ -115,6 +119,7 @@ export function sanitizeZodiacAnalyticsPayload(input: unknown): ZodiacAnalyticsP
   if (secondSign) payload.secondSign = secondSign;
   if (scoreTier) payload.scoreTier = scoreTier;
   if (relationshipMode) payload.relationshipMode = relationshipMode;
+  if (category) payload.category = category;
 
   return payload;
 }

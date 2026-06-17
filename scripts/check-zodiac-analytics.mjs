@@ -39,7 +39,8 @@ async function main() {
 
     const compatibilityRoute = await checkRoute(`${baseUrl}/compatibility`);
     const dashboardRoute = await checkRoute(`${baseUrl}/dashboard/networks/zodiac/analytics`);
-    const allowedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`);
+    const allowedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "relationship_map_category_opened", { category: "communication" });
+    const mentalMapEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "mental_map_viewed");
     const disallowedEvent = await checkDisallowedEvent(`${baseUrl}/api/zodiac/analytics/event`);
     const afterLedgerStats = await collectLedgerStats();
     const ledgerWrites = countLedgerWrites(beforeLedgerStats, afterLedgerStats);
@@ -54,8 +55,9 @@ async function main() {
         dashboard: dashboardRoute,
       },
       allowedEvent,
+      mentalMapEvent,
       disallowedEvent,
-      sensitiveFieldsStripped: allowedEvent.sensitiveFieldsStripped,
+      sensitiveFieldsStripped: allowedEvent.sensitiveFieldsStripped && mentalMapEvent.sensitiveFieldsStripped,
       noSecretsPrinted: true,
       telegramApiCalls,
       ledgerWrites,
@@ -128,14 +130,14 @@ async function checkRoute(url) {
   return `${response.status} OK`;
 }
 
-async function checkAllowedEvent(url) {
+async function checkAllowedEvent(url, event = "compatibility_calculated", extraPayload = {}) {
   const response = await trackedFetch(url, {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({
-      event: "compatibility_calculated",
+      event,
       dateKey: "2026-06-18",
-      section: "compatibility",
+      section: event === "compatibility_calculated" ? "compatibility" : "relationship_map",
       sign: "gemini",
       mode: "fast",
       source: "analytics_smoke",
@@ -145,6 +147,7 @@ async function checkAllowedEvent(url) {
       secondSign: "leo",
       scoreTier: "good",
       relationshipMode: "love",
+      ...extraPayload,
       name: "SHOULD_BE_STRIPPED_NAME",
       birthDate: "1990-01-02",
       birthTime: "12:34",
@@ -169,6 +172,7 @@ async function checkAllowedEvent(url) {
   assert(sensitiveFieldsStripped, "allowed event response echoed a sensitive value");
 
   return {
+    event,
     status: `${response.status} OK`,
     mode: payload.mode,
     stored: payload.stored,

@@ -222,6 +222,7 @@ export function ZodiacCompatibilityMiniApp({
       trackZodiacMiniAppEvent("couple_horoscope_viewed", { ...pairPayload, section: "couple_horoscope" });
       trackZodiacMiniAppEvent("section_open_relationship_map", { ...pairPayload, section: "relationship_map" });
       trackZodiacMiniAppEvent("relationship_map_viewed", { ...pairPayload, section: "relationship_map" });
+      trackZodiacMiniAppEvent("mental_map_viewed", { ...pairPayload, section: "relationship_map" });
     }
 
     trackZodiacMiniAppEvent("section_open_vip", analyticsPayload({ section: "vip", sign: selectedSign.slug }));
@@ -272,6 +273,22 @@ export function ZodiacCompatibilityMiniApp({
 
   function trackMessageHelperUse() {
     trackZodiacMiniAppEvent("message_helper_used", analyticsPayload({ section: "message_helper", firstSign: self.sign, secondSign: partner.sign, mode, scoreTier: zodiacAnalyticsScoreTier(result.scores.total) }));
+  }
+
+  function trackRelationshipMapCategoryOpen(category: string) {
+    if (!self.sign || !partner.sign) return;
+    trackZodiacMiniAppEvent(
+      "relationship_map_category_opened",
+      analyticsPayload({
+        section: "relationship_map",
+        category,
+        firstSign: self.sign,
+        secondSign: partner.sign,
+        mode,
+        relationshipMode,
+        scoreTier: zodiacAnalyticsScoreTier(result.scores.total),
+      }),
+    );
   }
 
   function resetFlow() {
@@ -375,6 +392,7 @@ export function ZodiacCompatibilityMiniApp({
                   onVipClick={() => trackPreviewClick("vip")}
                   onGiveawayClick={() => trackPreviewClick("giveaway")}
                   onMessageHelperUsed={trackMessageHelperUse}
+                  onRelationshipMapCategoryOpen={trackRelationshipMapCategoryOpen}
                 />
               ) : null}
               {activeTab === "compatibility" ? (
@@ -629,6 +647,7 @@ function MoreSection({
   onVipClick,
   onGiveawayClick,
   onMessageHelperUsed,
+  onRelationshipMapCategoryOpen,
 }: {
   publicMode: boolean;
   appDateKey: string | null;
@@ -639,6 +658,7 @@ function MoreSection({
   onVipClick: () => void;
   onGiveawayClick: () => void;
   onMessageHelperUsed: () => void;
+  onRelationshipMapCategoryOpen: (category: string) => void;
 }) {
   const [messageTone, setMessageTone] = useState<MessageTone>("soft");
   const dateKey = appDateKey ?? getCurrentZodiacDateKey(DEFAULT_ZODIAC_TIME_ZONE);
@@ -657,7 +677,7 @@ function MoreSection({
       </p>
       <div className="mt-5 space-y-4">
         <CoupleHoroscopeCard publicMode={publicMode} horoscope={coupleHoroscope} />
-        <RelationshipMapCard publicMode={publicMode} result={result} pairReady={pairReady} />
+        <RelationshipMapCard publicMode={publicMode} result={result} pairReady={pairReady} onCategoryOpen={onRelationshipMapCategoryOpen} />
         <CoupleCalendarCard publicMode={publicMode} days={coupleCalendar} pairReady={pairReady} />
         <ReconciliationDayCard publicMode={publicMode} reconciliation={reconciliation} />
         <PartnerMessageCard publicMode={publicMode} message={message} tone={messageTone} onToneChange={setMessageTone} onUsed={onMessageHelperUsed} pairReady={pairReady} />
@@ -714,19 +734,136 @@ function CoupleHoroscopeCard({ publicMode, horoscope }: { publicMode: boolean; h
   );
 }
 
-function RelationshipMapCard({ publicMode, result, pairReady }: { publicMode: boolean; result: CompatibilityResult; pairReady: boolean }) {
-  if (!pairReady) return <EmptyFeatureCard publicMode={publicMode} title="🧭 Карта отношений" text="Заполните данные пары, чтобы увидеть карту отношений." />;
+function RelationshipMapCard({
+  publicMode,
+  result,
+  pairReady,
+  onCategoryOpen,
+}: {
+  publicMode: boolean;
+  result: CompatibilityResult;
+  pairReady: boolean;
+  onCategoryOpen: (category: string) => void;
+}) {
+  if (!pairReady) return <EmptyFeatureCard publicMode={publicMode} title="🧠 Ментальная карта пары" text="Выберите два знака, чтобы увидеть карту отношений." />;
 
   return (
-    <FeatureCard publicMode={publicMode} title="🧭 Карта отношений" subtitle={result.mapSummary}>
-      <div className="space-y-3">
-        {result.mapScores.map((item) => (
-          <ScoreBar key={item.label} publicMode={publicMode} label={item.label} value={item.value} text={item.text} />
-        ))}
-        <ResultTextCard publicMode={publicMode} title="Сильная сторона" text={result.strengthText} />
-        <ResultTextCard publicMode={publicMode} title="Зона внимания" text={result.riskText} />
+    <FeatureCard publicMode={publicMode} title="🧠 Ментальная карта пары" subtitle="Как вы думаете, спорите, миритесь и поддерживаете друг друга">
+      <div className="space-y-4">
+        <div className={publicMode ? "rounded-lg border border-amber-200/20 bg-amber-200/10 p-3" : "rounded-lg border border-amber-200 bg-amber-50 p-3"}>
+          <p className={publicMode ? "text-xs font-semibold uppercase tracking-wide text-amber-100" : "text-xs font-semibold uppercase tracking-wide text-amber-800"}>Карта отношений</p>
+          <p className={publicMode ? "mt-2 text-sm leading-5 text-slate-200" : "mt-2 text-sm leading-5 text-slate-700"}>{result.mapSummary}</p>
+        </div>
+        <MentalMapSummaryBlock publicMode={publicMode} summary={result.mentalMapSummary} />
+        <div className="grid gap-3 sm:grid-cols-2">
+          {result.mapScores.map((item) => (
+            <MentalMapCategoryTile key={item.id} publicMode={publicMode} item={item} onOpen={onCategoryOpen} />
+          ))}
+        </div>
+        <MentalMapDynamicsGrid publicMode={publicMode} items={result.mentalMapDynamics} />
+        <div className="grid gap-3 sm:grid-cols-2">
+          <MentalMapAdviceCard publicMode={publicMode} title="✅ Что поможет" items={result.mentalMapSummary.helps} />
+          <MentalMapAdviceCard publicMode={publicMode} title="⚠️ Чего избегать" items={result.mentalMapSummary.avoid} />
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <ResultTextCard publicMode={publicMode} title="Сильная сторона" text={result.strengthText} />
+          <ResultTextCard publicMode={publicMode} title="Зона внимания" text={result.riskText} />
+        </div>
       </div>
     </FeatureCard>
+  );
+}
+
+function MentalMapSummaryBlock({ publicMode, summary }: { publicMode: boolean; summary: MentalMapSummary }) {
+  return (
+    <div className={publicMode ? "rounded-lg border border-fuchsia-200/20 bg-white/8 p-3" : "rounded-lg border border-violet-100 bg-white p-3"}>
+      <div className="grid gap-3 sm:grid-cols-3">
+        <MentalMapSummaryItem publicMode={publicMode} label="Сильные стороны" text={summary.strengths} />
+        <MentalMapSummaryItem publicMode={publicMode} label="Зоны риска" text={summary.risks} />
+        <MentalMapSummaryItem publicMode={publicMode} label="Главный совет" text={summary.advice} />
+      </div>
+    </div>
+  );
+}
+
+function MentalMapSummaryItem({ publicMode, label, text }: { publicMode: boolean; label: string; text: string }) {
+  return (
+    <div>
+      <p className={publicMode ? "text-xs font-semibold text-amber-100" : "text-xs font-semibold text-violet-800"}>{label}</p>
+      <p className={publicMode ? "mt-1 break-words text-sm leading-5 text-slate-200 [overflow-wrap:anywhere]" : "mt-1 break-words text-sm leading-5 text-slate-700 [overflow-wrap:anywhere]"}>{text}</p>
+    </div>
+  );
+}
+
+function MentalMapCategoryTile({ publicMode, item, onOpen }: { publicMode: boolean; item: RelationshipMapScore; onOpen: (category: string) => void }) {
+  const tone = item.value >= 70 ? "Сила" : item.value >= 55 ? "Баланс" : "Риск";
+  const toneClass =
+    item.value >= 70
+      ? publicMode
+        ? "border-emerald-200/25 bg-emerald-200/10 text-emerald-100"
+        : "border-emerald-100 bg-emerald-50 text-emerald-800"
+      : item.value >= 55
+        ? publicMode
+          ? "border-amber-200/25 bg-amber-200/10 text-amber-100"
+          : "border-amber-100 bg-amber-50 text-amber-800"
+        : publicMode
+          ? "border-rose-200/25 bg-rose-200/10 text-rose-100"
+          : "border-rose-100 bg-rose-50 text-rose-800";
+
+  return (
+    <button
+      type="button"
+      onClick={() => onOpen(item.id)}
+      className={
+        publicMode
+          ? "min-h-[156px] w-full rounded-lg border border-white/12 bg-white/8 p-3 text-left text-slate-100 transition hover:border-fuchsia-200/30 hover:bg-white/12 focus:outline-none focus:ring-2 focus:ring-fuchsia-200/50"
+          : "min-h-[156px] w-full rounded-lg border border-slate-200 bg-white p-3 text-left text-slate-700 transition hover:border-violet-200 hover:bg-violet-50/50 focus:outline-none focus:ring-2 focus:ring-violet-200"
+      }
+      aria-label={`${item.label}: ${item.value}%`}
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className={publicMode ? "break-words text-sm font-semibold leading-5 text-white [overflow-wrap:anywhere]" : "break-words text-sm font-semibold leading-5 text-slate-950 [overflow-wrap:anywhere]"}>{item.label}</p>
+          <p className={publicMode ? "mt-1 text-xs text-slate-400" : "mt-1 text-xs text-slate-500"}>{item.shortLabel}</p>
+        </div>
+        <span className={`shrink-0 rounded-full border px-2.5 py-1 text-xs font-semibold ${toneClass}`}>{tone}</span>
+      </div>
+      <div className="mt-3 flex items-center gap-3">
+        <div className={publicMode ? "h-2 flex-1 rounded-full bg-white/12" : "h-2 flex-1 rounded-full bg-slate-100"}>
+          <div className={publicMode ? "h-2 rounded-full bg-gradient-to-r from-fuchsia-300 via-rose-300 to-amber-200" : "h-2 rounded-full bg-gradient-to-r from-violet-500 via-fuchsia-500 to-amber-400"} style={{ width: `${item.value}%` }} />
+        </div>
+        <span className={publicMode ? "w-10 text-right text-sm font-semibold text-amber-100" : "w-10 text-right text-sm font-semibold text-violet-700"}>{item.value}%</span>
+      </div>
+      <p className={publicMode ? "mt-3 break-words text-sm leading-5 text-slate-300 [overflow-wrap:anywhere]" : "mt-3 break-words text-sm leading-5 text-slate-600 [overflow-wrap:anywhere]"}>{item.text}</p>
+    </button>
+  );
+}
+
+function MentalMapDynamicsGrid({ publicMode, items }: { publicMode: boolean; items: MentalMapDynamic[] }) {
+  return (
+    <div className="grid gap-3 sm:grid-cols-2">
+      {items.map((item) => (
+        <div key={item.label} className={publicMode ? "rounded-lg border border-white/12 bg-white/8 p-3" : "rounded-lg border border-slate-200 bg-white p-3"}>
+          <p className={publicMode ? "text-xs font-semibold text-amber-100" : "text-xs font-semibold text-violet-800"}>{item.label}</p>
+          <p className={publicMode ? "mt-2 break-words text-sm leading-5 text-slate-300 [overflow-wrap:anywhere]" : "mt-2 break-words text-sm leading-5 text-slate-600 [overflow-wrap:anywhere]"}>{item.text}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function MentalMapAdviceCard({ publicMode, title, items }: { publicMode: boolean; title: string; items: string[] }) {
+  return (
+    <div className={publicMode ? "rounded-lg border border-white/12 bg-white/8 p-3" : "rounded-lg border border-slate-200 bg-white p-3"}>
+      <p className={publicMode ? "text-sm font-semibold text-amber-100" : "text-sm font-semibold text-violet-800"}>{title}</p>
+      <ul className="mt-2 space-y-2">
+        {items.map((item) => (
+          <li key={item} className={publicMode ? "break-words text-sm leading-5 text-slate-300 [overflow-wrap:anywhere]" : "break-words text-sm leading-5 text-slate-600 [overflow-wrap:anywhere]"}>
+            {item}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
@@ -1411,8 +1548,23 @@ interface NameResonance {
 }
 
 interface RelationshipMapScore {
+  id: string;
   label: string;
+  shortLabel: string;
   value: number;
+  text: string;
+}
+
+interface MentalMapSummary {
+  strengths: string;
+  risks: string;
+  advice: string;
+  helps: string[];
+  avoid: string[];
+}
+
+interface MentalMapDynamic {
+  label: string;
   text: string;
 }
 
@@ -1440,6 +1592,8 @@ interface CompatibilityResult {
   nameResonance: NameResonance | null;
   mapScores: RelationshipMapScore[];
   mapSummary: string;
+  mentalMapSummary: MentalMapSummary;
+  mentalMapDynamics: MentalMapDynamic[];
   strengthText: string;
   riskText: string;
 }
@@ -1534,6 +1688,8 @@ function buildCompatibilityResult(mode: Mode, relationshipMode: RelationshipMode
     household: clampScore(total + relationshipScoreNudge(relationshipMode, "household") + variance(seed, 4, 17) - 8),
   };
   const mapScores = buildRelationshipMapScores(scores, seed, relationshipMode);
+  const mentalMapSummary = buildMentalMapSummary(mapScores, scores, seed);
+  const mentalMapDynamics = buildMentalMapDynamics(mapScores, scores, seed);
   const preciseKnown = mode === "precise" && self.knowsTime && partner.knowsTime && Boolean(selfCity && partnerCity);
   const unknownPreciseTime = mode === "precise" && (!self.knowsTime || !partner.knowsTime);
   return {
@@ -1554,6 +1710,8 @@ function buildCompatibilityResult(mode: Mode, relationshipMode: RelationshipMode
     nameResonance,
     mapScores,
     mapSummary: buildMapSummary(total, relationshipMode),
+    mentalMapSummary,
+    mentalMapDynamics,
     strengthText: buildStrengthText(scores, seed),
     riskText: buildRiskText(total, seed + 11),
   };
@@ -1673,23 +1831,150 @@ function preciseCompatibilityShift(self: PersonState, partner: PersonState, self
 }
 
 function buildRelationshipMapScores(scores: CompatibilityResult["scores"], seed: number, relationshipMode: RelationshipMode): RelationshipMapScore[] {
-  const conflict = clampScore(100 - scores.communication + variance(seed, 12, 13) - 6);
+  const conflictPressure = clampScore(100 - scores.communication + variance(seed, 12, 13) - 6);
+  const conflictBalance = clampScore(100 - conflictPressure + relationshipScoreNudge(relationshipMode, "communication") + variance(seed, 18, 7) - 3);
   const money = clampScore(Math.round((scores.household + scores.communication) / 2) + relationshipScoreNudge(relationshipMode, "household") + variance(seed, 13, 11) - 5);
   const mental = clampScore(scores.communication + variance(seed, 14, 11) - 5);
   const reconciliation = clampScore(Math.round((scores.communication + scores.love) / 2) + relationshipScoreNudge("reconciliation", "communication") + variance(seed, 15, 9) - 4);
-  const potential = clampScore(Math.round((scores.total + scores.communication + scores.love) / 3) + variance(seed, 16, 9) - 4);
+  const support = clampScore(Math.round((scores.communication + scores.love + scores.household) / 3) + variance(seed, 17, 11) - 5);
+  const potential = clampScore(Math.round((scores.total + scores.communication + scores.love + support) / 4) + variance(seed, 16, 9) - 4);
 
   return [
-    { label: "❤️ Любовь", value: scores.love, text: buildScoreText("love", scores.love, seed + 1) },
-    { label: "🔥 Притяжение", value: scores.attraction, text: buildScoreText("attraction", scores.attraction, seed + 2) },
-    { label: "💬 Общение", value: scores.communication, text: buildScoreText("communication", scores.communication, seed + 3) },
-    { label: "🏠 Быт и ритм", value: scores.household, text: buildScoreText("household", scores.household, seed + 4) },
-    { label: "💰 Деньги", value: money, text: money >= 65 ? "можно договариваться о планах и бюджете" : "деньги лучше обсуждать заранее и без намёков" },
-    { label: "🧠 Ментальная связь", value: mental, text: mental >= 65 ? "идеи хорошо цепляются друг за друга" : "есть риск недопонимания, важны короткие формулировки" },
-    { label: "⚠️ Конфликты", value: conflict, text: conflict >= 65 ? "напряжение возможно, особенно при резком тоне" : "споры легче остановить честным вопросом" },
-    { label: "🕊 Примирение", value: reconciliation, text: reconciliation >= 65 ? "мягкий разговор может быстро снизить напряжение" : "лучше идти маленькими шагами и не требовать ответа сразу" },
-    { label: "⭐ Потенциал", value: potential, text: potential >= 70 ? "у пары есть хороший запас роста" : "потенциал зависит от границ, терпения и ясных просьб" },
+    buildRelationshipMapScore("mental_connection", "🧠 Ментальная связь", "мышление", mental, [
+      "мысли быстро сходятся, легче строить общий план",
+      "часть идей совпадает, но лучше уточнять смысл",
+      "темп мышления разный, потребуется больше терпения",
+    ]),
+    buildRelationshipMapScore("communication", "💬 Общение", "диалог", scores.communication, [
+      buildScoreText("communication", scores.communication, seed + 3),
+      "можно договориться, если говорить прямо и без проверок",
+      "важны короткие просьбы и пауза перед резкими словами",
+    ]),
+    buildRelationshipMapScore("conflicts", "⚠️ Конфликты", "споры", conflictBalance, [
+      "споры можно удержать в рамках без резких слов",
+      "важны паузы, границы и возврат к сути разговора",
+      "есть риск спорить на эмоциях; лучше брать паузу",
+    ]),
+    buildRelationshipMapScore("reconciliation", "🕊 Примирение", "мириться", reconciliation, [
+      "мягкий разговор быстро снижает напряжение",
+      "поможет честный разговор без требования ответа сразу",
+      "лучше мириться маленькими шагами и возвращаться к теме позже",
+    ]),
+    buildRelationshipMapScore("emotional_closeness", "❤️ Эмоциональная близость", "тепло", scores.love, [
+      buildScoreText("love", scores.love, seed + 1),
+      "тепло есть, но его важно подкреплять действиями",
+      "близость растёт медленнее, чем ожидания; важны бережные просьбы",
+    ]),
+    buildRelationshipMapScore("household_rhythm", "🏠 Быт и ритм", "быт", scores.household, [
+      buildScoreText("household", scores.household, seed + 4),
+      "общий ритм возможен, если заранее делить ответственность",
+      "быт может цеплять чаще чувств; правила лучше проговаривать заранее",
+    ]),
+    buildRelationshipMapScore("money_decisions", "💰 Деньги и решения", "деньги", money, [
+      "можно спокойно обсуждать планы, траты и общий бюджет",
+      "решения лучше фиксировать конкретно, без намёков",
+      "финансовые темы лучше обсуждать заранее и без давления",
+    ]),
+    buildRelationshipMapScore("support", "🤝 Поддержка", "опора", support, [
+      "есть ресурс быть друг для друга опорой",
+      "поддержка работает лучше через конкретные действия",
+      "поддержку важно просить прямо, иначе легко ждать невозможного",
+    ]),
+    buildRelationshipMapScore("couple_potential", "⭐ Потенциал пары", "рост", potential, [
+      "у пары есть хороший запас роста",
+      "потенциал раскрывается через правила разговора и общий ритм",
+      "потенциал есть, но он зависит от границ, терпения и ясных просьб",
+    ]),
   ];
+}
+
+function buildRelationshipMapScore(id: string, label: string, shortLabel: string, value: number, lines: [string, string, string]): RelationshipMapScore {
+  return {
+    id,
+    label,
+    shortLabel,
+    value,
+    text: value >= 70 ? lines[0] : value >= 55 ? lines[1] : lines[2],
+  };
+}
+
+function buildMentalMapSummary(mapScores: RelationshipMapScore[], scores: CompatibilityResult["scores"], seed: number): MentalMapSummary {
+  const rankedHigh = [...mapScores].sort((first, second) => second.value - first.value);
+  const rankedLow = [...mapScores].sort((first, second) => first.value - second.value);
+  const strengths = rankedHigh.slice(0, 3).map((item) => item.shortLabel).join(", ");
+  const risks = rankedLow.slice(0, 3).map((item) => item.shortLabel).join(", ");
+  const mainRisk = rankedLow[0];
+  const mainAdvice = mentalMapAdviceForRisk(mainRisk.id, seed);
+  const helps = [
+    `опираться на ${rankedHigh[0].shortLabel} и не требовать одинакового темпа`,
+    "говорить просьбами, а не проверками",
+    scores.communication >= 55 ? "фиксировать договорённости простыми словами" : "переспрашивать смысл перед ответом",
+  ];
+  const avoid = [
+    mentalMapAvoidForRisk(mainRisk.id),
+    "не спорить на эмоциях",
+    "не превращать разницу характеров в борьбу за правоту",
+  ];
+
+  return {
+    strengths,
+    risks,
+    advice: mainAdvice,
+    helps,
+    avoid,
+  };
+}
+
+function buildMentalMapDynamics(mapScores: RelationshipMapScore[], scores: CompatibilityResult["scores"], seed: number): MentalMapDynamic[] {
+  const mental = findMentalMapScore(mapScores, "mental_connection");
+  const communication = findMentalMapScore(mapScores, "communication");
+  const reconciliation = findMentalMapScore(mapScores, "reconciliation");
+  const support = findMentalMapScore(mapScores, "support");
+  const trustRisk = [...mapScores].sort((first, second) => first.value - second.value)[0];
+  const easiest = [communication, findMentalMapScore(mapScores, "money_decisions"), findMentalMapScore(mapScores, "household_rhythm")].sort((first, second) => second.value - first.value)[0];
+
+  return [
+    { label: "Как вы думаете", text: mental.value >= 60 ? "мысли чаще можно собрать в общий план" : "ход мысли разный, поэтому помогает уточнять смысл и не угадывать за партнёра" },
+    { label: "Где легко договориться", text: `${easiest.shortLabel}: ${easiest.value >= 60 ? "здесь легче искать общий вариант" : "здесь нужен спокойный формат и конкретные правила"}` },
+    { label: "Где чаще возникают споры", text: `${trustRisk.shortLabel}: эта зона требует внимания, особенно когда усталость сильнее терпения` },
+    { label: "Как лучше мириться", text: reconciliation.value >= 60 ? "начинать с признания эмоций и одной конкретной просьбы" : "сначала снизить градус, потом возвращаться к теме без давления" },
+    { label: "Что укрепляет связь", text: support.value >= 60 ? "маленькие подтверждения поддержки и общий ритм" : "честные ожидания, границы и регулярные короткие разговоры" },
+    { label: "Что может разрушать доверие", text: scores.total >= 55 ? "молчаливые проверки, резкий тон и накопленные обиды" : pickLine(["давление, сарказм и обещания без действий", "игнорирование границ и разговоры на пике эмоций"], seed, 19) },
+  ];
+}
+
+function findMentalMapScore(mapScores: RelationshipMapScore[], id: string) {
+  return mapScores.find((item) => item.id === id) ?? mapScores[0];
+}
+
+function mentalMapAdviceForRisk(riskId: string, seed: number) {
+  const adviceByRisk: Record<string, string[]> = {
+    mental_connection: ["не спорить о формулировках, а уточнять смысл", "проверять, одинаково ли вы поняли план"],
+    communication: ["говорить короче и честнее, без намёков", "не копить обиды до большого разговора"],
+    conflicts: ["брать паузу до того, как спор станет соревнованием", "обсуждать проблему, а не характер друг друга"],
+    reconciliation: ["мириться маленькими шагами и не требовать мгновенного ответа", "начинать с признания эмоций, потом переходить к фактам"],
+    emotional_closeness: ["подтверждать чувства действиями, не только словами", "не проверять любовь молчанием"],
+    household_rhythm: ["разделить быт заранее, пока нет раздражения", "обсудить ритм, усталость и личное пространство"],
+    money_decisions: ["договариваться о тратах до эмоций и дедлайнов", "фиксировать решения конкретно, без намёков"],
+    support: ["просить поддержку прямо и благодарить за маленькие шаги", "не ждать, что партнёр угадает нужную помощь"],
+    couple_potential: ["держать границы и не торопить общий темп", "не превращать разницу характеров в борьбу за правоту"],
+  };
+  return pickLine(adviceByRisk[riskId] ?? adviceByRisk.couple_potential, seed, 18);
+}
+
+function mentalMapAvoidForRisk(riskId: string) {
+  const avoidByRisk: Record<string, string> = {
+    mental_connection: "не угадывать мысли партнёра",
+    communication: "не говорить намёками и проверками",
+    conflicts: "не спорить ради победы",
+    reconciliation: "не требовать примирения сразу",
+    emotional_closeness: "не мерить чувства только словами",
+    household_rhythm: "не оставлять быт без правил",
+    money_decisions: "не принимать денежные решения в раздражении",
+    support: "не ждать помощи без прямой просьбы",
+    couple_potential: "не торопить отношения через давление",
+  };
+  return avoidByRisk[riskId] ?? "не спорить на эмоциях";
 }
 
 function buildScoreText(kind: "attraction" | "communication" | "love" | "household", score: number, seed: number) {

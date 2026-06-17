@@ -107,6 +107,7 @@ function buildEventCommands(event: SanitizedZodiacAnalyticsEvent): RedisCommand[
   if (event.section) commands.push(["ZINCRBY", key("sections", dateKey), 1, event.section]);
   if (event.firstSign && event.secondSign) commands.push(["ZINCRBY", key("pairs", dateKey), 1, normalizePair(event.firstSign, event.secondSign)]);
   if (event.scoreTier) commands.push(["ZINCRBY", key("score-tiers", dateKey), 1, event.scoreTier]);
+  if (event.category) commands.push(["ZINCRBY", key("categories", dateKey), 1, event.category]);
 
   return commands;
 }
@@ -158,7 +159,7 @@ function parseDashboardResults(results: unknown[], dateKeys: string[], todayDate
     counters: {
       natalChartOpens: countEvents(events, ["section_open_natal_chart", "natal_chart_started", "natal_chart_completed"]),
       coupleHoroscopeOpens: countEvents(events, ["section_open_couple_horoscope", "couple_horoscope_viewed"]),
-      relationshipMapOpens: countEvents(events, ["section_open_relationship_map", "relationship_map_viewed"]),
+      relationshipMapOpens: countEvents(events, ["section_open_relationship_map", "relationship_map_viewed", "mental_map_viewed"]),
       luckyDaysOpens: countEvents(events, ["section_open_lucky_days"]),
       vipClicks: countEvents(events, ["vip_clicked"]),
       giveawayClicks: countEvents(events, ["giveaway_clicked"]),
