@@ -24,18 +24,30 @@ type Variant = "dashboard" | "public";
 type WizardStep = 1 | 2 | 3;
 type HubTab = "today" | "week" | "compatibility" | "lucky" | "more";
 type MoreFeatureId =
+  | "todayForecast"
+  | "weekForecast"
+  | "luckyDays"
+  | "compatibilityTool"
   | "coupleHoroscope"
   | "mentalMap"
   | "coupleCalendar"
   | "reconciliation"
   | "messageHelper"
+  | "nameCompatibility"
   | "natalChart"
   | "chineseHoroscope"
   | "zodiacStones"
   | "nameProfile"
+  | "numerology"
+  | "angelNumbers"
+  | "lunarCalendar"
+  | "dailyTalisman"
+  | "dreamDictionary"
+  | "giftBySign"
+  | "archetype"
   | "vip"
   | "giveaways";
-type MoreFeatureGroup = "pair" | "self" | "launch";
+type MenuFeatureGroup = "love" | "profile" | "forecasts" | "vip";
 
 interface City {
   cityId: string;
@@ -123,33 +135,65 @@ const relationshipModes: Array<{ id: RelationshipMode; label: string; caption: s
   { id: "reconciliation", label: "🕊 Примирение", caption: "мягкий диалог" },
 ];
 
-const hubTabs: Array<{ id: HubTab; label: string; shortLabel: string; icon: typeof Sparkles }> = [
-  { id: "today", label: "Сегодня", shortLabel: "Сегодня", icon: Sparkles },
-  { id: "week", label: "Неделя", shortLabel: "Неделя", icon: Star },
-  { id: "compatibility", label: "Совместимость", shortLabel: "Совмест.", icon: HeartHandshake },
-  { id: "lucky", label: "Удачные дни", shortLabel: "Дни", icon: CalendarDays },
-  { id: "more", label: "Ещё", shortLabel: "Ещё", icon: Crown },
+const menuHubTabs: Array<{ id: HubTab; label: string; shortLabel: string; icon: typeof Sparkles }> = [
+  { id: "today", label: "Главная", shortLabel: "Главная", icon: Sparkles },
+  { id: "compatibility", label: "Любовь", shortLabel: "Любовь", icon: HeartHandshake },
+  { id: "more", label: "Личный профиль", shortLabel: "Профиль", icon: Star },
+  { id: "week", label: "Прогнозы", shortLabel: "Прогнозы", icon: CalendarDays },
+  { id: "lucky", label: "VIP", shortLabel: "VIP", icon: Crown },
 ];
 
-const moreFeatureTabs: Array<{ id: MoreFeatureId; label: string; shortLabel: string; group: MoreFeatureGroup; requirement?: "pair" | "natal" | "sign" }> = [
-  { id: "coupleHoroscope", label: "💑 Гороскоп пары", shortLabel: "Пара", group: "pair", requirement: "pair" },
-  { id: "mentalMap", label: "🧠 Ментальная карта", shortLabel: "Карта", group: "pair", requirement: "pair" },
-  { id: "coupleCalendar", label: "📅 Календарь пары", shortLabel: "30 дней", group: "pair", requirement: "pair" },
-  { id: "reconciliation", label: "🕊 Примирение", shortLabel: "Мир", group: "pair", requirement: "pair" },
-  { id: "messageHelper", label: "💌 Сообщение", shortLabel: "Текст", group: "pair", requirement: "pair" },
-  { id: "natalChart", label: "🌌 Натальная карта", shortLabel: "Натал", group: "self", requirement: "natal" },
-  { id: "chineseHoroscope", label: "🐉 Китайский гороскоп", shortLabel: "Китай", group: "self", requirement: "natal" },
-  { id: "zodiacStones", label: "💎 Камни знака", shortLabel: "Камни", group: "self", requirement: "sign" },
-  { id: "nameProfile", label: "🔤 Именной профиль", shortLabel: "Имя", group: "self" },
-  { id: "vip", label: "👑 VIP бесплатно", shortLabel: "VIP", group: "launch" },
-  { id: "giveaways", label: "🎁 Розыгрыши", shortLabel: "Подарки", group: "launch" },
+const hubCategoryByTab: Record<HubTab, { group: MenuFeatureGroup | "home"; label: string }> = {
+  today: { group: "home", label: "Главная" },
+  compatibility: { group: "love", label: "Любовь" },
+  more: { group: "profile", label: "Личный профиль" },
+  week: { group: "forecasts", label: "Прогнозы" },
+  lucky: { group: "vip", label: "VIP" },
+};
+
+const menuFeatureTabs: Array<{ id: MoreFeatureId; label: string; shortLabel: string; group: MenuFeatureGroup; requirement?: "pair" | "natal" | "sign" }> = [
+  { id: "compatibilityTool", label: "💞 Совместимость", shortLabel: "Совмест.", group: "love" },
+  { id: "coupleHoroscope", label: "💑 Гороскоп пары", shortLabel: "Пара", group: "love", requirement: "pair" },
+  { id: "mentalMap", label: "🧠 Ментальная карта", shortLabel: "Карта", group: "love", requirement: "pair" },
+  { id: "coupleCalendar", label: "📅 Календарь пары", shortLabel: "30 дней", group: "love", requirement: "pair" },
+  { id: "reconciliation", label: "🕊 Примирение", shortLabel: "Мир", group: "love", requirement: "pair" },
+  { id: "messageHelper", label: "💌 Сообщение", shortLabel: "Текст", group: "love", requirement: "pair" },
+  { id: "nameCompatibility", label: "🔤 Совместимость имён", shortLabel: "Имена", group: "love" },
+  { id: "natalChart", label: "🌌 Натальная карта", shortLabel: "Натал", group: "profile", requirement: "natal" },
+  { id: "chineseHoroscope", label: "🐉 Китайский гороскоп", shortLabel: "Китай", group: "profile", requirement: "natal" },
+  { id: "nameProfile", label: "🔤 Именной профиль", shortLabel: "Имя", group: "profile" },
+  { id: "numerology", label: "🔢 Нумерология", shortLabel: "Числа", group: "profile" },
+  { id: "zodiacStones", label: "💎 Камни знака", shortLabel: "Камни", group: "profile", requirement: "sign" },
+  { id: "archetype", label: "✨ Архетип личности", shortLabel: "Архетип", group: "profile" },
+  { id: "todayForecast", label: "✨ Сегодня", shortLabel: "Сегодня", group: "forecasts", requirement: "sign" },
+  { id: "weekForecast", label: "⭐ Неделя", shortLabel: "Неделя", group: "forecasts", requirement: "sign" },
+  { id: "luckyDays", label: "📆 Удачные дни", shortLabel: "Дни", group: "forecasts", requirement: "sign" },
+  { id: "lunarCalendar", label: "🌙 Лунный календарь", shortLabel: "Луна", group: "forecasts", requirement: "sign" },
+  { id: "dailyTalisman", label: "🧿 Талисман дня", shortLabel: "Талисман", group: "forecasts", requirement: "sign" },
+  { id: "angelNumbers", label: "11:11 Ангельские числа", shortLabel: "11:11", group: "forecasts" },
+  { id: "dreamDictionary", label: "🌙 Сонник", shortLabel: "Сонник", group: "forecasts" },
+  { id: "giftBySign", label: "🎁 Подарок по знаку", shortLabel: "Подарок", group: "forecasts", requirement: "sign" },
+  { id: "vip", label: "👑 VIP бесплатно", shortLabel: "VIP", group: "vip" },
+  { id: "mentalMap", label: "🧠 Карта пары+", shortLabel: "Карта+", group: "vip", requirement: "pair" },
+  { id: "coupleCalendar", label: "📅 30 дней пары", shortLabel: "30 дней", group: "vip", requirement: "pair" },
+  { id: "natalChart", label: "🌌 Натал+", shortLabel: "Натал+", group: "vip", requirement: "natal" },
+  { id: "nameProfile", label: "🔤 Имя+", shortLabel: "Имя+", group: "vip" },
+  { id: "giveaways", label: "🎁 Розыгрыши", shortLabel: "Подарки", group: "vip" },
 ];
 
-const moreFeatureGroups: Array<{ id: MoreFeatureGroup; title: string }> = [
-  { id: "pair", title: "Пара" },
-  { id: "self", title: "Самопознание" },
-  { id: "launch", title: "VIP и подарки" },
+const menuFeatureGroups: Array<{ id: MenuFeatureGroup; title: string; subtitle: string }> = [
+  { id: "love", title: "Любовь", subtitle: "пара, диалог и мягкое сближение" },
+  { id: "profile", title: "Личный профиль", subtitle: "натальная карта, имя, числа и символы" },
+  { id: "forecasts", title: "Прогнозы", subtitle: "сегодня, неделя, луна, талисман и подсказки" },
+  { id: "vip", title: "VIP", subtitle: "ранний доступ открыт бесплатно" },
 ];
+
+const defaultMenuFeatureByGroup: Record<MenuFeatureGroup, MoreFeatureId> = {
+  love: "compatibilityTool",
+  profile: "natalChart",
+  forecasts: "todayForecast",
+  vip: "vip",
+};
 
 const tabAnalytics: Record<Exclude<HubTab, "more">, { event: "section_open_today" | "section_open_week" | "section_open_compatibility" | "section_open_lucky_days"; section: string }> = {
   today: { event: "section_open_today", section: "today" },
@@ -196,6 +240,8 @@ export function ZodiacCompatibilityMiniApp({
   const result = useMemo(() => buildCompatibilityResult(mode, relationshipMode, self, partner), [mode, partner, relationshipMode, self]);
   const selectedSign = selectedSignSlug ? findSign(selectedSignSlug) : null;
   const stepTitle = step === 1 ? "Вы" : step === 2 ? "Партнёр" : "Результат";
+  const appDisplayDate = appDateKey ? formatZodiacDisplayDate(appDateKey) : "";
+  const vipUntilLabel = formatVipFreeAccessDate(zodiacVipConfig.vipFreeAccessUntil);
   const analyticsSource = source ?? (publicMode ? "telegram_mini_app" : "dashboard_preview");
   const analyticsStartappType = zodiacAnalyticsStartappType(startParam);
   const analyticsPayload = useCallback(
@@ -241,12 +287,23 @@ export function ZodiacCompatibilityMiniApp({
   }, [analyticsPayload, appDateKey, hintSignSlug]);
 
   useEffect(() => {
-    if (!appDateKey || !selectedSign || activeTab === "more") return;
-    const tab = tabAnalytics[activeTab];
-    const trackKey = `${appDateKey}:${selectedSign.slug}:${activeTab}`;
+    if (!appDateKey || !selectedSign) return;
+    const menuCategory = hubCategoryByTab[activeTab];
+    const trackKey = `${appDateKey}:${selectedSign.slug}:${activeTab}:${menuCategory.group}`;
     if (lastTabTrackedRef.current === trackKey) return;
     lastTabTrackedRef.current = trackKey;
-    trackZodiacMiniAppEvent(tab.event, analyticsPayload({ section: tab.section, sign: selectedSign.slug, mode }));
+    trackZodiacMiniAppEvent("hub_category_opened", analyticsPayload({ section: "hub", category: String(menuCategory.group), sign: selectedSign.slug, mode }));
+
+    if (activeTab === "today" || activeTab === "week" || activeTab === "compatibility") {
+      const tab = tabAnalytics[activeTab];
+      trackZodiacMiniAppEvent(tab.event, analyticsPayload({ section: tab.section, sign: selectedSign.slug, mode }));
+    }
+
+    if (activeTab === "lucky") {
+      trackZodiacMiniAppEvent("section_open_vip", analyticsPayload({ section: "vip", sign: selectedSign.slug, mode }));
+      trackZodiacMiniAppEvent("vip_opened", analyticsPayload({ section: "vip", sign: selectedSign.slug, mode }));
+      if (zodiacVipConfig.vipFreeAccessEnabled) trackZodiacMiniAppEvent("vip_free_access_viewed", analyticsPayload({ section: "vip", sign: selectedSign.slug, mode }));
+    }
   }, [activeTab, analyticsPayload, appDateKey, mode, selectedSign]);
 
   useEffect(() => {
@@ -467,6 +524,10 @@ export function ZodiacCompatibilityMiniApp({
           </div>
         </header>
 
+        {selectedSign ? (
+          <HeaderStatusStrip publicMode={publicMode} sign={selectedSign} dateLabel={appDisplayDate} vipUntilLabel={vipUntilLabel} />
+        ) : null}
+
         {!selectedSign ? (
           <SignSelection publicMode={publicMode} hintSign={hintSign} onSelect={chooseSign} />
         ) : (
@@ -475,23 +536,74 @@ export function ZodiacCompatibilityMiniApp({
 
             <section className="min-w-0 flex-1">
               {activeTab === "today" ? (
-                appDateKey ? <TodaySection publicMode={publicMode} sign={selectedSign} dateKey={appDateKey} /> : <DateLoadingSection publicMode={publicMode} title="Сегодня" />
+                <div className="space-y-4">
+                  <HomeQuickSection publicMode={publicMode} onOpenLove={() => setActiveTab("compatibility")} onOpenProfile={() => setActiveTab("more")} onOpenForecasts={() => setActiveTab("week")} onOpenVip={() => setActiveTab("lucky")} />
+                  {appDateKey ? <TodaySection publicMode={publicMode} sign={selectedSign} dateKey={appDateKey} /> : <DateLoadingSection publicMode={publicMode} title="Сегодня" />}
+                </div>
               ) : null}
               {activeTab === "week" ? (
-                appDateKey ? <WeekSection publicMode={publicMode} sign={selectedSign} dateKey={appDateKey} /> : <DateLoadingSection publicMode={publicMode} title="Неделя" />
+                <div className="space-y-4">
+                  {appDateKey ? <WeekSection publicMode={publicMode} sign={selectedSign} dateKey={appDateKey} /> : <DateLoadingSection publicMode={publicMode} title="Неделя" />}
+                  <MoreSection
+                    publicMode={publicMode}
+                    appDateKey={appDateKey}
+                    category="forecasts"
+                    selectedSign={selectedSign}
+                    selectedSignSlug={selectedSignSlug}
+                    self={self}
+                    partner={partner}
+                    result={result}
+                    relationshipMode={relationshipMode}
+                    onLuckyDayClick={trackLuckyDayClick}
+                    onVipFeatureOpen={trackVipFeatureOpen}
+                    onVipFutureSubscriptionClick={trackVipFutureSubscriptionClick}
+                    onGiveawayClick={trackGiveawayPreviewClick}
+                    onMessageHelperUsed={trackMessageHelperUse}
+                    onRelationshipMapCategoryOpen={trackRelationshipMapCategoryOpen}
+                    onNatalChartOpened={trackNatalChartOpened}
+                    onNatalChartResultViewed={trackNatalChartResultViewed}
+                    onNatalChartSectionOpen={trackNatalChartSectionOpen}
+                    onNatalChartVipFreeOpen={trackNatalChartVipFreeOpen}
+                    onPersonalToolEvent={trackPersonalToolEvent}
+                  />
+                </div>
               ) : null}
               {activeTab === "lucky" ? (
-                appDateKey ? <LuckyDaysSection publicMode={publicMode} sign={selectedSign} dateKey={appDateKey} onLuckyDayClick={trackLuckyDayClick} /> : <DateLoadingSection publicMode={publicMode} title="Удачные дни" />
-              ) : null}
-              {activeTab === "more" ? (
                 <MoreSection
                   publicMode={publicMode}
                   appDateKey={appDateKey}
+                  category="vip"
+                  selectedSign={selectedSign}
                   selectedSignSlug={selectedSignSlug}
                   self={self}
                   partner={partner}
                   result={result}
                   relationshipMode={relationshipMode}
+                  onLuckyDayClick={trackLuckyDayClick}
+                  onVipFeatureOpen={trackVipFeatureOpen}
+                  onVipFutureSubscriptionClick={trackVipFutureSubscriptionClick}
+                  onGiveawayClick={trackGiveawayPreviewClick}
+                  onMessageHelperUsed={trackMessageHelperUse}
+                  onRelationshipMapCategoryOpen={trackRelationshipMapCategoryOpen}
+                  onNatalChartOpened={trackNatalChartOpened}
+                  onNatalChartResultViewed={trackNatalChartResultViewed}
+                  onNatalChartSectionOpen={trackNatalChartSectionOpen}
+                  onNatalChartVipFreeOpen={trackNatalChartVipFreeOpen}
+                  onPersonalToolEvent={trackPersonalToolEvent}
+                />
+              ) : null}
+              {activeTab === "more" ? (
+                <MoreSection
+                  publicMode={publicMode}
+                  appDateKey={appDateKey}
+                  category="profile"
+                  selectedSign={selectedSign}
+                  selectedSignSlug={selectedSignSlug}
+                  self={self}
+                  partner={partner}
+                  result={result}
+                  relationshipMode={relationshipMode}
+                  onLuckyDayClick={trackLuckyDayClick}
                   onVipFeatureOpen={trackVipFeatureOpen}
                   onVipFutureSubscriptionClick={trackVipFutureSubscriptionClick}
                   onGiveawayClick={trackGiveawayPreviewClick}
@@ -556,6 +668,28 @@ export function ZodiacCompatibilityMiniApp({
                       </WizardCard>
                     ) : null}
                   </div>
+                  <MoreSection
+                    publicMode={publicMode}
+                    appDateKey={appDateKey}
+                    category="love"
+                    selectedSign={selectedSign}
+                    selectedSignSlug={selectedSignSlug}
+                    self={self}
+                    partner={partner}
+                    result={result}
+                    relationshipMode={relationshipMode}
+                    onLuckyDayClick={trackLuckyDayClick}
+                    onVipFeatureOpen={trackVipFeatureOpen}
+                    onVipFutureSubscriptionClick={trackVipFutureSubscriptionClick}
+                    onGiveawayClick={trackGiveawayPreviewClick}
+                    onMessageHelperUsed={trackMessageHelperUse}
+                    onRelationshipMapCategoryOpen={trackRelationshipMapCategoryOpen}
+                    onNatalChartOpened={trackNatalChartOpened}
+                    onNatalChartResultViewed={trackNatalChartResultViewed}
+                    onNatalChartSectionOpen={trackNatalChartSectionOpen}
+                    onNatalChartVipFreeOpen={trackNatalChartVipFreeOpen}
+                    onPersonalToolEvent={trackPersonalToolEvent}
+                  />
                 </div>
               ) : null}
             </section>
@@ -604,10 +738,74 @@ function SignSelection({ publicMode, hintSign, onSelect }: { publicMode: boolean
   );
 }
 
+function HeaderStatusStrip({ publicMode, sign, dateLabel, vipUntilLabel }: { publicMode: boolean; sign: ZodiacSign; dateLabel: string; vipUntilLabel: string }) {
+  const items = [
+    `${sign.emoji} ${sign.name}`,
+    dateLabel ? `Сегодня: ${dateLabel} · Europe/Kyiv` : "Дата обновляется",
+    `VIP бесплатно до ${vipUntilLabel}`,
+    "данные не сохраняются",
+  ];
+
+  return (
+    <div className={publicMode ? "grid gap-2 rounded-lg border border-white/12 bg-white/8 p-3 text-xs font-semibold text-slate-100" : "grid gap-2 rounded-lg border border-white/12 bg-white/8 p-3 text-xs font-semibold text-slate-100 sm:grid-cols-2"}>
+      {items.map((item) => (
+        <span key={item} className="min-w-0 rounded-md border border-white/10 bg-black/15 px-3 py-2 [overflow-wrap:anywhere]">
+          {item}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function HomeQuickSection({
+  publicMode,
+  onOpenLove,
+  onOpenProfile,
+  onOpenForecasts,
+  onOpenVip,
+}: {
+  publicMode: boolean;
+  onOpenLove: () => void;
+  onOpenProfile: () => void;
+  onOpenForecasts: () => void;
+  onOpenVip: () => void;
+}) {
+  const cards = [
+    { title: "Сегодня", text: "короткий прогноз дня", action: onOpenForecasts, icon: <Sparkles className="h-4 w-4" /> },
+    { title: "Мой знак", text: "личный профиль", action: onOpenProfile, icon: <Star className="h-4 w-4" /> },
+    { title: "Совместимость", text: "расчёт пары", action: onOpenLove, icon: <HeartHandshake className="h-4 w-4" /> },
+    { title: "VIP бесплатно", text: "до 17.09.2026", action: onOpenVip, icon: <Crown className="h-4 w-4" /> },
+    { title: "Ментальная карта", text: "карта отношений", action: onOpenLove, icon: <Sparkles className="h-4 w-4" /> },
+    { title: "Натальная карта", text: "профиль рождения", action: onOpenProfile, icon: <CalendarDays className="h-4 w-4" /> },
+  ];
+
+  return (
+    <section className={panelClass(publicMode)}>
+      <SectionHeader publicMode={publicMode} icon={<Sparkles className="h-5 w-5" />} title="Главная" subtitle="быстрый вход в основные разделы" />
+      <div className="mt-4 grid grid-cols-2 gap-2">
+        {cards.map((card) => (
+          <button
+            key={card.title}
+            type="button"
+            onClick={card.action}
+            className={publicMode ? "min-h-[84px] rounded-lg border border-white/12 bg-white/8 p-3 text-left transition hover:border-fuchsia-200/35 hover:bg-white/12" : "min-h-[84px] rounded-lg border border-slate-200 bg-white p-3 text-left transition hover:border-violet-200 hover:bg-violet-50/50"}
+          >
+            <span className={publicMode ? "inline-flex h-8 w-8 items-center justify-center rounded-md border border-amber-200/25 bg-amber-200/10 text-amber-100" : "inline-flex h-8 w-8 items-center justify-center rounded-md border border-violet-100 bg-violet-50 text-violet-700"}>
+              {card.icon}
+            </span>
+            <span className={publicMode ? "mt-3 block break-words text-sm font-semibold leading-5 text-white" : "mt-3 block break-words text-sm font-semibold leading-5 text-slate-950"}>{card.title}</span>
+            <span className={publicMode ? "mt-1 block break-words text-xs leading-4 text-slate-400" : "mt-1 block break-words text-xs leading-4 text-slate-500"}>{card.text}</span>
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function HubNavigation({ publicMode, activeTab, onChange }: { publicMode: boolean; activeTab: HubTab; onChange: (tab: HubTab) => void }) {
   return (
     <nav className={publicMode ? "grid grid-cols-5 gap-2" : "grid grid-cols-5 gap-2"}>
-      {hubTabs.map((tab) => {
+      {menuHubTabs.map((tab) => {
         const Icon = tab.icon;
         const active = activeTab === tab.id;
         return (
@@ -750,11 +948,14 @@ function DateLoadingSection({ publicMode, title }: { publicMode: boolean; title:
 function MoreSection({
   publicMode,
   appDateKey,
+  category,
+  selectedSign,
   selectedSignSlug,
   self,
   partner,
   result,
   relationshipMode,
+  onLuckyDayClick,
   onVipFeatureOpen,
   onVipFutureSubscriptionClick,
   onGiveawayClick,
@@ -768,11 +969,14 @@ function MoreSection({
 }: {
   publicMode: boolean;
   appDateKey: string | null;
+  category: MenuFeatureGroup;
+  selectedSign: ZodiacSign;
   selectedSignSlug: string;
   self: PersonState;
   partner: PersonState;
   result: CompatibilityResult;
   relationshipMode: RelationshipMode;
+  onLuckyDayClick: (dateKey: string) => void;
   onVipFeatureOpen: (feature: string) => void;
   onVipFutureSubscriptionClick: () => void;
   onGiveawayClick: () => void;
@@ -785,7 +989,13 @@ function MoreSection({
   onPersonalToolEvent: (event: ZodiacAnalyticsEventName, payload: ZodiacAnalyticsPayload) => void;
 }) {
   const [messageTone, setMessageTone] = useState<MessageTone>("soft");
-  const [activeMoreFeature, setActiveMoreFeature] = useState<MoreFeatureId>("coupleHoroscope");
+  const [angelNumberInput, setAngelNumberInput] = useState("11:11");
+  const [dreamSymbolKey, setDreamSymbolKey] = useState("water");
+  const [dreamText, setDreamText] = useState("");
+  const [giftRecipientType, setGiftRecipientType] = useState<GiftRecipientType>("partner");
+  const [nameCompatibilitySelf, setNameCompatibilitySelf] = useState("");
+  const [nameCompatibilityPartner, setNameCompatibilityPartner] = useState("");
+  const [activeMoreFeature, setActiveMoreFeature] = useState<MoreFeatureId>(() => defaultMenuFeatureByGroup[category]);
   const [natalPerson, setNatalPerson] = useState<PersonState>(() => ({
     ...createInitialPerson(self.sign || selectedSignSlug, self.gender, self.knowsTime, self.selectedCityId),
     name: self.name,
@@ -806,9 +1016,23 @@ function MoreSection({
   const chineseHoroscope = buildChineseHoroscope(natalPerson, dateKey);
   const zodiacStoneProfile = selfSign ? buildZodiacStoneProfile(selfSign) : null;
   const nameProfile = buildNameProfile(natalPerson, selfSign, dateKey, vipFreeAccess);
+  const numerology = buildNumerologyProfile(natalPerson, dateKey);
+  const angelNumber = buildAngelNumberProfile(angelNumberInput, dateKey);
+  const lunarCalendar = selfSign ? buildLunarCalendarProfile(selfSign, dateKey) : null;
+  const dailyTalisman = selfSign ? buildDailyTalismanProfile(selfSign, dateKey) : null;
+  const dreamProfile = buildDreamProfile(dreamSymbolKey, dreamText, selfSign, dateKey);
+  const giftProfile = selfSign ? buildGiftBySignProfile(selfSign, giftRecipientType, dateKey) : null;
+  const nameCompatibility = buildNameCompatibilityProfile(nameCompatibilitySelf, nameCompatibilityPartner, selfSign, dateKey);
+  const archetype = buildPersonalityArchetypeProfile(natalPerson, selfSign, chineseHoroscope, numerology, dailyTalisman, dateKey);
   const vipLuckyDays = selfSign ? buildLuckyDays(selfSign, getLuckyDaysStartDate(dateKey), 14) : [];
   const monthForecast = selfSign ? buildPersonalMonthForecast(selfSign, dateKey, result) : null;
-  const selectedMoreFeature = moreFeatureTabs.find((item) => item.id === activeMoreFeature) ?? moreFeatureTabs[0];
+  const categoryFeatures = menuFeatureTabs.filter((item) => item.group === category);
+  const selectedMoreFeature = categoryFeatures.find((item) => item.id === activeMoreFeature) ?? categoryFeatures[0] ?? menuFeatureTabs[0];
+
+  useEffect(() => {
+    const categoryHasFeature = categoryFeatures.some((item) => item.id === activeMoreFeature);
+    if (!categoryHasFeature) setActiveMoreFeature(defaultMenuFeatureByGroup[category]);
+  }, [activeMoreFeature, category, categoryFeatures]);
 
   useEffect(() => {
     if (!self.sign && !selectedSignSlug) return;
@@ -868,24 +1092,137 @@ function MoreSection({
     }
   }, [activeMoreFeature, chineseHoroscope, nameProfile, natalPerson.birthDate, natalPerson.name, onPersonalToolEvent, selfSign, vipFreeAccess, zodiacStoneProfile]);
 
+  useEffect(() => {
+    const parsedDate = parseBirthDate(natalPerson.birthDate);
+    const hasBirthDate = parsedDate.ok;
+    const hasBirthTime = natalPerson.knowsTime && isValidTime(natalPerson.birthTime);
+    const hasBirthCity = natalPerson.knowsTime && Boolean(getCityById(natalPerson.selectedCityId));
+    const hasName = Boolean(normalizeName(natalPerson.name));
+    const hasSecondName = Boolean(normalizeName(nameCompatibilityPartner));
+    const sign = selfSign?.slug || (hasBirthDate ? parsedDate.signSlug : selectedSignSlug);
+    const selectedPresetKey =
+      activeMoreFeature === "angelNumbers"
+        ? angelNumber.safeKey
+        : activeMoreFeature === "dreamDictionary"
+          ? dreamProfile.safeKey
+          : undefined;
+    const trackKey = [
+      activeMoreFeature,
+      sign,
+      hasBirthDate ? "birth-date" : "no-birth-date",
+      hasBirthTime ? "birth-time" : "no-birth-time",
+      hasBirthCity ? "birth-city" : "no-birth-city",
+      hasName ? "name" : "no-name",
+      hasSecondName ? "second-name" : "no-second-name",
+      selectedPresetKey ?? "no-preset",
+      vipFreeAccess ? "vip-free" : "vip-closed",
+    ].join(":");
+
+    if (lastPersonalToolTrackedRef.current === trackKey) return;
+
+    const payload = {
+      section: sectionForFeature(activeMoreFeature),
+      category,
+      sign,
+      hasBirthDate,
+      hasBirthTime,
+      hasBirthCity,
+      hasName,
+      hasSecondName,
+      selectedPresetKey,
+      freeVipActive: vipFreeAccess,
+    };
+
+    if (activeMoreFeature === "numerology") {
+      lastPersonalToolTrackedRef.current = trackKey;
+      onPersonalToolEvent("numerology_opened", payload);
+      onPersonalToolEvent("numerology_result_viewed", payload);
+    }
+    if (activeMoreFeature === "angelNumbers") {
+      lastPersonalToolTrackedRef.current = trackKey;
+      onPersonalToolEvent("angel_numbers_opened", payload);
+      onPersonalToolEvent("angel_number_viewed", payload);
+    }
+    if (activeMoreFeature === "lunarCalendar") {
+      lastPersonalToolTrackedRef.current = trackKey;
+      onPersonalToolEvent("lunar_calendar_opened", payload);
+    }
+    if (activeMoreFeature === "dailyTalisman") {
+      lastPersonalToolTrackedRef.current = trackKey;
+      onPersonalToolEvent("daily_talisman_opened", payload);
+    }
+    if (activeMoreFeature === "dreamDictionary") {
+      lastPersonalToolTrackedRef.current = trackKey;
+      onPersonalToolEvent("dream_dictionary_opened", payload);
+      onPersonalToolEvent("dream_symbol_viewed", payload);
+    }
+    if (activeMoreFeature === "giftBySign") {
+      lastPersonalToolTrackedRef.current = trackKey;
+      onPersonalToolEvent("gift_by_sign_opened", payload);
+    }
+    if (activeMoreFeature === "nameCompatibility") {
+      lastPersonalToolTrackedRef.current = trackKey;
+      onPersonalToolEvent("name_compatibility_opened", payload);
+      if (nameCompatibility) onPersonalToolEvent("name_compatibility_result_viewed", payload);
+    }
+    if (activeMoreFeature === "archetype") {
+      lastPersonalToolTrackedRef.current = trackKey;
+      onPersonalToolEvent("archetype_opened", payload);
+      onPersonalToolEvent("archetype_result_viewed", payload);
+    }
+  }, [
+    activeMoreFeature,
+    angelNumber.safeKey,
+    category,
+    dreamProfile.safeKey,
+    nameCompatibility,
+    nameCompatibilityPartner,
+    natalPerson.birthDate,
+    natalPerson.birthTime,
+    natalPerson.knowsTime,
+    natalPerson.name,
+    natalPerson.selectedCityId,
+    onPersonalToolEvent,
+    selectedSignSlug,
+    selfSign,
+    vipFreeAccess,
+  ]);
+
+  const menuGroup = menuFeatureGroups.find((item) => item.id === category) ?? menuFeatureGroups[0];
+
   return (
     <section className={panelClass(publicMode)}>
-      <SectionHeader publicMode={publicMode} icon={<Crown className="h-5 w-5" />} title="Ещё" subtitle="Выберите один инструмент и двигайтесь без длинной прокрутки" />
+      <SectionHeader publicMode={publicMode} icon={<Crown className="h-5 w-5" />} title={menuGroup.title} subtitle={menuGroup.subtitle} />
       <div className={publicMode ? "mt-3 flex gap-2 rounded-lg border border-emerald-200/20 bg-emerald-200/10 p-3 text-sm leading-5 text-emerald-50" : "mt-3 flex gap-2 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm leading-5 text-emerald-900"}>
         <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0" />
         <p>без сохранения данных: имена, даты, время и город остаются только на этом экране.</p>
       </div>
-      <MoreFeatureNavigation activeFeature={activeMoreFeature} pairReady={pairReady} natalReady={Boolean(natalChart)} signReady={Boolean(selfSign)} onChange={setActiveMoreFeature} />
+      <MoreFeatureNavigation features={categoryFeatures} activeFeature={activeMoreFeature} pairReady={pairReady} natalReady={Boolean(natalChart)} signReady={Boolean(selfSign)} onChange={setActiveMoreFeature} />
       <div className={publicMode ? "mt-3 rounded-lg border border-white/10 bg-white/7 p-3" : "mt-3 rounded-lg border border-slate-200 bg-white p-3"}>
         <p className={publicMode ? "text-xs font-semibold text-amber-100" : "text-xs font-semibold text-violet-800"}>Открыт раздел</p>
         <p className={publicMode ? "mt-1 text-base font-semibold text-white" : "mt-1 text-base font-semibold text-slate-950"}>{selectedMoreFeature.label}</p>
       </div>
       <div className="mt-4">
+        {activeMoreFeature === "compatibilityTool" ? <CompatibilityToolCard publicMode={publicMode} /> : null}
+        {activeMoreFeature === "todayForecast" ? <TodaySection publicMode={publicMode} sign={selectedSign} dateKey={dateKey} /> : null}
+        {activeMoreFeature === "weekForecast" ? <WeekSection publicMode={publicMode} sign={selectedSign} dateKey={dateKey} /> : null}
+        {activeMoreFeature === "luckyDays" ? <LuckyDaysSection publicMode={publicMode} sign={selectedSign} dateKey={dateKey} onLuckyDayClick={onLuckyDayClick} /> : null}
         {activeMoreFeature === "coupleHoroscope" ? <CoupleHoroscopeCard publicMode={publicMode} horoscope={coupleHoroscope} /> : null}
         {activeMoreFeature === "mentalMap" ? <RelationshipMapCard publicMode={publicMode} result={result} pairReady={pairReady} onCategoryOpen={onRelationshipMapCategoryOpen} /> : null}
         {activeMoreFeature === "coupleCalendar" ? <CoupleCalendarCard publicMode={publicMode} days={coupleCalendar} pairReady={pairReady} /> : null}
         {activeMoreFeature === "reconciliation" ? <ReconciliationDayCard publicMode={publicMode} reconciliation={reconciliation} /> : null}
         {activeMoreFeature === "messageHelper" ? <PartnerMessageCard publicMode={publicMode} message={message} tone={messageTone} onToneChange={setMessageTone} onUsed={onMessageHelperUsed} pairReady={pairReady} /> : null}
+        {activeMoreFeature === "nameCompatibility" ? (
+          <NameCompatibilityCard
+            publicMode={publicMode}
+            firstName={nameCompatibilitySelf}
+            secondName={nameCompatibilityPartner}
+            onFirstNameChange={setNameCompatibilitySelf}
+            onSecondNameChange={setNameCompatibilityPartner}
+            profile={nameCompatibility}
+            vipFreeAccess={vipFreeAccess}
+          />
+        ) : null}
         {activeMoreFeature === "natalChart" ? (
           <NatalChartV1Card
             publicMode={publicMode}
@@ -901,6 +1238,13 @@ function MoreSection({
         {activeMoreFeature === "chineseHoroscope" ? <ChineseHoroscopeCard publicMode={publicMode} person={natalPerson} horoscope={chineseHoroscope} onPersonChange={setNatalPerson} /> : null}
         {activeMoreFeature === "zodiacStones" ? <ZodiacStonesCard publicMode={publicMode} profile={zodiacStoneProfile} /> : null}
         {activeMoreFeature === "nameProfile" ? <NameProfileCard publicMode={publicMode} person={natalPerson} profile={nameProfile} onPersonChange={setNatalPerson} vipFreeAccess={vipFreeAccess} /> : null}
+        {activeMoreFeature === "numerology" ? <NumerologyCard publicMode={publicMode} person={natalPerson} profile={numerology} onPersonChange={setNatalPerson} vipFreeAccess={vipFreeAccess} /> : null}
+        {activeMoreFeature === "angelNumbers" ? <AngelNumbersCard publicMode={publicMode} value={angelNumberInput} profile={angelNumber} onChange={setAngelNumberInput} /> : null}
+        {activeMoreFeature === "lunarCalendar" ? <LunarCalendarCard publicMode={publicMode} profile={lunarCalendar} /> : null}
+        {activeMoreFeature === "dailyTalisman" ? <DailyTalismanCard publicMode={publicMode} profile={dailyTalisman} /> : null}
+        {activeMoreFeature === "dreamDictionary" ? <DreamDictionaryCard publicMode={publicMode} symbolKey={dreamSymbolKey} dreamText={dreamText} profile={dreamProfile} onSymbolChange={setDreamSymbolKey} onDreamTextChange={setDreamText} /> : null}
+        {activeMoreFeature === "giftBySign" ? <GiftBySignCard publicMode={publicMode} recipientType={giftRecipientType} profile={giftProfile} onRecipientTypeChange={setGiftRecipientType} /> : null}
+        {activeMoreFeature === "archetype" ? <PersonalityArchetypeCard publicMode={publicMode} person={natalPerson} profile={archetype} onPersonChange={setNatalPerson} vipFreeAccess={vipFreeAccess} /> : null}
         {activeMoreFeature === "vip" ? (
           <VipFreeAccessCard
             publicMode={publicMode}
@@ -937,12 +1281,14 @@ function MoreSection({
 }
 
 function MoreFeatureNavigation({
+  features,
   activeFeature,
   pairReady,
   natalReady,
   signReady,
   onChange,
 }: {
+  features: Array<{ id: MoreFeatureId; label: string; shortLabel: string; group: MenuFeatureGroup; requirement?: "pair" | "natal" | "sign" }>;
   activeFeature: MoreFeatureId;
   pairReady: boolean;
   natalReady: boolean;
@@ -951,14 +1297,14 @@ function MoreFeatureNavigation({
 }) {
   return (
     <div className="mt-4 space-y-3">
-      {moreFeatureGroups.map((group) => {
-        const features = moreFeatureTabs.filter((feature) => feature.group === group.id);
+      {[{ id: "menu", title: "" }].map((group) => {
+        const groupedFeatures = features;
         return (
           <div key={group.id}>
-            <p className="px-1 text-xs font-semibold uppercase tracking-[0.08em] text-slate-400">{group.title}</p>
+            {group.title ? <p className="px-1 text-xs font-semibold uppercase tracking-[0.08em] text-slate-400">{group.title}</p> : null}
             <div className="-mx-1 mt-2 overflow-x-auto pb-1">
               <div className="flex min-w-max gap-2 px-1">
-                {features.map((feature) => {
+                {groupedFeatures.map((feature) => {
                   const active = activeFeature === feature.id;
                   const blockedHint =
                     feature.requirement === "pair" && !pairReady
@@ -1226,6 +1572,279 @@ function PartnerMessageCard({
         {message}
       </div>
     </FeatureCard>
+  );
+}
+
+function CompatibilityToolCard({ publicMode }: { publicMode: boolean }) {
+  return (
+    <FeatureCard publicMode={publicMode} title="💞 Совместимость знаков" subtitle="основной расчёт открыт в верхней части раздела Любовь">
+      <div className={publicMode ? "rounded-lg border border-emerald-200/20 bg-emerald-200/10 p-3 text-sm leading-6 text-emerald-50" : "rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm leading-6 text-emerald-900"}>
+        Выберите два знака в калькуляторе выше. Имена, даты, время и города не сохраняются.
+      </div>
+    </FeatureCard>
+  );
+}
+
+function NumerologyCard({
+  publicMode,
+  person,
+  profile,
+  onPersonChange,
+  vipFreeAccess,
+}: {
+  publicMode: boolean;
+  person: PersonState;
+  profile: NumerologyProfile;
+  onPersonChange: (value: PersonState) => void;
+  vipFreeAccess: boolean;
+}) {
+  const parsedDate = parseBirthDate(person.birthDate);
+  const dateError = person.birthDate && !parsedDate.ok ? parsedDate.error : "";
+
+  return (
+    <FeatureCard publicMode={publicMode} title="🔢 Нумерология" subtitle="числа имени, даты и текущего месяца без сохранения данных">
+      <div className="grid gap-4">
+        <div className={publicMode ? "grid gap-3 rounded-lg border border-white/12 bg-white/8 p-3" : "grid gap-3 rounded-lg border border-slate-200 bg-white p-3"}>
+          <Field label="Имя (необязательно)" publicMode={publicMode}>
+            <input value={person.name} onChange={(event) => onPersonChange({ ...person, name: sanitizeNameInput(event.target.value) })} placeholder="можно оставить пустым" autoComplete="off" autoCorrect="off" spellCheck={false} className="h-12 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900" />
+          </Field>
+          <Field label="Дата рождения (необязательно)" publicMode={publicMode}>
+            <input value={person.birthDate} onChange={(event) => updateBirthDate(person, event.target.value, onPersonChange)} placeholder="дд.мм.гггг" inputMode="numeric" autoComplete="off" className={`h-12 w-full rounded-lg border bg-white px-3 text-base text-slate-900 ${dateError ? "border-rose-300" : "border-slate-200"}`} />
+            {dateError ? <p className="mt-2 text-xs font-semibold text-rose-600">{dateError}</p> : null}
+          </Field>
+          <p className={publicMode ? "text-xs font-semibold text-emerald-100" : "text-xs font-semibold text-emerald-800"}>имя и дата остаются только на экране</p>
+        </div>
+        <div className="grid gap-2 sm:grid-cols-2">
+          <InfoRow publicMode={publicMode} label="Число пути" text={profile.lifePath ? String(profile.lifePath) : "добавьте дату рождения"} />
+          <InfoRow publicMode={publicMode} label="Число имени" text={profile.nameNumber ? String(profile.nameNumber) : "добавьте имя"} />
+          <InfoRow publicMode={publicMode} label="Число дня" text={String(profile.dayNumber)} />
+          <InfoRow publicMode={publicMode} label="Личный месяц" text={profile.personalMonth ? String(profile.personalMonth) : "появится с датой рождения"} />
+        </div>
+        <InfoRow publicMode={publicMode} label="Портрет" text={profile.summary} />
+        <InfoRow publicMode={publicMode} label="Сильные стороны" text={profile.strengths} />
+        <InfoRow publicMode={publicMode} label="Зоны риска" text={profile.risks} />
+        <InfoRow publicMode={publicMode} label="Совет" text={profile.advice} />
+        {vipFreeAccess ? <VipInlineNote publicMode={publicMode} /> : null}
+      </div>
+    </FeatureCard>
+  );
+}
+
+function AngelNumbersCard({ publicMode, value, profile, onChange }: { publicMode: boolean; value: string; profile: AngelNumberProfile; onChange: (value: string) => void }) {
+  const presets = ["11:11", "12:12", "15:15", "22:22", "02:22"];
+  return (
+    <FeatureCard publicMode={publicMode} title="11:11 Ангельские числа" subtitle="мягкая подсказка по повторяющимся и зеркальным числам">
+      <div className="grid gap-4">
+        <div className="flex flex-wrap gap-2">
+          {presets.map((preset) => (
+            <button key={preset} type="button" onClick={() => onChange(preset)} className={preset === profile.label ? primaryTinyButtonClass(publicMode) : secondaryTinyButtonClass(publicMode)}>
+              {preset}
+            </button>
+          ))}
+        </div>
+        <Field label="Своё число" publicMode={publicMode}>
+          <input value={value} onChange={(event) => onChange(event.target.value.replace(/[^\d:]/g, "").slice(0, 5))} placeholder="11:11" inputMode="numeric" autoComplete="off" className="h-12 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900" />
+          <p className={publicMode ? "mt-2 text-xs font-semibold text-emerald-100" : "mt-2 text-xs font-semibold text-emerald-800"}>в аналитику уходит только безопасный ключ пресета</p>
+        </Field>
+        <div className="grid gap-2 sm:grid-cols-2">
+          <InfoRow publicMode={publicMode} label="Значение" text={profile.meaning} />
+          <InfoRow publicMode={publicMode} label="Сигнал дня" text={profile.signal} />
+          <InfoRow publicMode={publicMode} label="Действие" text={profile.action} />
+          <InfoRow publicMode={publicMode} label="Избегать" text={profile.avoid} />
+          <InfoRow publicMode={publicMode} label="Любовь" text={profile.love} />
+          <InfoRow publicMode={publicMode} label="Дела и деньги" text={profile.workMoney} />
+        </div>
+      </div>
+    </FeatureCard>
+  );
+}
+
+function LunarCalendarCard({ publicMode, profile }: { publicMode: boolean; profile: LunarCalendarProfile | null }) {
+  if (!profile) return <EmptyFeatureCard publicMode={publicMode} title="🌙 Лунный календарь" text="Выберите знак, чтобы открыть мягкий ритм дня." />;
+  return (
+    <FeatureCard publicMode={publicMode} title="🌙 Лунный календарь" subtitle={profile.title}>
+      <div className="grid gap-2 sm:grid-cols-2">
+        <InfoRow publicMode={publicMode} label="Ритм дня" text={profile.rhythm} />
+        <InfoRow publicMode={publicMode} label="Любовь" text={profile.love} />
+        <InfoRow publicMode={publicMode} label="Дела и деньги" text={profile.workMoney} />
+        <InfoRow publicMode={publicMode} label="Разговоры" text={profile.talks} />
+        <InfoRow publicMode={publicMode} label="Примирение" text={profile.reconciliation} />
+        <InfoRow publicMode={publicMode} label="Сделать" text={profile.action} />
+        <InfoRow publicMode={publicMode} label="Избегать" text={profile.avoid} />
+      </div>
+      <p className={publicMode ? "mt-3 rounded-lg border border-white/12 bg-white/8 p-3 text-xs leading-5 text-slate-300" : "mt-3 rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs leading-5 text-slate-600"}>Это календарная интерпретация настроения дня, а не точные астрономические данные.</p>
+    </FeatureCard>
+  );
+}
+
+function DailyTalismanCard({ publicMode, profile }: { publicMode: boolean; profile: DailyTalismanProfile | null }) {
+  if (!profile) return <EmptyFeatureCard publicMode={publicMode} title="🧿 Талисман дня" text="Выберите знак, чтобы увидеть камень, цвет и фразу дня." />;
+  return (
+    <FeatureCard publicMode={publicMode} title="🧿 Талисман дня" subtitle="символическая подсказка для настроя">
+      <div className="grid gap-2 sm:grid-cols-2">
+        <InfoRow publicMode={publicMode} label="Камень" text={profile.stone} />
+        <InfoRow publicMode={publicMode} label="Цвет" text={profile.color} />
+        <InfoRow publicMode={publicMode} label="Число" text={String(profile.number)} />
+        <InfoRow publicMode={publicMode} label="Фраза" text={profile.phrase} />
+        <InfoRow publicMode={publicMode} label="Действие" text={profile.action} />
+        <InfoRow publicMode={publicMode} label="Избегать" text={profile.avoid} />
+      </div>
+    </FeatureCard>
+  );
+}
+
+function DreamDictionaryCard({
+  publicMode,
+  symbolKey,
+  dreamText,
+  profile,
+  onSymbolChange,
+  onDreamTextChange,
+}: {
+  publicMode: boolean;
+  symbolKey: string;
+  dreamText: string;
+  profile: DreamProfile;
+  onSymbolChange: (value: string) => void;
+  onDreamTextChange: (value: string) => void;
+}) {
+  return (
+    <FeatureCard publicMode={publicMode} title="🌙 Сонник" subtitle="бережная расшифровка популярных символов без страшных предсказаний">
+      <div className="grid gap-4">
+        <select value={symbolKey} onChange={(event) => onSymbolChange(event.target.value)} className="h-12 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900">
+          {dreamSymbols.map((symbol) => (
+            <option key={symbol.key} value={symbol.key}>{symbol.label}</option>
+          ))}
+        </select>
+        <Field label="Свой фрагмент сна (необязательно)" publicMode={publicMode}>
+          <textarea value={dreamText} onChange={(event) => onDreamTextChange(event.target.value.slice(0, 160))} placeholder="можно оставить пустым" autoComplete="off" className="min-h-24 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-base text-slate-900" />
+          <p className={publicMode ? "mt-2 text-xs font-semibold text-emerald-100" : "mt-2 text-xs font-semibold text-emerald-800"}>текст сна не сохраняется и не отправляется в аналитику</p>
+        </Field>
+        <div className="grid gap-2 sm:grid-cols-2">
+          <InfoRow publicMode={publicMode} label={profile.symbol} text={profile.general} />
+          <InfoRow publicMode={publicMode} label="Эмоциональный смысл" text={profile.emotional} />
+          <InfoRow publicMode={publicMode} label="Что подсвечивает" text={profile.highlight} />
+          <InfoRow publicMode={publicMode} label="Совет" text={profile.advice} />
+          <InfoRow publicMode={publicMode} label="Связь со знаком" text={profile.signConnection} />
+        </div>
+      </div>
+    </FeatureCard>
+  );
+}
+
+function GiftBySignCard({ publicMode, recipientType, profile, onRecipientTypeChange }: { publicMode: boolean; recipientType: GiftRecipientType; profile: GiftBySignProfile | null; onRecipientTypeChange: (value: GiftRecipientType) => void }) {
+  if (!profile) return <EmptyFeatureCard publicMode={publicMode} title="🎁 Подарок по знаку" text="Выберите знак, чтобы увидеть идеи подарков." />;
+  return (
+    <FeatureCard publicMode={publicMode} title="🎁 Подарок по знаку" subtitle={`${profile.sign.emoji} ${profile.sign.name} · ${profile.recipientLabel}`}>
+      <div className="grid gap-4">
+        <div className="flex flex-wrap gap-2">
+          {giftRecipientOptions.map((option) => (
+            <button key={option.id} type="button" onClick={() => onRecipientTypeChange(option.id)} className={recipientType === option.id ? primaryTinyButtonClass(publicMode) : secondaryTinyButtonClass(publicMode)}>
+              {option.label}
+            </button>
+          ))}
+        </div>
+        <ul className="grid gap-2">
+          {profile.ideas.map((idea) => (
+            <li key={idea} className={publicMode ? "rounded-lg border border-white/12 bg-white/8 px-3 py-2 text-sm leading-5 text-slate-200" : "rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm leading-5 text-slate-700"}>{idea}</li>
+          ))}
+        </ul>
+        <div className="grid gap-2 sm:grid-cols-2">
+          <InfoRow publicMode={publicMode} label="Ценит" text={profile.appreciates} />
+          <InfoRow publicMode={publicMode} label="Не лучший вариант" text={profile.avoid} />
+          <InfoRow publicMode={publicMode} label="Символический подарок" text={profile.symbolic} />
+          <InfoRow publicMode={publicMode} label="Премиум-идея" text={profile.premium} />
+        </div>
+      </div>
+    </FeatureCard>
+  );
+}
+
+function NameCompatibilityCard({
+  publicMode,
+  firstName,
+  secondName,
+  profile,
+  onFirstNameChange,
+  onSecondNameChange,
+  vipFreeAccess,
+}: {
+  publicMode: boolean;
+  firstName: string;
+  secondName: string;
+  profile: NameCompatibilityProfile | null;
+  onFirstNameChange: (value: string) => void;
+  onSecondNameChange: (value: string) => void;
+  vipFreeAccess: boolean;
+}) {
+  return (
+    <FeatureCard publicMode={publicMode} title="🔤 Совместимость имён" subtitle="эмоциональный резонанс пары без сохранения имён">
+      <div className="grid gap-4">
+        <div className={publicMode ? "grid gap-3 rounded-lg border border-white/12 bg-white/8 p-3" : "grid gap-3 rounded-lg border border-slate-200 bg-white p-3 sm:grid-cols-2"}>
+          <Field label="Первое имя" publicMode={publicMode}>
+            <input value={firstName} onChange={(event) => onFirstNameChange(sanitizeNameInput(event.target.value))} placeholder="Имя" autoComplete="off" autoCorrect="off" spellCheck={false} className="h-12 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900" />
+          </Field>
+          <Field label="Второе имя" publicMode={publicMode}>
+            <input value={secondName} onChange={(event) => onSecondNameChange(sanitizeNameInput(event.target.value))} placeholder="Имя" autoComplete="off" autoCorrect="off" spellCheck={false} className="h-12 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900" />
+          </Field>
+        </div>
+        {!profile ? (
+          <EmptyFeatureCard publicMode={publicMode} title="Добавьте два имени" text="Результат появится здесь. Имена не сохраняются и не отправляются в аналитику." />
+        ) : (
+          <div className="grid gap-2 sm:grid-cols-2">
+            <InfoRow publicMode={publicMode} label={profile.title} text={profile.emotional} />
+            <InfoRow publicMode={publicMode} label="Общение" text={profile.communication} />
+            <InfoRow publicMode={publicMode} label="Притяжение" text={profile.attraction} />
+            <InfoRow publicMode={publicMode} label="Риск конфликта" text={profile.conflictRisk} />
+            <InfoRow publicMode={publicMode} label="Примирение" text={profile.reconciliation} />
+            <InfoRow publicMode={publicMode} label="Что поможет" text={profile.helps} />
+            <InfoRow publicMode={publicMode} label="Чего избегать" text={profile.avoid} />
+          </div>
+        )}
+        {vipFreeAccess ? <VipInlineNote publicMode={publicMode} /> : null}
+      </div>
+    </FeatureCard>
+  );
+}
+
+function PersonalityArchetypeCard({ publicMode, person, profile, onPersonChange, vipFreeAccess }: { publicMode: boolean; person: PersonState; profile: PersonalityArchetypeProfile; onPersonChange: (value: PersonState) => void; vipFreeAccess: boolean }) {
+  const parsedDate = parseBirthDate(person.birthDate);
+  const dateError = person.birthDate && !parsedDate.ok ? parsedDate.error : "";
+  return (
+    <FeatureCard publicMode={publicMode} title="✨ Архетип личности" subtitle="сборный портрет по знаку, дате, имени и символам">
+      <div className="grid gap-4">
+        <div className={publicMode ? "grid gap-3 rounded-lg border border-white/12 bg-white/8 p-3" : "grid gap-3 rounded-lg border border-slate-200 bg-white p-3"}>
+          <Field label="Имя (необязательно)" publicMode={publicMode}>
+            <input value={person.name} onChange={(event) => onPersonChange({ ...person, name: sanitizeNameInput(event.target.value) })} placeholder="можно оставить пустым" autoComplete="off" autoCorrect="off" spellCheck={false} className="h-12 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900" />
+          </Field>
+          <Field label="Дата рождения (необязательно)" publicMode={publicMode}>
+            <input value={person.birthDate} onChange={(event) => updateBirthDate(person, event.target.value, onPersonChange)} placeholder="дд.мм.гггг" inputMode="numeric" autoComplete="off" className={`h-12 w-full rounded-lg border bg-white px-3 text-base text-slate-900 ${dateError ? "border-rose-300" : "border-slate-200"}`} />
+            {dateError ? <p className="mt-2 text-xs font-semibold text-rose-600">{dateError}</p> : null}
+          </Field>
+        </div>
+        <div className={publicMode ? "rounded-lg border border-amber-200/25 bg-amber-200/10 p-4" : "rounded-lg border border-amber-200 bg-amber-50 p-4"}>
+          <p className={publicMode ? "text-xl font-semibold text-white" : "text-xl font-semibold text-slate-950"}>{profile.title}</p>
+          <p className={publicMode ? "mt-2 text-sm leading-5 text-amber-100" : "mt-2 text-sm leading-5 text-amber-800"}>{profile.completeness}</p>
+        </div>
+        <div className="grid gap-2 sm:grid-cols-2">
+          <InfoRow publicMode={publicMode} label="Главная сила" text={profile.coreStrength} />
+          <InfoRow publicMode={publicMode} label="Тень / риск" text={profile.shadowRisk} />
+          <InfoRow publicMode={publicMode} label="Отношения" text={profile.relationship} />
+          <InfoRow publicMode={publicMode} label="Дела и деньги" text={profile.workMoney} />
+          <InfoRow publicMode={publicMode} label="Талисман" text={profile.talisman} />
+          <InfoRow publicMode={publicMode} label="Совет месяца" text={profile.monthAdvice} />
+        </div>
+        {vipFreeAccess ? <VipInlineNote publicMode={publicMode} /> : null}
+      </div>
+    </FeatureCard>
+  );
+}
+
+function VipInlineNote({ publicMode }: { publicMode: boolean }) {
+  return (
+    <p className={publicMode ? "rounded-lg border border-amber-200/25 bg-amber-200/10 p-3 text-sm font-semibold leading-5 text-amber-50" : "rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm font-semibold leading-5 text-amber-900"}>
+      👑 Расширенный разбор открыт бесплатно до 17.09.2026.
+    </p>
   );
 }
 
@@ -2062,6 +2681,18 @@ function secondaryButtonClass(publicMode: boolean) {
     : "inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50";
 }
 
+function primaryTinyButtonClass(publicMode: boolean) {
+  return publicMode
+    ? "rounded-lg border border-amber-200/55 bg-amber-200/15 px-3 py-2 text-xs font-semibold text-amber-50"
+    : "rounded-lg border border-violet-300 bg-violet-50 px-3 py-2 text-xs font-semibold text-violet-900";
+}
+
+function secondaryTinyButtonClass(publicMode: boolean) {
+  return publicMode
+    ? "rounded-lg border border-white/12 bg-white/8 px-3 py-2 text-xs font-semibold text-slate-200"
+    : "rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700";
+}
+
 function PersonPanel({
   publicMode,
   title,
@@ -2604,6 +3235,92 @@ interface MonthForecast {
   love: string;
   rhythm: string;
   advice: string;
+}
+
+interface NumerologyProfile {
+  lifePath: number | null;
+  nameNumber: number | null;
+  dayNumber: number;
+  personalMonth: number | null;
+  strengths: string;
+  risks: string;
+  advice: string;
+  summary: string;
+}
+
+interface AngelNumberProfile {
+  label: string;
+  safeKey: string;
+  meaning: string;
+  signal: string;
+  action: string;
+  avoid: string;
+  love: string;
+  workMoney: string;
+}
+
+interface LunarCalendarProfile {
+  title: string;
+  rhythm: string;
+  love: string;
+  workMoney: string;
+  talks: string;
+  reconciliation: string;
+  action: string;
+  avoid: string;
+}
+
+interface DailyTalismanProfile {
+  stone: string;
+  color: string;
+  number: number;
+  phrase: string;
+  action: string;
+  avoid: string;
+}
+
+interface DreamProfile {
+  safeKey: string;
+  symbol: string;
+  general: string;
+  emotional: string;
+  highlight: string;
+  advice: string;
+  signConnection: string;
+}
+
+type GiftRecipientType = "partner" | "friend" | "man" | "woman" | "colleague";
+
+interface GiftBySignProfile {
+  sign: ZodiacSign;
+  recipientLabel: string;
+  ideas: string[];
+  appreciates: string;
+  avoid: string;
+  symbolic: string;
+  premium: string;
+}
+
+interface NameCompatibilityProfile {
+  title: string;
+  emotional: string;
+  communication: string;
+  attraction: string;
+  conflictRisk: string;
+  reconciliation: string;
+  helps: string;
+  avoid: string;
+}
+
+interface PersonalityArchetypeProfile {
+  title: string;
+  coreStrength: string;
+  shadowRisk: string;
+  relationship: string;
+  workMoney: string;
+  talisman: string;
+  monthAdvice: string;
+  completeness: string;
 }
 
 type MessageTone = "soft" | "romantic" | "afterFight" | "longSilence" | "invite" | "reconciliation";
@@ -3552,6 +4269,308 @@ function buildNameProfile(person: PersonState, selectedSign: ZodiacSign | null, 
         ]
       : [],
   };
+}
+
+const numerologyLines = {
+  strengths: [
+    "легко замечать ритм ситуации и выбирать спокойный следующий шаг",
+    "соединять эмоции с практикой и не терять тепло в разговоре",
+    "видеть скрытую структуру дня и возвращать себе фокус",
+  ],
+  risks: [
+    "перегружать себя ожиданием идеального знака",
+    "сравнивать настроение дня с чужим темпом",
+    "делать вывод слишком быстро, пока эмоции ещё сильные",
+  ],
+  advice: [
+    "выберите одно маленькое действие и доведите его до конца",
+    "держите рядом простую опору: вода, пауза, короткая запись мысли",
+    "сначала уточните желание, потом обсуждайте решение",
+  ],
+};
+
+const angelNumberLines = [
+  {
+    keys: ["1111", "11:11"],
+    meaning: "момент фокуса: день просит ясной формулировки желания",
+    signal: "заметьте, где вы распыляетесь",
+    action: "запишите одну цель на сегодня",
+    avoid: "не обещайте больше, чем сможете поддержать",
+    love: "в любви помогает честный короткий жест внимания",
+    workMoney: "в делах лучше выбрать один приоритет и убрать лишнее",
+  },
+  {
+    keys: ["1212", "12:12"],
+    meaning: "баланс пары и личного пространства",
+    signal: "день подсказывает договариваться без давления",
+    action: "сверьте планы и ожидания",
+    avoid: "не угадывайте за другого человека",
+    love: "мягкий вопрос сработает лучше проверки",
+    workMoney: "поддержит аккуратный обмен задачами",
+  },
+  {
+    keys: ["1515", "15:15"],
+    meaning: "обновление привычек и смелость менять маршрут",
+    signal: "полезно выйти из повторяющегося сценария",
+    action: "сделайте шаг, который давно откладывали",
+    avoid: "не спорьте ради скорости",
+    love: "подойдёт тёплое приглашение вместо претензии",
+    workMoney: "проверьте, где нужна свежая договорённость",
+  },
+  {
+    keys: ["2222", "22:22"],
+    meaning: "терпение, доверие и спокойная сборка будущего",
+    signal: "день поддерживает длинные решения",
+    action: "закрепите важную договорённость",
+    avoid: "не требуйте мгновенного ответа",
+    love: "лучше говорить о поддержке, а не о доказательствах",
+    workMoney: "хорошо работает план с запасом",
+  },
+  {
+    keys: ["0222", "02:22"],
+    meaning: "мягкое восстановление контакта",
+    signal: "можно вернуться к теме бережно",
+    action: "начните с признания эмоций",
+    avoid: "не поднимайте старую обиду без цели",
+    love: "подходит короткое примиряющее сообщение",
+    workMoney: "лучше уточнить детали до решения",
+  },
+];
+
+const dreamSymbols = [
+  { key: "water", label: "Вода", general: "эмоции, обновление и необходимость услышать себя", emotional: "чувства могут быть сильнее слов", highlight: "где нужна мягкость", advice: "не торопите разговор" },
+  { key: "road", label: "Дорога", general: "выбор маршрута и движение к решению", emotional: "есть желание понять следующий шаг", highlight: "направление и темп", advice: "выберите один путь на ближайшие дни" },
+  { key: "money", label: "Деньги", general: "ценность, обмен и чувство безопасности", emotional: "может подниматься вопрос опоры", highlight: "границы ресурсов", advice: "сверьте траты и желания" },
+  { key: "ex", label: "Бывший / бывшая", general: "незавершённая эмоция или старый сценарий", emotional: "память просит бережного вывода", highlight: "что больше не хочется повторять", advice: "не сравнивайте прошлое с настоящим напрямую" },
+  { key: "house", label: "Дом", general: "личное пространство, тело и безопасность", emotional: "важно почувствовать опору", highlight: "домашний ритм", advice: "создайте маленький порядок вокруг себя" },
+  { key: "snake", label: "Змея", general: "интуиция, осторожность и обновление", emotional: "может быть сигналом прислушаться к телу", highlight: "тонкие границы", advice: "не драматизируйте, но проверьте факты" },
+  { key: "fish", label: "Рыба", general: "чувствительность, шанс и тихая удача", emotional: "эмоции созревают внутри", highlight: "маленькая возможность", advice: "заметьте спокойный знак поддержки" },
+  { key: "falling", label: "Падение", general: "потеря контроля или усталость", emotional: "нужно больше опоры", highlight: "где темп слишком высокий", advice: "верните себе простую паузу" },
+  { key: "car", label: "Машина", general: "управление ситуацией и скорость решений", emotional: "важно понять, кто ведёт процесс", highlight: "контроль и маршрут", advice: "не ускоряйте разговор без согласия" },
+  { key: "deceased", label: "Ушедший человек", general: "память, благодарность и мягкое завершение", emotional: "может подниматься тема поддержки", highlight: "ценные слова прошлого", advice: "позвольте себе спокойное воспоминание" },
+  { key: "fire", label: "Огонь", general: "энергия, желание и очищение", emotional: "много внутреннего тепла", highlight: "страсть и раздражение", advice: "направьте импульс в действие без резкости" },
+  { key: "child", label: "Ребёнок", general: "новое начало и уязвимая часть души", emotional: "нужна бережность к себе", highlight: "простая радость", advice: "не обесценивайте маленькие шаги" },
+  { key: "wedding", label: "Свадьба", general: "союз, обещание или важный выбор", emotional: "хочется ясности в связи", highlight: "ожидания от отношений", advice: "разделите мечту и реальный договор" },
+  { key: "forest", label: "Лес", general: "поиск, тишина и внутренний маршрут", emotional: "нужно время без давления", highlight: "где вы теряете ориентир", advice: "не решайте всё сразу" },
+  { key: "sea", label: "Море", general: "большие чувства и широкий горизонт", emotional: "эмоции хотят пространства", highlight: "мечты и глубину", advice: "говорите о чувствах спокойно" },
+];
+
+const giftRecipientOptions: Array<{ id: GiftRecipientType; label: string }> = [
+  { id: "partner", label: "партнёр" },
+  { id: "friend", label: "друг" },
+  { id: "man", label: "мужчина" },
+  { id: "woman", label: "женщина" },
+  { id: "colleague", label: "коллега" },
+];
+
+function buildNumerologyProfile(person: PersonState, dateKey: string): NumerologyProfile {
+  const parsed = parseBirthDate(person.birthDate);
+  const normalizedName = normalizeName(person.name);
+  const lifePath = parsed.ok ? reduceNumber(parsed.day + parsed.month + parsed.year) : null;
+  const nameNumber = normalizedName ? reduceNumber(Array.from(normalizedName).reduce((total, char) => total + ((char.toLocaleLowerCase("ru-RU").charCodeAt(0) % 9) + 1), 0)) : null;
+  const date = parseIsoDate(dateKey);
+  const dayNumber = reduceNumber(date.getUTCDate() + date.getUTCMonth() + 1 + date.getUTCFullYear());
+  const personalMonth = parsed.ok ? reduceNumber((lifePath ?? 0) + date.getUTCMonth() + 1) : null;
+  const seed = hashString(`${lifePath ?? "x"}:${nameNumber ?? "x"}:${dateKey}`);
+  return {
+    lifePath,
+    nameNumber,
+    dayNumber,
+    personalMonth,
+    summary: lifePath ? `число пути ${lifePath} добавляет личный ритм, а число дня ${dayNumber} показывает настроение текущего момента` : `даже без даты рождения число дня ${dayNumber} даёт мягкую подсказку для выбора темпа`,
+    strengths: pickLine(numerologyLines.strengths, seed, 1),
+    risks: pickLine(numerologyLines.risks, seed, 2),
+    advice: pickLine(numerologyLines.advice, seed, 3),
+  };
+}
+
+function buildAngelNumberProfile(value: string, dateKey: string): AngelNumberProfile {
+  const normalizedDigits = normalizeAngelDigits(value);
+  const matched = angelNumberLines.find((item) => item.keys.includes(normalizedDigits) || item.keys.includes(formatAngelLabel(normalizedDigits)));
+  const seed = hashString(`${normalizedDigits}:${dateKey}`);
+  const fallback = {
+    meaning: "повторяющийся ритм напоминает остановиться и услышать себя",
+    signal: "смотрите не на знак сам по себе, а на мысль, с которой вы его заметили",
+    action: pickLine(numerologyLines.advice, seed, 1),
+    avoid: pickLine(numerologyLines.risks, seed, 2),
+    love: "в любви лучше выбрать один честный жест внимания",
+    workMoney: "в делах помогает спокойная проверка приоритетов",
+  };
+  const profile = matched ?? fallback;
+  return {
+    label: formatAngelLabel(normalizedDigits),
+    safeKey: normalizedDigits ? `angel_${normalizedDigits}` : "angel_custom",
+    meaning: profile.meaning,
+    signal: profile.signal,
+    action: profile.action,
+    avoid: profile.avoid,
+    love: profile.love,
+    workMoney: profile.workMoney,
+  };
+}
+
+function buildLunarCalendarProfile(sign: ZodiacSign, dateKey: string): LunarCalendarProfile {
+  const seed = hashString(`${sign.slug}:${dateKey}:lunar`);
+  const rhythm = pickLine(["день мягкого накопления сил", "день спокойного разговора", "день внутренней уборки", "день бережного старта"], seed, 1);
+  return {
+    title: `${formatZodiacDisplayDate(dateKey)} · ${sign.emoji} ${sign.name}`,
+    rhythm,
+    love: pickLine(["лучше выбирать тёплый тон и не требовать быстрых признаний", "подходит маленькое внимание без проверки чувств", "полезно говорить о желаниях простыми словами"], seed, 2),
+    workMoney: pickLine(["день хорош для ревизии задач и спокойных покупок", "лучше не спешить с крупным решением", "поддержит план с запасом времени"], seed, 3),
+    talks: pickLine(["заходите через вопрос, а не через вывод", "сначала уточните настроение собеседника", "короткая формулировка будет сильнее длинного объяснения"], seed, 4),
+    reconciliation: pickLine(["можно сделать мягкий шаг навстречу", "лучше начать с признания эмоций", "подойдёт пауза и короткое доброе сообщение"], seed, 5),
+    action: pickLine(["разберите одну маленькую задачу", "освободите вечер от лишнего шума", "сделайте жест заботы"], seed, 6),
+    avoid: pickLine(["не драматизировать молчание", "не спорить на усталости", "не обещать из чувства вины"], seed, 7),
+  };
+}
+
+function buildDailyTalismanProfile(sign: ZodiacSign, dateKey: string): DailyTalismanProfile {
+  const seed = hashString(`${sign.slug}:${dateKey}:talisman`);
+  const stones = zodiacStoneProfiles[sign.slug];
+  return {
+    stone: pickLine([stones.mainStone, stones.loveStone, stones.calmStone, stones.workStone], seed, 1),
+    color: pickLine(["золотой", "глубокий синий", "молочный", "изумрудный", "серебристый", "ягодный"], seed, 2),
+    number: variance(seed, 3, 9) + 1,
+    phrase: pickLine(["я выбираю спокойный шаг", "моё тепло сильнее спешки", "я слышу себя и говорю ясно", "мне можно двигаться мягко"], seed, 4),
+    action: pickLine(["носите рядом небольшой символ", "начните день с одного ясного намерения", "выберите цвет как визуальную опору"], seed, 5),
+    avoid: pickLine(["не превращайте талисман в обещание результата", "не спорьте с собой из-за настроения", "не берите на себя чужой темп"], seed, 6),
+  };
+}
+
+function buildDreamProfile(symbolKey: string, dreamText: string, sign: ZodiacSign | null, dateKey: string): DreamProfile {
+  const safeSymbol = dreamSymbols.find((item) => item.key === symbolKey) ?? dreamSymbols[0];
+  const seed = hashString(`${safeSymbol.key}:${sign?.slug ?? "no-sign"}:${dateKey}:${dreamText ? "has-text" : "no-text"}`);
+  return {
+    safeKey: safeSymbol.key,
+    symbol: safeSymbol.label,
+    general: safeSymbol.general,
+    emotional: safeSymbol.emotional,
+    highlight: safeSymbol.highlight,
+    advice: safeSymbol.advice,
+    signConnection: sign ? `${sign.emoji} ${sign.name}: ${pickLine(signWeeklyProfiles[sign.slug].theme, seed, 1)}` : "если выбрать знак, появится личный оттенок",
+  };
+}
+
+function buildGiftBySignProfile(sign: ZodiacSign, recipientType: GiftRecipientType, dateKey: string): GiftBySignProfile {
+  const seed = hashString(`${sign.slug}:${recipientType}:${dateKey}:gift`);
+  const byElement: Record<string, string[]> = {
+    fire: ["яркое впечатление", "билет на событие", "аксессуар с характером", "набор для активности", "личное письмо с планом свидания"],
+    earth: ["качественная вещь для дома", "красивый ежедневник", "уходовый набор", "тёплый плед", "сертификат на спокойный вечер"],
+    air: ["книга с заметкой", "настольная игра", "необычная подписка без оплаты сейчас", "стильный блокнот", "мини-путешествие по городу"],
+    water: ["аромат для дома", "альбом воспоминаний", "украшение с символом", "чайный набор", "вечер без спешки и телефона"],
+  };
+  const recipient = giftRecipientOptions.find((item) => item.id === recipientType)?.label ?? "партнёр";
+  return {
+    sign,
+    recipientLabel: recipient,
+    ideas: pickUniqueLines(byElement[sign.element] ?? byElement.fire, seed, 1, 5),
+    appreciates: pickLine(["внимание к деталям", "личный смысл подарка", "честное качество", "красивую подачу"], seed, 2),
+    avoid: pickLine(["слишком безличный сувенир", "подарок с намёком на обязанность", "вещь, выбранная в спешке"], seed, 3),
+    symbolic: pickLine(["камень знака в маленьком мешочке", "открытка с фразой дня", "цвет дня в упаковке"], seed, 4),
+    premium: pickLine(["выходной-сюрприз с маршрутом", "персональный набор впечатлений", "качественная вещь, которая прослужит долго"], seed, 5),
+  };
+}
+
+function buildNameCompatibilityProfile(firstRaw: string, secondRaw: string, sign: ZodiacSign | null, dateKey: string): NameCompatibilityProfile | null {
+  const firstName = normalizeName(firstRaw);
+  const secondName = normalizeName(secondRaw);
+  if (!firstName || !secondName) return null;
+  const seed = hashString(`${firstName.toLocaleLowerCase("ru-RU")}:${secondName.toLocaleLowerCase("ru-RU")}:${sign?.slug ?? "no-sign"}:${dateKey.slice(0, 7)}`);
+  return {
+    title: "Резонанс имён",
+    emotional: pickLine(["эмоционально имена звучат мягко и могут быстро создавать ощущение близости", "связь строится через уважение к разному темпу", "есть живой интерес, если не давить выводами"], seed, 1),
+    communication: pickLine(["лучше говорить коротко и прямо", "помогают уточняющие вопросы", "важно не путать паузу с холодностью"], seed, 2),
+    attraction: pickLine(["притяжение держится на любопытстве и тёплых жестах", "симпатия усиливается через совместные планы", "сильнее всего работает спокойная надёжность"], seed, 3),
+    conflictRisk: pickLine(["риск появляется, когда один ждёт догадки вместо просьбы", "напряжение растёт от молчаливых проверок", "лучше не спорить о тоне на пике эмоций"], seed, 4),
+    reconciliation: pickLine(["начните с короткого признания: я услышал(а), что тебе было неприятно", "подойдёт мягкое сообщение без длинных объяснений", "пауза и одна конкретная просьба помогут вернуться к диалогу"], seed, 5),
+    helps: pickLine(["повторять договорённости простыми словами", "держать регулярные маленькие знаки внимания", "разделять чувства и факты"], seed, 6),
+    avoid: pickLine(["не сравнивать с прошлым", "не проверять любовь молчанием", "не делать вывод по одному сообщению"], seed, 7),
+  };
+}
+
+function buildPersonalityArchetypeProfile(
+  person: PersonState,
+  sign: ZodiacSign | null,
+  chineseHoroscope: ChineseHoroscope | null,
+  numerology: NumerologyProfile,
+  talisman: DailyTalismanProfile | null,
+  dateKey: string,
+): PersonalityArchetypeProfile {
+  const resolvedSign = sign ?? findSign(person.sign || "gemini");
+  const parsed = parseBirthDate(person.birthDate);
+  const hasName = Boolean(normalizeName(person.name));
+  const seed = hashString(`${resolvedSign.slug}:${parsed.ok ? parsed.iso : "no-date"}:${hasName}:${dateKey}:archetype`);
+  const title = pickLine(
+    [
+      `Стратег тепла ${resolvedSign.emoji}`,
+      `Тихий магнит ${resolvedSign.emoji}`,
+      `Проводник ясности ${resolvedSign.emoji}`,
+      `Хранитель ритма ${resolvedSign.emoji}`,
+    ],
+    seed,
+    1,
+  );
+  return {
+    title,
+    coreStrength: pickLine(signDailyProfiles[resolvedSign.slug].focus, seed, 2),
+    shadowRisk: pickLine(numerologyLines.risks, seed, 3),
+    relationship: chineseHoroscope?.relationshipStyle ?? pickLine(weeklyGuidanceByElement[resolvedSign.element].love, seed, 4),
+    workMoney: chineseHoroscope?.workMoneyStyle ?? pickLine(weeklyGuidanceByElement[resolvedSign.element].money, seed, 5),
+    talisman: talisman ? `${talisman.stone}, цвет ${talisman.color}` : buildZodiacStoneProfile(resolvedSign).mainStone,
+    monthAdvice: pickLine([numerology.advice, ...nameMonthAdviceLines], seed, 6),
+    completeness: parsed.ok || hasName ? "профиль собран по доступным данным, без сохранения имени или даты" : "частичный профиль: добавьте имя или дату, если хотите больше деталей",
+  };
+}
+
+function sectionForFeature(feature: MoreFeatureId) {
+  const sections: Partial<Record<MoreFeatureId, string>> = {
+    todayForecast: "today",
+    weekForecast: "week",
+    luckyDays: "lucky_days",
+    compatibilityTool: "compatibility",
+    coupleHoroscope: "couple_horoscope",
+    mentalMap: "relationship_map",
+    coupleCalendar: "couple_calendar",
+    reconciliation: "reconciliation",
+    messageHelper: "message_helper",
+    nameCompatibility: "name_compatibility",
+    natalChart: "natal_chart",
+    chineseHoroscope: "chinese_horoscope",
+    zodiacStones: "zodiac_stones",
+    nameProfile: "name_profile",
+    numerology: "numerology",
+    angelNumbers: "angel_numbers",
+    lunarCalendar: "lunar_calendar",
+    dailyTalisman: "daily_talisman",
+    dreamDictionary: "dream_dictionary",
+    giftBySign: "gift_by_sign",
+    archetype: "archetype",
+    vip: "vip",
+    giveaways: "giveaways",
+  };
+  return sections[feature] ?? "hub";
+}
+
+function reduceNumber(value: number) {
+  let current = Math.abs(Math.trunc(value));
+  while (current > 9) {
+    current = String(current)
+      .split("")
+      .reduce((total, digit) => total + Number(digit), 0);
+  }
+  return current || 1;
+}
+
+function normalizeAngelDigits(value: string) {
+  const digits = String(value || "").replace(/\D/g, "").slice(0, 4);
+  if (digits.length >= 4) return digits.slice(0, 4);
+  if (digits.length >= 2) return `${digits}${digits}`.slice(0, 4);
+  return "1111";
+}
+
+function formatAngelLabel(digits: string) {
+  const normalized = normalizeAngelDigits(digits);
+  return `${normalized.slice(0, 2)}:${normalized.slice(2, 4)}`;
 }
 
 function isNameVowel(value: string) {

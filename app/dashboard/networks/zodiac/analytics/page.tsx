@@ -273,6 +273,15 @@ const trackedAnalyticsItems = [
   "vip_future_subscription_clicked",
   "giveaway_clicked",
   "message_helper_used",
+  "hub_category_opened",
+  "numerology_opened / numerology_result_viewed",
+  "angel_numbers_opened / angel_number_viewed",
+  "lunar_calendar_opened",
+  "daily_talisman_opened",
+  "dream_dictionary_opened / dream_symbol_viewed",
+  "gift_by_sign_opened",
+  "name_compatibility_opened / name_compatibility_result_viewed",
+  "archetype_opened / archetype_result_viewed",
 ];
 
 const privateAnalyticsItems = [
@@ -281,6 +290,8 @@ const privateAnalyticsItems = [
   "birth times",
   "birth cities",
   "message text",
+  "dream text",
+  "raw angel number input",
   "bot token",
   "raw sensitive Telegram initData",
 ];

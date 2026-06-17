@@ -39,6 +39,20 @@ export const ZODIAC_ANALYTICS_EVENTS = [
   "vip_future_subscription_clicked",
   "giveaway_clicked",
   "message_helper_used",
+  "numerology_opened",
+  "numerology_result_viewed",
+  "angel_numbers_opened",
+  "angel_number_viewed",
+  "lunar_calendar_opened",
+  "daily_talisman_opened",
+  "dream_dictionary_opened",
+  "dream_symbol_viewed",
+  "gift_by_sign_opened",
+  "name_compatibility_opened",
+  "name_compatibility_result_viewed",
+  "archetype_opened",
+  "archetype_result_viewed",
+  "hub_category_opened",
 ] as const;
 
 export type ZodiacAnalyticsEventName = (typeof ZODIAC_ANALYTICS_EVENTS)[number];
@@ -64,6 +78,8 @@ export interface ZodiacAnalyticsPayload {
   hasBirthCity?: boolean;
   timeKnown?: boolean;
   hasName?: boolean;
+  hasSecondName?: boolean;
+  selectedPresetKey?: string;
   freeVipActive?: boolean;
 }
 
@@ -104,11 +120,22 @@ const sections = new Set([
   "chinese_horoscope",
   "zodiac_stones",
   "name_profile",
+  "numerology",
+  "angel_numbers",
+  "lunar_calendar",
+  "daily_talisman",
+  "dream_dictionary",
+  "gift_by_sign",
+  "name_compatibility",
+  "archetype",
   "couple_horoscope",
   "relationship_map",
+  "couple_calendar",
+  "reconciliation",
   "vip",
   "giveaways",
   "message_helper",
+  "hub",
 ]);
 
 export function isAllowedZodiacAnalyticsEvent(value: unknown): value is ZodiacAnalyticsEventName {
@@ -135,6 +162,8 @@ export function sanitizeZodiacAnalyticsPayload(input: unknown): ZodiacAnalyticsP
   const hasBirthCity = sanitizeBoolean(raw.hasBirthCity);
   const timeKnown = sanitizeBoolean(raw.timeKnown);
   const hasName = sanitizeBoolean(raw.hasName);
+  const hasSecondName = sanitizeBoolean(raw.hasSecondName);
+  const selectedPresetKey = sanitizeToken(raw.selectedPresetKey, 64);
   const freeVipActive = sanitizeBoolean(raw.freeVipActive);
 
   if (dateKey) payload.dateKey = dateKey;
@@ -154,6 +183,8 @@ export function sanitizeZodiacAnalyticsPayload(input: unknown): ZodiacAnalyticsP
   if (typeof hasBirthCity === "boolean") payload.hasBirthCity = hasBirthCity;
   if (typeof timeKnown === "boolean") payload.timeKnown = timeKnown;
   if (typeof hasName === "boolean") payload.hasName = hasName;
+  if (typeof hasSecondName === "boolean") payload.hasSecondName = hasSecondName;
+  if (selectedPresetKey) payload.selectedPresetKey = selectedPresetKey;
   if (typeof freeVipActive === "boolean") payload.freeVipActive = freeVipActive;
 
   return payload;

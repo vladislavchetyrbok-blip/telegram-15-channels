@@ -45,6 +45,15 @@ async function main() {
     const chineseHoroscopeEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "chinese_horoscope_result_viewed", { section: "chinese_horoscope", hasBirthDate: true, hasName: false, freeVipActive: true });
     const zodiacStonesEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "zodiac_stones_sign_viewed", { section: "zodiac_stones", hasBirthDate: false, hasName: false, freeVipActive: true });
     const nameProfileEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "name_profile_result_viewed", { section: "name_profile", hasBirthDate: false, hasName: true, freeVipActive: true });
+    const numerologyEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "numerology_result_viewed", { section: "numerology", hasBirthDate: true, hasName: true, freeVipActive: true });
+    const angelEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "angel_number_viewed", { section: "angel_numbers", selectedPresetKey: "angel_1111", freeVipActive: true });
+    const lunarEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "lunar_calendar_opened", { section: "lunar_calendar", freeVipActive: true });
+    const talismanEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "daily_talisman_opened", { section: "daily_talisman", freeVipActive: true });
+    const dreamEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "dream_symbol_viewed", { section: "dream_dictionary", selectedPresetKey: "water", freeVipActive: true });
+    const giftEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "gift_by_sign_opened", { section: "gift_by_sign", freeVipActive: true });
+    const nameCompatibilityEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "name_compatibility_result_viewed", { section: "name_compatibility", hasName: true, hasSecondName: true, freeVipActive: true });
+    const archetypeEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "archetype_result_viewed", { section: "archetype", hasBirthDate: true, hasName: true, freeVipActive: true });
+    const hubCategoryEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "hub_category_opened", { section: "hub", category: "forecasts", freeVipActive: true });
     const disallowedEvent = await checkDisallowedEvent(`${baseUrl}/api/zodiac/analytics/event`);
     const afterLedgerStats = await collectLedgerStats();
     const ledgerWrites = countLedgerWrites(beforeLedgerStats, afterLedgerStats);
@@ -64,6 +73,15 @@ async function main() {
       chineseHoroscopeEvent,
       zodiacStonesEvent,
       nameProfileEvent,
+      numerologyEvent,
+      angelEvent,
+      lunarEvent,
+      talismanEvent,
+      dreamEvent,
+      giftEvent,
+      nameCompatibilityEvent,
+      archetypeEvent,
+      hubCategoryEvent,
       disallowedEvent,
       sensitiveFieldsStripped:
         allowedEvent.sensitiveFieldsStripped &&
@@ -71,7 +89,16 @@ async function main() {
         vipFeatureEvent.sensitiveFieldsStripped &&
         chineseHoroscopeEvent.sensitiveFieldsStripped &&
         zodiacStonesEvent.sensitiveFieldsStripped &&
-        nameProfileEvent.sensitiveFieldsStripped,
+        nameProfileEvent.sensitiveFieldsStripped &&
+        numerologyEvent.sensitiveFieldsStripped &&
+        angelEvent.sensitiveFieldsStripped &&
+        lunarEvent.sensitiveFieldsStripped &&
+        talismanEvent.sensitiveFieldsStripped &&
+        dreamEvent.sensitiveFieldsStripped &&
+        giftEvent.sensitiveFieldsStripped &&
+        nameCompatibilityEvent.sensitiveFieldsStripped &&
+        archetypeEvent.sensitiveFieldsStripped &&
+        hubCategoryEvent.sensitiveFieldsStripped,
       noSecretsPrinted: true,
       telegramApiCalls,
       ledgerWrites,
