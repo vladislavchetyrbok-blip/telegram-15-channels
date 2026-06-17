@@ -21,6 +21,12 @@ export const ZODIAC_ANALYTICS_EVENTS = [
   "natal_chart_result_viewed",
   "natal_chart_section_opened",
   "natal_chart_vip_free_opened",
+  "chinese_horoscope_opened",
+  "chinese_horoscope_result_viewed",
+  "zodiac_stones_opened",
+  "zodiac_stones_sign_viewed",
+  "name_profile_opened",
+  "name_profile_result_viewed",
   "couple_horoscope_viewed",
   "relationship_map_viewed",
   "mental_map_viewed",
@@ -57,6 +63,8 @@ export interface ZodiacAnalyticsPayload {
   hasBirthTime?: boolean;
   hasBirthCity?: boolean;
   timeKnown?: boolean;
+  hasName?: boolean;
+  freeVipActive?: boolean;
 }
 
 export interface SanitizedZodiacAnalyticsEvent extends ZodiacAnalyticsPayload {
@@ -93,6 +101,9 @@ const sections = new Set([
   "compatibility",
   "lucky_days",
   "natal_chart",
+  "chinese_horoscope",
+  "zodiac_stones",
+  "name_profile",
   "couple_horoscope",
   "relationship_map",
   "vip",
@@ -123,6 +134,8 @@ export function sanitizeZodiacAnalyticsPayload(input: unknown): ZodiacAnalyticsP
   const hasBirthTime = sanitizeBoolean(raw.hasBirthTime);
   const hasBirthCity = sanitizeBoolean(raw.hasBirthCity);
   const timeKnown = sanitizeBoolean(raw.timeKnown);
+  const hasName = sanitizeBoolean(raw.hasName);
+  const freeVipActive = sanitizeBoolean(raw.freeVipActive);
 
   if (dateKey) payload.dateKey = dateKey;
   if (section) payload.section = section;
@@ -140,6 +153,8 @@ export function sanitizeZodiacAnalyticsPayload(input: unknown): ZodiacAnalyticsP
   if (typeof hasBirthTime === "boolean") payload.hasBirthTime = hasBirthTime;
   if (typeof hasBirthCity === "boolean") payload.hasBirthCity = hasBirthCity;
   if (typeof timeKnown === "boolean") payload.timeKnown = timeKnown;
+  if (typeof hasName === "boolean") payload.hasName = hasName;
+  if (typeof freeVipActive === "boolean") payload.freeVipActive = freeVipActive;
 
   return payload;
 }

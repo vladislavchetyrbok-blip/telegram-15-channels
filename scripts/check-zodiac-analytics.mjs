@@ -42,6 +42,9 @@ async function main() {
     const allowedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "relationship_map_category_opened", { category: "communication" });
     const mentalMapEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "mental_map_viewed");
     const vipFeatureEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "vip_feature_opened", { category: "month_forecast" });
+    const chineseHoroscopeEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "chinese_horoscope_result_viewed", { section: "chinese_horoscope", hasBirthDate: true, hasName: false, freeVipActive: true });
+    const zodiacStonesEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "zodiac_stones_sign_viewed", { section: "zodiac_stones", hasBirthDate: false, hasName: false, freeVipActive: true });
+    const nameProfileEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "name_profile_result_viewed", { section: "name_profile", hasBirthDate: false, hasName: true, freeVipActive: true });
     const disallowedEvent = await checkDisallowedEvent(`${baseUrl}/api/zodiac/analytics/event`);
     const afterLedgerStats = await collectLedgerStats();
     const ledgerWrites = countLedgerWrites(beforeLedgerStats, afterLedgerStats);
@@ -58,8 +61,17 @@ async function main() {
       allowedEvent,
       mentalMapEvent,
       vipFeatureEvent,
+      chineseHoroscopeEvent,
+      zodiacStonesEvent,
+      nameProfileEvent,
       disallowedEvent,
-      sensitiveFieldsStripped: allowedEvent.sensitiveFieldsStripped && mentalMapEvent.sensitiveFieldsStripped && vipFeatureEvent.sensitiveFieldsStripped,
+      sensitiveFieldsStripped:
+        allowedEvent.sensitiveFieldsStripped &&
+        mentalMapEvent.sensitiveFieldsStripped &&
+        vipFeatureEvent.sensitiveFieldsStripped &&
+        chineseHoroscopeEvent.sensitiveFieldsStripped &&
+        zodiacStonesEvent.sensitiveFieldsStripped &&
+        nameProfileEvent.sensitiveFieldsStripped,
       noSecretsPrinted: true,
       telegramApiCalls,
       ledgerWrites,

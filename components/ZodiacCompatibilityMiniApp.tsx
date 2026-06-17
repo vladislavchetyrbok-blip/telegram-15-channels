@@ -11,7 +11,7 @@ import {
   getWeekRangeForDate,
 } from "@/lib/zodiac-date";
 import { trackZodiacMiniAppEvent } from "@/lib/zodiac-mini-app-analytics-client";
-import { zodiacAnalyticsScoreTier, zodiacAnalyticsStartappType, type ZodiacAnalyticsPayload } from "@/lib/zodiac-mini-app-analytics-shared";
+import { zodiacAnalyticsScoreTier, zodiacAnalyticsStartappType, type ZodiacAnalyticsEventName, type ZodiacAnalyticsPayload } from "@/lib/zodiac-mini-app-analytics-shared";
 import { ArrowLeft, ArrowRight, CalendarDays, Crown, Gift, HeartHandshake, Lock, MapPin, RotateCcw, ShieldCheck, Sparkles, Star } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
@@ -23,7 +23,19 @@ type Gender = "male" | "female" | "unspecified";
 type Variant = "dashboard" | "public";
 type WizardStep = 1 | 2 | 3;
 type HubTab = "today" | "week" | "compatibility" | "lucky" | "more";
-type MoreFeatureId = "coupleHoroscope" | "mentalMap" | "coupleCalendar" | "reconciliation" | "messageHelper" | "natalChart" | "vip" | "giveaways";
+type MoreFeatureId =
+  | "coupleHoroscope"
+  | "mentalMap"
+  | "coupleCalendar"
+  | "reconciliation"
+  | "messageHelper"
+  | "natalChart"
+  | "chineseHoroscope"
+  | "zodiacStones"
+  | "nameProfile"
+  | "vip"
+  | "giveaways";
+type MoreFeatureGroup = "pair" | "self" | "launch";
 
 interface City {
   cityId: string;
@@ -119,15 +131,24 @@ const hubTabs: Array<{ id: HubTab; label: string; shortLabel: string; icon: type
   { id: "more", label: "Ещё", shortLabel: "Ещё", icon: Crown },
 ];
 
-const moreFeatureTabs: Array<{ id: MoreFeatureId; label: string; shortLabel: string; requirement?: "pair" | "natal" }> = [
-  { id: "coupleHoroscope", label: "💑 Гороскоп пары", shortLabel: "Пара", requirement: "pair" },
-  { id: "mentalMap", label: "🧠 Ментальная карта", shortLabel: "Карта", requirement: "pair" },
-  { id: "coupleCalendar", label: "📅 Календарь пары", shortLabel: "30 дней", requirement: "pair" },
-  { id: "reconciliation", label: "🕊 Примирение", shortLabel: "Мир", requirement: "pair" },
-  { id: "messageHelper", label: "💌 Сообщение", shortLabel: "Текст", requirement: "pair" },
-  { id: "natalChart", label: "🌌 Натальная карта", shortLabel: "Натал", requirement: "natal" },
-  { id: "vip", label: "👑 VIP бесплатно", shortLabel: "VIP" },
-  { id: "giveaways", label: "🎁 Розыгрыши", shortLabel: "Подарки" },
+const moreFeatureTabs: Array<{ id: MoreFeatureId; label: string; shortLabel: string; group: MoreFeatureGroup; requirement?: "pair" | "natal" | "sign" }> = [
+  { id: "coupleHoroscope", label: "💑 Гороскоп пары", shortLabel: "Пара", group: "pair", requirement: "pair" },
+  { id: "mentalMap", label: "🧠 Ментальная карта", shortLabel: "Карта", group: "pair", requirement: "pair" },
+  { id: "coupleCalendar", label: "📅 Календарь пары", shortLabel: "30 дней", group: "pair", requirement: "pair" },
+  { id: "reconciliation", label: "🕊 Примирение", shortLabel: "Мир", group: "pair", requirement: "pair" },
+  { id: "messageHelper", label: "💌 Сообщение", shortLabel: "Текст", group: "pair", requirement: "pair" },
+  { id: "natalChart", label: "🌌 Натальная карта", shortLabel: "Натал", group: "self", requirement: "natal" },
+  { id: "chineseHoroscope", label: "🐉 Китайский гороскоп", shortLabel: "Китай", group: "self", requirement: "natal" },
+  { id: "zodiacStones", label: "💎 Камни знака", shortLabel: "Камни", group: "self", requirement: "sign" },
+  { id: "nameProfile", label: "🔤 Именной профиль", shortLabel: "Имя", group: "self" },
+  { id: "vip", label: "👑 VIP бесплатно", shortLabel: "VIP", group: "launch" },
+  { id: "giveaways", label: "🎁 Розыгрыши", shortLabel: "Подарки", group: "launch" },
+];
+
+const moreFeatureGroups: Array<{ id: MoreFeatureGroup; title: string }> = [
+  { id: "pair", title: "Пара" },
+  { id: "self", title: "Самопознание" },
+  { id: "launch", title: "VIP и подарки" },
 ];
 
 const tabAnalytics: Record<Exclude<HubTab, "more">, { event: "section_open_today" | "section_open_week" | "section_open_compatibility" | "section_open_lucky_days"; section: string }> = {
@@ -368,6 +389,10 @@ export function ZodiacCompatibilityMiniApp({
     trackZodiacMiniAppEvent("natal_chart_vip_free_opened", natalSafePayload(person, chart, "vip_free_natal"));
   }
 
+  function trackPersonalToolEvent(event: ZodiacAnalyticsEventName, payload: ZodiacAnalyticsPayload) {
+    trackZodiacMiniAppEvent(event, analyticsPayload(payload));
+  }
+
   function resetFlow() {
     setMode(resolvedMode);
     setRelationshipMode("love");
@@ -462,6 +487,7 @@ export function ZodiacCompatibilityMiniApp({
                 <MoreSection
                   publicMode={publicMode}
                   appDateKey={appDateKey}
+                  selectedSignSlug={selectedSignSlug}
                   self={self}
                   partner={partner}
                   result={result}
@@ -475,6 +501,7 @@ export function ZodiacCompatibilityMiniApp({
                   onNatalChartResultViewed={trackNatalChartResultViewed}
                   onNatalChartSectionOpen={trackNatalChartSectionOpen}
                   onNatalChartVipFreeOpen={trackNatalChartVipFreeOpen}
+                  onPersonalToolEvent={trackPersonalToolEvent}
                 />
               ) : null}
               {activeTab === "compatibility" ? (
@@ -723,6 +750,7 @@ function DateLoadingSection({ publicMode, title }: { publicMode: boolean; title:
 function MoreSection({
   publicMode,
   appDateKey,
+  selectedSignSlug,
   self,
   partner,
   result,
@@ -736,9 +764,11 @@ function MoreSection({
   onNatalChartResultViewed,
   onNatalChartSectionOpen,
   onNatalChartVipFreeOpen,
+  onPersonalToolEvent,
 }: {
   publicMode: boolean;
   appDateKey: string | null;
+  selectedSignSlug: string;
   self: PersonState;
   partner: PersonState;
   result: CompatibilityResult;
@@ -752,10 +782,18 @@ function MoreSection({
   onNatalChartResultViewed: (person: PersonState, chart: NatalChart) => void;
   onNatalChartSectionOpen: (person: PersonState, chart: NatalChart, category: string) => void;
   onNatalChartVipFreeOpen: (person: PersonState, chart: NatalChart) => void;
+  onPersonalToolEvent: (event: ZodiacAnalyticsEventName, payload: ZodiacAnalyticsPayload) => void;
 }) {
   const [messageTone, setMessageTone] = useState<MessageTone>("soft");
   const [activeMoreFeature, setActiveMoreFeature] = useState<MoreFeatureId>("coupleHoroscope");
-  const [natalPerson, setNatalPerson] = useState<PersonState>(() => createInitialPerson(self.sign, "unspecified", false, ""));
+  const [natalPerson, setNatalPerson] = useState<PersonState>(() => ({
+    ...createInitialPerson(self.sign || selectedSignSlug, self.gender, self.knowsTime, self.selectedCityId),
+    name: self.name,
+    birthDate: self.birthDate,
+    birthTime: self.birthTime,
+    cityQuery: self.cityQuery,
+  }));
+  const lastPersonalToolTrackedRef = useRef("");
   const dateKey = appDateKey ?? getCurrentZodiacDateKey(DEFAULT_ZODIAC_TIME_ZONE);
   const pairReady = Boolean(self.sign && partner.sign);
   const vipFreeAccess = zodiacVipConfig.vipFreeAccessEnabled && !zodiacVipConfig.vipPaymentsEnabled && !zodiacVipConfig.telegramStarsEnabled;
@@ -764,15 +802,71 @@ function MoreSection({
   const reconciliation = pairReady ? buildReconciliationDay(self, partner, dateKey, result) : null;
   const message = pairReady ? buildPartnerMessage(self, partner, dateKey, messageTone, result) : null;
   const natalChart = buildNatalChart(natalPerson);
-  const selfSign = self.sign ? findSign(self.sign) : null;
+  const selfSign = self.sign || selectedSignSlug ? findSign(self.sign || selectedSignSlug) : null;
+  const chineseHoroscope = buildChineseHoroscope(natalPerson, dateKey);
+  const zodiacStoneProfile = selfSign ? buildZodiacStoneProfile(selfSign) : null;
+  const nameProfile = buildNameProfile(natalPerson, selfSign, dateKey, vipFreeAccess);
   const vipLuckyDays = selfSign ? buildLuckyDays(selfSign, getLuckyDaysStartDate(dateKey), 14) : [];
   const monthForecast = selfSign ? buildPersonalMonthForecast(selfSign, dateKey, result) : null;
   const selectedMoreFeature = moreFeatureTabs.find((item) => item.id === activeMoreFeature) ?? moreFeatureTabs[0];
 
   useEffect(() => {
-    if (!self.sign) return;
-    setNatalPerson((current) => (current.sign || current.birthDate ? current : { ...current, sign: self.sign }));
-  }, [self.sign]);
+    if (!self.sign && !selectedSignSlug) return;
+    setNatalPerson((current) => {
+      const hasPersonalInput = Boolean(current.name || current.birthDate || current.birthTime || current.cityQuery || current.selectedCityId);
+      if (hasPersonalInput) return current.sign ? current : { ...current, sign: self.sign || selectedSignSlug };
+      return {
+        ...current,
+        name: self.name,
+        sign: self.sign || selectedSignSlug,
+        gender: self.gender,
+        birthDate: self.birthDate,
+        knowsTime: self.knowsTime,
+        birthTime: self.birthTime,
+        cityQuery: self.cityQuery,
+        selectedCityId: self.selectedCityId,
+      };
+    });
+  }, [selectedSignSlug, self]);
+
+  useEffect(() => {
+    if (activeMoreFeature !== "chineseHoroscope" && activeMoreFeature !== "zodiacStones" && activeMoreFeature !== "nameProfile") return;
+
+    const parsedDate = parseBirthDate(natalPerson.birthDate);
+    const hasBirthDate = parsedDate.ok;
+    const hasName = Boolean(normalizeName(natalPerson.name));
+    const sign = selfSign?.slug || (hasBirthDate ? parsedDate.signSlug : undefined);
+    const trackKey = [
+      activeMoreFeature,
+      sign ?? "no-sign",
+      hasBirthDate ? "birth-date" : "no-birth-date",
+      hasName ? "name" : "no-name",
+      chineseHoroscope ? "chinese-result" : "no-chinese-result",
+      zodiacStoneProfile ? "stones-result" : "no-stones-result",
+      nameProfile ? "name-result" : "no-name-result",
+    ].join(":");
+
+    if (lastPersonalToolTrackedRef.current === trackKey) return;
+    lastPersonalToolTrackedRef.current = trackKey;
+
+    if (activeMoreFeature === "chineseHoroscope") {
+      const payload = { section: "chinese_horoscope", sign, hasBirthDate, hasName, freeVipActive: vipFreeAccess };
+      onPersonalToolEvent("chinese_horoscope_opened", payload);
+      if (chineseHoroscope) onPersonalToolEvent("chinese_horoscope_result_viewed", payload);
+    }
+
+    if (activeMoreFeature === "zodiacStones") {
+      const payload = { section: "zodiac_stones", sign: selfSign?.slug, hasBirthDate, hasName, freeVipActive: vipFreeAccess };
+      onPersonalToolEvent("zodiac_stones_opened", payload);
+      if (zodiacStoneProfile) onPersonalToolEvent("zodiac_stones_sign_viewed", payload);
+    }
+
+    if (activeMoreFeature === "nameProfile") {
+      const payload = { section: "name_profile", sign, hasBirthDate, hasName, freeVipActive: vipFreeAccess };
+      onPersonalToolEvent("name_profile_opened", payload);
+      if (nameProfile) onPersonalToolEvent("name_profile_result_viewed", payload);
+    }
+  }, [activeMoreFeature, chineseHoroscope, nameProfile, natalPerson.birthDate, natalPerson.name, onPersonalToolEvent, selfSign, vipFreeAccess, zodiacStoneProfile]);
 
   return (
     <section className={panelClass(publicMode)}>
@@ -781,7 +875,7 @@ function MoreSection({
         <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0" />
         <p>без сохранения данных: имена, даты, время и город остаются только на этом экране.</p>
       </div>
-      <MoreFeatureNavigation activeFeature={activeMoreFeature} pairReady={pairReady} natalReady={Boolean(natalChart)} onChange={setActiveMoreFeature} />
+      <MoreFeatureNavigation activeFeature={activeMoreFeature} pairReady={pairReady} natalReady={Boolean(natalChart)} signReady={Boolean(selfSign)} onChange={setActiveMoreFeature} />
       <div className={publicMode ? "mt-3 rounded-lg border border-white/10 bg-white/7 p-3" : "mt-3 rounded-lg border border-slate-200 bg-white p-3"}>
         <p className={publicMode ? "text-xs font-semibold text-amber-100" : "text-xs font-semibold text-violet-800"}>Открыт раздел</p>
         <p className={publicMode ? "mt-1 text-base font-semibold text-white" : "mt-1 text-base font-semibold text-slate-950"}>{selectedMoreFeature.label}</p>
@@ -804,6 +898,9 @@ function MoreSection({
             onVipFreeOpen={onNatalChartVipFreeOpen}
           />
         ) : null}
+        {activeMoreFeature === "chineseHoroscope" ? <ChineseHoroscopeCard publicMode={publicMode} person={natalPerson} horoscope={chineseHoroscope} onPersonChange={setNatalPerson} /> : null}
+        {activeMoreFeature === "zodiacStones" ? <ZodiacStonesCard publicMode={publicMode} profile={zodiacStoneProfile} /> : null}
+        {activeMoreFeature === "nameProfile" ? <NameProfileCard publicMode={publicMode} person={natalPerson} profile={nameProfile} onPersonChange={setNatalPerson} vipFreeAccess={vipFreeAccess} /> : null}
         {activeMoreFeature === "vip" ? (
           <VipFreeAccessCard
             publicMode={publicMode}
@@ -843,39 +940,58 @@ function MoreFeatureNavigation({
   activeFeature,
   pairReady,
   natalReady,
+  signReady,
   onChange,
 }: {
   activeFeature: MoreFeatureId;
   pairReady: boolean;
   natalReady: boolean;
+  signReady: boolean;
   onChange: (feature: MoreFeatureId) => void;
 }) {
   return (
-    <div className="-mx-1 mt-4 overflow-x-auto pb-1">
-      <div className="flex min-w-max gap-2 px-1">
-        {moreFeatureTabs.map((feature) => {
-          const active = activeFeature === feature.id;
-          const blockedHint = feature.requirement === "pair" && !pairReady ? "нужна пара" : feature.requirement === "natal" && !natalReady ? "нужна дата" : null;
-          return (
-            <button
-              key={feature.id}
-              type="button"
-              onClick={() => onChange(feature.id)}
-              className={
-                active
-                  ? "min-h-[58px] min-w-[92px] rounded-lg border border-amber-200/60 bg-amber-200/15 px-3 py-2 text-left shadow-sm"
-                  : "min-h-[58px] min-w-[92px] rounded-lg border border-white/10 bg-white/7 px-3 py-2 text-left transition hover:border-fuchsia-200/35 hover:bg-white/10"
-              }
-              aria-current={active ? "page" : undefined}
-            >
-              <span className={active ? "block text-sm font-semibold leading-4 text-white" : "block text-sm font-semibold leading-4 text-slate-200"}>{feature.shortLabel}</span>
-              <span className={blockedHint ? "mt-1 block text-[11px] font-semibold leading-4 text-amber-100" : active ? "mt-1 block text-[11px] leading-4 text-amber-100" : "mt-1 block text-[11px] leading-4 text-slate-400"}>
-                {blockedHint ?? (active ? "открыто" : "перейти")}
-              </span>
-            </button>
-          );
-        })}
-      </div>
+    <div className="mt-4 space-y-3">
+      {moreFeatureGroups.map((group) => {
+        const features = moreFeatureTabs.filter((feature) => feature.group === group.id);
+        return (
+          <div key={group.id}>
+            <p className="px-1 text-xs font-semibold uppercase tracking-[0.08em] text-slate-400">{group.title}</p>
+            <div className="-mx-1 mt-2 overflow-x-auto pb-1">
+              <div className="flex min-w-max gap-2 px-1">
+                {features.map((feature) => {
+                  const active = activeFeature === feature.id;
+                  const blockedHint =
+                    feature.requirement === "pair" && !pairReady
+                      ? "нужна пара"
+                      : feature.requirement === "natal" && !natalReady
+                        ? "нужна дата"
+                        : feature.requirement === "sign" && !signReady
+                          ? "нужен знак"
+                          : null;
+                  return (
+                    <button
+                      key={feature.id}
+                      type="button"
+                      onClick={() => onChange(feature.id)}
+                      className={
+                        active
+                          ? "min-h-[58px] min-w-[92px] rounded-lg border border-amber-200/60 bg-amber-200/15 px-3 py-2 text-left shadow-sm"
+                          : "min-h-[58px] min-w-[92px] rounded-lg border border-white/10 bg-white/7 px-3 py-2 text-left transition hover:border-fuchsia-200/35 hover:bg-white/10"
+                      }
+                      aria-current={active ? "page" : undefined}
+                    >
+                      <span className={active ? "block text-sm font-semibold leading-4 text-white" : "block text-sm font-semibold leading-4 text-slate-200"}>{feature.shortLabel}</span>
+                      <span className={blockedHint ? "mt-1 block text-[11px] font-semibold leading-4 text-amber-100" : active ? "mt-1 block text-[11px] leading-4 text-amber-100" : "mt-1 block text-[11px] leading-4 text-slate-400"}>
+                        {blockedHint ?? (active ? "открыто" : "перейти")}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -1394,6 +1510,220 @@ function NatalCompassList({ publicMode, title, items }: { publicMode: boolean; t
   );
 }
 
+function ChineseHoroscopeCard({
+  publicMode,
+  person,
+  horoscope,
+  onPersonChange,
+}: {
+  publicMode: boolean;
+  person: PersonState;
+  horoscope: ChineseHoroscope | null;
+  onPersonChange: (value: PersonState) => void;
+}) {
+  const parsedDate = parseBirthDate(person.birthDate);
+  const dateError = person.birthDate && !parsedDate.ok ? parsedDate.error : "";
+
+  return (
+    <FeatureCard publicMode={publicMode} title="🐉 Китайский гороскоп" subtitle="Животное года, стихия, характер и совместимость по восточной традиции">
+      <div className="grid gap-4">
+        <div className={publicMode ? "rounded-lg border border-fuchsia-200/20 bg-fuchsia-200/10 p-3" : "rounded-lg border border-violet-100 bg-violet-50 p-3"}>
+          <p className={publicMode ? "text-sm leading-6 text-slate-100" : "text-sm leading-6 text-slate-700"}>
+            Введите дату рождения, чтобы увидеть восточный знак, стихию и мягкие подсказки для отношений, работы и месяца.
+          </p>
+          <p className={publicMode ? "mt-2 text-xs font-semibold text-emerald-100" : "mt-2 text-xs font-semibold text-emerald-800"}>
+            без сохранения данных: дата остаётся только на этом экране
+          </p>
+        </div>
+
+        <Field label="Дата рождения" publicMode={publicMode}>
+          <input
+            value={person.birthDate}
+            onChange={(event) => updateBirthDate(person, event.target.value, onPersonChange)}
+            placeholder="дд.мм.гггг"
+            inputMode="numeric"
+            autoComplete="off"
+            className={`h-12 w-full rounded-lg border bg-white px-3 text-base text-slate-900 ${dateError ? "border-rose-300" : "border-slate-200"}`}
+          />
+          {dateError ? <p className="mt-2 text-xs font-semibold text-rose-600">{dateError}</p> : null}
+        </Field>
+
+        {!horoscope ? (
+          <div className={publicMode ? "rounded-lg border border-white/12 bg-white/8 p-4 text-sm leading-6 text-slate-300" : "rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-600"}>
+            Введите дату рождения, чтобы определить знак китайского гороскопа.
+          </div>
+        ) : (
+          <div className="grid gap-3">
+            <div className={publicMode ? "rounded-lg border border-amber-200/25 bg-amber-200/10 p-4" : "rounded-lg border border-amber-200 bg-amber-50 p-4"}>
+              <p className={publicMode ? "text-sm font-semibold text-amber-100" : "text-sm font-semibold text-amber-800"}>{horoscope.profileLabel}</p>
+              <p className={publicMode ? "mt-2 text-xl font-semibold text-white" : "mt-2 text-xl font-semibold text-slate-950"}>
+                {horoscope.emoji} {horoscope.animal} · {horoscope.element} · {horoscope.yinYang}
+              </p>
+              <p className={publicMode ? "mt-2 text-sm leading-6 text-slate-300" : "mt-2 text-sm leading-6 text-slate-700"}>{horoscope.summary}</p>
+              <p className={publicMode ? "mt-3 rounded-lg border border-white/12 bg-black/15 p-3 text-xs leading-5 text-amber-50" : "mt-3 rounded-lg border border-amber-100 bg-white p-3 text-xs leading-5 text-amber-900"}>
+                {horoscope.boundaryNote}
+              </p>
+            </div>
+            <div className="grid gap-2 sm:grid-cols-2">
+              <InfoRow publicMode={publicMode} label="💪 Сильные стороны" text={horoscope.strengths} />
+              <InfoRow publicMode={publicMode} label="⚠️ Зоны риска" text={horoscope.risks} />
+              <InfoRow publicMode={publicMode} label="❤️ В отношениях" text={horoscope.relationshipStyle} />
+              <InfoRow publicMode={publicMode} label="💼 Работа и деньги" text={horoscope.workMoneyStyle} />
+              <InfoRow publicMode={publicMode} label="🗓 Совет месяца" text={horoscope.monthAdvice} />
+              <InfoRow publicMode={publicMode} label="🤝 Совместимость" text={horoscope.compatibilityHints.join(" · ")} />
+            </div>
+          </div>
+        )}
+      </div>
+    </FeatureCard>
+  );
+}
+
+function ZodiacStonesCard({ publicMode, profile }: { publicMode: boolean; profile: ZodiacStoneProfile | null }) {
+  if (!profile) {
+    return (
+      <EmptyFeatureCard
+        publicMode={publicMode}
+        title="💎 Камни знака"
+        text="Выберите знак зодиака, чтобы увидеть камни, талисманы и мягкие подсказки для личного настроя."
+      />
+    );
+  }
+
+  return (
+    <FeatureCard publicMode={publicMode} title="💎 Камни знака" subtitle="Талисманы, энергия и смысл камней для каждого знака">
+      <div className="grid gap-4">
+        <div className={publicMode ? "rounded-lg border border-cyan-200/20 bg-cyan-200/10 p-4" : "rounded-lg border border-cyan-100 bg-cyan-50 p-4"}>
+          <p className={publicMode ? "text-sm font-semibold text-cyan-100" : "text-sm font-semibold text-cyan-800"}>{profile.sign.emoji} {profile.sign.name}</p>
+          <p className={publicMode ? "mt-2 text-xl font-semibold text-white" : "mt-2 text-xl font-semibold text-slate-950"}>{profile.mainStone}</p>
+          <p className={publicMode ? "mt-2 text-sm leading-6 text-slate-300" : "mt-2 text-sm leading-6 text-slate-700"}>{profile.symbol}</p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {profile.additionalStones.map((stone) => (
+              <span key={stone} className={publicMode ? "rounded-full border border-white/12 bg-white/8 px-3 py-1 text-xs font-semibold text-slate-200" : "rounded-full border border-cyan-100 bg-white px-3 py-1 text-xs font-semibold text-slate-700"}>
+                {stone}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div className="grid gap-2 sm:grid-cols-2">
+          <InfoRow publicMode={publicMode} label="❤️ Для отношений" text={profile.loveStone} />
+          <InfoRow publicMode={publicMode} label="🛡 Для спокойствия" text={profile.calmStone} />
+          <InfoRow publicMode={publicMode} label="💼 Для фокуса в делах" text={profile.workStone} />
+          <InfoRow publicMode={publicMode} label="✨ Когда носить" text={profile.whenToUse} />
+        </div>
+        <InfoRow publicMode={publicMode} label="⚠️ Чего избегать" text={profile.avoid} />
+        <p className={publicMode ? "rounded-lg border border-emerald-200/20 bg-emerald-200/10 p-3 text-sm leading-5 text-emerald-50" : "rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm leading-5 text-emerald-900"}>
+          Раздел носит развлекательный и символический характер. Камни могут использоваться как личный талисман, но не заменяют решения, заботу о здоровье или финансовую внимательность.
+        </p>
+      </div>
+    </FeatureCard>
+  );
+}
+
+function NameProfileCard({
+  publicMode,
+  person,
+  profile,
+  onPersonChange,
+  vipFreeAccess,
+}: {
+  publicMode: boolean;
+  person: PersonState;
+  profile: NameProfile | null;
+  onPersonChange: (value: PersonState) => void;
+  vipFreeAccess: boolean;
+}) {
+  const [openSectionId, setOpenSectionId] = useState("meaning");
+  const parsedDate = parseBirthDate(person.birthDate);
+  const dateError = person.birthDate && !parsedDate.ok ? parsedDate.error : "";
+
+  return (
+    <FeatureCard publicMode={publicMode} title="🔤 Именной профиль" subtitle="Сильные стороны, характер и личный резонанс имени">
+      <div className="grid gap-4">
+        <div className={publicMode ? "rounded-lg border border-fuchsia-200/20 bg-fuchsia-200/10 p-3" : "rounded-lg border border-violet-100 bg-violet-50 p-3"}>
+          <p className={publicMode ? "text-sm leading-6 text-slate-100" : "text-sm leading-6 text-slate-700"}>
+            Это интерпретационный профиль имени: символическое значение, личный резонанс и мягкие подсказки без утверждений о характере как о факте.
+          </p>
+          <p className={publicMode ? "mt-2 text-xs font-semibold text-emerald-100" : "mt-2 text-xs font-semibold text-emerald-800"}>
+            без сохранения данных: имя, дата, время и город остаются только на этом экране
+          </p>
+        </div>
+
+        <div className={publicMode ? "grid gap-3 rounded-lg border border-white/12 bg-white/8 p-3" : "grid gap-3 rounded-lg border border-slate-200 bg-white p-3"}>
+          <Field label="Имя" publicMode={publicMode}>
+            <input
+              value={person.name}
+              onChange={(event) => onPersonChange({ ...person, name: sanitizeNameInput(event.target.value) })}
+              placeholder="Введите имя"
+              autoComplete="off"
+              autoCorrect="off"
+              spellCheck={false}
+              className="h-12 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900"
+            />
+          </Field>
+
+          <Field label="Дата рождения (необязательно)" publicMode={publicMode}>
+            <input
+              value={person.birthDate}
+              onChange={(event) => updateBirthDate(person, event.target.value, onPersonChange)}
+              placeholder="дд.мм.гггг"
+              inputMode="numeric"
+              autoComplete="off"
+              className={`h-12 w-full rounded-lg border bg-white px-3 text-base text-slate-900 ${dateError ? "border-rose-300" : "border-slate-200"}`}
+            />
+            {dateError ? <p className="mt-2 text-xs font-semibold text-rose-600">{dateError}</p> : null}
+          </Field>
+        </div>
+
+        {!profile ? (
+          <div className={publicMode ? "rounded-lg border border-white/12 bg-white/8 p-4 text-sm leading-6 text-slate-300" : "rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-600"}>
+            Введите имя, чтобы увидеть именной профиль. Данные не сохраняются.
+          </div>
+        ) : (
+          <div className="grid gap-4">
+            <div className={publicMode ? "rounded-lg border border-amber-200/25 bg-amber-200/10 p-4" : "rounded-lg border border-amber-200 bg-amber-50 p-4"}>
+              <p className={publicMode ? "text-sm font-semibold text-amber-100" : "text-sm font-semibold text-amber-800"}>⭐ Краткий портрет</p>
+              <p className={publicMode ? "mt-2 text-sm leading-6 text-slate-200" : "mt-2 text-sm leading-6 text-slate-700"}>{profile.portrait}</p>
+              <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                {profile.summary.map((item) => (
+                  <InfoRow key={item.label} publicMode={publicMode} label={item.label} text={item.value} />
+                ))}
+              </div>
+            </div>
+
+            <div className="grid gap-2">
+              {profile.sections.map((section) => (
+                <NatalInsightSectionCard
+                  key={section.id}
+                  publicMode={publicMode}
+                  section={section}
+                  open={openSectionId === section.id}
+                  onToggle={() => setOpenSectionId((current) => (current === section.id ? "" : section.id))}
+                />
+              ))}
+            </div>
+
+            {vipFreeAccess ? (
+              <div className={publicMode ? "rounded-lg border border-amber-200/25 bg-gradient-to-br from-amber-200/12 via-fuchsia-300/10 to-cyan-300/10 p-4" : "rounded-lg border border-amber-200 bg-amber-50 p-4"}>
+                <p className={publicMode ? "text-base font-semibold text-white" : "text-base font-semibold text-slate-950"}>👑 Расширенный именной профиль открыт бесплатно до {formatVipFreeAccessDate(zodiacVipConfig.vipFreeAccessUntil)}</p>
+                <p className={publicMode ? "mt-1 text-sm leading-5 text-slate-300" : "mt-1 text-sm leading-5 text-slate-700"}>
+                  Сейчас ранний доступ открыт без оплаты. Позже часть расширенных функций может перейти в подписку.
+                </p>
+                <div className="mt-3 grid gap-2">
+                  {profile.vipBlocks.map((block) => (
+                    <InfoRow key={block.title} publicMode={publicMode} label={block.title} text={block.text} />
+                  ))}
+                </div>
+              </div>
+            ) : null}
+          </div>
+        )}
+      </div>
+    </FeatureCard>
+  );
+}
+
 function EmptyFeatureCard({ publicMode, title, text }: { publicMode: boolean; title: string; text: string }) {
   return (
     <FeatureCard publicMode={publicMode} title={title} subtitle={text}>
@@ -1440,6 +1770,9 @@ function VipFreeAccessCard({
     { id: "couple_calendar_30_days", title: "30 дней пары", text: pairReady ? `${calendarDays.length} дней открыты без оплаты` : "выберите два знака, чтобы открыть календарь" },
     { id: "extended_lucky_days", title: "Удачные дни+", text: luckyDays.length > 0 ? `14 дней для ${luckyDays[0].date}` : "выберите знак, чтобы увидеть расширение" },
     { id: "natal_interpretation", title: "Натальная подсказка", text: natalReady ? "Расширенная подсказка открыта" : "добавьте дату рождения, если хотите персонализацию" },
+    { id: "chinese_horoscope", title: "Китайский гороскоп", text: natalReady ? "знак года и стихия открыты без оплаты" : "добавьте дату рождения, чтобы открыть восточный профиль" },
+    { id: "zodiac_stones", title: "Камни знака", text: luckyDays.length > 0 ? "талисманы и символы знака уже доступны" : "выберите знак, чтобы открыть камни" },
+    { id: "name_profile", title: "Именной профиль", text: "расширенный профиль имени открыт бесплатно" },
     { id: "message_variants", title: "Варианты сообщений", text: `${messageTones.length} тонов для мягкого текста партнёру` },
     { id: "best_days", title: "Дни для свидания/примирения", text: pairReady ? "лучшие дни подсвечены в календаре пары" : "появятся после выбора двух знаков" },
     { id: "month_forecast", title: "Прогноз на месяц", text: monthForecast ? monthForecast.title : "появится после выбора знака" },
@@ -2231,6 +2564,41 @@ interface NatalVipBlock {
   text: string;
 }
 
+interface ChineseHoroscope {
+  animal: string;
+  emoji: string;
+  element: string;
+  yinYang: string;
+  profileLabel: string;
+  summary: string;
+  strengths: string;
+  risks: string;
+  relationshipStyle: string;
+  workMoneyStyle: string;
+  monthAdvice: string;
+  compatibilityHints: string[];
+  boundaryNote: string;
+}
+
+interface ZodiacStoneProfile {
+  sign: ZodiacSign;
+  mainStone: string;
+  additionalStones: string[];
+  loveStone: string;
+  calmStone: string;
+  workStone: string;
+  symbol: string;
+  whenToUse: string;
+  avoid: string;
+}
+
+interface NameProfile {
+  summary: NatalSummaryItem[];
+  sections: NatalInsightSection[];
+  portrait: string;
+  vipBlocks: NatalVipBlock[];
+}
+
 interface MonthForecast {
   title: string;
   love: string;
@@ -2994,6 +3362,202 @@ function buildNatalV1Details(person: PersonState, parsed: Extract<ParsedDate, { 
   };
 }
 
+function buildChineseHoroscope(person: PersonState, dateKey: string): ChineseHoroscope | null {
+  const parsed = parseBirthDate(person.birthDate);
+  if (!parsed.ok) return null;
+
+  const lunarYear = parsed.month === 1 || (parsed.month === 2 && parsed.day < 4) ? parsed.year - 1 : parsed.year;
+  const animalIndex = positiveModulo(lunarYear - 1900, chineseAnimalProfiles.length);
+  const stemIndex = positiveModulo(lunarYear - 4, 10);
+  const animal = chineseAnimalProfiles[animalIndex];
+  const element = chineseElements[Math.floor(stemIndex / 2)];
+  const yinYang = stemIndex % 2 === 0 ? "Ян" : "Инь";
+  const seed = hashString(`${lunarYear}:${animal.animal}:${element}:${dateKey.slice(0, 7)}`);
+
+  return {
+    animal: animal.animal,
+    emoji: animal.emoji,
+    element,
+    yinYang,
+    profileLabel: `год ${lunarYear} · восточная традиция`,
+    summary: `${animal.summary} Стихия ${element.toLowerCase()} добавляет ${pickLine(chineseElementTone[element], seed, 1)}.`,
+    strengths: pickLine(animal.strengths, seed, 2),
+    risks: pickLine(animal.risks, seed, 3),
+    relationshipStyle: pickLine(animal.relationshipStyle, seed, 4),
+    workMoneyStyle: pickLine(animal.workMoneyStyle, seed, 5),
+    monthAdvice: pickLine(chineseMonthAdvice, seed, 6),
+    compatibilityHints: [
+      `легче раскрывается рядом: ${animal.compatible.join(", ")}`,
+      `для баланса полезны: ${animal.balancing.join(", ")}`,
+    ],
+    boundaryNote: "Расчёт приближённый, если дата рождения близко к китайскому Новому году.",
+  };
+}
+
+function buildZodiacStoneProfile(sign: ZodiacSign): ZodiacStoneProfile {
+  const profile = zodiacStoneProfiles[sign.slug];
+  return { sign, ...profile };
+}
+
+function buildNameProfile(person: PersonState, selectedSign: ZodiacSign | null, dateKey: string, vipFreeAccess: boolean): NameProfile | null {
+  const name = normalizeName(person.name);
+  if (!name) return null;
+
+  const firstName = name.split(/\s+/)[0].toLocaleLowerCase("ru-RU");
+  const known = knownNameProfiles[firstName];
+  const parsed = parseBirthDate(person.birthDate);
+  const sign = person.sign ? findSign(person.sign) : selectedSign;
+  const seed = hashString(`${firstName}:${sign?.slug ?? "no-sign"}:${parsed.ok ? `${parsed.month}-${parsed.day}` : "no-date"}:${dateKey.slice(0, 7)}`);
+  const letters = Array.from(firstName.replace(/-/g, ""));
+  const vowelCount = letters.filter(isNameVowel).length;
+  const consonantCount = Math.max(0, letters.length - vowelCount);
+  const repeatedLetters = new Set(letters).size < letters.length;
+  const firstLetter = letters[0] ?? "";
+  const letterTone = pickLine(nameLetterTones[firstLetter] ?? nameLetterTones.default, seed, 1);
+  const rhythmTone =
+    vowelCount >= consonantCount
+      ? "мягкий и контактный ритм имени"
+      : consonantCount - vowelCount >= 3
+        ? "собранный и волевой ритм имени"
+        : "сбалансированный ритм имени";
+  const lengthTone =
+    letters.length <= 4
+      ? "короткое имя звучит собранно и быстро запоминается"
+      : letters.length >= 8
+        ? "длинное имя даёт ощущение глубины и многослойности"
+        : "имя звучит ровно и легко держит внимание";
+  const repeatTone = repeatedLetters ? "повторы букв усиливают ощущение устойчивости и внутреннего мотива" : "без повторов имя ощущается более подвижным и открытым";
+  const signTone = sign ? `${sign.emoji} ${sign.name} добавляет ${pickLine(signWeeklyProfiles[sign.slug].theme, seed, 2)}` : "если выбрать знак, профиль получит дополнительный личный оттенок";
+  const dateTone = parsed.ok ? `дата рождения добавляет ритм ${formatShortDate(parsed.iso)} без сохранения этой даты` : "дата рождения необязательна: имя уже даёт символический портрет";
+  const baseMeaning = known?.meaning ?? `Символическое значение имени строится вокруг первого звука: ${letterTone}.`;
+  const mainStrength = known?.strength ?? pickLine(nameStrengthLines, seed, 3);
+  const mainRisk = known?.risk ?? pickLine(nameRiskLines, seed, 4);
+  const relationshipStyle = known?.relationship ?? pickLine(nameRelationshipLines, seed, 5);
+  const communicationStyle = known?.communication ?? pickLine(nameCommunicationLines, seed, 6);
+  const workStyle = known?.work ?? pickLine(nameWorkLines, seed, 7);
+  const innerStyle = pickLine(nameInnerLines, seed, 8);
+  const growth = pickLine(nameGrowthLines, seed, 9);
+  const advice = pickLine(nameAdviceLines, seed, 10);
+  const portrait = `${baseMeaning} ${lengthTone}; ${repeatTone}. Это не диагноз характера, а личный резонанс имени для бережного самонаблюдения.`;
+
+  const sections: NatalInsightSection[] = [
+    {
+      id: "meaning",
+      title: "🧬 Общее значение имени",
+      items: [
+        { label: "Символическое значение", text: baseMeaning },
+        { label: "Ритм имени", text: rhythmTone },
+        { label: "Личный резонанс", text: `${letterTone}. ${dateTone}.` },
+      ],
+    },
+    {
+      id: "strengths",
+      title: "💪 Сильные стороны",
+      items: [
+        { label: "Главная сила имени", text: mainStrength },
+        { label: "Как проявляется", text: pickLine(nameManifestationLines, seed, 11) },
+        { label: "Что помогает раскрыться", text: pickLine(nameOpeningLines, seed, 12) },
+      ],
+    },
+    {
+      id: "risks",
+      title: "⚠️ Зоны риска",
+      items: [
+        { label: "Что может мешать", text: mainRisk },
+        { label: "В напряжении", text: pickLine(nameStressLines, seed, 13) },
+        { label: "Мягкая опора", text: "лучше возвращаться к простым словам, границам и одному понятному действию" },
+      ],
+    },
+    {
+      id: "relationships",
+      title: "❤️ В отношениях",
+      items: [
+        { label: "Стиль близости", text: relationshipStyle },
+        { label: "Какие люди подходят рядом", text: pickLine(namePartnerLines, seed, 14) },
+        { label: "Как строить отношения", text: pickLine(nameRelationshipAdviceLines, seed, 15) },
+      ],
+    },
+    {
+      id: "communication",
+      title: "💬 В общении",
+      items: [
+        { label: "Как лучше говорить", text: communicationStyle },
+        { label: "Что слышится сильнее", text: pickLine(nameVoiceLines, seed, 16) },
+        { label: "Практический совет", text: "формулируйте просьбу коротко и оставляйте место для ответа собеседника" },
+      ],
+    },
+    {
+      id: "work",
+      title: "💼 В работе и деньгах",
+      items: [
+        { label: "Рабочий стиль", text: workStyle },
+        { label: "Фокус в деньгах", text: pickLine(nameMoneyLines, seed, 17) },
+        { label: "Чего избегать", text: "не принимать важные решения только из желания доказать свою ценность" },
+      ],
+    },
+    {
+      id: "inner",
+      title: "🧠 Внутренний характер",
+      items: [
+        { label: "Внутренний тон", text: innerStyle },
+        { label: "Невидимая потребность", text: pickLine(nameNeedLines, seed, 18) },
+        { label: "Ресурс", text: pickLine(nameResourceLines, seed, 19) },
+      ],
+    },
+    {
+      id: "growth",
+      title: "🌱 Что развивать",
+      items: [
+        { label: "Направление роста", text: growth },
+        { label: "Что усилит имя", text: pickLine(nameGrowthSupportLines, seed, 20) },
+        { label: "Маленький шаг", text: "выберите одну привычку, которая поддерживает ваш спокойный тон каждый день" },
+      ],
+    },
+    {
+      id: "advice",
+      title: "🧭 Совет имени",
+      items: [
+        { label: "Совет", text: advice },
+        { label: "На ближайший месяц", text: pickLine(nameMonthAdviceLines, seed, 21) },
+        { label: "С партнёром", text: pickLine(nameCompatibilityHints, seed, 22) },
+      ],
+    },
+    {
+      id: "portrait",
+      title: "⭐ Краткий портрет",
+      items: [
+        { label: "Портрет", text: portrait },
+        { label: "Знак и имя", text: signTone },
+        { label: "Итог", text: `${mainStrength}. Важно беречь баланс: ${mainRisk}.` },
+      ],
+    },
+  ];
+
+  return {
+    summary: [
+      { label: "Имя", value: "введено, но не сохраняется" },
+      { label: "Главная сила", value: mainStrength },
+      { label: "Зона роста", value: growth },
+      { label: "Резонанс со знаком", value: signTone },
+    ],
+    sections,
+    portrait,
+    vipBlocks: vipFreeAccess
+      ? [
+          { title: "Имя + знак", text: signTone },
+          { title: "Имя + отношения", text: relationshipStyle },
+          { title: "Совет месяца", text: pickLine(nameMonthAdviceLines, seed, 23) },
+          { title: "Сила и риск", text: `${mainStrength}. Риск: ${mainRisk}.` },
+          { title: "Совместимость", text: pickLine(nameCompatibilityHints, seed, 24) },
+        ]
+      : [],
+  };
+}
+
+function isNameVowel(value: string) {
+  return "аеёиоуыэюяіїєaeiouy".includes(value.toLocaleLowerCase("ru-RU"));
+}
+
 function pairSeed(self: PersonState, partner: PersonState, dateKey: string, scope: string) {
   return hashString(`${pairKey(self, partner)}:${dateKey}:${scope}`);
 }
@@ -3033,6 +3597,491 @@ function buildNameResonance(selfNameRaw: string, partnerNameRaw: string): NameRe
     loveShift,
   };
 }
+
+const chineseElements = ["Дерево", "Огонь", "Земля", "Металл", "Вода"];
+
+const chineseElementTone: Record<string, string[]> = {
+  Дерево: ["рост, гибкость и умение договариваться", "интерес к развитию и новым связям"],
+  Огонь: ["яркость, инициативу и желание действовать сердцем", "смелость проявляться и быстро зажигаться идеей"],
+  Земля: ["устойчивость, практичность и внимание к реальным шагам", "спокойный темп и умение удерживать опору"],
+  Металл: ["собранность, честность и точность в решениях", "внутренний стержень и уважение к правилам"],
+  Вода: ["интуицию, мягкость и способность чувствовать настроение", "пластичность и глубину в общении"],
+};
+
+const chineseAnimalProfiles = [
+  {
+    animal: "Крыса",
+    emoji: "🐀",
+    summary: "Крыса символически связана с наблюдательностью, быстрым умом и умением видеть возможности.",
+    strengths: ["быстро замечает детали и умеет находить короткий путь к решению", "сильна в переговорах, планировании и бережном обращении с ресурсами"],
+    risks: ["может тревожиться из-за неопределённости и проверять людей чаще, чем нужно", "иногда держит слишком много планов в голове и устаёт от контроля"],
+    relationshipStyle: ["в отношениях важны умный диалог, надёжность и чувство, что рядом можно быть честным", "лучше раскрывается через лёгкий юмор, интерес и регулярные маленькие знаки внимания"],
+    workMoneyStyle: ["в делах помогает расчёт, гибкость и умение заранее видеть риски", "деньги лучше идут через систему, запасной план и спокойный выбор"],
+    compatible: ["Дракон", "Обезьяна", "Бык"],
+    balancing: ["Лошадь", "Коза"],
+  },
+  {
+    animal: "Бык",
+    emoji: "🐂",
+    summary: "Бык символически связан с устойчивостью, терпением и силой доводить начатое.",
+    strengths: ["умеет держать слово и создавать ощущение надёжной опоры", "сильнее всего проявляется там, где нужен план, качество и выдержка"],
+    risks: ["может упрямиться, когда проще было бы пересмотреть маршрут", "иногда слишком долго терпит и говорит о потребностях поздно"],
+    relationshipStyle: ["в любви ценит постоянство, уважение к быту и действия вместо громких обещаний", "раскрывается рядом с теми, кто не торопит и не обесценивает его темп"],
+    workMoneyStyle: ["в работе выигрывает через дисциплину, устойчивый график и понятные правила", "финансовый фокус лучше держать через долгий план без резких решений"],
+    compatible: ["Крыса", "Змея", "Петух"],
+    balancing: ["Коза", "Лошадь"],
+  },
+  {
+    animal: "Тигр",
+    emoji: "🐅",
+    summary: "Тигр символически связан со смелостью, независимостью и сильным внутренним импульсом.",
+    strengths: ["умеет начинать, вдохновлять и защищать важное", "быстро чувствует, где нужна честность и живое действие"],
+    risks: ["может торопиться с выводами или спорить из желания вернуть свободу", "иногда выбирает риск там, где помогла бы пауза"],
+    relationshipStyle: ["в отношениях важны уважение к свободе, прямота и живая эмоциональная искра", "лучше раскрывается рядом с партнёром, который не тушит инициативу"],
+    workMoneyStyle: ["в работе силён в старте, лидерстве и ситуациях, где нужна смелость", "деньги требуют паузы перед импульсивными покупками и ставками на настроение"],
+    compatible: ["Лошадь", "Собака", "Свинья"],
+    balancing: ["Обезьяна", "Змея"],
+  },
+  {
+    animal: "Кролик",
+    emoji: "🐇",
+    summary: "Кролик символически связан с тонкостью, дипломатией и умением создавать мягкую атмосферу.",
+    strengths: ["замечает настроение людей и умеет сглаживать острые углы", "сильнее всего проявляется через вкус, заботу и тактичность"],
+    risks: ["может избегать прямого разговора, чтобы не нарушить мир", "иногда слишком долго выбирает безопасность вместо ясности"],
+    relationshipStyle: ["в любви важны нежность, уважение к границам и спокойное пространство", "лучше раскрывается там, где не нужно защищаться от резкости"],
+    workMoneyStyle: ["в работе помогает аккуратность, эстетика и умение договариваться", "финансовый фокус лучше держать через понятные цели и мягкую дисциплину"],
+    compatible: ["Коза", "Свинья", "Собака"],
+    balancing: ["Петух", "Дракон"],
+  },
+  {
+    animal: "Дракон",
+    emoji: "🐉",
+    summary: "Дракон символически связан с масштабом, харизмой и способностью видеть большую цель.",
+    strengths: ["умеет вдохновлять, собирать людей вокруг идеи и мыслить широко", "быстро поднимает энергию там, где другим не хватает уверенности"],
+    risks: ["может брать слишком много на себя и ждать такого же масштаба от других", "иногда пропускает детали, если слишком увлечён большой картиной"],
+    relationshipStyle: ["в отношениях важны восхищение, честность и пространство для яркого проявления", "лучше раскрывается рядом с теми, кто уважает силу и при этом мягко возвращает к деталям"],
+    workMoneyStyle: ["в работе силён в стратегии, публичности и больших задачах", "деньги лучше держать через реалистичный план, а не только через вдохновение"],
+    compatible: ["Крыса", "Обезьяна", "Петух"],
+    balancing: ["Собака", "Кролик"],
+  },
+  {
+    animal: "Змея",
+    emoji: "🐍",
+    summary: "Змея символически связана с глубиной, интуицией и умением чувствовать скрытые мотивы.",
+    strengths: ["видит нюансы, умеет ждать правильного момента и выбирать точные слова", "сильна в анализе, стратегии и тонких переговорах"],
+    risks: ["может закрываться, если не чувствует доверия", "иногда слишком долго проверяет ситуацию вместо прямого шага"],
+    relationshipStyle: ["в любви важны доверие, глубина и уважение к личному пространству", "лучше раскрывается через спокойную честность и отсутствие давления"],
+    workMoneyStyle: ["в работе помогает исследование, концентрация и умение не раскрывать план раньше времени", "финансовые решения лучше принимать без подозрительности и крайностей"],
+    compatible: ["Бык", "Петух", "Обезьяна"],
+    balancing: ["Тигр", "Свинья"],
+  },
+  {
+    animal: "Лошадь",
+    emoji: "🐎",
+    summary: "Лошадь символически связана со свободой, движением и живым интересом к жизни.",
+    strengths: ["быстро оживляет пространство, умеет заражать энтузиазмом и действовать смело", "сильна там, где нужен темп, контакт и вдохновение"],
+    risks: ["может уставать от рутины и бросать начатое раньше результата", "иногда реагирует быстрее, чем успевает услышать другого"],
+    relationshipStyle: ["в любви важны свобода, лёгкость и честный разговор без контроля", "лучше раскрывается рядом с теми, кто поддерживает движение, но не давит"],
+    workMoneyStyle: ["в работе помогает энергия старта, коммуникация и мобильность", "финансовый фокус требует ритма: короткие планы лучше длинных обещаний"],
+    compatible: ["Тигр", "Собака", "Коза"],
+    balancing: ["Крыса", "Бык"],
+  },
+  {
+    animal: "Коза",
+    emoji: "🐐",
+    summary: "Коза символически связана с мягкостью, творчеством и тонким чувством гармонии.",
+    strengths: ["умеет создавать уют, замечать красоту и поддерживать людей деликатно", "сильна в творчестве, заботе и задачах, где важна атмосфера"],
+    risks: ["может сомневаться, если нет поддержки или понятной опоры", "иногда уходит в переживания вместо простого шага"],
+    relationshipStyle: ["в отношениях важны нежность, эмоциональная безопасность и бережный тон", "лучше раскрывается рядом с теми, кто не высмеивает чувствительность"],
+    workMoneyStyle: ["в работе помогает вкус, эмпатия и умение видеть человеческую сторону дела", "финансовый фокус лучше строить через поддержку, план и спокойные рамки"],
+    compatible: ["Кролик", "Свинья", "Лошадь"],
+    balancing: ["Бык", "Крыса"],
+  },
+  {
+    animal: "Обезьяна",
+    emoji: "🐒",
+    summary: "Обезьяна символически связана с находчивостью, юмором и умением быстро перестраиваться.",
+    strengths: ["легко видит нестандартные решения и оживляет сложные темы", "сильна в обучении, переговорах и задачах, где нужно соединить разные идеи"],
+    risks: ["может перескакивать с одного интереса на другой", "иногда шутит там, где человеку нужна серьёзность и тепло"],
+    relationshipStyle: ["в любви важны игра, интеллект и чувство, что рядом не скучно", "лучше раскрывается, когда юмор сочетается с надёжностью"],
+    workMoneyStyle: ["в работе помогает гибкость, быстрый ум и навык находить обходные пути", "деньги лучше держать через ясный приоритет, чтобы идеи не распыляли ресурс"],
+    compatible: ["Крыса", "Дракон", "Змея"],
+    balancing: ["Тигр", "Свинья"],
+  },
+  {
+    animal: "Петух",
+    emoji: "🐓",
+    summary: "Петух символически связан с точностью, выразительностью и вниманием к порядку.",
+    strengths: ["видит детали, умеет держать форму и говорить прямо", "сильнее всего проявляется там, где нужна ясность, стиль и ответственность"],
+    risks: ["может критиковать резче, чем хотел", "иногда слишком много внимания отдаёт идеальной картинке"],
+    relationshipStyle: ["в любви важны честность, уважение и понятные договорённости", "лучше раскрывается рядом с теми, кто ценит старание и не спорит ради спора"],
+    workMoneyStyle: ["в работе помогает дисциплина, точность и умение улучшать качество", "финансовый фокус лучше держать через аккуратный учёт и спокойный тон к себе"],
+    compatible: ["Бык", "Змея", "Дракон"],
+    balancing: ["Кролик", "Собака"],
+  },
+  {
+    animal: "Собака",
+    emoji: "🐕",
+    summary: "Собака символически связана с верностью, справедливостью и внутренним чувством правды.",
+    strengths: ["умеет поддерживать, защищать и держать слово", "сильна там, где важны доверие, команда и честные правила"],
+    risks: ["может тревожиться из-за несправедливости и ждать подвоха", "иногда берёт слишком много ответственности за чужое состояние"],
+    relationshipStyle: ["в любви важны доверие, честность и спокойная верность без игр", "лучше раскрывается рядом с теми, кто не обесценивает её заботу"],
+    workMoneyStyle: ["в работе помогает надёжность, командность и чувство ответственности", "финансовые решения лучше принимать без страха всё потерять или всем помочь сразу"],
+    compatible: ["Тигр", "Лошадь", "Кролик"],
+    balancing: ["Дракон", "Петух"],
+  },
+  {
+    animal: "Свинья",
+    emoji: "🐖",
+    summary: "Свинья символически связана с щедростью, чувственностью и умением ценить простую радость.",
+    strengths: ["умеет создавать тепло, доверять жизни и поддерживать близких", "сильна в заботе, терпении и задачах, где важна человечность"],
+    risks: ["может соглашаться из доброты чаще, чем ей полезно", "иногда избегает сложного разговора ради мира"],
+    relationshipStyle: ["в любви важны искренность, нежность и ощущение дома", "лучше раскрывается рядом с теми, кто ценит тепло и не пользуется мягкостью"],
+    workMoneyStyle: ["в работе помогает терпение, доброжелательность и умение объединять людей", "финансовый фокус лучше держать через границы щедрости и понятный план"],
+    compatible: ["Кролик", "Коза", "Тигр"],
+    balancing: ["Змея", "Обезьяна"],
+  },
+];
+
+const chineseMonthAdvice = [
+  "на ближайший месяц выберите один главный фокус и не распыляйте силы на второстепенное",
+  "лучше всего сработает спокойный разговор, где есть конкретная просьба и уважение к паузам",
+  "поддержите себя простым режимом: сон, порядок в делах и один честный шаг каждый день",
+  "не торопите события; мягкая последовательность сейчас сильнее резких решений",
+  "добавьте больше живого контакта: вопрос, встречу или короткое сообщение без давления",
+];
+
+const zodiacStoneProfiles: Record<string, Omit<ZodiacStoneProfile, "sign">> = {
+  aries: {
+    mainStone: "Гранат",
+    additionalStones: ["карнеол", "гематит", "рубин"],
+    loveStone: "Розовый кварц традиционно считается мягким камнем для тепла и открытого сердца.",
+    calmStone: "Аметист символически связан со спокойствием и паузой перед резким словом.",
+    workStone: "Гематит может использоваться как личный талисман собранности и фокуса.",
+    symbol: "Гранат символизирует смелость, импульс и честное действие.",
+    whenToUse: "Когда нужен старт, решительность или короткий смелый разговор.",
+    avoid: "Не превращайте талисман в повод давить на себя или действовать на эмоциях.",
+  },
+  taurus: {
+    mainStone: "Изумруд",
+    additionalStones: ["малахит", "розовый кварц", "агат"],
+    loveStone: "Розовый кварц символически связан с нежностью и устойчивой заботой.",
+    calmStone: "Агат традиционно считается камнем спокойного ритма и внутренней опоры.",
+    workStone: "Малахит может использоваться как талисман аккуратного роста и практичных решений.",
+    symbol: "Изумруд символизирует верность, вкус и способность беречь ценное.",
+    whenToUse: "Когда важно укрепить отношения, режим, бюджет или домашнюю опору.",
+    avoid: "Не использовать камень как замену разговору, плану или честному пересмотру привычек.",
+  },
+  gemini: {
+    mainStone: "Агат",
+    additionalStones: ["цитрин", "аквамарин", "тигровый глаз"],
+    loveStone: "Аквамарин символически связан с ясным, мягким диалогом.",
+    calmStone: "Агат помогает настроиться на более ровный темп мыслей.",
+    workStone: "Цитрин традиционно связывают с идеями, контактами и рабочим тонусом.",
+    symbol: "Агат символизирует гибкость, речь и соединение разных точек зрения.",
+    whenToUse: "Когда нужно писать, договариваться, учиться или выбирать из нескольких идей.",
+    avoid: "Не распыляться на десятки задач только потому, что каждая кажется интересной.",
+  },
+  cancer: {
+    mainStone: "Лунный камень",
+    additionalStones: ["жемчуг", "сердолик", "селенит"],
+    loveStone: "Жемчуг символически связан с нежностью, памятью и семейным теплом.",
+    calmStone: "Селенит может использоваться как талисман тишины и бережного восстановления.",
+    workStone: "Сердолик поддерживает образ мягкой уверенности и действия без спешки.",
+    symbol: "Лунный камень символизирует интуицию, эмоциональные циклы и заботу о себе.",
+    whenToUse: "Когда нужно бережно обсудить чувства или вернуться к внутренней опоре.",
+    avoid: "Не уходить в молчаливые ожидания вместо простых слов о потребностях.",
+  },
+  leo: {
+    mainStone: "Солнечный камень",
+    additionalStones: ["янтарь", "цитрин", "тигровый глаз"],
+    loveStone: "Янтарь традиционно считается тёплым символом радости и сердечного внимания.",
+    calmStone: "Тигровый глаз помогает держать образ спокойной силы без лишней драматичности.",
+    workStone: "Цитрин может использоваться как талисман видимости, идей и уверенного голоса.",
+    symbol: "Солнечный камень символизирует достоинство, творчество и щедрое проявление.",
+    whenToUse: "Когда нужно выступить, признаться, вдохновить или поддержать собственную ценность.",
+    avoid: "Не искать подтверждение ценности через спор, покупку или демонстративный жест.",
+  },
+  virgo: {
+    mainStone: "Яшма",
+    additionalStones: ["перидот", "сапфир", "агат"],
+    loveStone: "Перидот символически связан с мягким обновлением и добрым взглядом на партнёра.",
+    calmStone: "Яшма традиционно считается камнем устойчивости и внимания к телесному ритму.",
+    workStone: "Сапфир может использоваться как талисман ясности, качества и точных решений.",
+    symbol: "Яшма символизирует практичность, заботу через детали и спокойный порядок.",
+    whenToUse: "Когда нужно разобрать задачи, вернуть режим или говорить без критики.",
+    avoid: "Не превращать заботу в контроль и не требовать идеальности от себя или других.",
+  },
+  libra: {
+    mainStone: "Лазурит",
+    additionalStones: ["розовый кварц", "опал", "авантюрин"],
+    loveStone: "Розовый кварц символически связан с теплом, примирением и мягкой симпатией.",
+    calmStone: "Лазурит помогает настроиться на честные слова и внутреннее равновесие.",
+    workStone: "Авантюрин может использоваться как талисман лёгкого выбора и дипломатии.",
+    symbol: "Лазурит символизирует гармонию, вкус и ясный разговор без давления.",
+    whenToUse: "Когда нужно выбрать, договориться или вернуть эстетичный порядок вокруг себя.",
+    avoid: "Не соглашаться ради мира там, где давно нужен честный ответ.",
+  },
+  scorpio: {
+    mainStone: "Обсидиан",
+    additionalStones: ["гранат", "топаз", "малахит"],
+    loveStone: "Гранат символически связан с глубиной чувства и честной страстью.",
+    calmStone: "Обсидиан может использоваться как талисман границ и внутренней собранности.",
+    workStone: "Топаз традиционно связывают с концентрацией и точным направлением силы.",
+    symbol: "Обсидиан символизирует глубину, защиту личных границ и очищение от лишнего шума.",
+    whenToUse: "Когда нужно сказать правду, отпустить подозрение или выбрать сильный спокойный шаг.",
+    avoid: "Не использовать символ защиты как повод закрыться от доверительного разговора.",
+  },
+  sagittarius: {
+    mainStone: "Бирюза",
+    additionalStones: ["лазурит", "аметист", "содалит"],
+    loveStone: "Бирюза символически связана с открытостью, дорогой и честным сердечным словом.",
+    calmStone: "Аметист помогает настроиться на паузу перед слишком прямым выводом.",
+    workStone: "Содалит может использоваться как талисман смысла, обучения и большого плана.",
+    symbol: "Бирюза символизирует свободу, веру в путь и доброжелательную прямоту.",
+    whenToUse: "Когда нужен разговор о будущем, поездка, обучение или смелый выбор направления.",
+    avoid: "Не обещать больше, чем реально хочется и получается поддерживать.",
+  },
+  capricorn: {
+    mainStone: "Оникс",
+    additionalStones: ["гранат", "раухтопаз", "горный хрусталь"],
+    loveStone: "Гранат символически связан с верностью и теплом, которое проявляется поступками.",
+    calmStone: "Раухтопаз традиционно считается камнем заземления и спокойной выдержки.",
+    workStone: "Оникс может использоваться как талисман дисциплины, статуса и долгого плана.",
+    symbol: "Оникс символизирует структуру, ответственность и способность идти шаг за шагом.",
+    whenToUse: "Когда нужно выдержать план, договориться о правилах или укрепить границы.",
+    avoid: "Не путать контроль с безопасностью и не откладывать отдых до идеального результата.",
+  },
+  aquarius: {
+    mainStone: "Аметист",
+    additionalStones: ["флюорит", "аквамарин", "лабрадорит"],
+    loveStone: "Аквамарин символически связан с дружеским теплом и свободным диалогом.",
+    calmStone: "Аметист помогает настроиться на тишину и ясность в потоке идей.",
+    workStone: "Флюорит может использоваться как талисман системного мышления и новых решений.",
+    symbol: "Аметист символизирует независимость мысли, наблюдательность и внутреннюю свободу.",
+    whenToUse: "Когда нужны идеи, команда, честный разговор или нестандартный взгляд.",
+    avoid: "Не уходить в холодную дистанцию там, где близкому человеку нужна простая теплота.",
+  },
+  pisces: {
+    mainStone: "Аквамарин",
+    additionalStones: ["аметист", "лунный камень", "флюорит"],
+    loveStone: "Лунный камень символически связан с нежностью, интуицией и эмоциональной близостью.",
+    calmStone: "Аметист помогает настроиться на бережную паузу и ясные границы.",
+    workStone: "Флюорит может использоваться как талисман структуры для творческих идей.",
+    symbol: "Аквамарин символизирует мягкость, доверие, глубину и честное течение чувств.",
+    whenToUse: "Когда нужно успокоить эмоции, говорить о чувствах или придать мечте форму.",
+    avoid: "Не растворяться в чужом настроении и не заменять ясный план надеждой, что всё само сложится.",
+  },
+};
+
+const knownNameProfiles: Record<string, { meaning: string; strength: string; risk: string; relationship: string; communication: string; work: string }> = {
+  анна: {
+    meaning: "Имя Анна символически связано с мягкой силой, достоинством и умением поддерживать без лишнего шума.",
+    strength: "спокойная надёжность и способность быть рядом в важный момент",
+    risk: "склонность терпеть дольше, чем полезно, чтобы не ранить других",
+    relationship: "в отношениях раскрывается через верность, тепло и уважение к простым обещаниям",
+    communication: "лучше всего звучит спокойно, ясно и без давления",
+    work: "сильна там, где нужны ответственность, вкус и человеческая внимательность",
+  },
+  мария: {
+    meaning: "Имя Мария символически связано с глубиной, заботой и внутренним достоинством.",
+    strength: "умение соединять мягкость с сильным внутренним стержнем",
+    risk: "риск брать на себя слишком много эмоциональной ответственности",
+    relationship: "в любви важны доверие, домашнее тепло и честное отношение к чувствам",
+    communication: "лучше раскрывается через тёплые слова и прямую просьбу без самокритики",
+    work: "сильна в делах, где нужны терпение, эстетика и забота о результате",
+  },
+  александр: {
+    meaning: "Имя Александр символически связано с защитой, лидерством и способностью собирать людей вокруг цели.",
+    strength: "инициатива, ответственность и умение действовать, когда другим нужна опора",
+    risk: "желание всё решить самому и не показывать усталость",
+    relationship: "в отношениях важно учиться просить поддержку, а не только давать её",
+    communication: "лучше звучит через ясные договорённости и уважение к ответу другого",
+    work: "сильнее всего проявляется в задачах, где нужны решение, структура и ответственность",
+  },
+  елена: {
+    meaning: "Имя Елена символически связано со светом, красотой и умением видеть тонкие оттенки ситуации.",
+    strength: "чуткость, вкус и способность мягко объединять людей",
+    risk: "сомнения из-за желания сделать красиво и правильно одновременно",
+    relationship: "в отношениях важны внимание к деталям, нежность и спокойный диалог",
+    communication: "лучше раскрывается через ясный тон, в котором есть и мягкость, и позиция",
+    work: "сильна в проектах, где нужны эстетика, дипломатия и аккуратная организация",
+  },
+  олена: {
+    meaning: "Имя Олена символически связано со светом, теплом и мягкой внутренней собранностью.",
+    strength: "умение согревать пространство и при этом держать личную позицию",
+    risk: "попытка сгладить конфликт ценой собственных потребностей",
+    relationship: "в любви раскрывается через нежность, честность и уважение к личным границам",
+    communication: "лучше всего звучит спокойно, без намёков и ожидания, что другой догадается",
+    work: "сильна там, где нужны вкус, забота, точность и спокойная дипломатия",
+  },
+  владислав: {
+    meaning: "Имя Владислав символически связано с достоинством, управлением силой и умением отвечать за выбранный путь.",
+    strength: "воля, стратегическое мышление и способность держать направление",
+    risk: "перегруз ответственностью и желание контролировать результат слишком жёстко",
+    relationship: "в отношениях важно сочетать силу с тёплой открытостью и простыми словами",
+    communication: "лучше звучит через спокойную уверенность, без необходимости доказывать правоту",
+    work: "сильнее всего проявляется в задачах, где нужны план, лидерство и выдержка",
+  },
+  дарья: {
+    meaning: "Имя Дарья символически связано с энергией дара, живостью и способностью быстро оживлять пространство.",
+    strength: "эмоциональная выразительность, щедрость и быстрый контакт",
+    risk: "резкие реакции, если тепло не встречает ответа",
+    relationship: "в любви важны искренность, внимание и ощущение, что чувства не обесценивают",
+    communication: "лучше раскрывается через прямой, но мягкий разговор",
+    work: "сильна в задачах, где нужны энергия, контакт и красивое завершение",
+  },
+  дмитрий: {
+    meaning: "Имя Дмитрий символически связано с земной силой, практичностью и устойчивым движением к цели.",
+    strength: "надёжность, умение держать слово и решать реальные задачи",
+    risk: "закрытость, когда эмоции кажутся лишними",
+    relationship: "в отношениях помогает говорить о чувствах так же прямо, как о делах",
+    communication: "лучше всего звучит через спокойные факты и честные намерения",
+    work: "сильнее всего проявляется там, где нужен план, ответственность и практический результат",
+  },
+};
+
+const nameLetterTones: Record<string, string[]> = {
+  а: ["начало, открытость и желание действовать от сердца"],
+  в: ["внутренний стержень, верность выбору и внимание к результату"],
+  д: ["практичность, движение к делу и способность брать ответственность"],
+  е: ["тонкость, наблюдательность и стремление к гармонии"],
+  м: ["забота, глубина и способность удерживать тепло"],
+  о: ["цельность, спокойная сила и желание видеть смысл"],
+  с: ["собранность, ясность и способность замечать структуру"],
+  ю: ["мягкая яркость, контактность и желание соединять людей"],
+  default: ["личный оттенок, который раскрывается через звучание, привычки и выбранный темп"],
+};
+
+const nameStrengthLines = [
+  "умение быстро чувствовать настроение и выбирать подходящий тон",
+  "способность держать фокус и не терять себя в переменах",
+  "тепло, которое проявляется через поступки и уважение к деталям",
+  "внутренняя гибкость: можно менять путь, не теряя главную цель",
+];
+
+const nameRiskLines = [
+  "желание понравиться может мешать говорить прямо",
+  "склонность брать лишнюю ответственность, когда проще попросить о помощи",
+  "риск торопиться с выводами, если эмоции накопились",
+  "уход в молчание вместо короткой честной фразы",
+];
+
+const nameRelationshipLines = [
+  "в отношениях раскрывается через доверие, регулярное внимание и спокойные обещания",
+  "нуждается в партнёре, который уважает и нежность, и личное пространство",
+  "лучше всего строит близость через разговор без давления и маленькие знаки заботы",
+  "ценит честность, но сильнее слышит её в мягком тоне",
+];
+
+const nameCommunicationLines = [
+  "лучше звучит, когда мысль короткая, ясная и сказана без проверки партнёра",
+  "сильная сторона общения — умение соединить смысл и эмоцию",
+  "важно не прятать просьбу в намёк, а говорить её спокойно и прямо",
+  "слова становятся убедительнее, когда за ними есть действие",
+];
+
+const nameWorkLines = [
+  "в работе помогает личная ответственность и умение доводить начатое до понятного результата",
+  "сильнее раскрывается в задачах, где есть люди, смысл и пространство для выбора",
+  "лучше держит деньги через спокойный план, а не через резкие эмоциональные решения",
+  "умеет видеть слабое место в процессе и мягко улучшать систему",
+];
+
+const nameInnerLines = [
+  "внутри много наблюдательности: перед важным шагом полезно дать себе паузу",
+  "характер раскрывается через сочетание мягкости и желания держать направление",
+  "внутренний мир сильнее, когда есть личный ритм и право на восстановление",
+  "в глубине важно ощущать, что выбор сделан свободно, а не из давления",
+];
+
+const nameGrowthLines = [
+  "развивать прямоту без резкости и мягкость без самоотмены",
+  "учиться выбирать одну цель вместо нескольких параллельных ожиданий",
+  "укреплять границы, не закрывая сердце",
+  "развивать привычку просить поддержку раньше, чем накопится усталость",
+];
+
+const nameAdviceLines = [
+  "сохраняйте свой тон: спокойная ясность сейчас сильнее попытки всем всё доказать",
+  "не торопитесь объяснять себя тем, кто не готов слушать; лучше выбрать бережный момент",
+  "пусть имя станет якорем: один честный шаг, одно важное слово, один понятный выбор",
+  "сильнее всего вас поддержит разговор, где есть и правда, и уважение к границам",
+];
+
+const nameManifestationLines = [
+  "человек проявляется через то, как держит слово в мелочах",
+  "главная сила заметна в спокойной реакции, когда вокруг становится шумно",
+  "лучше всего раскрывается там, где можно быть полезным без потери себя",
+];
+
+const nameOpeningLines = [
+  "помогает ясный режим, тёплый круг людей и право не спешить",
+  "раскрывает честный интерес к делу и ощущение, что вклад действительно нужен",
+  "поддерживает среда, где ценят не только результат, но и человеческий тон",
+];
+
+const nameStressLines = [
+  "может становиться резче или молчаливее, если слишком долго не говорить о потребностях",
+  "может уходить в контроль, когда хочется вернуть ощущение безопасности",
+  "может сомневаться в себе, если вокруг слишком много неопределённых ожиданий",
+];
+
+const namePartnerLines = [
+  "подходят люди, рядом с которыми можно говорить прямо и не играть роль",
+  "хорошо рядом с теми, кто держит слово и умеет быть бережным в споре",
+  "подходит партнёр, который уважает личный ритм и не требует постоянного доказательства чувств",
+];
+
+const nameRelationshipAdviceLines = [
+  "лучше просить конкретно: так тепло быстрее превращается в действие",
+  "не проверяйте любовь молчанием; мягкая фраза работает честнее",
+  "важно обсуждать границы до того, как усталость станет обидой",
+];
+
+const nameVoiceLines = [
+  "сильнее всего слышится спокойная уверенность без давления",
+  "люди лучше принимают мысль, когда в ней есть пример и понятный следующий шаг",
+  "тёплый тон помогает сохранить влияние даже в сложном разговоре",
+];
+
+const nameMoneyLines = [
+  "лучше работает план, где есть маленький запас и понятная цель",
+  "деньги спокойнее движутся через регулярность, а не через резкий рывок",
+  "полезно отделять желание порадовать себя от настоящей финансовой цели",
+];
+
+const nameNeedLines = [
+  "быть услышанным без необходимости объяснять себя слишком долго",
+  "чувствовать, что рядом есть уважение к темпу и личному пространству",
+  "получать тепло не только за результат, но и за присутствие",
+];
+
+const nameResourceLines = [
+  "возвращение к телу, дому и простому порядку",
+  "короткий честный разговор с человеком, которому можно доверять",
+  "творческий жест: текст, музыка, прогулка или красивое завершение дела",
+];
+
+const nameGrowthSupportLines = [
+  "поддержит привычка каждый день завершать одну небольшую задачу",
+  "усилит бережная прямота: говорить раньше и спокойнее",
+  "поможет личный ритуал, который возвращает к своему центру",
+];
+
+const nameMonthAdviceLines = [
+  "в этом месяце выбирайте простые договорённости и не перегружайте себя чужими ожиданиями",
+  "лучший фокус месяца — ясная просьба, спокойный режим и один важный шаг",
+  "месяц поддержит тех, кто бережёт энергию и не тратит её на доказательства",
+  "поставьте границу там, где давно хотелось сказать мягкое, но честное нет",
+];
+
+const nameCompatibilityHints = [
+  "в паре полезно проговаривать не только планы, но и настроение, с которым вы в них входите",
+  "рядом подходят люди, которые слышат прямые просьбы и не обесценивают паузы",
+  "лучшее сближение — маленькие регулярные действия, а не редкие большие жесты",
+  "сильнее всего отношения поддержит уважение к личному ритму друг друга",
+];
 
 type ParsedDate = { ok: true; iso: string; day: number; month: number; year: number; signSlug: string } | { ok: false; error: string; iso?: undefined; signSlug?: undefined };
 
@@ -3117,6 +4166,10 @@ function hashString(value: string) {
     hash = Math.imul(hash, 16777619);
   }
   return hash >>> 0;
+}
+
+function positiveModulo(value: number, divisor: number) {
+  return ((value % divisor) + divisor) % divisor;
 }
 
 function variance(seed: number, offset: number, spread: number) {
