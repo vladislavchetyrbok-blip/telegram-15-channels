@@ -2,6 +2,7 @@ import process from "process";
 import { loadLedger, normalizeLedgerStatus, summarizeLedger } from "./lib/zodiac-publish-ledger.mjs";
 
 const VALID_STATUSES = new Set(["pending", "locked", "in_progress", "publishing", "sent", "published", "failed", "skipped"]);
+const LEDGER_DATE_ID_PATTERN = /^\d{4}-\d{2}-\d{2}(?:-[a-z0-9]+(?:-[a-z0-9]+)*)?$/;
 
 function validateLedger() {
   const ledger = loadLedger();
@@ -19,8 +20,8 @@ function validateLedger() {
     if (logicalKey !== key) {
       problems.push(`Entry key mismatch: ${key} contains ${logicalKey}.`);
     }
-    if (!entry.date || !/^\d{4}-\d{2}-\d{2}$/.test(String(entry.date))) {
-      problems.push(`Entry ${key} has invalid date.`);
+    if (!entry.date || !LEDGER_DATE_ID_PATTERN.test(String(entry.date))) {
+      problems.push(`Entry ${key} has invalid date identifier.`);
     }
     if (!entry.slug) {
       problems.push(`Entry ${key} has missing slug.`);
