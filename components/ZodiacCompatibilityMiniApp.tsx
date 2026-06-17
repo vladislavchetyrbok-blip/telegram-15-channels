@@ -22,7 +22,7 @@ type RelationshipMode = "love" | "friendship" | "work" | "family" | "passion" | 
 type Gender = "male" | "female" | "unspecified";
 type Variant = "dashboard" | "public";
 type WizardStep = 1 | 2 | 3;
-type HubTab = "today" | "week" | "compatibility" | "lucky" | "more";
+type HubTab = "today" | "love" | "profile" | "forecasts" | "mystic" | "vip";
 type MoreFeatureId =
   | "todayForecast"
   | "weekForecast"
@@ -45,9 +45,18 @@ type MoreFeatureId =
   | "dreamDictionary"
   | "giftBySign"
   | "archetype"
+  | "dailyCard"
+  | "tarotCard"
+  | "runeDay"
+  | "intuitiveSign"
+  | "talismans"
+  | "auraColor"
+  | "lunarRitual"
+  | "karmicLessons"
+  | "birthMatrix"
   | "vip"
   | "giveaways";
-type MenuFeatureGroup = "love" | "profile" | "forecasts" | "vip";
+type MenuFeatureGroup = "love" | "profile" | "forecasts" | "mystic" | "vip";
 
 interface City {
   cityId: string;
@@ -137,18 +146,20 @@ const relationshipModes: Array<{ id: RelationshipMode; label: string; caption: s
 
 const menuHubTabs: Array<{ id: HubTab; label: string; shortLabel: string; icon: typeof Sparkles }> = [
   { id: "today", label: "Главная", shortLabel: "Главная", icon: Sparkles },
-  { id: "compatibility", label: "Любовь", shortLabel: "Любовь", icon: HeartHandshake },
-  { id: "more", label: "Личный профиль", shortLabel: "Профиль", icon: Star },
-  { id: "week", label: "Прогнозы", shortLabel: "Прогнозы", icon: CalendarDays },
-  { id: "lucky", label: "VIP", shortLabel: "VIP", icon: Crown },
+  { id: "love", label: "Любовь", shortLabel: "Любовь", icon: HeartHandshake },
+  { id: "profile", label: "Личный профиль", shortLabel: "Профиль", icon: Star },
+  { id: "forecasts", label: "Прогнозы", shortLabel: "Прогнозы", icon: CalendarDays },
+  { id: "mystic", label: "Мистика", shortLabel: "Мистика", icon: Sparkles },
+  { id: "vip", label: "VIP", shortLabel: "VIP", icon: Crown },
 ];
 
 const hubCategoryByTab: Record<HubTab, { group: MenuFeatureGroup | "home"; label: string }> = {
   today: { group: "home", label: "Главная" },
-  compatibility: { group: "love", label: "Любовь" },
-  more: { group: "profile", label: "Личный профиль" },
-  week: { group: "forecasts", label: "Прогнозы" },
-  lucky: { group: "vip", label: "VIP" },
+  love: { group: "love", label: "Любовь" },
+  profile: { group: "profile", label: "Личный профиль" },
+  forecasts: { group: "forecasts", label: "Прогнозы" },
+  mystic: { group: "mystic", label: "Мистика" },
+  vip: { group: "vip", label: "VIP" },
 };
 
 const menuFeatureTabs: Array<{ id: MoreFeatureId; label: string; shortLabel: string; group: MenuFeatureGroup; requirement?: "pair" | "natal" | "sign" }> = [
@@ -191,14 +202,14 @@ const defaultMenuFeatureByGroup: Record<MenuFeatureGroup, MoreFeatureId> = {
   love: "compatibilityTool",
   profile: "natalChart",
   forecasts: "todayForecast",
+  mystic: "angelNumbers",
   vip: "vip",
 };
 
-const tabAnalytics: Record<Exclude<HubTab, "more">, { event: "section_open_today" | "section_open_week" | "section_open_compatibility" | "section_open_lucky_days"; section: string }> = {
+const tabAnalytics: Record<Exclude<HubTab, "profile" | "mystic" | "vip">, { event: "section_open_today" | "section_open_week" | "section_open_compatibility" | "section_open_lucky_days"; section: string }> = {
   today: { event: "section_open_today", section: "today" },
-  week: { event: "section_open_week", section: "week" },
-  compatibility: { event: "section_open_compatibility", section: "compatibility" },
-  lucky: { event: "section_open_lucky_days", section: "lucky_days" },
+  forecasts: { event: "section_open_week", section: "week" },
+  love: { event: "section_open_compatibility", section: "compatibility" },
 };
 
 const modeAnalyticsEvents: Record<Mode, "compatibility_mode_fast" | "compatibility_mode_personal" | "compatibility_mode_precise"> = {
@@ -293,12 +304,16 @@ export function ZodiacCompatibilityMiniApp({
     lastTabTrackedRef.current = trackKey;
     trackZodiacMiniAppEvent("hub_category_opened", analyticsPayload({ section: "hub", category: String(menuCategory.group), sign: selectedSign.slug, mode }));
 
-    if (activeTab === "today" || activeTab === "week" || activeTab === "compatibility") {
+    if (activeTab === "today" || activeTab === "forecasts" || activeTab === "love") {
       const tab = tabAnalytics[activeTab];
       trackZodiacMiniAppEvent(tab.event, analyticsPayload({ section: tab.section, sign: selectedSign.slug, mode }));
     }
 
-    if (activeTab === "lucky") {
+    if (activeTab === "mystic") {
+      trackZodiacMiniAppEvent("mystic_category_opened", analyticsPayload({ section: "mystic", sign: selectedSign.slug, mode }));
+    }
+
+    if (activeTab === "vip") {
       trackZodiacMiniAppEvent("section_open_vip", analyticsPayload({ section: "vip", sign: selectedSign.slug, mode }));
       trackZodiacMiniAppEvent("vip_opened", analyticsPayload({ section: "vip", sign: selectedSign.slug, mode }));
       if (zodiacVipConfig.vipFreeAccessEnabled) trackZodiacMiniAppEvent("vip_free_access_viewed", analyticsPayload({ section: "vip", sign: selectedSign.slug, mode }));
@@ -306,7 +321,7 @@ export function ZodiacCompatibilityMiniApp({
   }, [activeTab, analyticsPayload, appDateKey, mode, selectedSign]);
 
   useEffect(() => {
-    if (!appDateKey || !selectedSign || activeTab !== "more") return;
+    if (!appDateKey || !selectedSign || activeTab !== "profile") return;
     const scoreTier = zodiacAnalyticsScoreTier(result.scores.total);
     const trackKey = `${appDateKey}:${self.sign}:${partner.sign}:${relationshipMode}:${scoreTier}`;
     if (lastMoreTrackedRef.current === trackKey) return;
@@ -538,11 +553,11 @@ export function ZodiacCompatibilityMiniApp({
             <section className="min-w-0 flex-1">
               {activeTab === "today" ? (
                 <div className="space-y-4">
-                  <HomeQuickSection publicMode={publicMode} onOpenLove={() => setActiveTab("compatibility")} onOpenProfile={() => setActiveTab("more")} onOpenForecasts={() => setActiveTab("week")} onOpenVip={() => setActiveTab("lucky")} />
+                  <HomeQuickSection publicMode={publicMode} onOpenLove={() => setActiveTab("love")} onOpenProfile={() => setActiveTab("profile")} onOpenForecasts={() => setActiveTab("forecasts")} onOpenMystic={() => setActiveTab("mystic")} onOpenVip={() => setActiveTab("vip")} />
                   {appDateKey ? <TodaySection publicMode={publicMode} sign={selectedSign} dateKey={appDateKey} /> : <DateLoadingSection publicMode={publicMode} title="Сегодня" />}
                 </div>
               ) : null}
-              {activeTab === "week" ? (
+              {activeTab === "forecasts" ? (
                 <div className="space-y-4">
                   {appDateKey ? <WeekSection publicMode={publicMode} sign={selectedSign} dateKey={appDateKey} /> : <DateLoadingSection publicMode={publicMode} title="Неделя" />}
                   <MoreSection
@@ -569,7 +584,7 @@ export function ZodiacCompatibilityMiniApp({
                   />
                 </div>
               ) : null}
-              {activeTab === "lucky" ? (
+              {activeTab === "vip" ? (
                 <MoreSection
                   publicMode={publicMode}
                   appDateKey={appDateKey}
@@ -593,7 +608,7 @@ export function ZodiacCompatibilityMiniApp({
                   onPersonalToolEvent={trackPersonalToolEvent}
                 />
               ) : null}
-              {activeTab === "more" ? (
+              {activeTab === "profile" ? (
                 <MoreSection
                   publicMode={publicMode}
                   appDateKey={appDateKey}
@@ -617,7 +632,7 @@ export function ZodiacCompatibilityMiniApp({
                   onPersonalToolEvent={trackPersonalToolEvent}
                 />
               ) : null}
-              {activeTab === "compatibility" ? (
+              {activeTab === "love" ? (
                 <div className="space-y-4">
                   <StepProgress publicMode={publicMode} step={step} />
                   <ModeSelector publicMode={publicMode} mode={mode} onChange={changeMode} />
@@ -763,22 +778,23 @@ function HomeQuickSection({
   onOpenLove,
   onOpenProfile,
   onOpenForecasts,
+  onOpenMystic,
   onOpenVip,
 }: {
   publicMode: boolean;
   onOpenLove: () => void;
   onOpenProfile: () => void;
   onOpenForecasts: () => void;
+  onOpenMystic: () => void;
   onOpenVip: () => void;
 }) {
   const cards = [
     { title: "Сегодня", text: "короткий прогноз дня", action: onOpenForecasts, icon: <Sparkles className="h-4 w-4" /> },
-    { title: "Мой знак", text: "личный профиль", action: onOpenProfile, icon: <Star className="h-4 w-4" /> },
     { title: "Совместимость", text: "расчёт пары", action: onOpenLove, icon: <HeartHandshake className="h-4 w-4" /> },
+    { title: "Ангельские числа", text: "10:10, 12:12, 02:22", action: onOpenMystic, icon: <Star className="h-4 w-4" /> },
+    { title: "Натальная карта", text: "профиль рождения", action: onOpenProfile, icon: <CalendarDays className="h-4 w-4" /> },
     { title: "VIP бесплатно", text: "до 17.09.2026", action: onOpenVip, icon: <Crown className="h-4 w-4" /> },
     { title: "Ментальная карта", text: "карта отношений", action: onOpenLove, icon: <Sparkles className="h-4 w-4" /> },
-    { title: "Натальная карта", text: "профиль рождения", action: onOpenProfile, icon: <CalendarDays className="h-4 w-4" /> },
-    { title: "Ангельские числа", text: "10:10, 12:12, 02:22", action: onOpenForecasts, icon: <Star className="h-4 w-4" /> },
   ];
 
   return (
@@ -1279,6 +1295,33 @@ function MoreSection({
         {activeMoreFeature === "dreamDictionary" ? <DreamDictionaryCard publicMode={publicMode} symbolKey={dreamSymbolKey} dreamText={dreamText} profile={dreamProfile} onSymbolChange={setDreamSymbolKey} onDreamTextChange={setDreamText} /> : null}
         {activeMoreFeature === "giftBySign" ? <GiftBySignCard publicMode={publicMode} recipientType={giftRecipientType} profile={giftProfile} onRecipientTypeChange={setGiftRecipientType} /> : null}
         {activeMoreFeature === "archetype" ? <PersonalityArchetypeCard publicMode={publicMode} person={natalPerson} profile={archetype} onPersonChange={setNatalPerson} vipFreeAccess={vipFreeAccess} /> : null}
+        {activeMoreFeature === "dailyCard" ? (
+          <LockedPreviewCard publicMode={publicMode} icon={<Sparkles className="h-5 w-5" />} title="🔮 Карта дня" text="Скоро появится" items={["Символическая карта дня скоро появится здесь."]} onPreviewClick={() => {}} />
+        ) : null}
+        {activeMoreFeature === "tarotCard" ? (
+          <LockedPreviewCard publicMode={publicMode} icon={<Star className="h-5 w-5" />} title="🃏 Таро дня" text="Скоро появится" items={["Расклад Таро дня скоро появится здесь."]} onPreviewClick={() => {}} />
+        ) : null}
+        {activeMoreFeature === "runeDay" ? (
+          <LockedPreviewCard publicMode={publicMode} icon={<Sparkles className="h-5 w-5" />} title="ᚱ Руны дня" text="Скоро появится" items={["Символика рун дня скоро появится здесь."]} onPreviewClick={() => {}} />
+        ) : null}
+        {activeMoreFeature === "intuitiveSign" ? (
+          <LockedPreviewCard publicMode={publicMode} icon={<HeartHandshake className="h-5 w-5" />} title="👁 Интуитивный знак дня" text="Скоро появится" items={["Подсказки вашей интуиции скоро появятся здесь."]} onPreviewClick={() => {}} />
+        ) : null}
+        {activeMoreFeature === "talismans" ? (
+          <LockedPreviewCard publicMode={publicMode} icon={<Crown className="h-5 w-5" />} title="🧿 Талисманы и символы силы" text="Скоро появится" items={["Усиленные талисманы скоро появятся здесь."]} onPreviewClick={() => {}} />
+        ) : null}
+        {activeMoreFeature === "auraColor" ? (
+          <LockedPreviewCard publicMode={publicMode} icon={<Sparkles className="h-5 w-5" />} title="🌈 Цвет / аура дня" text="Скоро появится" items={["Цвет и аура дня скоро появятся здесь."]} onPreviewClick={() => {}} />
+        ) : null}
+        {activeMoreFeature === "lunarRitual" ? (
+          <LockedPreviewCard publicMode={publicMode} icon={<CalendarDays className="h-5 w-5" />} title="🌙 Лунный ритуал" text="Скоро появится" items={["Лунный ритуал скоро появится здесь."]} onPreviewClick={() => {}} />
+        ) : null}
+        {activeMoreFeature === "karmicLessons" ? (
+          <LockedPreviewCard publicMode={publicMode} icon={<Star className="h-5 w-5" />} title="🧬 Кармические уроки" text="Скоро появится" items={["Осмысление кармических уроков скоро появится здесь."]} onPreviewClick={() => {}} />
+        ) : null}
+        {activeMoreFeature === "birthMatrix" ? (
+          <LockedPreviewCard publicMode={publicMode} icon={<CalendarDays className="h-5 w-5" />} title="🔢 Матрица даты рождения" text="Скоро появится" items={["Матрица даты рождения скоро появится здесь."]} onPreviewClick={() => {}} />
+        ) : null}
         {activeMoreFeature === "vip" ? (
           <VipFreeAccessCard
             publicMode={publicMode}
@@ -4812,6 +4855,15 @@ function sectionForFeature(feature: MoreFeatureId) {
     dreamDictionary: "dream_dictionary",
     giftBySign: "gift_by_sign",
     archetype: "archetype",
+    dailyCard: "hub",
+    tarotCard: "hub",
+    runeDay: "hub",
+    intuitiveSign: "hub",
+    talismans: "hub",
+    auraColor: "hub",
+    lunarRitual: "hub",
+    karmicLessons: "hub",
+    birthMatrix: "hub",
     vip: "vip",
     giveaways: "giveaways",
   };

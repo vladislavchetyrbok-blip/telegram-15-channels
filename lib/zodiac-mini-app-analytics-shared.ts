@@ -54,6 +54,7 @@ export const ZODIAC_ANALYTICS_EVENTS = [
   "archetype_opened",
   "archetype_result_viewed",
   "hub_category_opened",
+  "mystic_category_opened",
 ] as const;
 
 export type ZodiacAnalyticsEventName = (typeof ZODIAC_ANALYTICS_EVENTS)[number];
@@ -139,6 +140,7 @@ const sections = new Set([
   "vip",
   "giveaways",
   "message_helper",
+  "mystic",
   "hub",
 ]);
 
