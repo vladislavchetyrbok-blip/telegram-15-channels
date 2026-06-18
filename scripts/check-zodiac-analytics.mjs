@@ -40,6 +40,11 @@ async function main() {
     const compatibilityRoute = await checkRoute(`${baseUrl}/compatibility`);
     const dashboardRoute = await checkRoute(`${baseUrl}/dashboard/networks/zodiac/analytics`);
     const allowedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "relationship_map_category_opened", { category: "communication" });
+    const mainMenuEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "main_menu_opened", { section: "main_menu" });
+    const mainMenuCategoryEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "main_menu_category_opened", { section: "main_menu", category: "mystic", featureKey: "birthMatrix" });
+    const compatibilityCategoryEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "compatibility_category_selected", { section: "compatibility", relationshipMode: "friendship" });
+    const horoscopeCategoryEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "horoscope_category_opened", { section: "week", category: "horoscopes", featureKey: "weekForecast" });
+    const profilePreviewEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "profile_preview_opened", { section: "profile_preview", category: "saved" });
     const mentalMapEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "mental_map_viewed");
     const vipFeatureEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "vip_feature_opened", { category: "month_forecast" });
     const chineseHoroscopeEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "chinese_horoscope_result_viewed", { section: "chinese_horoscope", hasBirthDate: true, hasName: false, freeVipActive: true });
@@ -72,6 +77,11 @@ async function main() {
         dashboard: dashboardRoute,
       },
       allowedEvent,
+      mainMenuEvent,
+      mainMenuCategoryEvent,
+      compatibilityCategoryEvent,
+      horoscopeCategoryEvent,
+      profilePreviewEvent,
       mentalMapEvent,
       vipFeatureEvent,
       chineseHoroscopeEvent,
@@ -93,6 +103,11 @@ async function main() {
       disallowedEvent,
       sensitiveFieldsStripped:
         allowedEvent.sensitiveFieldsStripped &&
+        mainMenuEvent.sensitiveFieldsStripped &&
+        mainMenuCategoryEvent.sensitiveFieldsStripped &&
+        compatibilityCategoryEvent.sensitiveFieldsStripped &&
+        horoscopeCategoryEvent.sensitiveFieldsStripped &&
+        profilePreviewEvent.sensitiveFieldsStripped &&
         mentalMapEvent.sensitiveFieldsStripped &&
         vipFeatureEvent.sensitiveFieldsStripped &&
         chineseHoroscopeEvent.sensitiveFieldsStripped &&

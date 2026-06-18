@@ -1,5 +1,10 @@
 export const ZODIAC_ANALYTICS_EVENTS = [
   "app_open",
+  "main_menu_opened",
+  "main_menu_category_opened",
+  "compatibility_category_selected",
+  "horoscope_category_opened",
+  "profile_preview_opened",
   "sign_selected",
   "section_open_today",
   "section_open_week",
@@ -166,6 +171,8 @@ const sections = new Set([
   "mystic",
   "hub",
   "telegram",
+  "main_menu",
+  "profile_preview",
 ]);
 
 export function isAllowedZodiacAnalyticsEvent(value: unknown): value is ZodiacAnalyticsEventName {

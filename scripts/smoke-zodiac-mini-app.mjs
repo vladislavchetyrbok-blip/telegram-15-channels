@@ -46,6 +46,7 @@ async function main() {
   const server = await ensureMiniAppServer(initialUrl, timeoutMs, Boolean(options.url || process.env.ZODIAC_MINIAPP_SMOKE_URL));
   report.serverUrl = server.url;
   report.startedDevServer = server.started;
+  report.serverMode = server.mode || (server.started ? "unknown" : "external");
 
   const browserPath = findBrowserExecutable();
   if (!browserPath || typeof WebSocket !== "function") {
@@ -95,18 +96,32 @@ async function main() {
 }
 
 async function runBrowserModeSmoke(client, report) {
-  await waitForPageText(client, /Выберите знак|Зодиакальный центр/, "Mini App home did not render.");
-  await click(client, "Овен");
-  await waitForPageText(client, /VIP бесплатно до 17\.09\.2026|VIP бесплатно/, "Main hub did not render after sign selection.");
+  await waitForPageText(client, /Астрологический центр|Выберите, что хотите узнать сегодня/, "Mini App main menu hero did not render.");
+  for (const category of ["Гороскопы", "Совместимость", "Мистика", "Матрица судьбы", "Нумерология", "VIP раздел", "Розыгрыши", "Мой профиль"]) {
+    if (!(await hasText(client, new RegExp(category, "i")))) throw new Error(`Main menu category is missing: ${category}`);
+  }
+  report.mainMenuChecked = true;
 
-  await clickHub(client, "Любовь");
-  await waitForPageText(client, /Совместимость|Шаг 1/, "Love tab did not render.");
+  await click(client, "Совместимость");
+  await waitForPageText(client, /Любовная совместимость|Дружеская совместимость|Совместимость/, "Compatibility category did not render.");
+  await click(client, "Любовная совместимость");
+  await waitForPageText(client, /Выберите знак|Овен/, "Compatibility sign gate did not render.");
+  await click(client, "Овен");
+  await waitForPageText(client, /Совместимость|Шаг 1/, "Love flow did not render after sign selection.");
   await click(client, "Далее");
   await waitForPageText(client, /Партнёр|Рассчитать/, "Compatibility step 2 did not render.");
   await click(client, "Рассчитать");
   await waitForPageText(client, /гармонии|совместимость|Заполните данные/, "Compatibility flow did not reach a stable result state.");
 
-  await clickHub(client, "VIP");
+  await click(client, "Главное меню");
+  await waitForPageText(client, /Астрологический центр|Выберите, что хотите узнать сегодня/, "Back to main menu did not render after Compatibility.");
+  await click(client, "Гороскопы");
+  await waitForPageText(client, /Гороскопы|Гороскоп недели|Удачные дни|Лунный календарь/, "Horoscopes category did not render.");
+  report.horoscopesChecked = true;
+
+  await click(client, "Главное меню");
+  await waitForPageText(client, /Астрологический центр|VIP раздел/, "Back to main menu did not render after Horoscopes.");
+  await click(client, "VIP раздел");
   await waitForPageText(client, /VIP открыт бесплатно|Ранний доступ до 17\.09\.2026/, "VIP menu did not render.");
   report.freeAccessVisible = await hasText(client, /17\.09\.2026/);
 
@@ -122,7 +137,9 @@ async function runBrowserModeSmoke(client, report) {
     await waitForPageText(client, /VIP открыт бесплатно|Ранний доступ до 17\.09\.2026/, `Back did not return from VIP card "${card}".`);
   }
 
-  await clickHub(client, "Мистика");
+  await click(client, "Главное меню");
+  await waitForPageText(client, /Астрологический центр|Мистика/, "Back to main menu did not render after VIP.");
+  await click(client, "Мистика");
   await waitForPageText(client, /Мистика|Ангельские числа|11:11/, "Mystic tab did not render.");
   for (const feature of MYSTIC_FEATURES) {
     await click(client, feature);
@@ -147,17 +164,22 @@ async function runBrowserModeSmoke(client, report) {
 
 async function runStartParamSmoke(client, baseUrl, report) {
   const cases = [
-    { param: "compat", sign: "Овен", pattern: /Совместимость|Шаг 1/, message: "startapp=compat did not open Compatibility after sign selection." },
-    { param: "mystic", sign: "Овен", pattern: /Мистика|Ангельские числа|11:11/, message: "startapp=mystic did not open Mystic after sign selection." },
-    { param: "vip", sign: "Овен", pattern: /VIP открыт бесплатно|Ранний доступ до 17\.09\.2026/, message: "startapp=vip did not open VIP after sign selection." },
-    { param: "birth_matrix", sign: "Овен", pattern: /Матрица|дд\.мм\.гггг|Дата/, message: "startapp=birth_matrix did not open Birth Matrix after sign selection." },
-    { param: "week", sign: "Овен", pattern: /Неделя|Прогнозы|Удачные дни/, message: "startapp=week did not open weekly forecasts after sign selection." },
+    { param: "compat", sign: "Овен", beforeSign: "Любовная совместимость", landing: /Любовная совместимость|Совместимость/, pattern: /Совместимость|Шаг 1/, message: "startapp=compat did not open Compatibility after sign selection." },
+    { param: "compat_gemini", sign: "Близнецы", beforeSign: "Любовная совместимость", landing: /Любовная совместимость|Совместимость/, pattern: /Совместимость|Шаг 1/, message: "startapp=compat_gemini did not open Compatibility after sign selection." },
+    { param: "mystic", sign: "Овен", landing: /Мистика|Выберите знак/, pattern: /Мистика|Ангельские числа|11:11/, message: "startapp=mystic did not open Mystic after sign selection." },
+    { param: "vip", sign: "Овен", landing: /VIP раздел|Выберите знак/, pattern: /VIP открыт бесплатно|Ранний доступ до 17\.09\.2026/, message: "startapp=vip did not open VIP after sign selection." },
+    { param: "birth_matrix", sign: "Овен", landing: /Матрица судьбы|Выберите знак/, pattern: /Матрица|дд\.мм\.гггг|Дата/, message: "startapp=birth_matrix did not open Birth Matrix after sign selection." },
+    { param: "week", sign: "Овен", landing: /Гороскопы|Выберите знак/, pattern: /Неделя|Прогнозы|Удачные дни/, message: "startapp=week did not open weekly forecasts after sign selection." },
   ];
 
   for (const item of cases) {
     await navigate(client, withStartParam(baseUrl, item.param));
     await installSmokeHelpers(client);
-    await waitForPageText(client, /Выберите знак|Зодиакальный центр/, `startapp=${item.param} home did not render.`);
+    await waitForPageText(client, item.landing, `startapp=${item.param} landing did not render.`);
+    if (item.beforeSign) {
+      await click(client, item.beforeSign);
+      await waitForPageText(client, /Выберите знак|Овен|Близнецы/, `startapp=${item.param} sign gate did not render.`);
+    }
     await click(client, item.sign);
     await waitForPageText(client, item.pattern, item.message);
     report.startParamsChecked.push(item.param);
@@ -165,15 +187,20 @@ async function runStartParamSmoke(client, baseUrl, report) {
 }
 
 async function runTelegramMockSmoke(client, report) {
-  await waitForPageText(client, /Выберите знак|Зодиакальный центр/, "Telegram mock Mini App home did not render.");
+  await waitForPageText(client, /Астрологический центр|Выберите, что хотите узнать сегодня/, "Telegram mock Mini App home did not render.");
   const initialCalls = await telegramCalls(client);
   if (initialCalls.ready < 1 || initialCalls.expand < 1) {
     throw new Error(`Telegram mock expected ready/expand calls, got ready=${initialCalls.ready}, expand=${initialCalls.expand}.`);
   }
 
+  const homeBackBeforeCategory = await telegramCalls(client);
+  if (homeBackBeforeCategory.backShow > 0 && homeBackBeforeCategory.backHide < 1) {
+    throw new Error("Telegram BackButton should be hidden on the main menu.");
+  }
+
+  await click(client, "VIP раздел");
+  await waitForPageText(client, /VIP раздел|Выберите знак|Овен/, "Telegram mock VIP sign gate did not render.");
   await click(client, "Овен");
-  await waitForPageText(client, /VIP бесплатно до 17\.09\.2026|VIP бесплатно/, "Telegram mock hub did not render after sign selection.");
-  await clickHub(client, "VIP");
   await waitForPageText(client, /VIP открыт бесплатно|Ранний доступ до 17\.09\.2026/, "Telegram mock VIP menu did not render.");
   await click(client, "Месячный прогноз");
   await settle(client);
@@ -190,13 +217,18 @@ async function runTelegramMockSmoke(client, report) {
   if (!backTriggered) throw new Error("Telegram BackButton mock had no active callback.");
   await waitForPageText(client, /VIP открыт бесплатно|Ранний доступ до 17\.09\.2026/, "Telegram BackButton did not return to VIP menu.");
 
+  const categoryBackTriggered = await evalPage(client, "window.__triggerTelegramBack?.()", []);
+  if (!categoryBackTriggered) throw new Error("Telegram BackButton mock had no category callback.");
+  await waitForPageText(client, /Астрологический центр|Выберите, что хотите узнать сегодня/, "Telegram BackButton did not return from VIP category to home.");
+  report.telegramCategoryBackChecked = true;
+
   const finalCalls = await telegramCalls(client);
   report.telegramReadyCalled = finalCalls.ready > 0;
   report.telegramExpandCalled = finalCalls.expand > 0;
   report.telegramBackButtonChecked = finalCalls.backShow > 0 && finalCalls.backHide > 0;
   report.telegramHapticsChecked = finalCalls.impact + finalCalls.selection > 0;
 
-  await clickHub(client, "Мистика");
+  await click(client, "Мистика");
   await waitForPageText(client, /Мистика|Ангельские числа|11:11/, "Telegram mock Mystic tab did not render.");
   await openBirthMatrix(client);
   await assertFeatureScreen(client, "Матрица судьбы", { allowSoon: false, minLength: 260 });
@@ -239,7 +271,13 @@ async function ensureMiniAppServer(rawUrl, timeoutMs, urlProvided) {
   const nextCli = path.join(process.cwd(), "node_modules", "next", "dist", "bin", "next");
   if (!fs.existsSync(nextCli)) throw new Error(`Next CLI was not found at ${nextCli}. Run npm install before smoke.`);
 
-  const child = spawn(process.execPath, [nextCli, "dev", "-H", host, "-p", String(port)], {
+  const hasProductionBuild = fs.existsSync(path.join(process.cwd(), ".next", "BUILD_ID"));
+  const serverMode = hasProductionBuild ? "start" : "dev";
+  const serverArgs = hasProductionBuild
+    ? [nextCli, "start", "-H", host, "-p", String(port)]
+    : [nextCli, "dev", "-H", host, "-p", String(port)];
+
+  const child = spawn(process.execPath, serverArgs, {
     cwd: process.cwd(),
     env: { ...process.env, BROWSER: "none" },
     stdio: ["ignore", "pipe", "pipe"],
@@ -258,11 +296,11 @@ async function ensureMiniAppServer(rawUrl, timeoutMs, urlProvided) {
   });
 
   await waitFor(async () => {
-    if (child.exitCode !== null) throw new Error(`Next dev server exited early.\n${output}`);
+    if (child.exitCode !== null) throw new Error(`Next ${serverMode} server exited early.\n${output}`);
     return (await probeHttpStatus(smokeUrl.href)) === 200;
-  }, `Next dev server did not become ready at ${smokeUrl.href}.\n${output}`, timeoutMs, 1000);
+  }, `Next ${serverMode} server did not become ready at ${smokeUrl.href}.\n${output}`, timeoutMs, 1000);
 
-  return { url: smokeUrl.href, started: true };
+  return { url: smokeUrl.href, started: true, mode: serverMode };
 }
 
 async function launchBrowser(browserPath) {
@@ -826,9 +864,12 @@ function createReport() {
   return {
     serverUrl: "",
     startedDevServer: false,
+    serverMode: "external",
     httpStatus: 0,
     browserMode: "NOT_RUN",
     telegramMock: "NOT_RUN",
+    mainMenuChecked: false,
+    horoscopesChecked: false,
     vipChecked: 0,
     giveawaysLocked: false,
     mysticChecked: 0,
@@ -836,6 +877,7 @@ function createReport() {
     telegramReadyCalled: false,
     telegramExpandCalled: false,
     telegramBackButtonChecked: false,
+    telegramCategoryBackChecked: false,
     telegramHapticsChecked: false,
     birthMatrixChecked: false,
     startParamsChecked: [],
@@ -854,12 +896,15 @@ function printSkipped(reason, report) {
 function printSummary(status, report) {
   console.log(`Mini App Smoke: ${status}`);
   console.log(`URL: ${report.serverUrl || "n/a"}`);
-  console.log(`Dev server: ${report.startedDevServer ? "started by smoke" : "external/already running"}`);
+  console.log(`Server: ${report.startedDevServer ? `started by smoke (${report.serverMode})` : "external/already running"}`);
   console.log(`HTTP status: ${report.httpStatus || "n/a"}`);
   console.log(`Browser mode: ${report.browserMode}`);
   console.log(`Telegram mock: ${report.telegramMock}`);
+  console.log(`Main menu checked: ${report.mainMenuChecked ? "YES" : "NO"}`);
+  console.log(`Horoscopes checked: ${report.horoscopesChecked ? "YES" : "NO"}`);
   console.log(`Telegram ready/expand: ${report.telegramReadyCalled && report.telegramExpandCalled ? "YES" : "NO"}`);
   console.log(`Telegram BackButton: ${report.telegramBackButtonChecked ? "YES" : "NO"}`);
+  console.log(`Telegram category back: ${report.telegramCategoryBackChecked ? "YES" : "NO"}`);
   console.log(`Telegram haptics: ${report.telegramHapticsChecked ? "YES" : "NO"}`);
   console.log(`VIP cards checked: ${report.vipChecked}/11`);
   console.log(`Free access visible: ${report.freeAccessVisible ? "YES" : "NO"}`);

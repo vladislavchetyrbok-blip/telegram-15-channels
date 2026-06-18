@@ -17,10 +17,13 @@ npm run zodiac:miniapp:smoke -- --url http://localhost:3000/compatibility
 ## What It Checks
 
 - `/compatibility` returns HTTP 200 and renders the Mini App home screen.
+- The main screen contains the hero title `Астрологический центр`, subtitle, CTA, VIP free-access badge, and the large category menu.
+- The expected product structure is `Home -> Category -> Feature -> Result`.
 - Browser mode works without `window.Telegram`.
 - Sign selection works.
-- Mini App start params render the intended section after sign selection: `compat`, `mystic`, `vip`, `birth_matrix`, and `week`.
+- Mini App start params render the intended section after category/sign selection: `compat`, `compat_gemini`, `mystic`, `vip`, `birth_matrix`, and `week`.
 - Basic compatibility flow reaches a stable result state without runtime errors.
+- Horoscopes category opens from the main menu.
 - VIP tab opens, free access until `17.09.2026` is visible, and all 11 active VIP cards open non-empty detail screens.
 - Giveaways remains locked/disabled.
 - Open VIP feature screens do not contain `TODO`, `lorem ipsum`, `placeholder`, or unexpected `Скоро появится` text.
@@ -28,7 +31,7 @@ npm run zodiac:miniapp:smoke -- --url http://localhost:3000/compatibility
 - Birth Matrix / `Матрица судьбы` opens from Mystic, accepts a sample birth date, renders a non-empty result, and returns to the Mystic menu.
 - Telegram WebApp mock is injected before page load.
 - Telegram `ready()` and `expand()` are called.
-- Telegram BackButton show/hide/onClick/offClick wiring works on detail screens.
+- Telegram BackButton show/hide/onClick/offClick wiring works: hidden on Home, detail -> category, category -> Home.
 - Telegram haptics are callable and do not throw.
 - Browser console, runtime, and HTTP/network errors are collected.
 
@@ -44,11 +47,13 @@ Expected successful summary shape:
 Mini App Smoke: PASS
 Browser mode: PASS
 Telegram mock: PASS
+Main menu checked: YES
+Horoscopes checked: YES
 VIP cards checked: 11/11
 Giveaways locked: YES
 Mystic checked: YES
 Birth Matrix / Матрица судьбы checked: YES
-Startapp params checked: compat, mystic, vip, birth_matrix, week
+Startapp params checked: compat, compat_gemini, mystic, vip, birth_matrix, week
 Console errors: 0
 Runtime errors: 0
 HTTP/network errors: 0

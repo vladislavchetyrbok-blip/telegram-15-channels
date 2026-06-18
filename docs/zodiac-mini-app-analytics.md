@@ -70,6 +70,7 @@ For Vercel, add both variables in Project Settings -> Environment Variables for 
 
 The allowlist covers:
 
+- main menu opens, main menu category taps, horoscope category opens, compatibility category selection, and profile/saved/history preview panels;
 - app open, sign selection, section opens, compatibility calculation;
 - natal chart, Chinese horoscope, zodiac stones, name profile, numerology, angel numbers, lunar calendar, daily talisman, dream dictionary, gifts, name compatibility, archetype;
 - VIP opened, free access, feature taps, future subscription tap, and all active VIP detail screens;
@@ -78,6 +79,14 @@ The allowlist covers:
 - giveaways locked/preview events.
 
 Allowed events and payload fields live in `lib/zodiac-mini-app-analytics-shared.ts`.
+
+Mini App navigation events follow the current structure:
+
+```text
+Home -> Category -> Feature -> Result
+```
+
+These navigation events must not include names, birth dates, birth times, city query, raw text inputs, or Telegram initData. Safe fields are limited to values such as `section`, `category`, `featureKey`, `relationshipMode`, and zodiac sign slugs.
 
 ## Forbidden Data
 
