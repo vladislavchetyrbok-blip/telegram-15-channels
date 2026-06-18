@@ -44,7 +44,7 @@ Daily and weekly dry-runs validate the Telegram inline keyboard retention CTA ro
 
 - Daily CTA: `💞 Проверить совместимость` and `🔮 Открыть Mini App`.
 - Weekly CTA: `📅 Прогноз недели` and `💞 Совместимость`.
-- Supported Mini App start params: `compat`, `compat_{slug}`, `mystic`, `vip`, `birth_matrix`, `week`.
+- Supported Mini App start params: `compat`, `compat_{slug}`, `mystic`, `vip`, `birth_matrix`, `angel_numbers`, `week`.
 - VIP remains free until `2026-09-17`; payments and Telegram Stars remain off.
 
 Expected dry-run safety counters remain:

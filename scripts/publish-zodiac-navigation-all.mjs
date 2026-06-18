@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import process from "process";
 import { fileURLToPath } from "url";
+import { MINI_APP_START_PARAMETERS, buildMiniAppInlineButton } from "./lib/zodiac-compatibility-bot.mjs";
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const configPath = path.join(rootDir, "data", "config", "zodiac-channel-links.json");
@@ -26,20 +27,41 @@ const TARGETS = [
   ...SIGNS.map((sign) => ({ slug: sign.slug, env: sign.env })),
 ];
 
-const GENERAL_MESSAGE = `🔮 Выберите свой знак зодиака
+const MINI_APP_BUTTONS = [
+  { key: "center", text: "🔮 Открыть Астрологический центр", start: MINI_APP_START_PARAMETERS.compat },
+  { key: "compatibility", text: "💞 Проверить совместимость", start: MINI_APP_START_PARAMETERS.compat },
+  { key: "angel_numbers", text: "👼 Ангельские числа", start: MINI_APP_START_PARAMETERS.angelNumbers },
+  { key: "birth_matrix", text: "🧿 Матрица судьбы", start: MINI_APP_START_PARAMETERS.birthMatrix },
+  { key: "vip", text: "👑 VIP бесплатно", start: MINI_APP_START_PARAMETERS.vip },
+  { key: "mystic", text: "🔮 Мистика", start: MINI_APP_START_PARAMETERS.mystic },
+  { key: "week", text: "📅 Прогноз недели", start: MINI_APP_START_PARAMETERS.week },
+];
 
-Ежедневные гороскопы выходят в отдельных каналах.
-Подпишитесь на свой знак и получайте прогноз каждый день.
+const GENERAL_MESSAGE = `🌟 Общий гороскоп
 
-👇 Нажмите на нужный знак ниже:`;
+Главный канал ежедневных гороскопов.
+
+Выберите свой знак или откройте Астрологический центр:
+✨ гороскопы
+💞 совместимость
+👼 ангельские числа
+🧿 матрица судьбы
+🔮 мистика
+👑 VIP бесплатно до 17.09.2026`;
 
 function signMessage(sign) {
   return `${sign.label} | Гороскоп
 
-Вы сейчас в канале: ${sign.name}.
-Ниже можно перейти в общий гороскоп или выбрать другой знак.
+Вы в канале знака ${sign.name}.
 
-👇 Навигация по гороскопам:`;
+Здесь каждый день:
+✨ ежедневный гороскоп
+💞 совместимость
+🔮 мистика и знаки дня
+👼 ангельские числа
+🧿 матрица судьбы
+
+Откройте Астрологический центр, чтобы проверить совместимость, матрицу судьбы, ангельские числа и VIP-раздел.`;
 }
 
 function parseArgs() {
@@ -86,12 +108,25 @@ function chunkButtons(buttons, size = 2) {
   return rows;
 }
 
+function buildMiniAppButtonRows() {
+  const buttons = MINI_APP_BUTTONS.map((button) => buildMiniAppInlineButton(button.start, button.text, { allowPreview: true })).filter(Boolean);
+  return [
+    buttons.slice(0, 1),
+    buttons.slice(1, 3),
+    buttons.slice(3, 5),
+    buttons.slice(5, 7),
+  ].filter((row) => row.length > 0);
+}
+
 function buildGeneralKeyboard(channelLinks) {
   const buttons = SIGNS.map((sign) => ({
     text: sign.label,
     url: channelLinks[sign.slug],
   }));
-  return chunkButtons(buttons);
+  return [
+    ...buildMiniAppButtonRows(),
+    ...chunkButtons(buttons),
+  ];
 }
 
 function buildSignKeyboard(channelLinks, currentSlug) {
@@ -101,7 +136,8 @@ function buildSignKeyboard(channelLinks, currentSlug) {
   }));
 
   return [
-    [{ text: "🔮 Общий гороскоп", url: channelLinks.general }],
+    ...buildMiniAppButtonRows(),
+    [{ text: "🌟 Общий гороскоп", url: channelLinks.general }],
     ...chunkButtons(otherSignButtons),
   ];
 }
@@ -143,6 +179,7 @@ function validateLinks(channelLinks) {
 
 function validateNavigationPosts(posts, channelLinks) {
   const errors = [];
+  const selfLinkExcluded = [];
   const general = posts.find((post) => post.target === "general");
 
   if (general) {
@@ -156,7 +193,7 @@ function validateNavigationPosts(posts, channelLinks) {
 
   for (const post of posts) {
     for (const button of post.keyboard.flat()) {
-      if (!/^https:\/\/t\.me\/[A-Za-z0-9_]+$/.test(button.url)) {
+      if (!isValidTelegramButtonUrl(button.url)) {
         errors.push(`${post.target} has invalid button URL: ${button.url}`);
       }
     }
@@ -165,11 +202,30 @@ function validateNavigationPosts(posts, channelLinks) {
       const ownLink = channelLinks[post.target];
       if (post.keyboard.flat().some((button) => button.url === ownLink)) {
         errors.push(`${post.target} includes a self-link`);
+      } else {
+        selfLinkExcluded.push(post.target);
       }
     }
   }
 
-  return errors;
+  return { errors, selfLinkExcluded };
+}
+
+function isValidTelegramButtonUrl(url) {
+  return /^https:\/\/t\.me\/[A-Za-z0-9_]+(?:\?startapp=[A-Za-z0-9_%.-]+)?$/.test(url);
+}
+
+function extractStartappLinks(posts) {
+  const links = new Map();
+  for (const button of posts.flatMap((post) => post.keyboard.flat())) {
+    const match = button.url.match(/[?&]startapp=([^&]+)/);
+    if (match) links.set(decodeURIComponent(match[1]), button.url);
+  }
+  return Array.from(links.entries()).map(([startapp, url]) => ({ startapp, url }));
+}
+
+function buttonLabels(post) {
+  return post.keyboard.flat().map((button) => button.text);
 }
 
 function printPostPreview(post) {
@@ -184,20 +240,31 @@ function printPostPreview(post) {
 }
 
 function printDryRun({ posts, missing, invalid, navErrors, channel, pin }) {
+  const startappLinks = extractStartappLinks(posts);
+  const signPosts = posts.filter((post) => post.target !== "general");
   console.log("=== Zodiac Cross-Navigation Posts ===");
   console.log("Mode              : DRY-RUN");
   console.log(`Config            : ${path.relative(rootDir, configPath).replaceAll("\\", "/")}`);
   console.log(`Targets           : ${posts.length}`);
+  console.log(`Channels Updated  : ${posts.map((post) => post.target).join(", ")}`);
   console.log(`Channel Filter    : ${channel ?? "all"}`);
   console.log(`Links Found       : ${13 - missing.length}/13`);
   console.log(`Missing Links     : ${missing.length}`);
   console.log(`Invalid Links     : ${invalid.length}`);
-  console.log(`Navigation Errors : ${navErrors.length}`);
+  console.log(`Navigation Errors : ${navErrors.errors.length}`);
+  console.log(`Self-Link Excluded: ${navErrors.selfLinkExcluded.length}/${signPosts.length}`);
   console.log(`Pin After Send    : ${pin ? "yes" : "no"}`);
+  console.log(`Startapp Links    : ${startappLinks.length}`);
+  console.log("");
+
+  console.log("--- Mini App Startapp Links ---");
+  startappLinks.forEach((item) => console.log(`${item.startapp} -> ${item.url}`));
   console.log("");
 
   for (const post of posts) {
     printPostPreview(post);
+    console.log(`Buttons Summary: ${buttonLabels(post).join(" | ")}`);
+    console.log("");
   }
 
   if (missing.length > 0) console.log(`Missing: ${missing.join(", ")}`);
@@ -205,11 +272,13 @@ function printDryRun({ posts, missing, invalid, navErrors, channel, pin }) {
     console.log("Invalid:");
     invalid.forEach((item) => console.log(`- ${item.slug}: ${item.link}`));
   }
-  if (navErrors.length > 0) {
+  if (navErrors.errors.length > 0) {
     console.log("Navigation validation errors:");
-    navErrors.forEach((error) => console.log(`- ${error}`));
+    navErrors.errors.forEach((error) => console.log(`- ${error}`));
   }
   console.log("Telegram API Calls: 0");
+  console.log("Live Publish Calls: 0");
+  console.log("Ledger Writes     : 0");
   console.log("======================================");
 }
 
@@ -304,7 +373,7 @@ async function main() {
     printDryRun({ posts, missing, invalid, navErrors, channel: options.channel, pin: options.pin });
   }
 
-  if (missing.length > 0 || invalid.length > 0 || navErrors.length > 0) {
+  if (missing.length > 0 || invalid.length > 0 || navErrors.errors.length > 0) {
     throw new Error("Zodiac cross-navigation config is incomplete or invalid.");
   }
 

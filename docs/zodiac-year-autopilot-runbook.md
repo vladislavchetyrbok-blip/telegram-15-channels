@@ -118,6 +118,18 @@ Supported Mini App start params:
 
 `vip` is supported for deep links and internal navigation, but Telegram posts avoid adding an extra VIP button by default to keep the keyboard compact. VIP free access remains enabled until `2026-09-17`; payments and Telegram Stars remain off.
 
+Pinned channel navigation uses a wider storefront keyboard than daily/weekly posts:
+
+- `🔮 Открыть Астрологический центр` -> `startapp=compat`;
+- `💞 Проверить совместимость` / `💞 Совместимость` -> `startapp=compat`;
+- `👼 Ангельские числа` -> `startapp=angel_numbers`;
+- `🧿 Матрица судьбы` -> `startapp=birth_matrix`;
+- `👑 VIP бесплатно` -> `startapp=vip`;
+- `🔮 Мистика` -> `startapp=mystic`;
+- `📅 Прогноз недели` -> `startapp=week`.
+
+Sign channel pins include the general channel and the other 11 signs; the current sign is intentionally excluded from its own grid.
+
 Dry-run commands print CTA summaries and must still show `Telegram API Calls 0` and `Ledger Writes 0`:
 
 ```bash

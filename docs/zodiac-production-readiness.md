@@ -317,7 +317,7 @@ P1/P2 gaps that remain:
 1. Real human-device Telegram WebView pass on a physical phone.
 2. Redis analytics storage configuration for real retention metrics.
 3. Weekly live scheduling decision after daily stability is proven.
-4. Channel descriptions / pinned navigation final pass.
+4. Channel descriptions / pinned navigation are dry-run ready with Mini App startapp links; live pin/description apply still needs explicit approval.
 5. Content quality improvement: less template feel, stronger first lines, more daily variation.
 6. Further Mini App refactor: split remaining stateful sections once product behavior stabilizes.
 7. Monetization plan after audience and analytics validate demand: entitlement model, Telegram Stars/payments, legal text, giveaways rules.

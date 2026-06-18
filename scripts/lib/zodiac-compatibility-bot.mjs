@@ -12,6 +12,7 @@ export const MINI_APP_START_PARAMETERS = Object.freeze({
   mystic: "mystic",
   vip: "vip",
   birthMatrix: "birth_matrix",
+  angelNumbers: "angel_numbers",
   week: "week",
 });
 

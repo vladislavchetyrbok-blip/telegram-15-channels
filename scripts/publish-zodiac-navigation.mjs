@@ -2,16 +2,32 @@ import fs from "fs";
 import path from "path";
 import process from "process";
 import { fileURLToPath } from "url";
+import { MINI_APP_START_PARAMETERS, buildMiniAppInlineButton } from "./lib/zodiac-compatibility-bot.mjs";
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const configPath = path.join(rootDir, "data", "config", "zodiac-channel-links.json");
 
-const MESSAGE_TEXT = `🔮 Выберите свой знак зодиака
+const MINI_APP_BUTTONS = [
+  { text: "🔮 Открыть Астрологический центр", start: MINI_APP_START_PARAMETERS.compat },
+  { text: "💞 Совместимость", start: MINI_APP_START_PARAMETERS.compat },
+  { text: "👼 Ангельские числа", start: MINI_APP_START_PARAMETERS.angelNumbers },
+  { text: "🧿 Матрица судьбы", start: MINI_APP_START_PARAMETERS.birthMatrix },
+  { text: "👑 VIP бесплатно", start: MINI_APP_START_PARAMETERS.vip },
+  { text: "🔮 Мистика", start: MINI_APP_START_PARAMETERS.mystic },
+  { text: "📅 Прогноз недели", start: MINI_APP_START_PARAMETERS.week },
+];
 
-Ежедневные гороскопы выходят в отдельных каналах.
-Подпишитесь на свой знак и получайте прогноз каждый день.
+const MESSAGE_TEXT = `🌟 Общий гороскоп
 
-👇 Нажмите на нужный знак ниже:`;
+Главный канал ежедневных гороскопов.
+
+Выберите свой знак или откройте Астрологический центр:
+✨ гороскопы
+💞 совместимость
+👼 ангельские числа
+🧿 матрица судьбы
+🔮 мистика
+👑 VIP бесплатно до 17.09.2026`;
 
 const SIGNS = [
   { slug: "aries", label: "♈ Овен" },
@@ -60,7 +76,14 @@ function loadChannelLinks() {
 }
 
 function buildKeyboard(channelLinks) {
-  return SIGNS.reduce((rows, sign, index) => {
+  const miniAppButtons = MINI_APP_BUTTONS.map((button) => buildMiniAppInlineButton(button.start, button.text, { allowPreview: true })).filter(Boolean);
+  const miniAppRows = [
+    miniAppButtons.slice(0, 1),
+    miniAppButtons.slice(1, 3),
+    miniAppButtons.slice(3, 5),
+    miniAppButtons.slice(5, 7),
+  ].filter((row) => row.length > 0);
+  const signRows = SIGNS.reduce((rows, sign, index) => {
     if (index % 2 === 0) rows.push([]);
     rows[rows.length - 1].push({
       text: sign.label,
@@ -68,6 +91,7 @@ function buildKeyboard(channelLinks) {
     });
     return rows;
   }, []);
+  return [...miniAppRows, ...signRows];
 }
 
 function validateLinks(channelLinks) {
@@ -96,6 +120,8 @@ function printPreview({ channelLinks, keyboard, missing, invalid, mode, pin }) {
   console.log(`Missing Links     : ${missing.length}`);
   console.log(`Invalid Links     : ${invalid.length}`);
   console.log(`Pin After Send    : ${pin ? "yes" : "no"}`);
+  const startappLinks = new Set(keyboard.flat().map((button) => button.url.match(/[?&]startapp=([^&]+)/)?.[1]).filter(Boolean));
+  console.log(`Startapp Links    : ${startappLinks.size}`);
   console.log("");
   console.log("--- Message Preview ---");
   console.log(MESSAGE_TEXT);
@@ -106,12 +132,16 @@ function printPreview({ channelLinks, keyboard, missing, invalid, mode, pin }) {
     console.log(`Row ${index + 1}: ${display}`);
   });
   console.log("");
+  console.log(`Buttons Summary: ${keyboard.flat().map((button) => button.text).join(" | ")}`);
+  console.log("");
   if (missing.length > 0) console.log(`Missing: ${missing.join(", ")}`);
   if (invalid.length > 0) {
     console.log("Invalid:");
     invalid.forEach((item) => console.log(`- ${item.slug}: ${item.link}`));
   }
   console.log(`Telegram API Calls: ${mode === "DRY-RUN" ? 0 : "pending live execution"}`);
+  console.log(`Live Publish Calls: ${mode === "DRY-RUN" ? 0 : "pending live execution"}`);
+  console.log("Ledger Writes     : 0");
   console.log("===============================");
 }
 
