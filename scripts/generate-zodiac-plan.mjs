@@ -279,9 +279,18 @@ function formatRuDate(dateStr) {
     .replace(/\s*г\.$/, "");
 }
 
+function formatNumericDate(dateStr) {
+  const [year, month, day] = String(dateStr).split("-");
+  if (!/^\d{4}$/.test(year) || !/^\d{2}$/.test(month) || !/^\d{2}$/.test(day)) {
+    return dateStr;
+  }
+  return `${day}.${month}.${year}`;
+}
+
 function buildPost(channel, dateStr, index, stylePreset) {
   const seed = createSeed(dateStr, channel.id, index);
   const guidance = getZodiacDailyGuidance(channel.id, dateStr);
+  const publishDateLabel = formatNumericDate(dateStr);
   
   let sections = [];
   let title = "";
@@ -289,7 +298,7 @@ function buildPost(channel, dateStr, index, stylePreset) {
   let visualPrompt = "";
   
   if (channel.type === "general") {
-    title = `${channel.emoji} Общий гороскоп — на сегодня`;
+    title = `${channel.emoji} Общий гороскоп на ${publishDateLabel}`;
     const signChannels = zodiacChannels.filter((item) => item.type === "sign");
     const intro = pick(generalIntroLines, seed);
     const signSections = signChannels.map((sign, signIndex) => ({
@@ -321,7 +330,7 @@ function buildPost(channel, dateStr, index, stylePreset) {
     ].join("\n");
     visualPrompt = `${channel.visualPromptSeed} Date mood: ${formatRuDate(dateStr)}. Style Preset: ${stylePreset.visualStyle}. Addons: ${stylePreset.promptAddons}. General daily zodiac cover, 12-sign composition, premium dark magazine layout.`;
   } else {
-    title = `${channel.emoji} ${channel.ruName} — гороскоп на сегодня`;
+    title = `${channel.emoji} ${channel.ruName} | Гороскоп на ${publishDateLabel}`;
     sections = [
       { title: "Общая энергия дня", body: pick(signMainLines[channel.id] ?? generalEnergy, seed) },
       { title: "Любовь", body: pick(loveDeepLines, seed + 1) },

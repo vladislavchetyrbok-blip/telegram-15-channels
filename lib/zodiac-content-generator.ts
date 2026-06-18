@@ -290,7 +290,7 @@ function buildGeneralPreviewPost({
     ...signSections,
     { title: "Совет дня", body: pick(generalClosingLines, seed + 31) },
   ];
-  const title = `${channel.emoji} Гороскоп на сегодня — ${formatRuDate(date)}`;
+  const title = `${channel.emoji} Общий гороскоп на ${formatNumericDate(date)}`;
 
   return createPreviewPost({
     channel,
@@ -328,7 +328,7 @@ function buildSignPreviewPost({
     { title: "Совет дня", body: pick(practicalAdviceLines, seed + 4) },
     { title: "Финальная строка", body: `${channel.ruName} сегодня сильнее, когда выбирает точность без лишнего напряжения.` },
   ];
-  const title = `${channel.emoji} ${channel.ruName} — гороскоп на ${formatRuDate(date)}`;
+  const title = `${channel.emoji} ${channel.ruName} | Гороскоп на ${formatNumericDate(date)}`;
 
   return createPreviewPost({
     channel,
@@ -459,4 +459,12 @@ function formatRuDate(value: string) {
     year: "numeric",
     timeZone: "UTC",
   }).format(date).replace(/\s*г\.$/, "");
+}
+
+function formatNumericDate(value: string) {
+  const [year, month, day] = value.split("-");
+  if (!/^\d{4}$/.test(year) || !/^\d{2}$/.test(month) || !/^\d{2}$/.test(day)) {
+    return value;
+  }
+  return `${day}.${month}.${year}`;
 }

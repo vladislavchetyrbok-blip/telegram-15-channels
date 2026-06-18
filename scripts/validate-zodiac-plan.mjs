@@ -54,6 +54,14 @@ function escapeRegExp(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+function formatNumericDate(dateStr) {
+  const [year, month, day] = String(dateStr || "").split("-");
+  if (!/^\d{4}$/.test(year) || !/^\d{2}$/.test(month) || !/^\d{2}$/.test(day)) {
+    return String(dateStr || "");
+  }
+  return `${day}.${month}.${year}`;
+}
+
 if (plan.network !== "zodiac") {
   blockingIssues.push("network is not 'zodiac'.");
 }
@@ -104,10 +112,11 @@ if (!Array.isArray(plan.posts)) {
 
     const text = String(post.text || "");
     const title = String(post.title || "");
+    const expectedDate = formatNumericDate(post.date);
 
     if (post.channelId === "zodiac-general") {
-      if (!title.includes("Общий гороскоп") || !title.includes("на сегодня")) {
-        blockingIssues.push(`${postRef}: zodiac-general title must include 'Общий гороскоп' and 'на сегодня'.`);
+      if (!title.includes(`Общий гороскоп на ${expectedDate}`)) {
+        blockingIssues.push(`${postRef}: zodiac-general title must include 'Общий гороскоп на ${expectedDate}'.`);
       }
 
       if (text.length < 900) {
@@ -132,8 +141,8 @@ if (!Array.isArray(plan.posts)) {
           blockingIssues.push(`${postRef}: sign post title must include ${sign.emoji} ${sign.ruName}.`);
         }
 
-        if (!title.includes("гороскоп на сегодня")) {
-          blockingIssues.push(`${postRef}: sign post title must include 'гороскоп на сегодня'.`);
+        if (!title.includes(`${sign.ruName} | Гороскоп на ${expectedDate}`)) {
+          blockingIssues.push(`${postRef}: sign post title must include '${sign.ruName} | Гороскоп на ${expectedDate}'.`);
         }
 
         if (text.length < 850) {

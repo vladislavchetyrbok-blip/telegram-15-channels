@@ -84,6 +84,14 @@ function formatRuDate(dateStr) {
     .replace(/\s*г\.$/, "");
 }
 
+function formatNumericDate(dateStr) {
+  const [year, month, day] = String(dateStr || "").split("-");
+  if (!/^\d{4}$/.test(year) || !/^\d{2}$/.test(month) || !/^\d{2}$/.test(day)) {
+    return String(dateStr || "");
+  }
+  return `${day}.${month}.${year}`;
+}
+
 function countOccurrences(text, needle) {
   return (text.match(new RegExp(escapeRegExp(needle), "g")) || []).length;
 }
@@ -169,7 +177,7 @@ function run() {
 
     const text = String(post.text || "");
     const lowerText = text.toLowerCase();
-    const expectedDate = formatRuDate(post.date);
+    const expectedDate = formatNumericDate(post.date);
     if (!String(post.title || "").includes(expectedDate)) {
       report.issues.critical.push(`${context}: title does not include generated date ${expectedDate}`);
       isWeak = true;
