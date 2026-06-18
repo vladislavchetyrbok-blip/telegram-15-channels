@@ -32,7 +32,7 @@ npm run zodiac:miniapp:smoke -- --url http://localhost:3000/compatibility
 - Safe Share can be clicked without crashing; browser fallback shows copy text or a copied state.
 - Mini App forms use custom `ZodiacSelect` controls in Telegram/browser mode; visible native `<select>` controls inside active Mini App screens are treated as a regression.
 - Compatibility follows `Compatibility -> Pair Setup -> Relationship Card -> 30-Day Couple Calendar -> Actions / Messages / Save / Share`.
-- Compatibility result must show the visual markers `Карта отношений`, `Главный совет`, `Эмоции`, `Общение`, and `Быт / ритм`.
+- Compatibility result must show the visual markers `Карта отношений`, `Главный совет`, `Эмоции`, `Общение`, and `Быт / ритм`, plus a non-empty `FinalAstroMap` with energy lines, arrows, and legend.
 - Compatibility smoke chooses Love mode, fills pair data, verifies birth-date autosign cases `1998-06-15 -> Близнецы`, `2000-03-21 -> Овен`, and `2000-12-22 -> Козерог`, reaches a detailed result, opens the 30-day couple calendar, opens `Что написать`, verifies the message copy state `Скопировано`, opens `Действие сегодня`, saves the pair with the `Пара сохранена` state, reopens it from Profile/Favorites/History, and checks safe Share.
 - Compatibility local retention stores only safe summary fields: first sign, second sign, relationship mode, score tier, label, feature key, and timestamp. It must not store names, birth dates, birth times, city query, selected city id, raw result text, or raw message text.
 - Horoscopes category opens from the main menu.
@@ -41,7 +41,8 @@ npm run zodiac:miniapp:smoke -- --url http://localhost:3000/compatibility
 - VIP pair tools support inline pair selection when no pair exists, show `Нужна пара для расчёта`, and can calculate without sending users into a dead end.
 - VIP top-tab pair gates `Карта+` and `30 дней` must route from `Выбрать знаки здесь` into the matching inline VIP pair picker and produce a result.
 - Natal chart VIP CTA buttons `Смотреть бесплатные расширения`, `Глубже про отношения`, `Фокус месяца`, and `Стиль лучших дней` must open the intended VIP tool; any button-looking CTA that does nothing is a regression.
-- VIP Natal Chart, Extended Compatibility, Mental Map, and Numerology render a non-empty symbolic `AstroChartVisual` block after calculation.
+- VIP Natal Chart, Extended Compatibility, Mental Map, Numerology, and VIP Mystic Day render a non-empty symbolic `FinalAstroMap` / `AstroChartVisual` block after calculation.
+- Final AstroMap checks require a visible SVG map, 12-sign wheel, highlighted selected sign(s), at least five energy lines, at least five arrows, a legend, and the honest caption that the map is symbolic and not an ephemeris/house/ascendant calculation.
 - Giveaways is not a top-level main category; it remains locked/disabled inside VIP.
 - Open VIP feature screens do not contain `TODO`, `lorem ipsum`, `placeholder`, or unexpected `Скоро появится` text.
 - VIP smoke checks all 11 active tools: natal chart, monthly forecast, name profile, compatibility, mental map, 30-day couple calendar, message helper, numerology, angel numbers, talismans, and VIP mystic day.
@@ -75,7 +76,8 @@ Custom selects checked: YES (native visible: 0)
 VIP cards checked: 11/11
 VIP tools calculated: 11/11
 VIP save/share checked: 11/11 saved, 11/11 shared
-VIP chart visuals checked: 4/4
+VIP chart visuals checked: 5/5
+Final Astro Maps checked: 6 (lines max: 5, arrows max: 5, legend: YES)
 VIP pair inline picker checked: YES
 Karta+ pair gate checked: YES
 30 days pair gate checked: YES

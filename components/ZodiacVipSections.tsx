@@ -387,12 +387,14 @@ function useResultActions(featureKey: VipFeatureKey, onEvent?: VipToolBaseProps[
 
   function save(payload: ZodiacAnalyticsPayload) {
     onEvent?.("vip_tool_saved", { featureKey, ...payload });
+    trackFinalMapEvent("final_map_saved", payload);
     onSave?.();
     setSaved(true);
   }
 
   async function share(payload: ZodiacAnalyticsPayload) {
     onEvent?.("vip_tool_shared", { featureKey, ...payload });
+    trackFinalMapEvent("final_map_shared", payload);
     if (onShare) {
       const status = await onShare();
       setShareStatus(typeof status === "string" && status ? status : "Ссылка готова");
@@ -413,13 +415,32 @@ function useResultActions(featureKey: VipFeatureKey, onEvent?: VipToolBaseProps[
 
   function chart(payload: ZodiacAnalyticsPayload) {
     onEvent?.("chart_visual_opened", { featureKey, ...payload });
+    trackFinalMapEvent("final_map_opened", payload);
+    trackFinalMapEvent("feature_depth_viewed", payload);
   }
 
   function reuse(payload: ZodiacAnalyticsPayload) {
     onEvent?.("vip_input_reused", { featureKey, ...payload });
   }
 
+  function trackFinalMapEvent(event: ZodiacAnalyticsEventName, payload: ZodiacAnalyticsPayload) {
+    const chartType = vipFinalMapChartType(featureKey);
+    if (!chartType) return;
+    onEvent?.(event, { ...payload, section: "vip", featureKey, chartType });
+  }
+
   return { saved, shared, shareStatus, save, share, calculate, chart, reuse };
+}
+
+function vipFinalMapChartType(featureKey: VipFeatureKey) {
+  const chartTypes: Partial<Record<VipFeatureKey, string>> = {
+    vipNatalChart: "personal",
+    vipCompatibility: "couple",
+    vipMentalMap: "couple",
+    vipNumerology: "numerology",
+    vipMysticDay: "mystic",
+  };
+  return chartTypes[featureKey];
 }
 
 function buildVipToolShareText(featureKey: VipFeatureKey) {
@@ -558,9 +579,11 @@ function buildNatalBlocks(sign: ZodiacSign, birthDate: string, birthTime: string
     title: `${sign.emoji} ${sign.name} · личная карта`,
     summary: natalChart?.summary?.[0]?.value ?? `${sign.name} раскрывается через стихию ${sign.element}: важно соединять личный темп, чувства и практичный выбор без давления.`,
     items: [
-      { title: "Архетип", text: natalChart?.archetype ?? pick(["инициатор перемен", "тихий стратег", "сердечный проводник", "исследователь смысла"], seed, 1) },
-      { title: "Любовь", text: natalChart?.loveStyle ?? pick(["лучше открывается через честный интерес и маленькие подтверждения внимания", "ценит тепло, но не любит эмоциональные проверки", "сближается там, где есть уважение к личному пространству"], seed, 2) },
-      { title: "Зона роста", text: natalChart?.growth ?? pick(["не торопить выводы и выбирать один ясный шаг", "мягко отделять своё желание от чужого ожидания", "держать баланс между вдохновением и режимом"], seed, 3) },
+      { title: "Сильные стороны", text: natalChart?.archetype ? `${natalChart.archetype}: это даёт умение быстро распознавать, где нужна инициатива, а где лучше удержать паузу.` : pick(["инициатор перемен: сильнее всего раскрывается, когда сам выбирает первый шаг", "тихий стратег: видит скрытый порядок и умеет собирать план без лишнего шума", "сердечный проводник: помогает людям возвращаться к теплу и простым словам", "исследователь смысла: умеет находить связь между событиями и внутренним выбором"], seed, 1) },
+      { title: "Внутренний конфликт", text: pick(["хочется действовать быстрее, чем созревает ясность; помогает короткая пауза перед обещанием", "часть энергии тянет к стабильности, а часть просит обновления; не смешивайте оба решения в один день", "эмоция может звучать громче факта; сначала проверьте, что именно задело", "желание быть полезным иногда превращается в контроль; лучше предлагать, а не спасать"], seed, 2) },
+      { title: "Отношения", text: natalChart?.loveStyle ?? pick(["лучше открывается через честный интерес и маленькие подтверждения внимания", "ценит тепло, но не любит эмоциональные проверки", "сближается там, где есть уважение к личному пространству"], seed, 3) },
+      { title: "Решения", text: pick(["выбирайте вариант, который можно объяснить одним предложением и выполнить без драматичного рывка", "сначала фиксируйте критерий, потом сравнивайте варианты; так меньше риска пойти за чужой тревогой", "важное решение лучше делить на тестовый шаг и финальное подтверждение", "если тело устало, решение нужно отложить хотя бы до восстановления ритма"], seed, 4) },
+      { title: "Рекомендации", text: natalChart?.growth ?? pick(["не торопить выводы и выбирать один ясный шаг", "мягко отделять своё желание от чужого ожидания", "держать баланс между вдохновением и режимом"], seed, 5) },
       { title: "Точность", text: hasDate ? "Дата учтена в расчёте; время и город только повышают детализацию и не сохраняются." : "Можно начать по знаку, а дату добавить позже для более точного слоя." },
     ],
   };
@@ -804,6 +827,9 @@ export function ExtendedCompatibilityFeature({
           <InfoBlock publicMode={publicMode} title="Общение" text={result?.communicationText ?? "говорите короче, конкретнее и без скрытых тестов"} />
           <InfoBlock publicMode={publicMode} title="Быт / ритм" text={result?.householdText ?? "распределите ожидания заранее, чтобы бытовые мелочи не становились символом отношения"} />
           <InfoBlock publicMode={publicMode} title="Главный совет" text={result?.adviceText ?? "не пытайтесь победить в разговоре: выбирайте общий следующий шаг"} />
+          <InfoBlock publicMode={publicMode} title="3 сильные стороны" text={`${first.name} даёт паре свой темп; ${second.name} добавляет ответную реакцию; режим "${relationshipModeLabel(mode)}" помогает выбрать язык разговора. Сильнее всего работает не процент, а повторяемый маленький шаг.`} />
+          <InfoBlock publicMode={publicMode} title="3 риска" text="спор на усталости; проверка чувств молчанием; попытка решить весь сценарий одним разговором. Лучше заранее договориться о паузе, формулировке и следующем действии." />
+          <InfoBlock publicMode={publicMode} title="Что делать дальше" text={`Сегодня выберите один общий шаг: короткое сообщение, бытовую договорённость или спокойную встречу. Если score ${score}%, не перегружайте пару доказательствами, закрепите то, что уже работает.`} />
           <VipResultActions publicMode={publicMode} saved={actions.saved} shared={actions.shared} shareStatus={actions.shareStatus} onSave={() => actions.save(payload)} onShare={() => actions.share(payload)} />
         </VipResultPanel>
       ) : null}
@@ -860,6 +886,8 @@ export function VipMentalMapFeature({
           <InfoBlock publicMode={publicMode} title="Как миритесь" text={result?.mentalMapDynamics?.[2]?.text ?? "лучше помогает короткое признание эмоции и одно действие, которое можно выполнить сегодня"} />
           <InfoBlock publicMode={publicMode} title="Что укрепляет" text={result?.mentalMapSummary?.helps?.join("; ") || `фокус "${goalLabel(goal)}", честный вопрос, пауза перед выводом`} />
           <InfoBlock publicMode={publicMode} title="Что избегать" text={result?.mentalMapSummary?.avoid?.join("; ") || "сарказм, молчаливые проверки и спор на усталости"} />
+          <InfoBlock publicMode={publicMode} title="Лучший тон" text={`Для ${first.name} + ${second.name} лучше работает тон: коротко, тепло, без скрытого экзамена. Фокус "${goalLabel(goal)}" стоит назвать в начале разговора.`} />
+          <InfoBlock publicMode={publicMode} title="Следующий шаг" text="Напишите одну фразу о цели, затем предложите конкретное действие на сегодня. Если реакция жёсткая, вернитесь к карте через паузу, а не через новый спор." />
           <VipResultActions publicMode={publicMode} saved={actions.saved} shared={actions.shared} shareStatus={actions.shareStatus} onSave={() => actions.save(payload)} onShare={() => actions.share(payload)} />
         </VipResultPanel>
       ) : null}
@@ -1095,6 +1123,8 @@ export function ExtendedNumerologyFeature({
           <InfoBlock publicMode={publicMode} title="Сильные стороны" text={numerology.strengths} />
           <InfoBlock publicMode={publicMode} title="Риски" text={numerology.risks} />
           <InfoBlock publicMode={publicMode} title="Совет" text={`${numerology.advice}. Фокус "${goalLabel(goal)}" лучше раскрывать через один небольшой завершённый шаг.`} />
+          <InfoBlock publicMode={publicMode} title="Что сделать" text={`Число пути ${lifePath ?? numerology.dayNumber} просит практики: выберите одно действие, которое можно закрыть сегодня, и отметьте результат без самооценки.`} />
+          <InfoBlock publicMode={publicMode} title="Чего избегать" text={`Не превращайте число имени ${nameNumber ?? numerology.nameNumber} в ярлык. Это символический фокус, а не приговор: проверяйте его через реальные решения.`} />
           <VipResultActions publicMode={publicMode} saved={actions.saved} shared={actions.shared} shareStatus={actions.shareStatus} onSave={() => actions.save(payload)} onShare={() => actions.share(payload)} />
         </VipResultPanel>
       ) : null}
@@ -1230,18 +1260,21 @@ export function VipMysticDayFeature({
       </VipInputPanel>
       <PrimaryVipButton publicMode={publicMode} onClick={() => {
         actions.calculate(payload);
+        actions.chart(payload);
         setCalculated(true);
       }}>
         Показать
       </PrimaryVipButton>
       {calculated ? (
         <VipResultPanel publicMode={publicMode} title={`${selectedSign.emoji} ${selectedSign.name} · ${displayDate(date || dateKey)}`}>
+          <AstroChartVisual publicMode={publicMode} kind="matrix" primarySign={selectedSign} title="VIP мистическая карта дня" caption="Символическая карта связывает знак, дату, цвет, руну, предупреждение и действие дня без обещаний точного предсказания." />
           <InfoBlock publicMode={publicMode} title="Таро и карта дня" text={`${synthesis.tarotCard.card} и ${synthesis.dailyCard.title}. ${synthesis.tarotCard.mainMeaning}`} />
           <InfoBlock publicMode={publicMode} title="Руна дня" text={`${synthesis.runeDay.symbol} ${synthesis.runeDay.name}. ${synthesis.runeDay.mainMeaning}`} />
           <InfoBlock publicMode={publicMode} title="Цвет и аура" text={`${synthesis.auraColor.color}. ${synthesis.auraColor.meaning}`} />
           {synthesis.angelNumber.isValid ? <InfoBlock publicMode={publicMode} title={`Синхрония чисел (${synthesis.angelNumber.safeKey})`} text={synthesis.angelNumber.label} /> : null}
           <InfoBlock publicMode={publicMode} title="Главный совет" text={synthesis.advice} />
           <InfoBlock publicMode={publicMode} title="Осторожность" text={synthesis.warning} />
+          <InfoBlock publicMode={publicMode} title="Маленькое действие" text={`Фокус "${goalLabel(goal)}": выберите один символ дня и закрепите его простым действием до вечера.`} />
           <VipResultActions publicMode={publicMode} saved={actions.saved} shared={actions.shared} shareStatus={actions.shareStatus} onSave={() => actions.save(payload)} onShare={() => actions.share(payload)} />
         </VipResultPanel>
       ) : null}

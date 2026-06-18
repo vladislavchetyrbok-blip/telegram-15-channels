@@ -265,7 +265,7 @@ const trackedAnalyticsItems = [
   "zodiac_stones_opened / zodiac_stones_sign_viewed",
   "name_profile_opened / name_profile_result_viewed",
   "couple_horoscope_viewed",
-  "relationship_map_viewed / mental_map_viewed",
+  "relationship_map_viewed / mental_map_viewed / final_map_opened",
   "relationship_map_category_opened",
   "lucky_day_clicked",
   "vip_clicked / vip_opened",

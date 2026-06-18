@@ -3,7 +3,8 @@
 import { useState } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import { ArrowLeft, Bookmark, CalendarDays, HeartHandshake, MessageCircle, RotateCcw, Share2, Sparkles } from "lucide-react";
-import type { CompatibilityResult } from "./types";
+import { FinalAstroMap } from "./AstroChartVisual";
+import type { CompatibilityResult, ZodiacSign } from "./types";
 import { primaryButtonClass, secondaryButtonClass } from "./WizardControls";
 
 export function ResultPanel({
@@ -14,6 +15,8 @@ export function ResultPanel({
   onReset,
   onSave,
   onShare,
+  firstSign,
+  secondSign,
 }: {
   publicMode: boolean;
   result: CompatibilityResult;
@@ -22,6 +25,8 @@ export function ResultPanel({
   onReset: () => void;
   onSave?: () => void;
   onShare?: () => void;
+  firstSign?: ZodiacSign | null;
+  secondSign?: ZodiacSign | null;
 }) {
   const [saved, setSaved] = useState(false);
   const scoreStyle = { "--relationship-score": `${result.scores.total * 3.6}deg` } as CSSProperties;
@@ -65,6 +70,19 @@ export function ResultPanel({
         </div>
       </div>
 
+      <FinalAstroMap
+        publicMode={publicMode}
+        mode="couple"
+        primarySign={firstSign}
+        secondarySign={secondSign}
+        relationshipMode={result.relationshipMode}
+        score={result.scores.total}
+        scoreTier={result.scoreTierLabel}
+        title={`Карта связи · ${result.pairLabel}`}
+        caption={`${result.pairLabel}: символическая схема показывает, где пара легче чувствует друг друга, где нужен перевод слов на спокойный язык и где рождается общий рост.`}
+        chartType="relationship"
+      />
+
       <div className={publicMode ? "rounded-lg border border-amber-200/20 bg-amber-200/10 p-3" : "rounded-lg border border-amber-200 bg-amber-50 p-3"}>
         <div className="flex items-start gap-3">
           <Sparkles className={publicMode ? "mt-0.5 h-5 w-5 shrink-0 text-amber-100" : "mt-0.5 h-5 w-5 shrink-0 text-amber-700"} />
@@ -102,6 +120,14 @@ export function ResultPanel({
         <ResultSectionCard id="relationship-strengths" publicMode={publicMode} title="Сильные стороны" icon={<Sparkles className="h-5 w-5" />}>
           <ScoreBar publicMode={publicMode} label="🔥 Притяжение" value={result.scores.attraction} text={result.attractionText} />
           <ResultText publicMode={publicMode} text={result.strengthText} />
+          <ResultBulletList
+            publicMode={publicMode}
+            items={[
+              `${result.scores.love >= 70 ? "Эмоции быстро оживают" : "Эмоции раскрываются постепенно"}: ${result.loveText}`,
+              `${result.scores.communication >= 70 ? "Разговор может стать опорой" : "Разговору нужен ясный формат"}: ${result.communicationText}`,
+              `${result.scores.household >= 70 ? "Ритм пары можно стабилизировать" : "Ритм требует договорённостей"}: ${result.householdText}`,
+            ]}
+          />
           {result.nameResonance ? <ResultText publicMode={publicMode} text={result.nameResonance.text} /> : null}
         </ResultSectionCard>
 
@@ -109,6 +135,14 @@ export function ResultPanel({
           <ResultText publicMode={publicMode} text={result.conflictPointsText} />
           <ResultText publicMode={publicMode} text={result.weakSpotText} />
           <ResultText publicMode={publicMode} text={result.riskText} />
+          <ResultBulletList
+            publicMode={publicMode}
+            items={[
+              "Не спорить на усталости: сначала пауза, потом одна конкретная тема.",
+              "Не проверять чувства молчанием: лучше назвать ожидание прямо и коротко.",
+              `Не превращать ${result.relationshipModeLabel.toLowerCase()} в экзамен: паре нужен следующий шаг, а не победитель разговора.`,
+            ]}
+          />
         </ResultSectionCard>
 
         <ResultSectionCard id="relationship-talk" publicMode={publicMode} title="Как общаться" icon={<MessageCircle className="h-5 w-5" />}>
@@ -127,6 +161,7 @@ export function ResultPanel({
 
         <ResultSectionCard id="relationship-action" publicMode={publicMode} title="Действие сегодня" icon={<Sparkles className="h-5 w-5" />}>
           <ResultText publicMode={publicMode} text={result.adviceText} />
+          <ResultText publicMode={publicMode} text={`Следующий шаг: выберите один небольшой жест на сегодня и один разговор без подтекста. Для ${result.pairLabel} это полезнее, чем пытаться решить весь сценарий сразу.`} />
         </ResultSectionCard>
       </div>
 
@@ -234,4 +269,16 @@ function ResultSectionCard({ id, publicMode, title, icon, children }: { id: stri
 
 function ResultText({ publicMode, text }: { publicMode: boolean; text: string }) {
   return <p className={publicMode ? "break-words text-sm leading-6 text-slate-300 [overflow-wrap:anywhere]" : "break-words text-sm leading-6 text-slate-600 [overflow-wrap:anywhere]"}>{text}</p>;
+}
+
+function ResultBulletList({ publicMode, items }: { publicMode: boolean; items: string[] }) {
+  return (
+    <ul className="grid gap-2">
+      {items.map((item) => (
+        <li key={item} className={publicMode ? "rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm leading-5 text-slate-200" : "rounded-md border border-slate-100 bg-slate-50 px-3 py-2 text-sm leading-5 text-slate-700"}>
+          {item}
+        </li>
+      ))}
+    </ul>
+  );
 }

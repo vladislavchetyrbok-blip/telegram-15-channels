@@ -14,7 +14,7 @@ The Zodiac product is ready for controlled live operation of the daily publishin
 - Weekly Zodiac posts are prepared and dry-run ready, but weekly live scheduling remains OFF.
 - Mini App core UX is implemented: 10-category home, Angel Numbers top-level, Compatibility pair core, Horoscopes, Mystic, Birth Matrix, VIP, Profile, History, Favorites, and Share.
 - VIP is free until `2026-09-17`; payments and Telegram Stars remain OFF.
-- Mini App interaction hardening is implemented and smoke-verified: custom dark selects, safe share fallback, non-dead pair gates, inline VIP pair pickers, and symbolic chart visuals for key VIP tools.
+- Mini App interaction hardening is implemented and smoke-verified: custom dark selects, safe share fallback, non-dead pair gates, inline VIP pair pickers, and symbolic Final AstroMap visuals for relationship/VIP tools.
 - Channel packaging live was applied and post-live verified for `13/13` channels.
 - Daily and weekly content quality was upgraded while keeping date/range headers and CTA buttons.
 - Analytics is privacy-safe but storage mode is currently `noop` unless Redis REST env vars are configured.
@@ -164,6 +164,7 @@ Important UX rules:
 - Bottom navigation: `Главная`, `Гороскопы`, `Совмест.`, `VIP`, `Профиль`.
 - Profile, History, and Favorites use localStorage only.
 - Share text must be generic and must not include personal data.
+- Final AstroMap visuals are symbolic energy maps. They must not claim exact houses, ascendant, or ephemeris-level calculation unless a future package adds a real astronomical engine and required inputs.
 
 Supported `startapp` params:
 
@@ -190,7 +191,8 @@ VIP:
 - Payments and Telegram Stars are OFF.
 - 11 active VIP cards are functional tools with visible inputs, calculate/show action, non-empty result, safe Save, and safe Share.
 - Pair-dependent VIP tools include inline sign/mode pickers and can calculate even when the user has not created a pair in the main compatibility wizard.
-- Key VIP result screens render symbolic chart visuals: Natal Chart, Extended Compatibility, Mental Map, and Numerology.
+- Key VIP result screens render symbolic Final AstroMap visuals: Natal Chart, Extended Compatibility, Mental Map, Numerology, and VIP Mystic Day.
+- Final AstroMap captions must stay honest: `Символическая карта энергий` and `Базовая визуализация без точных домов и асцендента`.
 - VIP message helper supports copy state without storing message text.
 - Giveaways remain locked/preview.
 
@@ -253,6 +255,8 @@ Compatibility share checked: YES
 VIP cards checked: 11/11
 VIP tools calculated: 11/11
 VIP save/share checked: 11/11 saved, 11/11 shared
+VIP chart visuals checked: 5/5
+Final Astro Maps checked: 6
 Karta+ pair gate checked: YES
 30 days pair gate checked: YES
 Dead CTA checked: YES

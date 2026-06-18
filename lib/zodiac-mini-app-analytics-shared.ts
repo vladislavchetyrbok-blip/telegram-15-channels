@@ -14,6 +14,10 @@ export const ZODIAC_ANALYTICS_EVENTS = [
   "dead_cta_resolved",
   "pair_required_action_clicked",
   "chart_visual_opened",
+  "final_map_opened",
+  "final_map_saved",
+  "final_map_shared",
+  "feature_depth_viewed",
   "local_data_cleared",
   "sign_selected",
   "section_open_today",
@@ -140,6 +144,7 @@ export interface ZodiacAnalyticsPayload {
   goal?: string;
   tone?: string;
   freeVipActive?: boolean;
+  chartType?: string;
 }
 
 export interface SanitizedZodiacAnalyticsEvent extends ZodiacAnalyticsPayload {
@@ -258,6 +263,7 @@ export function sanitizeZodiacAnalyticsPayload(input: unknown): ZodiacAnalyticsP
   const goal = sanitizeEnum(raw.goal, vipGoals);
   const tone = sanitizeEnum(raw.tone, vipTones);
   const freeVipActive = sanitizeBoolean(raw.freeVipActive);
+  const chartType = sanitizeToken(raw.chartType, 48);
 
   if (dateKey) payload.dateKey = dateKey;
   if (section) payload.section = section;
@@ -284,6 +290,7 @@ export function sanitizeZodiacAnalyticsPayload(input: unknown): ZodiacAnalyticsP
   if (goal) payload.goal = goal;
   if (tone) payload.tone = tone;
   if (typeof freeVipActive === "boolean") payload.freeVipActive = freeVipActive;
+  if (chartType) payload.chartType = chartType;
 
   return payload;
 }

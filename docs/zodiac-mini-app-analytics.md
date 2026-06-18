@@ -73,7 +73,7 @@ The allowlist covers:
 - main menu opens, main menu category taps, horoscope category opens, Angel Numbers category opens, compatibility category selection, and profile/saved/history preview panels;
 - Compatibility core funnel events: `compatibility_wizard_started`, `compatibility_mode_selected`, `compatibility_birthdate_autosign_used`, `compatibility_calendar_opened`, `compatibility_action_opened`, `compatibility_message_copied`, `compatibility_pair_saved`, and `compatibility_pair_reopened`;
 - Profile retention events: `profile_opened`, `history_opened`, `favorite_saved`, `favorite_opened`, `share_clicked`, and `local_data_cleared`;
-- Interaction hardening events: `dead_cta_resolved`, `pair_required_action_clicked`, and `chart_visual_opened`;
+- Interaction hardening and visual-depth events: `dead_cta_resolved`, `pair_required_action_clicked`, `chart_visual_opened`, `final_map_opened`, `final_map_saved`, `final_map_shared`, and `feature_depth_viewed`;
 - app open, sign selection, section opens, compatibility calculation;
 - natal chart, Chinese horoscope, zodiac stones, name profile, numerology, angel numbers, lunar calendar, daily talisman, dream dictionary, gifts, name compatibility, archetype;
 - VIP opened, free access, feature taps, future subscription tap, all active VIP detail screens, and functional VIP tool events: `vip_tool_started`, `vip_tool_calculated`, `vip_tool_saved`, `vip_tool_shared`, `vip_input_reused`, and `vip_message_copied`;
@@ -89,9 +89,9 @@ Mini App navigation events follow the current structure:
 Home -> Category -> Feature -> Result
 ```
 
-These navigation events must not include names, birth dates, birth times, city query, raw text inputs, or Telegram initData. Safe fields are limited to values such as `section`, `category`, `featureKey`, `relationshipMode`, and zodiac sign slugs.
+These navigation events must not include names, birth dates, birth times, city query, raw text inputs, or Telegram initData. Safe fields are limited to values such as `section`, `category`, `featureKey`, `relationshipMode`, `chartType`, and zodiac sign slugs.
 
-Interaction hardening events for repaired CTAs and pair-required flows use only safe routing context: `section`, `category`, `featureKey`, sign slugs, `relationshipMode`, and `scoreTier`. They must not include raw form values or generated result/message text.
+Interaction hardening events for repaired CTAs, pair-required flows, and Final AstroMap views use only safe routing context: `section`, `category`, `featureKey`, `chartType`, sign slugs, `relationshipMode`, and `scoreTier`. They must not include raw form values or generated result/message text.
 
 The current Home menu has 10 large top-level categories, in order: `Гороскопы`, `Совместимость`, `Ангельские числа`, `Матрица судьбы`, `Нумерология`, `Мистика`, `Таро и руны`, `Луна и ритуалы`, `VIP раздел`, and `Мой профиль`. Angel Numbers must stay visible in the first screen zone. `Розыгрыши` stays inside VIP as locked/preview and is tracked only through giveaway locked events.
 
@@ -118,11 +118,12 @@ hasBirthCity
 inputMode
 goal
 tone
+chartType
 ```
 
 The VIP events must never include names, birth dates, birth times, birth city/city query, raw angel number input, generated message text, or raw result text.
 
-Share and interaction-hardening events use only safe routing/status fields such as `section`, `category`, `featureKey`, sign slugs, `relationshipMode`, and `scoreTier`. They must not include copied text, raw generated messages, raw angel-number input, names, dates, time, city query, or Telegram initData.
+Share, Final AstroMap, and interaction-hardening events use only safe routing/status fields such as `section`, `category`, `featureKey`, `chartType`, sign slugs, `relationshipMode`, and `scoreTier`. They must not include copied text, raw generated messages, raw angel-number input, names, dates, time, city query, or Telegram initData.
 
 Supported direct profile and compatibility start params:
 
@@ -148,7 +149,7 @@ Do not send or store:
 - Telegram initData or raw Telegram profile data;
 - tokens, chat ids, or secrets.
 
-Allowed personal context is limited to safe aggregates and flags, for example `sign`, `firstSign`, `secondSign`, `hasName`, `hasBirthDate`, `hasBirthTime`, `hasBirthCity`, `scoreTier`, `section`, `category`, `featureKey`, `inputMode`, `goal`, and `tone`.
+Allowed personal context is limited to safe aggregates and flags, for example `sign`, `firstSign`, `secondSign`, `hasName`, `hasBirthDate`, `hasBirthTime`, `hasBirthCity`, `scoreTier`, `section`, `category`, `featureKey`, `chartType`, `inputMode`, `goal`, and `tone`.
 
 ## Server-Side Safety Model
 
@@ -178,7 +179,7 @@ Disallowed events are rejected and not stored:
 
 ## Dashboard
 
-The dashboard shows analytics mode, storage status, setup checklist, tracked/not-tracked data, today opens, last 7 days opens, top sections, top signs, compatibility mode split, VIP activity, giveaways, Mystic-related counters through aggregate events, and funnel metrics.
+The dashboard shows analytics mode, storage status, setup checklist, tracked/not-tracked data, today opens, last 7 days opens, top sections, top signs, compatibility mode split, VIP activity, Final AstroMap / relationship-map aggregate opens, giveaways, Mystic-related counters through aggregate events, and funnel metrics.
 
 When storage is missing, panels stay visible with zero values so the activation state is obvious without hiding the dashboard structure.
 

@@ -348,6 +348,8 @@ export function ZodiacCompatibilityMiniApp({
       trackZodiacMiniAppEvent("couple_horoscope_viewed", { ...pairPayload, section: "couple_horoscope" });
       trackZodiacMiniAppEvent("section_open_relationship_map", { ...pairPayload, section: "relationship_map" });
       trackZodiacMiniAppEvent("relationship_map_viewed", { ...pairPayload, section: "relationship_map" });
+      trackZodiacMiniAppEvent("final_map_opened", { ...pairPayload, section: "relationship_map", featureKey: "relationship_result", chartType: "couple" });
+      trackZodiacMiniAppEvent("feature_depth_viewed", { ...pairPayload, section: "relationship_map", featureKey: "relationship_result", chartType: "couple" });
       trackZodiacMiniAppEvent("mental_map_viewed", { ...pairPayload, section: "relationship_map" });
     }
 
@@ -1035,6 +1037,8 @@ export function ZodiacCompatibilityMiniApp({
                             onReset={resetFlow}
                             onSave={() => saveFavorite(compatibilityRetentionAction(self, partner, relationshipMode, result))}
                             onShare={() => shareSafeAction(compatibilityRetentionAction(self, partner, relationshipMode, result))}
+                            firstSign={findSign(self.sign)}
+                            secondSign={findSign(partner.sign)}
                           />
                         ) : (
                           <div className="py-8 text-center">

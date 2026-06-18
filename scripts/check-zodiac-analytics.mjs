@@ -84,6 +84,10 @@ async function main() {
     const vipToolSharedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "vip_tool_shared", { featureKey: "vipCoupleCalendar", firstSign: "gemini", secondSign: "leo", relationshipMode: "love", scoreTier: "good", inputMode: "date_range" });
     const vipInputReusedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "vip_input_reused", { featureKey: "vipCompatibility", firstSign: "gemini", secondSign: "leo", relationshipMode: "love", scoreTier: "good", inputMode: "current_pair" });
     const vipMessageCopiedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "vip_message_copied", { featureKey: "vipMessageHelper", firstSign: "gemini", secondSign: "leo", relationshipMode: "love", scoreTier: "good", goal: "reconciliation", tone: "soft" });
+    const finalMapOpenedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "final_map_opened", { section: "relationship_map", featureKey: "relationship_result", firstSign: "gemini", secondSign: "leo", relationshipMode: "love", scoreTier: "good", chartType: "couple" });
+    const finalMapSavedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "final_map_saved", { section: "vip", featureKey: "vipNatalChart", sign: "gemini", inputMode: "birth_date", chartType: "personal" });
+    const finalMapSharedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "final_map_shared", { section: "vip", featureKey: "vipMentalMap", firstSign: "gemini", secondSign: "leo", relationshipMode: "love", scoreTier: "good", chartType: "couple" });
+    const featureDepthViewedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "feature_depth_viewed", { section: "vip", featureKey: "vipMysticDay", sign: "gemini", chartType: "mystic" });
     const disallowedEvent = await checkDisallowedEvent(`${baseUrl}/api/zodiac/analytics/event`);
     const afterLedgerStats = await collectLedgerStats();
     const ledgerWrites = countLedgerWrites(beforeLedgerStats, afterLedgerStats);
@@ -142,6 +146,10 @@ async function main() {
       vipToolSharedEvent,
       vipInputReusedEvent,
       vipMessageCopiedEvent,
+      finalMapOpenedEvent,
+      finalMapSavedEvent,
+      finalMapSharedEvent,
+      featureDepthViewedEvent,
       disallowedEvent,
       sensitiveFieldsStripped:
         allowedEvent.sensitiveFieldsStripped &&
@@ -188,7 +196,11 @@ async function main() {
         vipToolSavedEvent.sensitiveFieldsStripped &&
         vipToolSharedEvent.sensitiveFieldsStripped &&
         vipInputReusedEvent.sensitiveFieldsStripped &&
-        vipMessageCopiedEvent.sensitiveFieldsStripped,
+        vipMessageCopiedEvent.sensitiveFieldsStripped &&
+        finalMapOpenedEvent.sensitiveFieldsStripped &&
+        finalMapSavedEvent.sensitiveFieldsStripped &&
+        finalMapSharedEvent.sensitiveFieldsStripped &&
+        featureDepthViewedEvent.sensitiveFieldsStripped,
       noSecretsPrinted: true,
       telegramApiCalls,
       ledgerWrites,

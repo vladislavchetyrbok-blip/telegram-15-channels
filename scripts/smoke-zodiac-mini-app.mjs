@@ -156,6 +156,7 @@ async function runBrowserModeSmoke(client, report) {
   report.compatibilityAutosignCases.push("2000-12-22 -> Козерог");
   await click(client, "Рассчитать");
   await waitForPageText(client, /Карта отношений|Главный совет|Эмоции|Быт \/ ритм|Как общаться/, "Compatibility result did not render the polished relationship card.");
+  await assertFinalAstroMap(client, "Compatibility relationship result", report);
   report.compatibilityResultChecked = true;
   await click(client, "Сохранить пару");
   await waitForPageText(client, /Пара сохранена/, "Compatibility save button did not show saved state.");
@@ -437,7 +438,7 @@ async function runVipToolSmoke(client, label, report) {
   await clickAny(client, ["Рассчитать", "Показать"]);
   await waitForPageText(client, /Результат VIP/, `VIP tool "${label}" did not render a result block after calculation.`);
   await assertFeatureScreen(client, label, { allowSoon: false, minLength: 700 });
-  if (["Расширенная натальная карта", "Расширенная совместимость", "Ментальная карта пары", "Расширенная нумерология"].includes(label)) {
+  if (["Расширенная натальная карта", "Расширенная совместимость", "Ментальная карта пары", "Расширенная нумерология", "VIP мистический день"].includes(label)) {
     await assertChartVisual(client, label, report);
   }
   report.vipCalculated += 1;
@@ -712,6 +713,22 @@ async function installSmokeHelpers(client) {
       chartVisualCount() {
         return Array.from(document.querySelectorAll("[data-zodiac-chart-visual]")).filter(isVisible).length;
       },
+      finalAstroMapCount() {
+        return Array.from(document.querySelectorAll("[data-final-astro-map]")).filter(isVisible).length;
+      },
+      finalAstroLineCount() {
+        return Array.from(document.querySelectorAll("[data-final-astro-map]"))
+          .filter(isVisible)
+          .reduce((sum, map) => sum + map.querySelectorAll("[data-final-astro-line]").length, 0);
+      },
+      finalAstroArrowCount() {
+        return Array.from(document.querySelectorAll("[data-final-astro-map]"))
+          .filter(isVisible)
+          .reduce((sum, map) => sum + map.querySelectorAll("[data-final-astro-arrow]").length, 0);
+      },
+      finalAstroLegendCount() {
+        return Array.from(document.querySelectorAll("[data-final-astro-legend]")).filter(isVisible).length;
+      },
       hasText(patternSource) {
         return new RegExp(patternSource, "i").test(document.body?.innerText || "");
       },
@@ -946,7 +963,23 @@ async function assertNoNativeSelects(client, report, label) {
 async function assertChartVisual(client, label, report) {
   const count = await evalPage(client, "window.__zodiacSmoke.chartVisualCount()", []);
   if (count < 1) throw new Error(`VIP tool "${label}" did not render an AstroChartVisual.`);
+  await assertFinalAstroMap(client, label, report);
   report.vipChartVisualsChecked += 1;
+}
+
+async function assertFinalAstroMap(client, label, report) {
+  const mapCount = await evalPage(client, "window.__zodiacSmoke.finalAstroMapCount()", []);
+  const lineCount = await evalPage(client, "window.__zodiacSmoke.finalAstroLineCount()", []);
+  const arrowCount = await evalPage(client, "window.__zodiacSmoke.finalAstroArrowCount()", []);
+  const legendCount = await evalPage(client, "window.__zodiacSmoke.finalAstroLegendCount()", []);
+  if (mapCount < 1) throw new Error(`"${label}" did not render FinalAstroMap.`);
+  if (lineCount < 5) throw new Error(`"${label}" FinalAstroMap expected at least 5 energy lines, got ${lineCount}.`);
+  if (arrowCount < 5) throw new Error(`"${label}" FinalAstroMap expected at least 5 arrows, got ${arrowCount}.`);
+  if (legendCount < 1) throw new Error(`"${label}" FinalAstroMap legend did not render.`);
+  report.finalAstroMapsChecked += 1;
+  report.finalAstroLinesChecked = Math.max(report.finalAstroLinesChecked, lineCount);
+  report.finalAstroArrowsChecked = Math.max(report.finalAstroArrowsChecked, arrowCount);
+  report.finalAstroLegendChecked = true;
 }
 
 async function clickHub(client, label) {
@@ -1229,6 +1262,10 @@ function createReport() {
     vipShared: 0,
     vipMessageCopyChecked: false,
     vipChartVisualsChecked: 0,
+    finalAstroMapsChecked: 0,
+    finalAstroLinesChecked: 0,
+    finalAstroArrowsChecked: 0,
+    finalAstroLegendChecked: false,
     vipPairGateInlinePickerChecked: false,
     vipKartaPlusInlinePickerChecked: false,
     vipThirtyDaysInlinePickerChecked: false,
@@ -1288,7 +1325,8 @@ function printSummary(status, report) {
   console.log(`VIP cards checked: ${report.vipChecked}/11`);
   console.log(`VIP tools calculated: ${report.vipCalculated}/11`);
   console.log(`VIP save/share checked: ${report.vipSaved}/11 saved, ${report.vipShared}/11 shared`);
-  console.log(`VIP chart visuals checked: ${report.vipChartVisualsChecked}/4`);
+  console.log(`VIP chart visuals checked: ${report.vipChartVisualsChecked}/5`);
+  console.log(`Final Astro Maps checked: ${report.finalAstroMapsChecked} (lines max: ${report.finalAstroLinesChecked}, arrows max: ${report.finalAstroArrowsChecked}, legend: ${report.finalAstroLegendChecked ? "YES" : "NO"})`);
   console.log(`VIP pair inline picker checked: ${report.vipPairGateInlinePickerChecked ? "YES" : "NO"}`);
   console.log(`Karta+ pair gate checked: ${report.vipKartaPlusInlinePickerChecked ? "YES" : "NO"}`);
   console.log(`30 days pair gate checked: ${report.vipThirtyDaysInlinePickerChecked ? "YES" : "NO"}`);

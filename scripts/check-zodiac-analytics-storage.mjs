@@ -97,7 +97,15 @@ const requiredCoverage = {
     "compatibility_pair_saved",
     "compatibility_pair_reopened",
   ],
-  interactionHardening: ["dead_cta_resolved", "pair_required_action_clicked", "chart_visual_opened"],
+  interactionHardening: [
+    "dead_cta_resolved",
+    "pair_required_action_clicked",
+    "chart_visual_opened",
+    "final_map_opened",
+    "final_map_saved",
+    "final_map_shared",
+    "feature_depth_viewed",
+  ],
 };
 
 const secretEnvNames = [
