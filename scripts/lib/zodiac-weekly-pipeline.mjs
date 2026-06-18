@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import process from "process";
 import { resolveZodiacWeeklyVisualAsset } from "../zodiac-weekly-asset-resolver.mjs";
+import { MINI_APP_START_PARAMETERS, buildCompatibilityInlineButton, buildMiniAppInlineButton } from "./zodiac-compatibility-bot.mjs";
 
 export const WEEKLY_LEDGER_PATH = path.resolve(process.cwd(), "data/state/zodiac-weekly-publish-ledger.json");
 const CHANNEL_LINKS_PATH = path.resolve(process.cwd(), "data/config/zodiac-channel-links.json");
@@ -25,6 +26,11 @@ export const ZODIAC_WEEKLY_CHANNELS = [
   { slug: "zodiac-general", emoji: "🔮", name: "Общий гороскоп", env: "ZODIAC_GENERAL_CHANNEL_ID" },
   ...SIGN_CHANNELS,
 ];
+
+export const WEEKLY_RETENTION_CTA_LABELS = Object.freeze({
+  week: "📅 Прогноз недели",
+  compatibility: "💞 Совместимость",
+});
 
 export const VALID_WEEKLY_STATUSES = new Set(["pending", "locked", "in_progress", "publishing", "sent", "published", "failed", "skipped"]);
 export const PROTECTED_WEEKLY_STATUSES = new Set(["pending", "locked", "in_progress", "publishing", "sent", "published"]);
@@ -260,6 +266,7 @@ export function buildWeeklyReport(weekCode) {
       action: duplicateBlocked ? "skip_duplicate" : failed ? "skip_failed" : "ready",
       buttonStatus: post.buttonStatus.ok ? "OK" : "PROBLEMS",
       buttonCount: post.buttonStatus.buttonCount,
+      ctaLabels: post.buttonStatus.ctaLabels,
       errors: post.buttonStatus.errors,
     });
   }
@@ -345,28 +352,43 @@ function buildSignWeeklyText(sign, week, weekRange, index) {
 
 export function buildWeeklyNavigationKeyboard(channelSlug) {
   const links = loadChannelLinks();
+  const ctaRow = buildWeeklyRetentionCtaRow(channelSlug);
+  const ctaRows = ctaRow.length > 0 ? [ctaRow] : [];
 
   if (channelSlug === "zodiac-general") {
-    return { inline_keyboard: chunkButtons(SIGN_CHANNELS.map((sign) => ({ text: `${sign.emoji} ${sign.name}`, url: links[sign.slug] }))) };
+    return { inline_keyboard: [...ctaRows, ...chunkButtons(SIGN_CHANNELS.map((sign) => ({ text: `${sign.emoji} ${sign.name}`, url: links[sign.slug] })))] };
   }
 
   const otherSigns = SIGN_CHANNELS.filter((sign) => sign.slug !== channelSlug);
   return {
     inline_keyboard: [
+      ...ctaRows,
       [{ text: "🔮 Общий гороскоп", url: links.general }],
       ...chunkButtons(otherSigns.map((sign) => ({ text: `${sign.emoji} ${sign.name}`, url: links[sign.slug] }))),
     ],
   };
 }
 
+function buildWeeklyRetentionCtaRow(channelSlug) {
+  return [
+    buildMiniAppInlineButton(MINI_APP_START_PARAMETERS.week, WEEKLY_RETENTION_CTA_LABELS.week),
+    buildCompatibilityInlineButton(channelSlug, { text: WEEKLY_RETENTION_CTA_LABELS.compatibility }),
+  ].filter(Boolean);
+}
+
 export function validateWeeklyKeyboard(channelSlug, keyboard) {
   const errors = [];
   const buttons = keyboard?.inline_keyboard?.flat() ?? [];
   const links = loadChannelLinks();
+  const ctaLabels = buttons.filter((button) => Object.values(WEEKLY_RETENTION_CTA_LABELS).includes(button.text)).map((button) => button.text);
 
   for (const button of buttons) {
     if (!button.text || !button.url) errors.push(`${channelSlug}: empty button text or url`);
-    if (button.url && !/^https:\/\/t\.me\/[A-Za-z0-9_]+$/.test(button.url)) errors.push(`${channelSlug}: invalid url ${button.url}`);
+    if (button.url && !isValidTelegramButtonUrl(button.url)) errors.push(`${channelSlug}: invalid url ${button.url}`);
+  }
+
+  for (const label of Object.values(WEEKLY_RETENTION_CTA_LABELS)) {
+    if (!buttons.some((button) => button.text === label)) errors.push(`${channelSlug}: missing CTA button ${label}`);
   }
 
   if (channelSlug === "zodiac-general") {
@@ -378,7 +400,7 @@ export function validateWeeklyKeyboard(channelSlug, keyboard) {
     if (buttons.some((button) => button.url === links[channelSlug])) errors.push(`${channelSlug}: includes self-link`);
   }
 
-  return { ok: errors.length === 0, errors, buttonCount: buttons.length };
+  return { ok: errors.length === 0, errors, buttonCount: buttons.length, ctaLabels };
 }
 
 export function getWeeklyTelegramTargetEnv(slug) {
@@ -396,6 +418,24 @@ function chunkButtons(buttons, size = 2) {
     rows.push(buttons.slice(index, index + size));
   }
   return rows;
+}
+
+function isValidTelegramButtonUrl(value) {
+  try {
+    const url = new URL(value);
+    if (url.protocol !== "https:" || url.hostname !== "t.me") return false;
+    if (!/^\/[A-Za-z0-9_]+(?:\/[A-Za-z0-9_/-]+)?$/.test(url.pathname)) return false;
+    for (const key of url.searchParams.keys()) {
+      if (key !== "start" && key !== "startapp") return false;
+    }
+    for (const key of ["start", "startapp"]) {
+      const param = url.searchParams.get(key);
+      if (param && !/^[A-Za-z0-9_-]+$/.test(param)) return false;
+    }
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 function pick(items, seed, offset) {

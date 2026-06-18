@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import process from "process";
-import { buildCompatibilityInlineButton } from "./lib/zodiac-compatibility-bot.mjs";
+import { MINI_APP_START_PARAMETERS, buildCompatibilityInlineButton, buildMiniAppInlineButton } from "./lib/zodiac-compatibility-bot.mjs";
 
 const ZODIAC_EMOJIS = {
   aries: "♈", taurus: "♉", gemini: "♊", cancer: "♋",
@@ -20,6 +20,11 @@ const ZODIAC_ORDER = [
   "libra", "scorpio", "sagittarius", "capricorn", "aquarius", "pisces"
 ];
 
+export const DAILY_RETENTION_CTA_LABELS = Object.freeze({
+  compatibility: "💞 Проверить совместимость",
+  miniApp: "🔮 Открыть Mini App",
+});
+
 function loadChannelLinks() {
   try {
     const configPath = path.join(process.cwd(), "data", "config", "zodiac-channel-links.json");
@@ -33,9 +38,11 @@ function loadChannelLinks() {
 export function buildZodiacNavigationKeyboard(channelId, options = {}) {
   const links = loadChannelLinks();
   const compatibilityButtonOptions = options.previewCompatibilityButton ? { preview: true } : {};
+  const ctaRow = buildDailyRetentionCtaRow(channelId, compatibilityButtonOptions);
   
   if (channelId === "zodiac-general") {
     const keyboard = [];
+    if (ctaRow.length > 0) keyboard.push(ctaRow);
     for (let i = 0; i < ZODIAC_ORDER.length; i += 2) {
       const row = [];
       for (let j = 0; j < 2; j++) {
@@ -46,16 +53,13 @@ export function buildZodiacNavigationKeyboard(channelId, options = {}) {
       }
       if (row.length > 0) keyboard.push(row);
     }
-    const compatibilityButton = buildCompatibilityInlineButton("zodiac-general", compatibilityButtonOptions);
-    if (compatibilityButton) keyboard.push([compatibilityButton]);
     return { inline_keyboard: keyboard };
   } else {
     const keyboard = [];
+    if (ctaRow.length > 0) keyboard.push(ctaRow);
     if (links["general"]) {
       keyboard.push([{ text: "🔮 Общий гороскоп", url: links["general"] }]);
     }
-    const compatibilityButton = buildCompatibilityInlineButton(channelId, compatibilityButtonOptions);
-    if (compatibilityButton) keyboard.push([compatibilityButton]);
     const otherSigns = ZODIAC_ORDER.filter(s => s !== channelId);
     for (let i = 0; i < otherSigns.length; i += 2) {
       const row = [];
@@ -69,6 +73,18 @@ export function buildZodiacNavigationKeyboard(channelId, options = {}) {
     }
     return { inline_keyboard: keyboard };
   }
+}
+
+function buildDailyRetentionCtaRow(channelId, buttonOptions) {
+  return [
+    buildCompatibilityInlineButton(channelId, { ...buttonOptions, text: DAILY_RETENTION_CTA_LABELS.compatibility }),
+    buildMiniAppInlineButton(MINI_APP_START_PARAMETERS.mystic, DAILY_RETENTION_CTA_LABELS.miniApp, buttonOptions),
+  ].filter(Boolean);
+}
+
+export function getZodiacNavigationCtaButtons(replyMarkup) {
+  const labels = new Set(Object.values(DAILY_RETENTION_CTA_LABELS));
+  return (replyMarkup?.inline_keyboard?.flat() ?? []).filter((button) => labels.has(button.text));
 }
 
 

@@ -14,7 +14,7 @@ import {
   releaseLock
 } from "./lib/zodiac-publish-ledger.mjs";
 import { resolveZodiacWeeklyVisualAsset } from "./zodiac-weekly-asset-resolver.mjs";
-import { buildZodiacNavigationKeyboard } from "./zodiac-telegram-publisher.mjs";
+import { DAILY_RETENTION_CTA_LABELS, buildZodiacNavigationKeyboard, getZodiacNavigationCtaButtons } from "./zodiac-telegram-publisher.mjs";
 import { buildZodiacPost } from "./generate-zodiac-plan.mjs";
 import {
   validateZodiacDailyGuidanceUniqueness,
@@ -137,6 +137,9 @@ function createReport(date, mode) {
     textOnly: 0,
     fallbackTextOnly: 0,
     contentValidationErrors: [],
+    ctaRowsChecked: 0,
+    ctaRowsOk: 0,
+    ctaErrors: [],
     ledgerWrites: 0,
     livePublishCalls: 0,
     telegramApiCalls: mode === "DRY-RUN" ? 0 : "live mode requested",
@@ -160,6 +163,8 @@ function printSummary(report) {
   console.log(`TextOnly Posts       : ${report.textOnly}`);
   console.log(`Fallback/TextOnly    : ${report.fallbackTextOnly}`);
   console.log(`Content Errors       : ${report.contentValidationErrors.length}`);
+  console.log(`CTA Rows Checked     : ${report.ctaRowsChecked}/${report.expected}`);
+  console.log(`CTA Rows OK          : ${report.ctaRowsOk}/${report.expected}`);
   console.log(`Ledger Writes        : ${report.ledgerWrites}`);
   console.log(`Live Publish Calls   : ${report.livePublishCalls}`);
   console.log(`Telegram API Calls   : ${report.telegramApiCalls}`);
@@ -172,6 +177,12 @@ function printSummary(report) {
   if (report.contentValidationErrors.length > 0) {
     console.log("--- Content Validation Errors ---");
     for (const error of report.contentValidationErrors) {
+      console.log(`- ${error}`);
+    }
+  }
+  if (report.ctaErrors.length > 0) {
+    console.log("--- CTA Errors ---");
+    for (const error of report.ctaErrors) {
       console.log(`- ${error}`);
     }
   }
@@ -292,6 +303,16 @@ function main() {
         const replyMarkup = buildZodiacNavigationKeyboard(slug, { previewCompatibilityButton: true });
         if (replyMarkup && replyMarkup.inline_keyboard) {
           const buttons = replyMarkup.inline_keyboard.flat();
+          const ctaButtons = getZodiacNavigationCtaButtons(replyMarkup);
+          const ctaLabels = ctaButtons.map((button) => button.text);
+          const missingCtaLabels = Object.values(DAILY_RETENTION_CTA_LABELS).filter((label) => !ctaLabels.includes(label));
+          report.ctaRowsChecked += 1;
+          if (ctaButtons.length === Object.values(DAILY_RETENTION_CTA_LABELS).length && ctaButtons.every((button) => Boolean(button.url)) && missingCtaLabels.length === 0) {
+            report.ctaRowsOk += 1;
+          } else {
+            report.ctaErrors.push(`${slug}: CTA buttons invalid or missing (${missingCtaLabels.join(", ") || "url missing"})`);
+          }
+          console.log(`  -> CTA buttons: ${ctaButtons.map(b => `${b.text}=${b.url}`).join(" | ")}`);
           console.log(`  -> button labels: ${buttons.map(b => b.text).join(" | ")}`);
           console.log(`  -> button URL presence: ${buttons.every(b => !!b.url)}`);
           console.log(`  -> reply_markup preview: ${JSON.stringify(replyMarkup)}`);
@@ -356,7 +377,7 @@ function main() {
       }
     }
     printSummary(report);
-    if (report.contentValidationErrors.length > 0) {
+    if (report.contentValidationErrors.length > 0 || report.ctaErrors.length > 0) {
       process.exit(1);
     }
   } finally {

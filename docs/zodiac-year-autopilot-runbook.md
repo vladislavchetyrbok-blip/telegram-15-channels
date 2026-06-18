@@ -89,6 +89,38 @@ Expected while weekly is still prepared-only:
 
 Do not enable weekly live schedule from this runbook. Enabling weekly publishing requires a separate plan that confirms daily stability, weekly ledger safety, channel targets, and duplicate-block behavior.
 
+## Telegram CTA And Mini App Start Params
+
+Daily and weekly posts keep the existing channel navigation buttons and add a small retention CTA row at the top of the inline keyboard.
+
+Daily CTA row:
+
+- `💞 Проверить совместимость` opens the Mini App with `startapp=compat` or `startapp=compat_{slug}`.
+- `🔮 Открыть Mini App` opens the Mini App with `startapp=mystic`.
+
+Weekly CTA row:
+
+- `📅 Прогноз недели` opens the Mini App with `startapp=week`.
+- `💞 Совместимость` opens the Mini App with `startapp=compat` or `startapp=compat_{slug}`.
+
+Supported Mini App start params:
+
+- `compat`
+- `compat_{slug}`
+- `mystic`
+- `vip`
+- `birth_matrix`
+- `week`
+
+`vip` is supported for deep links and internal navigation, but Telegram posts avoid adding an extra VIP button by default to keep the keyboard compact. VIP free access remains enabled until `2026-09-17`; payments and Telegram Stars remain off.
+
+Dry-run commands print CTA summaries and must still show `Telegram API Calls 0` and `Ledger Writes 0`:
+
+```bash
+npm run zodiac:publish-date:dry -- --date YYYY-MM-DD
+npm run zodiac:weekly:dry -- --week YYYY-Www
+```
+
 ## How Ledger Prevents Duplicates
 
 The key is always:

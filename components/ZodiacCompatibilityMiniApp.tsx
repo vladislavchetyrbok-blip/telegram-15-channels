@@ -164,10 +164,12 @@ export function ZodiacCompatibilityMiniApp({
   const telegram = useTelegramWebApp();
   const resolvedMode = normalizeMode(initialMode);
   const hintSignSlug = useMemo(() => resolveInitialSign(initialSign, startParam), [initialSign, startParam]);
+  const initialActiveTab = useMemo(() => resolveInitialHubTab(startParam), [startParam]);
+  const initialMoreFeature = useMemo(() => resolveInitialMoreFeature(startParam), [startParam]);
   const hintSign = hintSignSlug ? findSign(hintSignSlug) : null;
   const [appDateKey, setAppDateKey] = useState<string | null>(null);
   const [selectedSignSlug, setSelectedSignSlug] = useState("");
-  const [activeTab, setActiveTab] = useState<HubTab>("today");
+  const [activeTab, setActiveTab] = useState<HubTab>(initialActiveTab);
   const [mode, setMode] = useState<Mode>(resolvedMode);
   const [relationshipMode, setRelationshipMode] = useState<RelationshipMode>("love");
   const [step, setStep] = useState<WizardStep>(1);
@@ -332,7 +334,7 @@ export function ZodiacCompatibilityMiniApp({
   function chooseSign(slug: string) {
     triggerTelegramHaptic("selection", "sign", slug);
     setSelectedSignSlug(slug);
-    setActiveTab("today");
+    setActiveTab(initialActiveTab);
     setSelf((current) => ({ ...current, sign: !current.sign || current.sign === selectedSignSlug ? slug : current.sign }));
     trackZodiacMiniAppEvent("sign_selected", analyticsPayload({ sign: slug }));
   }
@@ -550,6 +552,7 @@ export function ZodiacCompatibilityMiniApp({
                     publicMode={publicMode}
                     appDateKey={appDateKey}
                     category="forecasts"
+                    initialFeature={initialActiveTab === "forecasts" ? initialMoreFeature : null}
                     selectedSign={selectedSign}
                     selectedSignSlug={selectedSignSlug}
                     self={self}
@@ -578,6 +581,7 @@ export function ZodiacCompatibilityMiniApp({
                   publicMode={publicMode}
                   appDateKey={appDateKey}
                   category="vip"
+                  initialFeature={initialActiveTab === "vip" ? initialMoreFeature : null}
                   selectedSign={selectedSign}
                   selectedSignSlug={selectedSignSlug}
                   self={self}
@@ -605,6 +609,7 @@ export function ZodiacCompatibilityMiniApp({
                   publicMode={publicMode}
                   appDateKey={appDateKey}
                   category="profile"
+                  initialFeature={initialActiveTab === "profile" ? initialMoreFeature : null}
                   selectedSign={selectedSign}
                   selectedSignSlug={selectedSignSlug}
                   self={self}
@@ -632,6 +637,7 @@ export function ZodiacCompatibilityMiniApp({
                   publicMode={publicMode}
                   appDateKey={appDateKey}
                   category="mystic"
+                  initialFeature={initialActiveTab === "mystic" ? initialMoreFeature : null}
                   selectedSign={selectedSign}
                   selectedSignSlug={selectedSignSlug}
                   self={self}
@@ -857,6 +863,7 @@ function MoreSection({
   publicMode,
   appDateKey,
   category,
+  initialFeature,
   selectedSign,
   selectedSignSlug,
   self,
@@ -881,6 +888,7 @@ function MoreSection({
   publicMode: boolean;
   appDateKey: string | null;
   category: MenuFeatureGroup;
+  initialFeature?: MoreFeatureId | null;
   selectedSign: ZodiacSign;
   selectedSignSlug: string;
   self: PersonState;
@@ -910,7 +918,12 @@ function MoreSection({
   const [giftRecipientType, setGiftRecipientType] = useState<GiftRecipientType>("partner");
   const [nameCompatibilitySelf, setNameCompatibilitySelf] = useState("");
   const [nameCompatibilityPartner, setNameCompatibilityPartner] = useState("");
-  const [activeMoreFeature, setActiveMoreFeature] = useState<MoreFeatureId>(() => defaultMenuFeatureByGroup[category]);
+  const categoryFeatures = menuFeatureTabs.filter((item) => item.group === category);
+  const defaultMoreFeature = defaultMenuFeatureByGroup[category];
+  const [activeMoreFeature, setActiveMoreFeature] = useState<MoreFeatureId>(() => {
+    const categoryHasInitialFeature = initialFeature ? categoryFeatures.some((item) => item.id === initialFeature) || (category === "vip" && vipDetailFeatureIds.has(initialFeature)) : false;
+    return categoryHasInitialFeature && initialFeature ? initialFeature : defaultMoreFeature;
+  });
   const [natalPerson, setNatalPerson] = useState<PersonState>(() => ({
     ...createInitialPerson(self.sign || selectedSignSlug, self.gender, self.knowsTime, self.selectedCityId),
     name: self.name,
@@ -942,9 +955,7 @@ function MoreSection({
   const nameCompatibility = buildNameCompatibilityProfile(nameCompatibilitySelf, nameCompatibilityPartner, selfSign, dateKey);
   const archetype = buildPersonalityArchetypeProfile(natalPerson, selfSign, chineseHoroscope, numerology, dailyTalisman, dateKey);
   const monthForecast = selfSign ? buildPersonalMonthForecast(selfSign, dateKey, result) : null;
-  const categoryFeatures = menuFeatureTabs.filter((item) => item.group === category);
   const selectedMoreFeature = categoryFeatures.find((item) => item.id === activeMoreFeature) ?? categoryFeatures[0] ?? menuFeatureTabs[0];
-  const defaultMoreFeature = defaultMenuFeatureByGroup[category];
   const telegramBackVisible = telegram.isTelegramWebApp && activeMoreFeature !== defaultMoreFeature;
   const returnToMoreMenu = useCallback(() => {
     onHaptic("impact", "back", activeMoreFeature);
@@ -3096,6 +3107,23 @@ function normalizeMode(value?: string | null): Mode {
   return normalized === "fast" || normalized === "personal" || normalized === "precise" ? normalized : "precise";
 }
 
+function resolveInitialHubTab(startParam?: string | null): HubTab {
+  const normalized = normalizeStartParam(startParam);
+  if (!normalized) return "today";
+  if (normalized === "compat" || normalized.startsWith("compat_")) return "love";
+  if (normalized === "mystic" || normalized === "birth_matrix") return "mystic";
+  if (normalized === "vip") return "vip";
+  if (normalized === "week") return "forecasts";
+  return "today";
+}
+
+function resolveInitialMoreFeature(startParam?: string | null): MoreFeatureId | null {
+  const normalized = normalizeStartParam(startParam);
+  if (normalized === "birth_matrix") return "birthMatrix";
+  if (normalized === "week") return "weekForecast";
+  return null;
+}
+
 function resolveInitialSign(sign?: string | null, startParam?: string | null) {
   const fromStart = parseCompatibilityStartParam(startParam);
   const normalized = String(sign || fromStart || "").trim().toLowerCase();
@@ -3103,11 +3131,15 @@ function resolveInitialSign(sign?: string | null, startParam?: string | null) {
 }
 
 function parseCompatibilityStartParam(value?: string | null) {
-  const normalized = String(value || "").trim().toLowerCase();
+  const normalized = normalizeStartParam(value);
   if (!normalized || normalized === "compat") return null;
   const match = normalized.match(/^compat_([a-z-]+)$/);
   if (!match) return null;
   return signSlugs.has(match[1]) ? match[1] : null;
+}
+
+function normalizeStartParam(value?: string | null) {
+  return String(value || "").trim().toLowerCase();
 }
 
 function getDateOrdinal(dateIso: string) {

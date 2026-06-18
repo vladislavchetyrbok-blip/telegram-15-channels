@@ -38,6 +38,22 @@ Weekly dry-run must show `Weekly Range Lines 13/13`, `Telegram API Calls 0`, `Li
 
 Weekly live publishing can be enabled only by a separate decision after daily scheduler stability is confirmed.
 
+## Retention CTA Checks
+
+Daily and weekly dry-runs validate the Telegram inline keyboard retention CTA row without making Telegram API calls.
+
+- Daily CTA: `💞 Проверить совместимость` and `🔮 Открыть Mini App`.
+- Weekly CTA: `📅 Прогноз недели` and `💞 Совместимость`.
+- Supported Mini App start params: `compat`, `compat_{slug}`, `mystic`, `vip`, `birth_matrix`, `week`.
+- VIP remains free until `2026-09-17`; payments and Telegram Stars remain off.
+
+Expected dry-run safety counters remain:
+
+- `Telegram API Calls 0`;
+- `Ledger Writes 0`;
+- `CTA Rows Checked 13/13`;
+- `CTA Rows OK 13/13`.
+
 ## Manual Recovery Procedure
 If both crons fail or the pipeline stalls:
 1. Verify the current ledger state using `npm run zodiac:status` or checking `data/state/zodiac-publish-ledger.json`.

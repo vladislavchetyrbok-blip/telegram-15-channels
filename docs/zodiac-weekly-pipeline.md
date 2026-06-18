@@ -126,10 +126,15 @@ Dry-run mode writes 0 weekly ledger entries. Live mode must skip any `week+slug`
 
 Weekly posts use the same navigation rules as daily posts:
 
+- every weekly post starts the inline keyboard with a compact CTA row:
+  - `📅 Прогноз недели` -> Mini App `startapp=week`;
+  - `💞 Совместимость` -> Mini App `startapp=compat` or `startapp=compat_{slug}`;
 - the general weekly post has 12 sign buttons;
 - each sign weekly post has the general channel button;
 - each sign weekly post includes the other 11 signs;
 - each sign weekly post excludes itself.
+
+Weekly dry-run prints the CTA labels for each slug and the summary counters `CTA Rows Checked` / `CTA Rows OK`. The weekly lane is still prepared-only; no weekly live schedule is enabled.
 
 ## Safety
 

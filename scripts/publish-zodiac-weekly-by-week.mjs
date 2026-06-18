@@ -47,6 +47,9 @@ function createReport(plan, mode) {
     duplicateBlocked: 0,
     weeklyRangeMatched: 0,
     weeklyRangeMissing: 0,
+    ctaRowsChecked: 0,
+    ctaRowsOk: 0,
+    ctaErrors: [],
     image: 0,
     textOnly: 0,
     ledgerWrites: 0,
@@ -71,6 +74,8 @@ function printSummary(report) {
   console.log(`Duplicate Blocked    : ${report.duplicateBlocked}`);
   console.log(`Weekly Range Lines   : ${report.weeklyRangeMatched}/${report.expected}`);
   console.log(`Weekly Range Missing : ${report.weeklyRangeMissing}`);
+  console.log(`CTA Rows Checked     : ${report.ctaRowsChecked}/${report.expected}`);
+  console.log(`CTA Rows OK          : ${report.ctaRowsOk}/${report.expected}`);
   console.log(`Image Posts          : ${report.image}`);
   console.log(`TextOnly Posts       : ${report.textOnly}`);
   console.log(`Ledger Writes        : ${report.ledgerWrites}`);
@@ -79,6 +84,12 @@ function printSummary(report) {
   console.log("--- Per Slug ---");
   for (const row of report.perSlug) {
     console.log(`- ${row.slug}: action=${row.action}, media=${row.mediaMode}, ledger=${row.ledgerStatus}, range=${row.firstLineStatus}, buttons=${row.buttonStatus}`);
+  }
+  if (report.ctaErrors.length > 0) {
+    console.log("--- CTA Errors ---");
+    for (const error of report.ctaErrors) {
+      console.log(`- ${error}`);
+    }
   }
   console.log("=====================================");
 }
@@ -170,6 +181,12 @@ async function main() {
     const firstLineHasRange = post.firstLine.includes(plan.weekRange);
     if (firstLineHasRange) report.weeklyRangeMatched += 1;
     else report.weeklyRangeMissing += 1;
+    report.ctaRowsChecked += 1;
+    if (post.buttonStatus.ok && post.buttonStatus.ctaLabels?.length >= 2) {
+      report.ctaRowsOk += 1;
+    } else {
+      report.ctaErrors.push(`${post.slug}: CTA buttons invalid or missing (${post.buttonStatus.ctaLabels?.join(" | ") || "none"})`);
+    }
 
     const entry = getWeeklyLedgerEntry(ledger, plan.week, post.slug);
     const status = normalizeWeeklyStatus(entry?.status);
@@ -202,6 +219,7 @@ async function main() {
       report.perSlug.push({ slug: post.slug, action: "dry_run_would_publish", mediaMode: post.mediaMode, ledgerStatus: status || "missing", firstLine: post.firstLine, firstLineStatus: "OK", buttonStatus: "OK" });
       console.log(`[dry_run_would_publish] ${post.slug} | ${plan.week} | Mode: ${post.mediaMode}`);
       console.log(`  -> first line: ${post.firstLine}`);
+      console.log(`  -> CTA buttons: ${(post.buttonStatus.ctaLabels ?? []).join(" | ")}`);
       console.log(`  -> button count: ${post.buttonStatus.buttonCount}`);
       console.log(`  -> button URL presence: ${post.keyboard.inline_keyboard.flat().every((button) => Boolean(button.url))}`);
       continue;
@@ -232,7 +250,7 @@ async function main() {
   }
 
   printSummary(report);
-  if (report.weeklyRangeMissing > 0) {
+  if (report.weeklyRangeMissing > 0 || report.ctaErrors.length > 0) {
     process.exitCode = 1;
   }
 }

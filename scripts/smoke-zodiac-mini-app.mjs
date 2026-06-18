@@ -75,6 +75,7 @@ async function main() {
   await navigate(client, server.url);
   await installSmokeHelpers(client);
   await runBrowserModeSmoke(client, report);
+  await runStartParamSmoke(client, server.url, report);
 
   report.telegramMock = "RUNNING";
   await installTelegramMock(client);
@@ -142,6 +143,25 @@ async function runBrowserModeSmoke(client, report) {
   report.birthMatrixChecked = true;
 
   report.browserMode = "PASS";
+}
+
+async function runStartParamSmoke(client, baseUrl, report) {
+  const cases = [
+    { param: "compat", sign: "Овен", pattern: /Совместимость|Шаг 1/, message: "startapp=compat did not open Compatibility after sign selection." },
+    { param: "mystic", sign: "Овен", pattern: /Мистика|Ангельские числа|11:11/, message: "startapp=mystic did not open Mystic after sign selection." },
+    { param: "vip", sign: "Овен", pattern: /VIP открыт бесплатно|Ранний доступ до 17\.09\.2026/, message: "startapp=vip did not open VIP after sign selection." },
+    { param: "birth_matrix", sign: "Овен", pattern: /Матрица|дд\.мм\.гггг|Дата/, message: "startapp=birth_matrix did not open Birth Matrix after sign selection." },
+    { param: "week", sign: "Овен", pattern: /Неделя|Прогнозы|Удачные дни/, message: "startapp=week did not open weekly forecasts after sign selection." },
+  ];
+
+  for (const item of cases) {
+    await navigate(client, withStartParam(baseUrl, item.param));
+    await installSmokeHelpers(client);
+    await waitForPageText(client, /Выберите знак|Зодиакальный центр/, `startapp=${item.param} home did not render.`);
+    await click(client, item.sign);
+    await waitForPageText(client, item.pattern, item.message);
+    report.startParamsChecked.push(item.param);
+  }
 }
 
 async function runTelegramMockSmoke(client, report) {
@@ -778,6 +798,13 @@ function withSmokeParam(rawUrl, mode) {
   return url.href;
 }
 
+function withStartParam(rawUrl, startParam) {
+  const url = new URL(rawUrl);
+  url.searchParams.set("startapp", startParam);
+  url.searchParams.set("smoke", `startapp_${startParam}`);
+  return url.href;
+}
+
 function parseArgs(args) {
   const parsed = {};
   for (let index = 0; index < args.length; index += 1) {
@@ -811,6 +838,7 @@ function createReport() {
     telegramBackButtonChecked: false,
     telegramHapticsChecked: false,
     birthMatrixChecked: false,
+    startParamsChecked: [],
     consoleErrors: [],
     runtimeErrors: [],
     networkErrors: [],
@@ -838,6 +866,7 @@ function printSummary(status, report) {
   console.log(`Giveaways locked: ${report.giveawaysLocked ? "YES" : "NO"}`);
   console.log(`Mystic checked: ${report.mysticChecked >= 3 ? "YES" : "NO"} (${report.mysticChecked}/3)`);
   console.log(`Birth Matrix / Матрица судьбы checked: ${report.birthMatrixChecked ? "YES" : "NO"}`);
+  console.log(`Startapp params checked: ${report.startParamsChecked.length ? report.startParamsChecked.join(", ") : "NO"}`);
   console.log(`Console errors: ${report.consoleErrors.length}`);
   console.log(`Runtime errors: ${report.runtimeErrors.length}`);
   console.log(`HTTP/network errors: ${report.networkErrors.length}`);

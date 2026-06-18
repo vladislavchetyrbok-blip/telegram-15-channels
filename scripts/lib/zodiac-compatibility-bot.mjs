@@ -7,6 +7,13 @@ export const DEFAULT_COMPATIBILITY_BOT_USERNAME_ENV = "COMPATIBILITY_BOT_USERNAM
 export const DEFAULT_COMPATIBILITY_MINI_APP_URL_ENV = "COMPATIBILITY_MINI_APP_URL";
 export const DEFAULT_COMPATIBILITY_MINI_APP_NAME_ENV = "COMPATIBILITY_MINI_APP_NAME";
 export const DEFAULT_COMPATIBILITY_BUTTON_TEXT = "💞 Совместимость знаков";
+export const MINI_APP_START_PARAMETERS = Object.freeze({
+  compat: "compat",
+  mystic: "mystic",
+  vip: "vip",
+  birthMatrix: "birth_matrix",
+  week: "week",
+});
 
 const ZODIAC_SIGN_SLUGS = new Set([
   "aries",
@@ -117,6 +124,15 @@ export function buildCompatibilityStartParameter(channelId) {
   return config.startParameters.signTemplate.replace("{slug}", slug);
 }
 
+export function normalizeMiniAppStartParameter(value) {
+  const normalized = String(value || "").trim().toLowerCase();
+  if (!normalized) return null;
+  if (Object.values(MINI_APP_START_PARAMETERS).includes(normalized)) return normalized;
+  const compatMatch = normalized.match(/^compat_([a-z-]+)$/);
+  if (compatMatch && ZODIAC_SIGN_SLUGS.has(compatMatch[1])) return normalized;
+  return null;
+}
+
 function appendQuery(url, key, value) {
   const parsed = new URL(url);
   parsed.searchParams.set(key, value);
@@ -202,9 +218,104 @@ export function buildCompatibilityInlineButton(channelId, options = {}) {
 
   const url = link.url || (preview ? link.previewUrl : null);
   if (!url) return null;
+  return { text: options.text || link.text, url };
+}
+
+export function resolveMiniAppLaunchTarget(startParameter, text, { env = process.env } = {}) {
+  const start = normalizeMiniAppStartParameter(startParameter);
+  const config = loadCompatibilityBotConfig();
+  const miniAppUrlEnv = config.miniAppUrlEnv || DEFAULT_COMPATIBILITY_MINI_APP_URL_ENV;
+  const miniAppNameEnv = config.miniAppNameEnv || DEFAULT_COMPATIBILITY_MINI_APP_NAME_ENV;
+  const usernameResult = resolveCompatibilityBotUsername({ env });
+  const liveButtonEnabled = config.liveChannelPostsEnabled === true;
+  const miniAppUrl = normalizeCompatibilityMiniAppUrl(env[miniAppUrlEnv]) || normalizeCompatibilityMiniAppUrl(config.compatibilityMiniAppUrl) || normalizeCompatibilityMiniAppUrl(config.miniAppUrl);
+  const miniAppName = normalizeCompatibilityMiniAppName(env[miniAppNameEnv]) || normalizeCompatibilityMiniAppName(config.compatibilityMiniAppName) || normalizeCompatibilityMiniAppName(config.miniAppName);
+  const namedDirectLinkEnabled = config.namedDirectLinkMiniAppEnabled === true;
+  const publicPreviewUrl = start && miniAppUrl ? appendQuery(miniAppUrl, "startapp", start) : null;
+  const disabledWarning = "Mini App launch target is configured, but liveChannelPostsEnabled=false; live channel buttons remain omitted until explicit approval.";
+
+  if (!start) {
+    return {
+      ok: false,
+      url: null,
+      previewUrl: null,
+      start: null,
+      text,
+      targetType: "invalid_start_parameter",
+      warning: `Invalid Mini App start parameter: ${startParameter}`,
+      envName: null,
+    };
+  }
+
+  if (usernameResult.ok && namedDirectLinkEnabled && miniAppName) {
+    const url = `https://t.me/${usernameResult.username}/${miniAppName}?startapp=${encodeURIComponent(start)}`;
+    return {
+      ok: liveButtonEnabled,
+      url: liveButtonEnabled ? url : null,
+      previewUrl: url,
+      start,
+      text,
+      targetType: liveButtonEnabled ? "named_mini_app" : "named_mini_app_disabled",
+      warning: liveButtonEnabled ? null : disabledWarning,
+      envName: `${usernameResult.envName}+${miniAppNameEnv}`,
+    };
+  }
+
+  if (usernameResult.ok && miniAppUrl) {
+    const url = `https://t.me/${usernameResult.username}?startapp=${encodeURIComponent(start)}`;
+    return {
+      ok: liveButtonEnabled,
+      url: liveButtonEnabled ? url : null,
+      previewUrl: url,
+      start,
+      text,
+      targetType: liveButtonEnabled ? "main_mini_app" : "main_mini_app_disabled",
+      warning: liveButtonEnabled ? null : disabledWarning,
+      envName: `${usernameResult.envName}+${miniAppUrlEnv}`,
+    };
+  }
+
+  if (usernameResult.ok) {
+    const url = `https://t.me/${usernameResult.username}?start=${encodeURIComponent(start)}`;
+    return {
+      ok: liveButtonEnabled,
+      url: liveButtonEnabled ? url : null,
+      previewUrl: url,
+      start,
+      text,
+      targetType: liveButtonEnabled ? "bot_deep_link" : "bot_deep_link_disabled",
+      warning: liveButtonEnabled ? null : disabledWarning,
+      envName: usernameResult.envName,
+    };
+  }
+
+  const previewUrl = publicPreviewUrl || `https://t.me/${usernameResult.envName}?start=${encodeURIComponent(start)}`;
+  return {
+    ok: false,
+    url: null,
+    previewUrl,
+    start,
+    text,
+    targetType: "missing_configuration",
+    warning: `${usernameResult.envName} must be configured before live Mini App buttons appear. ${miniAppNameEnv} enables the Telegram Mini App path; ${miniAppUrlEnv} is the public /compatibility URL for Mini App setup.`,
+    envName: usernameResult.envName,
+  };
+}
+
+export function buildMiniAppInlineButton(startParameter, text, options = {}) {
+  const link = resolveMiniAppLaunchTarget(startParameter, text, options);
+  const preview = options.preview === true || options.allowPreview === true;
+  if (!link.ok && !preview) return null;
+
+  const url = link.url || (preview ? link.previewUrl : null);
+  if (!url) return null;
   return { text: link.text, url };
 }
 
 export function getCompatibilityButtonReport(channelId, options = {}) {
   return buildCompatibilityDeepLink(channelId, options);
+}
+
+export function getMiniAppButtonReport(startParameter, text, options = {}) {
+  return resolveMiniAppLaunchTarget(startParameter, text, options);
 }

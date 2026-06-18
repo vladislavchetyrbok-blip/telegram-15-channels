@@ -248,9 +248,14 @@ export function zodiacAnalyticsScoreTier(score: number): ZodiacAnalyticsScoreTie
 }
 
 export function zodiacAnalyticsStartappType(startParam?: string | null) {
-  if (!startParam) return "none";
-  if (startParam === "compat") return "compat_general";
-  if (/^compat_[a-z]+$/.test(startParam)) return "compat_sign";
+  const normalized = String(startParam || "").trim().toLowerCase();
+  if (!normalized) return "none";
+  if (normalized === "compat") return "compat_general";
+  if (/^compat_[a-z]+$/.test(normalized)) return "compat_sign";
+  if (normalized === "mystic") return "mystic";
+  if (normalized === "vip") return "vip";
+  if (normalized === "birth_matrix") return "birth_matrix";
+  if (normalized === "week") return "week";
   return "other";
 }
 

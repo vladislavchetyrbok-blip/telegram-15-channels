@@ -19,6 +19,7 @@ npm run zodiac:miniapp:smoke -- --url http://localhost:3000/compatibility
 - `/compatibility` returns HTTP 200 and renders the Mini App home screen.
 - Browser mode works without `window.Telegram`.
 - Sign selection works.
+- Mini App start params render the intended section after sign selection: `compat`, `mystic`, `vip`, `birth_matrix`, and `week`.
 - Basic compatibility flow reaches a stable result state without runtime errors.
 - VIP tab opens, free access until `17.09.2026` is visible, and all 11 active VIP cards open non-empty detail screens.
 - Giveaways remains locked/disabled.
@@ -47,6 +48,7 @@ VIP cards checked: 11/11
 Giveaways locked: YES
 Mystic checked: YES
 Birth Matrix / Матрица судьбы checked: YES
+Startapp params checked: compat, mystic, vip, birth_matrix, week
 Console errors: 0
 Runtime errors: 0
 HTTP/network errors: 0
