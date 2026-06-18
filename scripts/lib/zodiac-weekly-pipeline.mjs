@@ -198,12 +198,14 @@ export function markWeeklyEntry(week, slug, status, metadata = {}) {
 export function generateWeeklyPosts(weekCode) {
   const week = parseWeekCode(weekCode);
   if (!week.ok) throw new Error(week.error);
+  const weekRange = formatWeeklyDateRange(week.startDate, week.endDate);
 
   return {
     week: week.week,
     startDate: week.startDate,
     endDate: week.endDate,
-    posts: ZODIAC_WEEKLY_CHANNELS.map((channel, index) => buildPostForChannel(channel, week, index)),
+    weekRange,
+    posts: ZODIAC_WEEKLY_CHANNELS.map((channel, index) => buildPostForChannel(channel, week, weekRange, index)),
   };
 }
 
@@ -214,12 +216,15 @@ export function buildWeeklyReport(weekCode) {
     week: plan.week,
     startDate: plan.startDate,
     endDate: plan.endDate,
+    weekRange: plan.weekRange,
     expectedPosts: plan.posts.length,
     imagePosts: 0,
     textOnlyPosts: 0,
     failed: 0,
     skipped: 0,
     duplicateBlocked: 0,
+    weeklyRangeStatus: "OK",
+    weeklyRangeMatched: 0,
     buttonStatus: "OK",
     ledgerStatus: "OK",
     perChannel: [],
@@ -241,10 +246,16 @@ export function buildWeeklyReport(weekCode) {
     }
     if (failed) report.failed += 1;
     if (!post.buttonStatus.ok) report.buttonStatus = "PROBLEMS";
+    const firstLineHasRange = post.firstLine.includes(plan.weekRange);
+    if (firstLineHasRange) report.weeklyRangeMatched += 1;
+    else report.weeklyRangeStatus = "PROBLEMS";
 
     report.perChannel.push({
       slug: post.slug,
       mediaMode: post.mediaMode,
+      firstLine: post.firstLine,
+      weekRange: post.weekRange,
+      firstLineStatus: firstLineHasRange ? "OK" : "MISSING_RANGE",
       ledgerStatus: status || "missing",
       action: duplicateBlocked ? "skip_duplicate" : failed ? "skip_failed" : "ready",
       buttonStatus: post.buttonStatus.ok ? "OK" : "PROBLEMS",
@@ -256,12 +267,13 @@ export function buildWeeklyReport(weekCode) {
   return { report, ledgerProblems };
 }
 
-function buildPostForChannel(channel, week, index) {
+function buildPostForChannel(channel, week, weekRange, index) {
   const asset = resolveZodiacWeeklyVisualAsset(channel.slug, week.startDate, "weekly");
   const keyboard = buildWeeklyNavigationKeyboard(channel.slug);
   const text = channel.slug === "zodiac-general"
-    ? buildGeneralWeeklyText(week)
-    : buildSignWeeklyText(channel, week, index);
+    ? buildGeneralWeeklyText(week, weekRange)
+    : buildSignWeeklyText(channel, week, weekRange, index);
+  const firstLine = text.split("\n")[0] ?? "";
 
   return {
     slug: channel.slug,
@@ -269,6 +281,8 @@ function buildPostForChannel(channel, week, index) {
     week: week.week,
     startDate: week.startDate,
     endDate: week.endDate,
+    weekRange,
+    firstLine,
     text,
     imagePath: asset.path ?? null,
     imageRelative: asset.relative ?? null,
@@ -280,10 +294,10 @@ function buildPostForChannel(channel, week, index) {
   };
 }
 
-function buildGeneralWeeklyText(week) {
+function buildGeneralWeeklyText(week, weekRange) {
   const seed = hashSeed(`${week.week}:zodiac-general`);
   return [
-    "🔮 Гороскоп на неделю",
+    `<b>✨ Общий гороскоп на неделю ${weekRange}</b>`,
     "",
     "Главная энергия недели:",
     pick(GENERAL_LINES.energy, seed, 1),
@@ -304,10 +318,10 @@ function buildGeneralWeeklyText(week) {
   ].join("\n");
 }
 
-function buildSignWeeklyText(sign, week, index) {
+function buildSignWeeklyText(sign, week, weekRange, index) {
   const seed = hashSeed(`${week.week}:${sign.slug}`);
   return [
-    `${sign.emoji} ${sign.name} — гороскоп на неделю`,
+    `<b>${sign.emoji} ${sign.name} | Гороскоп на неделю ${weekRange}</b>`,
     "",
     "Главная тема недели:",
     `На первый план выходят ${sign.tone}. ${pick(GENERAL_LINES.energy, seed, 1)}`,
@@ -420,4 +434,22 @@ function getIsoWeekFromDate(date) {
 
 function formatDate(date) {
   return date.toISOString().slice(0, 10);
+}
+
+export function formatWeeklyDateRange(startDate, endDate) {
+  const start = parseDateKey(startDate);
+  const end = parseDateKey(endDate);
+  if (!start || !end) throw new Error(`Invalid weekly date range: ${startDate} -> ${endDate}`);
+
+  if (start.year === end.year) {
+    return `${start.day}.${start.month}–${end.day}.${end.month}.${end.year}`;
+  }
+
+  return `${start.day}.${start.month}.${start.year}–${end.day}.${end.month}.${end.year}`;
+}
+
+function parseDateKey(value) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value || ""));
+  if (!match) return null;
+  return { year: match[1], month: match[2], day: match[3] };
 }

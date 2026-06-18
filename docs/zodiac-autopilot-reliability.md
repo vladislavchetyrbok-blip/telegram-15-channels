@@ -24,6 +24,20 @@ This checks `.github/workflows/zodiac-scheduler.yml`, the five cron attempts, sc
 
 If `GITHUB_TOKEN` or `GH_TOKEN` is not configured, the monitor still completes static and local checks and reports: `GitHub API token not configured; static workflow checks completed`.
 
+## Weekly Lane
+
+Weekly Zodiac publishing is currently dry-run/prepared only. No weekly live schedule is enabled.
+
+Use:
+
+```bash
+npm run zodiac:weekly:dry -- --week YYYY-Www
+```
+
+Weekly dry-run must show `Weekly Range Lines 13/13`, `Telegram API Calls 0`, `Live Publish Calls 0`, and `Ledger Writes 0`. The first line of every weekly post includes the explicit week range, for example `15.06–21.06.2026`, calculated from `--week` rather than system time.
+
+Weekly live publishing can be enabled only by a separate decision after daily scheduler stability is confirmed.
+
 ## Manual Recovery Procedure
 If both crons fail or the pipeline stalls:
 1. Verify the current ledger state using `npm run zodiac:status` or checking `data/state/zodiac-publish-ledger.json`.

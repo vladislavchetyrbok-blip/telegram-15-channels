@@ -28,6 +28,7 @@ function main() {
   console.log("=== Zodiac Weekly Post Generator ===");
   console.log(`Week              : ${plan.week}`);
   console.log(`Period            : ${plan.startDate} -> ${plan.endDate}`);
+  console.log(`Week Range        : ${plan.weekRange}`);
   console.log(`Posts             : ${plan.posts.length}`);
   console.log("External AI Calls : 0");
   console.log("Telegram API Calls: 0");

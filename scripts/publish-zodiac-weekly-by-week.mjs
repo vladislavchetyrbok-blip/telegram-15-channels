@@ -37,12 +37,16 @@ function createReport(plan, mode) {
   return {
     week: plan.week,
     period: `${plan.startDate} -> ${plan.endDate}`,
+    weekRange: plan.weekRange,
     mode,
     expected: plan.posts.length,
+    wouldPublish: 0,
     published: 0,
     failed: 0,
     skipped: 0,
     duplicateBlocked: 0,
+    weeklyRangeMatched: 0,
+    weeklyRangeMissing: 0,
     image: 0,
     textOnly: 0,
     ledgerWrites: 0,
@@ -57,12 +61,16 @@ function printSummary(report) {
   console.log("=== Zodiac Weekly Publish Summary ===");
   console.log(`Week                 : ${report.week}`);
   console.log(`Period               : ${report.period}`);
+  console.log(`Week Range           : ${report.weekRange}`);
   console.log(`Mode                 : ${report.mode}`);
   console.log(`Expected             : ${report.expected}`);
+  console.log(`Would Publish        : ${report.wouldPublish}`);
   console.log(`Published This Run   : ${report.published}`);
   console.log(`Failed               : ${report.failed}`);
   console.log(`Skipped              : ${report.skipped}`);
   console.log(`Duplicate Blocked    : ${report.duplicateBlocked}`);
+  console.log(`Weekly Range Lines   : ${report.weeklyRangeMatched}/${report.expected}`);
+  console.log(`Weekly Range Missing : ${report.weeklyRangeMissing}`);
   console.log(`Image Posts          : ${report.image}`);
   console.log(`TextOnly Posts       : ${report.textOnly}`);
   console.log(`Ledger Writes        : ${report.ledgerWrites}`);
@@ -70,7 +78,7 @@ function printSummary(report) {
   console.log(`Telegram API Calls   : ${report.telegramApiCalls}`);
   console.log("--- Per Slug ---");
   for (const row of report.perSlug) {
-    console.log(`- ${row.slug}: action=${row.action}, media=${row.mediaMode}, ledger=${row.ledgerStatus}, buttons=${row.buttonStatus}`);
+    console.log(`- ${row.slug}: action=${row.action}, media=${row.mediaMode}, ledger=${row.ledgerStatus}, range=${row.firstLineStatus}, buttons=${row.buttonStatus}`);
   }
   console.log("=====================================");
 }
@@ -152,12 +160,16 @@ async function main() {
   console.log("=== Zodiac Weekly Publish By Week ===");
   console.log(`Week        : ${plan.week}`);
   console.log(`Period      : ${plan.startDate} -> ${plan.endDate}`);
+  console.log(`Week Range  : ${plan.weekRange}`);
   console.log(`Mode        : ${report.mode}`);
   console.log("=====================================");
 
   for (const post of plan.posts) {
     if (post.mediaMode === "image") report.image += 1;
     else report.textOnly += 1;
+    const firstLineHasRange = post.firstLine.includes(plan.weekRange);
+    if (firstLineHasRange) report.weeklyRangeMatched += 1;
+    else report.weeklyRangeMissing += 1;
 
     const entry = getWeeklyLedgerEntry(ledger, plan.week, post.slug);
     const status = normalizeWeeklyStatus(entry?.status);
@@ -165,7 +177,7 @@ async function main() {
     if (isProtectedWeeklyStatus(status)) {
       report.skipped += 1;
       report.duplicateBlocked += 1;
-      report.perSlug.push({ slug: post.slug, action: "skip_duplicate", mediaMode: post.mediaMode, ledgerStatus: status, buttonStatus: post.buttonStatus.ok ? "OK" : "PROBLEMS" });
+      report.perSlug.push({ slug: post.slug, action: "skip_duplicate", mediaMode: post.mediaMode, ledgerStatus: status, firstLine: post.firstLine, firstLineStatus: firstLineHasRange ? "OK" : "MISSING_RANGE", buttonStatus: post.buttonStatus.ok ? "OK" : "PROBLEMS" });
       console.log(`[skip_duplicate] ${post.slug} | ${plan.week} | Mode: ${post.mediaMode} | Ledger: ${status}`);
       continue;
     }
@@ -173,21 +185,23 @@ async function main() {
     if (status === "failed") {
       report.skipped += 1;
       report.failed += 1;
-      report.perSlug.push({ slug: post.slug, action: "skip_failed_requires_manual_review", mediaMode: post.mediaMode, ledgerStatus: status, buttonStatus: post.buttonStatus.ok ? "OK" : "PROBLEMS" });
+      report.perSlug.push({ slug: post.slug, action: "skip_failed_requires_manual_review", mediaMode: post.mediaMode, ledgerStatus: status, firstLine: post.firstLine, firstLineStatus: firstLineHasRange ? "OK" : "MISSING_RANGE", buttonStatus: post.buttonStatus.ok ? "OK" : "PROBLEMS" });
       console.log(`[skip_failed] ${post.slug} | ${plan.week} | Mode: ${post.mediaMode}`);
       continue;
     }
 
-    if (!post.text.trim() || !post.buttonStatus.ok) {
+    if (!post.text.trim() || !post.buttonStatus.ok || !firstLineHasRange) {
       report.failed += 1;
-      report.perSlug.push({ slug: post.slug, action: "failed_preflight", mediaMode: post.mediaMode, ledgerStatus: status || "missing", buttonStatus: "PROBLEMS" });
-      console.log(`[failed_preflight] ${post.slug} | ${plan.week} | text/buttons invalid`);
+      report.perSlug.push({ slug: post.slug, action: "failed_preflight", mediaMode: post.mediaMode, ledgerStatus: status || "missing", firstLine: post.firstLine, firstLineStatus: firstLineHasRange ? "OK" : "MISSING_RANGE", buttonStatus: post.buttonStatus.ok ? "OK" : "PROBLEMS" });
+      console.log(`[failed_preflight] ${post.slug} | ${plan.week} | text/buttons/range invalid`);
       continue;
     }
 
     if (options.dryRun) {
-      report.perSlug.push({ slug: post.slug, action: "dry_run_would_publish", mediaMode: post.mediaMode, ledgerStatus: status || "missing", buttonStatus: "OK" });
+      report.wouldPublish += 1;
+      report.perSlug.push({ slug: post.slug, action: "dry_run_would_publish", mediaMode: post.mediaMode, ledgerStatus: status || "missing", firstLine: post.firstLine, firstLineStatus: "OK", buttonStatus: "OK" });
       console.log(`[dry_run_would_publish] ${post.slug} | ${plan.week} | Mode: ${post.mediaMode}`);
+      console.log(`  -> first line: ${post.firstLine}`);
       console.log(`  -> button count: ${post.buttonStatus.buttonCount}`);
       console.log(`  -> button URL presence: ${post.keyboard.inline_keyboard.flat().every((button) => Boolean(button.url))}`);
       continue;
@@ -206,18 +220,21 @@ async function main() {
       report.ledgerWrites += 1;
       report.published += 1;
       report.livePublishCalls += 1;
-      report.perSlug.push({ slug: post.slug, action: "published", mediaMode: post.mediaMode, ledgerStatus: "sent", buttonStatus: "OK" });
+      report.perSlug.push({ slug: post.slug, action: "published", mediaMode: post.mediaMode, ledgerStatus: "sent", firstLine: post.firstLine, firstLineStatus: "OK", buttonStatus: "OK" });
       console.log(`[sent] ${post.slug} | ${plan.week} | message_id=${result?.message_id ?? "unknown"}`);
     } catch (error) {
       markWeeklyEntry(plan.week, post.slug, "failed", { mediaMode: post.mediaMode, error: error instanceof Error ? error.message : String(error) });
       report.ledgerWrites += 1;
       report.failed += 1;
-      report.perSlug.push({ slug: post.slug, action: "failed", mediaMode: post.mediaMode, ledgerStatus: "failed", buttonStatus: post.buttonStatus.ok ? "OK" : "PROBLEMS" });
+      report.perSlug.push({ slug: post.slug, action: "failed", mediaMode: post.mediaMode, ledgerStatus: "failed", firstLine: post.firstLine, firstLineStatus: firstLineHasRange ? "OK" : "MISSING_RANGE", buttonStatus: post.buttonStatus.ok ? "OK" : "PROBLEMS" });
       console.error(`[failed] ${post.slug} | ${plan.week}: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
 
   printSummary(report);
+  if (report.weeklyRangeMissing > 0) {
+    process.exitCode = 1;
+  }
 }
 
 function loadTokenForLive() {

@@ -10,6 +10,27 @@ The weekly Zodiac pipeline prepares one weekly horoscope post for each Zodiac ch
 
 ## Weekly Format
 
+The first line is Telegram preview-friendly and includes the ISO week date range derived from `--week`, not from system time.
+
+For the general channel:
+
+```html
+<b>✨ Общий гороскоп на неделю 15.06–21.06.2026</b>
+```
+
+For sign channels:
+
+```html
+<b>♈ Овен | Гороскоп на неделю 15.06–21.06.2026</b>
+```
+
+Range formatting rules:
+
+- same calendar year: `DD.MM–DD.MM.YYYY`;
+- cross-year week: `DD.MM.YYYY–DD.MM.YYYY`.
+
+Weekly live schedule is not enabled. The lane is dry-run/prepared only until a separate production decision enables live weekly publishing.
+
 Sign-channel weekly posts use this structure:
 
 ```text
@@ -71,6 +92,8 @@ Dry-run the weekly publish plan:
 npm run zodiac:weekly:dry -- --week 2026-W25
 ```
 
+Dry-run prints the first line for every slug, reports `Weekly Range Lines`, and must show `Telegram API Calls: 0`, `Live Publish Calls: 0`, and `Ledger Writes: 0`.
+
 Check the separate weekly ledger:
 
 ```bash
@@ -114,5 +137,6 @@ Weekly posts use the same navigation rules as daily posts:
 - No Telegram API calls happen in dry-run mode.
 - No daily publish ledger mutation happens.
 - No scheduler or workflow changes are required.
+- No weekly live schedule is enabled by this pipeline.
 - No image assets are modified.
 - Live weekly publishing is disabled unless `--live --approved` is passed.

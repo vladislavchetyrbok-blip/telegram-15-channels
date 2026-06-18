@@ -62,6 +62,33 @@ The monitor validates the `Zodiac Daily Publisher` workflow name, all five cron 
 
 If `GITHUB_TOKEN` or `GH_TOKEN` is configured, it also reads recent workflow runs from GitHub Actions. Without a token, static workflow checks and local ledger/report checks still run, and the command reports a warning instead of failing.
 
+## Weekly Lane Status
+
+Weekly Zodiac posts are prepared and dry-run validated only. Weekly live schedule is not enabled, and weekly live publish must not be started until a separate production decision after daily stability review.
+
+Weekly posts use a Telegram preview-friendly first line with a date range derived from the explicit ISO week id:
+
+```html
+<b>✨ Общий гороскоп на неделю 15.06–21.06.2026</b>
+<b>♈ Овен | Гороскоп на неделю 15.06–21.06.2026</b>
+```
+
+Dry-run check:
+
+```bash
+npm run zodiac:weekly:dry -- --week YYYY-Www
+```
+
+Expected while weekly is still prepared-only:
+
+- `Would Publish 13`.
+- `Weekly Range Lines 13/13`.
+- `Telegram API Calls 0`.
+- `Live Publish Calls 0`.
+- `Ledger Writes 0`.
+
+Do not enable weekly live schedule from this runbook. Enabling weekly publishing requires a separate plan that confirms daily stability, weekly ledger safety, channel targets, and duplicate-block behavior.
+
 ## How Ledger Prevents Duplicates
 
 The key is always:
