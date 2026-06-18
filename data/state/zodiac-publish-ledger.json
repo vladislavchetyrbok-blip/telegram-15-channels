@@ -953,6 +953,18 @@
       "updatedAt": "2026-06-18T10:39:01.039Z",
       "messageId": "18,",
       "sentAt": "2026-06-18T10:39:01.038Z"
+    },
+    "2026-06-18:leo": {
+      "key": "2026-06-18:leo",
+      "date": "2026-06-18",
+      "slug": "leo",
+      "createdAt": "2026-06-18T10:39:02.148Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-06-18T10:39:02.148Z"
     }
   }
 }
