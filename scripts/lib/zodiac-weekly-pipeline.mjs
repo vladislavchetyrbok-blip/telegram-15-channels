@@ -63,6 +63,52 @@ const ADVICE_LINES = [
   "Сохраняйте достоинство и темп; неделя любит тех, кто действует без спешки.",
 ];
 
+const WEEKLY_OPENINGS = [
+  "Неделя не просит резких разворотов: её сила в том, чтобы заметить главный ритм и не расплескать внимание на мелочи.",
+  "Это период тихой настройки: сначала собрать факты и чувства, потом выбирать шаг, который можно удержать.",
+  "Главный сюжет недели — меньше автоматических реакций и больше честных решений, после которых становится легче дышать.",
+  "Неделя раскрывается через практичную магию маленьких действий: вовремя сказать, вовремя остановиться, вовремя выбрать своё.",
+];
+
+const WEEK_PHASE_LINES = {
+  start: [
+    "В начале недели лучше не перегружать расписание. Проверьте планы, договорённости и то, что давно просит спокойной правки.",
+    "Первые дни подходят для настройки темпа: не берите лишнее, пока не стало ясно, где действительно нужен ваш ресурс.",
+    "Начало недели сильнее для наблюдения и подготовки, чем для громких обещаний. Хороший старт выглядит аккуратно.",
+  ],
+  middle: [
+    "Середина недели активирует разговоры, деньги и рабочие решения. Здесь важно фиксировать детали, а не полагаться на память.",
+    "К середине недели появится больше движения. Держите фокус на одном результате, чтобы не распылиться на чужую срочность.",
+    "В середине периода полезно сверить слова с действиями: то, что звучит красиво, должно иметь понятный следующий шаг.",
+  ],
+  weekend: [
+    "Ближе к выходным телу и эмоциям понадобится восстановление. Уберите лишний шум и оставьте время для простых радостей.",
+    "Финал недели лучше провести без гонки за идеальным сценарием. Закрепите сделанное и дайте себе мягкую паузу.",
+    "К концу недели станет ясно, что стоит продолжать, а что пора отпустить без длинных объяснений.",
+  ],
+};
+
+const WEEKLY_CTA_LINES = [
+  "👇 Ниже — кнопки прогноза недели и совместимости в Mini App.",
+  "👇 Откройте Mini App ниже, чтобы проверить совместимость и личный прогноз.",
+  "👇 Внизу есть быстрый переход в прогноз недели и совместимость.",
+];
+
+const SIGN_WEEKLY_OPENINGS = {
+  aries: "Овен, неделя даёт искру для старта, но просит не превращать каждую задержку в борьбу.",
+  taurus: "Телец, неделя укрепляет то, что построено спокойно: деньги, быт, договорённости и личный темп.",
+  gemini: "Близнецы, неделя наполнена разговорами и идеями, но главный выигрыш даст один выбранный фокус.",
+  cancer: "Рак, неделя мягко подсвечивает дом, близость и личные границы: не игнорируйте внутренние сигналы.",
+  leo: "Лев, неделя помогает проявиться ярко, если уверенность не превращается в давление на окружающих.",
+  virgo: "Дева, неделя идеально подходит для чистки деталей и возвращения контроля без лишней самокритики.",
+  libra: "Весы, неделя про баланс, но не про молчаливые уступки: гармония начинается с честной позиции.",
+  scorpio: "Скорпион, неделя усиливает глубину и интуицию, но просит меньше проверок и больше ясности.",
+  sagittarius: "Стрелец, неделя открывает горизонт, если вы выбираете маршрут, а не просто мечтаете о свободе.",
+  capricorn: "Козерог, неделя поддерживает дисциплину, статус и решения, которые работают на долгий результат.",
+  aquarius: "Водолей, неделя приносит свежую идею, но ей нужна структура, чтобы стать реальным шагом.",
+  pisces: "Рыбы, неделя тонкая и интуитивная: чем мягче режим, тем точнее внутренний сигнал.",
+};
+
 const GENERAL_LINES = {
   energy: [
     "Неделя соединяет практичность и интуицию: важно видеть факты, но не глушить внутренний голос.",
@@ -231,6 +277,8 @@ export function buildWeeklyReport(weekCode) {
     duplicateBlocked: 0,
     weeklyRangeStatus: "OK",
     weeklyRangeMatched: 0,
+    contentQualityStatus: "OK",
+    contentQualityErrors: [],
     buttonStatus: "OK",
     ledgerStatus: "OK",
     perChannel: [],
@@ -255,6 +303,11 @@ export function buildWeeklyReport(weekCode) {
     const firstLineHasRange = post.firstLine.includes(plan.weekRange);
     if (firstLineHasRange) report.weeklyRangeMatched += 1;
     else report.weeklyRangeStatus = "PROBLEMS";
+    const contentQualityErrors = validateWeeklyPostQuality(post);
+    if (contentQualityErrors.length > 0) {
+      report.contentQualityStatus = "PROBLEMS";
+      report.contentQualityErrors.push(...contentQualityErrors.map((error) => `${post.slug}: ${error}`));
+    }
 
     report.perChannel.push({
       slug: post.slug,
@@ -264,6 +317,7 @@ export function buildWeeklyReport(weekCode) {
       firstLineStatus: firstLineHasRange ? "OK" : "MISSING_RANGE",
       ledgerStatus: status || "missing",
       action: duplicateBlocked ? "skip_duplicate" : failed ? "skip_failed" : "ready",
+      contentQualityStatus: contentQualityErrors.length > 0 ? "PROBLEMS" : "OK",
       buttonStatus: post.buttonStatus.ok ? "OK" : "PROBLEMS",
       buttonCount: post.buttonStatus.buttonCount,
       ctaLabels: post.buttonStatus.ctaLabels,
@@ -303,23 +357,40 @@ function buildPostForChannel(channel, week, weekRange, index) {
 
 function buildGeneralWeeklyText(week, weekRange) {
   const seed = hashSeed(`${week.week}:zodiac-general`);
+  const opening = pick(WEEKLY_OPENINGS, seed, 0);
   return [
     `<b>✨ Общий гороскоп на неделю ${weekRange}</b>`,
     "",
-    "Главная энергия недели:",
+    opening,
+    "",
+    "<b>1. Старт недели</b>",
+    pick(WEEK_PHASE_LINES.start, seed, 1),
+    "",
+    "<b>2. Середина недели</b>",
+    pick(WEEK_PHASE_LINES.middle, seed, 2),
+    "",
+    "<b>3. Выходные и восстановление</b>",
+    pick(WEEK_PHASE_LINES.weekend, seed, 3),
+    "",
+    "<b>4. Главный вектор</b>",
     pick(GENERAL_LINES.energy, seed, 1),
     "",
-    "Любовь:",
+    "<b>Любовь / отношения</b>",
     pick(GENERAL_LINES.love, seed, 2),
     "",
-    "Деньги и работа:",
+    "<b>Работа / деньги</b>",
     pick(GENERAL_LINES.work, seed, 3),
     "",
-    "Решения:",
+    "<b>Энергия / самочувствие</b>",
+    pick(ENERGY_LINES, seed, 4),
+    "",
+    "<b>Решения недели</b>",
     pick(GENERAL_LINES.decisions, seed, 4),
     "",
-    "Совет недели:",
+    "<b>Главный совет недели</b>",
     pick(GENERAL_LINES.advice, seed, 5),
+    "",
+    pick(WEEKLY_CTA_LINES, seed, 6),
     "",
     "👇 Выберите свой знак ниже:",
   ].join("\n");
@@ -327,26 +398,39 @@ function buildGeneralWeeklyText(week, weekRange) {
 
 function buildSignWeeklyText(sign, week, weekRange, index) {
   const seed = hashSeed(`${week.week}:${sign.slug}`);
+  const opening = SIGN_WEEKLY_OPENINGS[sign.slug] ?? pick(WEEKLY_OPENINGS, seed, 0);
   return [
     `<b>${sign.emoji} ${sign.name} | Гороскоп на неделю ${weekRange}</b>`,
     "",
-    "Главная тема недели:",
+    opening,
+    "",
+    "<b>1. Старт недели</b>",
+    `${pick(WEEK_PHASE_LINES.start, seed, 1)} Для вас это особенно связано с темой: ${sign.tone}.`,
+    "",
+    "<b>2. Середина недели</b>",
+    pick(WEEK_PHASE_LINES.middle, seed, 2),
+    "",
+    "<b>3. Выходные и восстановление</b>",
+    pick(WEEK_PHASE_LINES.weekend, seed, 3),
+    "",
+    "<b>4. Главный вектор</b>",
     `На первый план выходят ${sign.tone}. ${pick(GENERAL_LINES.energy, seed, 1)}`,
     "",
-    "Любовь:",
+    "<b>Любовь / отношения</b>",
     pick(LOVE_LINES, seed, 2),
     "",
-    "Работа и деньги:",
+    "<b>Работа / деньги</b>",
     pick(WORK_LINES, seed, 3),
     "",
-    "Энергия:",
+    "<b>Энергия / самочувствие</b>",
     pick(ENERGY_LINES, seed, 4),
     "",
-    "Совет недели:",
+    "<b>Главный совет недели</b>",
     pick(ADVICE_LINES, seed, 5),
     "",
-    "Лучший день:",
-    BEST_DAYS[(seed + index) % BEST_DAYS.length],
+    `<b>Лучший день:</b> ${BEST_DAYS[(seed + index) % BEST_DAYS.length]}`,
+    "",
+    pick(WEEKLY_CTA_LINES, seed, 6),
   ].join("\n");
 }
 
@@ -401,6 +485,48 @@ export function validateWeeklyKeyboard(channelSlug, keyboard) {
   }
 
   return { ok: errors.length === 0, errors, buttonCount: buttons.length, ctaLabels };
+}
+
+export function validateWeeklyPostQuality(post) {
+  const errors = [];
+  const text = String(post?.text || "");
+  const lines = text
+    .split(/\r?\n/)
+    .map((line) => line.replace(/<[^>]+>/g, "").trim())
+    .filter(Boolean);
+  const opening = lines[1] ?? "";
+  const minLength = post?.slug === "zodiac-general" ? 900 : 850;
+  const requiredLabels = [
+    "1. Старт недели",
+    "2. Середина недели",
+    "3. Выходные и восстановление",
+    "4. Главный вектор",
+    "Любовь / отношения",
+    "Работа / деньги",
+    "Энергия / самочувствие",
+    "Главный совет недели",
+  ];
+
+  if (!post?.firstLine?.includes(post?.weekRange)) {
+    errors.push("first line is missing weekly date range");
+  }
+  if (opening.length < 55) {
+    errors.push("weekly opening is too short or missing after the date range header");
+  }
+  if (text.length < minLength) {
+    errors.push(`weekly post is too short: ${text.length}/${minLength}`);
+  }
+  for (const label of requiredLabels) {
+    if (!text.includes(label)) errors.push(`missing weekly quality block: ${label}`);
+  }
+  if (/TODO|lorem ipsum|placeholder|Скоро появится/i.test(text)) {
+    errors.push("weekly post contains placeholder/TODO/lorem text");
+  }
+  if (!/Mini App|кнопк[аи]|совместимост/i.test(text)) {
+    errors.push("weekly post is missing a lightweight CTA/navigation hint");
+  }
+
+  return errors;
 }
 
 export function getWeeklyTelegramTargetEnv(slug) {

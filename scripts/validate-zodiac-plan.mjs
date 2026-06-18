@@ -2,6 +2,7 @@ import fs from "fs";
 import process from "process";
 import {
   validateZodiacDailyGuidanceUniqueness,
+  validateZodiacDailyOpeningUniqueness,
   validateZodiacDailyPostGuidance,
 } from "./lib/zodiac-daily-guidance.mjs";
 
@@ -96,6 +97,9 @@ if (!Array.isArray(plan.posts)) {
 
   for (const issue of validateZodiacDailyGuidanceUniqueness(plan.posts)) {
     blockingIssues.push(`Duplicate guidance: ${issue}.`);
+  }
+  for (const issue of validateZodiacDailyOpeningUniqueness(plan.posts)) {
+    blockingIssues.push(`Duplicate opening: ${issue}.`);
   }
 
   // Validate posts content

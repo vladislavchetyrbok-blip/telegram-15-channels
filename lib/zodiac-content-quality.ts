@@ -58,7 +58,15 @@ export function evaluateZodiacPostQuality(post: Omit<ZodiacPreviewPost, 'quality
   }
 
   if (post.type === "sign") {
-    const requiredSignSections = ["Главное", "Любовь", "Деньги", "Работа", "Предупреждение", "Совет"];
+    const requiredSignSections = [
+      "Общий настрой дня",
+      "Любовь / отношения",
+      "Работа / деньги",
+      "Энергия / самочувствие",
+      "Совет дня",
+      "Маленькое действие",
+      "Лучше избегать",
+    ];
     for (const req of requiredSignSections) {
       if (!post.sections.some(s => s.title === req)) {
         missingSections.push(req);

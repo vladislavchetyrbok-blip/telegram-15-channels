@@ -182,6 +182,25 @@ const generalClosingLines = [
   "Выбирайте действия, после которых останется больше порядка, тепла и свободного дыхания.",
 ];
 
+const dailyOpeningHooks: Record<string, string[]> = {
+  "zodiac-general": [
+    "Сегодняшний гороскоп не про громкие обещания, а про точный выбор: где добавить тепла, где навести порядок и где не тратить силы зря.",
+    "День раскрывается через маленькие решения: одно слово мягче, один шаг смелее, один лишний спор меньше.",
+  ],
+  aries: ["Овен, день заряжен искрой, но выиграет не самый громкий, а самый точный шаг."],
+  taurus: ["Телец, сегодня лучше не ускоряться: устойчивый темп принесёт больше, чем резкий рывок."],
+  gemini: ["Близнецы, одно точное сообщение сегодня может изменить больше, чем длинная цепочка объяснений."],
+  cancer: ["Рак, день тонкий: чем мягче вы держите границы, тем спокойнее становится пространство вокруг."],
+  leo: ["Лев, вас заметят без усилий: сегодня сияние сильнее, когда в нём нет давления."],
+  virgo: ["Дева, один аккуратный порядок сегодня способен снять сразу несколько внутренних тревог."],
+  libra: ["Весы, красивый баланс сегодня начинается с честного ответа себе, а не с удобной уступки."],
+  scorpio: ["Скорпион, глубина сегодня работает тише обычного, но именно в тишине вы увидите главное."],
+  sagittarius: ["Стрелец, горизонт открыт, но путь станет реальным только после одного конкретного шага."],
+  capricorn: ["Козерог, день уважает зрелость: тихая дисциплина даст больше, чем громкая демонстрация силы."],
+  aquarius: ["Водолей, идея уже рядом, но ей нужна форма: запишите, соберите, проверьте."],
+  pisces: ["Рыбы, интуиция сегодня говорит тихо: дайте себе паузу, чтобы не спутать её с тревогой."],
+};
+
 const signDailyForecasts: Record<string, string[]> = {
   aries: ["сила дня в спокойной инициативе: начните важное, но не превращайте разговор в спор.", "энергии много, но результат даст не напор, а точный выбор одного главного действия.", "держите импульс под контролем: пауза перед ответом сегодня сохранит вам преимущество."],
   taurus: ["день просит устойчивости: не меняйте план из-за чужой нервозности и берегите свой темп.", "хорошо навести порядок в делах и деньгах, без резких покупок и обещаний на эмоциях.", "ваша сила в простоте: закрепите то, что уже работает, и не распыляйтесь."],
@@ -281,14 +300,21 @@ function buildGeneralPreviewPost({
 }): ZodiacPreviewPost {
   const seed = createSeed(date, channel.id, index);
   const signChannels = zodiacChannels.filter((item) => item.type === "sign");
+  const opening = pick(dailyOpeningHooks["zodiac-general"], seed);
+  const intro = pick(generalIntroLines, seed);
   const signSections = signChannels.map((sign, signIndex) => ({
     title: `${sign.emoji} ${sign.ruName}`,
     body: pick(signDailyForecasts[sign.id] ?? adviceLines, seed + signIndex),
   }));
   const sections = [
-    { title: "Вступление", body: pick(generalIntroLines, seed) },
+    { title: "Opening hook", body: opening },
+    { title: "Общий настрой дня", body: intro },
+    { title: "Любовь / отношения", body: pick(loveDeepLines, seed + 1) },
+    { title: "Работа / деньги", body: pick(workMoneyDeepLines, seed + 2) },
+    { title: "Энергия / самочувствие", body: pick(moodDeepLines, seed + 3) },
     ...signSections,
     { title: "Совет дня", body: pick(generalClosingLines, seed + 31) },
+    { title: "Маленькое действие", body: pick(practicalAdviceLines, seed + 4) },
   ];
   const title = `${channel.emoji} Общий гороскоп на ${formatNumericDate(date)}`;
 
@@ -320,12 +346,16 @@ function buildSignPreviewPost({
 }): ZodiacPreviewPost {
   const seed = createSeed(date, channel.id, index);
   const mainPool = signMainLines[channel.id] ?? generalEnergy;
+  const opening = pick(dailyOpeningHooks[channel.id] ?? dailyOpeningHooks["zodiac-general"], seed);
   const sections = [
-    { title: "Общая энергия дня", body: pick(mainPool, seed) },
-    { title: "Любовь", body: pick(loveDeepLines, seed + 1) },
-    { title: "Работа и деньги", body: pick(workMoneyDeepLines, seed + 2) },
-    { title: "Настроение и энергия", body: pick(moodDeepLines, seed + 3) },
+    { title: "Opening hook", body: opening },
+    { title: "Общий настрой дня", body: pick(mainPool, seed) },
+    { title: "Любовь / отношения", body: pick(loveDeepLines, seed + 1) },
+    { title: "Работа / деньги", body: pick(workMoneyDeepLines, seed + 2) },
+    { title: "Энергия / самочувствие", body: pick(moodDeepLines, seed + 3) },
     { title: "Совет дня", body: pick(practicalAdviceLines, seed + 4) },
+    { title: "Маленькое действие", body: pick(adviceLines, seed + 5) },
+    { title: "Лучше избегать", body: pick(warningLines, seed + 6) },
     { title: "Финальная строка", body: `${channel.ruName} сегодня сильнее, когда выбирает точность без лишнего напряжения.` },
   ];
   const title = `${channel.emoji} ${channel.ruName} | Гороскоп на ${formatNumericDate(date)}`;
@@ -392,21 +422,44 @@ function createPreviewPost({
 
 function composeText(title: string, sections: ZodiacPreviewSection[], channel: ZodiacChannelConfig) {
   if (channel.type === "general") {
-    const intro = sections.find((section) => section.title === "Вступление")?.body ?? "";
+    const opening = sections.find((section) => section.title === "Opening hook")?.body ?? "";
+    const intro = sections.find((section) => section.title === "Общий настрой дня")?.body ?? "";
+    const love = sections.find((section) => section.title === "Любовь / отношения")?.body ?? "";
+    const work = sections.find((section) => section.title === "Работа / деньги")?.body ?? "";
+    const energy = sections.find((section) => section.title === "Энергия / самочувствие")?.body ?? "";
     const advice = sections.find((section) => section.title === "Совет дня")?.body ?? "";
+    const action = sections.find((section) => section.title === "Маленькое действие")?.body ?? "";
     const signLines = sections
-      .filter((section) => section.title !== "Вступление" && section.title !== "Совет дня")
+      .filter((section) => !["Opening hook", "Общий настрой дня", "Любовь / отношения", "Работа / деньги", "Энергия / самочувствие", "Совет дня", "Маленькое действие"].includes(section.title))
       .map((section) => `${section.title} — ${section.body}`);
 
     return [
       title,
       "",
+      opening,
+      "",
+      "Общий настрой дня:",
       intro,
       "",
+      "Любовь / отношения:",
+      love,
+      "",
+      "Работа / деньги:",
+      work,
+      "",
+      "Энергия / самочувствие:",
+      energy,
+      "",
+      "По знакам:",
       ...signLines,
       "",
       "Совет дня:",
       advice,
+      "",
+      "Маленькое действие:",
+      action,
+      "",
+      "👇 Внизу есть кнопки для совместимости и Mini App.",
       "",
       "Хэштеги:",
       "#Гороскоп #Зодиак #ГороскопНаСегодня",
@@ -414,15 +467,18 @@ function composeText(title: string, sections: ZodiacPreviewSection[], channel: Z
   }
 
   const closing = sections.find((section) => section.title === "Финальная строка")?.body ?? "";
+  const opening = sections.find((section) => section.title === "Opening hook")?.body ?? "";
   const body = sections
-    .filter((section) => section.title !== "Финальная строка")
+    .filter((section) => !["Opening hook", "Финальная строка"].includes(section.title))
     .map((section) => `${section.title}:\n${section.body}`)
     .join("\n\n");
 
   return [
     title,
+    opening,
     body,
     closing,
+    "👇 Ниже — кнопки совместимости и Mini App.",
     `Хэштеги:\n#${channel.ruName.replace(/\s+/g, "")} #Гороскоп #Зодиак #ГороскопНаСегодня`,
   ].join("\n\n");
 }

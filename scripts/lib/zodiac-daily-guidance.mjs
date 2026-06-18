@@ -281,11 +281,13 @@ export function validateZodiacDailyGuidanceText(post) {
   const issues = [];
   const text = String(post?.text ?? "");
   const expectedLabels = [
-    "<b>Главное на день:</b>",
-    "💡 <b>Совет дня:</b>",
-    "✅ <b>Стоит сделать:</b>",
-    "⚠️ <b>Лучше избегать:</b>",
-    "<b>Гороскоп:</b>",
+    "<b>Общий настрой дня:</b>",
+    "<b>Любовь / отношения:</b>",
+    "<b>Работа / деньги:</b>",
+    "<b>Энергия / самочувствие:</b>",
+    "<b>Совет дня:</b>",
+    "<b>Маленькое действие:</b>",
+    "<b>Лучше избегать:</b>",
   ];
 
   for (const label of expectedLabels) {
@@ -294,10 +296,10 @@ export function validateZodiacDailyGuidanceText(post) {
     }
   }
 
-  const guidanceIndex = text.indexOf("<b>Главное на день:</b>");
-  const horoscopeIndex = text.indexOf("<b>Гороскоп:</b>");
-  if (guidanceIndex === -1 || horoscopeIndex === -1 || guidanceIndex > horoscopeIndex) {
-    issues.push("guidance block must appear before <b>Гороскоп:</b>");
+  const moodIndex = text.indexOf("<b>Общий настрой дня:</b>");
+  const actionIndex = text.indexOf("<b>Маленькое действие:</b>");
+  if (moodIndex === -1 || actionIndex === -1 || moodIndex > actionIndex) {
+    issues.push("daily structure must start with mood blocks before the action block");
   }
 
   for (const field of GUIDANCE_FIELDS) {
@@ -305,6 +307,62 @@ export function validateZodiacDailyGuidanceText(post) {
     if (value && !text.includes(escapeHtml(value))) {
       issues.push(`text does not include ${field}`);
     }
+  }
+
+  return issues;
+}
+
+function formatNumericDate(value) {
+  const [year, month, day] = String(value || "").split("-");
+  if (!/^\d{4}$/.test(year) || !/^\d{2}$/.test(month) || !/^\d{2}$/.test(day)) {
+    return String(value || "");
+  }
+  return `${day}.${month}.${year}`;
+}
+
+function stripHtml(value) {
+  return String(value || "").replace(/<[^>]+>/g, "").trim();
+}
+
+function contentLines(text) {
+  return String(text || "")
+    .split(/\r?\n/)
+    .map((line) => stripHtml(line))
+    .map((line) => line.trim())
+    .filter(Boolean);
+}
+
+function firstOpeningLine(text) {
+  const lines = contentLines(text);
+  return lines[1] ?? "";
+}
+
+export function validateZodiacDailyPostQuality(post) {
+  const issues = [];
+  const text = String(post?.text ?? "");
+  const lines = contentLines(text);
+  const expectedDate = formatNumericDate(post?.date);
+  const firstLine = lines[0] ?? "";
+  const opening = lines[1] ?? "";
+  const minLength = post?.channelId === "zodiac-general" ? 1300 : 1000;
+
+  if (!firstLine.includes(expectedDate)) {
+    issues.push(`first line must include target date ${expectedDate}`);
+  }
+  if (opening.length < 45) {
+    issues.push("opening hook is too short or missing after the date header");
+  }
+  if (/^(главное|общий настрой|гороскоп|совет дня|любовь|работа)/i.test(opening)) {
+    issues.push("opening hook looks like a section label, not a human preview line");
+  }
+  if (text.length < minLength) {
+    issues.push(`post is too short for upgraded daily format: ${text.length}/${minLength}`);
+  }
+  if (/TODO|lorem ipsum|placeholder|Скоро появится/i.test(text)) {
+    issues.push("post contains placeholder/TODO/lorem text");
+  }
+  if (!/кнопк[аи]|Mini App|совместимост/i.test(text)) {
+    issues.push("post text is missing a lightweight CTA/navigation hint");
   }
 
   return issues;
@@ -342,9 +400,40 @@ export function validateZodiacDailyGuidanceUniqueness(posts) {
   return issues;
 }
 
+export function validateZodiacDailyOpeningUniqueness(posts) {
+  const issues = [];
+  const postsByDate = new Map();
+
+  for (const post of posts || []) {
+    if (!post || post.channelId === "zodiac-general") continue;
+    const date = post.date || "unknown-date";
+    if (!postsByDate.has(date)) postsByDate.set(date, []);
+    postsByDate.get(date).push(post);
+  }
+
+  for (const [date, dayPosts] of postsByDate.entries()) {
+    const openings = new Map();
+    for (const post of dayPosts) {
+      const opening = firstOpeningLine(post.text).toLocaleLowerCase("ru-RU");
+      if (!opening) continue;
+      if (!openings.has(opening)) openings.set(opening, []);
+      openings.get(opening).push(post.channelId || "unknown");
+    }
+
+    for (const [opening, slugs] of openings.entries()) {
+      if (slugs.length > 1) {
+        issues.push(`${date}: opening hook is reused by ${slugs.join(", ")}: ${opening}`);
+      }
+    }
+  }
+
+  return issues;
+}
+
 export function validateZodiacDailyPostGuidance(post, maxLength = ZODIAC_DAILY_GUIDANCE_MAX_LENGTH) {
   return [
     ...validateZodiacDailyGuidanceFields(post, maxLength),
     ...validateZodiacDailyGuidanceText(post),
+    ...validateZodiacDailyPostQuality(post),
   ];
 }

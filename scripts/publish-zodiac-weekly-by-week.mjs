@@ -9,6 +9,7 @@ import {
   loadWeeklyLedger,
   markWeeklyEntry,
   normalizeWeeklyStatus,
+  validateWeeklyPostQuality,
 } from "./lib/zodiac-weekly-pipeline.mjs";
 
 function parseArgs() {
@@ -50,6 +51,7 @@ function createReport(plan, mode) {
     ctaRowsChecked: 0,
     ctaRowsOk: 0,
     ctaErrors: [],
+    contentQualityErrors: [],
     image: 0,
     textOnly: 0,
     ledgerWrites: 0,
@@ -76,6 +78,7 @@ function printSummary(report) {
   console.log(`Weekly Range Missing : ${report.weeklyRangeMissing}`);
   console.log(`CTA Rows Checked     : ${report.ctaRowsChecked}/${report.expected}`);
   console.log(`CTA Rows OK          : ${report.ctaRowsOk}/${report.expected}`);
+  console.log(`Content Errors       : ${report.contentQualityErrors.length}`);
   console.log(`Image Posts          : ${report.image}`);
   console.log(`TextOnly Posts       : ${report.textOnly}`);
   console.log(`Ledger Writes        : ${report.ledgerWrites}`);
@@ -88,6 +91,12 @@ function printSummary(report) {
   if (report.ctaErrors.length > 0) {
     console.log("--- CTA Errors ---");
     for (const error of report.ctaErrors) {
+      console.log(`- ${error}`);
+    }
+  }
+  if (report.contentQualityErrors.length > 0) {
+    console.log("--- Content Quality Errors ---");
+    for (const error of report.contentQualityErrors) {
       console.log(`- ${error}`);
     }
   }
@@ -178,6 +187,10 @@ async function main() {
   for (const post of plan.posts) {
     if (post.mediaMode === "image") report.image += 1;
     else report.textOnly += 1;
+    const qualityErrors = validateWeeklyPostQuality(post);
+    if (qualityErrors.length > 0) {
+      report.contentQualityErrors.push(...qualityErrors.map((error) => `${post.slug}: ${error}`));
+    }
     const firstLineHasRange = post.firstLine.includes(plan.weekRange);
     if (firstLineHasRange) report.weeklyRangeMatched += 1;
     else report.weeklyRangeMissing += 1;
@@ -207,10 +220,10 @@ async function main() {
       continue;
     }
 
-    if (!post.text.trim() || !post.buttonStatus.ok || !firstLineHasRange) {
+    if (!post.text.trim() || !post.buttonStatus.ok || !firstLineHasRange || qualityErrors.length > 0) {
       report.failed += 1;
       report.perSlug.push({ slug: post.slug, action: "failed_preflight", mediaMode: post.mediaMode, ledgerStatus: status || "missing", firstLine: post.firstLine, firstLineStatus: firstLineHasRange ? "OK" : "MISSING_RANGE", buttonStatus: post.buttonStatus.ok ? "OK" : "PROBLEMS" });
-      console.log(`[failed_preflight] ${post.slug} | ${plan.week} | text/buttons/range invalid`);
+      console.log(`[failed_preflight] ${post.slug} | ${plan.week} | text/buttons/range/quality invalid`);
       continue;
     }
 
@@ -250,7 +263,7 @@ async function main() {
   }
 
   printSummary(report);
-  if (report.weeklyRangeMissing > 0 || report.ctaErrors.length > 0) {
+  if (report.weeklyRangeMissing > 0 || report.ctaErrors.length > 0 || report.contentQualityErrors.length > 0) {
     process.exitCode = 1;
   }
 }

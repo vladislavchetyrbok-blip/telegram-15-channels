@@ -18,6 +18,7 @@ import { DAILY_RETENTION_CTA_LABELS, buildZodiacNavigationKeyboard, getZodiacNav
 import { buildZodiacPost } from "./generate-zodiac-plan.mjs";
 import {
   validateZodiacDailyGuidanceUniqueness,
+  validateZodiacDailyOpeningUniqueness,
   validateZodiacDailyPostGuidance,
 } from "./lib/zodiac-daily-guidance.mjs";
 import { getCompatibilityButtonReport } from "./lib/zodiac-compatibility-bot.mjs";
@@ -374,6 +375,9 @@ function main() {
     if (options.dryRun) {
       for (const issue of validateZodiacDailyGuidanceUniqueness(dryRunPreviewPosts)) {
         report.contentValidationErrors.push(`duplicate guidance: ${issue}`);
+      }
+      for (const issue of validateZodiacDailyOpeningUniqueness(dryRunPreviewPosts)) {
+        report.contentValidationErrors.push(`duplicate opening: ${issue}`);
       }
     }
     printSummary(report);
