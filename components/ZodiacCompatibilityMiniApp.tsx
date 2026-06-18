@@ -11,7 +11,7 @@ import {
 import { useTelegramBackButton, useTelegramWebApp, type TelegramWebAppState } from "@/lib/use-telegram-webapp";
 import { trackZodiacMiniAppEvent } from "@/lib/zodiac-mini-app-analytics-client";
 import { zodiacAnalyticsScoreTier, zodiacAnalyticsStartappType, type ZodiacAnalyticsEventName, type ZodiacAnalyticsPayload } from "@/lib/zodiac-mini-app-analytics-shared";
-import { ArrowLeft, ArrowRight, CalendarDays, Crown, Gift, HeartHandshake, Lock, MapPin, RotateCcw, ShieldCheck, Sparkles, Star } from "lucide-react";
+import { ArrowLeft, ArrowRight, CalendarDays, Crown, Gift, MapPin, ShieldCheck, Sparkles, Star } from "lucide-react";
 import Link from "next/link";
 import {
   AuraColorFeature,
@@ -38,7 +38,6 @@ import {
   VipMysticDayFeature,
   VipTalismansFeature,
 } from "./ZodiacVipSections";
-import type { ReactNode } from "react";
 import type { CSSProperties } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { modeAnalyticsEvents, tabAnalytics, vipFeatureAnalyticsEvents } from "./zodiac-mini-app/analytics";
@@ -67,7 +66,31 @@ import {
   searchCities,
   isValidTime,
 } from "./zodiac-mini-app/person-state";
-import { EmptyFeatureCard, FeatureCard } from "./zodiac-mini-app/ui-primitives";
+import { DateLoadingSection, EnergyCard } from "./zodiac-mini-app/ForecastCards";
+import { HeaderStatusStrip, HomeQuickSection, HubNavigation, SignSelection } from "./zodiac-mini-app/MiniAppHeader";
+import { MoreFeatureNavigation } from "./zodiac-mini-app/MoreFeatureNavigation";
+import { ResultPanel, ResultTextCard } from "./zodiac-mini-app/ResultCards";
+import {
+  Field,
+  ModeSelector,
+  RelationshipModeSelector,
+  StepProgress,
+  WizardCard,
+  primaryButtonClass,
+  primaryTinyButtonClass,
+  secondaryButtonClass,
+  secondaryTinyButtonClass,
+} from "./zodiac-mini-app/WizardControls";
+import {
+  EmptyFeatureCard,
+  FeatureCard,
+  InfoRow,
+  LockedPreviewCard,
+  SectionHeader,
+  VipPreviewPanel,
+  VipStatusPill,
+  panelClass,
+} from "./zodiac-mini-app/ui-primitives";
 import type {
   AngelNumberPatternType,
   AngelNumberProfile,
@@ -668,7 +691,7 @@ export function ZodiacCompatibilityMiniApp({
                     {step === 3 ? (
                       <WizardCard publicMode={publicMode} stepLabel="Шаг 3 из 3" title={stepTitle}>
                         {isReadyToCalculate(mode, self, partner) ? (
-                          <ResultPanel publicMode={publicMode} result={result} onEdit={() => setStep(1)} onReset={resetFlow} />
+                          <ResultPanel publicMode={publicMode} result={result} levelLabel={compatibilityLevelLabel(result.scores.total)} onEdit={() => setStep(1)} onReset={resetFlow} />
                         ) : (
                           <div className="py-8 text-center">
                             <p className="text-slate-300">Заполните данные, чтобы увидеть совместимость.</p>
@@ -735,138 +758,6 @@ function buildTelegramThemeStyle(telegram: TelegramWebAppState): CSSProperties {
   if (theme.secondary_bg_color) style["--tg-theme-secondary-bg-color"] = theme.secondary_bg_color;
 
   return style as CSSProperties;
-}
-
-function SignSelection({ publicMode, hintSign, onSelect }: { publicMode: boolean; hintSign: ZodiacSign | null; onSelect: (slug: string) => void }) {
-  return (
-    <section className={panelClass(publicMode)}>
-      <div className="min-w-0">
-        <p className={eyebrowClass(publicMode)}>Выбор знака</p>
-        <h2 className={sectionTitleClass(publicMode)}>Выберите знак</h2>
-        <p className="mt-2 text-sm leading-6 text-slate-300">
-          Прогнозы, календарь и совместимость откроются после вашего выбора.
-        </p>
-      </div>
-
-      {hintSign ? (
-        <div className="mt-4 rounded-lg border border-amber-200/25 bg-amber-200/10 p-3 text-sm text-amber-50">
-          <p>Вы пришли из канала {hintSign.name}</p>
-          <button type="button" onClick={() => onSelect(hintSign.slug)} className="mt-3 inline-flex min-h-10 w-full items-center justify-center rounded-lg border border-amber-100/40 bg-amber-200/15 px-3 text-sm font-semibold text-amber-50 transition hover:bg-amber-200/20">
-            Выбрать {hintSign.name}
-          </button>
-        </div>
-      ) : null}
-
-      <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
-        {signs.map((sign) => (
-          <button
-            key={sign.slug}
-            type="button"
-            onClick={() => onSelect(sign.slug)}
-            className="min-h-[104px] rounded-lg border border-white/12 bg-white/8 p-3 text-left shadow-[0_14px_44px_rgba(8,13,30,0.2)] transition hover:border-fuchsia-200/45 hover:bg-white/12"
-          >
-            <span className="block text-2xl leading-none text-amber-100">{sign.emoji}</span>
-            <span className="mt-3 block text-base font-semibold text-white">{sign.name}</span>
-            <span className="mt-1 block text-xs leading-4 text-slate-300">{sign.range}</span>
-          </button>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function HeaderStatusStrip({ publicMode, sign, dateLabel, vipUntilLabel }: { publicMode: boolean; sign: ZodiacSign; dateLabel: string; vipUntilLabel: string }) {
-  const items = [
-    `${sign.emoji} ${sign.name}`,
-    dateLabel ? `Сегодня: ${dateLabel} · Europe/Kyiv` : "Дата обновляется",
-    `VIP бесплатно до ${vipUntilLabel}`,
-    "данные не сохраняются",
-  ];
-
-  return (
-    <div className={publicMode ? "grid gap-2 rounded-lg border border-white/12 bg-white/8 p-3 text-xs font-semibold text-slate-100" : "grid gap-2 rounded-lg border border-white/12 bg-white/8 p-3 text-xs font-semibold text-slate-100 sm:grid-cols-2"}>
-      {items.map((item) => (
-        <span key={item} className="min-w-0 rounded-md border border-white/10 bg-black/15 px-3 py-2 [overflow-wrap:anywhere]">
-          {item}
-        </span>
-      ))}
-    </div>
-  );
-}
-
-function HomeQuickSection({
-  publicMode,
-  onOpenLove,
-  onOpenProfile,
-  onOpenForecasts,
-  onOpenMystic,
-  onOpenVip,
-}: {
-  publicMode: boolean;
-  onOpenLove: () => void;
-  onOpenProfile: () => void;
-  onOpenForecasts: () => void;
-  onOpenMystic: () => void;
-  onOpenVip: () => void;
-}) {
-  const cards = [
-    { title: "Сегодня", text: "короткий прогноз дня", action: onOpenForecasts, icon: <Sparkles className="h-4 w-4" /> },
-    { title: "Совместимость", text: "расчёт пары", action: onOpenLove, icon: <HeartHandshake className="h-4 w-4" /> },
-    { title: "Ангельские числа", text: "10:10, 12:12, 02:22", action: onOpenMystic, icon: <Star className="h-4 w-4" /> },
-    { title: "Натальная карта", text: "профиль рождения", action: onOpenProfile, icon: <CalendarDays className="h-4 w-4" /> },
-    { title: "VIP бесплатно", text: "до 17.09.2026", action: onOpenVip, icon: <Crown className="h-4 w-4" /> },
-    { title: "Ментальная карта", text: "карта отношений", action: onOpenLove, icon: <Sparkles className="h-4 w-4" /> },
-  ];
-
-  return (
-    <section className={panelClass(publicMode)}>
-      <SectionHeader publicMode={publicMode} icon={<Sparkles className="h-5 w-5" />} title="Главная" subtitle="быстрый вход в основные разделы" />
-      <div className="mt-4 grid grid-cols-2 gap-2">
-        {cards.map((card) => (
-          <button
-            key={card.title}
-            type="button"
-            onClick={card.action}
-            className={publicMode ? "min-h-[84px] rounded-lg border border-white/12 bg-white/8 p-3 text-left transition hover:border-fuchsia-200/35 hover:bg-white/12" : "min-h-[84px] rounded-lg border border-slate-200 bg-white p-3 text-left transition hover:border-violet-200 hover:bg-violet-50/50"}
-          >
-            <span className={publicMode ? "inline-flex h-8 w-8 items-center justify-center rounded-md border border-amber-200/25 bg-amber-200/10 text-amber-100" : "inline-flex h-8 w-8 items-center justify-center rounded-md border border-violet-100 bg-violet-50 text-violet-700"}>
-              {card.icon}
-            </span>
-            <span className={publicMode ? "mt-3 block break-words text-sm font-semibold leading-5 text-white" : "mt-3 block break-words text-sm font-semibold leading-5 text-slate-950"}>{card.title}</span>
-            <span className={publicMode ? "mt-1 block break-words text-xs leading-4 text-slate-400" : "mt-1 block break-words text-xs leading-4 text-slate-500"}>{card.text}</span>
-          </button>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function HubNavigation({ publicMode, activeTab, onChange }: { publicMode: boolean; activeTab: HubTab; onChange: (tab: HubTab) => void }) {
-  return (
-    <nav className={publicMode ? "grid grid-cols-5 gap-2" : "grid grid-cols-5 gap-2"}>
-      {menuHubTabs.map((tab) => {
-        const Icon = tab.icon;
-        const active = activeTab === tab.id;
-        return (
-          <button
-            key={tab.id}
-            type="button"
-            onClick={() => onChange(tab.id)}
-            className={
-              active
-                ? "flex min-h-[58px] min-w-0 flex-col items-center justify-center gap-1 rounded-lg border border-amber-200/55 bg-amber-200/15 px-1 text-center text-[11px] font-semibold leading-tight text-amber-50 shadow-sm"
-                : "flex min-h-[58px] min-w-0 flex-col items-center justify-center gap-1 rounded-lg border border-white/10 bg-white/7 px-1 text-center text-[11px] font-semibold leading-tight text-slate-300 transition hover:border-fuchsia-200/35 hover:bg-white/10"
-            }
-            aria-label={tab.label}
-            aria-current={active ? "page" : undefined}
-          >
-            <Icon className="h-4 w-4 shrink-0" />
-            <span className="block max-w-full break-words">{tab.shortLabel}</span>
-          </button>
-        );
-      })}
-    </nav>
-  );
 }
 
 function TodaySection({ publicMode, sign, dateKey }: { publicMode: boolean; sign: ZodiacSign; dateKey: string }) {
@@ -958,28 +849,6 @@ function LuckyDaysSection({
           </button>
         ))}
       </div>
-    </section>
-  );
-}
-
-function EnergyCard({ publicMode, energy }: { publicMode: boolean; energy: DayEnergy }) {
-  return (
-    <div className={publicMode ? "rounded-lg border border-indigo-200/15 bg-indigo-200/10 p-3 text-slate-100" : "rounded-lg border border-indigo-100 bg-indigo-50 p-3 text-slate-700"}>
-      <p className={publicMode ? "text-sm font-semibold text-indigo-100" : "text-sm font-semibold text-indigo-800"}>🌙 Энергия дня: {energy.type}</p>
-      <div className="mt-2 grid gap-2 text-sm leading-5">
-        <p><span className="font-semibold">Лучше для:</span> {energy.bestFor}</p>
-        <p><span className="font-semibold">Тон:</span> {energy.relationshipTone}</p>
-        <p><span className="font-semibold">Избегать:</span> {energy.avoid}</p>
-      </div>
-    </div>
-  );
-}
-
-function DateLoadingSection({ publicMode, title }: { publicMode: boolean; title: string }) {
-  return (
-    <section className={panelClass(publicMode)}>
-      <SectionHeader publicMode={publicMode} icon={<CalendarDays className="h-5 w-5" />} title={title} subtitle="Обновляем дату" />
-      <div className="mt-5 h-28 animate-pulse rounded-lg border border-white/12 bg-white/8" />
     </section>
   );
 }
@@ -1463,68 +1332,6 @@ function MoreSection({
         ) : null}
       </div>
     </section>
-  );
-}
-
-function MoreFeatureNavigation({
-  features,
-  activeFeature,
-  pairReady,
-  natalReady,
-  signReady,
-  onChange,
-}: {
-  features: Array<{ id: MoreFeatureId; label: string; shortLabel: string; group: MenuFeatureGroup; requirement?: "pair" | "natal" | "sign" }>;
-  activeFeature: MoreFeatureId;
-  pairReady: boolean;
-  natalReady: boolean;
-  signReady: boolean;
-  onChange: (feature: MoreFeatureId) => void;
-}) {
-  return (
-    <div className="mt-4 space-y-3">
-      {[{ id: "menu", title: "" }].map((group) => {
-        const groupedFeatures = features;
-        return (
-          <div key={group.id}>
-            {group.title ? <p className="px-1 text-xs font-semibold uppercase tracking-[0.08em] text-slate-400">{group.title}</p> : null}
-            <div className="-mx-1 mt-2 overflow-x-auto pb-1">
-              <div className="flex min-w-max gap-2 px-1">
-                {groupedFeatures.map((feature) => {
-                  const active = activeFeature === feature.id;
-                  const blockedHint =
-                    feature.requirement === "pair" && !pairReady
-                      ? "нужна пара"
-                      : feature.requirement === "natal" && !natalReady
-                        ? "нужна дата"
-                        : feature.requirement === "sign" && !signReady
-                          ? "нужен знак"
-                          : null;
-                  return (
-                    <button
-                      key={feature.id}
-                      type="button"
-                      onClick={() => onChange(feature.id)}
-                      className={
-                        active
-                          ? "min-h-[58px] min-w-[92px] rounded-lg border border-amber-200/60 bg-amber-200/15 px-3 py-2 text-left shadow-sm"
-                          : "min-h-[58px] min-w-[92px] rounded-lg border border-white/10 bg-white/7 px-3 py-2 text-left transition hover:border-fuchsia-200/35 hover:bg-white/10"
-                      }
-                      aria-current={active ? "page" : undefined}
-                    >
-                      <span className={active ? "block text-sm font-semibold leading-4 text-white" : "block text-sm font-semibold leading-4 text-slate-200"}>{feature.shortLabel}</span>
-                      <span className={blockedHint ? "mt-1 block text-[11px] font-semibold leading-4 text-amber-100" : active ? "mt-1 block text-[11px] leading-4 text-amber-100" : "mt-1 block text-[11px] leading-4 text-slate-400"}>
-                        {blockedHint ?? (active ? "открыто" : "перейти")}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        );
-      })}
-    </div>
   );
 }
 
@@ -2703,233 +2510,6 @@ function VipFreeAccessCard({
   );
 }
 
-function VipStatusPill({ publicMode, label, value }: { publicMode: boolean; label: string; value: string }) {
-  return (
-    <div className={publicMode ? "rounded-lg border border-white/12 bg-white/8 p-3" : "rounded-lg border border-amber-100 bg-white p-3"}>
-      <p className={publicMode ? "text-xs font-semibold text-amber-100" : "text-xs font-semibold text-amber-800"}>{label}</p>
-      <p className={publicMode ? "mt-1 text-sm font-semibold text-white" : "mt-1 text-sm font-semibold text-slate-950"}>{value}</p>
-    </div>
-  );
-}
-
-function VipPreviewPanel({ publicMode, title, text }: { publicMode: boolean; title: string; text: string }) {
-  return (
-    <div className={publicMode ? "rounded-lg border border-white/12 bg-white/8 p-3" : "rounded-lg border border-amber-100 bg-white p-3"}>
-      <p className={publicMode ? "text-sm font-semibold text-amber-100" : "text-sm font-semibold text-amber-800"}>{title}</p>
-      <p className={publicMode ? "mt-2 text-sm leading-5 text-slate-300" : "mt-2 text-sm leading-5 text-slate-600"}>{text}</p>
-    </div>
-  );
-}
-
-function SectionHeader({ publicMode, icon, title, subtitle }: { publicMode: boolean; icon: ReactNode; title: string; subtitle: string }) {
-  return (
-    <div className="flex items-start gap-3">
-      <span className={publicMode ? "flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-fuchsia-200/20 bg-fuchsia-200/10 text-fuchsia-100" : "flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-fuchsia-200/20 bg-fuchsia-200/10 text-fuchsia-100"}>
-        {icon}
-      </span>
-      <div className="min-w-0">
-        <p className={eyebrowClass(publicMode)}>Гороскоп</p>
-        <h2 className={sectionTitleClass(publicMode)}>{title}</h2>
-        <p className="mt-1 text-sm text-slate-300">{subtitle}</p>
-      </div>
-    </div>
-  );
-}
-
-function InfoRow({ publicMode, label, text }: { publicMode: boolean; label: string; text: string }) {
-  return (
-    <div className={publicMode ? "rounded-lg border border-white/12 bg-white/8 p-3" : "rounded-lg border border-white/12 bg-white/8 p-3"}>
-      <p className="text-sm font-semibold text-amber-100">{label}</p>
-      <p className="mt-2 text-sm leading-5 text-slate-300">{text}</p>
-    </div>
-  );
-}
-
-function LockedPreviewCard({
-  publicMode,
-  icon,
-  title,
-  text,
-  items,
-  onPreviewClick,
-}: {
-  publicMode: boolean;
-  icon: ReactNode;
-  title: string;
-  text: string;
-  items: string[];
-  onPreviewClick?: () => void;
-}) {
-  return (
-    <div className={publicMode ? "rounded-lg border border-amber-200/20 bg-amber-200/10 p-4" : "rounded-lg border border-amber-200/20 bg-amber-200/10 p-4"}>
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <p className="text-lg font-semibold text-white">{title}</p>
-          <p className="mt-2 text-sm leading-6 text-slate-300">{text}</p>
-        </div>
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-amber-200/25 bg-black/20 text-amber-100">
-          {icon}
-        </span>
-      </div>
-      <div className="mt-4 flex items-center gap-2 rounded-lg border border-white/12 bg-white/7 px-3 py-2 text-xs font-semibold text-slate-300">
-        <Lock className="h-4 w-4 text-amber-100" />
-        только превью
-      </div>
-      {onPreviewClick ? (
-        <button type="button" onClick={onPreviewClick} className="mt-3 inline-flex min-h-10 w-full items-center justify-center rounded-lg border border-amber-200/30 bg-amber-200/12 px-3 text-sm font-semibold text-amber-50 transition hover:bg-amber-200/18">
-          Открыть превью
-        </button>
-      ) : null}
-      <ul className="mt-4 space-y-2 text-sm leading-5 text-slate-300">
-        {items.map((item) => (
-          <li key={item} className="flex gap-2">
-            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-200" />
-            <span>{item}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-function panelClass(_publicMode: boolean) {
-  return "min-w-0 rounded-lg border border-white/12 bg-white/10 p-4 shadow-[0_18px_60px_rgba(8,13,30,0.38)] backdrop-blur transition-all duration-300";
-}
-
-function eyebrowClass(_publicMode: boolean) {
-  return "text-xs font-semibold text-amber-100";
-}
-
-function sectionTitleClass(_publicMode: boolean) {
-  return "mt-1 break-words text-xl font-semibold leading-tight text-white [overflow-wrap:anywhere]";
-}
-
-function StepProgress({ publicMode, step }: { publicMode: boolean; step: WizardStep }) {
-  return (
-    <div className={publicMode ? "grid grid-cols-3 gap-2" : "grid grid-cols-3 gap-2"}>
-      {[1, 2, 3].map((item) => (
-        <div
-          key={item}
-          className={
-            item <= step
-              ? publicMode
-                ? "h-1.5 rounded-full bg-gradient-to-r from-fuchsia-300 via-rose-300 to-amber-200"
-                : "h-1.5 rounded-full bg-violet-500"
-              : publicMode
-                ? "h-1.5 rounded-full bg-white/12"
-                : "h-1.5 rounded-full bg-slate-200"
-          }
-        />
-      ))}
-    </div>
-  );
-}
-
-function ModeSelector({ publicMode, mode, onChange }: { publicMode: boolean; mode: Mode; onChange: (mode: Mode) => void }) {
-  return (
-    <section className="grid grid-cols-3 gap-2">
-      {modes.map((item) => (
-        <button
-          key={item.id}
-          type="button"
-          onClick={() => onChange(item.id)}
-          className={
-            publicMode
-              ? `min-w-0 rounded-lg border px-2 py-3 text-center text-xs shadow-sm transition ${
-                  mode === item.id ? "border-amber-200/70 bg-amber-200/15 text-amber-50" : "border-white/10 bg-white/6 text-slate-300 hover:border-fuchsia-200/40"
-                }`
-              : `min-w-0 rounded-lg border px-2 py-3 text-center text-xs shadow-sm transition ${
-                  mode === item.id ? "border-violet-300 bg-violet-50 text-violet-900" : "border-slate-200 bg-white text-slate-700 hover:border-cyan-200"
-                }`
-          }
-        >
-          <span className="block font-semibold">{item.label}</span>
-          <span className="mt-1 block leading-snug">{item.caption}</span>
-        </button>
-      ))}
-    </section>
-  );
-}
-
-function RelationshipModeSelector({ publicMode, mode, onChange }: { publicMode: boolean; mode: RelationshipMode; onChange: (mode: RelationshipMode) => void }) {
-  return (
-    <section className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-      {relationshipModes.map((item) => (
-        <button
-          key={item.id}
-          type="button"
-          onClick={() => onChange(item.id)}
-          className={
-            publicMode
-              ? `min-w-0 rounded-lg border px-2 py-3 text-left text-xs shadow-sm transition ${
-                  mode === item.id ? "border-rose-200/70 bg-rose-200/15 text-rose-50" : "border-white/10 bg-white/6 text-slate-300 hover:border-rose-200/40"
-                }`
-              : `min-w-0 rounded-lg border px-2 py-3 text-left text-xs shadow-sm transition ${
-                  mode === item.id ? "border-rose-300 bg-rose-50 text-rose-900" : "border-slate-200 bg-white text-slate-700 hover:border-rose-200"
-                }`
-          }
-        >
-          <span className="block font-semibold">{item.label}</span>
-          <span className="mt-1 block leading-snug">{item.caption}</span>
-        </button>
-      ))}
-    </section>
-  );
-}
-
-function WizardCard({ publicMode, stepLabel, title, children }: { publicMode: boolean; stepLabel: string; title: string; children: ReactNode }) {
-  return (
-    <div
-      className={
-        publicMode
-          ? "min-w-0 rounded-lg border border-white/12 bg-white/10 p-4 shadow-[0_18px_60px_rgba(8,13,30,0.38)] backdrop-blur transition-all duration-300"
-          : "min-w-0 rounded-lg border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300"
-      }
-    >
-      <div className="mb-5 flex items-center justify-between gap-3">
-        <div className="min-w-0">
-          <p className={publicMode ? "text-xs font-semibold text-amber-100" : "text-xs font-semibold text-violet-700"}>{stepLabel}</p>
-          <h2 className={publicMode ? "mt-1 text-xl font-semibold text-white" : "mt-1 text-xl font-semibold text-slate-950"}>{title}</h2>
-        </div>
-        <span
-          className={
-            publicMode
-              ? "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-fuchsia-200/20 bg-fuchsia-200/10 text-fuchsia-100"
-              : "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-violet-100 bg-violet-50 text-violet-700"
-          }
-        >
-          <HeartHandshake className="h-5 w-5" />
-        </span>
-      </div>
-      {children}
-    </div>
-  );
-}
-
-function primaryButtonClass(publicMode: boolean) {
-  return publicMode
-    ? "inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg border border-amber-100/40 bg-gradient-to-r from-fuchsia-500 via-rose-500 to-amber-400 px-4 text-sm font-semibold text-white shadow-lg shadow-rose-950/30 transition hover:brightness-110"
-    : "inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg border border-violet-500 bg-violet-600 px-4 text-sm font-semibold text-white transition hover:bg-violet-700";
-}
-
-function secondaryButtonClass(publicMode: boolean) {
-  return publicMode
-    ? "inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg border border-white/15 bg-white/8 px-4 text-sm font-semibold text-slate-100 transition hover:bg-white/12"
-    : "inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50";
-}
-
-function primaryTinyButtonClass(publicMode: boolean) {
-  return publicMode
-    ? "rounded-lg border border-amber-200/55 bg-amber-200/15 px-3 py-2 text-xs font-semibold text-amber-50"
-    : "rounded-lg border border-violet-300 bg-violet-50 px-3 py-2 text-xs font-semibold text-violet-900";
-}
-
-function secondaryTinyButtonClass(publicMode: boolean) {
-  return publicMode
-    ? "rounded-lg border border-white/12 bg-white/8 px-3 py-2 text-xs font-semibold text-slate-200"
-    : "rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700";
-}
-
 function PersonPanel({
   publicMode,
   title,
@@ -3124,106 +2704,6 @@ function CitySelector({ publicMode, value, onChange }: { publicMode: boolean; va
     </div>
   );
 }
-
-function ResultPanel({
-  publicMode,
-  result,
-  onEdit,
-  onReset,
-}: {
-  publicMode: boolean;
-  result: CompatibilityResult;
-  onEdit: () => void;
-  onReset: () => void;
-}) {
-  const levelLabel = compatibilityLevelLabel(result.scores.total);
-
-  return (
-    <div className="min-w-0 space-y-4">
-      <div className={publicMode ? "rounded-lg border border-amber-200/20 bg-gradient-to-br from-fuchsia-300/12 via-rose-300/12 to-amber-200/12 p-4 text-white" : "rounded-lg border border-violet-100 bg-violet-50 p-4 text-slate-950"}>
-        <p className="text-sm font-semibold opacity-80">{result.modeLabel}</p>
-        <p className="mt-2 break-words text-lg font-semibold [overflow-wrap:anywhere]">{result.title}</p>
-        <div className="mt-4 flex items-end justify-between gap-3">
-          <div>
-            <p className={publicMode ? "text-5xl font-semibold text-amber-100" : "text-5xl font-semibold text-violet-700"}>{result.scores.total}%</p>
-            <p className={publicMode ? "mt-1 text-sm font-semibold text-fuchsia-100" : "mt-1 text-sm font-semibold text-violet-800"}>{levelLabel}</p>
-          </div>
-          <HeartHandshake className={publicMode ? "h-12 w-12 text-rose-200" : "h-12 w-12 text-violet-400"} />
-        </div>
-      </div>
-
-      <div className="space-y-3">
-        <ScoreBar publicMode={publicMode} label="🔥 Притяжение" value={result.scores.attraction} text={result.attractionText} />
-        <ScoreBar publicMode={publicMode} label="💬 Общение" value={result.scores.communication} text={result.communicationText} />
-        <ScoreBar publicMode={publicMode} label="❤️ В любви" value={result.scores.love} text={result.loveText} />
-        <ScoreBar publicMode={publicMode} label="🏠 Быт и ритм" value={result.scores.household} text={result.householdText} />
-      </div>
-
-      {result.nameResonance ? (
-        <ResultTextCard publicMode={publicMode} title="✨ Именной резонанс" text={result.nameResonance.text} />
-      ) : null}
-
-      <div className="space-y-3">
-        <ResultTextCard publicMode={publicMode} title="⚠️ Слабое место" text={result.weakSpotText} />
-        <ResultTextCard publicMode={publicMode} title="⭐ Совет паре" text={result.adviceText} />
-        <ResultTextCard publicMode={publicMode} title="🎯 Итог" text={result.conclusionText} />
-      </div>
-
-      {result.validationMessages.map((message) => (
-        <p key={message} className="rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm font-semibold text-rose-800">{message}</p>
-      ))}
-      {result.note ? <p className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">{result.note}</p> : null}
-
-      <div className="grid grid-cols-2 gap-3 pt-1">
-        <button type="button" onClick={onEdit} className={secondaryButtonClass(publicMode)}>
-          <ArrowLeft className="h-4 w-4" />
-          Изменить данные
-        </button>
-        <button type="button" onClick={onReset} className={primaryButtonClass(publicMode)}>
-          <RotateCcw className="h-4 w-4" />
-          Новый расчёт
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function ScoreBar({ publicMode, label, value, text }: { publicMode: boolean; label: string; value: number; text: string }) {
-  return (
-    <div className={publicMode ? "rounded-lg border border-white/12 bg-white/8 p-3 text-slate-100" : "rounded-lg border border-slate-200 bg-white p-3 text-slate-700"}>
-      <div className="flex items-center justify-between gap-3">
-        <span className="text-sm font-semibold">{label}</span>
-        <span className={publicMode ? "text-sm font-semibold text-amber-100" : "text-sm font-semibold text-violet-700"}>{value}%</span>
-      </div>
-      <div className={publicMode ? "mt-2 h-2 rounded-full bg-white/12" : "mt-2 h-2 rounded-full bg-slate-100"}>
-        <div
-          className={publicMode ? "h-2 rounded-full bg-gradient-to-r from-fuchsia-300 via-rose-300 to-amber-200" : "h-2 rounded-full bg-violet-500"}
-          style={{ width: `${value}%` }}
-        />
-      </div>
-      <p className={publicMode ? "mt-2 text-sm leading-5 text-slate-300" : "mt-2 text-sm leading-5 text-slate-600"}>{text}</p>
-    </div>
-  );
-}
-
-function ResultTextCard({ publicMode, title, text }: { publicMode: boolean; title: string; text: string }) {
-  return (
-    <div className={publicMode ? "rounded-lg border border-white/12 bg-white/8 p-3 text-slate-100" : "rounded-lg border border-slate-200 bg-white p-3 text-slate-700"}>
-      <p className={publicMode ? "text-sm font-semibold text-amber-100" : "text-sm font-semibold text-violet-800"}>{title}</p>
-      <p className={publicMode ? "mt-2 text-sm leading-5 text-slate-300" : "mt-2 text-sm leading-5 text-slate-600"}>{text}</p>
-    </div>
-  );
-}
-
-function Field({ label, publicMode, children }: { label: string; publicMode?: boolean; children: ReactNode }) {
-  return (
-    <label className="block">
-      <span className={publicMode ? "mb-1 block text-sm font-medium text-slate-200" : "mb-1 block text-sm font-medium text-slate-700"}>{label}</span>
-      {children}
-    </label>
-  );
-}
-
 
 function isReadyToCalculate(mode: Mode, self: PersonState, partner: PersonState) {
   if (!self.sign || !partner.sign) return false;
