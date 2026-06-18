@@ -13,6 +13,17 @@ Duplicate posts are strictly prevented by the **Durable Ledger** (`data/state/zo
 * If the first run never fires, a later backup run acts as the primary and publishes the target date.
 * If a run is still in progress, the workflow concurrency group and durable ledger prevent duplicate sends.
 
+## Workflow Monitor
+Use the dedicated monitor for the `Zodiac Daily Publisher` workflow:
+
+```bash
+npm run zodiac:workflow:check -- --date YYYY-MM-DD
+```
+
+This checks `.github/workflows/zodiac-scheduler.yml`, the five cron attempts, scheduled live mode, `Europe/Kyiv` target date calculation, the ledger-protected live command, manual `dry-run` default, report artifact upload, and local ledger/report counts for the requested date.
+
+If `GITHUB_TOKEN` or `GH_TOKEN` is not configured, the monitor still completes static and local checks and reports: `GitHub API token not configured; static workflow checks completed`.
+
 ## Manual Recovery Procedure
 If both crons fail or the pipeline stalls:
 1. Verify the current ledger state using `npm run zodiac:status` or checking `data/state/zodiac-publish-ledger.json`.

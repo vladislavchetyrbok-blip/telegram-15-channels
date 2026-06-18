@@ -97,6 +97,7 @@
     "zodiac:report:daily": "node scripts/generate-zodiac-daily-report.mjs",
     "zodiac:report:history": "node scripts/generate-zodiac-history-report.mjs",
     "zodiac:status": "node scripts/zodiac-status.mjs",
+    "zodiac:workflow:check": "node scripts/check-zodiac-daily-workflow.mjs",
     "zodiac:scheduler:preflight": "node scripts/zodiac-scheduler-preflight.mjs",
     "zodiac:retry:failed": "node scripts/zodiac-retry-failed.mjs",
     "zodiac:recover:stale": "node scripts/zodiac-recover-stale.mjs",

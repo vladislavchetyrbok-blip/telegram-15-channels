@@ -50,6 +50,18 @@ All scheduled attempts run in `live` mode after preflight, but repeated attempts
 
 If a stable 09:00 Kyiv wall-clock time is mandatory year-round, update the cron seasonally or move the scheduler to a runtime with timezone-aware cron, such as VPS/Coolify.
 
+## Workflow Monitor
+
+Use the dedicated Zodiac Daily workflow monitor for `.github/workflows/zodiac-scheduler.yml`:
+
+```bash
+npm run zodiac:workflow:check -- --date YYYY-MM-DD
+```
+
+The monitor validates the `Zodiac Daily Publisher` workflow name, all five cron attempts, scheduled `live` mode, `Europe/Kyiv` target date calculation, the ledger-protected live command, manual `dry-run` default, and daily report artifact upload.
+
+If `GITHUB_TOKEN` or `GH_TOKEN` is configured, it also reads recent workflow runs from GitHub Actions. Without a token, static workflow checks and local ledger/report checks still run, and the command reports a warning instead of failing.
+
 ## How Ledger Prevents Duplicates
 
 The key is always:
