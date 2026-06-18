@@ -61,15 +61,6 @@ export function AstrologyCenterHome({
       badge: "Топ",
     },
     {
-      id: "birth_matrix",
-      title: "🧿 Матрица судьбы",
-      text: "Расчёт по дате рождения",
-      icon: <Star className="h-6 w-6" />,
-      target: { tab: "mystic", feature: "birthMatrix" },
-      tone: "amber",
-      badge: "Личное",
-    },
-    {
       id: "angel_numbers",
       title: "👼 Ангельские числа",
       text: "11:11, 22:22, 15:15 и знаки Вселенной",
@@ -77,6 +68,15 @@ export function AstrologyCenterHome({
       target: { tab: "mystic", feature: "angelNumbers" },
       tone: "cyan",
       badge: "Популярное",
+    },
+    {
+      id: "birth_matrix",
+      title: "🧿 Матрица судьбы",
+      text: "Расчёт по дате рождения",
+      icon: <Star className="h-6 w-6" />,
+      target: { tab: "mystic", feature: "birthMatrix" },
+      tone: "amber",
+      badge: "Личное",
     },
     {
       id: "numerology",
@@ -128,7 +128,6 @@ export function AstrologyCenterHome({
       icon: <User className="h-6 w-6" />,
       target: { tab: "profile", feature: "natalChart" },
       tone: "slate",
-      badge: "Preview",
     },
   ];
 
@@ -148,7 +147,23 @@ export function AstrologyCenterHome({
         </div>
         <h2 className="mt-4 text-2xl font-semibold leading-tight text-white">Астрологический центр ✨</h2>
         <p className="mt-2 text-sm leading-6 text-slate-300">Гороскопы, совместимость, мистика и личные расчёты в одном месте</p>
-        <p className="mt-3 text-base font-semibold leading-6 text-amber-50">Выберите, что хотите узнать сегодня</p>
+        
+        <button
+          type="button"
+          onClick={() => onOpenCategory({ tab: "mystic", feature: "angelNumbers" }, "angel_numbers")}
+          className="mt-4 flex w-full items-center justify-between rounded-lg border border-cyan-300/30 bg-gradient-to-r from-cyan-950/50 to-blue-900/40 p-3 text-left transition hover:border-cyan-300/50"
+        >
+          <div className="flex items-center gap-3">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-cyan-300/20 text-cyan-100">
+              <Stars className="h-5 w-5" />
+            </span>
+            <div>
+              <p className="text-sm font-semibold text-white">Ангельские числа 11:11</p>
+              <p className="text-xs text-cyan-100/70">Узнать значение совпадений</p>
+            </div>
+          </div>
+          <ArrowRight className="h-5 w-5 text-cyan-200/50" />
+        </button>
       </div>
 
       <div className="mt-4 grid grid-cols-1 gap-3 min-[390px]:grid-cols-2">
