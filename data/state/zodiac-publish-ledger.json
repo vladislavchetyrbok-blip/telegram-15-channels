@@ -1023,6 +1023,18 @@
       "updatedAt": "2026-06-18T10:39:24.225Z",
       "messageId": "16,",
       "sentAt": "2026-06-18T10:39:24.225Z"
+    },
+    "2026-06-18:capricorn": {
+      "key": "2026-06-18:capricorn",
+      "date": "2026-06-18",
+      "slug": "capricorn",
+      "createdAt": "2026-06-18T10:39:25.352Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-06-18T10:39:25.352Z"
     }
   }
 }
