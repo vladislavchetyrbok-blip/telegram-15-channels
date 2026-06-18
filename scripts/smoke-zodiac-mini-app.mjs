@@ -97,9 +97,12 @@ async function main() {
 
 async function runBrowserModeSmoke(client, report) {
   await waitForPageText(client, /Астрологический центр|Выберите, что хотите узнать сегодня/, "Mini App main menu hero did not render.");
-  for (const category of ["Гороскопы", "Совместимость", "Мистика", "Матрица судьбы", "Нумерология", "VIP раздел", "Розыгрыши", "Мой профиль"]) {
+  const mainCategories = ["Гороскопы", "Совместимость", "Матрица судьбы", "Ангельские числа", "Нумерология", "Мистика", "Таро и руны", "Луна и ритуалы", "VIP раздел", "Мой профиль"];
+  for (const category of mainCategories) {
     if (!(await hasText(client, new RegExp(category, "i")))) throw new Error(`Main menu category is missing: ${category}`);
   }
+  if (await hasText(client, /Розыгрыши/i)) throw new Error("Giveaways should not be a top-level main menu category.");
+  report.mainMenuCategoryCount = mainCategories.length;
   report.mainMenuChecked = true;
 
   await click(client, "Совместимость");
@@ -120,7 +123,14 @@ async function runBrowserModeSmoke(client, report) {
   report.horoscopesChecked = true;
 
   await click(client, "Главное меню");
-  await waitForPageText(client, /Астрологический центр|VIP раздел/, "Back to main menu did not render after Horoscopes.");
+  await waitForPageText(client, /Астрологический центр|Ангельские числа/, "Back to main menu did not render after Horoscopes.");
+  await click(client, "Ангельские числа");
+  await waitForPageText(client, /Ангельские числа|11:11|22:22/, "Angel Numbers category did not render.");
+  await assertFeatureScreen(client, "Ангельские числа", { allowSoon: false, minLength: 260 });
+  report.angelNumbersChecked = true;
+
+  await click(client, "Главное меню");
+  await waitForPageText(client, /Астрологический центр|VIP раздел/, "Back to main menu did not render after Angel Numbers.");
   await click(client, "VIP раздел");
   await waitForPageText(client, /VIP открыт бесплатно|Ранний доступ до 17\.09\.2026/, "VIP menu did not render.");
   report.freeAccessVisible = await hasText(client, /17\.09\.2026/);
@@ -169,6 +179,7 @@ async function runStartParamSmoke(client, baseUrl, report) {
     { param: "mystic", sign: "Овен", landing: /Мистика|Выберите знак/, pattern: /Мистика|Ангельские числа|11:11/, message: "startapp=mystic did not open Mystic after sign selection." },
     { param: "vip", sign: "Овен", landing: /VIP раздел|Выберите знак/, pattern: /VIP открыт бесплатно|Ранний доступ до 17\.09\.2026/, message: "startapp=vip did not open VIP after sign selection." },
     { param: "birth_matrix", sign: "Овен", landing: /Матрица судьбы|Выберите знак/, pattern: /Матрица|дд\.мм\.гггг|Дата/, message: "startapp=birth_matrix did not open Birth Matrix after sign selection." },
+    { param: "angel_numbers", sign: "Овен", landing: /Ангельские числа|Выберите знак/, pattern: /Ангельские числа|11:11|22:22/, message: "startapp=angel_numbers did not open Angel Numbers after sign selection." },
     { param: "week", sign: "Овен", landing: /Гороскопы|Выберите знак/, pattern: /Неделя|Прогнозы|Удачные дни/, message: "startapp=week did not open weekly forecasts after sign selection." },
   ];
 
@@ -869,7 +880,9 @@ function createReport() {
     browserMode: "NOT_RUN",
     telegramMock: "NOT_RUN",
     mainMenuChecked: false,
+    mainMenuCategoryCount: 0,
     horoscopesChecked: false,
+    angelNumbersChecked: false,
     vipChecked: 0,
     giveawaysLocked: false,
     mysticChecked: 0,
@@ -901,7 +914,9 @@ function printSummary(status, report) {
   console.log(`Browser mode: ${report.browserMode}`);
   console.log(`Telegram mock: ${report.telegramMock}`);
   console.log(`Main menu checked: ${report.mainMenuChecked ? "YES" : "NO"}`);
+  console.log(`Main menu categories checked: ${report.mainMenuCategoryCount}/10`);
   console.log(`Horoscopes checked: ${report.horoscopesChecked ? "YES" : "NO"}`);
+  console.log(`Angel Numbers / Ангельские числа checked: ${report.angelNumbersChecked ? "YES" : "NO"}`);
   console.log(`Telegram ready/expand: ${report.telegramReadyCalled && report.telegramExpandCalled ? "YES" : "NO"}`);
   console.log(`Telegram BackButton: ${report.telegramBackButtonChecked ? "YES" : "NO"}`);
   console.log(`Telegram category back: ${report.telegramCategoryBackChecked ? "YES" : "NO"}`);

@@ -70,7 +70,7 @@ For Vercel, add both variables in Project Settings -> Environment Variables for 
 
 The allowlist covers:
 
-- main menu opens, main menu category taps, horoscope category opens, compatibility category selection, and profile/saved/history preview panels;
+- main menu opens, main menu category taps, horoscope category opens, Angel Numbers category opens, compatibility category selection, and profile/saved/history preview panels;
 - app open, sign selection, section opens, compatibility calculation;
 - natal chart, Chinese horoscope, zodiac stones, name profile, numerology, angel numbers, lunar calendar, daily talisman, dream dictionary, gifts, name compatibility, archetype;
 - VIP opened, free access, feature taps, future subscription tap, and all active VIP detail screens;
@@ -87,6 +87,8 @@ Home -> Category -> Feature -> Result
 ```
 
 These navigation events must not include names, birth dates, birth times, city query, raw text inputs, or Telegram initData. Safe fields are limited to values such as `section`, `category`, `featureKey`, `relationshipMode`, and zodiac sign slugs.
+
+The current Home menu has 10 large top-level categories: `Гороскопы`, `Совместимость`, `Матрица судьбы`, `Ангельские числа`, `Нумерология`, `Мистика`, `Таро и руны`, `Луна и ритуалы`, `VIP раздел`, and `Мой профиль`. `Розыгрыши` stays inside VIP as locked/preview and is tracked only through giveaway locked events.
 
 ## Forbidden Data
 

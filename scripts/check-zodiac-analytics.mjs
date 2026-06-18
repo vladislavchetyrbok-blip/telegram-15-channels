@@ -44,6 +44,7 @@ async function main() {
     const mainMenuCategoryEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "main_menu_category_opened", { section: "main_menu", category: "mystic", featureKey: "birthMatrix" });
     const compatibilityCategoryEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "compatibility_category_selected", { section: "compatibility", relationshipMode: "friendship" });
     const horoscopeCategoryEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "horoscope_category_opened", { section: "week", category: "horoscopes", featureKey: "weekForecast" });
+    const angelNumbersCategoryEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "angel_numbers_category_opened", { section: "angel_numbers", category: "angel_numbers", featureKey: "angelNumbers" });
     const profilePreviewEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "profile_preview_opened", { section: "profile_preview", category: "saved" });
     const mentalMapEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "mental_map_viewed");
     const vipFeatureEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "vip_feature_opened", { category: "month_forecast" });
@@ -81,6 +82,7 @@ async function main() {
       mainMenuCategoryEvent,
       compatibilityCategoryEvent,
       horoscopeCategoryEvent,
+      angelNumbersCategoryEvent,
       profilePreviewEvent,
       mentalMapEvent,
       vipFeatureEvent,
@@ -107,6 +109,7 @@ async function main() {
         mainMenuCategoryEvent.sensitiveFieldsStripped &&
         compatibilityCategoryEvent.sensitiveFieldsStripped &&
         horoscopeCategoryEvent.sensitiveFieldsStripped &&
+        angelNumbersCategoryEvent.sensitiveFieldsStripped &&
         profilePreviewEvent.sensitiveFieldsStripped &&
         mentalMapEvent.sensitiveFieldsStripped &&
         vipFeatureEvent.sensitiveFieldsStripped &&

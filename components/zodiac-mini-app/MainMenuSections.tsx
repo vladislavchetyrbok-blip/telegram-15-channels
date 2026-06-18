@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { ArrowRight, Bookmark, Crown, Gift, Hash, HeartHandshake, History, Lock, Moon, Sparkles, Star, User } from "lucide-react";
+import { ArrowRight, BadgeCheck, Bookmark, CalendarDays, CircleDot, Crown, Gem, Hash, HeartHandshake, History, Sparkles, Star, Stars, User, WandSparkles } from "lucide-react";
 import { relationshipModes } from "./constants";
 import { panelClass } from "./ui-primitives";
 import type { HubTab, MoreFeatureId, RelationshipMode, ZodiacSign } from "./types";
@@ -18,7 +18,7 @@ interface MainMenuCategory {
   icon: ReactNode;
   target: MainMenuCategoryTarget;
   tone: "violet" | "rose" | "cyan" | "amber" | "emerald" | "slate";
-  locked?: boolean;
+  badge?: string;
 }
 
 const categoryIconClass: Record<MainMenuCategory["tone"], string> = {
@@ -45,67 +45,90 @@ export function AstrologyCenterHome({
     {
       id: "horoscopes",
       title: "✨ Гороскопы",
-      text: "Ежедневные, недельные и месячные прогнозы",
-      icon: <Sparkles className="h-5 w-5" />,
+      text: "Сегодня, неделя, месяц, удачные дни",
+      icon: <CalendarDays className="h-6 w-6" />,
       target: { tab: "forecasts", feature: "todayForecast" },
       tone: "violet",
+      badge: "Ежедневно",
     },
     {
       id: "compatibility",
       title: "💞 Совместимость",
       text: "Любовь, дружба, работа, семья",
-      icon: <HeartHandshake className="h-5 w-5" />,
+      icon: <HeartHandshake className="h-6 w-6" />,
       target: { tab: "love", feature: "compatibilityTool" },
       tone: "rose",
-    },
-    {
-      id: "mystic",
-      title: "🔮 Мистика",
-      text: "Таро, руны, ритуалы, знаки дня",
-      icon: <Moon className="h-5 w-5" />,
-      target: { tab: "mystic", feature: "dailyCard" },
-      tone: "cyan",
+      badge: "Топ",
     },
     {
       id: "birth_matrix",
       title: "🧿 Матрица судьбы",
-      text: "Расчёт и расшифровка по дате рождения",
-      icon: <Star className="h-5 w-5" />,
+      text: "Расчёт по дате рождения",
+      icon: <Star className="h-6 w-6" />,
       target: { tab: "mystic", feature: "birthMatrix" },
       tone: "amber",
+      badge: "Личное",
+    },
+    {
+      id: "angel_numbers",
+      title: "👼 Ангельские числа",
+      text: "11:11, 22:22, 15:15 и знаки Вселенной",
+      icon: <Stars className="h-6 w-6" />,
+      target: { tab: "mystic", feature: "angelNumbers" },
+      tone: "cyan",
+      badge: "Популярное",
     },
     {
       id: "numerology",
       title: "🔢 Нумерология",
-      text: "Числа судьбы, души и личности",
-      icon: <Hash className="h-5 w-5" />,
+      text: "Число судьбы, души и личности",
+      icon: <Hash className="h-6 w-6" />,
       target: { tab: "profile", feature: "numerology" },
       tone: "emerald",
+      badge: "Расчёт",
+    },
+    {
+      id: "mystic",
+      title: "🔮 Мистика",
+      text: "Знаки дня, символы, интуиция",
+      icon: <WandSparkles className="h-6 w-6" />,
+      target: { tab: "mystic", feature: "dailyCard" },
+      tone: "violet",
+    },
+    {
+      id: "tarot_runes",
+      title: "🃏 Таро и руны",
+      text: "Карта дня, руна дня, подсказка",
+      icon: <Gem className="h-6 w-6" />,
+      target: { tab: "mystic", feature: "tarotCard" },
+      tone: "rose",
+      badge: "Подсказка",
+    },
+    {
+      id: "moon_rituals",
+      title: "🌙 Луна и ритуалы",
+      text: "Лунный календарь и практики",
+      icon: <CircleDot className="h-6 w-6" />,
+      target: { tab: "mystic", feature: "lunarRitual" },
+      tone: "cyan",
     },
     {
       id: "vip",
       title: "👑 VIP раздел",
-      text: `11 премиум-функций бесплатно до ${vipUntilLabel}`,
-      icon: <Crown className="h-5 w-5" />,
+      text: `Премиум-функции бесплатно до ${vipUntilLabel}`,
+      icon: <Crown className="h-6 w-6" />,
       target: { tab: "vip", feature: "vip" },
       tone: "amber",
-    },
-    {
-      id: "giveaways",
-      title: "🎁 Розыгрыши",
-      text: "Скоро, locked preview",
-      icon: <Gift className="h-5 w-5" />,
-      target: { tab: "vip", feature: "giveaways" },
-      tone: "slate",
-      locked: true,
+      badge: "Бесплатно",
     },
     {
       id: "profile",
       title: "👤 Мой профиль",
-      text: "Данные не сохраняются, настройки пока preview",
-      icon: <User className="h-5 w-5" />,
+      text: "Данные, история и быстрый доступ",
+      icon: <User className="h-6 w-6" />,
       target: { tab: "profile", feature: "natalChart" },
       tone: "slate",
+      badge: "Preview",
     },
   ];
 
@@ -128,21 +151,21 @@ export function AstrologyCenterHome({
         <p className="mt-3 text-base font-semibold leading-6 text-amber-50">Выберите, что хотите узнать сегодня</p>
       </div>
 
-      <div className="mt-4 grid grid-cols-2 gap-3">
+      <div className="mt-4 grid grid-cols-1 gap-3 min-[390px]:grid-cols-2">
         {categories.map((category) => (
           <button
             key={category.id}
             type="button"
             onClick={() => onOpenCategory(category.target, category.id)}
-            className="min-h-[138px] rounded-lg border border-white/12 bg-white/8 p-3 text-left shadow-[0_16px_50px_rgba(8,13,30,0.24)] transition hover:border-fuchsia-200/40 hover:bg-white/12 focus:outline-none focus:ring-2 focus:ring-amber-200/50"
+            className="min-h-[166px] rounded-lg border border-white/12 bg-white/8 p-4 text-left shadow-[0_18px_54px_rgba(8,13,30,0.28)] transition hover:border-fuchsia-200/40 hover:bg-white/12 focus:outline-none focus:ring-2 focus:ring-amber-200/50"
           >
-            <span className={`inline-flex h-10 w-10 items-center justify-center rounded-lg border ${categoryIconClass[category.tone]}`}>{category.icon}</span>
-            <span className="mt-3 block break-words text-sm font-semibold leading-5 text-white">{category.title}</span>
-            <span className="mt-1 block break-words text-xs leading-4 text-slate-300">{category.text}</span>
-            {category.locked ? (
-              <span className="mt-3 inline-flex items-center gap-1 rounded-md border border-white/12 bg-black/20 px-2 py-1 text-[11px] font-semibold text-slate-300">
-                <Lock className="h-3 w-3 text-amber-100" />
-                locked
+            <span className={`inline-flex h-12 w-12 items-center justify-center rounded-lg border ${categoryIconClass[category.tone]}`}>{category.icon}</span>
+            <span className="mt-4 block break-words text-base font-semibold leading-5 text-white">{category.title}</span>
+            <span className="mt-2 block break-words text-sm leading-5 text-slate-300">{category.text}</span>
+            {category.badge ? (
+              <span className="mt-4 inline-flex items-center gap-1 rounded-md border border-amber-200/20 bg-amber-200/10 px-2 py-1 text-[11px] font-semibold text-amber-100">
+                <BadgeCheck className="h-3 w-3" />
+                {category.badge}
               </span>
             ) : null}
           </button>

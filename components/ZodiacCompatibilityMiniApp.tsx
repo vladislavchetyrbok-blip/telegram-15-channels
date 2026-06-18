@@ -381,6 +381,9 @@ export function ZodiacCompatibilityMiniApp({
     if (target.tab === "forecasts") {
       trackZodiacMiniAppEvent("horoscope_category_opened", analyticsPayload({ section: "week", category: categoryId, featureKey: target.feature ?? "forecasts", sign: selectedSignSlug || undefined }));
     }
+    if (categoryId === "angel_numbers") {
+      trackZodiacMiniAppEvent("angel_numbers_category_opened", analyticsPayload({ section: "angel_numbers", category: categoryId, featureKey: "angelNumbers", sign: selectedSignSlug || undefined }));
+    }
     if (categoryId === "profile") {
       trackZodiacMiniAppEvent("profile_preview_opened", analyticsPayload({ section: "profile_preview", category: "profile", sign: selectedSignSlug || undefined }));
     }
@@ -907,6 +910,30 @@ function getCategoryStartCopy(tab: HubTab, feature: MoreFeatureId | null) {
       title: "🧿 Матрица судьбы",
       subtitle: "Выберите знак для входа, затем рассчитайте матрицу по дате рождения без сохранения данных.",
       features: ["Расчёт по дате рождения", "Личные коды", "Сильные стороны", "Точки роста"],
+    };
+  }
+
+  if (tab === "mystic" && feature === "angelNumbers") {
+    return {
+      title: "👼 Ангельские числа",
+      subtitle: "Выберите знак для входа и откройте толкование 11:11, 22:22, зеркальных чисел и знаков дня.",
+      features: ["11:11 и 22:22", "Зеркальные комбинации", "Знаки Вселенной", "Базовое толкование", "VIP-расширение внутри VIP"],
+    };
+  }
+
+  if (tab === "mystic" && (feature === "tarotCard" || feature === "runeDay")) {
+    return {
+      title: "🃏 Таро и руны",
+      subtitle: "Выберите знак, чтобы открыть карту дня, руну дня и короткую подсказку на текущую ситуацию.",
+      features: ["Карта дня", "Таро дня", "Руна дня", "Интуитивная подсказка"],
+    };
+  }
+
+  if (tab === "mystic" && feature === "lunarRitual") {
+    return {
+      title: "🌙 Луна и ритуалы",
+      subtitle: "Выберите знак, чтобы открыть лунный ритм, практики и мягкие действия на день.",
+      features: ["Лунный календарь", "Лунный ритуал", "Практика дня", "Что усилить", "Чего избегать"],
     };
   }
 
@@ -3319,7 +3346,7 @@ function resolveInitialHubTab(startParam?: string | null): HubTab {
   const normalized = normalizeStartParam(startParam);
   if (!normalized) return "today";
   if (normalized === "compat" || normalized.startsWith("compat_")) return "love";
-  if (normalized === "mystic" || normalized === "birth_matrix") return "mystic";
+  if (normalized === "mystic" || normalized === "birth_matrix" || normalized === "angel_numbers") return "mystic";
   if (normalized === "vip") return "vip";
   if (normalized === "week") return "forecasts";
   return "today";
@@ -3328,6 +3355,7 @@ function resolveInitialHubTab(startParam?: string | null): HubTab {
 function resolveInitialMoreFeature(startParam?: string | null): MoreFeatureId | null {
   const normalized = normalizeStartParam(startParam);
   if (normalized === "birth_matrix") return "birthMatrix";
+  if (normalized === "angel_numbers") return "angelNumbers";
   if (normalized === "week") return "weekForecast";
   return null;
 }

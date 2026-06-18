@@ -4,6 +4,7 @@ export const ZODIAC_ANALYTICS_EVENTS = [
   "main_menu_category_opened",
   "compatibility_category_selected",
   "horoscope_category_opened",
+  "angel_numbers_category_opened",
   "profile_preview_opened",
   "sign_selected",
   "section_open_today",
@@ -262,6 +263,7 @@ export function zodiacAnalyticsStartappType(startParam?: string | null) {
   if (normalized === "mystic") return "mystic";
   if (normalized === "vip") return "vip";
   if (normalized === "birth_matrix") return "birth_matrix";
+  if (normalized === "angel_numbers") return "angel_numbers";
   if (normalized === "week") return "week";
   return "other";
 }

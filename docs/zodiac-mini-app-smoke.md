@@ -6,7 +6,7 @@ Use the Mini App smoke check after Mini App, VIP, Mystic, navigation, or Telegra
 npm run zodiac:miniapp:smoke
 ```
 
-By default the script checks `http://localhost:3000/compatibility`. If that URL is not already running, the script starts a local Next dev server equivalent to `npm run dev -- -H 127.0.0.1 -p <port>` and stops it at the end.
+By default the script checks `http://localhost:3000/compatibility`. If that URL is not already running, the script starts a local Next server on a free port and stops it at the end. When a production build exists it prefers `next start`; otherwise it falls back to dev mode.
 
 To check an already running deployment or local server:
 
@@ -17,15 +17,17 @@ npm run zodiac:miniapp:smoke -- --url http://localhost:3000/compatibility
 ## What It Checks
 
 - `/compatibility` returns HTTP 200 and renders the Mini App home screen.
-- The main screen contains the hero title `Астрологический центр`, subtitle, CTA, VIP free-access badge, and the large category menu.
+- The main screen contains the hero title `Астрологический центр`, subtitle, CTA, VIP free-access badge, and 10 large category cards.
+- The 10 main categories are: `Гороскопы`, `Совместимость`, `Матрица судьбы`, `Ангельские числа`, `Нумерология`, `Мистика`, `Таро и руны`, `Луна и ритуалы`, `VIP раздел`, and `Мой профиль`.
 - The expected product structure is `Home -> Category -> Feature -> Result`.
 - Browser mode works without `window.Telegram`.
 - Sign selection works.
-- Mini App start params render the intended section after category/sign selection: `compat`, `compat_gemini`, `mystic`, `vip`, `birth_matrix`, and `week`.
+- Mini App start params render the intended section after category/sign selection: `compat`, `compat_gemini`, `mystic`, `vip`, `birth_matrix`, `angel_numbers`, and `week`.
 - Basic compatibility flow reaches a stable result state without runtime errors.
 - Horoscopes category opens from the main menu.
+- Angel Numbers / `Ангельские числа` is visible as a top-level category, opens the existing `angelNumbers` feature, and returns to Home via Back/Main menu.
 - VIP tab opens, free access until `17.09.2026` is visible, and all 11 active VIP cards open non-empty detail screens.
-- Giveaways remains locked/disabled.
+- Giveaways is not a top-level main category; it remains locked/disabled inside VIP.
 - Open VIP feature screens do not contain `TODO`, `lorem ipsum`, `placeholder`, or unexpected `Скоро появится` text.
 - Mystic tab opens and at least three Mystic features can be opened.
 - Birth Matrix / `Матрица судьбы` opens from Mystic, accepts a sample birth date, renders a non-empty result, and returns to the Mystic menu.
@@ -48,12 +50,14 @@ Mini App Smoke: PASS
 Browser mode: PASS
 Telegram mock: PASS
 Main menu checked: YES
+Main menu categories checked: 10/10
 Horoscopes checked: YES
+Angel Numbers / Ангельские числа checked: YES
 VIP cards checked: 11/11
 Giveaways locked: YES
 Mystic checked: YES
 Birth Matrix / Матрица судьбы checked: YES
-Startapp params checked: compat, compat_gemini, mystic, vip, birth_matrix, week
+Startapp params checked: compat, compat_gemini, mystic, vip, birth_matrix, angel_numbers, week
 Console errors: 0
 Runtime errors: 0
 HTTP/network errors: 0
