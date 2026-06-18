@@ -276,19 +276,233 @@ export function generateKarmicLessons(signId: ZodiacSignId, birthDateKey?: strin
 }
 
 export interface MysticBirthMatrix {
+  matrixType: "symbolic_birth_date";
+  displayDate: string;
+  centralNumber: number;
   lifePath: number;
+  soulNumber: number;
+  realizationNumber: number;
+  relationshipNumber: number;
   dayNumber: number;
   monthNumber: number;
   yearSum: number;
+  lessonNumber: number;
+  resourceNumber: number;
+  archetype: string;
+  archetypeKey: string;
+  tier: string;
+  hero: string;
+  honesty: string;
   strengths: string;
   risks: string;
   relationships: string;
   moneyWork: string;
   advice: string;
+  visualCells: BirthMatrixVisualCell[];
+  sections: BirthMatrixSection[];
+  recommendations: string[];
+  todayAction: {
+    action: string;
+    avoid: string;
+    tone: string;
+    smallStep: string;
+  };
 }
 
+export type BirthMatrixSectionId = "main" | "character" | "relationships" | "money" | "lesson" | "today";
+
+export interface BirthMatrixVisualCell {
+  id: "character" | "relationships" | "money" | "energy" | "lesson" | "resource";
+  label: string;
+  number: number;
+  title: string;
+  summary: string;
+}
+
+export interface BirthMatrixSection {
+  id: BirthMatrixSectionId;
+  tab: string;
+  title: string;
+  eyebrow: string;
+  body: string;
+  points: string[];
+}
+
+interface BirthMatrixNumberProfile {
+  key: string;
+  archetype: string;
+  tier: string;
+  strength: string;
+  conflict: string;
+  choice: string;
+  relationship: string;
+  money: string;
+  lesson: string;
+  today: string;
+  resource: string;
+}
+
+const birthMatrixNumberProfiles: Record<number, BirthMatrixNumberProfile> = {
+  1: {
+    key: "initiator",
+    archetype: "Инициатор",
+    tier: "сильный импульс старта",
+    strength: "быстро замечаете, где нужно взять ответственность и сделать первый шаг.",
+    conflict: "можете торопить события и слышать отказ там, где человеку просто нужно время.",
+    choice: "выбираете через личную свободу, ясную цель и ощущение собственного авторства.",
+    relationship: "в близости важны уважение к самостоятельности и прямой разговор без давления.",
+    money: "реализация растёт через собственные проекты, лидерские роли и смелые решения.",
+    lesson: "учиться вести за собой мягко, не доказывая силу через контроль.",
+    today: "начните одно дело, которое давно ждало вашего решения.",
+    resource: "личная инициатива и умение включать движение там, где всё застыло.",
+  },
+  2: {
+    key: "diplomat",
+    archetype: "Дипломат",
+    tier: "тонкая эмоциональная настройка",
+    strength: "чувствуете нюансы отношений и умеете снижать напряжение.",
+    conflict: "иногда слишком долго согласовываете выбор, чтобы никого не задеть.",
+    choice: "выбираете через доверие, мягкие договорённости и чувство внутренней безопасности.",
+    relationship: "вам нужен партнёр, который слышит интонации и не обесценивает чувствительность.",
+    money: "лучше раскрываетесь в партнёрствах, сервисе, сопровождении и тонкой коммуникации.",
+    lesson: "не растворяться в чужих ожиданиях и говорить о своих условиях раньше.",
+    today: "сформулируйте одну просьбу честно и спокойно.",
+    resource: "эмпатия, дипломатия и способность создавать пространство без борьбы.",
+  },
+  3: {
+    key: "creator",
+    archetype: "Творец",
+    tier: "яркая творческая волна",
+    strength: "переводите сложное в живой язык, идею, образ или настроение.",
+    conflict: "можете распыляться, если вокруг много стимулов и мало структуры.",
+    choice: "выбираете через интерес, вдохновение и возможность проявиться голосом.",
+    relationship: "в любви важны лёгкость, юмор и ощущение, что рядом можно быть живым.",
+    money: "доход растёт через креатив, публичность, обучение, контент или красивую упаковку смысла.",
+    lesson: "доводить вдохновение до формы, а не только переживать его.",
+    today: "запишите идею и сразу сделайте маленький видимый шаг.",
+    resource: "творческая речь, лёгкость контакта и способность оживлять атмосферу.",
+  },
+  4: {
+    key: "builder",
+    archetype: "Архитектор",
+    tier: "устойчивая земная опора",
+    strength: "умеете собирать хаос в план, режим и понятную систему.",
+    conflict: "можете зажимать себя рамками, когда жизнь просит гибкости.",
+    choice: "выбираете через надёжность, факты и ощущение долгого фундамента.",
+    relationship: "вам важно видеть поступки, регулярность и готовность строить вместе.",
+    money: "сильны в процессах, управлении ресурсами, ремесле, аналитике и долгих проектах.",
+    lesson: "оставлять место спонтанности, не теряя опору.",
+    today: "упростите один процесс и освободите место для отдыха.",
+    resource: "дисциплина, практичность и умение превращать намерение в систему.",
+  },
+  5: {
+    key: "navigator",
+    archetype: "Навигатор перемен",
+    tier: "подвижная энергия выбора",
+    strength: "быстро адаптируетесь и находите новый маршрут, когда прежний закрыт.",
+    conflict: "можете уходить от глубины, если свобода кажется важнее ответственности.",
+    choice: "выбираете через движение, опыт и возможность пробовать несколько вариантов.",
+    relationship: "нужны честные правила свободы: без контроля, но с ясными договорённостями.",
+    money: "раскрываетесь в коммуникациях, продажах, поездках, медиа, гибких форматах.",
+    lesson: "свобода становится сильнее, когда у неё есть выбранное направление.",
+    today: "обновите один маршрут: способ общения, рабочий шаг или личный ритуал.",
+    resource: "любопытство, скорость, адаптивность и талант видеть варианты.",
+  },
+  6: {
+    key: "keeper",
+    archetype: "Хранитель тепла",
+    tier: "сердечная ответственность",
+    strength: "создаёте ощущение заботы, красоты и эмоционального дома.",
+    conflict: "иногда берёте на себя больше, чем действительно ваше.",
+    choice: "выбираете через ценность близких, гармонию и желание сделать пространство лучше.",
+    relationship: "в паре важны взаимная забота, благодарность и честное распределение нагрузки.",
+    money: "сильны в красоте, заботе, наставничестве, дизайне, семье, сервисе и людях.",
+    lesson: "заботиться о себе так же внимательно, как о других.",
+    today: "сделайте один тёплый жест без самопожертвования.",
+    resource: "умение соединять людей, успокаивать пространство и добавлять красоту.",
+  },
+  7: {
+    key: "seeker",
+    archetype: "Исследователь",
+    tier: "глубокая внутренняя настройка",
+    strength: "видите скрытые связи и умеете задавать вопросы глубже поверхности.",
+    conflict: "можете закрываться, когда мир требует быстрых ответов.",
+    choice: "выбираете через смысл, наблюдение и внутреннее доказательство.",
+    relationship: "вам нужна близость, где уважают тишину, личное пространство и честность.",
+    money: "сильны в аналитике, исследовании, обучении, экспертности, духовных практиках без фанатизма.",
+    lesson: "делиться выводами, не ожидая идеального момента.",
+    today: "найдите 20 минут тишины и сформулируйте один точный вывод.",
+    resource: "интуитивная аналитика, самостоятельность и способность видеть глубину.",
+  },
+  8: {
+    key: "strategist",
+    archetype: "Стратег",
+    tier: "энергия влияния и результата",
+    strength: "чувствуете масштаб, ресурсы и точки управленческого рычага.",
+    conflict: "можете мерить ценность только эффективностью и перегружать себя.",
+    choice: "выбираете через результат, справедливый обмен и ощущение силы.",
+    relationship: "важно не соревноваться за власть, а договариваться о целях и границах.",
+    money: "раскрываетесь в управлении, бизнесе, переговорах, финансах и больших задачах.",
+    lesson: "сила не обязана быть жёсткой, чтобы быть заметной.",
+    today: "пересмотрите одну договорённость: где нужен баланс вклада и отдачи.",
+    resource: "стратегичность, выносливость и умение собирать результат.",
+  },
+  9: {
+    key: "humanist",
+    archetype: "Гуманист",
+    tier: "широкое поле смысла",
+    strength: "умеете видеть историю целиком и соединять личное с большим смыслом.",
+    conflict: "можете спасать чужое, забывая о собственных границах.",
+    choice: "выбираете через ценности, завершение циклов и ощущение пользы.",
+    relationship: "в близости важны зрелость, сострадание и отсутствие эмоциональных игр.",
+    money: "сильны в помощи, образовании, творчестве, международных темах и проектах со смыслом.",
+    lesson: "закрывать старое вовремя, не таща всё прошлое в новый этап.",
+    today: "завершите один маленький хвост и верните себе энергию.",
+    resource: "мудрость, щедрость взгляда и способность превращать опыт в пользу.",
+  },
+  11: {
+    key: "intuitive_guide",
+    archetype: "Интуитивный проводник",
+    tier: "мастерская интуитивная чувствительность",
+    strength: "тонко считываете атмосферу и можете вдохновлять людей образом будущего.",
+    conflict: "чувствительность перегружает, если нет режима и заземления.",
+    choice: "выбираете через внутренний сигнал, красоту идеи и доверие к знакам без фанатизма.",
+    relationship: "нужны бережность, честность и партнёр, который не высмеивает тонкость восприятия.",
+    money: "раскрываетесь в вдохновляющих проектах, медиа, обучении, красоте, практиках внимания.",
+    lesson: "переводить интуицию в спокойные действия и проверяемые шаги.",
+    today: "запишите главный внутренний сигнал и подтвердите его одним реальным действием.",
+    resource: "интуиция, образность, способность вдохновлять и чувствовать момент.",
+  },
+  22: {
+    key: "system_creator",
+    archetype: "Создатель систем",
+    tier: "мастерская энергия воплощения",
+    strength: "видите большой замысел и можете собрать под него работающую структуру.",
+    conflict: "масштаб пугает, если пытаться сделать всё сразу.",
+    choice: "выбираете через пользу, долгий результат и возможность построить нечто устойчивое.",
+    relationship: "важны общая цель, честные роли и уважение к делу каждого.",
+    money: "сильны в системах, проектах, управлении, продукте, строительстве процессов.",
+    lesson: "делить большой путь на этапы и доверять постепенности.",
+    today: "разбейте большую цель на три шага и выполните первый.",
+    resource: "масштабное мышление, практичность и талант создавать устойчивые формы.",
+  },
+  33: {
+    key: "heart_mentor",
+    archetype: "Наставник сердца",
+    tier: "мастерская энергия поддержки",
+    strength: "умеете соединять заботу, смысл и личный пример.",
+    conflict: "можете становиться спасателем, когда нужна честная граница.",
+    choice: "выбираете через любовь, пользу и ощущение, что ваше действие согревает других.",
+    relationship: "в паре важно не учить сверху, а быть рядом и говорить по-человечески.",
+    money: "раскрываетесь в наставничестве, помощи, красоте, обучении и проектах с человеческим лицом.",
+    lesson: "помогать без самопотери и оставлять людям их ответственность.",
+    today: "поддержите кого-то одним тёплым действием и не забывайте о себе.",
+    resource: "сердечность, зрелая забота и способность поднимать людей мягким примером.",
+  },
+};
+
 function sumDigits(n: number): number {
-  return n.toString().split('').reduce((acc, curr) => acc + parseInt(curr, 10), 0);
+  return Math.abs(n).toString().split('').reduce((acc, curr) => acc + parseInt(curr, 10), 0);
 }
 
 function reduceToSingleDigit(n: number): number {
@@ -299,55 +513,181 @@ function reduceToSingleDigit(n: number): number {
   return result;
 }
 
-export function generateBirthMatrix(birthDateString: string): MysticBirthMatrix | null {
-  if (!birthDateString || birthDateString.length !== 10) return null;
-  const parts = birthDateString.split(".");
-  if (parts.length !== 3) return null;
-  const day = parseInt(parts[0], 10);
-  const month = parseInt(parts[1], 10);
-  const year = parseInt(parts[2], 10);
-  if (isNaN(day) || isNaN(month) || isNaN(year)) return null;
+function getNumberProfile(number: number): BirthMatrixNumberProfile {
+  const normalized = number === 11 || number === 22 || number === 33 ? number : ((number - 1) % 9) + 1;
+  return birthMatrixNumberProfiles[normalized] ?? birthMatrixNumberProfiles[1];
+}
 
+function parseBirthMatrixDate(value: string) {
+  const trimmed = String(value || "").trim();
+  const isoMatch = trimmed.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  const displayMatch = trimmed.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+  const parts = isoMatch
+    ? { year: Number(isoMatch[1]), month: Number(isoMatch[2]), day: Number(isoMatch[3]) }
+    : displayMatch
+      ? { day: Number(displayMatch[1]), month: Number(displayMatch[2]), year: Number(displayMatch[3]) }
+      : null;
+  if (!parts) return null;
+
+  const { day, month, year } = parts;
+  const date = new Date(Date.UTC(year, month - 1, day));
+  const isValid =
+    date.getUTCFullYear() === year &&
+    date.getUTCMonth() === month - 1 &&
+    date.getUTCDate() === day &&
+    year >= 1900 &&
+    year <= 2099;
+  if (!isValid) return null;
+
+  return {
+    day,
+    month,
+    year,
+    displayDate: `${String(day).padStart(2, "0")}.${String(month).padStart(2, "0")}.${year}`,
+  };
+}
+
+export function generateBirthMatrix(birthDateString: string): MysticBirthMatrix | null {
+  const parsed = parseBirthMatrixDate(birthDateString);
+  if (!parsed) return null;
+
+  const { day, month, year } = parsed;
   const dayReduced = reduceToSingleDigit(day);
   const monthReduced = reduceToSingleDigit(month);
   const yearReduced = reduceToSingleDigit(year);
   const lifePath = reduceToSingleDigit(dayReduced + monthReduced + yearReduced);
-
-  const strengthsList = [
-    "Символизирует лидерство и инициативу.",
-    "Символизирует эмпатию и дипломатию.",
-    "Символизирует творчество и радость.",
-    "Символизирует стабильность и порядок.",
-    "Символизирует свободу и адаптивность.",
-    "Символизирует заботу и ответственность.",
-    "Символизирует мудрость и аналитику.",
-    "Символизирует амбиции и управление.",
-    "Символизирует гуманизм и широту взглядов."
+  const soulNumber = reduceToSingleDigit(dayReduced + monthReduced);
+  const realizationNumber = reduceToSingleDigit(monthReduced + yearReduced);
+  const relationshipNumber = reduceToSingleDigit(dayReduced + lifePath);
+  const lessonNumber = reduceToSingleDigit(lifePath + yearReduced);
+  const resourceNumber = reduceToSingleDigit(soulNumber + monthReduced);
+  const profile = getNumberProfile(lifePath);
+  const soulProfile = getNumberProfile(soulNumber);
+  const realizationProfile = getNumberProfile(realizationNumber);
+  const relationshipProfile = getNumberProfile(relationshipNumber);
+  const lessonProfile = getNumberProfile(lessonNumber);
+  const resourceProfile = getNumberProfile(resourceNumber);
+  const energyProfile = getNumberProfile(monthReduced);
+  const dayProfile = getNumberProfile(dayReduced);
+  const recommendations = [
+    `Держите главный ресурс: ${profile.resource}`,
+    `В отношениях опирайтесь на правило: ${relationshipProfile.relationship}`,
+    `Для реализации выберите один практичный шаг: ${realizationProfile.today}`,
   ];
-
-  const risksList = [
-    "Эгоизм, излишняя категоричность.",
-    "Чрезмерная чувствительность, нерешительность.",
-    "Рассеянность, поверхностность.",
-    "Упрямство, жесткость рамок.",
-    "Непостоянство, импульсивность.",
-    "Чрезмерная опека, идеализм.",
-    "Изоляция, излишний критицизм.",
-    "Трудоголизм, властность.",
-    "Эмоциональные качели, отрыв от реальности."
+  const visualCells: BirthMatrixVisualCell[] = [
+    { id: "character", label: "Характер", number: dayReduced, title: dayProfile.archetype, summary: dayProfile.strength },
+    { id: "relationships", label: "Отношения", number: relationshipNumber, title: relationshipProfile.archetype, summary: relationshipProfile.relationship },
+    { id: "money", label: "Деньги", number: realizationNumber, title: realizationProfile.archetype, summary: realizationProfile.money },
+    { id: "energy", label: "Энергия", number: monthReduced, title: energyProfile.archetype, summary: energyProfile.resource },
+    { id: "lesson", label: "Урок", number: lessonNumber, title: lessonProfile.archetype, summary: lessonProfile.lesson },
+    { id: "resource", label: "Ресурс", number: resourceNumber, title: resourceProfile.archetype, summary: resourceProfile.resource },
   ];
-
-  const idx = (lifePath <= 9 ? lifePath : lifePath % 9 || 1) - 1;
+  const todayAction = {
+    action: profile.today,
+    avoid: `не уходите в автоматический сценарий: ${profile.conflict}`,
+    tone: relationshipProfile.choice,
+    smallStep: recommendations[2],
+  };
 
   return {
+    matrixType: "symbolic_birth_date",
+    displayDate: parsed.displayDate,
+    centralNumber: lifePath,
     lifePath,
+    soulNumber,
+    realizationNumber,
+    relationshipNumber,
     dayNumber: dayReduced,
     monthNumber: monthReduced,
     yearSum: yearReduced,
-    strengths: strengthsList[idx] || strengthsList[0],
-    risks: risksList[idx] || risksList[0],
-    relationships: "Ваши числа указывают на потребность в глубоком взаимопонимании.",
-    moneyWork: "Матрица подсказывает, что успех приходит через реализацию заложенного потенциала.",
-    advice: "Используйте свои сильные стороны осознанно."
+    lessonNumber,
+    resourceNumber,
+    archetype: profile.archetype,
+    archetypeKey: profile.key,
+    tier: profile.tier,
+    hero: `Главный код ${lifePath} описывает стиль движения: ${profile.strength} Это не приговор, а карта внимания: где проще включить ресурс и где полезно замедлиться.`,
+    honesty: "символическая интерпретация по дате рождения",
+    strengths: profile.strength,
+    risks: profile.conflict,
+    relationships: relationshipProfile.relationship,
+    moneyWork: realizationProfile.money,
+    advice: todayAction.action,
+    visualCells,
+    sections: [
+      {
+        id: "main",
+        tab: "Главное",
+        title: `Главный код: ${lifePath} · ${profile.archetype}`,
+        eyebrow: "Центр матрицы",
+        body: `В этой символической модели число пути показывает основной способ выбирать направление. Для кода ${lifePath} ключевой ресурс: ${profile.resource}`,
+        points: [
+          `Сильная сторона: ${profile.strength}`,
+          `Внутренний конфликт: ${profile.conflict}`,
+          `Как человек выбирает: ${profile.choice}`,
+        ],
+      },
+      {
+        id: "character",
+        tab: "Характер",
+        title: `Характер: день ${dayReduced} · ${dayProfile.archetype}`,
+        eyebrow: "Как проявляется личный стиль",
+        body: `День рождения в матрице показывает первый, заметный слой поведения. Здесь активен архетип ${dayProfile.archetype.toLowerCase()}: ${dayProfile.strength}`,
+        points: [
+          `Ресурс дня: ${dayProfile.resource}`,
+          `Если напряжение растёт: ${dayProfile.conflict}`,
+          `Лучший способ решения: ${dayProfile.choice}`,
+        ],
+      },
+      {
+        id: "relationships",
+        tab: "Отношения",
+        title: `Отношения: код ${relationshipNumber} · ${relationshipProfile.archetype}`,
+        eyebrow: "Как строится близость",
+        body: `Код отношений показывает, какой формат контакта легче всего поддерживает тепло и честность. Для этой матрицы важен принцип: ${relationshipProfile.relationship}`,
+        points: [
+          `Сильная сторона в паре: ${relationshipProfile.strength}`,
+          `Риск близости: ${relationshipProfile.conflict}`,
+          `Фраза-настройка: говорите о потребности до того, как она станет претензией.`,
+        ],
+      },
+      {
+        id: "money",
+        tab: "Деньги",
+        title: `Деньги и реализация: код ${realizationNumber} · ${realizationProfile.archetype}`,
+        eyebrow: "Где проще собирать результат",
+        body: `Число реализации показывает, через какой тип действий легче превращать талант в понятный результат. Здесь работает формула: ${realizationProfile.money}`,
+        points: [
+          `Рабочий ресурс: ${realizationProfile.resource}`,
+          `Что мешает: ${realizationProfile.conflict}`,
+          `Практика: выберите один измеримый шаг и доведите его до формы.`,
+        ],
+      },
+      {
+        id: "lesson",
+        tab: "Урок",
+        title: `Жизненный урок: код ${lessonNumber} · ${lessonProfile.archetype}`,
+        eyebrow: "Без фатализма, как точка роста",
+        body: `Урок матрицы не означает неизбежность. Это повторяющаяся тема внимания: ${lessonProfile.lesson}`,
+        points: [
+          `Когда тема включается: ${lessonProfile.conflict}`,
+          `Зрелый ответ: ${lessonProfile.choice}`,
+          `Ресурс выхода: ${resourceProfile.resource}`,
+        ],
+      },
+      {
+        id: "today",
+        tab: "Сегодня",
+        title: "Что делать сегодня",
+        eyebrow: "Маленькое действие вместо большого обещания",
+        body: `Сегодня матрицу лучше использовать как мягкую подсказку к действию: ${todayAction.action}`,
+        points: [
+          `Избегать: ${todayAction.avoid}`,
+          `Лучший тон: ${todayAction.tone}`,
+          `Маленький шаг: ${todayAction.smallStep}`,
+        ],
+      },
+    ],
+    recommendations,
+    todayAction,
   };
 }

@@ -83,8 +83,12 @@ const requiredCoverage = {
     "lunar_ritual_opened",
     "karmic_lessons_opened",
     "birth_matrix_opened",
+    "birth_matrix_started",
+    "birth_matrix_calculated",
+    "birth_matrix_saved",
+    "birth_matrix_shared",
   ],
-  birthMatrix: ["birth_matrix_opened"],
+  birthMatrix: ["birth_matrix_opened", "birth_matrix_started", "birth_matrix_calculated", "birth_matrix_saved", "birth_matrix_shared", "feature_depth_viewed"],
   natal: [
     "natal_chart_started",
     "natal_chart_calculated",

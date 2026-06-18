@@ -16,6 +16,9 @@ export interface ZodiacRetentionItem {
   scoreTier?: string;
   relationshipMode?: RelationshipMode;
   mode?: string;
+  matrixType?: string;
+  archetype?: string;
+  mainNumber?: number;
   detail?: string;
   createdAt: string;
 }
@@ -152,8 +155,11 @@ function normalizeItem(value: ZodiacRetentionDraft | Partial<ZodiacRetentionItem
   const scoreTier = sanitizeToken(value.scoreTier);
   const relationshipMode = sanitizeRelationshipMode(value.relationshipMode);
   const mode = sanitizeToken(value.mode);
+  const matrixType = sanitizeToken(value.matrixType);
+  const archetype = sanitizeToken(value.archetype);
+  const mainNumber = sanitizeSafeNumber(value.mainNumber);
   const detail = sanitizeLabel(value.detail);
-  const id = sanitizeToken(value.id) || [section, featureKey, sign, firstSign, secondSign, relationshipMode, mode, label].filter(Boolean).join(":").slice(0, 140);
+  const id = sanitizeToken(value.id) || [section, featureKey, sign, firstSign, secondSign, relationshipMode, mode, matrixType, archetype, mainNumber, label].filter(Boolean).join(":").slice(0, 140);
   const createdAt = typeof value.createdAt === "string" && !Number.isNaN(Date.parse(value.createdAt)) ? value.createdAt : new Date().toISOString();
   return {
     id,
@@ -166,6 +172,9 @@ function normalizeItem(value: ZodiacRetentionDraft | Partial<ZodiacRetentionItem
     scoreTier,
     relationshipMode,
     mode,
+    matrixType,
+    archetype,
+    mainNumber,
     detail,
     createdAt,
   };
@@ -184,6 +193,11 @@ function sanitizeToken(value: unknown) {
   if (typeof value !== "string") return undefined;
   const normalized = value.trim();
   return /^[A-Za-z0-9_-]{1,64}$/.test(normalized) ? normalized : undefined;
+}
+
+function sanitizeSafeNumber(value: unknown) {
+  if (typeof value !== "number" || !Number.isInteger(value) || value < 1 || value > 33) return undefined;
+  return value;
 }
 
 function sanitizeRelationshipMode(value: unknown): RelationshipMode | undefined {

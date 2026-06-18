@@ -12,7 +12,7 @@ The Zodiac product is ready for controlled live operation of the daily publishin
 
 - Daily Zodiac publishing is active and ledger-protected.
 - Weekly Zodiac posts are prepared and dry-run ready, but weekly live scheduling remains OFF.
-- Mini App core UX is implemented: 10-category home, Angel Numbers top-level, Compatibility pair core, Horoscopes, Mystic, Birth Matrix, VIP, Profile, History, Favorites, and Share.
+- Mini App core UX is implemented: 10-category home, Angel Numbers top-level, Compatibility pair core, Horoscopes, Mystic, premium Birth Matrix, VIP, Profile, History, Favorites, and Share.
 - VIP is free until `2026-09-17`; payments and Telegram Stars remain OFF.
 - Mini App interaction hardening is implemented and smoke-verified: custom dark selects, safe share fallback, non-dead pair gates, inline VIP pair pickers, and symbolic Final AstroMap visuals for relationship/VIP tools.
 - Channel packaging live was applied and post-live verified for `13/13` channels.
@@ -207,7 +207,8 @@ Birth Matrix:
 
 - Opens from the Mini App.
 - Accepts a sample birth date in smoke.
-- Renders a non-empty result.
+- Renders a premium symbolic result with hero summary, visual matrix, central number, legend, 6 sections, recommendations, and safe Save/Share.
+- Stores only safe shortcut fields in localStorage: feature key, matrix type, archetype key, central number, label, and timestamp. Raw birth date/name/result text are not retained.
 
 Angel Numbers:
 

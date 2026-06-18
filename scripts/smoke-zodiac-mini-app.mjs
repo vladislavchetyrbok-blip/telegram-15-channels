@@ -28,6 +28,7 @@ const PLACEHOLDER_PATTERNS = [/TODO/i, /lorem ipsum/i, /placeholder/i, /Скор
 const RETENTION_STORAGE_KEY = "zodiac-mini-app-retention-v1";
 const FORBIDDEN_RETENTION_VALUES = [
   "1998-06-15",
+  "15.06.1998",
   "23:55",
   "Dnipro",
   "2000-03-21",
@@ -250,12 +251,13 @@ async function runBrowserModeSmoke(client, report) {
   await openBirthMatrix(client);
   if (!(await hasText(client, /ДД\.ММ\.ГГГГ|дд\.мм\.гггг|Введите дату рождения/i))) {
     await click(client, "Изменить");
-    await waitForPageText(client, /ДД\.ММ\.ГГГГ|дд\.мм\.гггг|Введите дату рождения/i, "Birth Matrix edit mode did not render an input.");
+    await waitForPageText(client, /ДД\.ММ\.ГГГГ|дд\.мм\.гггг|Введите дату рождения|1998-06-15/i, "Birth Matrix edit mode did not render an input.");
   }
-  await fillVisibleInput(client, "19.06.1992");
+  await fillVisibleInput(client, "1998-06-15");
   await click(client, "Рассчитать");
   await settle(client);
-  await assertFeatureScreen(client, "Матрица судьбы", { allowSoon: false, minLength: 520 });
+  await assertFeatureScreen(client, "Матрица судьбы", { allowSoon: false, minLength: 1400 });
+  await assertBirthMatrixDepth(client, report);
   await click(client, "11:11");
   await waitForPageText(client, /Ангельские числа|11:11/, "Mystic default tab did not return after Birth Matrix.");
   report.birthMatrixChecked = true;
@@ -768,6 +770,14 @@ async function installSmokeHelpers(client) {
         button.click();
         return { ok: true, text: button.innerText || button.textContent || "" };
       },
+      clickBirthMatrixTab(tabId) {
+        const safeTabId = String(tabId || "").replace(/"/g, "");
+        const button = document.querySelector('[data-birth-matrix-tab="' + safeTabId + '"]');
+        if (!button || !isVisible(button)) return { ok: false, error: "not_found" };
+        button.scrollIntoView({ block: "center", inline: "center" });
+        button.click();
+        return { ok: true, text: button.innerText || button.textContent || "" };
+      },
       natalAspectLineCount() {
         return Array.from(document.querySelectorAll("[data-premium-natal-chart]"))
           .filter(isVisible)
@@ -1062,6 +1072,39 @@ async function assertPremiumNatalChart(client, report) {
     await waitForPageText(client, item.pattern, `VIP Natal tab "${item.label}" did not render its structured content.`);
   }
   report.vipNatalPremiumChartChecked = true;
+}
+
+async function assertBirthMatrixDepth(client, report) {
+  const visualCount = await evalPage(client, "document.querySelectorAll('[data-birth-matrix-visual=\"true\"]').length", []);
+  const legendCount = await evalPage(client, "document.querySelectorAll('[data-birth-matrix-legend=\"true\"]').length", []);
+  const tabCount = await evalPage(client, "document.querySelectorAll('[data-birth-matrix-tab]').length", []);
+  const sectionCount = await evalPage(client, "document.querySelectorAll('[data-birth-matrix-section=\"true\"]').length", []);
+  if (visualCount < 1) throw new Error("Birth Matrix did not render the visual matrix block.");
+  if (legendCount < 1) throw new Error("Birth Matrix did not render a visual legend.");
+  if (tabCount < 6) throw new Error(`Birth Matrix expected 6 sections/tabs, got ${tabCount}.`);
+  if (sectionCount < 1) throw new Error("Birth Matrix did not render the active section card.");
+  await waitForPageText(client, /символическая интерпретация по дате рождения/i, "Birth Matrix did not show the honesty badge.");
+  await waitForPageText(client, /Центр|Число пути|код 3|Творец/i, "Birth Matrix did not show central number/result summary.");
+  const tabChecks = [
+    { id: "main", label: "Главное", pattern: /Главный код|Центр матрицы/ },
+    { id: "character", label: "Характер", pattern: /Характер|Внутренний конфликт|Как проявляется/ },
+    { id: "relationships", label: "Отношения", pattern: /Отношения|Как строится близость/ },
+    { id: "money", label: "Деньги", pattern: /Деньги и реализация|результат/ },
+    { id: "lesson", label: "Урок", pattern: /Жизненный урок|Без фатализма/ },
+    { id: "today", label: "Сегодня", pattern: /Что делать сегодня|Маленькое действие/ },
+  ];
+  for (const item of tabChecks) {
+    const clicked = await evalPage(client, "window.__zodiacSmoke.clickBirthMatrixTab(arguments[0])", [item.id]);
+    if (!clicked.ok) throw new Error(`Birth Matrix tab "${item.label}" could not be clicked: ${clicked.error}.`);
+    await settle(client);
+    await waitForPageText(client, item.pattern, `Birth Matrix tab "${item.label}" did not render expected content.`);
+  }
+  await click(client, "Сохранить матрицу");
+  await waitForPageText(client, /Сохранено/, "Birth Matrix save did not show saved state.");
+  await click(client, "Поделиться");
+  await waitForPageText(client, /Ссылка готова|Готово к отправке|Скопировано|Текст для копирования|Текст скопирован|Откройте Telegram/i, "Birth Matrix share did not show safe share state.");
+  await assertRetentionPrivacy(client, report);
+  report.birthMatrixDepthChecked = true;
 }
 
 async function clickHub(client, label) {
@@ -1364,6 +1407,7 @@ function createReport() {
     telegramCategoryBackChecked: false,
     telegramHapticsChecked: false,
     birthMatrixChecked: false,
+    birthMatrixDepthChecked: false,
     startParamsChecked: [],
     consoleErrors: [],
     runtimeErrors: [],
@@ -1423,6 +1467,7 @@ function printSummary(status, report) {
   console.log(`Giveaways locked: ${report.giveawaysLocked ? "YES" : "NO"}`);
   console.log(`Mystic checked: ${report.mysticChecked >= 3 ? "YES" : "NO"} (${report.mysticChecked}/3)`);
   console.log(`Birth Matrix / Матрица судьбы checked: ${report.birthMatrixChecked ? "YES" : "NO"}`);
+  console.log(`Birth Matrix depth checked: ${report.birthMatrixDepthChecked ? "YES" : "NO"}`);
   console.log(`Startapp params checked: ${report.startParamsChecked.length ? report.startParamsChecked.join(", ") : "NO"}`);
   console.log(`Console errors: ${report.consoleErrors.length}`);
   console.log(`Runtime errors: ${report.runtimeErrors.length}`);

@@ -50,7 +50,8 @@ npm run zodiac:miniapp:smoke -- --url http://localhost:3000/compatibility
 - VIP message helper must show `Скопировано` after copying a generated message.
 - VIP local retention must store only safe shortcuts: feature key, sign slugs, relationship mode, score tier, label, section, mode, and timestamp. It must not store names, birth dates, birth times, birth city/city query, raw input, raw result text, or raw message text.
 - Mystic tab opens and at least three Mystic features can be opened.
-- Birth Matrix / `Матрица судьбы` opens from Mystic, accepts a sample birth date, renders a non-empty result, and returns to the Mystic menu.
+- Birth Matrix / `Матрица судьбы` opens from Mystic, accepts sample date `1998-06-15`, renders the premium symbolic result, visual matrix, central number, legend, 6 sections (`Главное`, `Характер`, `Отношения`, `Деньги`, `Урок`, `Сегодня`), safe Save/Share states, and returns to the Mystic menu.
+- Birth Matrix local retention stores only safe summary fields such as feature key, matrix type, archetype key, central number, label, and timestamp. It must not store raw birth date, name, result text, or generated text.
 - Telegram WebApp mock is injected before page load.
 - Telegram `ready()` and `expand()` are called.
 - Telegram BackButton show/hide/onClick/offClick wiring works: hidden on Home, detail -> category, category -> Home.
@@ -89,6 +90,7 @@ VIP message copy checked: YES
 Giveaways locked: YES
 Mystic checked: YES
 Birth Matrix / Матрица судьбы checked: YES
+Birth Matrix depth checked: YES
 Compatibility result checked: YES
 Compatibility autosign cases: 1998-06-15 -> Близнецы, 2000-03-21 -> Овен, 2000-12-22 -> Козерог
 Compatibility 30-day calendar checked: YES

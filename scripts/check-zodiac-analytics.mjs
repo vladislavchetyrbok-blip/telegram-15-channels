@@ -91,6 +91,10 @@ async function main() {
     const natalCalculatedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "natal_chart_calculated", { section: "natal_chart", featureKey: "vipNatalChart", sign: "gemini", chartType: "natal", inputMode: "natal_extended", hasBirthDate: true, hasBirthTime: true, hasBirthCity: true });
     const natalSavedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "natal_chart_saved", { section: "natal_chart", featureKey: "vipNatalChart", sign: "gemini", chartType: "natal", inputMode: "natal_date", hasBirthDate: true, hasBirthTime: false, hasBirthCity: false });
     const natalSharedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "natal_chart_shared", { section: "natal_chart", featureKey: "vipNatalChart", sign: "gemini", chartType: "natal", inputMode: "natal_basic", hasBirthDate: false, hasBirthTime: false, hasBirthCity: false });
+    const birthMatrixStartedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "birth_matrix_started", { section: "mystic", featureKey: "birthMatrix", matrixType: "symbolic_birth_date", mainNumber: 3, archetype: "creator", inputMode: "date", hasBirthDate: true, hasName: false });
+    const birthMatrixCalculatedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "birth_matrix_calculated", { section: "mystic", featureKey: "birthMatrix", matrixType: "symbolic_birth_date", mainNumber: 3, archetype: "creator", inputMode: "date", hasBirthDate: true, hasName: false });
+    const birthMatrixSavedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "birth_matrix_saved", { section: "mystic", featureKey: "birthMatrix", matrixType: "symbolic_birth_date", mainNumber: 3, archetype: "creator", inputMode: "date", hasBirthDate: true, hasName: false });
+    const birthMatrixSharedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "birth_matrix_shared", { section: "mystic", featureKey: "birthMatrix", matrixType: "symbolic_birth_date", mainNumber: 3, archetype: "creator", inputMode: "date", hasBirthDate: true, hasName: false });
     const disallowedEvent = await checkDisallowedEvent(`${baseUrl}/api/zodiac/analytics/event`);
     const afterLedgerStats = await collectLedgerStats();
     const ledgerWrites = countLedgerWrites(beforeLedgerStats, afterLedgerStats);
@@ -156,6 +160,10 @@ async function main() {
       natalCalculatedEvent,
       natalSavedEvent,
       natalSharedEvent,
+      birthMatrixStartedEvent,
+      birthMatrixCalculatedEvent,
+      birthMatrixSavedEvent,
+      birthMatrixSharedEvent,
       disallowedEvent,
       sensitiveFieldsStripped:
         allowedEvent.sensitiveFieldsStripped &&
@@ -209,7 +217,11 @@ async function main() {
         featureDepthViewedEvent.sensitiveFieldsStripped &&
         natalCalculatedEvent.sensitiveFieldsStripped &&
         natalSavedEvent.sensitiveFieldsStripped &&
-        natalSharedEvent.sensitiveFieldsStripped,
+        natalSharedEvent.sensitiveFieldsStripped &&
+        birthMatrixStartedEvent.sensitiveFieldsStripped &&
+        birthMatrixCalculatedEvent.sensitiveFieldsStripped &&
+        birthMatrixSavedEvent.sensitiveFieldsStripped &&
+        birthMatrixSharedEvent.sensitiveFieldsStripped,
       noSecretsPrinted: true,
       telegramApiCalls,
       ledgerWrites,

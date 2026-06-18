@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   generateDailyCard,
   generateTarotDay,
@@ -9,8 +9,13 @@ import {
   generateLunarRitual,
   generateKarmicLessons,
   generateBirthMatrix,
+  type BirthMatrixSectionId,
+  type MysticBirthMatrix,
   ZodiacSignId,
 } from "../lib/zodiac-mystic-content";
+import type { ZodiacAnalyticsEventName, ZodiacAnalyticsPayload } from "@/lib/zodiac-mini-app-analytics-shared";
+import type { ZodiacRetentionDraft } from "./zodiac-mini-app/retention";
+import { BirthMatrixVisual } from "./zodiac-mini-app/BirthMatrixVisual";
 import { FeatureCard, EmptyFeatureCard } from "./zodiac-mini-app/ui-primitives";
 
 const signNames: Record<ZodiacSignId, string> = {
@@ -200,28 +205,89 @@ export function KarmicLessonsFeature({ publicMode, sign, birthDateKey }: CommonP
   );
 }
 
-export function BirthMatrixFeature({ publicMode, birthDateString, onBirthDateChange }: CommonProps & { birthDateString?: string; onBirthDateChange: (val: string) => void }) {
+export function BirthMatrixFeature({
+  publicMode,
+  birthDateString,
+  onBirthDateChange,
+  onSave,
+  onShare,
+  onEvent,
+}: CommonProps & {
+  birthDateString?: string;
+  onBirthDateChange: (val: string) => void;
+  onSave?: (action: ZodiacRetentionDraft) => void;
+  onShare?: (action: ZodiacRetentionDraft) => Promise<string | void> | string | void;
+  onEvent?: (event: ZodiacAnalyticsEventName, payload: ZodiacAnalyticsPayload) => void;
+}) {
   const [inputVal, setInputVal] = useState(birthDateString || "");
   const [matrix, setMatrix] = useState<ReturnType<typeof generateBirthMatrix>>(birthDateString ? generateBirthMatrix(birthDateString) : null);
+  const [activeSection, setActiveSection] = useState<BirthMatrixSectionId>("main");
+  const [saveStatus, setSaveStatus] = useState("");
+  const [shareStatus, setShareStatus] = useState("");
+  const startedTrackedRef = useRef(false);
+  const resultTrackedRef = useRef("");
+  const currentSection = matrix?.sections.find((section) => section.id === activeSection) ?? matrix?.sections[0] ?? null;
+  const currentAction = useMemo(() => (matrix ? buildBirthMatrixRetentionAction(matrix) : null), [matrix]);
+
+  useEffect(() => {
+    if (startedTrackedRef.current) return;
+    startedTrackedRef.current = true;
+    onEvent?.("birth_matrix_started", birthMatrixAnalyticsPayload(matrix, Boolean(birthDateString || inputVal)));
+  }, [birthDateString, inputVal, matrix, onEvent]);
+
+  useEffect(() => {
+    if (!matrix) return;
+    const trackKey = `${matrix.matrixType}:${matrix.centralNumber}:${matrix.archetypeKey}`;
+    if (resultTrackedRef.current === trackKey) return;
+    resultTrackedRef.current = trackKey;
+    onEvent?.("birth_matrix_calculated", birthMatrixAnalyticsPayload(matrix, true));
+  }, [matrix, onEvent]);
 
   const handleApply = () => {
-    if (inputVal && inputVal.length === 10) {
-      setMatrix(generateBirthMatrix(inputVal));
-      onBirthDateChange(inputVal);
+    const nextMatrix = generateBirthMatrix(inputVal);
+    if (nextMatrix) {
+      setMatrix(nextMatrix);
+      setActiveSection("main");
+      setSaveStatus("");
+      setShareStatus("");
+      onBirthDateChange(nextMatrix.displayDate);
     } else {
       setMatrix(null);
     }
   };
 
+  const handleSectionSelect = (section: BirthMatrixSectionId) => {
+    setActiveSection(section);
+    if (matrix) onEvent?.("feature_depth_viewed", birthMatrixAnalyticsPayload(matrix, true, section));
+  };
+
+  const handleSave = () => {
+    if (!currentAction || !matrix) return;
+    onSave?.(currentAction);
+    onEvent?.("birth_matrix_saved", birthMatrixAnalyticsPayload(matrix, true));
+    setSaveStatus("Сохранено");
+  };
+
+  const handleShare = async () => {
+    if (!currentAction || !matrix) return;
+    onEvent?.("birth_matrix_shared", birthMatrixAnalyticsPayload(matrix, true));
+    const result = await onShare?.(currentAction);
+    setShareStatus(typeof result === "string" && result ? result : "Ссылка готова");
+  };
+
   return (
-    <FeatureCard publicMode={publicMode} title="🔢 Матрица даты рождения" subtitle="Нумерологический символизм вашей даты">
-      <div className="mt-4">
+    <FeatureCard publicMode={publicMode} title="🧿 Матрица судьбы" subtitle="Символическая интерпретация по дате рождения без фатальных обещаний">
+      <div className="mt-4 space-y-4">
         {!matrix ? (
-          <div className={publicMode ? "rounded bg-white/5 p-4 text-center" : "rounded bg-slate-50 p-4 text-center"}>
-            <p className={publicMode ? "text-sm text-slate-300 mb-3" : "text-sm text-slate-600 mb-3"}>Введите дату рождения (ДД.ММ.ГГГГ), чтобы рассчитать матрицу. Данные не сохраняются.</p>
+          <div className={publicMode ? "rounded-lg border border-white/10 bg-white/7 p-4 text-center" : "rounded-lg border border-slate-200 bg-slate-50 p-4 text-center"}>
+            <p className={publicMode ? "text-sm text-slate-300 mb-3" : "text-sm text-slate-600 mb-3"}>
+              Введите дату рождения, чтобы рассчитать число пути, число души, реализацию, отношения и главный архетип. Сырая дата не сохраняется в истории или аналитике.
+            </p>
             <input
               type="text"
-              placeholder="ДД.ММ.ГГГГ"
+              inputMode="numeric"
+              autoComplete="bday"
+              placeholder="1998-06-15 или 15.06.1998"
               value={inputVal}
               onChange={(e) => setInputVal(e.target.value)}
               className={
@@ -232,11 +298,11 @@ export function BirthMatrixFeature({ publicMode, birthDateString, onBirthDateCha
             />
             <button
               onClick={handleApply}
-              disabled={inputVal.length !== 10}
+              disabled={!generateBirthMatrix(inputVal)}
               className={
                 publicMode
-                  ? "mt-3 w-full rounded bg-indigo-500 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-400 disabled:opacity-50"
-                  : "mt-3 w-full rounded bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500 disabled:opacity-50"
+                  ? "mt-3 w-full rounded-lg bg-indigo-500 px-4 py-3 text-sm font-medium text-white hover:bg-indigo-400 disabled:opacity-50"
+                  : "mt-3 w-full rounded-lg bg-indigo-600 px-4 py-3 text-sm font-medium text-white hover:bg-indigo-500 disabled:opacity-50"
               }
             >
               Рассчитать
@@ -244,43 +310,140 @@ export function BirthMatrixFeature({ publicMode, birthDateString, onBirthDateCha
           </div>
         ) : (
           <div className="space-y-4">
-            <div className="flex justify-between items-center mb-2">
-              <p className={publicMode ? "text-sm text-slate-400" : "text-sm text-slate-500"}>Дата: {inputVal}</p>
-              <button onClick={() => setMatrix(null)} className={publicMode ? "text-xs text-indigo-400 hover:text-indigo-300" : "text-xs text-indigo-600 hover:text-indigo-500"}>
-                Изменить
-              </button>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-              <div className={publicMode ? "rounded bg-indigo-500/10 p-2 text-center" : "rounded bg-indigo-50 p-2 text-center"}>
-                <p className={publicMode ? "text-xs text-slate-400" : "text-xs text-slate-500"}>Путь</p>
-                <p className={publicMode ? "text-xl font-bold text-indigo-400" : "text-xl font-bold text-indigo-600"}>{matrix.lifePath}</p>
+            <div className={publicMode ? "rounded-lg border border-amber-200/20 bg-gradient-to-br from-amber-200/12 via-fuchsia-200/10 to-cyan-200/10 p-4" : "rounded-lg border border-amber-100 bg-gradient-to-br from-amber-50 via-fuchsia-50 to-cyan-50 p-4"}>
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className={publicMode ? "text-xs font-semibold uppercase tracking-wide text-amber-100" : "text-xs font-semibold uppercase tracking-wide text-amber-800"}>Матрица судьбы</p>
+                  <h3 className={publicMode ? "mt-1 text-2xl font-semibold leading-tight text-white" : "mt-1 text-2xl font-semibold leading-tight text-slate-950"}>
+                    {matrix.archetype} · код {matrix.centralNumber}
+                  </h3>
+                  <p className={publicMode ? "mt-2 text-sm leading-6 text-slate-200" : "mt-2 text-sm leading-6 text-slate-700"}>{matrix.hero}</p>
+                </div>
+                <div className={publicMode ? "rounded-lg border border-white/15 bg-black/20 px-3 py-2 text-center" : "rounded-lg border border-white bg-white/70 px-3 py-2 text-center"}>
+                  <p className={publicMode ? "text-xs text-slate-300" : "text-xs text-slate-500"}>Число пути</p>
+                  <p className={publicMode ? "text-3xl font-bold text-amber-100" : "text-3xl font-bold text-fuchsia-800"}>{matrix.lifePath}</p>
+                </div>
               </div>
-              <div className={publicMode ? "rounded bg-white/5 p-2 text-center" : "rounded bg-slate-50 p-2 text-center"}>
-                <p className={publicMode ? "text-xs text-slate-400" : "text-xs text-slate-500"}>День</p>
-                <p className={publicMode ? "text-xl font-bold text-slate-200" : "text-xl font-bold text-slate-700"}>{matrix.dayNumber}</p>
-              </div>
-              <div className={publicMode ? "rounded bg-white/5 p-2 text-center" : "rounded bg-slate-50 p-2 text-center"}>
-                <p className={publicMode ? "text-xs text-slate-400" : "text-xs text-slate-500"}>Месяц</p>
-                <p className={publicMode ? "text-xl font-bold text-slate-200" : "text-xl font-bold text-slate-700"}>{matrix.monthNumber}</p>
-              </div>
-              <div className={publicMode ? "rounded bg-white/5 p-2 text-center" : "rounded bg-slate-50 p-2 text-center"}>
-                <p className={publicMode ? "text-xs text-slate-400" : "text-xs text-slate-500"}>Год</p>
-                <p className={publicMode ? "text-xl font-bold text-slate-200" : "text-xl font-bold text-slate-700"}>{matrix.yearSum}</p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <span className={publicMode ? "rounded-full border border-emerald-200/25 bg-emerald-200/10 px-3 py-1 text-xs font-semibold text-emerald-100" : "rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700"}>
+                  {matrix.honesty}
+                </span>
+                <span className={publicMode ? "rounded-full border border-white/12 bg-white/8 px-3 py-1 text-xs font-semibold text-slate-200" : "rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-600"}>
+                  Дата введена · {matrix.tier}
+                </span>
               </div>
             </div>
 
-            <p className={publicMode ? "text-sm text-slate-300" : "text-sm text-slate-600"}><strong>Сильные стороны:</strong> {matrix.strengths}</p>
-            <p className={publicMode ? "text-sm text-slate-300" : "text-sm text-slate-600"}><strong>Зоны риска:</strong> {matrix.risks}</p>
-            <p className={publicMode ? "text-sm text-slate-300" : "text-sm text-slate-600"}><strong>Отношения:</strong> {matrix.relationships}</p>
-            <p className={publicMode ? "text-sm text-slate-300" : "text-sm text-slate-600"}><strong>Реализация:</strong> {matrix.moneyWork}</p>
-            
-            <div className={publicMode ? "rounded bg-white/10 p-3 text-center" : "rounded bg-slate-50 p-3 text-center"}>
-              <p className={publicMode ? "text-sm font-medium text-emerald-400" : "text-sm font-medium text-emerald-600"}>{matrix.advice}</p>
+            <div className="flex items-center justify-between gap-3">
+              <p className={publicMode ? "text-xs text-slate-400" : "text-xs text-slate-500"}>Исходная дата используется только на экране расчёта.</p>
+              <button onClick={() => setMatrix(null)} className={publicMode ? "text-xs font-semibold text-indigo-300 hover:text-indigo-200" : "text-xs font-semibold text-indigo-600 hover:text-indigo-500"}>
+                Изменить
+              </button>
             </div>
+
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+              <Metric publicMode={publicMode} label="Путь" value={matrix.lifePath} />
+              <Metric publicMode={publicMode} label="Душа" value={matrix.soulNumber} />
+              <Metric publicMode={publicMode} label="Реализация" value={matrix.realizationNumber} />
+              <Metric publicMode={publicMode} label="Отношения" value={matrix.relationshipNumber} />
+            </div>
+
+            <BirthMatrixVisual publicMode={publicMode} matrix={matrix} activeSection={activeSection} onSectionSelect={handleSectionSelect} />
+
+            <div className="flex gap-2 overflow-x-auto pb-1" data-birth-matrix-tabs="true">
+              {matrix.sections.map((section) => (
+                <button
+                  key={section.id}
+                  type="button"
+                  onClick={() => handleSectionSelect(section.id)}
+                  data-birth-matrix-tab={section.id}
+                  className={`min-h-10 shrink-0 rounded-lg border px-3 text-sm font-semibold transition ${
+                    activeSection === section.id
+                      ? publicMode
+                        ? "border-amber-200/50 bg-amber-200/15 text-amber-50"
+                        : "border-fuchsia-200 bg-fuchsia-50 text-fuchsia-900"
+                      : publicMode
+                        ? "border-white/10 bg-white/7 text-slate-300"
+                        : "border-slate-200 bg-white text-slate-600"
+                  }`}
+                >
+                  {section.tab}
+                </button>
+              ))}
+            </div>
+
+            {currentSection ? (
+              <div className={publicMode ? "rounded-lg border border-white/10 bg-white/7 p-4" : "rounded-lg border border-slate-200 bg-white p-4"} data-birth-matrix-section="true">
+                <p className={publicMode ? "text-xs font-semibold uppercase tracking-wide text-amber-100" : "text-xs font-semibold uppercase tracking-wide text-fuchsia-800"}>{currentSection.eyebrow}</p>
+                <h4 className={publicMode ? "mt-1 text-lg font-semibold text-white" : "mt-1 text-lg font-semibold text-slate-950"}>{currentSection.title}</h4>
+                <p className={publicMode ? "mt-2 text-sm leading-6 text-slate-300" : "mt-2 text-sm leading-6 text-slate-600"}>{currentSection.body}</p>
+                <div className="mt-3 grid gap-2">
+                  {currentSection.points.map((point) => (
+                    <div key={point} className={publicMode ? "rounded-lg border border-white/10 bg-black/15 p-3 text-sm leading-5 text-slate-200" : "rounded-lg border border-slate-100 bg-slate-50 p-3 text-sm leading-5 text-slate-700"}>
+                      {point}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+
+            <div className={publicMode ? "rounded-lg border border-emerald-200/20 bg-emerald-200/10 p-4" : "rounded-lg border border-emerald-200 bg-emerald-50 p-4"}>
+              <p className={publicMode ? "text-sm font-semibold text-emerald-100" : "text-sm font-semibold text-emerald-800"}>3 рекомендации</p>
+              <ul className="mt-3 space-y-2">
+                {matrix.recommendations.map((item) => (
+                  <li key={item} className={publicMode ? "text-sm leading-5 text-slate-200" : "text-sm leading-5 text-slate-700"}>• {item}</li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="grid gap-2 sm:grid-cols-2">
+              <button type="button" onClick={handleSave} className={publicMode ? "min-h-11 rounded-lg border border-white/15 bg-white/8 px-3 text-sm font-semibold text-white hover:bg-white/12" : "min-h-11 rounded-lg border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-800 hover:bg-slate-50"}>
+                Сохранить матрицу
+              </button>
+              <button type="button" onClick={handleShare} className={publicMode ? "min-h-11 rounded-lg border border-white/15 bg-white/8 px-3 text-sm font-semibold text-white hover:bg-white/12" : "min-h-11 rounded-lg border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-800 hover:bg-slate-50"}>
+                Поделиться
+              </button>
+            </div>
+            {saveStatus || shareStatus ? <p className={publicMode ? "text-center text-sm font-semibold text-emerald-300" : "text-center text-sm font-semibold text-emerald-700"}>{saveStatus || shareStatus}</p> : null}
           </div>
         )}
       </div>
     </FeatureCard>
   );
+}
+
+function Metric({ publicMode, label, value }: { publicMode: boolean; label: string; value: number }) {
+  return (
+    <div className={publicMode ? "rounded-lg border border-white/10 bg-white/7 p-3 text-center" : "rounded-lg border border-slate-200 bg-white p-3 text-center"}>
+      <p className={publicMode ? "text-xs text-slate-400" : "text-xs text-slate-500"}>{label}</p>
+      <p className={publicMode ? "mt-1 text-2xl font-bold text-indigo-200" : "mt-1 text-2xl font-bold text-indigo-700"}>{value}</p>
+    </div>
+  );
+}
+
+function buildBirthMatrixRetentionAction(matrix: MysticBirthMatrix): ZodiacRetentionDraft {
+  return {
+    section: "mystic",
+    featureKey: "birthMatrix",
+    label: "Матрица судьбы",
+    mode: matrix.matrixType,
+    matrixType: matrix.matrixType,
+    archetype: matrix.archetypeKey,
+    mainNumber: matrix.centralNumber,
+    detail: `${matrix.archetype} · код ${matrix.centralNumber}`,
+  };
+}
+
+function birthMatrixAnalyticsPayload(matrix: MysticBirthMatrix | null, hasBirthDate: boolean, category = "birth_matrix"): ZodiacAnalyticsPayload {
+  return {
+    section: "mystic",
+    category,
+    featureKey: "birthMatrix",
+    inputMode: "date",
+    matrixType: matrix?.matrixType ?? "symbolic_birth_date",
+    mainNumber: matrix?.centralNumber,
+    archetype: matrix?.archetypeKey,
+    hasBirthDate,
+    hasName: false,
+  };
 }

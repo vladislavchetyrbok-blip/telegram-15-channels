@@ -1878,6 +1878,9 @@ function MoreSection({
             publicMode={publicMode}
             birthDateString={natalPerson.birthDate}
             onBirthDateChange={(val) => setNatalPerson((s) => ({ ...s, birthDate: val }))}
+            onSave={(action) => onFavoriteSave(action)}
+            onShare={(action) => onShare(action)}
+            onEvent={onPersonalToolEvent}
           />
         ) : null}
         {activeMoreFeature === "vip" ? (

@@ -78,7 +78,7 @@ The allowlist covers:
 - app open, sign selection, section opens, compatibility calculation;
 - natal chart, Chinese horoscope, zodiac stones, name profile, numerology, angel numbers, lunar calendar, daily talisman, dream dictionary, gifts, name compatibility, archetype;
 - VIP opened, free access, feature taps, future subscription tap, all active VIP detail screens, and functional VIP tool events: `vip_tool_started`, `vip_tool_calculated`, `vip_tool_saved`, `vip_tool_shared`, `vip_input_reused`, and `vip_message_copied`;
-- Mystic category, daily card, Tarot, rune, intuitive sign, talismans, aura, lunar ritual, karmic lessons, and Birth Matrix;
+- Mystic category, daily card, Tarot, rune, intuitive sign, talismans, aura, lunar ritual, karmic lessons, and Birth Matrix lifecycle events (`birth_matrix_started`, `birth_matrix_calculated`, `birth_matrix_saved`, `birth_matrix_shared`);
 - Telegram WebApp ready, BackButton usage, and haptics;
 - giveaways locked/preview events.
 
@@ -102,7 +102,7 @@ Compatibility product structure:
 Compatibility -> Pair Setup -> Relationship Map -> 30-Day Couple Calendar -> Actions / Messages / Save / Share
 ```
 
-Profile, History, and Favorites are local retention features. They use localStorage on the device and store only safe shortcuts/summaries: selected sign slug, first sign slug, second sign slug, section id/label, featureKey, compatibility mode, score tier, and timestamps. They must not store or send names, exact birth dates, birth times, city query, selected city id, raw result text, raw message text, raw dream text, or raw angel number input. VIP tool Save uses the same safe shortcut model. Safe Share sends only generic Mini App text, safe sign-pair labels, and startapp links.
+Profile, History, and Favorites are local retention features. They use localStorage on the device and store only safe shortcuts/summaries: selected sign slug, first sign slug, second sign slug, section id/label, featureKey, compatibility mode, score tier, matrix type, Birth Matrix archetype key, Birth Matrix central number, and timestamps. They must not store or send names, exact birth dates, birth times, city query, selected city id, raw result text, raw message text, raw dream text, or raw angel number input. VIP tool Save and Birth Matrix Save use the same safe shortcut model. Safe Share sends only generic Mini App text, safe sign-pair labels, and startapp links.
 
 VIP functional tool payloads are limited to safe categorical fields:
 
@@ -135,6 +135,20 @@ natal_extended
 These modes describe data completeness, not the raw data. The payload may include `hasBirthDate`, `hasBirthTime`, and `hasBirthCity` booleans, but must never include the birth date value, birth time value, city query, selected city, gender, name, or raw result text.
 
 Share, Final AstroMap, and interaction-hardening events use only safe routing/status fields such as `section`, `category`, `featureKey`, `chartType`, sign slugs, `relationshipMode`, and `scoreTier`. They must not include copied text, raw generated messages, raw angel-number input, names, dates, time, city query, or Telegram initData.
+
+Birth Matrix payloads are limited to:
+
+```text
+featureKey
+matrixType
+mainNumber
+archetype
+hasBirthDate
+hasName
+inputMode
+```
+
+`mainNumber` is numeric only, `archetype` is an ASCII-safe archetype key such as `creator`, and `matrixType` is `symbolic_birth_date`. Payloads must never include the birth date value, name, raw matrix text, or raw result sections.
 
 Supported direct profile and compatibility start params:
 

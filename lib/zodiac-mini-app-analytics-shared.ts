@@ -86,6 +86,10 @@ export const ZODIAC_ANALYTICS_EVENTS = [
   "lunar_ritual_opened",
   "karmic_lessons_opened",
   "birth_matrix_opened",
+  "birth_matrix_started",
+  "birth_matrix_calculated",
+  "birth_matrix_saved",
+  "birth_matrix_shared",
   "vip_natal_opened",
   "vip_compatibility_opened",
   "vip_mental_map_opened",
@@ -148,6 +152,9 @@ export interface ZodiacAnalyticsPayload {
   tone?: string;
   freeVipActive?: boolean;
   chartType?: string;
+  matrixType?: string;
+  mainNumber?: number;
+  archetype?: string;
 }
 
 export interface SanitizedZodiacAnalyticsEvent extends ZodiacAnalyticsPayload {
@@ -270,6 +277,9 @@ export function sanitizeZodiacAnalyticsPayload(input: unknown): ZodiacAnalyticsP
   const tone = sanitizeEnum(raw.tone, vipTones);
   const freeVipActive = sanitizeBoolean(raw.freeVipActive);
   const chartType = sanitizeToken(raw.chartType, 48);
+  const matrixType = sanitizeToken(raw.matrixType, 64);
+  const mainNumber = sanitizeSafeInteger(raw.mainNumber, 1, 33);
+  const archetype = sanitizeToken(raw.archetype, 64);
 
   if (dateKey) payload.dateKey = dateKey;
   if (section) payload.section = section;
@@ -297,6 +307,9 @@ export function sanitizeZodiacAnalyticsPayload(input: unknown): ZodiacAnalyticsP
   if (tone) payload.tone = tone;
   if (typeof freeVipActive === "boolean") payload.freeVipActive = freeVipActive;
   if (chartType) payload.chartType = chartType;
+  if (matrixType) payload.matrixType = matrixType;
+  if (typeof mainNumber === "number") payload.mainNumber = mainNumber;
+  if (archetype) payload.archetype = archetype;
 
   return payload;
 }
@@ -365,6 +378,11 @@ function sanitizeToken(value: unknown, maxLength: number) {
 
 function sanitizeBoolean(value: unknown) {
   return typeof value === "boolean" ? value : undefined;
+}
+
+function sanitizeSafeInteger(value: unknown, min: number, max: number) {
+  if (typeof value !== "number" || !Number.isInteger(value) || value < min || value > max) return undefined;
+  return value;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
