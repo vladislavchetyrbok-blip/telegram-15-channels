@@ -218,8 +218,8 @@ export function ExtendedNatalFeature({ publicMode, natalChart, onBack }: { publi
   );
 }
 
-export function ExtendedCompatibilityFeature({ publicMode, result, onBack }: { publicMode: boolean; result: CompatibilityResult | null; onBack: () => void }) {
-  if (!result) {
+export function ExtendedCompatibilityFeature({ publicMode, result, pairReady, onBack }: { publicMode: boolean; result: CompatibilityResult | null; pairReady: boolean; onBack: () => void }) {
+  if (!pairReady || !result) {
     return (
       <VipScreenLayout publicMode={publicMode} title="Расширенная совместимость" onBack={onBack}>
         <VipReadinessBlock
@@ -250,8 +250,8 @@ export function ExtendedCompatibilityFeature({ publicMode, result, onBack }: { p
   );
 }
 
-export function VipMentalMapFeature({ publicMode, result, onBack }: { publicMode: boolean; result: CompatibilityResult | null; onBack: () => void }) {
-  if (!result) {
+export function VipMentalMapFeature({ publicMode, result, pairReady, onBack }: { publicMode: boolean; result: CompatibilityResult | null; pairReady: boolean; onBack: () => void }) {
+  if (!pairReady || !result) {
     return (
       <VipScreenLayout publicMode={publicMode} title="Ментальная карта пары" onBack={onBack}>
         <VipReadinessBlock
@@ -342,7 +342,23 @@ export function VipMonthForecastFeature({ publicMode, monthForecast, onBack }: {
   );
 }
 
-export function VipMessageHelperFeature({ publicMode, messageVariants, onBack }: { publicMode: boolean; messageVariants: Array<{ label: string; text: string }>; onBack: () => void }) {
+export function VipMessageHelperFeature({ publicMode, messageVariants, pairReady, onBack }: { publicMode: boolean; messageVariants: Array<{ label: string; text: string }>; pairReady: boolean; onBack: () => void }) {
+  if (!pairReady) {
+    return (
+      <VipScreenLayout publicMode={publicMode} title="Помощник сообщений" onBack={onBack}>
+        <VipReadinessBlock
+          publicMode={publicMode}
+          lead="Помощник сообщений открыт бесплатно, но личные фразы появляются только после выбора пары."
+          items={[
+            { title: "Что будет внутри", text: "Готовые варианты для мягкого сообщения, романтического тона, разговора после ссоры, приглашения и честного диалога." },
+            { title: "Почему нужна пара", text: "Текст зависит от двух знаков и динамики совместимости, поэтому без пары приложение не подставляет синтетический результат." },
+            { title: "Доступ", text: "Функция остается бесплатной до 17.09.2026 и не требует Telegram Stars." },
+          ]}
+        />
+      </VipScreenLayout>
+    );
+  }
+
   return (
     <VipScreenLayout publicMode={publicMode} title="Помощник сообщений" onBack={onBack}>
       <p className={publicMode ? "text-sm text-slate-300 mb-4" : "text-sm text-slate-600 mb-4"}>Используйте эти фразы для гармоничного общения с вашим партнером:</p>

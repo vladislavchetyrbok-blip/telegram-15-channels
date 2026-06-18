@@ -235,6 +235,16 @@ const menuFeatureTabs: Array<{ id: MoreFeatureId; label: string; shortLabel: str
   { id: "dailyTalisman", label: "🧿 Талисман дня", shortLabel: "Талисман", group: "forecasts", requirement: "sign" },
   { id: "angelNumbers", label: "👼 Ангельские числа", shortLabel: "11:11", group: "forecasts" },
   { id: "giftBySign", label: "🎁 Подарок по знаку", shortLabel: "Подарок", group: "forecasts", requirement: "sign" },
+  { id: "angelNumbers", label: "👼 Ангельские числа", shortLabel: "11:11", group: "mystic" },
+  { id: "dailyCard", label: "🃏 Карта дня", shortLabel: "Карта", group: "mystic", requirement: "sign" },
+  { id: "tarotCard", label: "🔮 Таро дня", shortLabel: "Таро", group: "mystic", requirement: "sign" },
+  { id: "runeDay", label: "ᚱ Руна дня", shortLabel: "Руна", group: "mystic", requirement: "sign" },
+  { id: "intuitiveSign", label: "✨ Интуитивный знак", shortLabel: "Знак", group: "mystic", requirement: "sign" },
+  { id: "talismans", label: "🧿 Талисманы", shortLabel: "Символы", group: "mystic", requirement: "sign" },
+  { id: "auraColor", label: "🌈 Цвет ауры", shortLabel: "Аура", group: "mystic", requirement: "sign" },
+  { id: "lunarRitual", label: "🌙 Лунный ритуал", shortLabel: "Ритуал", group: "mystic" },
+  { id: "karmicLessons", label: "🪞 Кармические уроки", shortLabel: "Карма", group: "mystic", requirement: "sign" },
+  { id: "birthMatrix", label: "🔢 Матрица рождения", shortLabel: "Матрица", group: "mystic" },
   { id: "vip", label: "👑 VIP бесплатно", shortLabel: "VIP", group: "vip" },
   { id: "mentalMap", label: "🧠 Карта пары+", shortLabel: "Карта+", group: "vip", requirement: "pair" },
   { id: "coupleCalendar", label: "📅 30 дней пары", shortLabel: "30 дней", group: "vip", requirement: "pair" },
@@ -247,6 +257,7 @@ const menuFeatureGroups: Array<{ id: MenuFeatureGroup; title: string; subtitle: 
   { id: "love", title: "Любовь", subtitle: "пара, диалог и мягкое сближение" },
   { id: "profile", title: "Личный профиль", subtitle: "натальная карта, имя, числа и символы" },
   { id: "forecasts", title: "Прогнозы", subtitle: "сегодня, неделя, луна, талисман и подсказки" },
+  { id: "mystic", title: "Мистика", subtitle: "карты, Таро, руны, аура и символы дня" },
   { id: "vip", title: "VIP", subtitle: "ранний доступ открыт бесплатно" },
 ];
 
@@ -669,6 +680,30 @@ export function ZodiacCompatibilityMiniApp({
                   publicMode={publicMode}
                   appDateKey={appDateKey}
                   category="profile"
+                  selectedSign={selectedSign}
+                  selectedSignSlug={selectedSignSlug}
+                  self={self}
+                  partner={partner}
+                  result={result}
+                  relationshipMode={relationshipMode}
+                  onLuckyDayClick={trackLuckyDayClick}
+                  onVipFeatureOpen={trackVipFeatureOpen}
+                  onVipFutureSubscriptionClick={trackVipFutureSubscriptionClick}
+                  onGiveawayClick={trackGiveawayPreviewClick}
+                  onMessageHelperUsed={trackMessageHelperUse}
+                  onRelationshipMapCategoryOpen={trackRelationshipMapCategoryOpen}
+                  onNatalChartOpened={trackNatalChartOpened}
+                  onNatalChartResultViewed={trackNatalChartResultViewed}
+                  onNatalChartSectionOpen={trackNatalChartSectionOpen}
+                  onNatalChartVipFreeOpen={trackNatalChartVipFreeOpen}
+                  onPersonalToolEvent={trackPersonalToolEvent}
+                />
+              ) : null}
+              {activeTab === "mystic" ? (
+                <MoreSection
+                  publicMode={publicMode}
+                  appDateKey={appDateKey}
+                  category="mystic"
                   selectedSign={selectedSign}
                   selectedSignSlug={selectedSignSlug}
                   self={self}
@@ -1420,10 +1455,10 @@ function MoreSection({
           <ExtendedNatalFeature publicMode={publicMode} natalChart={natalChart} onBack={() => setActiveMoreFeature("vip")} />
         ) : null}
         {activeMoreFeature === "vipCompatibility" ? (
-          <ExtendedCompatibilityFeature publicMode={publicMode} result={result} onBack={() => setActiveMoreFeature("vip")} />
+          <ExtendedCompatibilityFeature publicMode={publicMode} result={result} pairReady={pairReady} onBack={() => setActiveMoreFeature("vip")} />
         ) : null}
         {activeMoreFeature === "vipMentalMap" ? (
-          <VipMentalMapFeature publicMode={publicMode} result={result} onBack={() => setActiveMoreFeature("vip")} />
+          <VipMentalMapFeature publicMode={publicMode} result={result} pairReady={pairReady} onBack={() => setActiveMoreFeature("vip")} />
         ) : null}
         {activeMoreFeature === "vipCoupleCalendar" ? (
           <VipCoupleCalendarFeature publicMode={publicMode} calendarDays={coupleCalendar} pairReady={pairReady} onBack={() => setActiveMoreFeature("vip")} />
@@ -1435,7 +1470,7 @@ function MoreSection({
           <VipMessageHelperFeature publicMode={publicMode} messageVariants={messageTones.map((tone) => ({
             label: tone.label,
             text: pairReady ? buildPartnerMessage(self, partner, dateKey, tone.id, result) : "выберите два знака, чтобы открыть вариант сообщения",
-          }))} onBack={() => setActiveMoreFeature("vip")} />
+          }))} pairReady={pairReady} onBack={() => setActiveMoreFeature("vip")} />
         ) : null}
         {activeMoreFeature === "vipNameProfile" ? (
           <ExtendedNameProfileFeature publicMode={publicMode} nameProfile={nameProfile} onBack={() => setActiveMoreFeature("vip")} />
