@@ -4,6 +4,9 @@ import { AppShell } from "@/components/AppShell";
 
 export const metadata: Metadata = {
   title: "Telegram 15 Channels",
+  icons: {
+    icon: "/assets/zodiac-mini-app-icon.svg",
+  },
   description: "Панель управления сетью из 15 Telegram-каналов",
 };
 

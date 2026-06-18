@@ -55,6 +55,9 @@ async function main() {
     const archetypeEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "archetype_result_viewed", { section: "archetype", hasBirthDate: true, hasName: true, freeVipActive: true });
     const hubCategoryEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "hub_category_opened", { section: "hub", category: "forecasts", freeVipActive: true });
     const giveawayLockedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "giveaway_locked_viewed", { section: "giveaways", featureKey: "giveaways_locked", freeVipActive: true });
+    const telegramReadyEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "telegram_webapp_ready", { section: "telegram", category: "ios", featureKey: "dark" });
+    const telegramBackEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "telegram_back_button_used", { section: "telegram", category: "vip", featureKey: "vipMysticDay" });
+    const telegramHapticEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "telegram_haptic_used", { section: "telegram", category: "tab", featureKey: "selection" });
     const disallowedEvent = await checkDisallowedEvent(`${baseUrl}/api/zodiac/analytics/event`);
     const afterLedgerStats = await collectLedgerStats();
     const ledgerWrites = countLedgerWrites(beforeLedgerStats, afterLedgerStats);
@@ -84,6 +87,9 @@ async function main() {
       archetypeEvent,
       hubCategoryEvent,
       giveawayLockedEvent,
+      telegramReadyEvent,
+      telegramBackEvent,
+      telegramHapticEvent,
       disallowedEvent,
       sensitiveFieldsStripped:
         allowedEvent.sensitiveFieldsStripped &&
@@ -101,7 +107,10 @@ async function main() {
         nameCompatibilityEvent.sensitiveFieldsStripped &&
         archetypeEvent.sensitiveFieldsStripped &&
         hubCategoryEvent.sensitiveFieldsStripped &&
-        giveawayLockedEvent.sensitiveFieldsStripped,
+        giveawayLockedEvent.sensitiveFieldsStripped &&
+        telegramReadyEvent.sensitiveFieldsStripped &&
+        telegramBackEvent.sensitiveFieldsStripped &&
+        telegramHapticEvent.sensitiveFieldsStripped,
       noSecretsPrinted: true,
       telegramApiCalls,
       ledgerWrites,

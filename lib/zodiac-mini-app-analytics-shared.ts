@@ -75,6 +75,9 @@ export const ZODIAC_ANALYTICS_EVENTS = [
   "vip_angel_numbers_opened",
   "vip_talismans_opened",
   "vip_mystic_day_opened",
+  "telegram_webapp_ready",
+  "telegram_back_button_used",
+  "telegram_haptic_used",
 ] as const;
 
 export type ZodiacAnalyticsEventName = (typeof ZODIAC_ANALYTICS_EVENTS)[number];
@@ -162,6 +165,7 @@ const sections = new Set([
   "message_helper",
   "mystic",
   "hub",
+  "telegram",
 ]);
 
 export function isAllowedZodiacAnalyticsEvent(value: unknown): value is ZodiacAnalyticsEventName {

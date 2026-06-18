@@ -10,6 +10,7 @@ import {
   getLuckyDaysStartDate,
   getWeekRangeForDate,
 } from "@/lib/zodiac-date";
+import { useTelegramBackButton, useTelegramWebApp, type TelegramWebAppState } from "@/lib/use-telegram-webapp";
 import { trackZodiacMiniAppEvent } from "@/lib/zodiac-mini-app-analytics-client";
 import { zodiacAnalyticsScoreTier, zodiacAnalyticsStartappType, type ZodiacAnalyticsEventName, type ZodiacAnalyticsPayload } from "@/lib/zodiac-mini-app-analytics-shared";
 import { ArrowLeft, ArrowRight, CalendarDays, Crown, Gift, HeartHandshake, Lock, MapPin, RotateCcw, ShieldCheck, Sparkles, Star } from "lucide-react";
@@ -40,6 +41,7 @@ import {
   VipTalismansFeature,
 } from "./ZodiacVipSections";
 import type { ReactNode } from "react";
+import type { CSSProperties } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 type Mode = "fast" | "personal" | "precise";
@@ -48,6 +50,7 @@ type Gender = "male" | "female" | "unspecified";
 type Variant = "dashboard" | "public";
 type WizardStep = 1 | 2 | 3;
 type HubTab = "today" | "love" | "profile" | "forecasts" | "mystic" | "vip";
+type TelegramHapticKind = "selection" | "impact";
 type MoreFeatureId =
   | "todayForecast"
   | "weekForecast"
@@ -293,6 +296,7 @@ export function ZodiacCompatibilityMiniApp({
   startParam,
 }: ZodiacCompatibilityMiniAppProps) {
   const publicMode = variant === "public";
+  const telegram = useTelegramWebApp();
   const resolvedMode = normalizeMode(initialMode);
   const hintSignSlug = useMemo(() => resolveInitialSign(initialSign, startParam), [initialSign, startParam]);
   const hintSign = hintSignSlug ? findSign(hintSignSlug) : null;
@@ -309,6 +313,7 @@ export function ZodiacCompatibilityMiniApp({
   const lastMoreTrackedRef = useRef("");
   const lastNatalOpenedTrackedRef = useRef("");
   const lastNatalResultTrackedRef = useRef("");
+  const telegramReadyTrackedRef = useRef(false);
 
   const result = useMemo(() => buildCompatibilityResult(mode, relationshipMode, self, partner), [mode, partner, relationshipMode, self]);
   const selectedSign = selectedSignSlug ? findSign(selectedSignSlug) : null;
@@ -326,6 +331,9 @@ export function ZodiacCompatibilityMiniApp({
     }),
     [analyticsSource, analyticsStartappType, appDateKey],
   );
+  const telegramImpactOccurred = telegram.impactOccurred;
+  const telegramSelectionChanged = telegram.selectionChanged;
+  const telegramThemeStyle = buildTelegramThemeStyle(telegram);
 
   useEffect(() => {
     function refreshAppDate() {
@@ -358,6 +366,19 @@ export function ZodiacCompatibilityMiniApp({
     appOpenTrackedRef.current = true;
     trackZodiacMiniAppEvent("app_open", analyticsPayload({ sign: hintSignSlug ?? undefined }));
   }, [analyticsPayload, appDateKey, hintSignSlug]);
+
+  useEffect(() => {
+    if (!appDateKey || !telegram.isTelegramWebApp || !telegram.isReady || telegramReadyTrackedRef.current) return;
+    telegramReadyTrackedRef.current = true;
+    trackZodiacMiniAppEvent(
+      "telegram_webapp_ready",
+      analyticsPayload({
+        section: "telegram",
+        category: telegram.platform ?? undefined,
+        featureKey: telegram.colorScheme ?? undefined,
+      }),
+    );
+  }, [analyticsPayload, appDateKey, telegram.colorScheme, telegram.isReady, telegram.isTelegramWebApp, telegram.platform]);
 
   useEffect(() => {
     if (!appDateKey || !selectedSign) return;
@@ -415,7 +436,36 @@ export function ZodiacCompatibilityMiniApp({
     trackZodiacMiniAppEvent("section_open_giveaways", analyticsPayload({ section: "giveaways", sign: selectedSign.slug }));
   }, [activeTab, analyticsPayload, appDateKey, mode, partner.sign, relationshipMode, result.scores.total, selectedSign, self]);
 
+  const triggerTelegramHaptic = useCallback(
+    (kind: TelegramHapticKind, category: string, featureKey?: string) => {
+      const used = kind === "selection" ? telegramSelectionChanged() : telegramImpactOccurred("light");
+      if (!used) return;
+      trackZodiacMiniAppEvent(
+        "telegram_haptic_used",
+        analyticsPayload({
+          section: "telegram",
+          category,
+          featureKey: featureKey ?? kind,
+        }),
+      );
+    },
+    [analyticsPayload, telegramImpactOccurred, telegramSelectionChanged],
+  );
+
+  const trackTelegramBackUsed = useCallback(
+    (category: string, featureKey: string) => {
+      trackZodiacMiniAppEvent("telegram_back_button_used", analyticsPayload({ section: "telegram", category, featureKey }));
+    },
+    [analyticsPayload],
+  );
+
+  function changeActiveTab(nextTab: HubTab) {
+    if (nextTab !== activeTab) triggerTelegramHaptic("selection", "tab", nextTab);
+    setActiveTab(nextTab);
+  }
+
   function chooseSign(slug: string) {
+    triggerTelegramHaptic("selection", "sign", slug);
     setSelectedSignSlug(slug);
     setActiveTab("today");
     setSelf((current) => ({ ...current, sign: !current.sign || current.sign === selectedSignSlug ? slug : current.sign }));
@@ -543,10 +593,14 @@ export function ZodiacCompatibilityMiniApp({
 
   return (
     <div
+      data-telegram-webapp={telegram.isTelegramWebApp ? "true" : "false"}
+      data-telegram-platform={telegram.platform ?? "browser"}
+      data-telegram-color-scheme={telegram.colorScheme ?? "dark"}
+      style={telegramThemeStyle}
       className={
         publicMode
-          ? "min-h-screen w-full max-w-full overflow-x-hidden bg-[#070712] bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.14)_1px,transparent_0),radial-gradient(circle_at_top,rgba(168,85,247,0.26),transparent_24rem),linear-gradient(180deg,#070712_0%,#13091f_44%,#070b14_100%)] bg-[length:28px_28px,100%_100%,100%_100%] px-4 py-5 text-slate-100 sm:px-6"
-          : "-mx-4 -my-6 min-h-screen overflow-x-hidden bg-[#070712] bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.12)_1px,transparent_0),radial-gradient(circle_at_top,rgba(168,85,247,0.2),transparent_24rem),linear-gradient(180deg,#070712_0%,#13091f_48%,#070b14_100%)] bg-[length:28px_28px,100%_100%,100%_100%] px-4 py-6 text-slate-100 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
+          ? "min-h-[var(--zma-viewport-height,100vh)] w-full max-w-full overflow-x-hidden bg-[#070712] bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.14)_1px,transparent_0),radial-gradient(circle_at_top,rgba(168,85,247,0.26),transparent_24rem),linear-gradient(180deg,#070712_0%,#13091f_44%,#070b14_100%)] bg-[length:28px_28px,100%_100%,100%_100%] px-4 pb-[calc(1.25rem+var(--zma-safe-area-bottom,0px))] pt-[calc(1.25rem+var(--zma-safe-area-top,0px))] text-slate-100 sm:px-6"
+          : "-mx-4 -my-6 min-h-[var(--zma-viewport-height,100vh)] overflow-x-hidden bg-[#070712] bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.12)_1px,transparent_0),radial-gradient(circle_at_top,rgba(168,85,247,0.2),transparent_24rem),linear-gradient(180deg,#070712_0%,#13091f_48%,#070b14_100%)] bg-[length:28px_28px,100%_100%,100%_100%] px-4 pb-[calc(1.5rem+var(--zma-safe-area-bottom,0px))] pt-[calc(1.5rem+var(--zma-safe-area-top,0px))] text-slate-100 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
       }
     >
       <div className={publicMode ? "mx-auto flex min-h-[calc(100vh-2.5rem)] w-full max-w-md flex-col space-y-4" : "mx-auto flex min-h-screen max-w-3xl flex-col space-y-5"}>
@@ -615,12 +669,12 @@ export function ZodiacCompatibilityMiniApp({
           <SignSelection publicMode={publicMode} hintSign={hintSign} onSelect={chooseSign} />
         ) : (
           <>
-            <HubNavigation publicMode={publicMode} activeTab={activeTab} onChange={setActiveTab} />
+            <HubNavigation publicMode={publicMode} activeTab={activeTab} onChange={changeActiveTab} />
 
             <section className="min-w-0 flex-1">
               {activeTab === "today" ? (
                 <div className="space-y-4">
-                  <HomeQuickSection publicMode={publicMode} onOpenLove={() => setActiveTab("love")} onOpenProfile={() => setActiveTab("profile")} onOpenForecasts={() => setActiveTab("forecasts")} onOpenMystic={() => setActiveTab("mystic")} onOpenVip={() => setActiveTab("vip")} />
+                  <HomeQuickSection publicMode={publicMode} onOpenLove={() => changeActiveTab("love")} onOpenProfile={() => changeActiveTab("profile")} onOpenForecasts={() => changeActiveTab("forecasts")} onOpenMystic={() => changeActiveTab("mystic")} onOpenVip={() => changeActiveTab("vip")} />
                   {appDateKey ? <TodaySection publicMode={publicMode} sign={selectedSign} dateKey={appDateKey} /> : <DateLoadingSection publicMode={publicMode} title="Сегодня" />}
                 </div>
               ) : null}
@@ -637,6 +691,9 @@ export function ZodiacCompatibilityMiniApp({
                     partner={partner}
                     result={result}
                     relationshipMode={relationshipMode}
+                    telegram={telegram}
+                    onHaptic={triggerTelegramHaptic}
+                    onTelegramBackUsed={trackTelegramBackUsed}
                     onLuckyDayClick={trackLuckyDayClick}
                     onVipFeatureOpen={trackVipFeatureOpen}
                     onVipFutureSubscriptionClick={trackVipFutureSubscriptionClick}
@@ -662,6 +719,9 @@ export function ZodiacCompatibilityMiniApp({
                   partner={partner}
                   result={result}
                   relationshipMode={relationshipMode}
+                  telegram={telegram}
+                  onHaptic={triggerTelegramHaptic}
+                  onTelegramBackUsed={trackTelegramBackUsed}
                   onLuckyDayClick={trackLuckyDayClick}
                   onVipFeatureOpen={trackVipFeatureOpen}
                   onVipFutureSubscriptionClick={trackVipFutureSubscriptionClick}
@@ -686,6 +746,9 @@ export function ZodiacCompatibilityMiniApp({
                   partner={partner}
                   result={result}
                   relationshipMode={relationshipMode}
+                  telegram={telegram}
+                  onHaptic={triggerTelegramHaptic}
+                  onTelegramBackUsed={trackTelegramBackUsed}
                   onLuckyDayClick={trackLuckyDayClick}
                   onVipFeatureOpen={trackVipFeatureOpen}
                   onVipFutureSubscriptionClick={trackVipFutureSubscriptionClick}
@@ -710,6 +773,9 @@ export function ZodiacCompatibilityMiniApp({
                   partner={partner}
                   result={result}
                   relationshipMode={relationshipMode}
+                  telegram={telegram}
+                  onHaptic={triggerTelegramHaptic}
+                  onTelegramBackUsed={trackTelegramBackUsed}
                   onLuckyDayClick={trackLuckyDayClick}
                   onVipFeatureOpen={trackVipFeatureOpen}
                   onVipFutureSubscriptionClick={trackVipFutureSubscriptionClick}
@@ -785,6 +851,9 @@ export function ZodiacCompatibilityMiniApp({
                     partner={partner}
                     result={result}
                     relationshipMode={relationshipMode}
+                    telegram={telegram}
+                    onHaptic={triggerTelegramHaptic}
+                    onTelegramBackUsed={trackTelegramBackUsed}
                     onLuckyDayClick={trackLuckyDayClick}
                     onVipFeatureOpen={trackVipFeatureOpen}
                     onVipFutureSubscriptionClick={trackVipFutureSubscriptionClick}
@@ -805,6 +874,25 @@ export function ZodiacCompatibilityMiniApp({
       </div>
     </div>
   );
+}
+
+function buildTelegramThemeStyle(telegram: TelegramWebAppState): CSSProperties {
+  const viewportHeight = telegram.viewportStableHeight ?? telegram.viewportHeight;
+  const theme = telegram.themeParams;
+  const style: Record<string, string> = {
+    "--zma-safe-area-top": "env(safe-area-inset-top, 0px)",
+    "--zma-safe-area-bottom": "env(safe-area-inset-bottom, 0px)",
+    "--zma-viewport-height": viewportHeight ? `${Math.max(viewportHeight, 320)}px` : "100vh",
+  };
+
+  if (theme.bg_color) style["--tg-theme-bg-color"] = theme.bg_color;
+  if (theme.text_color) style["--tg-theme-text-color"] = theme.text_color;
+  if (theme.hint_color) style["--tg-theme-hint-color"] = theme.hint_color;
+  if (theme.button_color) style["--tg-theme-button-color"] = theme.button_color;
+  if (theme.button_text_color) style["--tg-theme-button-text-color"] = theme.button_text_color;
+  if (theme.secondary_bg_color) style["--tg-theme-secondary-bg-color"] = theme.secondary_bg_color;
+
+  return style as CSSProperties;
 }
 
 function SignSelection({ publicMode, hintSign, onSelect }: { publicMode: boolean; hintSign: ZodiacSign | null; onSelect: (slug: string) => void }) {
@@ -1064,6 +1152,9 @@ function MoreSection({
   partner,
   result,
   relationshipMode,
+  telegram,
+  onHaptic,
+  onTelegramBackUsed,
   onLuckyDayClick,
   onVipFeatureOpen,
   onVipFutureSubscriptionClick,
@@ -1085,6 +1176,9 @@ function MoreSection({
   partner: PersonState;
   result: CompatibilityResult;
   relationshipMode: RelationshipMode;
+  telegram: TelegramWebAppState;
+  onHaptic: (kind: TelegramHapticKind, category: string, featureKey?: string) => void;
+  onTelegramBackUsed: (category: string, featureKey: string) => void;
   onLuckyDayClick: (dateKey: string) => void;
   onVipFeatureOpen: (feature: string) => void;
   onVipFutureSubscriptionClick: () => void;
@@ -1139,6 +1233,33 @@ function MoreSection({
   const monthForecast = selfSign ? buildPersonalMonthForecast(selfSign, dateKey, result) : null;
   const categoryFeatures = menuFeatureTabs.filter((item) => item.group === category);
   const selectedMoreFeature = categoryFeatures.find((item) => item.id === activeMoreFeature) ?? categoryFeatures[0] ?? menuFeatureTabs[0];
+  const defaultMoreFeature = defaultMenuFeatureByGroup[category];
+  const telegramBackVisible = telegram.isTelegramWebApp && activeMoreFeature !== defaultMoreFeature;
+  const returnToMoreMenu = useCallback(() => {
+    onHaptic("impact", "back", activeMoreFeature);
+    setActiveMoreFeature(defaultMoreFeature);
+  }, [activeMoreFeature, defaultMoreFeature, onHaptic]);
+  const handleTelegramBack = useCallback(() => {
+    onTelegramBackUsed(category, activeMoreFeature);
+    returnToMoreMenu();
+  }, [activeMoreFeature, category, onTelegramBackUsed, returnToMoreMenu]);
+  const changeMoreFeature = useCallback(
+    (feature: MoreFeatureId) => {
+      if (feature !== activeMoreFeature) onHaptic("selection", category, feature);
+      setActiveMoreFeature(feature);
+    },
+    [activeMoreFeature, category, onHaptic],
+  );
+  const openVipFeature = useCallback(
+    (feature: string) => {
+      onHaptic("impact", "vip", feature);
+      onVipFeatureOpen(feature);
+      setActiveMoreFeature(feature as MoreFeatureId);
+    },
+    [onHaptic, onVipFeatureOpen],
+  );
+
+  useTelegramBackButton(telegram.webApp, telegramBackVisible, handleTelegramBack);
 
   useEffect(() => {
     const categoryHasFeature = categoryFeatures.some((item) => item.id === activeMoreFeature) || (category === "vip" && vipDetailFeatureIds.has(activeMoreFeature));
@@ -1359,7 +1480,7 @@ function MoreSection({
         <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0" />
         <p>без сохранения данных: имена, даты, время и город остаются только на этом экране.</p>
       </div>
-      <MoreFeatureNavigation features={categoryFeatures} activeFeature={activeMoreFeature} pairReady={pairReady} natalReady={Boolean(natalChart)} signReady={Boolean(selfSign)} onChange={setActiveMoreFeature} />
+      <MoreFeatureNavigation features={categoryFeatures} activeFeature={activeMoreFeature} pairReady={pairReady} natalReady={Boolean(natalChart)} signReady={Boolean(selfSign)} onChange={changeMoreFeature} />
       <div className={publicMode ? "mt-3 rounded-lg border border-white/10 bg-white/7 p-3" : "mt-3 rounded-lg border border-slate-200 bg-white p-3"}>
         <p className={publicMode ? "text-xs font-semibold text-amber-100" : "text-xs font-semibold text-violet-800"}>Открыт раздел</p>
         <p className={publicMode ? "mt-1 text-base font-semibold text-white" : "mt-1 text-base font-semibold text-slate-950"}>{selectedMoreFeature.label}</p>
@@ -1445,47 +1566,44 @@ function MoreSection({
             pairReady={pairReady}
             natalReady={Boolean(natalChart)}
             nameReady={Boolean(nameProfile)}
-            onFeatureOpen={(feature) => {
-              onVipFeatureOpen(feature);
-              setActiveMoreFeature(feature as MoreFeatureId);
-            }}
+            onFeatureOpen={openVipFeature}
           />
         ) : null}
         {activeMoreFeature === "vipNatalChart" ? (
-          <ExtendedNatalFeature publicMode={publicMode} natalChart={natalChart} onBack={() => setActiveMoreFeature("vip")} />
+          <ExtendedNatalFeature publicMode={publicMode} natalChart={natalChart} onBack={returnToMoreMenu} />
         ) : null}
         {activeMoreFeature === "vipCompatibility" ? (
-          <ExtendedCompatibilityFeature publicMode={publicMode} result={result} pairReady={pairReady} onBack={() => setActiveMoreFeature("vip")} />
+          <ExtendedCompatibilityFeature publicMode={publicMode} result={result} pairReady={pairReady} onBack={returnToMoreMenu} />
         ) : null}
         {activeMoreFeature === "vipMentalMap" ? (
-          <VipMentalMapFeature publicMode={publicMode} result={result} pairReady={pairReady} onBack={() => setActiveMoreFeature("vip")} />
+          <VipMentalMapFeature publicMode={publicMode} result={result} pairReady={pairReady} onBack={returnToMoreMenu} />
         ) : null}
         {activeMoreFeature === "vipCoupleCalendar" ? (
-          <VipCoupleCalendarFeature publicMode={publicMode} calendarDays={coupleCalendar} pairReady={pairReady} onBack={() => setActiveMoreFeature("vip")} />
+          <VipCoupleCalendarFeature publicMode={publicMode} calendarDays={coupleCalendar} pairReady={pairReady} onBack={returnToMoreMenu} />
         ) : null}
         {activeMoreFeature === "vipMonthForecast" ? (
-          <VipMonthForecastFeature publicMode={publicMode} monthForecast={monthForecast} onBack={() => setActiveMoreFeature("vip")} />
+          <VipMonthForecastFeature publicMode={publicMode} monthForecast={monthForecast} onBack={returnToMoreMenu} />
         ) : null}
         {activeMoreFeature === "vipMessageHelper" ? (
           <VipMessageHelperFeature publicMode={publicMode} messageVariants={messageTones.map((tone) => ({
             label: tone.label,
             text: pairReady ? buildPartnerMessage(self, partner, dateKey, tone.id, result) : "выберите два знака, чтобы открыть вариант сообщения",
-          }))} pairReady={pairReady} onBack={() => setActiveMoreFeature("vip")} />
+          }))} pairReady={pairReady} onBack={returnToMoreMenu} />
         ) : null}
         {activeMoreFeature === "vipNameProfile" ? (
-          <ExtendedNameProfileFeature publicMode={publicMode} nameProfile={nameProfile} onBack={() => setActiveMoreFeature("vip")} />
+          <ExtendedNameProfileFeature publicMode={publicMode} nameProfile={nameProfile} onBack={returnToMoreMenu} />
         ) : null}
         {activeMoreFeature === "vipNumerology" ? (
-          <ExtendedNumerologyFeature publicMode={publicMode} numerology={numerology} onBack={() => setActiveMoreFeature("vip")} />
+          <ExtendedNumerologyFeature publicMode={publicMode} numerology={numerology} onBack={returnToMoreMenu} />
         ) : null}
         {activeMoreFeature === "vipAngelNumbers" ? (
-          <ExtendedAngelNumberFeature publicMode={publicMode} angelNumber={angelNumber} onBack={() => setActiveMoreFeature("vip")} />
+          <ExtendedAngelNumberFeature publicMode={publicMode} angelNumber={angelNumber} onBack={returnToMoreMenu} />
         ) : null}
         {activeMoreFeature === "vipTalismans" ? (
-          <VipTalismansFeature publicMode={publicMode} dailyTalisman={dailyTalisman} selfSign={selfSign} onBack={() => setActiveMoreFeature("vip")} />
+          <VipTalismansFeature publicMode={publicMode} dailyTalisman={dailyTalisman} selfSign={selfSign} onBack={returnToMoreMenu} />
         ) : null}
         {activeMoreFeature === "vipMysticDay" ? (
-          <VipMysticDayFeature publicMode={publicMode} dateKey={dateKey} sign={selfSign} angelNumber={angelNumber} onBack={() => setActiveMoreFeature("vip")} />
+          <VipMysticDayFeature publicMode={publicMode} dateKey={dateKey} sign={selfSign} angelNumber={angelNumber} onBack={returnToMoreMenu} />
         ) : null}
         {activeMoreFeature === "giveaways" ? (
           <LockedPreviewCard
