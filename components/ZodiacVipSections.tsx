@@ -11,7 +11,7 @@ import type {
   DailyTalismanProfile, 
   ZodiacVipConfig, 
   ZodiacSign 
-} from "./ZodiacCompatibilityMiniApp";
+} from "./zodiac-mini-app/types";
 import { synthesizeVipMysticDay } from "@/lib/zodiac-vip-content";
 import type { ZodiacSignId } from "@/lib/zodiac-mystic-content";
 

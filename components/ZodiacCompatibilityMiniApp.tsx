@@ -1,7 +1,5 @@
 "use client";
 
-import cityCatalogData from "@/data/config/zodiac-city-catalog.json";
-import zodiacVipConfigData from "@/data/config/zodiac-vip-config.json";
 import {
   DEFAULT_ZODIAC_TIME_ZONE,
   addDaysToDateKey,
@@ -43,250 +41,94 @@ import {
 import type { ReactNode } from "react";
 import type { CSSProperties } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { modeAnalyticsEvents, tabAnalytics, vipFeatureAnalyticsEvents } from "./zodiac-mini-app/analytics";
+import {
+  citySelectionWarning,
+  exactBirthDataNote,
+  genderLabels,
+  modes,
+  relationshipModes,
+  signSlugs,
+  signs,
+  unknownBirthTimeNote,
+  zodiacVipConfig,
+} from "./zodiac-mini-app/constants";
+import { defaultMenuFeatureByGroup, hubCategoryByTab, menuFeatureGroups, menuFeatureTabs, menuHubTabs } from "./zodiac-mini-app/feature-tabs";
+import { findSign, sectionForFeature, vipDetailFeatureIds } from "./zodiac-mini-app/feature-routing";
+import {
+  cityLabel,
+  createInitialPerson,
+  formatDateInput,
+  formatTimeInput,
+  genderSuffix,
+  getCityById,
+  normalizeName,
+  sanitizeNameInput,
+  searchCities,
+  isValidTime,
+} from "./zodiac-mini-app/person-state";
+import { EmptyFeatureCard, FeatureCard } from "./zodiac-mini-app/ui-primitives";
+import type {
+  AngelNumberPatternType,
+  AngelNumberProfile,
+  ChineseHoroscope,
+  City,
+  CompatibilityResult,
+  CoupleCalendarDay,
+  CoupleHoroscope,
+  DailyTalismanProfile,
+  DayEnergy,
+  DreamProfile,
+  Gender,
+  GiftBySignProfile,
+  GiftRecipientType,
+  HubTab,
+  LunarCalendarProfile,
+  MenuFeatureGroup,
+  MentalMapDynamic,
+  MentalMapSummary,
+  MessageTone,
+  Mode,
+  MonthForecast,
+  MoreFeatureId,
+  NameCompatibilityProfile,
+  NameProfile,
+  NameResonance,
+  NatalChart,
+  NatalCityTone,
+  NatalCompass,
+  NatalInsightSection,
+  NatalSummaryItem,
+  NatalTimeTone,
+  NatalVipBlock,
+  NumerologyProfile,
+  ParsedDate,
+  PersonState,
+  PersonalityArchetypeProfile,
+  ReconciliationDay,
+  RelationshipMapScore,
+  RelationshipMode,
+  TelegramHapticKind,
+  VipFeature,
+  WizardStep,
+  ZodiacCompatibilityMiniAppProps,
+  ZodiacSign,
+  ZodiacStoneProfile,
+  ZodiacVipConfig,
+} from "./zodiac-mini-app/types";
+export type {
+  AngelNumberProfile,
+  CompatibilityResult,
+  CoupleCalendarDay,
+  DailyTalismanProfile,
+  MonthForecast,
+  NameProfile,
+  NatalChart,
+  NumerologyProfile,
+  ZodiacSign,
+  ZodiacVipConfig,
+} from "./zodiac-mini-app/types";
 
-type Mode = "fast" | "personal" | "precise";
-type RelationshipMode = "love" | "friendship" | "work" | "family" | "passion" | "reconciliation";
-type Gender = "male" | "female" | "unspecified";
-type Variant = "dashboard" | "public";
-type WizardStep = 1 | 2 | 3;
-type HubTab = "today" | "love" | "profile" | "forecasts" | "mystic" | "vip";
-type TelegramHapticKind = "selection" | "impact";
-type MoreFeatureId =
-  | "todayForecast"
-  | "weekForecast"
-  | "luckyDays"
-  | "compatibilityTool"
-  | "coupleHoroscope"
-  | "mentalMap"
-  | "coupleCalendar"
-  | "reconciliation"
-  | "messageHelper"
-  | "nameCompatibility"
-  | "natalChart"
-  | "chineseHoroscope"
-  | "zodiacStones"
-  | "nameProfile"
-  | "numerology"
-  | "angelNumbers"
-  | "lunarCalendar"
-  | "dailyTalisman"
-  | "dreamDictionary"
-  | "giftBySign"
-  | "archetype"
-  | "dailyCard"
-  | "tarotCard"
-  | "runeDay"
-  | "intuitiveSign"
-  | "talismans"
-  | "auraColor"
-  | "lunarRitual"
-  | "karmicLessons"
-  | "birthMatrix"
-  | "vip"
-  | "giveaways"
-  | "vipNatalChart"
-  | "vipCompatibility"
-  | "vipMentalMap"
-  | "vipCoupleCalendar"
-  | "vipMonthForecast"
-  | "vipMessageHelper"
-  | "vipNameProfile"
-  | "vipNumerology"
-  | "vipAngelNumbers"
-  | "vipTalismans"
-  | "vipMysticDay";
-type MenuFeatureGroup = "love" | "profile" | "forecasts" | "mystic" | "vip";
-
-const vipFeatureAnalyticsEvents: Partial<Record<MoreFeatureId, ZodiacAnalyticsEventName>> = {
-  vipNatalChart: "vip_natal_opened",
-  vipCompatibility: "vip_compatibility_opened",
-  vipMentalMap: "vip_mental_map_opened",
-  vipCoupleCalendar: "vip_calendar_opened",
-  vipMonthForecast: "vip_month_forecast_opened",
-  vipMessageHelper: "vip_message_helper_opened",
-  vipNameProfile: "vip_name_profile_opened",
-  vipNumerology: "vip_numerology_opened",
-  vipAngelNumbers: "vip_angel_numbers_opened",
-  vipTalismans: "vip_talismans_opened",
-  vipMysticDay: "vip_mystic_day_opened",
-};
-
-const vipDetailFeatureIds = new Set<MoreFeatureId>(Object.keys(vipFeatureAnalyticsEvents) as MoreFeatureId[]);
-
-interface City {
-  cityId: string;
-  nameRu: string;
-  nameEn: string;
-  countryRu: string;
-  countryCode: string;
-  timezone: string;
-  latitude: number;
-  longitude: number;
-  aliases?: string[];
-}
-
-interface PersonState {
-  name: string;
-  sign: string;
-  gender: Gender;
-  birthDate: string;
-  knowsTime: boolean;
-  birthTime: string;
-  cityQuery: string;
-  selectedCityId: string;
-}
-
-interface ZodiacCompatibilityMiniAppProps {
-  variant?: Variant;
-  initialSign?: string | null;
-  initialMode?: string | null;
-  source?: string | null;
-  startParam?: string | null;
-}
-
-export interface ZodiacVipConfig {
-  vipFreeAccessEnabled: boolean;
-  vipFreeAccessUntil: string;
-  vipPaymentsEnabled: boolean;
-  telegramStarsEnabled: boolean;
-}
-
-interface VipFeature {
-  id: string;
-  title: string;
-  text: string;
-}
-
-const signs = [
-  { slug: "aries", emoji: "♈", name: "Овен", range: "21 марта - 19 апреля", element: "fire" },
-  { slug: "taurus", emoji: "♉", name: "Телец", range: "20 апреля - 20 мая", element: "earth" },
-  { slug: "gemini", emoji: "♊", name: "Близнецы", range: "21 мая - 20 июня", element: "air" },
-  { slug: "cancer", emoji: "♋", name: "Рак", range: "21 июня - 22 июля", element: "water" },
-  { slug: "leo", emoji: "♌", name: "Лев", range: "23 июля - 22 августа", element: "fire" },
-  { slug: "virgo", emoji: "♍", name: "Дева", range: "23 августа - 22 сентября", element: "earth" },
-  { slug: "libra", emoji: "♎", name: "Весы", range: "23 сентября - 22 октября", element: "air" },
-  { slug: "scorpio", emoji: "♏", name: "Скорпион", range: "23 октября - 21 ноября", element: "water" },
-  { slug: "sagittarius", emoji: "♐", name: "Стрелец", range: "22 ноября - 21 декабря", element: "fire" },
-  { slug: "capricorn", emoji: "♑", name: "Козерог", range: "22 декабря - 19 января", element: "earth" },
-  { slug: "aquarius", emoji: "♒", name: "Водолей", range: "20 января - 18 февраля", element: "air" },
-  { slug: "pisces", emoji: "♓", name: "Рыбы", range: "19 февраля - 20 марта", element: "water" },
-];
-
-export type ZodiacSign = (typeof signs)[number];
-
-const signSlugs = new Set(signs.map((sign) => sign.slug));
-const cityCatalog = cityCatalogData.cities as City[];
-const zodiacVipConfig = zodiacVipConfigData as ZodiacVipConfig;
-
-const genderLabels: Record<Gender, string> = {
-  male: "Мужчина",
-  female: "Женщина",
-  unspecified: "Не указывать",
-};
-
-const modes: Array<{ id: Mode; label: string; caption: string; resultLabel: string }> = [
-  { id: "fast", label: "Быстрый", caption: "знак + знак", resultLabel: "Быстрый расчёт" },
-  { id: "personal", label: "Персональный", caption: "пол, знак и дата рождения", resultLabel: "Персональный расчёт" },
-  { id: "precise", label: "Точный", caption: "время и город, если известны", resultLabel: "Точный расчёт" },
-];
-
-const relationshipModes: Array<{ id: RelationshipMode; label: string; caption: string }> = [
-  { id: "love", label: "❤️ Любовь", caption: "чувства и близость" },
-  { id: "friendship", label: "💬 Дружба", caption: "поддержка и доверие" },
-  { id: "work", label: "💼 Работа", caption: "дела и решения" },
-  { id: "family", label: "🏠 Семья / быт", caption: "ритм и забота" },
-  { id: "passion", label: "🔥 Страсть", caption: "искра и притяжение" },
-  { id: "reconciliation", label: "🕊 Примирение", caption: "мягкий диалог" },
-];
-
-const menuHubTabs: Array<{ id: HubTab; label: string; shortLabel: string; icon: typeof Sparkles }> = [
-  { id: "today", label: "Главная", shortLabel: "Главная", icon: Sparkles },
-  { id: "love", label: "Любовь", shortLabel: "Любовь", icon: HeartHandshake },
-  { id: "profile", label: "Личный профиль", shortLabel: "Профиль", icon: Star },
-  { id: "forecasts", label: "Прогнозы", shortLabel: "Прогнозы", icon: CalendarDays },
-  { id: "mystic", label: "Мистика", shortLabel: "Мистика", icon: Sparkles },
-  { id: "vip", label: "VIP", shortLabel: "VIP", icon: Crown },
-];
-
-const hubCategoryByTab: Record<HubTab, { group: MenuFeatureGroup | "home"; label: string }> = {
-  today: { group: "home", label: "Главная" },
-  love: { group: "love", label: "Любовь" },
-  profile: { group: "profile", label: "Личный профиль" },
-  forecasts: { group: "forecasts", label: "Прогнозы" },
-  mystic: { group: "mystic", label: "Мистика" },
-  vip: { group: "vip", label: "VIP" },
-};
-
-const menuFeatureTabs: Array<{ id: MoreFeatureId; label: string; shortLabel: string; group: MenuFeatureGroup; requirement?: "pair" | "natal" | "sign" }> = [
-  { id: "compatibilityTool", label: "💞 Совместимость", shortLabel: "Совмест.", group: "love" },
-  { id: "coupleHoroscope", label: "💑 Гороскоп пары", shortLabel: "Пара", group: "love", requirement: "pair" },
-  { id: "mentalMap", label: "🧠 Ментальная карта", shortLabel: "Карта", group: "love", requirement: "pair" },
-  { id: "coupleCalendar", label: "📅 Календарь пары", shortLabel: "30 дней", group: "love", requirement: "pair" },
-  { id: "reconciliation", label: "🕊 Примирение", shortLabel: "Мир", group: "love", requirement: "pair" },
-  { id: "messageHelper", label: "💌 Сообщение", shortLabel: "Текст", group: "love", requirement: "pair" },
-  { id: "nameCompatibility", label: "🔤 Совместимость имён", shortLabel: "Имена", group: "love" },
-  { id: "natalChart", label: "🌌 Натальная карта", shortLabel: "Натал", group: "profile", requirement: "natal" },
-  { id: "chineseHoroscope", label: "🐉 Китайский гороскоп", shortLabel: "Китай", group: "profile", requirement: "natal" },
-  { id: "nameProfile", label: "🔤 Именной профиль", shortLabel: "Имя", group: "profile" },
-  { id: "numerology", label: "🔢 Нумерология", shortLabel: "Числа", group: "profile" },
-  { id: "zodiacStones", label: "💎 Камни знака", shortLabel: "Камни", group: "profile", requirement: "sign" },
-  { id: "archetype", label: "✨ Архетип личности", shortLabel: "Архетип", group: "profile" },
-  { id: "todayForecast", label: "✨ Сегодня", shortLabel: "Сегодня", group: "forecasts", requirement: "sign" },
-  { id: "weekForecast", label: "⭐ Неделя", shortLabel: "Неделя", group: "forecasts", requirement: "sign" },
-  { id: "luckyDays", label: "📆 Удачные дни", shortLabel: "Дни", group: "forecasts", requirement: "sign" },
-  { id: "lunarCalendar", label: "🌙 Лунный календарь", shortLabel: "Луна", group: "forecasts", requirement: "sign" },
-  { id: "dailyTalisman", label: "🧿 Талисман дня", shortLabel: "Талисман", group: "forecasts", requirement: "sign" },
-  { id: "angelNumbers", label: "👼 Ангельские числа", shortLabel: "11:11", group: "forecasts" },
-  { id: "giftBySign", label: "🎁 Подарок по знаку", shortLabel: "Подарок", group: "forecasts", requirement: "sign" },
-  { id: "angelNumbers", label: "👼 Ангельские числа", shortLabel: "11:11", group: "mystic" },
-  { id: "dailyCard", label: "🃏 Карта дня", shortLabel: "Карта", group: "mystic", requirement: "sign" },
-  { id: "tarotCard", label: "🔮 Таро дня", shortLabel: "Таро", group: "mystic", requirement: "sign" },
-  { id: "runeDay", label: "ᚱ Руна дня", shortLabel: "Руна", group: "mystic", requirement: "sign" },
-  { id: "intuitiveSign", label: "✨ Интуитивный знак", shortLabel: "Знак", group: "mystic", requirement: "sign" },
-  { id: "talismans", label: "🧿 Талисманы", shortLabel: "Символы", group: "mystic", requirement: "sign" },
-  { id: "auraColor", label: "🌈 Цвет ауры", shortLabel: "Аура", group: "mystic", requirement: "sign" },
-  { id: "lunarRitual", label: "🌙 Лунный ритуал", shortLabel: "Ритуал", group: "mystic" },
-  { id: "karmicLessons", label: "🪞 Кармические уроки", shortLabel: "Карма", group: "mystic", requirement: "sign" },
-  { id: "birthMatrix", label: "🔢 Матрица рождения", shortLabel: "Матрица", group: "mystic" },
-  { id: "vip", label: "👑 VIP бесплатно", shortLabel: "VIP", group: "vip" },
-  { id: "mentalMap", label: "🧠 Карта пары+", shortLabel: "Карта+", group: "vip", requirement: "pair" },
-  { id: "coupleCalendar", label: "📅 30 дней пары", shortLabel: "30 дней", group: "vip", requirement: "pair" },
-  { id: "natalChart", label: "🌌 Натал+", shortLabel: "Натал+", group: "vip", requirement: "natal" },
-  { id: "nameProfile", label: "🔤 Имя+", shortLabel: "Имя+", group: "vip" },
-  { id: "giveaways", label: "🔒 Розыгрыши", shortLabel: "Скоро", group: "vip" },
-];
-
-const menuFeatureGroups: Array<{ id: MenuFeatureGroup; title: string; subtitle: string }> = [
-  { id: "love", title: "Любовь", subtitle: "пара, диалог и мягкое сближение" },
-  { id: "profile", title: "Личный профиль", subtitle: "натальная карта, имя, числа и символы" },
-  { id: "forecasts", title: "Прогнозы", subtitle: "сегодня, неделя, луна, талисман и подсказки" },
-  { id: "mystic", title: "Мистика", subtitle: "карты, Таро, руны, аура и символы дня" },
-  { id: "vip", title: "VIP", subtitle: "ранний доступ открыт бесплатно" },
-];
-
-const defaultMenuFeatureByGroup: Record<MenuFeatureGroup, MoreFeatureId> = {
-  love: "compatibilityTool",
-  profile: "natalChart",
-  forecasts: "todayForecast",
-  mystic: "angelNumbers",
-  vip: "vip",
-};
-
-const tabAnalytics: Record<Exclude<HubTab, "profile" | "mystic" | "vip">, { event: "section_open_today" | "section_open_week" | "section_open_compatibility" | "section_open_lucky_days"; section: string }> = {
-  today: { event: "section_open_today", section: "today" },
-  forecasts: { event: "section_open_week", section: "week" },
-  love: { event: "section_open_compatibility", section: "compatibility" },
-};
-
-const modeAnalyticsEvents: Record<Mode, "compatibility_mode_fast" | "compatibility_mode_personal" | "compatibility_mode_precise"> = {
-  fast: "compatibility_mode_fast",
-  personal: "compatibility_mode_personal",
-  precise: "compatibility_mode_precise",
-};
-
-const unknownBirthTimeNote = "Расчёт выполнен без точного времени рождения. Некоторые детали могут быть приблизительными.";
-const exactBirthDataNote = "Расчёт выполнен с учётом времени и города рождения.";
-const citySelectionWarning = "Выберите город из списка, чтобы расчёт был точнее.";
 
 export function ZodiacCompatibilityMiniApp({
   variant = "dashboard",
@@ -2740,23 +2582,6 @@ function NameProfileCard({
   );
 }
 
-export function EmptyFeatureCard({ publicMode, title, text }: { publicMode: boolean; title: string; text: string }) {
-  return (
-    <FeatureCard publicMode={publicMode} title={title} subtitle={text}>
-      <p className={publicMode ? "text-sm leading-5 text-slate-400" : "text-sm leading-5 text-slate-500"}>Данные остаются только на экране и не сохраняются.</p>
-    </FeatureCard>
-  );
-}
-
-export function FeatureCard({ publicMode, title, subtitle, children }: { publicMode: boolean; title: string; subtitle: string; children: ReactNode }) {
-  return (
-    <div className={publicMode ? "rounded-lg border border-white/12 bg-white/8 p-4 text-slate-100" : "rounded-lg border border-slate-200 bg-white p-4 text-slate-700"}>
-      <p className={publicMode ? "text-base font-semibold text-white" : "text-base font-semibold text-slate-950"}>{title}</p>
-      <p className={publicMode ? "mt-1 text-sm leading-5 text-slate-300" : "mt-1 text-sm leading-5 text-slate-600"}>{subtitle}</p>
-      <div className="mt-4">{children}</div>
-    </div>
-  );
-}
 
 function VipFreeAccessCard({
   publicMode,
@@ -3399,51 +3224,6 @@ function Field({ label, publicMode, children }: { label: string; publicMode?: bo
   );
 }
 
-function createInitialPerson(sign: string, gender: Gender, knowsTime: boolean, cityId: string): PersonState {
-  const selectedCity = getCityById(cityId);
-  return {
-    name: "",
-    sign,
-    gender,
-    birthDate: "",
-    knowsTime,
-    birthTime: "",
-    cityQuery: selectedCity ? cityLabel(selectedCity) : "",
-    selectedCityId: selectedCity?.cityId ?? "",
-  };
-}
-
-function sanitizeNameInput(value: string) {
-  return String(value || "")
-    .replace(/[^A-Za-zА-Яа-яЁё\s-]/g, "")
-    .replace(/\s{2,}/g, " ")
-    .slice(0, 30);
-}
-
-function normalizeName(value: string) {
-  return sanitizeNameInput(value).trim().replace(/\s{2,}/g, " ");
-}
-
-function formatDateInput(value: string) {
-  const digits = value.replace(/\D/g, "").slice(0, 8);
-  if (digits.length <= 2) return digits;
-  if (digits.length <= 4) return `${digits.slice(0, 2)}.${digits.slice(2)}`;
-  return `${digits.slice(0, 2)}.${digits.slice(2, 4)}.${digits.slice(4)}`;
-}
-
-function formatTimeInput(value: string) {
-  const digits = value.replace(/\D/g, "").slice(0, 4);
-  if (digits.length <= 2) return digits;
-  return `${digits.slice(0, 2)}:${digits.slice(2)}`;
-}
-
-function isValidTime(value: string) {
-  const match = value.match(/^(\d{2}):(\d{2})$/);
-  if (!match) return false;
-  const h = Number(match[1]);
-  const m = Number(match[2]);
-  return h >= 0 && h <= 23 && m >= 0 && m <= 59;
-}
 
 function isReadyToCalculate(mode: Mode, self: PersonState, partner: PersonState) {
   if (!self.sign || !partner.sign) return false;
@@ -3464,291 +3244,6 @@ function updateBirthDate(value: PersonState, rawValue: string, onChange: (value:
   onChange({ ...value, birthDate: formatted, sign: parsed.ok ? parsed.signSlug : value.sign });
 }
 
-interface NameResonance {
-  text: string;
-  adviceText: string;
-  communicationShift: number;
-  loveShift: number;
-}
-
-interface RelationshipMapScore {
-  id: string;
-  label: string;
-  shortLabel: string;
-  value: number;
-  text: string;
-}
-
-interface MentalMapSummary {
-  strengths: string;
-  risks: string;
-  advice: string;
-  helps: string[];
-  avoid: string[];
-}
-
-interface MentalMapDynamic {
-  label: string;
-  text: string;
-}
-
-export interface CompatibilityResult {
-  title: string;
-  modeLabel: string;
-  relationshipMode: RelationshipMode;
-  dataUseLabel: string;
-  note: string | null;
-  validationMessages: string[];
-  scores: {
-    total: number;
-    attraction: number;
-    communication: number;
-    love: number;
-    household: number;
-  };
-  attractionText: string;
-  communicationText: string;
-  loveText: string;
-  householdText: string;
-  weakSpotText: string;
-  adviceText: string;
-  conclusionText: string;
-  nameResonance: NameResonance | null;
-  mapScores: RelationshipMapScore[];
-  mapSummary: string;
-  mentalMapSummary: MentalMapSummary;
-  mentalMapDynamics: MentalMapDynamic[];
-  strengthText: string;
-  riskText: string;
-}
-
-interface DayEnergy {
-  type: string;
-  bestFor: string;
-  avoid: string;
-  mood: string;
-  relationshipTone: string;
-}
-
-interface CoupleHoroscope {
-  summary: string;
-  relationship: string;
-  talk: string;
-  date: string;
-  reconciliation: string;
-  action: string;
-  avoid: string;
-  energy: DayEnergy;
-}
-
-export interface CoupleCalendarDay {
-  dateKey: string;
-  date: string;
-  weekday: string;
-  status: string;
-  advice: string;
-}
-
-interface ReconciliationDay {
-  status: string;
-  approach: string;
-  avoid: string;
-  energy: DayEnergy;
-}
-
-export interface NatalChart {
-  sign: ZodiacSign;
-  element: string;
-  modality: string;
-  polarity: string;
-  archetype: string;
-  strengths: string;
-  growth: string;
-  loveStyle: string;
-  communicationStyle: string;
-  precisionNote: string;
-  calculationLabel: string;
-  accuracyNote: string;
-  profileLabel: string;
-  summary: NatalSummaryItem[];
-  sections: NatalInsightSection[];
-  compass: NatalCompass;
-  vipBlocks: NatalVipBlock[];
-  hasBirthDate: boolean;
-  hasBirthTime: boolean;
-  hasBirthCity: boolean;
-  timeKnown: boolean;
-}
-
-interface NatalSummaryItem {
-  label: string;
-  value: string;
-}
-
-interface NatalInsightItem {
-  label: string;
-  text: string;
-}
-
-interface NatalInsightSection {
-  id: string;
-  title: string;
-  items: NatalInsightItem[];
-}
-
-interface NatalCompass {
-  strengths: string[];
-  risks: string[];
-  actions: string[];
-}
-
-interface NatalVipBlock {
-  title: string;
-  text: string;
-}
-
-interface ChineseHoroscope {
-  animal: string;
-  emoji: string;
-  element: string;
-  yinYang: string;
-  profileLabel: string;
-  summary: string;
-  strengths: string;
-  risks: string;
-  relationshipStyle: string;
-  workMoneyStyle: string;
-  monthAdvice: string;
-  compatibilityHints: string[];
-  boundaryNote: string;
-}
-
-interface ZodiacStoneProfile {
-  sign: ZodiacSign;
-  mainStone: string;
-  additionalStones: string[];
-  loveStone: string;
-  calmStone: string;
-  workStone: string;
-  symbol: string;
-  whenToUse: string;
-  avoid: string;
-}
-
-export interface NameProfile {
-  summary: NatalSummaryItem[];
-  sections: NatalInsightSection[];
-  portrait: string;
-  vipBlocks: NatalVipBlock[];
-}
-
-export interface MonthForecast {
-  title: string;
-  theme: string;
-  love: string;
-  money: string;
-  energy: string;
-  risk: string;
-  bestPeriod: string;
-  advice: string;
-}
-
-export interface NumerologyProfile {
-  lifePath: number | null;
-  nameNumber: number | null;
-  dayNumber: number;
-  personalMonth: number | null;
-  strengths: string;
-  risks: string;
-  advice: string;
-  summary: string;
-}
-
-export interface AngelNumberProfile {
-  label: string;
-  safeKey: string;
-  isValid: boolean;
-  prompt?: string;
-  patternType: AngelNumberPatternType;
-  meaning: string;
-  highlights: string;
-  love: string;
-  workMoney: string;
-  intuition: string;
-  actions: string[];
-  avoid: string[];
-  phrase: string;
-  next24Hours: string;
-  vipBlocks: NatalVipBlock[];
-}
-
-type AngelNumberPatternType = "repeated" | "mirror" | "amplified" | "custom" | "fallback";
-
-interface LunarCalendarProfile {
-  title: string;
-  rhythm: string;
-  love: string;
-  workMoney: string;
-  talks: string;
-  reconciliation: string;
-  action: string;
-  avoid: string;
-}
-
-export interface DailyTalismanProfile {
-  stone: string;
-  color: string;
-  number: number;
-  phrase: string;
-  action: string;
-  avoid: string;
-}
-
-interface DreamProfile {
-  safeKey: string;
-  symbol: string;
-  general: string;
-  emotional: string;
-  highlight: string;
-  advice: string;
-  signConnection: string;
-}
-
-type GiftRecipientType = "partner" | "friend" | "man" | "woman" | "colleague";
-
-interface GiftBySignProfile {
-  sign: ZodiacSign;
-  recipientLabel: string;
-  ideas: string[];
-  appreciates: string;
-  avoid: string;
-  symbolic: string;
-  premium: string;
-}
-
-interface NameCompatibilityProfile {
-  title: string;
-  emotional: string;
-  communication: string;
-  attraction: string;
-  conflictRisk: string;
-  reconciliation: string;
-  helps: string;
-  avoid: string;
-}
-
-interface PersonalityArchetypeProfile {
-  title: string;
-  coreStrength: string;
-  shadowRisk: string;
-  relationship: string;
-  workMoney: string;
-  talisman: string;
-  monthAdvice: string;
-  completeness: string;
-}
-
-type MessageTone = "soft" | "romantic" | "afterFight" | "longSilence" | "invite" | "reconciliation" | "short" | "honest";
 
 function buildCompatibilityResult(mode: Mode, relationshipMode: RelationshipMode, self: PersonState, partner: PersonState): CompatibilityResult {
   const selfSign = findSign(self.sign);
@@ -5091,54 +4586,6 @@ function buildPersonalityArchetypeProfile(
   };
 }
 
-function sectionForFeature(feature: MoreFeatureId) {
-  const sections: Partial<Record<MoreFeatureId, string>> = {
-    todayForecast: "today",
-    weekForecast: "week",
-    luckyDays: "lucky_days",
-    compatibilityTool: "compatibility",
-    coupleHoroscope: "couple_horoscope",
-    mentalMap: "relationship_map",
-    coupleCalendar: "couple_calendar",
-    reconciliation: "reconciliation",
-    messageHelper: "message_helper",
-    nameCompatibility: "name_compatibility",
-    natalChart: "natal_chart",
-    chineseHoroscope: "chinese_horoscope",
-    zodiacStones: "zodiac_stones",
-    nameProfile: "name_profile",
-    numerology: "numerology",
-    angelNumbers: "angel_numbers",
-    lunarCalendar: "lunar_calendar",
-    dailyTalisman: "daily_talisman",
-    dreamDictionary: "dream_dictionary",
-    giftBySign: "gift_by_sign",
-    archetype: "archetype",
-    dailyCard: "hub",
-    tarotCard: "hub",
-    runeDay: "hub",
-    intuitiveSign: "hub",
-    talismans: "hub",
-    auraColor: "hub",
-    lunarRitual: "hub",
-    karmicLessons: "hub",
-    birthMatrix: "hub",
-    vip: "vip",
-    vipNatalChart: "vip",
-    vipCompatibility: "vip",
-    vipMentalMap: "vip",
-    vipCoupleCalendar: "vip",
-    vipMonthForecast: "vip",
-    vipMessageHelper: "vip",
-    vipNameProfile: "vip",
-    vipNumerology: "vip",
-    vipAngelNumbers: "vip",
-    vipTalismans: "vip",
-    vipMysticDay: "vip",
-    giveaways: "giveaways",
-  };
-  return sections[feature] ?? "hub";
-}
 
 function reduceNumber(value: number) {
   let current = Math.abs(Math.trunc(value));
@@ -5744,7 +5191,6 @@ const nameCompatibilityHints = [
   "сильнее всего отношения поддержит уважение к личному ритму друг друга",
 ];
 
-type ParsedDate = { ok: true; iso: string; day: number; month: number; year: number; signSlug: string } | { ok: false; error: string; iso?: undefined; signSlug?: undefined };
 
 function parseBirthDate(value: string): ParsedDate {
   const raw = String(value || "").trim();
@@ -5789,36 +5235,6 @@ function signFromDate(day: number, month: number) {
   return "pisces";
 }
 
-function findSign(slug: string) {
-  return signs.find((sign) => sign.slug === slug) ?? signs[0];
-}
-
-function getCityById(cityId: string) {
-  return cityCatalog.find((city) => city.cityId === cityId) ?? null;
-}
-
-function cityLabel(city: City) {
-  return `${city.nameRu}, ${city.countryRu}`;
-}
-
-function searchCities(query: string) {
-  const normalized = normalizeSearch(query);
-  if (!normalized) return cityCatalog.slice(0, 5);
-  return cityCatalog.filter((city) => {
-    const haystack = [city.nameRu, city.nameEn, city.countryRu, city.countryCode, ...(city.aliases ?? [])].map(normalizeSearch);
-    return haystack.some((item) => item.includes(normalized));
-  });
-}
-
-function normalizeSearch(value: string) {
-  return String(value || "").trim().toLowerCase().replace(/ё/g, "е");
-}
-
-function genderSuffix(gender: Gender) {
-  if (gender === "male") return " мужчина";
-  if (gender === "female") return " женщина";
-  return "";
-}
 
 function hashString(value: string) {
   let hash = 2166136261;
@@ -6057,8 +5473,6 @@ const weeklyGuidanceByElement: Record<string, { theme: string[]; love: string[];
 const luckyStatuses = ["🍀 удачный день", "⚖️ нейтральный день", "⚠️ осторожнее"];
 const luckyAreas = ["любовь", "деньги", "дела", "отдых", "разговоры", "покупки", "документы"];
 
-type NatalTimeTone = "morning" | "day" | "evening" | "night" | "unknown";
-type NatalCityTone = "north" | "south" | "east" | "west" | "open";
 
 function natalTimeTone(value: string): NatalTimeTone {
   if (!isValidTime(value)) return "unknown";

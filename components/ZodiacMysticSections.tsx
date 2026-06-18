@@ -11,7 +11,7 @@ import {
   generateBirthMatrix,
   ZodiacSignId,
 } from "../lib/zodiac-mystic-content";
-import { FeatureCard, EmptyFeatureCard } from "./ZodiacCompatibilityMiniApp";
+import { FeatureCard, EmptyFeatureCard } from "./zodiac-mini-app/ui-primitives";
 
 const signNames: Record<ZodiacSignId, string> = {
   aries: "Овен", taurus: "Телец", gemini: "Близнецы", cancer: "Рак",

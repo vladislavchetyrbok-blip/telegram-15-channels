@@ -6,7 +6,7 @@ import {
   generateIntuitiveSign as getIntuitiveSign 
 } from "./zodiac-mystic-content";
 import type { ZodiacSignId } from "./zodiac-mystic-content";
-import type { AngelNumberProfile } from "@/components/ZodiacCompatibilityMiniApp";
+import type { AngelNumberProfile } from "@/components/zodiac-mini-app/types";
 
 export interface VipMysticDaySynthesis {
   dailyCard: ReturnType<typeof getDailyCard>;
