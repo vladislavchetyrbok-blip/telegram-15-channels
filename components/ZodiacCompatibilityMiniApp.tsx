@@ -94,6 +94,22 @@ type MoreFeatureId =
   | "vipMysticDay";
 type MenuFeatureGroup = "love" | "profile" | "forecasts" | "mystic" | "vip";
 
+const vipFeatureAnalyticsEvents: Partial<Record<MoreFeatureId, ZodiacAnalyticsEventName>> = {
+  vipNatalChart: "vip_natal_opened",
+  vipCompatibility: "vip_compatibility_opened",
+  vipMentalMap: "vip_mental_map_opened",
+  vipCoupleCalendar: "vip_calendar_opened",
+  vipMonthForecast: "vip_month_forecast_opened",
+  vipMessageHelper: "vip_message_helper_opened",
+  vipNameProfile: "vip_name_profile_opened",
+  vipNumerology: "vip_numerology_opened",
+  vipAngelNumbers: "vip_angel_numbers_opened",
+  vipTalismans: "vip_talismans_opened",
+  vipMysticDay: "vip_mystic_day_opened",
+};
+
+const vipDetailFeatureIds = new Set<MoreFeatureId>(Object.keys(vipFeatureAnalyticsEvents) as MoreFeatureId[]);
+
 interface City {
   cityId: string;
   nameRu: string;
@@ -433,7 +449,11 @@ export function ZodiacCompatibilityMiniApp({
   }
 
   function trackVipFeatureOpen(feature: string) {
-    trackZodiacMiniAppEvent("vip_feature_opened", analyticsPayload({ section: "vip", category: feature, featureKey: feature, sign: selectedSignSlug || undefined }));
+    const featureId = feature as MoreFeatureId;
+    const payload = analyticsPayload({ section: "vip", category: feature, featureKey: feature, sign: selectedSignSlug || undefined });
+    trackZodiacMiniAppEvent("vip_feature_opened", payload);
+    const featureEvent = vipFeatureAnalyticsEvents[featureId];
+    if (featureEvent) trackZodiacMiniAppEvent(featureEvent, payload);
   }
 
   function trackVipFutureSubscriptionClick() {
@@ -1086,7 +1106,7 @@ function MoreSection({
   const selectedMoreFeature = categoryFeatures.find((item) => item.id === activeMoreFeature) ?? categoryFeatures[0] ?? menuFeatureTabs[0];
 
   useEffect(() => {
-    const categoryHasFeature = categoryFeatures.some((item) => item.id === activeMoreFeature);
+    const categoryHasFeature = categoryFeatures.some((item) => item.id === activeMoreFeature) || (category === "vip" && vipDetailFeatureIds.has(activeMoreFeature));
     if (!categoryHasFeature) setActiveMoreFeature(defaultMenuFeatureByGroup[category]);
   }, [activeMoreFeature, category, categoryFeatures]);
 
@@ -4951,6 +4971,17 @@ function sectionForFeature(feature: MoreFeatureId) {
     karmicLessons: "hub",
     birthMatrix: "hub",
     vip: "vip",
+    vipNatalChart: "vip",
+    vipCompatibility: "vip",
+    vipMentalMap: "vip",
+    vipCoupleCalendar: "vip",
+    vipMonthForecast: "vip",
+    vipMessageHelper: "vip",
+    vipNameProfile: "vip",
+    vipNumerology: "vip",
+    vipAngelNumbers: "vip",
+    vipTalismans: "vip",
+    vipMysticDay: "vip",
     giveaways: "giveaways",
   };
   return sections[feature] ?? "hub";

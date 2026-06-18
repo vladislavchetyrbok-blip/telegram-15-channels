@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ElementType, ReactNode } from "react";
 import { Crown, ArrowLeft, HeartHandshake, Star, Sparkles, MapPin, CalendarDays, Lock } from "lucide-react";
 import type { 
   NatalChart, 
@@ -48,7 +48,7 @@ function VipCardButton({
 }: {
   title: string;
   text: string;
-  icon: React.ElementType;
+  icon: ElementType;
   publicMode: boolean;
   onClick: () => void;
   locked?: boolean;
@@ -61,7 +61,7 @@ function VipCardButton({
       className={
         publicMode
           ? `flex min-h-[88px] w-full flex-col justify-center rounded-lg border p-3 text-left transition focus:outline-none focus:ring-2 focus:ring-amber-200/40 ${
-              locked ? "border-white/5 bg-white/5 opacity-60" : "border-white/12 bg-white/8 hover:border-amber-200/35 hover:bg-white/12"
+              locked ? "border-white/5 bg-white/5 opacity-60" : "border-white/10 bg-white/10 hover:border-amber-200/35 hover:bg-white/10"
             }`
           : `flex min-h-[88px] w-full flex-col justify-center rounded-lg border p-3 text-left transition focus:outline-none focus:ring-2 focus:ring-amber-200 ${
               locked ? "border-slate-200 bg-slate-50 opacity-60" : "border-amber-100 bg-white hover:border-amber-300"
@@ -125,7 +125,7 @@ export function VipMenuCard({
       <SectionHeading title="2. Любовь и пара" publicMode={publicMode} />
       <div className="mt-3 grid gap-2 sm:grid-cols-2">
         <VipCardButton publicMode={publicMode} icon={HeartHandshake} title="Расширенная совместимость" text={pairReady ? "Детальный разбор быта, общения и рисков" : "Выберите два знака, чтобы открыть"} onClick={() => onFeatureOpen("vipCompatibility")} />
-        <VipCardButton publicMode={publicMode} icon={Sparkles} title="Ментальная карта пары" text={pairReady ? "Динамика споров, доверия и примирения" : "Появится после выбора пары"} onClick={() => onFeatureOpen("vipMentalMap")} />
+        <VipCardButton publicMode={publicMode} icon={Sparkles} title="Ментальная карта пары" text={pairReady ? "Динамика споров, доверия и примирения" : "Нужна выбранная пара для персональной карты"} onClick={() => onFeatureOpen("vipMentalMap")} />
         <VipCardButton publicMode={publicMode} icon={CalendarDays} title="30-дневный календарь пары" text={pairReady ? "Прогноз динамики на месяц вперед" : "Доступно для пары"} onClick={() => onFeatureOpen("vipCoupleCalendar")} />
         <VipCardButton publicMode={publicMode} icon={HeartHandshake} title="Помощник сообщений" text="Готовые решения для диалога и примирения" onClick={() => onFeatureOpen("vipMessageHelper")} />
       </div>
@@ -169,11 +169,32 @@ function InfoBlock({ title, text, publicMode }: { title: string; text: string; p
   );
 }
 
+function VipReadinessBlock({ publicMode, lead, items }: { publicMode: boolean; lead: string; items: Array<{ title: string; text: string }> }) {
+  return (
+    <>
+      <p className={publicMode ? "text-sm leading-6 text-slate-300" : "text-sm leading-6 text-slate-600"}>{lead}</p>
+      <div className="grid gap-3">
+        {items.map((item) => (
+          <InfoBlock key={item.title} publicMode={publicMode} title={item.title} text={item.text} />
+        ))}
+      </div>
+    </>
+  );
+}
+
 export function ExtendedNatalFeature({ publicMode, natalChart, onBack }: { publicMode: boolean; natalChart: NatalChart | null; onBack: () => void }) {
   if (!natalChart) {
     return (
       <VipScreenLayout publicMode={publicMode} title="Расширенная натальная карта" onBack={onBack}>
-        <p className={publicMode ? "text-slate-300" : "text-slate-600"}>Добавьте дату рождения на главном экране для получения полного разбора.</p>
+        <VipReadinessBlock
+          publicMode={publicMode}
+          lead="VIP-разбор уже открыт бесплатно: дата нужна только для точной персонализации карты."
+          items={[
+            { title: "Что появится в полном режиме", text: "Архетип личности, стиль общения, любовь, сильные стороны, зона роста, личный компас и тени, которые лучше не усиливать." },
+            { title: "Как получить точность", text: "Добавьте дату рождения в профиле. Время и город можно оставить пустыми, если нужен мягкий, но не технически точный разбор." },
+            { title: "Приватность", text: "Дата используется только на экране для расчета и не отправляется в аналитику как значение." },
+          ]}
+        />
       </VipScreenLayout>
     );
   }
@@ -201,7 +222,14 @@ export function ExtendedCompatibilityFeature({ publicMode, result, onBack }: { p
   if (!result) {
     return (
       <VipScreenLayout publicMode={publicMode} title="Расширенная совместимость" onBack={onBack}>
-        <p className={publicMode ? "text-slate-300" : "text-slate-600"}>Выберите два знака в разделе «Любовь», чтобы открыть расширенную совместимость.</p>
+        <VipReadinessBlock
+          publicMode={publicMode}
+          lead="Расширенная совместимость открыта бесплатно; для личного результата нужны только два знака."
+          items={[
+            { title: "Что будет в разборе", text: "Процент гармонии, любовь, общение, быт, притяжение, сильные стороны, зоны риска и главный совет для пары." },
+            { title: "Без лишних данных", text: "Можно начать только со знаков. Имена, даты и время рождения не обязательны для базового VIP-результата." },
+          ]}
+        />
       </VipScreenLayout>
     );
   }
@@ -226,7 +254,14 @@ export function VipMentalMapFeature({ publicMode, result, onBack }: { publicMode
   if (!result) {
     return (
       <VipScreenLayout publicMode={publicMode} title="Ментальная карта пары" onBack={onBack}>
-        <p className={publicMode ? "text-slate-300" : "text-slate-600"}>Выберите пару, чтобы увидеть динамику мыслей и примирения.</p>
+        <VipReadinessBlock
+          publicMode={publicMode}
+          lead="Ментальная карта показывает не совместимость в целом, а то, как пара думает, спорит и возвращается к контакту."
+          items={[
+            { title: "Слои карты", text: "Отдельно раскрываются мышление, спорные сценарии, примирение, укрепляющие привычки и то, что снижает доверие." },
+            { title: "Что нужно", text: "Выберите два знака в разделе любви, чтобы карта стала персональной, без платежей и подписки." },
+          ]}
+        />
       </VipScreenLayout>
     );
   }
@@ -245,7 +280,15 @@ export function VipCoupleCalendarFeature({ publicMode, calendarDays, pairReady, 
   if (!pairReady) {
     return (
       <VipScreenLayout publicMode={publicMode} title="30-дневный календарь пары" onBack={onBack}>
-        <p className={publicMode ? "text-slate-300" : "text-slate-600"}>Выберите два знака, чтобы увидеть прогноз на 30 дней.</p>
+        <VipReadinessBlock
+          publicMode={publicMode}
+          lead="30-дневный календарь открыт в раннем VIP-доступе и строится после выбора пары."
+          items={[
+            { title: "Что внутри", text: "Дни для разговоров, свиданий, осторожности, примирения и совместных решений на ближайший месяц." },
+            { title: "Как использовать", text: "Смотрите не как жесткое расписание, а как мягкую карту темпа: когда лучше говорить, а когда дать друг другу больше воздуха." },
+            { title: "Доступ", text: "До 17.09.2026 календарь работает бесплатно и не требует Telegram Stars." },
+          ]}
+        />
       </VipScreenLayout>
     );
   }
@@ -275,7 +318,14 @@ export function VipMonthForecastFeature({ publicMode, monthForecast, onBack }: {
   if (!monthForecast) {
     return (
       <VipScreenLayout publicMode={publicMode} title="Месячный прогноз" onBack={onBack}>
-        <p className={publicMode ? "text-slate-300" : "text-slate-600"}>Выберите знак, чтобы увидеть прогноз на месяц.</p>
+        <VipReadinessBlock
+          publicMode={publicMode}
+          lead="Месячный VIP-прогноз готовит обзор месяца после выбора знака."
+          items={[
+            { title: "Структура прогноза", text: "Главная тема, любовь, деньги и дела, энергия, возможный риск, лучший период и практичный совет." },
+            { title: "Для кого", text: "Подходит для спокойного планирования месяца без точных персональных данных и без оплаты." },
+          ]}
+        />
       </VipScreenLayout>
     );
   }
@@ -309,7 +359,14 @@ export function ExtendedNameProfileFeature({ publicMode, nameProfile, onBack }: 
   if (!nameProfile) {
     return (
       <VipScreenLayout publicMode={publicMode} title="Расширенный именной профиль" onBack={onBack}>
-        <p className={publicMode ? "text-slate-300" : "text-slate-600"}>Добавьте имя в профиле, чтобы открыть расшифровку.</p>
+        <VipReadinessBlock
+          publicMode={publicMode}
+          lead="Именной профиль открыт бесплатно, но ему нужно имя, чтобы не показывать выдуманную персонализацию."
+          items={[
+            { title: "Что раскроется", text: "Внутренний портрет, сильные стороны, риски, стиль общения, отношения, работа и совет месяца." },
+            { title: "Безопасность", text: "Имя используется только для расчета на экране; аналитика получает только флаг наличия имени, а не само имя." },
+          ]}
+        />
       </VipScreenLayout>
     );
   }
@@ -344,7 +401,14 @@ export function ExtendedAngelNumberFeature({ publicMode, angelNumber, onBack }: 
   if (!angelNumber.isValid) {
     return (
       <VipScreenLayout publicMode={publicMode} title="Ангельские числа" onBack={onBack}>
-        <p className={publicMode ? "text-slate-300" : "text-slate-600"}>Введите комбинацию времени (например, 11:11) в разделе Прогнозы, чтобы получить толковании.</p>
+        <VipReadinessBlock
+          publicMode={publicMode}
+          lead="VIP-толкование ангельских чисел разбирает повторяющиеся и зеркальные паттерны."
+          items={[
+            { title: "Примеры", text: "Введите 11:11, 22:22, 12:21 или похожую комбинацию времени, которую вы часто замечаете." },
+            { title: "Что будет в результате", text: "Любовь, дела, интуиция, действие, осторожность, знак дня и связь с текущей энергией." },
+          ]}
+        />
       </VipScreenLayout>
     );
   }
@@ -365,7 +429,14 @@ export function VipTalismansFeature({ publicMode, dailyTalisman, selfSign, onBac
   if (!dailyTalisman) {
     return (
       <VipScreenLayout publicMode={publicMode} title="VIP талисманы и символы" onBack={onBack}>
-        <p className={publicMode ? "text-slate-300" : "text-slate-600"}>Выберите знак, чтобы открыть свои символы силы.</p>
+        <VipReadinessBlock
+          publicMode={publicMode}
+          lead="VIP-талисманы показывают мягкие символы дня после выбора знака."
+          items={[
+            { title: "Что внутри", text: "Камень силы, цвет дня, счастливое число, тотем, фраза силы и действие, которое поддержит настрой." },
+            { title: "Как читать", text: "Это не обещание результата, а аккуратная подсказка для фокуса, настроения и маленького ежедневного ритуала." },
+          ]}
+        />
       </VipScreenLayout>
     );
   }
@@ -390,7 +461,14 @@ export function VipMysticDayFeature({ publicMode, dateKey, sign, angelNumber, on
   if (!sign) {
     return (
       <VipScreenLayout publicMode={publicMode} title="VIP Мистический день" onBack={onBack}>
-        <p className={publicMode ? "text-slate-300" : "text-slate-600"}>Выберите знак, чтобы открыть синтез дня.</p>
+        <VipReadinessBlock
+          publicMode={publicMode}
+          lead="VIP мистический день объединяет несколько мистических разделов в один короткий синтез."
+          items={[
+            { title: "Состав синтеза", text: "Карта дня, Таро, руна, цвет ауры, ангельское число при наличии и главный интуитивный совет." },
+            { title: "Что нужно", text: "Достаточно выбрать знак. Остальные элементы рассчитываются по дате и не требуют личных вводов." },
+          ]}
+        />
       </VipScreenLayout>
     );
   }
