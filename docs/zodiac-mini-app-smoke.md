@@ -43,12 +43,12 @@ npm run zodiac:miniapp:smoke -- --url http://localhost:3000/compatibility
 - Natal chart VIP CTA buttons `Смотреть бесплатные расширения`, `Глубже про отношения`, `Фокус месяца`, and `Стиль лучших дней` must open the intended VIP tool; any button-looking CTA that does nothing is a regression.
 - VIP Natal Chart, Extended Compatibility, Mental Map, Numerology, and VIP Mystic Day render a non-empty symbolic `FinalAstroMap` / `AstroChartVisual` block after calculation.
 - Final AstroMap checks require a visible SVG map, 12-sign wheel, highlighted selected sign(s), at least five energy lines, at least five arrows, a legend, and the honest caption that the map is symbolic and not an ephemeris/house/ascendant calculation.
-- VIP Natal Chart has a dedicated premium smoke path: enter `1998-06-15`, verify auto-sign `Близнецы`, calculate, render `Символическая натальная карта`, show the premium natal circle/aspect lines/legend, and verify result blocks `Главный код личности`, `Стихия и темперамент`, `Сильные стороны`, `Внутренний конфликт`, `Отношения и близость`, `Работа / деньги / реализация`, `Что делать сегодня`, and `3 персональные рекомендации`.
+- VIP Natal Chart has a dedicated premium smoke path: enter `1998-06-15`, `23:55`, and `Dnipro`, verify auto-sign `Близнецы`, calculate, render the structured hero `Символическая натальная карта`, show the premium natal circle/aspect lines/legend, show the honesty badge `без точных домов и асцендента`, render 6 internal tabs (`Главное`, `Характер`, `Отношения`, `Деньги`, `Рост`, `Сегодня`), verify at least 5 structured sections are reachable, and keep one bottom Save/Share action area.
 - Giveaways is not a top-level main category; it remains locked/disabled inside VIP.
 - Open VIP feature screens do not contain `TODO`, `lorem ipsum`, `placeholder`, or unexpected `Скоро появится` text.
 - VIP smoke checks all 11 active tools: natal chart, monthly forecast, name profile, compatibility, mental map, 30-day couple calendar, message helper, numerology, angel numbers, talismans, and VIP mystic day.
 - VIP message helper must show `Скопировано` after copying a generated message.
-- VIP local retention must store only safe shortcuts: feature key, sign slugs, relationship mode, score tier, label, section, and timestamp. It must not store names, birth dates, birth times, city query, raw input, raw result text, or raw message text.
+- VIP local retention must store only safe shortcuts: feature key, sign slugs, relationship mode, score tier, label, section, mode, and timestamp. It must not store names, birth dates, birth times, birth city/city query, raw input, raw result text, or raw message text.
 - Mystic tab opens and at least three Mystic features can be opened.
 - Birth Matrix / `Матрица судьбы` opens from Mystic, accepts a sample birth date, renders a non-empty result, and returns to the Mystic menu.
 - Telegram WebApp mock is injected before page load.

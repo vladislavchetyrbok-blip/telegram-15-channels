@@ -28,6 +28,8 @@ const PLACEHOLDER_PATTERNS = [/TODO/i, /lorem ipsum/i, /placeholder/i, /Скор
 const RETENTION_STORAGE_KEY = "zodiac-mini-app-retention-v1";
 const FORBIDDEN_RETENTION_VALUES = [
   "1998-06-15",
+  "23:55",
+  "Dnipro",
   "2000-03-21",
   "2000-12-22",
   "19.06.1992",
@@ -437,6 +439,8 @@ async function runVipToolSmoke(client, label, report) {
   await assertNoNativeSelects(client, report, `VIP tool "${label}"`);
   if (label === "Расширенная натальная карта") {
     await fillVisibleInputAt(client, 0, "1998-06-15");
+    await fillVisibleInputAt(client, 1, "23:55");
+    await fillVisibleInputAt(client, 2, "Dnipro");
     await waitForPageText(client, /Близнецы|Карта по дате рождения и знаку/, "VIP Natal date input did not auto-detect Близнецы.");
     await expectVisibleSelectValue(client, 0, "gemini", "VIP Natal birth date autosign 1998-06-15 -> Близнецы");
     report.vipNatalAutosignChecked = true;
@@ -487,7 +491,7 @@ async function assertRetentionPrivacy(client, report) {
     throw new Error("Retention localStorage is not valid JSON.");
   }
   const serialized = JSON.stringify(parsed);
-  for (const forbiddenField of ["birthDate", "birthTime", "cityQuery", "selectedCityId", "messageText", "rawInput", "rawResult"]) {
+  for (const forbiddenField of ["birthDate", "birthTime", "birthCity", "city", "cityQuery", "selectedCityId", "messageText", "rawInput", "rawResult", "resultText"]) {
     if (serialized.includes(`"${forbiddenField}"`)) {
       throw new Error(`Retention localStorage contains forbidden field: ${forbiddenField}`);
     }
@@ -740,6 +744,29 @@ async function installSmokeHelpers(client) {
       },
       premiumNatalChartCount() {
         return Array.from(document.querySelectorAll("[data-premium-natal-chart]")).filter(isVisible).length;
+      },
+      premiumNatalHeroCount() {
+        return Array.from(document.querySelectorAll("[data-premium-natal-hero]")).filter(isVisible).length;
+      },
+      premiumNatalHonestyBadgeCount() {
+        return Array.from(document.querySelectorAll("[data-premium-natal-honesty-badge]")).filter(isVisible).length;
+      },
+      premiumNatalTabCount() {
+        return Array.from(document.querySelectorAll("[data-premium-natal-tab]")).filter(isVisible).length;
+      },
+      premiumNatalSectionCount() {
+        return Array.from(document.querySelectorAll("[data-premium-natal-section]")).filter(isVisible).length;
+      },
+      premiumNatalBottomActionsCount() {
+        return Array.from(document.querySelectorAll("[data-premium-natal-bottom-actions]")).filter(isVisible).length;
+      },
+      clickPremiumNatalTab(tabId) {
+        const safeTabId = String(tabId || "").replace(/"/g, "");
+        const button = document.querySelector('[data-premium-natal-tab="' + safeTabId + '"]');
+        if (!button || !isVisible(button)) return { ok: false, error: "not_found" };
+        button.scrollIntoView({ block: "center", inline: "center" });
+        button.click();
+        return { ok: true, text: button.innerText || button.textContent || "" };
       },
       natalAspectLineCount() {
         return Array.from(document.querySelectorAll("[data-premium-natal-chart]"))
@@ -1004,13 +1031,36 @@ async function assertFinalAstroMap(client, label, report) {
 
 async function assertPremiumNatalChart(client, report) {
   const mapCount = await evalPage(client, "window.__zodiacSmoke.premiumNatalChartCount()", []);
+  const heroCount = await evalPage(client, "window.__zodiacSmoke.premiumNatalHeroCount()", []);
+  const honestyBadgeCount = await evalPage(client, "window.__zodiacSmoke.premiumNatalHonestyBadgeCount()", []);
+  const tabCount = await evalPage(client, "window.__zodiacSmoke.premiumNatalTabCount()", []);
+  const sectionCount = await evalPage(client, "window.__zodiacSmoke.premiumNatalSectionCount()", []);
+  const bottomActionsCount = await evalPage(client, "window.__zodiacSmoke.premiumNatalBottomActionsCount()", []);
   const aspectLineCount = await evalPage(client, "window.__zodiacSmoke.natalAspectLineCount()", []);
   const legendCount = await evalPage(client, "window.__zodiacSmoke.natalLegendCount()", []);
+  if (heroCount < 1) throw new Error("VIP Natal did not render the structured hero summary.");
   if (mapCount < 1) throw new Error("VIP Natal did not render Premium Natal Chart visual.");
+  if (honestyBadgeCount < 1) throw new Error("VIP Natal did not render the honesty badge.");
+  if (tabCount < 6) throw new Error(`VIP Natal expected 6 structured tabs, got ${tabCount}.`);
+  if (sectionCount < 1) throw new Error("VIP Natal did not render an active structured section.");
+  if (bottomActionsCount < 1) throw new Error("VIP Natal did not render the bottom action bar.");
   if (aspectLineCount < 5) throw new Error(`VIP Natal expected at least 5 symbolic aspect lines, got ${aspectLineCount}.`);
   if (legendCount < 1) throw new Error("VIP Natal legend did not render.");
   await waitForPageText(client, /Символическая натальная карта|Символическая карта|без точных домов и асцендента/i, "VIP Natal did not show symbolic/honesty wording.");
-  await waitForPageText(client, /Главный код личности|Стихия и темперамент|Сильные стороны|Внутренний конфликт|Отношения и близость|Работа \/ деньги \/ реализация|Что делать сегодня|3 персональные рекомендации/, "VIP Natal did not render the required deep result blocks.");
+  const tabChecks = [
+    { id: "main", label: "Главное", pattern: /Главный код личности|Стихия и темперамент/ },
+    { id: "character", label: "Характер", pattern: /Сильные стороны|Внутренний конфликт|Как человек принимает решения/ },
+    { id: "relationships", label: "Отношения", pattern: /Отношения и близость/ },
+    { id: "money", label: "Деньги", pattern: /Работа \/ деньги \/ реализация/ },
+    { id: "growth", label: "Рост", pattern: /Энергия месяца|Зона роста|3 персональные рекомендации/ },
+    { id: "today", label: "Сегодня", pattern: /Что делать сегодня|Точность и честность/ },
+  ];
+  for (const item of tabChecks) {
+    const clickResult = await evalPage(client, "window.__zodiacSmoke.clickPremiumNatalTab(arguments[0])", [item.id]);
+    if (!clickResult.ok) throw new Error(`VIP Natal tab "${item.label}" could not be clicked: ${clickResult.error}.`);
+    await settle(client);
+    await waitForPageText(client, item.pattern, `VIP Natal tab "${item.label}" did not render its structured content.`);
+  }
   report.vipNatalPremiumChartChecked = true;
 }
 

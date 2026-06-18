@@ -695,6 +695,209 @@ function vipNatalTraits(sign: ZodiacSign) {
   return traits[sign.slug] ?? traits.aries;
 }
 
+type NatalResultTabId = "main" | "character" | "relationships" | "money" | "growth" | "today";
+type NatalResult = ReturnType<typeof buildNatalBlocks>;
+type NatalResultItem = NatalResult["items"][number];
+
+const natalResultTabs: Array<{ id: NatalResultTabId; label: string; hint: string }> = [
+  { id: "main", label: "Главное", hint: "код и стихия" },
+  { id: "character", label: "Характер", hint: "сила и тень" },
+  { id: "relationships", label: "Отношения", hint: "близость" },
+  { id: "money", label: "Деньги", hint: "реализация" },
+  { id: "growth", label: "Рост", hint: "месяц и зона роста" },
+  { id: "today", label: "Сегодня", hint: "один шаг" },
+];
+
+function natalItem(result: NatalResult, title: string): NatalResultItem {
+  return result.items.find((item) => item.title === title) ?? { title, text: result.summary };
+}
+
+function buildNatalResultSections(result: NatalResult): Record<NatalResultTabId, { title: string; subtitle: string; items: NatalResultItem[]; recommendations?: string[] }> {
+  return {
+    main: {
+      title: "Главное в карте",
+      subtitle: "Коротко: ядро личности, стихия и рабочий способ использовать эту карту.",
+      items: [
+        natalItem(result, "Главный код личности"),
+        natalItem(result, "Стихия и темперамент"),
+      ],
+    },
+    character: {
+      title: "Характер и внутренний ритм",
+      subtitle: "Где твоя сила, что мешает и как принимать решения спокойнее.",
+      items: [
+        natalItem(result, "Сильные стороны"),
+        natalItem(result, "Внутренний конфликт"),
+        natalItem(result, "Как человек принимает решения"),
+      ],
+    },
+    relationships: {
+      title: "Отношения и близость",
+      subtitle: "Как раскрывается контакт, какие слова и границы помогают.",
+      items: [natalItem(result, "Отношения и близость")],
+    },
+    money: {
+      title: "Работа, деньги и реализация",
+      subtitle: "Как переводить энергию знака в понятный результат.",
+      items: [natalItem(result, "Работа / деньги / реализация")],
+    },
+    growth: {
+      title: "Рост и энергия месяца",
+      subtitle: "Что усилить в ближайшие недели и какие привычки поддержат.",
+      items: [
+        natalItem(result, "Энергия месяца"),
+        natalItem(result, "Зона роста"),
+      ],
+      recommendations: result.recommendations,
+    },
+    today: {
+      title: "Что сделать сегодня",
+      subtitle: "Один практичный шаг и честная рамка точности расчёта.",
+      items: [
+        natalItem(result, "Что делать сегодня"),
+        natalItem(result, "Точность и честность"),
+      ],
+    },
+  };
+}
+
+function NatalResultHero({ publicMode, result, resultSign }: { publicMode: boolean; result: NatalResult; resultSign: ZodiacSign }) {
+  const strength = natalItem(result, "Сильные стороны").text;
+  const conflict = natalItem(result, "Внутренний конфликт").text;
+  const today = natalItem(result, "Что делать сегодня").text;
+  return (
+    <div
+      className={
+        publicMode
+          ? "overflow-hidden rounded-lg border border-amber-200/20 bg-gradient-to-br from-amber-200/14 via-fuchsia-300/10 to-cyan-300/8 p-4"
+          : "overflow-hidden rounded-lg border border-amber-200 bg-gradient-to-br from-amber-50 via-white to-violet-50 p-4"
+      }
+      data-premium-natal-hero
+    >
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className={publicMode ? "text-xs font-semibold uppercase tracking-widest text-amber-100" : "text-xs font-semibold uppercase tracking-widest text-amber-800"}>Символическая натальная карта</p>
+          <h3 className={publicMode ? "mt-1 text-2xl font-semibold text-white" : "mt-1 text-2xl font-semibold text-slate-950"}>
+            {resultSign.emoji} {resultSign.name}
+          </h3>
+        </div>
+        <span
+          className={publicMode ? "rounded-full border border-cyan-200/20 bg-cyan-200/10 px-3 py-1 text-xs font-semibold text-cyan-50" : "rounded-full border border-cyan-100 bg-cyan-50 px-3 py-1 text-xs font-semibold text-cyan-900"}
+          data-premium-natal-honesty-badge
+        >
+          без точных домов и асцендента
+        </span>
+      </div>
+      <div className="mt-3 grid gap-2 sm:grid-cols-3">
+        <VipStatusPill publicMode={publicMode} label="Режим" value={result.modeLabel} />
+        <VipStatusPill publicMode={publicMode} label="Стихия" value={vipElementLabel(resultSign.element)} />
+        <VipStatusPill publicMode={publicMode} label="Точность" value={result.mode === "extended" ? "расширенная" : result.mode === "date" ? "по дате" : "по знаку"} />
+      </div>
+      <p className={publicMode ? "mt-4 text-sm leading-6 text-slate-200" : "mt-4 text-sm leading-6 text-slate-700"}>{result.summary}</p>
+      <div className="mt-4 grid gap-2 sm:grid-cols-3">
+        <NatalQuickInsight publicMode={publicMode} title="Где твоя сила" text={strength} />
+        <NatalQuickInsight publicMode={publicMode} title="Что мешает" text={conflict} />
+        <NatalQuickInsight publicMode={publicMode} title="Что сделать сегодня" text={today} />
+      </div>
+      <p className={publicMode ? "mt-3 text-xs font-semibold text-amber-100" : "mt-3 text-xs font-semibold text-amber-800"}>Открой вкладки ниже, чтобы развернуть карту без длинного полотна.</p>
+    </div>
+  );
+}
+
+function NatalQuickInsight({ publicMode, title, text }: { publicMode: boolean; title: string; text: string }) {
+  return (
+    <div className={publicMode ? "rounded-md border border-white/10 bg-white/5 p-3" : "rounded-md border border-slate-100 bg-white/75 p-3"}>
+      <p className={publicMode ? "text-xs font-semibold text-amber-100" : "text-xs font-semibold text-amber-800"}>{title}</p>
+      <p className={publicMode ? "mt-1 line-clamp-3 text-xs leading-5 text-slate-300" : "mt-1 line-clamp-3 text-xs leading-5 text-slate-600"}>{text}</p>
+    </div>
+  );
+}
+
+function NatalResultTabs({
+  publicMode,
+  activeTab,
+  onTabChange,
+}: {
+  publicMode: boolean;
+  activeTab: NatalResultTabId;
+  onTabChange: (tab: NatalResultTabId) => void;
+}) {
+  return (
+    <div className="overflow-x-auto pb-1" data-premium-natal-tabs>
+      <div className="flex min-w-max gap-2">
+        {natalResultTabs.map((tab) => {
+          const active = tab.id === activeTab;
+          return (
+            <button
+              key={tab.id}
+              type="button"
+              aria-pressed={active}
+              data-premium-natal-tab={tab.id}
+              onClick={() => onTabChange(tab.id)}
+              className={
+                publicMode
+                  ? `min-h-[54px] rounded-lg border px-3 py-2 text-left transition focus:outline-none focus:ring-2 focus:ring-amber-200/40 ${active ? "border-amber-200/45 bg-amber-200/16 text-white" : "border-white/10 bg-white/5 text-slate-300"}`
+                  : `min-h-[54px] rounded-lg border px-3 py-2 text-left transition focus:outline-none focus:ring-2 focus:ring-amber-300 ${active ? "border-amber-300 bg-amber-100 text-slate-950" : "border-slate-200 bg-white text-slate-700"}`
+              }
+            >
+              <span className="block text-sm font-semibold">{tab.label}</span>
+              <span className={publicMode ? "block text-[11px] text-slate-400" : "block text-[11px] text-slate-500"}>{tab.hint}</span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function NatalSectionPanel({
+  publicMode,
+  section,
+}: {
+  publicMode: boolean;
+  section: { title: string; subtitle: string; items: NatalResultItem[]; recommendations?: string[] };
+}) {
+  return (
+    <section
+      className={publicMode ? "rounded-lg border border-white/10 bg-white/5 p-3" : "rounded-lg border border-slate-200 bg-white/85 p-3"}
+      data-premium-natal-section
+    >
+      <h4 className={publicMode ? "text-base font-semibold text-white" : "text-base font-semibold text-slate-950"}>{section.title}</h4>
+      <p className={publicMode ? "mt-1 text-sm leading-5 text-slate-400" : "mt-1 text-sm leading-5 text-slate-600"}>{section.subtitle}</p>
+      <div className="mt-3 grid gap-2">
+        {section.items.map((item) => (
+          <InfoBlock key={item.title} publicMode={publicMode} title={item.title} text={item.text} />
+        ))}
+      </div>
+      {section.recommendations?.length ? <NatalRecommendationList publicMode={publicMode} recommendations={section.recommendations} /> : null}
+    </section>
+  );
+}
+
+function NatalRecommendationList({ publicMode, recommendations }: { publicMode: boolean; recommendations: string[] }) {
+  return (
+    <div className={publicMode ? "mt-3 rounded-lg bg-white/5 p-3" : "mt-3 rounded-lg border border-slate-100 bg-slate-50 p-3"}>
+      <h4 className={publicMode ? "text-sm font-semibold text-amber-100" : "text-sm font-semibold text-amber-800"}>3 персональные рекомендации</h4>
+      <ul className="mt-2 grid gap-2">
+        {recommendations.map((item) => (
+          <li key={item} className={publicMode ? "rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm leading-5 text-slate-200" : "rounded-md border border-slate-100 bg-white px-3 py-2 text-sm leading-5 text-slate-700"}>{item}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function NatalBottomActions({ publicMode, children }: { publicMode: boolean; children: ReactNode }) {
+  return (
+    <div
+      className={publicMode ? "rounded-lg border border-amber-200/20 bg-slate-950/50 p-3" : "rounded-lg border border-amber-200 bg-amber-50/80 p-3"}
+      data-premium-natal-bottom-actions
+    >
+      {children}
+    </div>
+  );
+}
+
 export function ExtendedNatalFeature({
   publicMode,
   natalChart,
@@ -711,9 +914,12 @@ export function ExtendedNatalFeature({
   const [birthCity, setBirthCity] = useState("");
   const [gender, setGender] = useState<Gender>("unspecified");
   const [calculated, setCalculated] = useState(false);
+  const [activeNatalTab, setActiveNatalTab] = useState<NatalResultTabId>("main");
   const actions = useResultActions(featureKey, onEvent, onSave, onShare);
   const resultSign = birthDate ? signFromBirthDate(birthDate, signSlug) : signBySlug(signSlug);
   const result = buildNatalBlocks(resultSign, birthDate, birthTime, birthCity, gender, natalChart?.sign.slug === resultSign.slug ? natalChart : null);
+  const natalSections = buildNatalResultSections(result);
+  const activeNatalSection = natalSections[activeNatalTab];
   const payload = vipPayload({
     sign: resultSign.slug,
     hasBirthDate: Boolean(parseIsoDate(birthDate)),
@@ -757,31 +963,20 @@ export function ExtendedNatalFeature({
       <PrimaryVipButton publicMode={publicMode} onClick={() => {
         actions.calculate(payload);
         actions.chart(payload);
+        setActiveNatalTab("main");
         setCalculated(true);
       }}>
         Рассчитать
       </PrimaryVipButton>
       {calculated ? (
         <VipResultPanel publicMode={publicMode} title={result.title}>
+          <NatalResultHero publicMode={publicMode} result={result} resultSign={resultSign} />
           <NatalChartVisual publicMode={publicMode} sign={resultSign} birthDate={birthDate} birthTime={birthTime} birthCity={birthCity} gender={gender} mode={result.mode} title={`${resultSign.name} · символическая натальная карта`} />
-          <div className="grid gap-2 sm:grid-cols-3">
-            <VipStatusPill publicMode={publicMode} label="Режим" value={result.modeLabel} />
-            <VipStatusPill publicMode={publicMode} label="Стихия" value={vipElementLabel(resultSign.element)} />
-            <VipStatusPill publicMode={publicMode} label="Точность" value={result.mode === "extended" ? "расширенная" : result.mode === "date" ? "по дате" : "по знаку"} />
-          </div>
-          <InfoBlock publicMode={publicMode} title="Главный вывод" text={result.summary} />
-          {result.items.map((item) => (
-            <InfoBlock key={item.title} publicMode={publicMode} title={item.title} text={item.text} />
-          ))}
-          <div className={publicMode ? "rounded-lg bg-white/5 p-3" : "rounded-lg border border-slate-100 bg-white/80 p-3"}>
-            <h4 className={publicMode ? "text-sm font-semibold text-amber-100" : "text-sm font-semibold text-amber-800"}>3 персональные рекомендации</h4>
-            <ul className="mt-2 grid gap-2">
-              {result.recommendations.map((item) => (
-                <li key={item} className={publicMode ? "rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm leading-5 text-slate-200" : "rounded-md border border-slate-100 bg-slate-50 px-3 py-2 text-sm leading-5 text-slate-700"}>{item}</li>
-              ))}
-            </ul>
-          </div>
-          <VipResultActions publicMode={publicMode} saved={actions.saved} shared={actions.shared} shareStatus={actions.shareStatus} saveLabel="Сохранить карту" shareLabel="Поделиться картой" onSave={() => actions.save(payload, buildNatalRetentionAction(resultSign, result.mode))} onShare={() => actions.share(payload, buildNatalRetentionAction(resultSign, result.mode))} />
+          <NatalResultTabs publicMode={publicMode} activeTab={activeNatalTab} onTabChange={setActiveNatalTab} />
+          <NatalSectionPanel publicMode={publicMode} section={activeNatalSection} />
+          <NatalBottomActions publicMode={publicMode}>
+            <VipResultActions publicMode={publicMode} saved={actions.saved} shared={actions.shared} shareStatus={actions.shareStatus} saveLabel="Сохранить карту" shareLabel="Поделиться картой" onSave={() => actions.save(payload, buildNatalRetentionAction(resultSign, result.mode))} onShare={() => actions.share(payload, buildNatalRetentionAction(resultSign, result.mode))} />
+          </NatalBottomActions>
         </VipResultPanel>
       ) : null}
     </VipScreenLayout>

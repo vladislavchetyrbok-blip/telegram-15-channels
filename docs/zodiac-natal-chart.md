@@ -55,7 +55,14 @@ extended: date + time + city
 
 ## Result Blocks
 
-The result must include:
+The result is a structured premium result, not a single longread. It must render:
+
+- hero summary with `Символическая натальная карта`, sign, element, input mode, honesty badge, and one concise main conclusion;
+- large visual map block;
+- compact internal tabs: `Главное`, `Характер`, `Отношения`, `Деньги`, `Рост`, `Сегодня`;
+- one bottom action area for Save/Share.
+
+The sections must include:
 
 - Главный код личности;
 - Стихия и темперамент;
@@ -69,7 +76,7 @@ The result must include:
 - Что делать сегодня;
 - 3 персональные рекомендации.
 
-The tone must be useful and non-fatalistic. Avoid medical, diagnostic, or guaranteed outcome language.
+The tone must be useful and non-fatalistic. Avoid medical, diagnostic, or guaranteed outcome language. Keep the screen scannable: do not return to a long uninterrupted stack of every text block.
 
 ## Visual Map
 
