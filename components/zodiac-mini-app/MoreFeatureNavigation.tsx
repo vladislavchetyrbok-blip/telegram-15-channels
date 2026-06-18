@@ -45,6 +45,7 @@ export function MoreFeatureNavigation({
                           : "min-h-[58px] min-w-[92px] rounded-lg border border-white/10 bg-white/7 px-3 py-2 text-left transition hover:border-fuchsia-200/35 hover:bg-white/10"
                       }
                       aria-current={active ? "page" : undefined}
+                      aria-label={feature.label}
                     >
                       <span className={active ? "block text-sm font-semibold leading-4 text-white" : "block text-sm font-semibold leading-4 text-slate-200"}>{feature.shortLabel}</span>
                       <span className={blockedHint ? "mt-1 block text-[11px] font-semibold leading-4 text-amber-100" : active ? "mt-1 block text-[11px] leading-4 text-amber-100" : "mt-1 block text-[11px] leading-4 text-slate-400"}>

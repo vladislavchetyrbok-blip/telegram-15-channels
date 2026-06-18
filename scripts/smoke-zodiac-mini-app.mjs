@@ -142,9 +142,10 @@ async function runBrowserModeSmoke(client, report) {
   await expectVisibleSelectValue(client, 0, "capricorn", "Birth date autosign 2000-12-22 -> Козерог");
   report.compatibilityAutosignCases.push("2000-12-22 -> Козерог");
   await click(client, "Рассчитать");
-  await waitForPageText(client, /Обзор пары|Уровень связи|Как общаться|Точки конфликта/, "Compatibility result did not render the relationship map summary.");
+  await waitForPageText(client, /Карта отношений|Главный совет|Эмоции|Быт \/ ритм|Как общаться/, "Compatibility result did not render the polished relationship card.");
   report.compatibilityResultChecked = true;
-  await click(client, "Сохранить");
+  await click(client, "Сохранить пару");
+  await waitForPageText(client, /Пара сохранена/, "Compatibility save button did not show saved state.");
   report.compatibilityPairSaved = true;
   await click(client, "Поделиться");
   await settle(client);
@@ -153,17 +154,18 @@ async function runBrowserModeSmoke(client, report) {
   await click(client, "Пара");
   await waitForPageText(client, /Действие сегодня|Главный шаг|Лучший тон/, "Compatibility action today block did not render.");
   report.compatibilityActionChecked = true;
-  await click(client, "30 дней");
+  await click(client, "Календарь пары");
   await waitForPageText(client, /30 дней пары|Тема|Энергия|Риск/, "30-day couple calendar did not render with detailed fields.");
   report.compatibilityCalendarChecked = true;
   await click(client, "Текст");
   await waitForPageText(client, /Что написать|Скопировать|Тёплый старт|Мягкий шаг/, "Relationship message helper did not render 3 message variants.");
   await click(client, "Скопировать");
+  await waitForPageText(client, /Скопировано/, "Relationship message helper did not show copied state.");
   report.compatibilityMessageChecked = true;
   await click(client, "Профиль");
   await waitForPageText(client, /Избранное|История|Совместимость: Овен \+ Козерог/, "Saved compatibility pair/history did not render in Profile.");
   await click(client, "Открыть");
-  await waitForPageText(client, /Овен.*Козерог|Козерог.*Овен|Обзор пары|Уровень связи/, "Opening saved compatibility pair did not restore the pair.");
+  await waitForPageText(client, /Овен.*Козерог|Козерог.*Овен|Карта отношений|Главный совет/, "Opening saved compatibility pair did not restore the pair.");
   report.compatibilityPairReopened = true;
 
   await click(client, "Главная");
@@ -202,8 +204,9 @@ async function runBrowserModeSmoke(client, report) {
   await waitForPageText(client, /VIP открыт бесплатно|Ранний доступ до 17\.09\.2026/, "VIP menu did not render.");
   report.freeAccessVisible = await hasText(client, /17\.09\.2026/);
 
-  const giveawayStatus = await evalPage(client, "window.__zodiacSmoke.buttonStatus(arguments[0])", ["Розыгрыши"]);
+  const giveawayStatus = await evalPage(client, "window.__zodiacSmoke.buttonStatus(arguments[0])", ["Розыгрыши (Скоро)"]);
   report.giveawaysLocked = Boolean(giveawayStatus.exists && giveawayStatus.disabled);
+  if (!report.giveawaysLocked) throw new Error("Giveaways card must remain locked/disabled inside VIP.");
 
   for (const card of VIP_ACTIVE_CARDS) {
     await click(client, card);

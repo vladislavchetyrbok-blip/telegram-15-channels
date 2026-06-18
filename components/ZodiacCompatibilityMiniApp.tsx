@@ -11,7 +11,7 @@ import {
 import { useTelegramBackButton, useTelegramWebApp, type TelegramWebAppState } from "@/lib/use-telegram-webapp";
 import { trackZodiacMiniAppEvent } from "@/lib/zodiac-mini-app-analytics-client";
 import { zodiacAnalyticsScoreTier, zodiacAnalyticsStartappType, type ZodiacAnalyticsEventName, type ZodiacAnalyticsPayload } from "@/lib/zodiac-mini-app-analytics-shared";
-import { ArrowLeft, ArrowRight, Bookmark, CalendarDays, Crown, Gift, MapPin, Share2, ShieldCheck, Sparkles, Star } from "lucide-react";
+import { ArrowLeft, ArrowRight, Bookmark, CalendarDays, Check, Copy, Crown, Gift, MapPin, Share2, ShieldCheck, Sparkles, Star } from "lucide-react";
 import Link from "next/link";
 import {
   AuraColorFeature,
@@ -1697,7 +1697,20 @@ function MoreSection({
         {activeMoreFeature === "mentalMap" ? <RelationshipMapCard publicMode={publicMode} result={result} pairReady={pairReady} onCategoryOpen={onRelationshipMapCategoryOpen} /> : null}
         {activeMoreFeature === "coupleCalendar" ? <CoupleCalendarCard publicMode={publicMode} days={coupleCalendar} pairReady={pairReady} /> : null}
         {activeMoreFeature === "reconciliation" ? <ReconciliationDayCard publicMode={publicMode} reconciliation={reconciliation} /> : null}
-        {activeMoreFeature === "messageHelper" ? <PartnerMessageCard publicMode={publicMode} message={message} messageTemplates={messageTemplates} tone={messageTone} onToneChange={setMessageTone} onUsed={onMessageHelperUsed} onCopy={handleMessageTemplateCopy} pairReady={pairReady} /> : null}
+        {activeMoreFeature === "messageHelper" ? (
+          <PartnerMessageCard
+            publicMode={publicMode}
+            message={message}
+            messageTemplates={messageTemplates}
+            tone={messageTone}
+            onToneChange={setMessageTone}
+            onUsed={onMessageHelperUsed}
+            onCopy={handleMessageTemplateCopy}
+            onSave={() => onFavoriteSave(currentRetentionAction)}
+            onShare={() => onShare(currentRetentionAction)}
+            pairReady={pairReady}
+          />
+        ) : null}
         {activeMoreFeature === "nameCompatibility" ? (
           <NameCompatibilityCard
             publicMode={publicMode}
@@ -1840,11 +1853,18 @@ function CoupleHoroscopeCard({ publicMode, horoscope, actionToday }: { publicMod
         <InfoRow publicMode={publicMode} label="✅ Стоит сделать" text={horoscope.action} />
         <InfoRow publicMode={publicMode} label="⚠️ Лучше избегать" text={horoscope.avoid} />
         {actionToday ? (
-          <div className={publicMode ? "rounded-lg border border-emerald-200/20 bg-emerald-200/10 p-3" : "rounded-lg border border-emerald-200 bg-emerald-50 p-3"}>
-            <p className={publicMode ? "text-sm font-semibold text-emerald-50" : "text-sm font-semibold text-emerald-900"}>✅ Действие сегодня</p>
-            <div className="mt-3 grid gap-2">
-              <InfoRow publicMode={publicMode} label="Главный шаг" text={actionToday.mainAction} />
-              <InfoRow publicMode={publicMode} label="Не делать" text={actionToday.avoid} />
+          <div className={publicMode ? "rounded-lg border border-emerald-200/20 bg-gradient-to-br from-emerald-200/14 to-cyan-200/8 p-4" : "rounded-lg border border-emerald-200 bg-gradient-to-br from-emerald-50 to-cyan-50 p-4"}>
+            <div className="flex items-start gap-3">
+              <span className={publicMode ? "grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-emerald-100/20 bg-emerald-100/10 text-emerald-50" : "grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-emerald-200 bg-white text-emerald-700"}>
+                <Check className="h-5 w-5" />
+              </span>
+              <div className="min-w-0">
+                <p className={publicMode ? "text-base font-semibold text-emerald-50" : "text-base font-semibold text-emerald-950"}>Действие сегодня</p>
+                <p className={publicMode ? "mt-1 break-words text-sm leading-6 text-emerald-50/90 [overflow-wrap:anywhere]" : "mt-1 break-words text-sm leading-6 text-emerald-950 [overflow-wrap:anywhere]"}>{actionToday.mainAction}</p>
+              </div>
+            </div>
+            <div className="mt-3 grid gap-2 sm:grid-cols-3">
+              <InfoRow publicMode={publicMode} label="Избегать" text={actionToday.avoid} />
               <InfoRow publicMode={publicMode} label="Лучший тон" text={actionToday.bestTone} />
               <InfoRow publicMode={publicMode} label="Маленький шаг" text={actionToday.smallStep} />
             </div>
@@ -1994,25 +2014,53 @@ function CoupleCalendarCard({ publicMode, days, pairReady }: { publicMode: boole
 
   return (
     <FeatureCard publicMode={publicMode} title="📅 30 дней пары" subtitle={`Ближайшие ${days.length} дней: тема, энергия, действие и риск`}>
-      <div className="grid max-h-[430px] gap-3 overflow-y-auto pr-1">
-        {days.map((day) => (
-          <div key={day.dateKey} className={publicMode ? "rounded-lg border border-white/12 bg-white/8 p-3" : "rounded-lg border border-slate-200 bg-white p-3"}>
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <p className={publicMode ? "text-sm font-semibold text-white" : "text-sm font-semibold text-slate-950"}>{day.date}</p>
-                <p className={publicMode ? "mt-1 text-xs text-slate-400" : "mt-1 text-xs text-slate-500"}>{day.weekday}</p>
+      <div className="grid max-h-[560px] gap-3 overflow-y-auto pr-1">
+        {days.map((day, index) => {
+          const isToday = index === 0;
+          return (
+            <div
+              key={day.dateKey}
+              className={
+                isToday
+                  ? publicMode
+                    ? "rounded-lg border border-amber-200/35 bg-amber-200/10 p-4 shadow-[0_10px_30px_rgba(0,0,0,0.16)]"
+                    : "rounded-lg border border-amber-200 bg-amber-50 p-4 shadow-sm"
+                  : publicMode
+                    ? "rounded-lg border border-white/12 bg-white/8 p-4"
+                    : "rounded-lg border border-slate-200 bg-white p-4"
+              }
+            >
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className={publicMode ? "rounded-full border border-white/12 bg-white/8 px-2.5 py-1 text-xs font-semibold text-slate-200" : "rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-semibold text-slate-600"}>
+                      День {index + 1}
+                    </span>
+                    {isToday ? (
+                      <span className={publicMode ? "rounded-full border border-amber-200/30 bg-amber-200/12 px-2.5 py-1 text-xs font-semibold text-amber-50" : "rounded-full border border-amber-200 bg-white px-2.5 py-1 text-xs font-semibold text-amber-800"}>
+                        Сегодня
+                      </span>
+                    ) : null}
+                  </div>
+                  <p className={publicMode ? "mt-2 text-base font-semibold text-white" : "mt-2 text-base font-semibold text-slate-950"}>{day.date}</p>
+                  <p className={publicMode ? "mt-1 text-xs text-slate-400" : "mt-1 text-xs text-slate-500"}>{day.weekday}</p>
+                </div>
+                <div className="flex shrink-0 flex-col items-end gap-2">
+                  <span className={publicMode ? "rounded-full border border-amber-200/25 bg-amber-200/10 px-3 py-1 text-xs font-semibold text-amber-50" : "rounded-full border border-violet-100 bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-800"}>{day.status}</span>
+                  <span className={publicMode ? "rounded-full border border-cyan-200/20 bg-cyan-200/10 px-3 py-1 text-xs font-semibold text-cyan-50" : "rounded-full border border-cyan-100 bg-cyan-50 px-3 py-1 text-xs font-semibold text-cyan-800"}>{day.energy}</span>
+                </div>
               </div>
-              <span className={publicMode ? "rounded-full border border-amber-200/25 bg-amber-200/10 px-3 py-1 text-xs font-semibold text-amber-50" : "rounded-full border border-violet-100 bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-800"}>{day.status}</span>
+              <div className="mt-4 grid gap-3">
+                <InfoRow publicMode={publicMode} label="Тема" text={day.theme} />
+                <InfoRow publicMode={publicMode} label="Действие" text={day.action} />
+                <div className="grid gap-2 sm:grid-cols-2">
+                  <InfoRow publicMode={publicMode} label="Риск" text={day.risk} />
+                  <InfoRow publicMode={publicMode} label="Совет" text={day.advice} />
+                </div>
+              </div>
             </div>
-            <div className="mt-3 grid gap-2">
-              <InfoRow publicMode={publicMode} label="Тема" text={day.theme} />
-              <InfoRow publicMode={publicMode} label="Энергия" text={day.energy} />
-              <InfoRow publicMode={publicMode} label="Действие" text={day.action} />
-              <InfoRow publicMode={publicMode} label="Риск" text={day.risk} />
-              <InfoRow publicMode={publicMode} label="Совет" text={day.advice} />
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </FeatureCard>
   );
@@ -2040,6 +2088,8 @@ function PartnerMessageCard({
   onToneChange,
   onUsed,
   onCopy,
+  onSave,
+  onShare,
   pairReady,
 }: {
   publicMode: boolean;
@@ -2049,8 +2099,12 @@ function PartnerMessageCard({
   onToneChange: (tone: MessageTone) => void;
   onUsed: () => void;
   onCopy: (templateId: string) => void;
+  onSave: () => void;
+  onShare: () => void;
   pairReady: boolean;
 }) {
+  const [copiedTemplateId, setCopiedTemplateId] = useState<string | null>(null);
+
   if (!pairReady) return <EmptyFeatureCard publicMode={publicMode} title="💌 Что написать партнёру" text="Выберите два знака, чтобы получить уважительную подсказку для сообщения." />;
 
   async function copyMessage(template: CoupleMessageTemplate) {
@@ -2060,20 +2114,34 @@ function PartnerMessageCard({
       // Clipboard access is optional in WebView/browser smoke; copy failure must not break the helper.
     }
     onCopy(template.id);
+    setCopiedTemplateId(template.id);
   }
 
   return (
     <FeatureCard publicMode={publicMode} title="💌 Что написать" subtitle="3 уважительных варианта под выбранный тип отношений">
       <div className="grid gap-3">
         {messageTemplates.map((template) => (
-          <div key={template.id} className={publicMode ? "rounded-lg border border-white/12 bg-white/8 p-3" : "rounded-lg border border-slate-200 bg-white p-3"}>
+          <div key={template.id} className={publicMode ? "rounded-lg border border-white/12 bg-white/8 p-4" : "rounded-lg border border-slate-200 bg-white p-4"}>
             <div className="flex items-start justify-between gap-3">
-              <p className={publicMode ? "text-sm font-semibold text-amber-100" : "text-sm font-semibold text-violet-800"}>{template.label}</p>
-              <button type="button" onClick={() => copyMessage(template)} className={secondaryTinyButtonClass(publicMode)}>
-                Скопировать
+              <div className="min-w-0">
+                <p className={publicMode ? "text-sm font-semibold text-amber-100" : "text-sm font-semibold text-violet-800"}>{template.label}</p>
+                <p className={publicMode ? "mt-2 break-words text-sm leading-6 text-slate-100 [overflow-wrap:anywhere]" : "mt-2 break-words text-sm leading-6 text-slate-700 [overflow-wrap:anywhere]"}>{template.text}</p>
+              </div>
+            </div>
+            <div className="mt-3 grid gap-2 sm:grid-cols-3">
+              <button type="button" onClick={() => copyMessage(template)} className={secondaryTinyButtonClass(publicMode)} aria-live="polite">
+                {copiedTemplateId === template.id ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                {copiedTemplateId === template.id ? "Скопировано" : "Скопировать"}
+              </button>
+              <button type="button" onClick={onSave} className={secondaryTinyButtonClass(publicMode)}>
+                <Bookmark className="h-4 w-4" />
+                Сохранить
+              </button>
+              <button type="button" onClick={onShare} className={secondaryTinyButtonClass(publicMode)}>
+                <Share2 className="h-4 w-4" />
+                Поделиться
               </button>
             </div>
-            <p className={publicMode ? "mt-2 text-sm leading-6 text-slate-100" : "mt-2 text-sm leading-6 text-slate-700"}>{template.text}</p>
           </div>
         ))}
       </div>
@@ -3282,6 +3350,7 @@ function buildCompatibilityResult(mode: Mode, relationshipMode: RelationshipMode
   const partnerCity = partner.knowsTime ? getCityById(partner.selectedCityId) : null;
   const modeLabel = modes.find((item) => item.id === mode)?.resultLabel ?? "Расчёт";
   const relationshipLabel = relationshipModes.find((item) => item.id === relationshipMode)?.label ?? "❤️ Любовь";
+  const relationshipModeLabel = relationshipModePlainText(relationshipLabel);
   const title = `${selfSign.emoji} ${selfSign.name}${genderSuffix(self.gender)} + ${partnerSign.emoji} ${partnerSign.name}${genderSuffix(partner.gender)}`;
   const validationMessages = buildValidationMessages(mode, self, partner, selfDate, partnerDate, selfCity, partnerCity);
   const nameResonance = buildNameResonance(self.name, partner.name);
@@ -3321,7 +3390,9 @@ function buildCompatibilityResult(mode: Mode, relationshipMode: RelationshipMode
   const scoreTierLabel = buildScoreTierLabel(total);
   return {
     title,
+    pairLabel: `${selfSign.name} + ${partnerSign.name}`,
     modeLabel: `${modeLabel} · ${relationshipLabel}`,
+    relationshipModeLabel,
     relationshipMode,
     dataUseLabel: buildDataUseLabel(mode, preciseKnown),
     scoreTierLabel,
@@ -3787,6 +3858,10 @@ function mainMenuCategoryLabel(categoryId: string) {
 
 function relationshipModeText(mode: RelationshipMode) {
   return relationshipModes.find((item) => item.id === mode)?.label ?? mode;
+}
+
+function relationshipModePlainText(label: string) {
+  return label.replace(/^[^A-Za-zА-Яа-яЁё0-9]+/, "").trim();
 }
 
 function safeAnalyticsScoreTier(value?: string): ZodiacAnalyticsPayload["scoreTier"] {

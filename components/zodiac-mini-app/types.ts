@@ -136,7 +136,9 @@ export interface MentalMapDynamic {
 
 export interface CompatibilityResult {
   title: string;
+  pairLabel: string;
   modeLabel: string;
+  relationshipModeLabel: string;
   relationshipMode: RelationshipMode;
   dataUseLabel: string;
   scoreTierLabel: string;

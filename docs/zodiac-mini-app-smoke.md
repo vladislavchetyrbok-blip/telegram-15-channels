@@ -30,8 +30,9 @@ npm run zodiac:miniapp:smoke -- --url http://localhost:3000/compatibility
 - History and Favorites use localStorage only and store safe shortcuts/summaries, not raw personal inputs.
 - A safe Angel Numbers item can be saved, appears in Favorites/Profile, opens back into the feature, and can be cleared with `Очистить данные`.
 - Safe Share can be clicked without crashing; browser fallback shows copy text or a copied state.
-- Compatibility follows `Compatibility -> Pair Setup -> Relationship Map -> 30-Day Couple Calendar -> Actions / Messages / Save / Share`.
-- Compatibility smoke chooses Love mode, fills pair data, verifies birth-date autosign cases `1998-06-15 -> Близнецы`, `2000-03-21 -> Овен`, and `2000-12-22 -> Козерог`, reaches a detailed result, opens the 30-day couple calendar, opens `Что написать`, opens `Действие сегодня`, saves the pair, reopens it from Profile/Favorites/History, and checks safe Share.
+- Compatibility follows `Compatibility -> Pair Setup -> Relationship Card -> 30-Day Couple Calendar -> Actions / Messages / Save / Share`.
+- Compatibility result must show the visual markers `Карта отношений`, `Главный совет`, `Эмоции`, `Общение`, and `Быт / ритм`.
+- Compatibility smoke chooses Love mode, fills pair data, verifies birth-date autosign cases `1998-06-15 -> Близнецы`, `2000-03-21 -> Овен`, and `2000-12-22 -> Козерог`, reaches a detailed result, opens the 30-day couple calendar, opens `Что написать`, verifies the message copy state `Скопировано`, opens `Действие сегодня`, saves the pair with the `Пара сохранена` state, reopens it from Profile/Favorites/History, and checks safe Share.
 - Compatibility local retention stores only safe summary fields: first sign, second sign, relationship mode, score tier, label, feature key, and timestamp. It must not store names, birth dates, birth times, city query, selected city id, raw result text, or raw message text.
 - Horoscopes category opens from the main menu.
 - Angel Numbers / `Ангельские числа` is visible as a top-level category, opens the existing `angelNumbers` feature, and returns to Home via Back/Main menu.

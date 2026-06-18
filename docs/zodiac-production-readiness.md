@@ -252,6 +252,8 @@ HTTP/network errors: 0
 
 Smoke must never run live publish, never change ledgers, and never enable weekly live scheduling.
 
+Package 12 UX markers: the compatibility result should render as `Карта отношений` with score, quick metrics, `Главный совет`, readable sections, the 30-day mobile feed, `Скопировано` after copying a message, and `Пара сохранена` after saving the pair.
+
 ## Analytics / Privacy
 
 Commands:
