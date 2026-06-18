@@ -18,7 +18,9 @@ npm run zodiac:miniapp:smoke -- --url http://localhost:3000/compatibility
 
 - `/compatibility` returns HTTP 200 and renders the Mini App home screen.
 - The main screen contains the hero title `Астрологический центр`, subtitle, CTA, VIP free-access badge, and 10 large category cards.
-- The 10 main categories are: `Гороскопы`, `Совместимость`, `Матрица судьбы`, `Ангельские числа`, `Нумерология`, `Мистика`, `Таро и руны`, `Луна и ритуалы`, `VIP раздел`, and `Мой профиль`.
+- The 10 main categories are, in order: `Гороскопы`, `Совместимость`, `Ангельские числа`, `Матрица судьбы`, `Нумерология`, `Мистика`, `Таро и руны`, `Луна и ритуалы`, `VIP раздел`, and `Мой профиль`.
+- Angel Numbers / `Ангельские числа` must be visible in the first screen zone and must not be hidden only inside VIP or Mystic.
+- `Розыгрыши` must not be a top-level main category; it remains locked/preview inside VIP.
 - The expected product structure is `Home -> Category -> Feature -> Result`.
 - Browser mode works without `window.Telegram`.
 - Sign selection works.
