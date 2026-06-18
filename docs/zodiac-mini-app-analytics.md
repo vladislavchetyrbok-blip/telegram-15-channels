@@ -89,7 +89,7 @@ Home -> Category -> Feature -> Result
 
 These navigation events must not include names, birth dates, birth times, city query, raw text inputs, or Telegram initData. Safe fields are limited to values such as `section`, `category`, `featureKey`, `relationshipMode`, and zodiac sign slugs.
 
-The current Home menu has 10 large top-level categories: `Гороскопы`, `Совместимость`, `Матрица судьбы`, `Ангельские числа`, `Нумерология`, `Мистика`, `Таро и руны`, `Луна и ритуалы`, `VIP раздел`, and `Мой профиль`. `Розыгрыши` stays inside VIP as locked/preview and is tracked only through giveaway locked events.
+The current Home menu has 10 large top-level categories, in order: `Гороскопы`, `Совместимость`, `Ангельские числа`, `Матрица судьбы`, `Нумерология`, `Мистика`, `Таро и руны`, `Луна и ритуалы`, `VIP раздел`, and `Мой профиль`. Angel Numbers must stay visible in the first screen zone. `Розыгрыши` stays inside VIP as locked/preview and is tracked only through giveaway locked events.
 
 Profile, History, and Favorites are local retention features. They use localStorage on the device and store only safe shortcuts/summaries: selected sign slug, section id/label, featureKey, compatibility mode, and timestamps. They must not store or send names, exact birth dates, birth times, city query, selected city id, raw result text, raw message text, raw dream text, or raw angel number input. Safe Share sends only generic Mini App text and startapp links.
 
