@@ -29,16 +29,24 @@ Manual `workflow_dispatch` defaults to `dry-run`. Scheduled runs use `live` mode
 
 ## Cron Time
 
-Current cron:
+Current cron attempts:
 
 ```text
 0 6 * * *
+30 6 * * *
+0 7 * * *
+30 7 * * *
+0 8 * * *
 ```
 
-GitHub Actions cron is UTC-only.
+GitHub Actions cron is UTC-only and can start late under platform load.
 
 - During Kyiv summer time, 06:00 UTC is 09:00 Kyiv.
 - During Kyiv winter time, 06:00 UTC is 08:00 Kyiv.
+- Primary publish window: 06:00 and 06:30 UTC.
+- Backup publish window: 07:00, 07:30, and 08:00 UTC.
+
+All scheduled attempts run in `live` mode after preflight, but repeated attempts are safe because the durable ledger and publish-date dedupe guard block already sent date/slug pairs before Telegram publish calls.
 
 If a stable 09:00 Kyiv wall-clock time is mandatory year-round, update the cron seasonally or move the scheduler to a runtime with timezone-aware cron, such as VPS/Coolify.
 
@@ -58,6 +66,19 @@ Live publish by date checks the ledger before each slug:
 - missing entry: publishable for the target date.
 
 The low-level zodiac pipeline blocks direct live use unless it is called as an approved child of the publish-by-date orchestrator and the ledger entry is already `pending`.
+
+## Delayed Schedule Recovery
+
+GitHub Actions schedule runs can be delayed. Do not start manual live recovery just because the 06:00 or 06:30 UTC attempt has not appeared yet; first check the backup window and the ledger.
+
+Manual live recovery is allowed only when all are true:
+
+- `npm run zodiac:publish-date:dry -- --date YYYY-MM-DD` shows 13 publishable posts for the target date.
+- The dry-run shows `Already Sent 0` and `Duplicate Blocked 0`.
+- The ledger has no `sent` entries for the target date.
+- The target date is explicit and was checked with the `Europe/Kyiv` calendar policy.
+
+Manual live recovery is forbidden when the dry-run or report shows the date is already protected, including `Already Sent 13` or `Duplicate Blocked 13`. In that case, the scheduled or backup run already did its job and another live attempt must not be started.
 
 ## Daily Status
 
