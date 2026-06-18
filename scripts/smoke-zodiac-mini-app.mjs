@@ -276,6 +276,9 @@ async function runStartParamSmoke(client, baseUrl, report) {
     { param: "favorites", landing: /Избранное|сохранённые расчёты/, pattern: /Избранное|Здесь появятся сохранённые расчёты/, message: "startapp=favorites did not open Profile favorites." },
   ];
 
+  await runVipPairGateShortcutSmoke(client, baseUrl, report);
+  await runNatalVipCtaSmoke(client, baseUrl, report);
+
   for (const item of cases) {
     await navigate(client, withStartParam(baseUrl, item.param));
     await installSmokeHelpers(client);
@@ -297,6 +300,69 @@ async function runStartParamSmoke(client, baseUrl, report) {
     }
     report.startParamsChecked.push(item.param);
   }
+}
+
+async function runVipPairGateShortcutSmoke(client, baseUrl, report) {
+  await openVipFromStartParam(client, baseUrl);
+  await click(client, "Карта+");
+  await waitForPageText(client, /Нужна пара для расчёта|Выберите два знака/, "Karta+ did not show a pair-required state.");
+  await click(client, "Выбрать знаки здесь");
+  await waitForPageText(client, /Ментальная карта пары|Первый знак|Второй знак/, "Karta+ did not open an inline VIP pair picker.");
+  await assertNoNativeSelects(client, report, "Karta+ inline pair picker");
+  await selectVisibleOption(client, "Телец", { index: 1 });
+  await click(client, "Рассчитать");
+  await waitForPageText(client, /Результат VIP|Ментальная карта связи/, "Karta+ inline pair picker did not calculate.");
+  report.vipKartaPlusInlinePickerChecked = true;
+
+  await openVipFromStartParam(client, baseUrl);
+  await click(client, "30 дней");
+  await waitForPageText(client, /Нужна пара для расчёта|Выберите два знака/, "30 days tab did not show a pair-required state.");
+  await click(client, "Выбрать знаки здесь");
+  await waitForPageText(client, /30-дневный календарь пары|Первый знак|Второй знак/, "30 days tab did not open an inline VIP pair picker.");
+  await assertNoNativeSelects(client, report, "30 days inline pair picker");
+  await selectVisibleOption(client, "Телец", { index: 1 });
+  await click(client, "Показать");
+  await waitForPageText(client, /Результат VIP|30 дней пары/, "30 days inline pair picker did not calculate.");
+  report.vipThirtyDaysInlinePickerChecked = true;
+}
+
+async function runNatalVipCtaSmoke(client, baseUrl, report) {
+  const cases = [
+    { label: "Смотреть бесплатные расширения", expected: /Расширенная натальная карта|VIP натальная схема|Ввод для расчёта/ },
+    { label: "Глубже про отношения", expected: /Расширенная совместимость|Первый знак|Второй знак/ },
+    { label: "Фокус месяца", expected: /Месячный прогноз|Месяц|Фокус/ },
+    { label: "Стиль лучших дней", expected: /30-дневный календарь пары|Первый знак|Второй знак/ },
+  ];
+
+  for (const item of cases) {
+    await openNatalChartWithVipBlocks(client, baseUrl);
+    await click(client, item.label);
+    await waitForPageText(client, item.expected, `Dead CTA "${item.label}" did not open the expected VIP tool.`);
+  }
+
+  report.deadCtaChecked = true;
+}
+
+async function openVipFromStartParam(client, baseUrl) {
+  await navigate(client, withStartParam(baseUrl, "vip"));
+  await installSmokeHelpers(client);
+  await waitForPageText(client, /VIP раздел|Выберите знак|Овен/, "VIP startapp sign gate did not render.");
+  await click(client, "Овен");
+  await waitForPageText(client, /VIP открыт бесплатно|Ранний доступ до 17\.09\.2026/, "VIP startapp menu did not render.");
+}
+
+async function openNatalChartWithVipBlocks(client, baseUrl) {
+  await navigate(client, withSmokeParam(baseUrl, "dead_cta"));
+  await installSmokeHelpers(client);
+  await waitForPageText(client, /Астрологический центр|Выберите, что хотите узнать сегодня/, "Mini App home did not render for dead CTA smoke.");
+  await click(client, "Нумерология");
+  await waitForPageText(client, /Выберите знак|Овен/, "Profile sign gate did not render for dead CTA smoke.");
+  await click(client, "Овен");
+  await waitForPageText(client, /Нумерология|Открыт раздел/, "Profile category did not render for dead CTA smoke.");
+  await click(client, "Натал");
+  await waitForPageText(client, /Натальная карта|Дата рождения/, "Natal chart feature did not render for dead CTA smoke.");
+  await fillVisibleInputAt(client, 1, "19.06.1992");
+  await waitForPageText(client, /VIP-разбор открыт бесплатно|Глубже про отношения|Фокус месяца|Стиль лучших дней/, "Natal VIP blocks did not render for dead CTA smoke.");
 }
 
 async function runTelegramMockSmoke(client, report) {
@@ -1164,6 +1230,9 @@ function createReport() {
     vipMessageCopyChecked: false,
     vipChartVisualsChecked: 0,
     vipPairGateInlinePickerChecked: false,
+    vipKartaPlusInlinePickerChecked: false,
+    vipThirtyDaysInlinePickerChecked: false,
+    deadCtaChecked: false,
     localStoragePrivacyChecked: false,
     giveawaysLocked: false,
     mysticChecked: 0,
@@ -1221,6 +1290,9 @@ function printSummary(status, report) {
   console.log(`VIP save/share checked: ${report.vipSaved}/11 saved, ${report.vipShared}/11 shared`);
   console.log(`VIP chart visuals checked: ${report.vipChartVisualsChecked}/4`);
   console.log(`VIP pair inline picker checked: ${report.vipPairGateInlinePickerChecked ? "YES" : "NO"}`);
+  console.log(`Karta+ pair gate checked: ${report.vipKartaPlusInlinePickerChecked ? "YES" : "NO"}`);
+  console.log(`30 days pair gate checked: ${report.vipThirtyDaysInlinePickerChecked ? "YES" : "NO"}`);
+  console.log(`Dead CTA checked: ${report.deadCtaChecked ? "YES" : "NO"}`);
   console.log(`VIP message copy checked: ${report.vipMessageCopyChecked ? "YES" : "NO"}`);
   console.log(`localStorage privacy checked: ${report.localStoragePrivacyChecked ? "YES" : "NO"}`);
   console.log(`Free access visible: ${report.freeAccessVisible ? "YES" : "NO"}`);

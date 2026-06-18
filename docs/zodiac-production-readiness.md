@@ -243,6 +243,9 @@ Compatibility share checked: YES
 VIP cards checked: 11/11
 VIP tools calculated: 11/11
 VIP save/share checked: 11/11 saved, 11/11 shared
+Karta+ pair gate checked: YES
+30 days pair gate checked: YES
+Dead CTA checked: YES
 VIP message copy checked: YES
 Giveaways locked: YES
 Mystic checked: YES

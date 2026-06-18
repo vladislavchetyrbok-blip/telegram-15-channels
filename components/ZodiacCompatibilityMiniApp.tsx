@@ -563,6 +563,11 @@ export function ZodiacCompatibilityMiniApp({
   function trackVipFeatureOpen(feature: string) {
     const featureId = feature as MoreFeatureId;
     const payload = analyticsPayload({ section: "vip", category: feature, featureKey: feature, sign: selectedSignSlug || undefined });
+    setHomePanel("home");
+    setActiveTab("vip");
+    setRequestedMoreFeature(featureId);
+    setPendingCompatibilityMode(null);
+    setShareFallbackText("");
     trackZodiacMiniAppEvent("vip_feature_opened", payload);
     const featureEvent = vipFeatureAnalyticsEvents[featureId];
     if (featureEvent) trackZodiacMiniAppEvent(featureEvent, payload);
@@ -1432,6 +1437,14 @@ function MoreSection({
     },
     [activeMoreFeature, category, onHaptic],
   );
+  const openVipFeature = useCallback(
+    (feature: string) => {
+      onHaptic("impact", "vip", feature);
+      onVipFeatureOpen(feature);
+      setActiveMoreFeature(feature as MoreFeatureId);
+    },
+    [onHaptic, onVipFeatureOpen],
+  );
   const handlePairRequiredAction = useCallback(
     (action: "create_pair" | "select_here" | "use_last_pair") => {
       onPersonalToolEvent("pair_required_action_clicked", {
@@ -1451,17 +1464,9 @@ function MoreSection({
         onUseLastPair(activeMoreFeature);
         return;
       }
-      setActiveMoreFeature("compatibilityTool");
+      openVipFeature(vipInlinePairFeatureFor(activeMoreFeature));
     },
-    [activeMoreFeature, lastPairAction, onCreatePair, onPersonalToolEvent, onUseLastPair, pairReady, partner.sign, relationshipMode, result.scores.total, selectedSignSlug, self.sign],
-  );
-  const openVipFeature = useCallback(
-    (feature: string) => {
-      onHaptic("impact", "vip", feature);
-      onVipFeatureOpen(feature);
-      setActiveMoreFeature(feature as MoreFeatureId);
-    },
-    [onHaptic, onVipFeatureOpen],
+    [activeMoreFeature, lastPairAction, onCreatePair, onPersonalToolEvent, onUseLastPair, openVipFeature, pairReady, partner.sign, relationshipMode, result.scores.total, selectedSignSlug, self.sign],
   );
   const openNatalVipFreeFeature = useCallback(
     (person: PersonState, chart: NatalChart) => {
@@ -4137,6 +4142,13 @@ function vipFeatureForNatalBlock(title: string): MoreFeatureId {
   if (title.includes("Фокус месяца")) return "vipMonthForecast";
   if (title.includes("Стиль лучших дней")) return "vipCoupleCalendar";
   return "vipNatalChart";
+}
+
+function vipInlinePairFeatureFor(feature: MoreFeatureId): MoreFeatureId {
+  if (feature === "mentalMap") return "vipMentalMap";
+  if (feature === "coupleCalendar") return "vipCoupleCalendar";
+  if (feature === "messageHelper") return "vipMessageHelper";
+  return "vipCompatibility";
 }
 
 function natalVipBlockCategory(title: string) {

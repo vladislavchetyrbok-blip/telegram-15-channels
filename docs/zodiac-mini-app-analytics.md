@@ -91,6 +91,8 @@ Home -> Category -> Feature -> Result
 
 These navigation events must not include names, birth dates, birth times, city query, raw text inputs, or Telegram initData. Safe fields are limited to values such as `section`, `category`, `featureKey`, `relationshipMode`, and zodiac sign slugs.
 
+Interaction hardening events for repaired CTAs and pair-required flows use only safe routing context: `section`, `category`, `featureKey`, sign slugs, `relationshipMode`, and `scoreTier`. They must not include raw form values or generated result/message text.
+
 The current Home menu has 10 large top-level categories, in order: `Гороскопы`, `Совместимость`, `Ангельские числа`, `Матрица судьбы`, `Нумерология`, `Мистика`, `Таро и руны`, `Луна и ритуалы`, `VIP раздел`, and `Мой профиль`. Angel Numbers must stay visible in the first screen zone. `Розыгрыши` stays inside VIP as locked/preview and is tracked only through giveaway locked events.
 
 Compatibility product structure:

@@ -39,6 +39,8 @@ npm run zodiac:miniapp:smoke -- --url http://localhost:3000/compatibility
 - Angel Numbers / `Ангельские числа` is visible as a top-level category, opens the existing `angelNumbers` feature, and returns to Home via Back/Main menu.
 - VIP tab opens, free access until `17.09.2026` is visible, and all 11 active VIP cards open as functional tools with an input block, calculate/show action, non-empty `Результат VIP`, safe Save, and safe Share.
 - VIP pair tools support inline pair selection when no pair exists, show `Нужна пара для расчёта`, and can calculate without sending users into a dead end.
+- VIP top-tab pair gates `Карта+` and `30 дней` must route from `Выбрать знаки здесь` into the matching inline VIP pair picker and produce a result.
+- Natal chart VIP CTA buttons `Смотреть бесплатные расширения`, `Глубже про отношения`, `Фокус месяца`, and `Стиль лучших дней` must open the intended VIP tool; any button-looking CTA that does nothing is a regression.
 - VIP Natal Chart, Extended Compatibility, Mental Map, and Numerology render a non-empty symbolic `AstroChartVisual` block after calculation.
 - Giveaways is not a top-level main category; it remains locked/disabled inside VIP.
 - Open VIP feature screens do not contain `TODO`, `lorem ipsum`, `placeholder`, or unexpected `Скоро появится` text.
@@ -75,6 +77,9 @@ VIP tools calculated: 11/11
 VIP save/share checked: 11/11 saved, 11/11 shared
 VIP chart visuals checked: 4/4
 VIP pair inline picker checked: YES
+Karta+ pair gate checked: YES
+30 days pair gate checked: YES
+Dead CTA checked: YES
 VIP message copy checked: YES
 Giveaways locked: YES
 Mystic checked: YES
