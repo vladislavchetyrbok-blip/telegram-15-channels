@@ -97,6 +97,7 @@ const requiredCoverage = {
     "compatibility_pair_saved",
     "compatibility_pair_reopened",
   ],
+  interactionHardening: ["dead_cta_resolved", "pair_required_action_clicked", "chart_visual_opened"],
 };
 
 const secretEnvNames = [
@@ -238,6 +239,7 @@ async function main() {
     `Telegram events covered: ${formatCoverage(report.coverage.telegram)}`,
     `Retention events covered: ${formatCoverage(report.coverage.retention)}`,
     `Compatibility events covered: ${formatCoverage(report.coverage.compatibility)}`,
+    `Interaction hardening events covered: ${formatCoverage(report.coverage.interactionHardening)}`,
     `Tracked events checked: ${usedEvents.length}`,
     `Ledger writes: ${ledgerChanged}`,
     `Live publish calls: 0`,

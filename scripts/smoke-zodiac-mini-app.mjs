@@ -136,6 +136,7 @@ async function runBrowserModeSmoke(client, report) {
   await waitForPageText(client, /Выберите знак|Овен/, "Compatibility sign gate did not render.");
   await click(client, "Овен");
   await waitForPageText(client, /Совместимость|Шаг 1/, "Love flow did not render after sign selection.");
+  await assertNoNativeSelects(client, report, "Compatibility step 1");
   await click(client, "Персональный");
   await fillVisibleInputAt(client, 1, "1998-06-15");
   await waitForPageText(client, /Близнецы/, "Birth date autosign failed for 1998-06-15 -> Близнецы.");
@@ -285,6 +286,15 @@ async function runStartParamSmoke(client, baseUrl, report) {
     }
     if (item.sign) await click(client, item.sign);
     await waitForPageText(client, item.pattern, item.message);
+    if (item.param === "vip") {
+      await click(client, "Расширенная совместимость");
+      await waitForPageText(client, /Нужна пара для расчёта|Первый знак|Второй знак/, "VIP pair-gated inline picker did not render.");
+      await assertNoNativeSelects(client, report, "VIP startapp pair inline picker");
+      await selectVisibleOption(client, "Телец", { index: 1 });
+      await click(client, "Рассчитать");
+      await waitForPageText(client, /Результат VIP|VIP карта отношений/, "VIP inline pair picker did not calculate a result.");
+      report.vipPairGateInlinePickerChecked = true;
+    }
     report.startParamsChecked.push(item.param);
   }
 }
@@ -357,9 +367,13 @@ async function assertFeatureScreen(client, label, options = {}) {
 async function runVipToolSmoke(client, label, report) {
   await assertFeatureScreen(client, label, { allowSoon: false, minLength: 420 });
   await waitForPageText(client, /Ввод для расчёта/, `VIP tool "${label}" did not render an input block.`);
+  await assertNoNativeSelects(client, report, `VIP tool "${label}"`);
   await clickAny(client, ["Рассчитать", "Показать"]);
   await waitForPageText(client, /Результат VIP/, `VIP tool "${label}" did not render a result block after calculation.`);
   await assertFeatureScreen(client, label, { allowSoon: false, minLength: 700 });
+  if (["Расширенная натальная карта", "Расширенная совместимость", "Ментальная карта пары", "Расширенная нумерология"].includes(label)) {
+    await assertChartVisual(client, label, report);
+  }
   report.vipCalculated += 1;
 
   await click(client, "Сохранить результат");
@@ -367,7 +381,7 @@ async function runVipToolSmoke(client, label, report) {
   report.vipSaved += 1;
 
   await click(client, "Поделиться результатом");
-  await waitForPageText(client, /Готово к отправке|Текст для копирования|Текст скопирован/i, `VIP tool "${label}" did not show share state or safe share fallback.`);
+  await waitForPageText(client, /Готово к отправке|Ссылка готова|Скопировано|Откройте Telegram|Не удалось открыть отправку|Текст для копирования|Текст скопирован/i, `VIP tool "${label}" did not show share state or safe share fallback.`);
   report.vipShared += 1;
 
   if (label === "Помощник сообщений") {
@@ -582,6 +596,12 @@ async function installSmokeHelpers(client) {
     function buttonLike() {
       return Array.from(document.querySelectorAll("button, a, [role='button']")).filter(isVisible);
     }
+    function customSelects() {
+      return Array.from(document.querySelectorAll("[data-zodiac-select]")).filter(isVisible);
+    }
+    function nativeSelects() {
+      return Array.from(document.querySelectorAll("select")).filter(isVisible).filter((element) => !element.disabled);
+    }
     function candidates(needle, options = {}) {
       const normalizedNeedle = normalize(needle);
       return buttonLike()
@@ -611,12 +631,20 @@ async function installSmokeHelpers(client) {
           text,
           textLength: text.trim().length,
           activeText: document.querySelector("[aria-current='page']")?.innerText || "",
+          nativeSelectCount: nativeSelects().length,
+          customSelectCount: customSelects().length,
           buttons: buttonLike().map((element) => ({
             text: (element.innerText || element.textContent || element.getAttribute("aria-label") || "").replace(/\\s+/g, " ").trim(),
             aria: element.getAttribute("aria-label") || "",
             disabled: Boolean(element.disabled || element.getAttribute("aria-disabled") === "true"),
           })).slice(0, 80),
         };
+      },
+      nativeSelectCount() {
+        return nativeSelects().length;
+      },
+      chartVisualCount() {
+        return Array.from(document.querySelectorAll("[data-zodiac-chart-visual]")).filter(isVisible).length;
       },
       hasText(patternSource) {
         return new RegExp(patternSource, "i").test(document.body?.innerText || "");
@@ -679,11 +707,24 @@ async function installSmokeHelpers(client) {
         input.dispatchEvent(new Event("change", { bubbles: true }));
         return { ok: true, count: inputs.length };
       },
-      selectVisibleOption(valueOrText, options = {}) {
-        const selects = Array.from(document.querySelectorAll("select")).filter(isVisible).filter((element) => !element.disabled);
+      async selectVisibleOption(valueOrText, options = {}) {
+        const selects = nativeSelects();
         const select = selects[options.index || 0];
-        if (!select) return { ok: false, error: "not_found", count: selects.length };
         const normalizedNeedle = normalize(valueOrText);
+        if (!select) {
+          const custom = customSelects()[options.index || 0];
+          if (!custom) return { ok: false, error: "not_found", count: 0, customCount: customSelects().length };
+          const trigger = custom.querySelector("button[aria-haspopup='listbox']");
+          if (!trigger) return { ok: false, error: "custom_trigger_not_found", count: 0, customCount: customSelects().length };
+          trigger.scrollIntoView({ block: "center", inline: "center" });
+          trigger.click();
+          await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+          const optionsList = Array.from(document.querySelectorAll("[data-zodiac-select-option-value]")).filter(isVisible);
+          const option = optionsList.find((item) => normalize(item.getAttribute("data-zodiac-select-option-value")) === normalizedNeedle || normalize(item.textContent).includes(normalizedNeedle));
+          if (!option) return { ok: false, error: "custom_option_not_found", count: 0, customCount: customSelects().length, options: optionsList.map((item) => item.textContent || item.getAttribute("data-zodiac-select-option-value")).slice(0, 20) };
+          option.click();
+          return { ok: true, value: option.getAttribute("data-zodiac-select-option-value"), text: option.textContent, count: 0, customCount: customSelects().length };
+        }
         const option = Array.from(select.options).find((item) => normalize(item.value) === normalizedNeedle || normalize(item.textContent).includes(normalizedNeedle));
         if (!option) return { ok: false, error: "option_not_found", count: selects.length, options: Array.from(select.options).map((item) => item.textContent || item.value).slice(0, 20) };
         select.scrollIntoView({ block: "center", inline: "center" });
@@ -695,9 +736,13 @@ async function installSmokeHelpers(client) {
         return { ok: true, value: option.value, text: option.textContent, count: selects.length };
       },
       visibleSelectValue(index = 0) {
-        const selects = Array.from(document.querySelectorAll("select")).filter(isVisible).filter((element) => !element.disabled);
+        const selects = nativeSelects();
         const select = selects[index || 0];
-        if (!select) return { ok: false, error: "not_found", count: selects.length };
+        if (!select) {
+          const custom = customSelects()[index || 0];
+          if (!custom) return { ok: false, error: "not_found", count: 0, customCount: customSelects().length };
+          return { ok: true, value: custom.getAttribute("data-zodiac-select-value") || "", text: custom.innerText || custom.textContent || "", count: 0, customCount: customSelects().length };
+        }
         const option = select.options[select.selectedIndex];
         return { ok: true, value: select.value, text: option?.textContent || "", count: selects.length };
       },
@@ -823,6 +868,19 @@ async function expectVisibleSelectValue(client, index, expectedValue, label) {
   const result = await evalPage(client, "window.__zodiacSmoke.visibleSelectValue(arguments[0])", [index]);
   if (!result.ok) throw new Error(`Could not read visible select at index ${index}: ${result.error}; visible selects=${result.count}.`);
   if (result.value !== expectedValue) throw new Error(`${label}: expected select value ${expectedValue}, got ${result.value || "empty"} (${result.text || "no text"}).`);
+}
+
+async function assertNoNativeSelects(client, report, label) {
+  const count = await evalPage(client, "window.__zodiacSmoke.nativeSelectCount()", []);
+  report.nativeSelectsVisible = Math.max(report.nativeSelectsVisible, count || 0);
+  if (count > 0) throw new Error(`${label}: expected custom ZodiacSelect controls, found ${count} visible native <select> control(s).`);
+  report.customSelectChecked = true;
+}
+
+async function assertChartVisual(client, label, report) {
+  const count = await evalPage(client, "window.__zodiacSmoke.chartVisualCount()", []);
+  if (count < 1) throw new Error(`VIP tool "${label}" did not render an AstroChartVisual.`);
+  report.vipChartVisualsChecked += 1;
 }
 
 async function clickHub(client, label) {
@@ -1089,6 +1147,8 @@ function createReport() {
     localDataCleared: false,
     horoscopesChecked: false,
     angelNumbersChecked: false,
+    customSelectChecked: false,
+    nativeSelectsVisible: 0,
     compatibilityAutosignCases: [],
     compatibilityResultChecked: false,
     compatibilityCalendarChecked: false,
@@ -1102,6 +1162,8 @@ function createReport() {
     vipSaved: 0,
     vipShared: 0,
     vipMessageCopyChecked: false,
+    vipChartVisualsChecked: 0,
+    vipPairGateInlinePickerChecked: false,
     localStoragePrivacyChecked: false,
     giveawaysLocked: false,
     mysticChecked: 0,
@@ -1142,6 +1204,7 @@ function printSummary(status, report) {
   console.log(`Local data cleared: ${report.localDataCleared ? "YES" : "NO"}`);
   console.log(`Horoscopes checked: ${report.horoscopesChecked ? "YES" : "NO"}`);
   console.log(`Angel Numbers / Ангельские числа checked: ${report.angelNumbersChecked ? "YES" : "NO"}`);
+  console.log(`Custom selects checked: ${report.customSelectChecked ? "YES" : "NO"} (native visible: ${report.nativeSelectsVisible})`);
   console.log(`Compatibility result checked: ${report.compatibilityResultChecked ? "YES" : "NO"}`);
   console.log(`Compatibility autosign cases: ${report.compatibilityAutosignCases.length ? report.compatibilityAutosignCases.join(", ") : "NO"}`);
   console.log(`Compatibility 30-day calendar checked: ${report.compatibilityCalendarChecked ? "YES" : "NO"}`);
@@ -1156,6 +1219,8 @@ function printSummary(status, report) {
   console.log(`VIP cards checked: ${report.vipChecked}/11`);
   console.log(`VIP tools calculated: ${report.vipCalculated}/11`);
   console.log(`VIP save/share checked: ${report.vipSaved}/11 saved, ${report.vipShared}/11 shared`);
+  console.log(`VIP chart visuals checked: ${report.vipChartVisualsChecked}/4`);
+  console.log(`VIP pair inline picker checked: ${report.vipPairGateInlinePickerChecked ? "YES" : "NO"}`);
   console.log(`VIP message copy checked: ${report.vipMessageCopyChecked ? "YES" : "NO"}`);
   console.log(`localStorage privacy checked: ${report.localStoragePrivacyChecked ? "YES" : "NO"}`);
   console.log(`Free access visible: ${report.freeAccessVisible ? "YES" : "NO"}`);

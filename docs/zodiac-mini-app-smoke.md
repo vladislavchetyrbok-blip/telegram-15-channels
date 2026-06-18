@@ -30,6 +30,7 @@ npm run zodiac:miniapp:smoke -- --url http://localhost:3000/compatibility
 - History and Favorites use localStorage only and store safe shortcuts/summaries, not raw personal inputs.
 - A safe Angel Numbers item can be saved, appears in Favorites/Profile, opens back into the feature, and can be cleared with `Очистить данные`.
 - Safe Share can be clicked without crashing; browser fallback shows copy text or a copied state.
+- Mini App forms use custom `ZodiacSelect` controls in Telegram/browser mode; visible native `<select>` controls inside active Mini App screens are treated as a regression.
 - Compatibility follows `Compatibility -> Pair Setup -> Relationship Card -> 30-Day Couple Calendar -> Actions / Messages / Save / Share`.
 - Compatibility result must show the visual markers `Карта отношений`, `Главный совет`, `Эмоции`, `Общение`, and `Быт / ритм`.
 - Compatibility smoke chooses Love mode, fills pair data, verifies birth-date autosign cases `1998-06-15 -> Близнецы`, `2000-03-21 -> Овен`, and `2000-12-22 -> Козерог`, reaches a detailed result, opens the 30-day couple calendar, opens `Что написать`, verifies the message copy state `Скопировано`, opens `Действие сегодня`, saves the pair with the `Пара сохранена` state, reopens it from Profile/Favorites/History, and checks safe Share.
@@ -37,6 +38,8 @@ npm run zodiac:miniapp:smoke -- --url http://localhost:3000/compatibility
 - Horoscopes category opens from the main menu.
 - Angel Numbers / `Ангельские числа` is visible as a top-level category, opens the existing `angelNumbers` feature, and returns to Home via Back/Main menu.
 - VIP tab opens, free access until `17.09.2026` is visible, and all 11 active VIP cards open as functional tools with an input block, calculate/show action, non-empty `Результат VIP`, safe Save, and safe Share.
+- VIP pair tools support inline pair selection when no pair exists, show `Нужна пара для расчёта`, and can calculate without sending users into a dead end.
+- VIP Natal Chart, Extended Compatibility, Mental Map, and Numerology render a non-empty symbolic `AstroChartVisual` block after calculation.
 - Giveaways is not a top-level main category; it remains locked/disabled inside VIP.
 - Open VIP feature screens do not contain `TODO`, `lorem ipsum`, `placeholder`, or unexpected `Скоро появится` text.
 - VIP smoke checks all 11 active tools: natal chart, monthly forecast, name profile, compatibility, mental map, 30-day couple calendar, message helper, numerology, angel numbers, talismans, and VIP mystic day.
@@ -66,9 +69,12 @@ Main menu checked: YES
 Main menu categories checked: 10/10
 Horoscopes checked: YES
 Angel Numbers / Ангельские числа checked: YES
+Custom selects checked: YES (native visible: 0)
 VIP cards checked: 11/11
 VIP tools calculated: 11/11
 VIP save/share checked: 11/11 saved, 11/11 shared
+VIP chart visuals checked: 4/4
+VIP pair inline picker checked: YES
 VIP message copy checked: YES
 Giveaways locked: YES
 Mystic checked: YES

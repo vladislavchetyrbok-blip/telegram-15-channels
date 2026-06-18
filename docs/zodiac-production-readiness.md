@@ -14,6 +14,7 @@ The Zodiac product is ready for controlled live operation of the daily publishin
 - Weekly Zodiac posts are prepared and dry-run ready, but weekly live scheduling remains OFF.
 - Mini App core UX is implemented: 10-category home, Angel Numbers top-level, Compatibility pair core, Horoscopes, Mystic, Birth Matrix, VIP, Profile, History, Favorites, and Share.
 - VIP is free until `2026-09-17`; payments and Telegram Stars remain OFF.
+- Mini App interaction hardening is expected: custom dark selects, safe share fallback, non-dead pair gates, inline VIP pair pickers, and symbolic chart visuals for key VIP tools.
 - Analytics is privacy-safe but storage mode is currently `noop` unless Redis REST env vars are configured.
 - Manual live publish remains forbidden unless a dry-run and ledger audit prove it is safe.
 
@@ -178,6 +179,8 @@ VIP:
 - Free access until `2026-09-17`.
 - Payments and Telegram Stars are OFF.
 - 11 active VIP cards are functional tools with visible inputs, calculate/show action, non-empty result, safe Save, and safe Share.
+- Pair-dependent VIP tools include inline sign/mode pickers and can calculate even when the user has not created a pair in the main compatibility wizard.
+- Key VIP result screens render symbolic chart visuals: Natal Chart, Extended Compatibility, Mental Map, and Numerology.
 - VIP message helper supports copy state without storing message text.
 - Giveaways remain locked/preview.
 

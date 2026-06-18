@@ -9,6 +9,7 @@ import {
   getWeekRangeForDate,
 } from "@/lib/zodiac-date";
 import { useTelegramBackButton, useTelegramWebApp, type TelegramWebAppState } from "@/lib/use-telegram-webapp";
+import { shareZodiacMiniAppContent } from "@/lib/zodiac-mini-app-share";
 import { trackZodiacMiniAppEvent } from "@/lib/zodiac-mini-app-analytics-client";
 import { zodiacAnalyticsScoreTier, zodiacAnalyticsStartappType, type ZodiacAnalyticsEventName, type ZodiacAnalyticsPayload } from "@/lib/zodiac-mini-app-analytics-shared";
 import { ArrowLeft, ArrowRight, Bookmark, CalendarDays, Check, Copy, Crown, Gift, MapPin, Share2, ShieldCheck, Sparkles, Star } from "lucide-react";
@@ -80,6 +81,7 @@ import { MoreFeatureNavigation } from "./zodiac-mini-app/MoreFeatureNavigation";
 import { ProfileRetentionPanel, type ProfileQuickTarget } from "./zodiac-mini-app/ProfileRetentionPanel";
 import { useZodiacMiniAppRetention, type RetentionPanelFocus, type ZodiacRetentionDraft, type ZodiacRetentionItem } from "./zodiac-mini-app/retention";
 import { ResultPanel, ResultTextCard } from "./zodiac-mini-app/ResultCards";
+import { ZodiacSelect, type ZodiacSelectOption } from "./zodiac-mini-app/ZodiacSelect";
 import {
   Field,
   ModeSelector,
@@ -164,6 +166,14 @@ export type {
   ZodiacVipConfig,
 } from "./zodiac-mini-app/types";
 
+const signSelectOptions: ZodiacSelectOption[] = [
+  { value: "", label: "Выберите знак...", disabled: true },
+  ...signs.map((sign) => ({
+    value: sign.slug,
+    label: `${sign.emoji} ${sign.name}`,
+    description: sign.range,
+  })),
+];
 
 export function ZodiacCompatibilityMiniApp({
   variant = "dashboard",
@@ -182,6 +192,7 @@ export function ZodiacCompatibilityMiniApp({
   const initialRelationshipMode = useMemo(() => resolveInitialRelationshipMode(startParam), [startParam]);
   const hintSign = hintSignSlug ? findSign(hintSignSlug) : null;
   const retention = useZodiacMiniAppRetention();
+  const lastPairAction = useMemo(() => findLastPairRetentionItem(retention.state.history, retention.state.favorites), [retention.state.favorites, retention.state.history]);
   const [appDateKey, setAppDateKey] = useState<string | null>(null);
   const [selectedSignSlug, setSelectedSignSlug] = useState("");
   const [activeTab, setActiveTab] = useState<HubTab>(initialActiveTab);
@@ -445,6 +456,28 @@ export function ZodiacCompatibilityMiniApp({
     openMenuCategory(target, categoryId);
   }
 
+  function startPairSetup(featureKey = "pair_required") {
+    triggerTelegramHaptic("selection", "compatibility", featureKey);
+    setActiveTab("love");
+    setHomePanel("home");
+    setRequestedMoreFeature("compatibilityTool");
+    setPendingCompatibilityMode(relationshipMode);
+    setStep(1);
+  }
+
+  function useLastPair(featureKey = "pair_required") {
+    if (!lastPairAction?.firstSign || !lastPairAction.secondSign) return;
+    const nextRelationshipMode = lastPairAction.relationshipMode ?? "love";
+    triggerTelegramHaptic("selection", "compatibility", featureKey);
+    setRelationshipMode(nextRelationshipMode);
+    setPendingCompatibilityMode(nextRelationshipMode);
+    setMode("fast");
+    setSelectedSignSlug(lastPairAction.firstSign);
+    setSelf((current) => ({ ...current, sign: lastPairAction.firstSign || current.sign }));
+    setPartner((current) => ({ ...current, sign: lastPairAction.secondSign || current.sign }));
+    setStep(3);
+  }
+
   function changeActiveTab(nextTab: HubTab) {
     if (nextTab !== activeTab) triggerTelegramHaptic("selection", "tab", nextTab);
     setHomePanel("home");
@@ -659,25 +692,9 @@ export function ZodiacCompatibilityMiniApp({
     setShareFallbackText("");
     trackZodiacMiniAppEvent("share_clicked", analyticsPayload({ section: "share", category: action.section, featureKey: action.featureKey, sign: action.sign }));
     const appLink = `https://t.me/zodiac_love_check_bot?startapp=${shareStartParamForAction(action)}`;
-    const telegramShareUrl = `https://t.me/share/url?url=${encodeURIComponent(appLink)}&text=${encodeURIComponent(text)}`;
-    try {
-      if (telegram.webApp?.openTelegramLink) {
-        telegram.webApp.openTelegramLink(telegramShareUrl);
-        return;
-      }
-      if (typeof navigator !== "undefined" && navigator.share) {
-        await navigator.share({ text });
-        return;
-      }
-      if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(text);
-        setShareFallbackText("Текст скопирован в буфер обмена.");
-        return;
-      }
-    } catch {
-      // Fall through to visible copy text.
-    }
-    setShareFallbackText(text);
+    const result = await shareZodiacMiniAppContent({ text, url: appLink, telegramWebApp: telegram.webApp });
+    setShareFallbackText(result.fallbackText ?? result.label);
+    return result.label;
   }
 
   function resetFlow() {
@@ -852,6 +869,9 @@ export function ZodiacCompatibilityMiniApp({
                     onPersonalToolEvent={trackPersonalToolEvent}
                     onRetentionAction={retention.recordAction}
                     onFavoriteSave={saveFavorite}
+                    lastPairAction={lastPairAction}
+                    onCreatePair={startPairSetup}
+                    onUseLastPair={useLastPair}
                     onShare={shareSafeAction}
                   />
                 </div>
@@ -885,6 +905,9 @@ export function ZodiacCompatibilityMiniApp({
                   onPersonalToolEvent={trackPersonalToolEvent}
                   onRetentionAction={retention.recordAction}
                   onFavoriteSave={saveFavorite}
+                  lastPairAction={lastPairAction}
+                  onCreatePair={startPairSetup}
+                  onUseLastPair={useLastPair}
                   onShare={shareSafeAction}
                 />
               ) : null}
@@ -917,6 +940,9 @@ export function ZodiacCompatibilityMiniApp({
                   onPersonalToolEvent={trackPersonalToolEvent}
                   onRetentionAction={retention.recordAction}
                   onFavoriteSave={saveFavorite}
+                  lastPairAction={lastPairAction}
+                  onCreatePair={startPairSetup}
+                  onUseLastPair={useLastPair}
                   onShare={shareSafeAction}
                 />
               ) : null}
@@ -949,6 +975,9 @@ export function ZodiacCompatibilityMiniApp({
                   onPersonalToolEvent={trackPersonalToolEvent}
                   onRetentionAction={retention.recordAction}
                   onFavoriteSave={saveFavorite}
+                  lastPairAction={lastPairAction}
+                  onCreatePair={startPairSetup}
+                  onUseLastPair={useLastPair}
                   onShare={shareSafeAction}
                 />
               ) : null}
@@ -1041,11 +1070,14 @@ export function ZodiacCompatibilityMiniApp({
                     onNatalChartResultViewed={trackNatalChartResultViewed}
                     onNatalChartSectionOpen={trackNatalChartSectionOpen}
                     onNatalChartVipFreeOpen={trackNatalChartVipFreeOpen}
-                    onPersonalToolEvent={trackPersonalToolEvent}
-                    onRetentionAction={retention.recordAction}
-                    onFavoriteSave={saveFavorite}
-                    onShare={shareSafeAction}
-                  />
+                  onPersonalToolEvent={trackPersonalToolEvent}
+                  onRetentionAction={retention.recordAction}
+                  onFavoriteSave={saveFavorite}
+                  lastPairAction={lastPairAction}
+                  onCreatePair={startPairSetup}
+                  onUseLastPair={useLastPair}
+                  onShare={shareSafeAction}
+                />
                 </div>
               ) : null}
             </section>
@@ -1275,6 +1307,9 @@ function MoreSection({
   onPersonalToolEvent,
   onRetentionAction,
   onFavoriteSave,
+  lastPairAction,
+  onCreatePair,
+  onUseLastPair,
   onShare,
 }: {
   publicMode: boolean;
@@ -1304,7 +1339,10 @@ function MoreSection({
   onPersonalToolEvent: (event: ZodiacAnalyticsEventName, payload: ZodiacAnalyticsPayload) => void;
   onRetentionAction: (action: ZodiacRetentionDraft) => void;
   onFavoriteSave: (action: ZodiacRetentionDraft) => void;
-  onShare: (action: ZodiacRetentionDraft) => void;
+  lastPairAction?: ZodiacRetentionItem | null;
+  onCreatePair: (featureKey?: string) => void;
+  onUseLastPair: (featureKey?: string) => void;
+  onShare: (action: ZodiacRetentionDraft) => Promise<string | void> | string | void;
 }) {
   const [messageTone, setMessageTone] = useState<MessageTone>("soft");
   const [angelNumberInput, setAngelNumberInput] = useState("11:11");
@@ -1394,6 +1432,29 @@ function MoreSection({
     },
     [activeMoreFeature, category, onHaptic],
   );
+  const handlePairRequiredAction = useCallback(
+    (action: "create_pair" | "select_here" | "use_last_pair") => {
+      onPersonalToolEvent("pair_required_action_clicked", {
+        section: "compatibility",
+        category: action,
+        featureKey: activeMoreFeature,
+        firstSign: action === "use_last_pair" ? lastPairAction?.firstSign : self.sign || selectedSignSlug || undefined,
+        secondSign: action === "use_last_pair" ? lastPairAction?.secondSign : partner.sign || undefined,
+        relationshipMode,
+        scoreTier: pairReady ? zodiacAnalyticsScoreTier(result.scores.total) : safeAnalyticsScoreTier(lastPairAction?.scoreTier),
+      });
+      if (action === "create_pair") {
+        onCreatePair(activeMoreFeature);
+        return;
+      }
+      if (action === "use_last_pair") {
+        onUseLastPair(activeMoreFeature);
+        return;
+      }
+      setActiveMoreFeature("compatibilityTool");
+    },
+    [activeMoreFeature, lastPairAction, onCreatePair, onPersonalToolEvent, onUseLastPair, pairReady, partner.sign, relationshipMode, result.scores.total, selectedSignSlug, self.sign],
+  );
   const openVipFeature = useCallback(
     (feature: string) => {
       onHaptic("impact", "vip", feature);
@@ -1401,6 +1462,38 @@ function MoreSection({
       setActiveMoreFeature(feature as MoreFeatureId);
     },
     [onHaptic, onVipFeatureOpen],
+  );
+  const openNatalVipFreeFeature = useCallback(
+    (person: PersonState, chart: NatalChart) => {
+      onNatalChartVipFreeOpen(person, chart);
+      onPersonalToolEvent("dead_cta_resolved", {
+        section: "natal_chart",
+        category: "vip_free_extensions",
+        featureKey: "vipNatalChart",
+        sign: chart.sign.slug,
+        hasBirthDate: chart.hasBirthDate,
+        hasBirthTime: chart.hasBirthTime,
+        hasBirthCity: chart.hasBirthCity,
+      });
+      openVipFeature("vipNatalChart");
+    },
+    [onNatalChartVipFreeOpen, onPersonalToolEvent, openVipFeature],
+  );
+  const openNatalVipBlockFeature = useCallback(
+    (blockTitle: string, chart: NatalChart) => {
+      const targetFeature = vipFeatureForNatalBlock(blockTitle);
+      onPersonalToolEvent("dead_cta_resolved", {
+        section: "natal_chart",
+        category: natalVipBlockCategory(blockTitle),
+        featureKey: targetFeature,
+        sign: chart.sign.slug,
+        hasBirthDate: chart.hasBirthDate,
+        hasBirthTime: chart.hasBirthTime,
+        hasBirthCity: chart.hasBirthCity,
+      });
+      openVipFeature(targetFeature);
+    },
+    [onPersonalToolEvent, openVipFeature],
   );
   const handleMessageTemplateCopy = useCallback(
     (templateId: string) => {
@@ -1694,10 +1787,10 @@ function MoreSection({
         {activeMoreFeature === "todayForecast" ? <TodaySection publicMode={publicMode} sign={selectedSign} dateKey={dateKey} /> : null}
         {activeMoreFeature === "weekForecast" ? <WeekSection publicMode={publicMode} sign={selectedSign} dateKey={dateKey} /> : null}
         {activeMoreFeature === "luckyDays" ? <LuckyDaysSection publicMode={publicMode} sign={selectedSign} dateKey={dateKey} onLuckyDayClick={onLuckyDayClick} /> : null}
-        {activeMoreFeature === "coupleHoroscope" ? <CoupleHoroscopeCard publicMode={publicMode} horoscope={coupleHoroscope} actionToday={coupleAction} /> : null}
-        {activeMoreFeature === "mentalMap" ? <RelationshipMapCard publicMode={publicMode} result={result} pairReady={pairReady} onCategoryOpen={onRelationshipMapCategoryOpen} /> : null}
-        {activeMoreFeature === "coupleCalendar" ? <CoupleCalendarCard publicMode={publicMode} days={coupleCalendar} pairReady={pairReady} /> : null}
-        {activeMoreFeature === "reconciliation" ? <ReconciliationDayCard publicMode={publicMode} reconciliation={reconciliation} /> : null}
+        {activeMoreFeature === "coupleHoroscope" ? <CoupleHoroscopeCard publicMode={publicMode} horoscope={coupleHoroscope} actionToday={coupleAction} lastPairAction={lastPairAction} onPairRequiredAction={handlePairRequiredAction} /> : null}
+        {activeMoreFeature === "mentalMap" ? <RelationshipMapCard publicMode={publicMode} result={result} pairReady={pairReady} lastPairAction={lastPairAction} onPairRequiredAction={handlePairRequiredAction} onCategoryOpen={onRelationshipMapCategoryOpen} /> : null}
+        {activeMoreFeature === "coupleCalendar" ? <CoupleCalendarCard publicMode={publicMode} days={coupleCalendar} pairReady={pairReady} lastPairAction={lastPairAction} onPairRequiredAction={handlePairRequiredAction} /> : null}
+        {activeMoreFeature === "reconciliation" ? <ReconciliationDayCard publicMode={publicMode} reconciliation={reconciliation} lastPairAction={lastPairAction} onPairRequiredAction={handlePairRequiredAction} /> : null}
         {activeMoreFeature === "messageHelper" ? (
           <PartnerMessageCard
             publicMode={publicMode}
@@ -1710,6 +1803,8 @@ function MoreSection({
             onSave={() => onFavoriteSave(currentRetentionAction)}
             onShare={() => onShare(currentRetentionAction)}
             pairReady={pairReady}
+            lastPairAction={lastPairAction}
+            onPairRequiredAction={handlePairRequiredAction}
           />
         ) : null}
         {activeMoreFeature === "nameCompatibility" ? (
@@ -1732,7 +1827,8 @@ function MoreSection({
             onOpened={onNatalChartOpened}
             onResultViewed={onNatalChartResultViewed}
             onSectionOpen={onNatalChartSectionOpen}
-            onVipFreeOpen={onNatalChartVipFreeOpen}
+            onVipFreeOpen={openNatalVipFreeFeature}
+            onVipBlockOpen={openNatalVipBlockFeature}
           />
         ) : null}
         {activeMoreFeature === "chineseHoroscope" ? <ChineseHoroscopeCard publicMode={publicMode} person={natalPerson} horoscope={chineseHoroscope} onPersonChange={setNatalPerson} /> : null}
@@ -1841,8 +1937,57 @@ function MoreSection({
   );
 }
 
-function CoupleHoroscopeCard({ publicMode, horoscope, actionToday }: { publicMode: boolean; horoscope: CoupleHoroscope | null; actionToday: CoupleAction | null }) {
-  if (!horoscope) return <EmptyFeatureCard publicMode={publicMode} title="💑 Гороскоп пары" text="Выберите два знака в разделе «Совместимость», чтобы открыть гороскоп пары." />;
+function PairRequiredCard({
+  publicMode,
+  title,
+  lastPairAction,
+  onPairRequiredAction,
+}: {
+  publicMode: boolean;
+  title: string;
+  lastPairAction?: ZodiacRetentionItem | null;
+  onPairRequiredAction: (action: "create_pair" | "select_here" | "use_last_pair") => void;
+}) {
+  const lastPairLabel = lastPairAction?.firstSign && lastPairAction.secondSign ? `${findSign(lastPairAction.firstSign).name} + ${findSign(lastPairAction.secondSign).name}` : "";
+  return (
+    <FeatureCard publicMode={publicMode} title={title} subtitle="Нужна пара для расчёта">
+      <div className={publicMode ? "rounded-lg border border-cyan-200/20 bg-cyan-200/10 p-4" : "rounded-lg border border-cyan-100 bg-cyan-50 p-4"}>
+        <p className={publicMode ? "text-base font-semibold text-cyan-50" : "text-base font-semibold text-cyan-950"}>Нужна пара для расчёта</p>
+        <p className={publicMode ? "mt-2 text-sm leading-6 text-cyan-50/85" : "mt-2 text-sm leading-6 text-cyan-900"}>
+          Выберите два знака, чтобы открыть этот инструмент. Можно создать пару в основном расчёте или быстро перейти к выбору знаков.
+        </p>
+        <div className="mt-4 grid gap-2">
+          <button type="button" onClick={() => onPairRequiredAction("create_pair")} className={primaryTinyButtonClass(publicMode)}>
+            Создать пару
+          </button>
+          <button type="button" onClick={() => onPairRequiredAction("select_here")} className={secondaryTinyButtonClass(publicMode)}>
+            Выбрать знаки здесь
+          </button>
+          {lastPairLabel ? (
+            <button type="button" onClick={() => onPairRequiredAction("use_last_pair")} className={secondaryTinyButtonClass(publicMode)}>
+              Использовать последнюю пару: {lastPairLabel}
+            </button>
+          ) : null}
+        </div>
+      </div>
+    </FeatureCard>
+  );
+}
+
+function CoupleHoroscopeCard({
+  publicMode,
+  horoscope,
+  actionToday,
+  lastPairAction,
+  onPairRequiredAction,
+}: {
+  publicMode: boolean;
+  horoscope: CoupleHoroscope | null;
+  actionToday: CoupleAction | null;
+  lastPairAction?: ZodiacRetentionItem | null;
+  onPairRequiredAction: (action: "create_pair" | "select_here" | "use_last_pair") => void;
+}) {
+  if (!horoscope) return <PairRequiredCard publicMode={publicMode} title="💑 Гороскоп пары" lastPairAction={lastPairAction} onPairRequiredAction={onPairRequiredAction} />;
 
   return (
     <FeatureCard publicMode={publicMode} title="💑 Гороскоп пары на сегодня" subtitle={horoscope.summary}>
@@ -1881,14 +2026,18 @@ function RelationshipMapCard({
   publicMode,
   result,
   pairReady,
+  lastPairAction,
+  onPairRequiredAction,
   onCategoryOpen,
 }: {
   publicMode: boolean;
   result: CompatibilityResult;
   pairReady: boolean;
+  lastPairAction?: ZodiacRetentionItem | null;
+  onPairRequiredAction: (action: "create_pair" | "select_here" | "use_last_pair") => void;
   onCategoryOpen: (category: string) => void;
 }) {
-  if (!pairReady) return <EmptyFeatureCard publicMode={publicMode} title="🧠 Ментальная карта пары" text="Выберите два знака в разделе «Совместимость», чтобы увидеть карту отношений." />;
+  if (!pairReady) return <PairRequiredCard publicMode={publicMode} title="🧠 Ментальная карта пары" lastPairAction={lastPairAction} onPairRequiredAction={onPairRequiredAction} />;
 
   return (
     <FeatureCard publicMode={publicMode} title="🧠 Ментальная карта пары" subtitle="Как вы думаете, спорите, миритесь и поддерживаете друг друга">
@@ -2010,8 +2159,20 @@ function MentalMapAdviceCard({ publicMode, title, items }: { publicMode: boolean
   );
 }
 
-function CoupleCalendarCard({ publicMode, days, pairReady }: { publicMode: boolean; days: CoupleCalendarDay[]; pairReady: boolean }) {
-  if (!pairReady) return <EmptyFeatureCard publicMode={publicMode} title="📅 Календарь пары" text="Выберите два знака, чтобы открыть календарь пары без лишних данных." />;
+function CoupleCalendarCard({
+  publicMode,
+  days,
+  pairReady,
+  lastPairAction,
+  onPairRequiredAction,
+}: {
+  publicMode: boolean;
+  days: CoupleCalendarDay[];
+  pairReady: boolean;
+  lastPairAction?: ZodiacRetentionItem | null;
+  onPairRequiredAction: (action: "create_pair" | "select_here" | "use_last_pair") => void;
+}) {
+  if (!pairReady) return <PairRequiredCard publicMode={publicMode} title="📅 Календарь пары" lastPairAction={lastPairAction} onPairRequiredAction={onPairRequiredAction} />;
 
   return (
     <FeatureCard publicMode={publicMode} title="📅 30 дней пары" subtitle={`Ближайшие ${days.length} дней: тема, энергия, действие и риск`}>
@@ -2067,8 +2228,18 @@ function CoupleCalendarCard({ publicMode, days, pairReady }: { publicMode: boole
   );
 }
 
-function ReconciliationDayCard({ publicMode, reconciliation }: { publicMode: boolean; reconciliation: ReconciliationDay | null }) {
-  if (!reconciliation) return <EmptyFeatureCard publicMode={publicMode} title="🕊 День для примирения" text="Выберите два знака, чтобы увидеть мягкую подсказку для примирения." />;
+function ReconciliationDayCard({
+  publicMode,
+  reconciliation,
+  lastPairAction,
+  onPairRequiredAction,
+}: {
+  publicMode: boolean;
+  reconciliation: ReconciliationDay | null;
+  lastPairAction?: ZodiacRetentionItem | null;
+  onPairRequiredAction: (action: "create_pair" | "select_here" | "use_last_pair") => void;
+}) {
+  if (!reconciliation) return <PairRequiredCard publicMode={publicMode} title="🕊 День для примирения" lastPairAction={lastPairAction} onPairRequiredAction={onPairRequiredAction} />;
 
   return (
     <FeatureCard publicMode={publicMode} title="🕊 День для примирения" subtitle={reconciliation.status}>
@@ -2092,6 +2263,8 @@ function PartnerMessageCard({
   onSave,
   onShare,
   pairReady,
+  lastPairAction,
+  onPairRequiredAction,
 }: {
   publicMode: boolean;
   message: string | null;
@@ -2103,10 +2276,12 @@ function PartnerMessageCard({
   onSave: () => void;
   onShare: () => void;
   pairReady: boolean;
+  lastPairAction?: ZodiacRetentionItem | null;
+  onPairRequiredAction: (action: "create_pair" | "select_here" | "use_last_pair") => void;
 }) {
   const [copiedTemplateId, setCopiedTemplateId] = useState<string | null>(null);
 
-  if (!pairReady) return <EmptyFeatureCard publicMode={publicMode} title="💌 Что написать партнёру" text="Выберите два знака, чтобы получить уважительную подсказку для сообщения." />;
+  if (!pairReady) return <PairRequiredCard publicMode={publicMode} title="💌 Что написать партнёру" lastPairAction={lastPairAction} onPairRequiredAction={onPairRequiredAction} />;
 
   async function copyMessage(template: CoupleMessageTemplate) {
     try {
@@ -2360,14 +2535,15 @@ function DreamDictionaryCard({
   onSymbolChange: (value: string) => void;
   onDreamTextChange: (value: string) => void;
 }) {
+  const dreamSymbolOptions: ZodiacSelectOption[] = dreamSymbols.map((symbol) => ({
+    value: symbol.key,
+    label: symbol.label,
+  }));
+
   return (
     <FeatureCard publicMode={publicMode} title="🌙 Сонник" subtitle="бережная расшифровка популярных символов без страшных предсказаний">
       <div className="grid gap-4">
-        <select value={symbolKey} onChange={(event) => onSymbolChange(event.target.value)} className="h-12 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900">
-          {dreamSymbols.map((symbol) => (
-            <option key={symbol.key} value={symbol.key}>{symbol.label}</option>
-          ))}
-        </select>
+        <ZodiacSelect publicMode={publicMode} label="Символ сна" value={symbolKey} options={dreamSymbolOptions} onChange={onSymbolChange} />
         <Field label="Свой фрагмент сна (необязательно)" publicMode={publicMode}>
           <textarea value={dreamText} onChange={(event) => onDreamTextChange(event.target.value.slice(0, 160))} placeholder="можно оставить пустым" autoComplete="off" className="min-h-24 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-base text-slate-900" />
           <p className={publicMode ? "mt-2 text-xs font-semibold text-emerald-100" : "mt-2 text-xs font-semibold text-emerald-800"}>текст сна не сохраняется и не отправляется в аналитику</p>
@@ -2526,6 +2702,7 @@ function NatalChartV1Card({
   onResultViewed,
   onSectionOpen,
   onVipFreeOpen,
+  onVipBlockOpen,
 }: {
   publicMode: boolean;
   person: PersonState;
@@ -2535,6 +2712,7 @@ function NatalChartV1Card({
   onResultViewed: (person: PersonState, chart: NatalChart) => void;
   onSectionOpen: (person: PersonState, chart: NatalChart, category: string) => void;
   onVipFreeOpen: (person: PersonState, chart: NatalChart) => void;
+  onVipBlockOpen: (blockTitle: string, chart: NatalChart) => void;
 }) {
   const [openSectionId, setOpenSectionId] = useState("core");
   const openedTrackedRef = useRef("");
@@ -2682,7 +2860,16 @@ function NatalChartV1Card({
               </button>
               <div className="mt-3 grid gap-2">
                 {chart.vipBlocks.map((block) => (
-                  <InfoRow key={block.title} publicMode={publicMode} label={block.title} text={block.text} />
+                  <button
+                    key={block.title}
+                    type="button"
+                    onClick={() => onVipBlockOpen(block.title, chart)}
+                    className={publicMode ? "rounded-lg border border-white/12 bg-white/8 p-3 text-left transition hover:border-amber-200/35 hover:bg-white/12" : "rounded-lg border border-amber-100 bg-white p-3 text-left transition hover:border-amber-300"}
+                  >
+                    <span className={publicMode ? "block text-sm font-semibold text-amber-100" : "block text-sm font-semibold text-amber-800"}>{block.title}</span>
+                    <span className={publicMode ? "mt-1 block text-sm leading-5 text-slate-300" : "mt-1 block text-sm leading-5 text-slate-700"}>{block.text}</span>
+                    <span className={publicMode ? "mt-2 block text-xs font-semibold text-amber-100" : "mt-2 block text-xs font-semibold text-amber-800"}>Открыть VIP-инструмент</span>
+                  </button>
                 ))}
               </div>
             </div>
@@ -3158,20 +3345,7 @@ function PersonPanel({
           />
         </Field>
 
-        <Field label="Знак" publicMode={publicMode}>
-          <select
-            value={value.sign}
-            onChange={(event) => onChange({ ...value, sign: event.target.value })}
-            className="h-12 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900"
-          >
-            <option value="" disabled>Выберите знак...</option>
-            {signs.map((sign) => (
-              <option key={sign.slug} value={sign.slug}>
-                {sign.emoji} {sign.name}
-              </option>
-            ))}
-          </select>
-        </Field>
+        <ZodiacSelect publicMode={publicMode} label="Знак" value={value.sign} options={signSelectOptions} onChange={(nextSign) => onChange({ ...value, sign: nextSign })} />
 
         {showBirthDate ? (
           <>
@@ -3869,6 +4043,10 @@ function safeAnalyticsScoreTier(value?: string): ZodiacAnalyticsPayload["scoreTi
   return value === "strong" || value === "good" || value === "medium" || value === "difficult" || value === "tense" ? value : undefined;
 }
 
+function findLastPairRetentionItem(history: ZodiacRetentionItem[], favorites: ZodiacRetentionItem[]) {
+  return [...history, ...favorites].find((item) => signSlugs.has(item.firstSign || "") && signSlugs.has(item.secondSign || "")) ?? null;
+}
+
 function compatibilityRetentionAction(self: PersonState, partner: PersonState, relationshipMode: RelationshipMode, result?: CompatibilityResult): ZodiacRetentionDraft {
   const selfLabel = self.sign ? findSign(self.sign).name : "первый знак";
   const partnerLabel = partner.sign ? findSign(partner.sign).name : "второй знак";
@@ -3952,6 +4130,20 @@ function shareStartParamForAction(action: ZodiacRetentionDraft) {
   if (action.section === "mystic") return "mystic";
   if (action.featureKey === "weekForecast") return "week";
   return "compat";
+}
+
+function vipFeatureForNatalBlock(title: string): MoreFeatureId {
+  if (title.includes("Глубже про отношения")) return "vipCompatibility";
+  if (title.includes("Фокус месяца")) return "vipMonthForecast";
+  if (title.includes("Стиль лучших дней")) return "vipCoupleCalendar";
+  return "vipNatalChart";
+}
+
+function natalVipBlockCategory(title: string) {
+  if (title.includes("Глубже про отношения")) return "relationship_deep_dive";
+  if (title.includes("Фокус месяца")) return "month_focus";
+  if (title.includes("Стиль лучших дней")) return "best_days_style";
+  return "vip_natal_block";
 }
 
 function buildSafeShareText(action: ZodiacRetentionDraft) {
