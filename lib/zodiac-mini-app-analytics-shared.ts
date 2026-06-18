@@ -87,6 +87,12 @@ export const ZODIAC_ANALYTICS_EVENTS = [
   "vip_angel_numbers_opened",
   "vip_talismans_opened",
   "vip_mystic_day_opened",
+  "vip_tool_started",
+  "vip_tool_calculated",
+  "vip_tool_saved",
+  "vip_tool_shared",
+  "vip_input_reused",
+  "vip_message_copied",
   "telegram_webapp_ready",
   "telegram_back_button_used",
   "telegram_haptic_used",
@@ -127,6 +133,9 @@ export interface ZodiacAnalyticsPayload {
   featureKey?: string;
   selectedPresetKey?: string;
   patternType?: string;
+  inputMode?: string;
+  goal?: string;
+  tone?: string;
   freeVipActive?: boolean;
 }
 
@@ -159,6 +168,26 @@ const modes = new Set(["fast", "personal", "precise"]);
 const scoreTiers = new Set(["strong", "good", "medium", "difficult", "tense"]);
 const relationshipModes = new Set(["love", "friendship", "work", "family", "passion", "reconciliation"]);
 const patternTypes = new Set(["repeated", "mirror", "amplified", "custom", "fallback"]);
+const vipInputModes = new Set([
+  "sign_only",
+  "birth_date",
+  "profile",
+  "current_sign",
+  "name_entered",
+  "sign_pair",
+  "current_pair",
+  "month",
+  "date_range",
+  "message_goal",
+  "date_and_name",
+  "date",
+  "day_number",
+  "angel_time",
+  "sign_goal",
+  "date_sign",
+]);
+const vipGoals = new Set(["love", "work", "energy", "clarity", "reconciliation"]);
+const vipTones = new Set(["soft", "warm", "direct", "romantic"]);
 const sections = new Set([
   "today",
   "week",
@@ -222,6 +251,9 @@ export function sanitizeZodiacAnalyticsPayload(input: unknown): ZodiacAnalyticsP
   const featureKey = sanitizeToken(raw.featureKey, 64);
   const selectedPresetKey = sanitizeToken(raw.selectedPresetKey, 64);
   const patternType = sanitizeEnum(raw.patternType, patternTypes);
+  const inputMode = sanitizeEnum(raw.inputMode, vipInputModes);
+  const goal = sanitizeEnum(raw.goal, vipGoals);
+  const tone = sanitizeEnum(raw.tone, vipTones);
   const freeVipActive = sanitizeBoolean(raw.freeVipActive);
 
   if (dateKey) payload.dateKey = dateKey;
@@ -245,6 +277,9 @@ export function sanitizeZodiacAnalyticsPayload(input: unknown): ZodiacAnalyticsP
   if (featureKey) payload.featureKey = featureKey;
   if (selectedPresetKey) payload.selectedPresetKey = selectedPresetKey;
   if (patternType) payload.patternType = patternType;
+  if (inputMode) payload.inputMode = inputMode;
+  if (goal) payload.goal = goal;
+  if (tone) payload.tone = tone;
   if (typeof freeVipActive === "boolean") payload.freeVipActive = freeVipActive;
 
   return payload;

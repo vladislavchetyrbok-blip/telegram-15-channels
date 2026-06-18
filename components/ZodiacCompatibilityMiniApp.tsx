@@ -1340,6 +1340,8 @@ function MoreSection({
   const messageTemplates = pairReady ? buildCoupleMessageTemplates(self, partner, dateKey, relationshipMode, result) : [];
   const natalChart = buildNatalChart(natalPerson);
   const selfSign = self.sign || selectedSignSlug ? findSign(self.sign || selectedSignSlug) : null;
+  const partnerSign = partner.sign ? findSign(partner.sign) : null;
+  const vipScoreTier = pairReady ? zodiacAnalyticsScoreTier(result.scores.total) : undefined;
   const chineseHoroscope = buildChineseHoroscope(natalPerson, dateKey);
   const zodiacStoneProfile = selfSign ? buildZodiacStoneProfile(selfSign) : null;
   const nameProfile = buildNameProfile(natalPerson, selfSign, dateKey, vipFreeAccess);
@@ -1786,40 +1788,40 @@ function MoreSection({
           />
         ) : null}
         {activeMoreFeature === "vipNatalChart" ? (
-          <ExtendedNatalFeature publicMode={publicMode} natalChart={natalChart} onBack={returnToMoreMenu} />
+          <ExtendedNatalFeature publicMode={publicMode} natalChart={natalChart} defaultSign={selfSign} onBack={returnToMoreMenu} onSave={() => onFavoriteSave(currentRetentionAction)} onShare={() => onShare(currentRetentionAction)} onEvent={onPersonalToolEvent} />
         ) : null}
         {activeMoreFeature === "vipCompatibility" ? (
-          <ExtendedCompatibilityFeature publicMode={publicMode} result={result} pairReady={pairReady} onBack={returnToMoreMenu} />
+          <ExtendedCompatibilityFeature publicMode={publicMode} result={result} pairReady={pairReady} defaultSign={selfSign} defaultSecondSign={partnerSign} relationshipMode={relationshipMode} scoreTier={vipScoreTier} onBack={returnToMoreMenu} onSave={() => onFavoriteSave(currentRetentionAction)} onShare={() => onShare(currentRetentionAction)} onEvent={onPersonalToolEvent} />
         ) : null}
         {activeMoreFeature === "vipMentalMap" ? (
-          <VipMentalMapFeature publicMode={publicMode} result={result} pairReady={pairReady} onBack={returnToMoreMenu} />
+          <VipMentalMapFeature publicMode={publicMode} result={result} pairReady={pairReady} defaultSign={selfSign} defaultSecondSign={partnerSign} relationshipMode={relationshipMode} scoreTier={vipScoreTier} onBack={returnToMoreMenu} onSave={() => onFavoriteSave(currentRetentionAction)} onShare={() => onShare(currentRetentionAction)} onEvent={onPersonalToolEvent} />
         ) : null}
         {activeMoreFeature === "vipCoupleCalendar" ? (
-          <VipCoupleCalendarFeature publicMode={publicMode} calendarDays={coupleCalendar} pairReady={pairReady} onBack={returnToMoreMenu} />
+          <VipCoupleCalendarFeature publicMode={publicMode} calendarDays={coupleCalendar} pairReady={pairReady} defaultSign={selfSign} defaultSecondSign={partnerSign} relationshipMode={relationshipMode} scoreTier={vipScoreTier} onBack={returnToMoreMenu} onSave={() => onFavoriteSave(currentRetentionAction)} onShare={() => onShare(currentRetentionAction)} onEvent={onPersonalToolEvent} />
         ) : null}
         {activeMoreFeature === "vipMonthForecast" ? (
-          <VipMonthForecastFeature publicMode={publicMode} monthForecast={monthForecast} onBack={returnToMoreMenu} />
+          <VipMonthForecastFeature publicMode={publicMode} monthForecast={monthForecast} defaultSign={selfSign} onBack={returnToMoreMenu} onSave={() => onFavoriteSave(currentRetentionAction)} onShare={() => onShare(currentRetentionAction)} onEvent={onPersonalToolEvent} />
         ) : null}
         {activeMoreFeature === "vipMessageHelper" ? (
           <VipMessageHelperFeature publicMode={publicMode} messageVariants={messageTones.map((tone) => ({
             label: tone.label,
             text: pairReady ? buildPartnerMessage(self, partner, dateKey, tone.id, result) : "выберите два знака, чтобы открыть вариант сообщения",
-          }))} pairReady={pairReady} onBack={returnToMoreMenu} />
+          }))} pairReady={pairReady} defaultSign={selfSign} defaultSecondSign={partnerSign} relationshipMode={relationshipMode} scoreTier={vipScoreTier} onBack={returnToMoreMenu} onSave={() => onFavoriteSave(currentRetentionAction)} onShare={() => onShare(currentRetentionAction)} onEvent={onPersonalToolEvent} />
         ) : null}
         {activeMoreFeature === "vipNameProfile" ? (
-          <ExtendedNameProfileFeature publicMode={publicMode} nameProfile={nameProfile} onBack={returnToMoreMenu} />
+          <ExtendedNameProfileFeature publicMode={publicMode} nameProfile={nameProfile} defaultSign={selfSign} onBack={returnToMoreMenu} onSave={() => onFavoriteSave(currentRetentionAction)} onShare={() => onShare(currentRetentionAction)} onEvent={onPersonalToolEvent} />
         ) : null}
         {activeMoreFeature === "vipNumerology" ? (
-          <ExtendedNumerologyFeature publicMode={publicMode} numerology={numerology} onBack={returnToMoreMenu} />
+          <ExtendedNumerologyFeature publicMode={publicMode} numerology={numerology} defaultSign={selfSign} onBack={returnToMoreMenu} onSave={() => onFavoriteSave(currentRetentionAction)} onShare={() => onShare(currentRetentionAction)} onEvent={onPersonalToolEvent} />
         ) : null}
         {activeMoreFeature === "vipAngelNumbers" ? (
-          <ExtendedAngelNumberFeature publicMode={publicMode} angelNumber={angelNumber} onBack={returnToMoreMenu} />
+          <ExtendedAngelNumberFeature publicMode={publicMode} angelNumber={angelNumber} defaultSign={selfSign} onBack={returnToMoreMenu} onSave={() => onFavoriteSave(currentRetentionAction)} onShare={() => onShare(currentRetentionAction)} onEvent={onPersonalToolEvent} />
         ) : null}
         {activeMoreFeature === "vipTalismans" ? (
-          <VipTalismansFeature publicMode={publicMode} dailyTalisman={dailyTalisman} selfSign={selfSign} onBack={returnToMoreMenu} />
+          <VipTalismansFeature publicMode={publicMode} dailyTalisman={dailyTalisman} selfSign={selfSign} onBack={returnToMoreMenu} onSave={() => onFavoriteSave(currentRetentionAction)} onShare={() => onShare(currentRetentionAction)} onEvent={onPersonalToolEvent} />
         ) : null}
         {activeMoreFeature === "vipMysticDay" ? (
-          <VipMysticDayFeature publicMode={publicMode} dateKey={dateKey} sign={selfSign} angelNumber={angelNumber} onBack={returnToMoreMenu} />
+          <VipMysticDayFeature publicMode={publicMode} dateKey={dateKey} sign={selfSign} angelNumber={angelNumber} onBack={returnToMoreMenu} onSave={() => onFavoriteSave(currentRetentionAction)} onShare={() => onShare(currentRetentionAction)} onEvent={onPersonalToolEvent} />
         ) : null}
         {activeMoreFeature === "giveaways" ? (
           <LockedPreviewCard

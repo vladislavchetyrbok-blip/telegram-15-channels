@@ -177,7 +177,8 @@ VIP:
 
 - Free access until `2026-09-17`.
 - Payments and Telegram Stars are OFF.
-- 11 active VIP cards open non-empty detail screens.
+- 11 active VIP cards are functional tools with visible inputs, calculate/show action, non-empty result, safe Save, and safe Share.
+- VIP message helper supports copy state without storing message text.
 - Giveaways remain locked/preview.
 
 Mystic:
@@ -237,6 +238,9 @@ Compatibility messages checked: YES
 Compatibility pair saved/reopened: YES
 Compatibility share checked: YES
 VIP cards checked: 11/11
+VIP tools calculated: 11/11
+VIP save/share checked: 11/11 saved, 11/11 shared
+VIP message copy checked: YES
 Giveaways locked: YES
 Mystic checked: YES
 Birth Matrix / Матрица судьбы checked: YES

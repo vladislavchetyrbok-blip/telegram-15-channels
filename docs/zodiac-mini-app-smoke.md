@@ -36,9 +36,12 @@ npm run zodiac:miniapp:smoke -- --url http://localhost:3000/compatibility
 - Compatibility local retention stores only safe summary fields: first sign, second sign, relationship mode, score tier, label, feature key, and timestamp. It must not store names, birth dates, birth times, city query, selected city id, raw result text, or raw message text.
 - Horoscopes category opens from the main menu.
 - Angel Numbers / `Ангельские числа` is visible as a top-level category, opens the existing `angelNumbers` feature, and returns to Home via Back/Main menu.
-- VIP tab opens, free access until `17.09.2026` is visible, and all 11 active VIP cards open non-empty detail screens.
+- VIP tab opens, free access until `17.09.2026` is visible, and all 11 active VIP cards open as functional tools with an input block, calculate/show action, non-empty `Результат VIP`, safe Save, and safe Share.
 - Giveaways is not a top-level main category; it remains locked/disabled inside VIP.
 - Open VIP feature screens do not contain `TODO`, `lorem ipsum`, `placeholder`, or unexpected `Скоро появится` text.
+- VIP smoke checks all 11 active tools: natal chart, monthly forecast, name profile, compatibility, mental map, 30-day couple calendar, message helper, numerology, angel numbers, talismans, and VIP mystic day.
+- VIP message helper must show `Скопировано` after copying a generated message.
+- VIP local retention must store only safe shortcuts: feature key, sign slugs, relationship mode, score tier, label, section, and timestamp. It must not store names, birth dates, birth times, city query, raw input, raw result text, or raw message text.
 - Mystic tab opens and at least three Mystic features can be opened.
 - Birth Matrix / `Матрица судьбы` opens from Mystic, accepts a sample birth date, renders a non-empty result, and returns to the Mystic menu.
 - Telegram WebApp mock is injected before page load.
@@ -64,6 +67,9 @@ Main menu categories checked: 10/10
 Horoscopes checked: YES
 Angel Numbers / Ангельские числа checked: YES
 VIP cards checked: 11/11
+VIP tools calculated: 11/11
+VIP save/share checked: 11/11 saved, 11/11 shared
+VIP message copy checked: YES
 Giveaways locked: YES
 Mystic checked: YES
 Birth Matrix / Матрица судьбы checked: YES

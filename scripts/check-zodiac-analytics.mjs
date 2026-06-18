@@ -78,6 +78,12 @@ async function main() {
     const compMessageCopiedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "compatibility_message_copied", { section: "compatibility" });
     const compPairSavedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "compatibility_pair_saved", { section: "compatibility" });
     const compPairReopenedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "compatibility_pair_reopened", { section: "compatibility" });
+    const vipToolStartedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "vip_tool_started", { featureKey: "vipMessageHelper", firstSign: "gemini", secondSign: "leo", relationshipMode: "love", scoreTier: "good", inputMode: "message_goal", goal: "reconciliation", tone: "soft" });
+    const vipToolCalculatedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "vip_tool_calculated", { featureKey: "vipNatalChart", sign: "gemini", hasBirthDate: true, hasBirthTime: true, hasBirthCity: true, inputMode: "birth_date" });
+    const vipToolSavedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "vip_tool_saved", { featureKey: "vipAngelNumbers", sign: "gemini", inputMode: "angel_time", goal: "clarity" });
+    const vipToolSharedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "vip_tool_shared", { featureKey: "vipCoupleCalendar", firstSign: "gemini", secondSign: "leo", relationshipMode: "love", scoreTier: "good", inputMode: "date_range" });
+    const vipInputReusedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "vip_input_reused", { featureKey: "vipCompatibility", firstSign: "gemini", secondSign: "leo", relationshipMode: "love", scoreTier: "good", inputMode: "current_pair" });
+    const vipMessageCopiedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "vip_message_copied", { featureKey: "vipMessageHelper", firstSign: "gemini", secondSign: "leo", relationshipMode: "love", scoreTier: "good", goal: "reconciliation", tone: "soft" });
     const disallowedEvent = await checkDisallowedEvent(`${baseUrl}/api/zodiac/analytics/event`);
     const afterLedgerStats = await collectLedgerStats();
     const ledgerWrites = countLedgerWrites(beforeLedgerStats, afterLedgerStats);
@@ -130,6 +136,12 @@ async function main() {
       compMessageCopiedEvent,
       compPairSavedEvent,
       compPairReopenedEvent,
+      vipToolStartedEvent,
+      vipToolCalculatedEvent,
+      vipToolSavedEvent,
+      vipToolSharedEvent,
+      vipInputReusedEvent,
+      vipMessageCopiedEvent,
       disallowedEvent,
       sensitiveFieldsStripped:
         allowedEvent.sensitiveFieldsStripped &&
@@ -170,7 +182,13 @@ async function main() {
         compActionOpenedEvent.sensitiveFieldsStripped &&
         compMessageCopiedEvent.sensitiveFieldsStripped &&
         compPairSavedEvent.sensitiveFieldsStripped &&
-        compPairReopenedEvent.sensitiveFieldsStripped,
+        compPairReopenedEvent.sensitiveFieldsStripped &&
+        vipToolStartedEvent.sensitiveFieldsStripped &&
+        vipToolCalculatedEvent.sensitiveFieldsStripped &&
+        vipToolSavedEvent.sensitiveFieldsStripped &&
+        vipToolSharedEvent.sensitiveFieldsStripped &&
+        vipInputReusedEvent.sensitiveFieldsStripped &&
+        vipMessageCopiedEvent.sensitiveFieldsStripped,
       noSecretsPrinted: true,
       telegramApiCalls,
       ledgerWrites,

@@ -13,6 +13,7 @@ const clientPath = path.join(projectRoot, "lib", "zodiac-mini-app-analytics-clie
 const routePath = path.join(projectRoot, "app", "api", "zodiac", "analytics", "event", "route.ts");
 const dashboardPath = path.join(projectRoot, "app", "dashboard", "networks", "zodiac", "analytics", "page.tsx");
 const miniAppPath = path.join(projectRoot, "components", "ZodiacCompatibilityMiniApp.tsx");
+const vipSectionsPath = path.join(projectRoot, "components", "ZodiacVipSections.tsx");
 const miniAppAnalyticsPath = path.join(projectRoot, "components", "zodiac-mini-app", "analytics.ts");
 const featureRoutingPath = path.join(projectRoot, "components", "zodiac-mini-app", "feature-routing.ts");
 
@@ -64,6 +65,12 @@ const requiredCoverage = {
     "vip_angel_numbers_opened",
     "vip_talismans_opened",
     "vip_mystic_day_opened",
+    "vip_tool_started",
+    "vip_tool_calculated",
+    "vip_tool_saved",
+    "vip_tool_shared",
+    "vip_input_reused",
+    "vip_message_copied",
   ],
   mystic: [
     "mystic_category_opened",
@@ -147,6 +154,7 @@ async function main() {
     sources.miniApp,
     sources.miniAppAnalytics,
     sources.featureRouting,
+    sources.vipSections,
   ]);
   pushMissing(errors, "tracked events missing from allowlist", usedEvents.filter((event) => !allowlistedEvents.includes(event)));
 
@@ -251,6 +259,7 @@ async function readSources() {
     ["client", clientPath],
     ["route", routePath],
     ["miniApp", miniAppPath],
+    ["vipSections", vipSectionsPath],
     ["miniAppAnalytics", miniAppAnalyticsPath],
     ["featureRouting", featureRoutingPath],
   ].map(async ([key, filePath]) => [key, await readFile(filePath, "utf8")]));
@@ -284,6 +293,7 @@ function extractUsedAnalyticsEvents(sources) {
   const patterns = [
     /trackZodiacMiniAppEvent\(\s*"([^"]+)"/g,
     /onPersonalToolEvent\(\s*"([^"]+)"/g,
+    /onEvent\?\.\(\s*"([^"]+)"/g,
   ];
   const events = new Set();
   for (const pattern of patterns) {

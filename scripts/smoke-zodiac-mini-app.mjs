@@ -87,6 +87,7 @@ async function main() {
   await client.close();
 
   if (report.consoleErrors.length || report.runtimeErrors.length || report.networkErrors.length) {
+    printSummary("FAIL", report);
     throw new Error(`Browser reported errors: console=${report.consoleErrors.length}, runtime=${report.runtimeErrors.length}, network=${report.networkErrors.length}.`);
   }
 
@@ -211,7 +212,7 @@ async function runBrowserModeSmoke(client, report) {
   for (const card of VIP_ACTIVE_CARDS) {
     await click(client, card);
     await settle(client);
-    await assertFeatureScreen(client, card);
+    await runVipToolSmoke(client, card, report);
     report.vipChecked += 1;
     await clickBackIcon(client);
     await waitForPageText(client, /VIP открыт бесплатно|Ранний доступ до 17\.09\.2026/, `Back did not return from VIP card "${card}".`);
@@ -338,6 +339,29 @@ async function assertFeatureScreen(client, label, options = {}) {
   const bad = PLACEHOLDER_PATTERNS.find((pattern) => pattern.test(snapshot.text));
   if (bad && !options.allowSoon) {
     throw new Error(`Feature "${label}" contains placeholder text matching ${bad}.`);
+  }
+}
+
+async function runVipToolSmoke(client, label, report) {
+  await assertFeatureScreen(client, label, { allowSoon: false, minLength: 420 });
+  await waitForPageText(client, /Ввод для расчёта/, `VIP tool "${label}" did not render an input block.`);
+  await clickAny(client, ["Рассчитать", "Показать"]);
+  await waitForPageText(client, /Результат VIP/, `VIP tool "${label}" did not render a result block after calculation.`);
+  await assertFeatureScreen(client, label, { allowSoon: false, minLength: 700 });
+  report.vipCalculated += 1;
+
+  await click(client, "Сохранить результат");
+  await waitForPageText(client, /Сохранено/, `VIP tool "${label}" did not show saved state.`);
+  report.vipSaved += 1;
+
+  await click(client, "Поделиться результатом");
+  await waitForPageText(client, /Готово к отправке|Текст для копирования|Текст скопирован/i, `VIP tool "${label}" did not show share state or safe share fallback.`);
+  report.vipShared += 1;
+
+  if (label === "Помощник сообщений") {
+    await click(client, "Скопировать");
+    await waitForPageText(client, /Скопировано/, "VIP message helper did not show copied state.");
+    report.vipMessageCopyChecked = true;
   }
 }
 
@@ -1034,6 +1058,10 @@ function createReport() {
     compatibilityPairReopened: false,
     compatibilityShareChecked: false,
     vipChecked: 0,
+    vipCalculated: 0,
+    vipSaved: 0,
+    vipShared: 0,
+    vipMessageCopyChecked: false,
     giveawaysLocked: false,
     mysticChecked: 0,
     freeAccessVisible: false,
@@ -1085,6 +1113,9 @@ function printSummary(status, report) {
   console.log(`Telegram category back: ${report.telegramCategoryBackChecked ? "YES" : "NO"}`);
   console.log(`Telegram haptics: ${report.telegramHapticsChecked ? "YES" : "NO"}`);
   console.log(`VIP cards checked: ${report.vipChecked}/11`);
+  console.log(`VIP tools calculated: ${report.vipCalculated}/11`);
+  console.log(`VIP save/share checked: ${report.vipSaved}/11 saved, ${report.vipShared}/11 shared`);
+  console.log(`VIP message copy checked: ${report.vipMessageCopyChecked ? "YES" : "NO"}`);
   console.log(`Free access visible: ${report.freeAccessVisible ? "YES" : "NO"}`);
   console.log(`Giveaways locked: ${report.giveawaysLocked ? "YES" : "NO"}`);
   console.log(`Mystic checked: ${report.mysticChecked >= 3 ? "YES" : "NO"} (${report.mysticChecked}/3)`);

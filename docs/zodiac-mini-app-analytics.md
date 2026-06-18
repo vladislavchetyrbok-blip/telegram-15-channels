@@ -75,7 +75,7 @@ The allowlist covers:
 - Profile retention events: `profile_opened`, `history_opened`, `favorite_saved`, `favorite_opened`, `share_clicked`, and `local_data_cleared`;
 - app open, sign selection, section opens, compatibility calculation;
 - natal chart, Chinese horoscope, zodiac stones, name profile, numerology, angel numbers, lunar calendar, daily talisman, dream dictionary, gifts, name compatibility, archetype;
-- VIP opened, free access, feature taps, future subscription tap, and all active VIP detail screens;
+- VIP opened, free access, feature taps, future subscription tap, all active VIP detail screens, and functional VIP tool events: `vip_tool_started`, `vip_tool_calculated`, `vip_tool_saved`, `vip_tool_shared`, `vip_input_reused`, and `vip_message_copied`;
 - Mystic category, daily card, Tarot, rune, intuitive sign, talismans, aura, lunar ritual, karmic lessons, and Birth Matrix;
 - Telegram WebApp ready, BackButton usage, and haptics;
 - giveaways locked/preview events.
@@ -98,7 +98,26 @@ Compatibility product structure:
 Compatibility -> Pair Setup -> Relationship Map -> 30-Day Couple Calendar -> Actions / Messages / Save / Share
 ```
 
-Profile, History, and Favorites are local retention features. They use localStorage on the device and store only safe shortcuts/summaries: selected sign slug, first sign slug, second sign slug, section id/label, featureKey, compatibility mode, score tier, and timestamps. They must not store or send names, exact birth dates, birth times, city query, selected city id, raw result text, raw message text, raw dream text, or raw angel number input. Safe Share sends only generic Mini App text, safe sign-pair labels, and startapp links.
+Profile, History, and Favorites are local retention features. They use localStorage on the device and store only safe shortcuts/summaries: selected sign slug, first sign slug, second sign slug, section id/label, featureKey, compatibility mode, score tier, and timestamps. They must not store or send names, exact birth dates, birth times, city query, selected city id, raw result text, raw message text, raw dream text, or raw angel number input. VIP tool Save uses the same safe shortcut model. Safe Share sends only generic Mini App text, safe sign-pair labels, and startapp links.
+
+VIP functional tool payloads are limited to safe categorical fields:
+
+```text
+featureKey
+sign
+firstSign
+secondSign
+relationshipMode
+scoreTier
+hasBirthDate
+hasBirthTime
+hasBirthCity
+inputMode
+goal
+tone
+```
+
+The VIP events must never include names, birth dates, birth times, birth city/city query, raw angel number input, generated message text, or raw result text.
 
 Supported direct profile and compatibility start params:
 
@@ -124,7 +143,7 @@ Do not send or store:
 - Telegram initData or raw Telegram profile data;
 - tokens, chat ids, or secrets.
 
-Allowed personal context is limited to safe aggregates and flags, for example `sign`, `firstSign`, `secondSign`, `hasName`, `hasBirthDate`, `hasBirthTime`, `hasBirthCity`, `scoreTier`, `section`, `category`, and `featureKey`.
+Allowed personal context is limited to safe aggregates and flags, for example `sign`, `firstSign`, `secondSign`, `hasName`, `hasBirthDate`, `hasBirthTime`, `hasBirthCity`, `scoreTier`, `section`, `category`, `featureKey`, `inputMode`, `goal`, and `tone`.
 
 ## Server-Side Safety Model
 

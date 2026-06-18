@@ -1,25 +1,74 @@
-import type { ElementType, ReactNode } from "react";
-import { Crown, ArrowLeft, HeartHandshake, Star, Sparkles, MapPin, CalendarDays, Lock } from "lucide-react";
-import type { 
-  NatalChart, 
-  CompatibilityResult, 
-  CoupleCalendarDay, 
-  MonthForecast, 
-  NameProfile, 
-  NumerologyProfile, 
-  AngelNumberProfile, 
-  DailyTalismanProfile, 
-  ZodiacVipConfig, 
-  ZodiacSign 
-} from "./zodiac-mini-app/types";
+import { useState, type ElementType, type ReactNode } from "react";
+import { ArrowLeft, Bookmark, CalendarDays, Check, Copy, Crown, HeartHandshake, Lock, MapPin, Share2, Sparkles, Star } from "lucide-react";
+import type { ZodiacAnalyticsEventName, ZodiacAnalyticsPayload } from "@/lib/zodiac-mini-app-analytics-shared";
 import { synthesizeVipMysticDay } from "@/lib/zodiac-vip-content";
 import type { ZodiacSignId } from "@/lib/zodiac-mystic-content";
+import { relationshipModes, signs } from "./zodiac-mini-app/constants";
+import type {
+  AngelNumberProfile,
+  CompatibilityResult,
+  CoupleCalendarDay,
+  MonthForecast,
+  MoreFeatureId,
+  NameProfile,
+  NatalChart,
+  NumerologyProfile,
+  DailyTalismanProfile,
+  RelationshipMode,
+  ZodiacSign,
+  ZodiacVipConfig,
+} from "./zodiac-mini-app/types";
 
 interface VipStatusPillProps {
   publicMode: boolean;
   label: string;
   value: string;
 }
+
+interface VipToolBaseProps {
+  publicMode: boolean;
+  onBack: () => void;
+  onSave?: () => void;
+  onShare?: () => void;
+  onEvent?: (event: ZodiacAnalyticsEventName, payload: ZodiacAnalyticsPayload) => void;
+  defaultSign?: ZodiacSign | null;
+  defaultSecondSign?: ZodiacSign | null;
+  relationshipMode?: RelationshipMode;
+  scoreTier?: ZodiacAnalyticsPayload["scoreTier"];
+}
+
+type VipFeatureKey = Extract<
+  MoreFeatureId,
+  | "vipNatalChart"
+  | "vipCompatibility"
+  | "vipMentalMap"
+  | "vipCoupleCalendar"
+  | "vipMonthForecast"
+  | "vipMessageHelper"
+  | "vipNameProfile"
+  | "vipNumerology"
+  | "vipAngelNumbers"
+  | "vipTalismans"
+  | "vipMysticDay"
+>;
+
+type VipGoal = "love" | "work" | "energy" | "clarity" | "reconciliation";
+type VipTone = "soft" | "warm" | "direct" | "romantic";
+
+const goalOptions: Array<{ id: VipGoal; label: string }> = [
+  { id: "love", label: "Любовь" },
+  { id: "work", label: "Дела" },
+  { id: "energy", label: "Энергия" },
+  { id: "clarity", label: "Ясность" },
+  { id: "reconciliation", label: "Примирение" },
+];
+
+const toneOptions: Array<{ id: VipTone; label: string }> = [
+  { id: "soft", label: "Мягкий" },
+  { id: "warm", label: "Тёплый" },
+  { id: "direct", label: "Прямой" },
+  { id: "romantic", label: "Романтичный" },
+];
 
 function VipStatusPill({ publicMode, label, value }: VipStatusPillProps) {
   return (
@@ -117,16 +166,16 @@ export function VipMenuCard({
 
       <SectionHeading title="1. Личный VIP" publicMode={publicMode} />
       <div className="mt-3 grid gap-2 sm:grid-cols-2">
-        <VipCardButton publicMode={publicMode} icon={Star} title="Расширенная натальная карта" text={natalReady ? "Полный разбор личности, любви, денег и теней" : "Частичный режим (добавьте дату для глубины)"} onClick={() => onFeatureOpen("vipNatalChart")} />
+        <VipCardButton publicMode={publicMode} icon={Star} title="Расширенная натальная карта" text={natalReady ? "Полный разбор личности, любви, денег и теней" : "Частичный режим: можно рассчитать по знаку и дате"} onClick={() => onFeatureOpen("vipNatalChart")} />
         <VipCardButton publicMode={publicMode} icon={MapPin} title="Месячный прогноз" text="Энергия, риск, любовь и лучший период месяца" onClick={() => onFeatureOpen("vipMonthForecast")} />
-        <VipCardButton publicMode={publicMode} icon={Crown} title="Расширенный именной профиль" text={nameReady ? "Глубокий анализ имени, рисков и стиля общения" : "Добавьте имя для расшифровки"} onClick={() => onFeatureOpen("vipNameProfile")} />
+        <VipCardButton publicMode={publicMode} icon={Crown} title="Расширенный именной профиль" text={nameReady ? "Глубокий анализ имени, рисков и стиля общения" : "Имя можно ввести только на экране расчёта"} onClick={() => onFeatureOpen("vipNameProfile")} />
       </div>
 
       <SectionHeading title="2. Любовь и пара" publicMode={publicMode} />
       <div className="mt-3 grid gap-2 sm:grid-cols-2">
-        <VipCardButton publicMode={publicMode} icon={HeartHandshake} title="Расширенная совместимость" text={pairReady ? "Детальный разбор быта, общения и рисков" : "Выберите два знака, чтобы открыть"} onClick={() => onFeatureOpen("vipCompatibility")} />
-        <VipCardButton publicMode={publicMode} icon={Sparkles} title="Ментальная карта пары" text={pairReady ? "Динамика споров, доверия и примирения" : "Нужна выбранная пара для персональной карты"} onClick={() => onFeatureOpen("vipMentalMap")} />
-        <VipCardButton publicMode={publicMode} icon={CalendarDays} title="30-дневный календарь пары" text={pairReady ? "Прогноз динамики на месяц вперед" : "Доступно для пары"} onClick={() => onFeatureOpen("vipCoupleCalendar")} />
+        <VipCardButton publicMode={publicMode} icon={HeartHandshake} title="Расширенная совместимость" text={pairReady ? "Детальный разбор быта, общения и рисков" : "Можно рассчитать по двум знакам прямо здесь"} onClick={() => onFeatureOpen("vipCompatibility")} />
+        <VipCardButton publicMode={publicMode} icon={Sparkles} title="Ментальная карта пары" text={pairReady ? "Динамика споров, доверия и примирения" : "Выберите два знака для карты мышления пары"} onClick={() => onFeatureOpen("vipMentalMap")} />
+        <VipCardButton publicMode={publicMode} icon={CalendarDays} title="30-дневный календарь пары" text="Прогноз динамики на месяц вперед" onClick={() => onFeatureOpen("vipCoupleCalendar")} />
         <VipCardButton publicMode={publicMode} icon={HeartHandshake} title="Помощник сообщений" text="Готовые решения для диалога и примирения" onClick={() => onFeatureOpen("vipMessageHelper")} />
       </div>
 
@@ -150,7 +199,7 @@ function VipScreenLayout({ publicMode, title, onBack, children }: { publicMode: 
   return (
     <div className={publicMode ? "rounded-lg border border-amber-200/20 bg-black/40 p-4" : "rounded-lg border border-slate-200 bg-white p-4 shadow-sm"}>
       <div className="mb-4 flex items-center gap-3">
-        <button onClick={onBack} className={publicMode ? "rounded-full p-2 hover:bg-white/10 text-white" : "rounded-full p-2 hover:bg-slate-100 text-slate-700"}>
+        <button type="button" onClick={onBack} className={publicMode ? "rounded-full p-2 text-white hover:bg-white/10" : "rounded-full p-2 text-slate-700 hover:bg-slate-100"}>
           <ArrowLeft className="h-5 w-5" />
         </button>
         <h2 className={publicMode ? "text-lg font-bold text-amber-200" : "text-lg font-bold text-slate-900"}>{title}</h2>
@@ -160,348 +209,997 @@ function VipScreenLayout({ publicMode, title, onBack, children }: { publicMode: 
   );
 }
 
-function InfoBlock({ title, text, publicMode }: { title: string; text: string; publicMode: boolean }) {
+function VipIntro({ publicMode, text }: { publicMode: boolean; text: string }) {
+  return <p className={publicMode ? "text-sm leading-6 text-slate-300" : "text-sm leading-6 text-slate-600"}>{text}</p>;
+}
+
+function VipInputPanel({ publicMode, children }: { publicMode: boolean; children: ReactNode }) {
   return (
-    <div className={publicMode ? "rounded-lg bg-white/5 p-3" : "rounded-lg bg-slate-50 border border-slate-100 p-3"}>
-      <h3 className={publicMode ? "text-sm font-semibold text-amber-100" : "text-sm font-semibold text-amber-800"}>{title}</h3>
-      <p className={publicMode ? "mt-1 text-sm text-slate-300" : "mt-1 text-sm text-slate-700"}>{text}</p>
+    <div className={publicMode ? "rounded-lg border border-white/10 bg-white/5 p-3" : "rounded-lg border border-slate-200 bg-slate-50 p-3"}>
+      <p className={publicMode ? "text-xs font-semibold uppercase tracking-widest text-amber-100" : "text-xs font-semibold uppercase tracking-widest text-amber-700"}>Ввод для расчёта</p>
+      <div className="mt-3 grid gap-3 sm:grid-cols-2">{children}</div>
     </div>
   );
 }
 
-function VipReadinessBlock({ publicMode, lead, items }: { publicMode: boolean; lead: string; items: Array<{ title: string; text: string }> }) {
+function VipField({ publicMode, label, children }: { publicMode: boolean; label: string; children: ReactNode }) {
   return (
-    <>
-      <p className={publicMode ? "text-sm leading-6 text-slate-300" : "text-sm leading-6 text-slate-600"}>{lead}</p>
-      <div className="grid gap-3">
-        {items.map((item) => (
-          <InfoBlock key={item.title} publicMode={publicMode} title={item.title} text={item.text} />
-        ))}
-      </div>
-    </>
+    <label className="block min-w-0">
+      <span className={publicMode ? "text-xs font-semibold text-slate-300" : "text-xs font-semibold text-slate-600"}>{label}</span>
+      <div className="mt-1">{children}</div>
+    </label>
   );
 }
 
-export function ExtendedNatalFeature({ publicMode, natalChart, onBack }: { publicMode: boolean; natalChart: NatalChart | null; onBack: () => void }) {
-  if (!natalChart) {
-    return (
-      <VipScreenLayout publicMode={publicMode} title="Расширенная натальная карта" onBack={onBack}>
-        <VipReadinessBlock
-          publicMode={publicMode}
-          lead="VIP-разбор уже открыт бесплатно: дата нужна только для точной персонализации карты."
-          items={[
-            { title: "Что появится в полном режиме", text: "Архетип личности, стиль общения, любовь, сильные стороны, зона роста, личный компас и тени, которые лучше не усиливать." },
-            { title: "Как получить точность", text: "Добавьте дату рождения в профиле. Время и город можно оставить пустыми, если нужен мягкий, но не технически точный разбор." },
-            { title: "Приватность", text: "Дата используется только на экране для расчета и не отправляется в аналитику как значение." },
-          ]}
-        />
-      </VipScreenLayout>
-    );
+function inputClass(publicMode: boolean) {
+  return publicMode
+    ? "h-11 w-full rounded-md border border-white/10 bg-white/10 px-3 text-sm text-white outline-none focus:border-amber-200"
+    : "h-11 w-full rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-950 outline-none focus:border-amber-400";
+}
+
+function selectClass(publicMode: boolean) {
+  return inputClass(publicMode);
+}
+
+function SignSelect({ publicMode, value, onChange, label = "Знак" }: { publicMode: boolean; value: string; onChange: (value: string) => void; label?: string }) {
+  return (
+    <VipField publicMode={publicMode} label={label}>
+      <select className={selectClass(publicMode)} value={value} onChange={(event) => onChange(event.target.value)}>
+        {signs.map((sign) => (
+          <option key={sign.slug} value={sign.slug}>
+            {sign.emoji} {sign.name}
+          </option>
+        ))}
+      </select>
+    </VipField>
+  );
+}
+
+function GoalSelect({ publicMode, value, onChange, label = "Фокус" }: { publicMode: boolean; value: VipGoal; onChange: (value: VipGoal) => void; label?: string }) {
+  return (
+    <VipField publicMode={publicMode} label={label}>
+      <select className={selectClass(publicMode)} value={value} onChange={(event) => onChange(event.target.value as VipGoal)}>
+        {goalOptions.map((goal) => (
+          <option key={goal.id} value={goal.id}>
+            {goal.label}
+          </option>
+        ))}
+      </select>
+    </VipField>
+  );
+}
+
+function ToneSelect({ publicMode, value, onChange }: { publicMode: boolean; value: VipTone; onChange: (value: VipTone) => void }) {
+  return (
+    <VipField publicMode={publicMode} label="Тон">
+      <select className={selectClass(publicMode)} value={value} onChange={(event) => onChange(event.target.value as VipTone)}>
+        {toneOptions.map((tone) => (
+          <option key={tone.id} value={tone.id}>
+            {tone.label}
+          </option>
+        ))}
+      </select>
+    </VipField>
+  );
+}
+
+function PrimaryVipButton({ publicMode, onClick, children }: { publicMode: boolean; onClick: () => void; children: ReactNode }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={
+        publicMode
+          ? "inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-amber-200 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-amber-100"
+          : "inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-slate-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
+      }
+    >
+      {children}
+    </button>
+  );
+}
+
+function SecondaryVipButton({ publicMode, onClick, children }: { publicMode: boolean; onClick: () => void; children: ReactNode }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={
+        publicMode
+          ? "inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-slate-100 transition hover:bg-white/10"
+          : "inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 transition hover:bg-slate-50"
+      }
+    >
+      {children}
+    </button>
+  );
+}
+
+function VipResultPanel({ publicMode, title, children }: { publicMode: boolean; title: string; children: ReactNode }) {
+  return (
+    <div className={publicMode ? "rounded-lg border border-amber-200/20 bg-amber-200/10 p-4" : "rounded-lg border border-amber-200 bg-amber-50 p-4"}>
+      <p className={publicMode ? "text-xs font-semibold uppercase tracking-widest text-amber-100" : "text-xs font-semibold uppercase tracking-widest text-amber-800"}>Результат VIP</p>
+      <h3 className={publicMode ? "mt-1 text-base font-semibold text-white" : "mt-1 text-base font-semibold text-slate-950"}>{title}</h3>
+      <div className="mt-3 space-y-3">{children}</div>
+    </div>
+  );
+}
+
+function InfoBlock({ title, text, publicMode }: { title: string; text: string; publicMode: boolean }) {
+  return (
+    <div className={publicMode ? "rounded-lg bg-white/5 p-3" : "rounded-lg border border-slate-100 bg-white/80 p-3"}>
+      <h4 className={publicMode ? "text-sm font-semibold text-amber-100" : "text-sm font-semibold text-amber-800"}>{title}</h4>
+      <p className={publicMode ? "mt-1 text-sm leading-6 text-slate-300" : "mt-1 text-sm leading-6 text-slate-700"}>{text}</p>
+    </div>
+  );
+}
+
+function VipResultActions({
+  publicMode,
+  saved,
+  shared,
+  onSave,
+  onShare,
+}: {
+  publicMode: boolean;
+  saved: boolean;
+  shared: boolean;
+  onSave: () => void;
+  onShare: () => void;
+}) {
+  return (
+    <div className="grid gap-2 sm:grid-cols-2">
+      <SecondaryVipButton publicMode={publicMode} onClick={onSave}>
+        {saved ? <Check className="h-4 w-4" /> : <Bookmark className="h-4 w-4" />}
+        {saved ? "Сохранено" : "Сохранить результат"}
+      </SecondaryVipButton>
+      <SecondaryVipButton publicMode={publicMode} onClick={onShare}>
+        {shared ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
+        {shared ? "Готово к отправке" : "Поделиться результатом"}
+      </SecondaryVipButton>
+    </div>
+  );
+}
+
+function VipReuseButton({ publicMode, onClick }: { publicMode: boolean; onClick: () => void }) {
+  return (
+    <SecondaryVipButton publicMode={publicMode} onClick={onClick}>
+      <Sparkles className="h-4 w-4" />
+      Использовать текущие данные
+    </SecondaryVipButton>
+  );
+}
+
+function useResultActions(featureKey: VipFeatureKey, onEvent?: VipToolBaseProps["onEvent"], onSave?: () => void, onShare?: () => void) {
+  const [saved, setSaved] = useState(false);
+  const [shared, setShared] = useState(false);
+
+  function save(payload: ZodiacAnalyticsPayload) {
+    onEvent?.("vip_tool_saved", { featureKey, ...payload });
+    onSave?.();
+    setSaved(true);
   }
+
+  function share(payload: ZodiacAnalyticsPayload) {
+    onEvent?.("vip_tool_shared", { featureKey, ...payload });
+    onShare?.();
+    setShared(true);
+  }
+
+  function calculate(payload: ZodiacAnalyticsPayload) {
+    onEvent?.("vip_tool_started", { featureKey, ...payload });
+    onEvent?.("vip_tool_calculated", { featureKey, ...payload });
+  }
+
+  function reuse(payload: ZodiacAnalyticsPayload) {
+    onEvent?.("vip_input_reused", { featureKey, ...payload });
+  }
+
+  return { saved, shared, save, share, calculate, reuse };
+}
+
+function signBySlug(slug?: string | null) {
+  return signs.find((sign) => sign.slug === slug) ?? signs[0];
+}
+
+function relationshipModeLabel(mode: RelationshipMode) {
+  return relationshipModes.find((item) => item.id === mode)?.label.replace(/^[^A-Za-zА-Яа-яЁё0-9]+/, "").trim() ?? "Любовь";
+}
+
+function goalLabel(goal: VipGoal) {
+  return goalOptions.find((item) => item.id === goal)?.label ?? "Ясность";
+}
+
+function toneLabel(tone: VipTone) {
+  return toneOptions.find((item) => item.id === tone)?.label ?? "Мягкий";
+}
+
+function safeScoreTier(score: number): ZodiacAnalyticsPayload["scoreTier"] {
+  if (score >= 85) return "strong";
+  if (score >= 70) return "good";
+  if (score >= 55) return "medium";
+  if (score >= 40) return "difficult";
+  return "tense";
+}
+
+function hashString(value: string) {
+  let hash = 0;
+  for (let index = 0; index < value.length; index += 1) {
+    hash = (hash * 31 + value.charCodeAt(index)) | 0;
+  }
+  return Math.abs(hash);
+}
+
+function pick<T>(items: T[], seed: string, offset = 0) {
+  return items[(hashString(`${seed}:${offset}`) + offset) % items.length];
+}
+
+function reduceNumber(value: number): number {
+  let next = Math.abs(Math.trunc(value));
+  while (next > 9) next = String(next).split("").reduce((sum, digit) => sum + Number(digit), 0);
+  return next || 1;
+}
+
+function parseIsoDate(value: string) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) return null;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  if (!year || month < 1 || month > 12 || day < 1 || day > 31) return null;
+  return { year, month, day };
+}
+
+function addDays(value: string, offset: number) {
+  const date = new Date(`${value}T00:00:00.000Z`);
+  date.setUTCDate(date.getUTCDate() + offset);
+  return date.toISOString().slice(0, 10);
+}
+
+function displayDate(value: string) {
+  const parsed = parseIsoDate(value);
+  if (!parsed) return value;
+  return `${String(parsed.day).padStart(2, "0")}.${String(parsed.month).padStart(2, "0")}.${parsed.year}`;
+}
+
+function displayMonth(value: string) {
+  const match = /^(\d{4})-(\d{2})$/.exec(value);
+  if (!match) return value;
+  return `${match[2]}.${match[1]}`;
+}
+
+function signFromBirthDate(value: string, fallbackSlug: string) {
+  const parsed = parseIsoDate(value);
+  if (!parsed) return signBySlug(fallbackSlug);
+  const dayCode = parsed.month * 100 + parsed.day;
+  if (dayCode >= 321 && dayCode <= 419) return signBySlug("aries");
+  if (dayCode >= 420 && dayCode <= 520) return signBySlug("taurus");
+  if (dayCode >= 521 && dayCode <= 620) return signBySlug("gemini");
+  if (dayCode >= 621 && dayCode <= 722) return signBySlug("cancer");
+  if (dayCode >= 723 && dayCode <= 822) return signBySlug("leo");
+  if (dayCode >= 823 && dayCode <= 922) return signBySlug("virgo");
+  if (dayCode >= 923 && dayCode <= 1022) return signBySlug("libra");
+  if (dayCode >= 1023 && dayCode <= 1121) return signBySlug("scorpio");
+  if (dayCode >= 1122 && dayCode <= 1221) return signBySlug("sagittarius");
+  if (dayCode >= 1222 || dayCode <= 119) return signBySlug("capricorn");
+  if (dayCode >= 120 && dayCode <= 218) return signBySlug("aquarius");
+  return signBySlug("pisces");
+}
+
+function calculatePairScore(firstSign: ZodiacSign, secondSign: ZodiacSign, mode: RelationshipMode) {
+  const sameElement = firstSign.element === secondSign.element ? 12 : 0;
+  const base = 56 + (hashString(`${firstSign.slug}:${secondSign.slug}:${mode}`) % 28) + sameElement;
+  return Math.min(96, base);
+}
+
+function vipPayload(input: {
+  sign?: string;
+  firstSign?: string;
+  secondSign?: string;
+  relationshipMode?: RelationshipMode;
+  scoreTier?: ZodiacAnalyticsPayload["scoreTier"];
+  hasBirthDate?: boolean;
+  hasBirthTime?: boolean;
+  hasBirthCity?: boolean;
+  inputMode?: string;
+  goal?: VipGoal | string;
+  tone?: VipTone | string;
+  selectedPresetKey?: string;
+  patternType?: string;
+}): ZodiacAnalyticsPayload {
+  return input;
+}
+
+function buildNatalBlocks(sign: ZodiacSign, birthDate: string, birthTime: string, birthCity: string, natalChart: NatalChart | null) {
+  const hasDate = Boolean(parseIsoDate(birthDate));
+  const seed = `${sign.slug}:${birthDate || "no-date"}:${birthTime || "no-time"}:${birthCity ? "city" : "no-city"}`;
+  return {
+    title: `${sign.emoji} ${sign.name} · личная карта`,
+    summary: natalChart?.summary?.[0]?.value ?? `${sign.name} раскрывается через стихию ${sign.element}: важно соединять личный темп, чувства и практичный выбор без давления.`,
+    items: [
+      { title: "Архетип", text: natalChart?.archetype ?? pick(["инициатор перемен", "тихий стратег", "сердечный проводник", "исследователь смысла"], seed, 1) },
+      { title: "Любовь", text: natalChart?.loveStyle ?? pick(["лучше открывается через честный интерес и маленькие подтверждения внимания", "ценит тепло, но не любит эмоциональные проверки", "сближается там, где есть уважение к личному пространству"], seed, 2) },
+      { title: "Зона роста", text: natalChart?.growth ?? pick(["не торопить выводы и выбирать один ясный шаг", "мягко отделять своё желание от чужого ожидания", "держать баланс между вдохновением и режимом"], seed, 3) },
+      { title: "Точность", text: hasDate ? "Дата учтена в расчёте; время и город только повышают детализацию и не сохраняются." : "Можно начать по знаку, а дату добавить позже для более точного слоя." },
+    ],
+  };
+}
+
+export function ExtendedNatalFeature({
+  publicMode,
+  natalChart,
+  onBack,
+  onSave,
+  onShare,
+  onEvent,
+  defaultSign,
+}: VipToolBaseProps & { natalChart: NatalChart | null }) {
+  const featureKey: VipFeatureKey = "vipNatalChart";
+  const [signSlug, setSignSlug] = useState((natalChart?.sign ?? defaultSign ?? signs[0]).slug);
+  const [birthDate, setBirthDate] = useState("");
+  const [birthTime, setBirthTime] = useState("");
+  const [birthCity, setBirthCity] = useState("");
+  const [calculated, setCalculated] = useState(false);
+  const actions = useResultActions(featureKey, onEvent, onSave, onShare);
+  const resultSign = birthDate ? signFromBirthDate(birthDate, signSlug) : signBySlug(signSlug);
+  const payload = vipPayload({
+    sign: resultSign.slug,
+    hasBirthDate: Boolean(parseIsoDate(birthDate)),
+    hasBirthTime: /^\d{2}:\d{2}$/.test(birthTime),
+    hasBirthCity: Boolean(birthCity.trim()),
+    inputMode: birthDate ? "birth_date" : "sign_only",
+  });
+  const result = buildNatalBlocks(resultSign, birthDate, birthTime, birthCity, natalChart?.sign.slug === resultSign.slug ? natalChart : null);
+
   return (
     <VipScreenLayout publicMode={publicMode} title="Расширенная натальная карта" onBack={onBack}>
-      <InfoBlock publicMode={publicMode} title="Личность" text={natalChart.archetype} />
-      <InfoBlock publicMode={publicMode} title="Эмоции и стиль общения" text={natalChart.communicationStyle} />
-      <InfoBlock publicMode={publicMode} title="Любовь" text={natalChart.loveStyle} />
-      <InfoBlock publicMode={publicMode} title="Сильные стороны" text={natalChart.strengths} />
-      <InfoBlock publicMode={publicMode} title="Зона роста" text={natalChart.growth} />
-      {natalChart.compass && (
-        <>
-          <InfoBlock publicMode={publicMode} title="Личный компас" text={natalChart.compass.actions.join("; ")} />
-          <InfoBlock publicMode={publicMode} title="Тени (чего избегать)" text={natalChart.compass.risks.join("; ")} />
-        </>
-      )}
-      {natalChart.vipBlocks?.map((block, i) => (
-        <InfoBlock key={i} publicMode={publicMode} title={block.title} text={block.text} />
-      ))}
+      <VipIntro publicMode={publicMode} text="Персональная карта показывает сильные стороны, любовь, рост и мягкие риски. Данные используются только на экране расчёта." />
+      <VipInputPanel publicMode={publicMode}>
+        <SignSelect publicMode={publicMode} value={signSlug} onChange={setSignSlug} />
+        <VipField publicMode={publicMode} label="Дата рождения">
+          <input className={inputClass(publicMode)} type="date" value={birthDate} onChange={(event) => setBirthDate(event.target.value)} />
+        </VipField>
+        <VipField publicMode={publicMode} label="Время рождения">
+          <input className={inputClass(publicMode)} type="time" value={birthTime} onChange={(event) => setBirthTime(event.target.value)} />
+        </VipField>
+        <VipField publicMode={publicMode} label="Город рождения">
+          <input className={inputClass(publicMode)} value={birthCity} onChange={(event) => setBirthCity(event.target.value)} />
+        </VipField>
+      </VipInputPanel>
+      {natalChart ? (
+        <VipReuseButton publicMode={publicMode} onClick={() => {
+          setSignSlug(natalChart.sign.slug);
+          actions.reuse({ featureKey, sign: natalChart.sign.slug, hasBirthDate: natalChart.hasBirthDate, hasBirthTime: natalChart.hasBirthTime, hasBirthCity: natalChart.hasBirthCity, inputMode: "profile" });
+        }} />
+      ) : null}
+      <PrimaryVipButton publicMode={publicMode} onClick={() => {
+        actions.calculate(payload);
+        setCalculated(true);
+      }}>
+        Рассчитать
+      </PrimaryVipButton>
+      {calculated ? (
+        <VipResultPanel publicMode={publicMode} title={result.title}>
+          <InfoBlock publicMode={publicMode} title="Главный вывод" text={result.summary} />
+          {result.items.map((item) => (
+            <InfoBlock key={item.title} publicMode={publicMode} title={item.title} text={item.text} />
+          ))}
+          <VipResultActions publicMode={publicMode} saved={actions.saved} shared={actions.shared} onSave={() => actions.save(payload)} onShare={() => actions.share(payload)} />
+        </VipResultPanel>
+      ) : null}
     </VipScreenLayout>
   );
 }
 
-export function ExtendedCompatibilityFeature({ publicMode, result, pairReady, onBack }: { publicMode: boolean; result: CompatibilityResult | null; pairReady: boolean; onBack: () => void }) {
-  if (!pairReady || !result) {
-    return (
-      <VipScreenLayout publicMode={publicMode} title="Расширенная совместимость" onBack={onBack}>
-        <VipReadinessBlock
-          publicMode={publicMode}
-          lead="Расширенная совместимость открыта бесплатно; для личного результата нужны только два знака."
-          items={[
-            { title: "Что будет в разборе", text: "Процент гармонии, любовь, общение, быт, притяжение, сильные стороны, зоны риска и главный совет для пары." },
-            { title: "Без лишних данных", text: "Можно начать только со знаков. Имена, даты и время рождения не обязательны для базового VIP-результата." },
-          ]}
-        />
-      </VipScreenLayout>
-    );
-  }
-  return (
-    <VipScreenLayout publicMode={publicMode} title="Расширенная совместимость" onBack={onBack}>
-      <div className="flex items-center gap-3">
-        <div className="text-3xl font-bold text-amber-500">{result.scores.total}%</div>
-        <div className={publicMode ? "text-slate-300" : "text-slate-600"}>Общий показатель гармонии пары</div>
-      </div>
-      <InfoBlock publicMode={publicMode} title="Любовь и чувства" text={result.loveText} />
-      <InfoBlock publicMode={publicMode} title="Общение и диалог" text={result.communicationText} />
-      <InfoBlock publicMode={publicMode} title="Быт и привычки" text={result.householdText} />
-      <InfoBlock publicMode={publicMode} title="Притяжение и интересы" text={result.attractionText} />
-      <InfoBlock publicMode={publicMode} title="Сильные стороны пары" text={result.strengthText} />
-      <InfoBlock publicMode={publicMode} title="Зоны риска и напряжения" text={result.weakSpotText} />
-      <InfoBlock publicMode={publicMode} title="Главный совет" text={result.adviceText} />
-    </VipScreenLayout>
-  );
-}
+export function VipMonthForecastFeature({
+  publicMode,
+  monthForecast,
+  onBack,
+  onSave,
+  onShare,
+  onEvent,
+  defaultSign,
+}: VipToolBaseProps & { monthForecast: MonthForecast | null }) {
+  const featureKey: VipFeatureKey = "vipMonthForecast";
+  const [signSlug, setSignSlug] = useState((defaultSign ?? signs[0]).slug);
+  const [month, setMonth] = useState("2026-06");
+  const [goal, setGoal] = useState<VipGoal>("clarity");
+  const [calculated, setCalculated] = useState(false);
+  const sign = signBySlug(signSlug);
+  const actions = useResultActions(featureKey, onEvent, onSave, onShare);
+  const payload = vipPayload({ sign: sign.slug, goal, inputMode: "month" });
+  const seed = `${sign.slug}:${month}:${goal}`;
 
-export function VipMentalMapFeature({ publicMode, result, pairReady, onBack }: { publicMode: boolean; result: CompatibilityResult | null; pairReady: boolean; onBack: () => void }) {
-  if (!pairReady || !result) {
-    return (
-      <VipScreenLayout publicMode={publicMode} title="Ментальная карта пары" onBack={onBack}>
-        <VipReadinessBlock
-          publicMode={publicMode}
-          lead="Ментальная карта показывает не совместимость в целом, а то, как пара думает, спорит и возвращается к контакту."
-          items={[
-            { title: "Слои карты", text: "Отдельно раскрываются мышление, спорные сценарии, примирение, укрепляющие привычки и то, что снижает доверие." },
-            { title: "Что нужно", text: "Выберите два знака в разделе любви, чтобы карта стала персональной, без платежей и подписки." },
-          ]}
-        />
-      </VipScreenLayout>
-    );
-  }
-  return (
-    <VipScreenLayout publicMode={publicMode} title="Ментальная карта пары" onBack={onBack}>
-      <InfoBlock publicMode={publicMode} title="Как вы думаете" text={result.mentalMapDynamics[0]?.text || result.mentalMapSummary.strengths} />
-      <InfoBlock publicMode={publicMode} title="Как вы спорите" text={result.mentalMapDynamics[1]?.text || result.mentalMapSummary.risks} />
-      <InfoBlock publicMode={publicMode} title="Как вы миритесь" text={result.mentalMapDynamics[2]?.text || result.mentalMapSummary.advice} />
-      <InfoBlock publicMode={publicMode} title="Что укрепляет контакт" text={result.mentalMapSummary.helps.join("; ")} />
-      <InfoBlock publicMode={publicMode} title="Что разрушает доверие" text={result.mentalMapSummary.avoid.join("; ")} />
-    </VipScreenLayout>
-  );
-}
-
-export function VipCoupleCalendarFeature({ publicMode, calendarDays, pairReady, onBack }: { publicMode: boolean; calendarDays: CoupleCalendarDay[]; pairReady: boolean; onBack: () => void }) {
-  if (!pairReady) {
-    return (
-      <VipScreenLayout publicMode={publicMode} title="30-дневный календарь пары" onBack={onBack}>
-        <VipReadinessBlock
-          publicMode={publicMode}
-          lead="30-дневный календарь открыт в раннем VIP-доступе и строится после выбора пары."
-          items={[
-            { title: "Что внутри", text: "Дни для разговоров, свиданий, осторожности, примирения и совместных решений на ближайший месяц." },
-            { title: "Как использовать", text: "Смотрите не как жесткое расписание, а как мягкую карту темпа: когда лучше говорить, а когда дать друг другу больше воздуха." },
-            { title: "Доступ", text: "До 17.09.2026 календарь работает бесплатно и не требует Telegram Stars." },
-          ]}
-        />
-      </VipScreenLayout>
-    );
-  }
-  return (
-    <VipScreenLayout publicMode={publicMode} title="30-дневный календарь пары" onBack={onBack}>
-      <p className={publicMode ? "mb-2 text-sm text-slate-300" : "mb-2 text-sm text-slate-600"}>Ключевые дни для вашей пары в ближайший месяц:</p>
-      <div className="space-y-3">
-        {calendarDays.slice(0, 15).map((day, i) => (
-          <div key={i} className={publicMode ? "rounded-lg bg-white/5 p-3 border-l-2 border-amber-400" : "rounded-lg bg-slate-50 p-3 border-l-2 border-amber-400"}>
-            <div className="flex justify-between items-center mb-1">
-              <span className={publicMode ? "font-semibold text-white" : "font-semibold text-slate-900"}>{day.date}</span>
-              <span className="text-xs uppercase tracking-wider text-amber-500 font-bold">{day.weekday}</span>
-            </div>
-            <p className={publicMode ? "text-sm text-slate-300 font-medium" : "text-sm text-slate-700 font-medium"}>{day.status}</p>
-            <p className={publicMode ? "text-xs text-slate-400 mt-1" : "text-xs text-slate-500 mt-1"}>{day.advice}</p>
-          </div>
-        ))}
-        {calendarDays.length > 15 && (
-          <p className={publicMode ? "text-xs text-center text-slate-400" : "text-xs text-center text-slate-500"}>И еще {calendarDays.length - 15} дней в вашем календаре...</p>
-        )}
-      </div>
-    </VipScreenLayout>
-  );
-}
-
-export function VipMonthForecastFeature({ publicMode, monthForecast, onBack }: { publicMode: boolean; monthForecast: MonthForecast | null; onBack: () => void }) {
-  if (!monthForecast) {
-    return (
-      <VipScreenLayout publicMode={publicMode} title="Месячный прогноз" onBack={onBack}>
-        <VipReadinessBlock
-          publicMode={publicMode}
-          lead="Месячный VIP-прогноз готовит обзор месяца после выбора знака."
-          items={[
-            { title: "Структура прогноза", text: "Главная тема, любовь, деньги и дела, энергия, возможный риск, лучший период и практичный совет." },
-            { title: "Для кого", text: "Подходит для спокойного планирования месяца без точных персональных данных и без оплаты." },
-          ]}
-        />
-      </VipScreenLayout>
-    );
-  }
   return (
     <VipScreenLayout publicMode={publicMode} title="Месячный прогноз" onBack={onBack}>
-      <InfoBlock publicMode={publicMode} title="Главная тема месяца" text={monthForecast.theme} />
-      <InfoBlock publicMode={publicMode} title="Любовь и отношения" text={monthForecast.love} />
-      <InfoBlock publicMode={publicMode} title="Деньги и дела" text={monthForecast.money} />
-      <InfoBlock publicMode={publicMode} title="Энергия и здоровье" text={monthForecast.energy} />
-      <InfoBlock publicMode={publicMode} title="Возможные риски" text={monthForecast.risk} />
-      <InfoBlock publicMode={publicMode} title="Лучший период" text={monthForecast.bestPeriod} />
-      <InfoBlock publicMode={publicMode} title="Главный совет" text={monthForecast.advice} />
+      <VipIntro publicMode={publicMode} text="VIP-прогноз собирает месяц в понятную карту: тема, любовь, деньги, энергия, риски и лучший период." />
+      <VipInputPanel publicMode={publicMode}>
+        <SignSelect publicMode={publicMode} value={signSlug} onChange={setSignSlug} />
+        <VipField publicMode={publicMode} label="Месяц">
+          <input className={inputClass(publicMode)} type="month" value={month} onChange={(event) => setMonth(event.target.value)} />
+        </VipField>
+        <GoalSelect publicMode={publicMode} value={goal} onChange={setGoal} />
+      </VipInputPanel>
+      {monthForecast ? (
+        <VipReuseButton publicMode={publicMode} onClick={() => {
+          actions.reuse({ featureKey, sign: sign.slug, goal, inputMode: "current_sign" });
+        }} />
+      ) : null}
+      <PrimaryVipButton publicMode={publicMode} onClick={() => {
+        actions.calculate(payload);
+        setCalculated(true);
+      }}>
+        Показать
+      </PrimaryVipButton>
+      {calculated ? (
+        <VipResultPanel publicMode={publicMode} title={`${sign.emoji} ${sign.name} · прогноз на ${displayMonth(month)}`}>
+          <InfoBlock publicMode={publicMode} title="Главная тема" text={monthForecast?.theme ?? `${goalLabel(goal)} требует спокойного плана: сначала выбрать приоритет, затем распределить силы по неделям.`} />
+          <InfoBlock publicMode={publicMode} title="Любовь и отношения" text={monthForecast?.love ?? pick(["лучше работают короткие честные разговоры", "отношениям полезна мягкая инициатива", "не проверяйте чувства молчанием"], seed, 1)} />
+          <InfoBlock publicMode={publicMode} title="Деньги и дела" text={monthForecast?.money ?? pick(["хороший месяц для ревизии расходов", "дела требуют одного ясного маршрута", "не берите лишнее из желания всё успеть"], seed, 2)} />
+          <InfoBlock publicMode={publicMode} title="Энергия" text={monthForecast?.energy ?? pick(["берегите сон и не спорьте на усталости", "силы прибавит стабильный режим", "лучше чередовать рывок и восстановление"], seed, 3)} />
+          <InfoBlock publicMode={publicMode} title="Риск" text={monthForecast?.risk ?? pick(["переоценить скорость других людей", "сказать слишком резко в момент напряжения", "застрять в сравнении себя с чужим темпом"], seed, 4)} />
+          <InfoBlock publicMode={publicMode} title="Лучший период" text={monthForecast?.bestPeriod ?? "середина месяца: больше ясности, легче договариваться и завершать небольшие дела"} />
+          <InfoBlock publicMode={publicMode} title="Главный совет" text={monthForecast?.advice ?? "выберите один приоритет месяца и возвращайтесь к нему, когда эмоции начинают распылять внимание"} />
+          <VipResultActions publicMode={publicMode} saved={actions.saved} shared={actions.shared} onSave={() => actions.save(payload)} onShare={() => actions.share(payload)} />
+        </VipResultPanel>
+      ) : null}
     </VipScreenLayout>
   );
 }
 
-export function VipMessageHelperFeature({ publicMode, messageVariants, pairReady, onBack }: { publicMode: boolean; messageVariants: Array<{ label: string; text: string }>; pairReady: boolean; onBack: () => void }) {
-  if (!pairReady) {
-    return (
-      <VipScreenLayout publicMode={publicMode} title="Помощник сообщений" onBack={onBack}>
-        <VipReadinessBlock
-          publicMode={publicMode}
-          lead="Помощник сообщений открыт бесплатно, но личные фразы появляются только после выбора пары."
-          items={[
-            { title: "Что будет внутри", text: "Готовые варианты для мягкого сообщения, романтического тона, разговора после ссоры, приглашения и честного диалога." },
-            { title: "Почему нужна пара", text: "Текст зависит от двух знаков и динамики совместимости, поэтому без пары приложение не подставляет синтетический результат." },
-            { title: "Доступ", text: "Функция остается бесплатной до 17.09.2026 и не требует Telegram Stars." },
-          ]}
-        />
-      </VipScreenLayout>
-    );
+export function ExtendedNameProfileFeature({
+  publicMode,
+  nameProfile,
+  onBack,
+  onSave,
+  onShare,
+  onEvent,
+  defaultSign,
+}: VipToolBaseProps & { nameProfile: NameProfile | null }) {
+  const featureKey: VipFeatureKey = "vipNameProfile";
+  const [name, setName] = useState("");
+  const [signSlug, setSignSlug] = useState((defaultSign ?? signs[0]).slug);
+  const [goal, setGoal] = useState<VipGoal>("clarity");
+  const [calculated, setCalculated] = useState(false);
+  const sign = signBySlug(signSlug);
+  const actions = useResultActions(featureKey, onEvent, onSave, onShare);
+  const payload = vipPayload({ sign: sign.slug, goal, inputMode: name.trim() ? "name_entered" : "sign_only" });
+  const seed = `${name.length}:${sign.slug}:${goal}`;
+
+  return (
+    <VipScreenLayout publicMode={publicMode} title="Расширенный именной профиль" onBack={onBack}>
+      <VipIntro publicMode={publicMode} text="Именной профиль разбирает звучание имени, стиль общения, сильные стороны и мягкие риски. Само имя не сохраняется и не отправляется в аналитику." />
+      <VipInputPanel publicMode={publicMode}>
+        <VipField publicMode={publicMode} label="Имя">
+          <input className={inputClass(publicMode)} value={name} onChange={(event) => setName(event.target.value)} />
+        </VipField>
+        <SignSelect publicMode={publicMode} value={signSlug} onChange={setSignSlug} />
+        <GoalSelect publicMode={publicMode} value={goal} onChange={setGoal} />
+      </VipInputPanel>
+      {nameProfile ? (
+        <VipReuseButton publicMode={publicMode} onClick={() => {
+          actions.reuse({ featureKey, sign: sign.slug, goal, inputMode: "profile" });
+        }} />
+      ) : null}
+      <PrimaryVipButton publicMode={publicMode} onClick={() => {
+        actions.calculate(payload);
+        setCalculated(true);
+      }}>
+        Рассчитать
+      </PrimaryVipButton>
+      {calculated ? (
+        <VipResultPanel publicMode={publicMode} title={`${sign.emoji} ${sign.name} · именной резонанс`}>
+          <InfoBlock publicMode={publicMode} title="Внутренний портрет" text={nameProfile?.portrait ?? `${name.trim() ? "Введённое имя" : "Имя"} задаёт символический ритм: важно говорить с собой мягко и выбирать формулировки, которые не усиливают внутреннее давление.`} />
+          <InfoBlock publicMode={publicMode} title="Сильная сторона" text={nameProfile?.vipBlocks?.[0]?.text ?? pick(["умение слышать нюансы", "способность быстро собираться", "тёплый стиль контакта", "внимание к деталям"], seed, 1)} />
+          <InfoBlock publicMode={publicMode} title="Риск" text={nameProfile?.vipBlocks?.[3]?.text ?? pick(["пытаться доказать ценность слишком резко", "застревать в ожидании идеальной реакции", "сравнивать себя с чужим образом"], seed, 2)} />
+          <InfoBlock publicMode={publicMode} title="Совет" text={`Фокус "${goalLabel(goal)}": сформулируйте одну просьбу коротко и оставьте место для спокойного ответа.`} />
+          <VipResultActions publicMode={publicMode} saved={actions.saved} shared={actions.shared} onSave={() => actions.save(payload)} onShare={() => actions.share(payload)} />
+        </VipResultPanel>
+      ) : null}
+    </VipScreenLayout>
+  );
+}
+
+export function ExtendedCompatibilityFeature({
+  publicMode,
+  result,
+  pairReady,
+  onBack,
+  onSave,
+  onShare,
+  onEvent,
+  defaultSign,
+  defaultSecondSign,
+  relationshipMode = "love",
+  scoreTier,
+}: VipToolBaseProps & { result: CompatibilityResult | null; pairReady: boolean }) {
+  const featureKey: VipFeatureKey = "vipCompatibility";
+  const [firstSlug, setFirstSlug] = useState((defaultSign ?? signs[0]).slug);
+  const [secondSlug, setSecondSlug] = useState((defaultSecondSign ?? signs[2]).slug);
+  const [mode, setMode] = useState<RelationshipMode>(relationshipMode);
+  const [calculated, setCalculated] = useState(false);
+  const first = signBySlug(firstSlug);
+  const second = signBySlug(secondSlug);
+  const score = pairReady && result ? result.scores.total : calculatePairScore(first, second, mode);
+  const tier = scoreTier ?? safeScoreTier(score);
+  const actions = useResultActions(featureKey, onEvent, onSave, onShare);
+  const payload = vipPayload({ firstSign: first.slug, secondSign: second.slug, relationshipMode: mode, scoreTier: tier, inputMode: "sign_pair" });
+
+  return (
+    <VipScreenLayout publicMode={publicMode} title="Расширенная совместимость" onBack={onBack}>
+      <VipIntro publicMode={publicMode} text="Расчёт показывает не только процент, а температуру пары: чувства, общение, быт, притяжение и главный совет." />
+      <VipInputPanel publicMode={publicMode}>
+        <SignSelect publicMode={publicMode} value={firstSlug} onChange={setFirstSlug} label="Первый знак" />
+        <SignSelect publicMode={publicMode} value={secondSlug} onChange={setSecondSlug} label="Второй знак" />
+        <VipField publicMode={publicMode} label="Режим">
+          <select className={selectClass(publicMode)} value={mode} onChange={(event) => setMode(event.target.value as RelationshipMode)}>
+            {relationshipModes.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.label}
+              </option>
+            ))}
+          </select>
+        </VipField>
+      </VipInputPanel>
+      {pairReady ? (
+        <VipReuseButton publicMode={publicMode} onClick={() => {
+          setFirstSlug((defaultSign ?? first).slug);
+          setSecondSlug((defaultSecondSign ?? second).slug);
+          actions.reuse({ featureKey, firstSign: (defaultSign ?? first).slug, secondSign: (defaultSecondSign ?? second).slug, relationshipMode: mode, scoreTier: tier, inputMode: "current_pair" });
+        }} />
+      ) : null}
+      <PrimaryVipButton publicMode={publicMode} onClick={() => {
+        actions.calculate(payload);
+        setCalculated(true);
+      }}>
+        Рассчитать
+      </PrimaryVipButton>
+      {calculated ? (
+        <VipResultPanel publicMode={publicMode} title={`${first.emoji} ${first.name} + ${second.emoji} ${second.name} · ${relationshipModeLabel(mode)}`}>
+          <div className="grid gap-2 sm:grid-cols-3">
+            <VipStatusPill publicMode={publicMode} label="Score" value={`${score}%`} />
+            <VipStatusPill publicMode={publicMode} label="Уровень" value={tier ?? "medium"} />
+            <VipStatusPill publicMode={publicMode} label="Режим" value={relationshipModeLabel(mode)} />
+          </div>
+          <InfoBlock publicMode={publicMode} title="Главный вывод" text={result?.overviewText ?? `Пара держится на сочетании темпа ${first.name} и реакции ${second.name}: чем яснее договорённости, тем меньше напряжения.`} />
+          <InfoBlock publicMode={publicMode} title="Любовь" text={result?.loveText ?? "лучше работают тёплые действия, а не проверка чувств"} />
+          <InfoBlock publicMode={publicMode} title="Общение" text={result?.communicationText ?? "говорите короче, конкретнее и без скрытых тестов"} />
+          <InfoBlock publicMode={publicMode} title="Быт / ритм" text={result?.householdText ?? "распределите ожидания заранее, чтобы бытовые мелочи не становились символом отношения"} />
+          <InfoBlock publicMode={publicMode} title="Главный совет" text={result?.adviceText ?? "не пытайтесь победить в разговоре: выбирайте общий следующий шаг"} />
+          <VipResultActions publicMode={publicMode} saved={actions.saved} shared={actions.shared} onSave={() => actions.save(payload)} onShare={() => actions.share(payload)} />
+        </VipResultPanel>
+      ) : null}
+    </VipScreenLayout>
+  );
+}
+
+export function VipMentalMapFeature({
+  publicMode,
+  result,
+  pairReady,
+  onBack,
+  onSave,
+  onShare,
+  onEvent,
+  defaultSign,
+  defaultSecondSign,
+  relationshipMode = "love",
+  scoreTier,
+}: VipToolBaseProps & { result: CompatibilityResult | null; pairReady: boolean }) {
+  const featureKey: VipFeatureKey = "vipMentalMap";
+  const [firstSlug, setFirstSlug] = useState((defaultSign ?? signs[0]).slug);
+  const [secondSlug, setSecondSlug] = useState((defaultSecondSign ?? signs[2]).slug);
+  const [goal, setGoal] = useState<VipGoal>("clarity");
+  const [calculated, setCalculated] = useState(false);
+  const first = signBySlug(firstSlug);
+  const second = signBySlug(secondSlug);
+  const score = pairReady && result ? result.scores.total : calculatePairScore(first, second, relationshipMode);
+  const tier = scoreTier ?? safeScoreTier(score);
+  const actions = useResultActions(featureKey, onEvent, onSave, onShare);
+  const payload = vipPayload({ firstSign: first.slug, secondSign: second.slug, relationshipMode, scoreTier: tier, goal, inputMode: "sign_pair" });
+
+  return (
+    <VipScreenLayout publicMode={publicMode} title="Ментальная карта пары" onBack={onBack}>
+      <VipIntro publicMode={publicMode} text="Ментальная карта показывает, как пара думает, спорит, мирится и возвращается к доверию." />
+      <VipInputPanel publicMode={publicMode}>
+        <SignSelect publicMode={publicMode} value={firstSlug} onChange={setFirstSlug} label="Первый знак" />
+        <SignSelect publicMode={publicMode} value={secondSlug} onChange={setSecondSlug} label="Второй знак" />
+        <GoalSelect publicMode={publicMode} value={goal} onChange={setGoal} />
+      </VipInputPanel>
+      <PrimaryVipButton publicMode={publicMode} onClick={() => {
+        actions.calculate(payload);
+        setCalculated(true);
+      }}>
+        Рассчитать
+      </PrimaryVipButton>
+      {calculated ? (
+        <VipResultPanel publicMode={publicMode} title={`${first.name} + ${second.name} · карта мышления`}>
+          <InfoBlock publicMode={publicMode} title="Как вы думаете" text={result?.mentalMapDynamics?.[0]?.text ?? `${first.name} быстрее реагирует на импульс, а ${second.name} добавляет свой способ проверки реальности. Важно сначала назвать цель разговора.`} />
+          <InfoBlock publicMode={publicMode} title="Как спорите" text={result?.mentalMapDynamics?.[1]?.text ?? "напряжение растёт, когда один ждёт мгновенного ответа, а второй пытается защитить темп"} />
+          <InfoBlock publicMode={publicMode} title="Как миритесь" text={result?.mentalMapDynamics?.[2]?.text ?? "лучше помогает короткое признание эмоции и одно действие, которое можно выполнить сегодня"} />
+          <InfoBlock publicMode={publicMode} title="Что укрепляет" text={result?.mentalMapSummary?.helps?.join("; ") || `фокус "${goalLabel(goal)}", честный вопрос, пауза перед выводом`} />
+          <InfoBlock publicMode={publicMode} title="Что избегать" text={result?.mentalMapSummary?.avoid?.join("; ") || "сарказм, молчаливые проверки и спор на усталости"} />
+          <VipResultActions publicMode={publicMode} saved={actions.saved} shared={actions.shared} onSave={() => actions.save(payload)} onShare={() => actions.share(payload)} />
+        </VipResultPanel>
+      ) : null}
+    </VipScreenLayout>
+  );
+}
+
+export function VipCoupleCalendarFeature({
+  publicMode,
+  calendarDays,
+  pairReady,
+  onBack,
+  onSave,
+  onShare,
+  onEvent,
+  defaultSign,
+  defaultSecondSign,
+  relationshipMode = "love",
+  scoreTier,
+}: VipToolBaseProps & { calendarDays: CoupleCalendarDay[]; pairReady: boolean }) {
+  const featureKey: VipFeatureKey = "vipCoupleCalendar";
+  const [firstSlug, setFirstSlug] = useState((defaultSign ?? signs[0]).slug);
+  const [secondSlug, setSecondSlug] = useState((defaultSecondSign ?? signs[2]).slug);
+  const [startDate, setStartDate] = useState("2026-06-19");
+  const [calculated, setCalculated] = useState(false);
+  const first = signBySlug(firstSlug);
+  const second = signBySlug(secondSlug);
+  const score = pairReady ? 72 : calculatePairScore(first, second, relationshipMode);
+  const tier = scoreTier ?? safeScoreTier(score);
+  const actions = useResultActions(featureKey, onEvent, onSave, onShare);
+  const payload = vipPayload({ firstSign: first.slug, secondSign: second.slug, relationshipMode, scoreTier: tier, inputMode: "date_range" });
+  const days = calendarDays.length >= 30 && pairReady ? calendarDays : Array.from({ length: 30 }, (_, index) => {
+    const dateKey = addDays(startDate, index);
+    const seed = `${first.slug}:${second.slug}:${relationshipMode}:${dateKey}`;
+    return {
+      dateKey,
+      date: displayDate(dateKey),
+      weekday: `день ${index + 1}`,
+      status: pick(["мягкий контакт", "день разговора", "пауза и наблюдение", "совместное действие"], seed, 1),
+      theme: pick(["доверие", "планы", "тепло", "границы", "поддержка"], seed, 2),
+      energy: pick(["спокойная", "живая", "чувствительная", "собранная"], seed, 3),
+      action: pick(["задать один вопрос", "сделать маленький жест", "договориться о быте", "оставить место для ответа"], seed, 4),
+      risk: pick(["спешка", "намёки", "усталость", "соревнование"], seed, 5),
+      advice: pick(["говорите прямо и мягко", "не перегружайте день ожиданиями", "выберите общий маленький шаг", "дайте эмоциям созреть"], seed, 6),
+    };
+  });
+
+  return (
+    <VipScreenLayout publicMode={publicMode} title="30-дневный календарь пары" onBack={onBack}>
+      <VipIntro publicMode={publicMode} text="Календарь пары показывает ближайшие 30 дней: тему, энергию, действие, риск и короткий совет." />
+      <VipInputPanel publicMode={publicMode}>
+        <SignSelect publicMode={publicMode} value={firstSlug} onChange={setFirstSlug} label="Первый знак" />
+        <SignSelect publicMode={publicMode} value={secondSlug} onChange={setSecondSlug} label="Второй знак" />
+        <VipField publicMode={publicMode} label="Старт">
+          <input className={inputClass(publicMode)} type="date" value={startDate} onChange={(event) => setStartDate(event.target.value)} />
+        </VipField>
+      </VipInputPanel>
+      <PrimaryVipButton publicMode={publicMode} onClick={() => {
+        actions.calculate(payload);
+        setCalculated(true);
+      }}>
+        Показать
+      </PrimaryVipButton>
+      {calculated ? (
+        <VipResultPanel publicMode={publicMode} title={`30 дней пары · ${first.name} + ${second.name}`}>
+          <div className="space-y-2">
+            {days.map((day, index) => (
+              <div key={`${day.dateKey}-${index}`} className={publicMode ? "rounded-lg border border-white/10 bg-white/5 p-3" : "rounded-lg border border-slate-100 bg-white p-3"}>
+                <div className="flex items-center justify-between gap-2">
+                  <p className={publicMode ? "text-sm font-semibold text-white" : "text-sm font-semibold text-slate-950"}>День {index + 1} · {day.date}</p>
+                  <span className={publicMode ? "rounded-full bg-amber-200/15 px-2 py-1 text-[11px] font-semibold text-amber-100" : "rounded-full bg-amber-100 px-2 py-1 text-[11px] font-semibold text-amber-800"}>{day.energy}</span>
+                </div>
+                <p className={publicMode ? "mt-1 text-sm text-slate-300" : "mt-1 text-sm text-slate-700"}>{day.theme}: {day.action}. Риск: {day.risk}. Совет: {day.advice}</p>
+              </div>
+            ))}
+          </div>
+          <VipResultActions publicMode={publicMode} saved={actions.saved} shared={actions.shared} onSave={() => actions.save(payload)} onShare={() => actions.share(payload)} />
+        </VipResultPanel>
+      ) : null}
+    </VipScreenLayout>
+  );
+}
+
+export function VipMessageHelperFeature({
+  publicMode,
+  messageVariants,
+  pairReady,
+  onBack,
+  onSave,
+  onShare,
+  onEvent,
+  defaultSign,
+  defaultSecondSign,
+  relationshipMode = "love",
+  scoreTier,
+}: VipToolBaseProps & { messageVariants: Array<{ label: string; text: string }>; pairReady: boolean }) {
+  const featureKey: VipFeatureKey = "vipMessageHelper";
+  const [firstSlug, setFirstSlug] = useState((defaultSign ?? signs[0]).slug);
+  const [secondSlug, setSecondSlug] = useState((defaultSecondSign ?? signs[2]).slug);
+  const [goal, setGoal] = useState<VipGoal>("reconciliation");
+  const [tone, setTone] = useState<VipTone>("soft");
+  const [calculated, setCalculated] = useState(false);
+  const [copiedId, setCopiedId] = useState("");
+  const first = signBySlug(firstSlug);
+  const second = signBySlug(secondSlug);
+  const tier = scoreTier ?? safeScoreTier(calculatePairScore(first, second, relationshipMode));
+  const actions = useResultActions(featureKey, onEvent, onSave, onShare);
+  const payload = vipPayload({ firstSign: first.slug, secondSign: second.slug, relationshipMode, scoreTier: tier, goal, tone, inputMode: "message_goal" });
+  const generatedMessages = buildVipMessages(first, second, goal, tone, pairReady ? messageVariants : []);
+
+  function copyMessage(id: string, text: string) {
+    if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
+      void navigator.clipboard.writeText(text).catch(() => {
+        // Clipboard access is optional in Telegram WebView/browser smoke.
+      });
+    }
+    setCopiedId(id);
+    onEvent?.("vip_message_copied", { featureKey, firstSign: first.slug, secondSign: second.slug, relationshipMode, scoreTier: tier, goal, tone });
   }
 
   return (
     <VipScreenLayout publicMode={publicMode} title="Помощник сообщений" onBack={onBack}>
-      <p className={publicMode ? "text-sm text-slate-300 mb-4" : "text-sm text-slate-600 mb-4"}>Используйте эти фразы для гармоничного общения с вашим партнером:</p>
-      <div className="space-y-3">
-        {messageVariants.map((variant, i) => (
-          <InfoBlock key={i} publicMode={publicMode} title={variant.label} text={variant.text} />
-        ))}
-      </div>
+      <VipIntro publicMode={publicMode} text="Помощник собирает три готовые фразы для разговора. Текст не сохраняется в localStorage и не уходит в аналитику." />
+      <VipInputPanel publicMode={publicMode}>
+        <SignSelect publicMode={publicMode} value={firstSlug} onChange={setFirstSlug} label="Первый знак" />
+        <SignSelect publicMode={publicMode} value={secondSlug} onChange={setSecondSlug} label="Второй знак" />
+        <GoalSelect publicMode={publicMode} value={goal} onChange={setGoal} label="Цель сообщения" />
+        <ToneSelect publicMode={publicMode} value={tone} onChange={setTone} />
+      </VipInputPanel>
+      <PrimaryVipButton publicMode={publicMode} onClick={() => {
+        actions.calculate(payload);
+        setCalculated(true);
+      }}>
+        Показать
+      </PrimaryVipButton>
+      {calculated ? (
+        <VipResultPanel publicMode={publicMode} title={`Что написать · ${toneLabel(tone).toLowerCase()} тон`}>
+          {generatedMessages.map((message) => (
+            <div key={message.id} className={publicMode ? "rounded-lg border border-white/10 bg-white/5 p-3" : "rounded-lg border border-slate-100 bg-white p-3"}>
+              <p className={publicMode ? "text-sm font-semibold text-amber-100" : "text-sm font-semibold text-amber-800"}>{message.label}</p>
+              <p className={publicMode ? "mt-2 text-sm leading-6 text-slate-200" : "mt-2 text-sm leading-6 text-slate-800"}>{message.text}</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <SecondaryVipButton publicMode={publicMode} onClick={() => copyMessage(message.id, message.text)}>
+                  {copiedId === message.id ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                  {copiedId === message.id ? "Скопировано" : "Скопировать"}
+                </SecondaryVipButton>
+              </div>
+            </div>
+          ))}
+          <VipResultActions publicMode={publicMode} saved={actions.saved} shared={actions.shared} onSave={() => actions.save(payload)} onShare={() => actions.share(payload)} />
+        </VipResultPanel>
+      ) : null}
     </VipScreenLayout>
   );
 }
 
-export function ExtendedNameProfileFeature({ publicMode, nameProfile, onBack }: { publicMode: boolean; nameProfile: NameProfile | null; onBack: () => void }) {
-  if (!nameProfile) {
-    return (
-      <VipScreenLayout publicMode={publicMode} title="Расширенный именной профиль" onBack={onBack}>
-        <VipReadinessBlock
-          publicMode={publicMode}
-          lead="Именной профиль открыт бесплатно, но ему нужно имя, чтобы не показывать выдуманную персонализацию."
-          items={[
-            { title: "Что раскроется", text: "Внутренний портрет, сильные стороны, риски, стиль общения, отношения, работа и совет месяца." },
-            { title: "Безопасность", text: "Имя используется только для расчета на экране; аналитика получает только флаг наличия имени, а не само имя." },
-          ]}
-        />
-      </VipScreenLayout>
-    );
+function buildVipMessages(first: ZodiacSign, second: ZodiacSign, goal: VipGoal, tone: VipTone, variants: Array<{ label: string; text: string }>) {
+  const base = variants.filter((item) => !item.text.includes("выберите два знака")).slice(0, 3);
+  if (base.length >= 3) {
+    return base.map((item, index) => ({ id: `message_${index}`, label: item.label, text: item.text }));
   }
-  return (
-    <VipScreenLayout publicMode={publicMode} title="Расширенный именной профиль" onBack={onBack}>
-      <InfoBlock publicMode={publicMode} title="Внутренний портрет" text={nameProfile.portrait} />
-      {nameProfile.vipBlocks.map((block, i) => (
-        <InfoBlock key={i} publicMode={publicMode} title={block.title} text={block.text} />
-      ))}
-    </VipScreenLayout>
-  );
+  const tonePrefix: Record<VipTone, string> = {
+    soft: "Мне важно сказать это спокойно:",
+    warm: "Я хочу сохранить тепло между нами:",
+    direct: "Скажу прямо и бережно:",
+    romantic: "Мне хочется быть ближе к тебе:",
+  };
+  const goalLine: Record<VipGoal, string> = {
+    love: "давай сделаем сегодня один маленький шаг навстречу друг другу.",
+    work: "давай договоримся о понятном плане без лишнего давления.",
+    energy: "давай не спорить на усталости и выбрать более мягкий темп.",
+    clarity: "давай проясним главное коротко, без догадок и проверок.",
+    reconciliation: "мне жаль за резкость; я хочу услышать тебя и восстановить контакт.",
+  };
+  return [
+    { id: "warm_start", label: "Тёплый старт", text: `${tonePrefix[tone]} ${first.name} и ${second.name} могут не совпадать в темпе, но ${goalLine[goal]}` },
+    { id: "clear_step", label: "Мягкий шаг", text: `Мне важно не победить в разговоре, а понять нас. Давай выберем один следующий шаг и не будем давить друг на друга.` },
+    { id: "careful_close", label: "Бережное завершение", text: `Спасибо, что слышишь меня. Я рядом и хочу говорить так, чтобы нам обоим было спокойнее.` },
+  ];
 }
 
-export function ExtendedNumerologyFeature({ publicMode, numerology, onBack }: { publicMode: boolean; numerology: NumerologyProfile; onBack: () => void }) {
+export function ExtendedNumerologyFeature({
+  publicMode,
+  numerology,
+  onBack,
+  onSave,
+  onShare,
+  onEvent,
+  defaultSign,
+}: VipToolBaseProps & { numerology: NumerologyProfile }) {
+  const featureKey: VipFeatureKey = "vipNumerology";
+  const [birthDate, setBirthDate] = useState("");
+  const [name, setName] = useState("");
+  const [goal, setGoal] = useState<VipGoal>("energy");
+  const [calculated, setCalculated] = useState(false);
+  const sign = defaultSign ?? signs[0];
+  const parsedDate = parseIsoDate(birthDate);
+  const lifePath = parsedDate ? reduceNumber(parsedDate.day + parsedDate.month + parsedDate.year) : numerology.lifePath;
+  const nameNumber = name.trim() ? reduceNumber(Array.from(name.trim()).reduce((sum, char) => sum + char.charCodeAt(0), 0)) : numerology.nameNumber;
+  const actions = useResultActions(featureKey, onEvent, onSave, onShare);
+  const payload = vipPayload({ sign: sign.slug, hasBirthDate: Boolean(parsedDate), inputMode: name.trim() ? "date_and_name" : parsedDate ? "date" : "day_number", goal });
+
   return (
     <VipScreenLayout publicMode={publicMode} title="Расширенная нумерология" onBack={onBack}>
-      <div className="flex flex-wrap gap-3 mb-4">
-        {numerology.lifePath && <VipStatusPill publicMode={publicMode} label="Путь" value={String(numerology.lifePath)} />}
-        {numerology.nameNumber && <VipStatusPill publicMode={publicMode} label="Имя" value={String(numerology.nameNumber)} />}
-        {numerology.personalMonth && <VipStatusPill publicMode={publicMode} label="Месяц" value={String(numerology.personalMonth)} />}
-        <VipStatusPill publicMode={publicMode} label="День" value={String(numerology.dayNumber)} />
-      </div>
-      <InfoBlock publicMode={publicMode} title="Сильные стороны чисел" text={numerology.strengths} />
-      <InfoBlock publicMode={publicMode} title="Скрытые риски" text={numerology.risks} />
-      <InfoBlock publicMode={publicMode} title="Деньги и любовь" text={numerology.summary} />
-      <InfoBlock publicMode={publicMode} title="Совет по вашим числам" text={numerology.advice} />
+      <VipIntro publicMode={publicMode} text="Нумерология показывает число пути, число имени, личный месяц и практичный совет. Имя и дата остаются только на экране." />
+      <VipInputPanel publicMode={publicMode}>
+        <VipField publicMode={publicMode} label="Дата рождения">
+          <input className={inputClass(publicMode)} type="date" value={birthDate} onChange={(event) => setBirthDate(event.target.value)} />
+        </VipField>
+        <VipField publicMode={publicMode} label="Имя">
+          <input className={inputClass(publicMode)} value={name} onChange={(event) => setName(event.target.value)} />
+        </VipField>
+        <GoalSelect publicMode={publicMode} value={goal} onChange={setGoal} />
+      </VipInputPanel>
+      <PrimaryVipButton publicMode={publicMode} onClick={() => {
+        actions.calculate(payload);
+        setCalculated(true);
+      }}>
+        Рассчитать
+      </PrimaryVipButton>
+      {calculated ? (
+        <VipResultPanel publicMode={publicMode} title="Числовой профиль">
+          <div className="grid gap-2 sm:grid-cols-4">
+            <VipStatusPill publicMode={publicMode} label="Путь" value={String(lifePath ?? numerology.dayNumber)} />
+            <VipStatusPill publicMode={publicMode} label="Имя" value={String(nameNumber ?? "—")} />
+            <VipStatusPill publicMode={publicMode} label="Месяц" value={String(numerology.personalMonth ?? numerology.dayNumber)} />
+            <VipStatusPill publicMode={publicMode} label="День" value={String(numerology.dayNumber)} />
+          </div>
+          <InfoBlock publicMode={publicMode} title="Сильные стороны" text={numerology.strengths} />
+          <InfoBlock publicMode={publicMode} title="Риски" text={numerology.risks} />
+          <InfoBlock publicMode={publicMode} title="Совет" text={`${numerology.advice}. Фокус "${goalLabel(goal)}" лучше раскрывать через один небольшой завершённый шаг.`} />
+          <VipResultActions publicMode={publicMode} saved={actions.saved} shared={actions.shared} onSave={() => actions.save(payload)} onShare={() => actions.share(payload)} />
+        </VipResultPanel>
+      ) : null}
     </VipScreenLayout>
   );
 }
 
-export function ExtendedAngelNumberFeature({ publicMode, angelNumber, onBack }: { publicMode: boolean; angelNumber: AngelNumberProfile; onBack: () => void }) {
-  if (!angelNumber.isValid) {
-    return (
-      <VipScreenLayout publicMode={publicMode} title="Ангельские числа" onBack={onBack}>
-        <VipReadinessBlock
-          publicMode={publicMode}
-          lead="VIP-толкование ангельских чисел разбирает повторяющиеся и зеркальные паттерны."
-          items={[
-            { title: "Примеры", text: "Введите 11:11, 22:22, 12:21 или похожую комбинацию времени, которую вы часто замечаете." },
-            { title: "Что будет в результате", text: "Любовь, дела, интуиция, действие, осторожность, знак дня и связь с текущей энергией." },
-          ]}
-        />
-      </VipScreenLayout>
-    );
-  }
+export function ExtendedAngelNumberFeature({
+  publicMode,
+  angelNumber,
+  onBack,
+  onSave,
+  onShare,
+  onEvent,
+  defaultSign,
+}: VipToolBaseProps & { angelNumber: AngelNumberProfile }) {
+  const featureKey: VipFeatureKey = "vipAngelNumbers";
+  const [value, setValue] = useState(angelNumber.isValid ? angelNumber.label : "11:11");
+  const [goal, setGoal] = useState<VipGoal>("clarity");
+  const [calculated, setCalculated] = useState(false);
+  const sign = defaultSign ?? signs[0];
+  const safeValue = /^\d{2}:\d{2}$/.test(value) ? value : "11:11";
+  const actions = useResultActions(featureKey, onEvent, onSave, onShare);
+  const payload = vipPayload({ sign: sign.slug, selectedPresetKey: `angel_${safeValue.replace(":", "")}`, patternType: angelNumber.patternType, inputMode: "angel_time", goal });
+
   return (
     <VipScreenLayout publicMode={publicMode} title="Толкование ангельских чисел" onBack={onBack}>
-      <div className="flex items-center gap-3 mb-4">
-        <div className="text-3xl font-bold tracking-widest text-amber-500">{angelNumber.safeKey}</div>
-        <div className={publicMode ? "text-slate-300" : "text-slate-600"}>{angelNumber.label}</div>
-      </div>
-      {angelNumber.vipBlocks.map((block, i) => (
-        <InfoBlock key={i} publicMode={publicMode} title={block.title} text={block.text} />
-      ))}
+      <VipIntro publicMode={publicMode} text="VIP-толкование разбирает повторяющиеся и зеркальные числа: любовь, дела, интуицию, действие и осторожность." />
+      <VipInputPanel publicMode={publicMode}>
+        <VipField publicMode={publicMode} label="Комбинация">
+          <input className={inputClass(publicMode)} value={value} onChange={(event) => setValue(event.target.value)} />
+        </VipField>
+        <GoalSelect publicMode={publicMode} value={goal} onChange={setGoal} />
+      </VipInputPanel>
+      <PrimaryVipButton publicMode={publicMode} onClick={() => {
+        actions.calculate(payload);
+        setCalculated(true);
+      }}>
+        Рассчитать
+      </PrimaryVipButton>
+      {calculated ? (
+        <VipResultPanel publicMode={publicMode} title={`${safeValue} · знак Вселенной`}>
+          <InfoBlock publicMode={publicMode} title="Главный смысл" text={angelNumber.isValid && angelNumber.label === safeValue ? angelNumber.meaning : "это мягкое напоминание вернуть внимание к главному и не ждать идеального знака вместо действия"} />
+          <InfoBlock publicMode={publicMode} title="Любовь" text={angelNumber.isValid ? angelNumber.love : "лучше выбрать одно честное сообщение без проверки чувств"} />
+          <InfoBlock publicMode={publicMode} title="Дела" text={angelNumber.isValid ? angelNumber.workMoney : "сверьте план, деньги и обещания без спешки"} />
+          <InfoBlock publicMode={publicMode} title="Интуиция" text={angelNumber.isValid ? angelNumber.intuition : "заметьте мысль, которая была рядом с числом"} />
+          <InfoBlock publicMode={publicMode} title="Действие" text={(angelNumber.isValid ? angelNumber.actions : ["сделать один ясный шаг"]).join("; ")} />
+          <InfoBlock publicMode={publicMode} title="Осторожность" text={(angelNumber.isValid ? angelNumber.avoid : ["не строить вывод по одному совпадению"]).join("; ")} />
+          <VipResultActions publicMode={publicMode} saved={actions.saved} shared={actions.shared} onSave={() => actions.save(payload)} onShare={() => actions.share(payload)} />
+        </VipResultPanel>
+      ) : null}
     </VipScreenLayout>
   );
 }
 
-export function VipTalismansFeature({ publicMode, dailyTalisman, selfSign, onBack }: { publicMode: boolean; dailyTalisman: DailyTalismanProfile | null; selfSign: ZodiacSign | null; onBack: () => void }) {
-  if (!dailyTalisman) {
-    return (
-      <VipScreenLayout publicMode={publicMode} title="VIP талисманы и символы" onBack={onBack}>
-        <VipReadinessBlock
-          publicMode={publicMode}
-          lead="VIP-талисманы показывают мягкие символы дня после выбора знака."
-          items={[
-            { title: "Что внутри", text: "Камень силы, цвет дня, счастливое число, тотем, фраза силы и действие, которое поддержит настрой." },
-            { title: "Как читать", text: "Это не обещание результата, а аккуратная подсказка для фокуса, настроения и маленького ежедневного ритуала." },
-          ]}
-        />
-      </VipScreenLayout>
-    );
-  }
+export function VipTalismansFeature({
+  publicMode,
+  dailyTalisman,
+  selfSign,
+  onBack,
+  onSave,
+  onShare,
+  onEvent,
+}: VipToolBaseProps & { dailyTalisman: DailyTalismanProfile | null; selfSign: ZodiacSign | null }) {
+  const featureKey: VipFeatureKey = "vipTalismans";
+  const [signSlug, setSignSlug] = useState((selfSign ?? signs[0]).slug);
+  const [goal, setGoal] = useState<VipGoal>("energy");
+  const [calculated, setCalculated] = useState(false);
+  const sign = signBySlug(signSlug);
+  const actions = useResultActions(featureKey, onEvent, onSave, onShare);
+  const payload = vipPayload({ sign: sign.slug, goal, inputMode: "sign_goal" });
+  const seed = `${sign.slug}:${goal}`;
+
   return (
     <VipScreenLayout publicMode={publicMode} title="Талисманы и символы силы" onBack={onBack}>
-      <div className="grid gap-3 sm:grid-cols-2">
-        <InfoBlock publicMode={publicMode} title="Камень силы" text={dailyTalisman.stone} />
-        <InfoBlock publicMode={publicMode} title="Цвет дня" text={dailyTalisman.color} />
-        <InfoBlock publicMode={publicMode} title="Счастливое число" text={String(dailyTalisman.number)} />
-        <InfoBlock publicMode={publicMode} title="Тотем" text={selfSign ? `${selfSign.emoji} ${selfSign.name}` : "Личный тотем"} />
-      </div>
-      <div className="mt-3">
-        <InfoBlock publicMode={publicMode} title="Фраза силы на день" text={dailyTalisman.phrase} />
-        <div className="mt-3" />
-        <InfoBlock publicMode={publicMode} title="Действие, которое принесет удачу" text={dailyTalisman.action} />
-      </div>
+      <VipIntro publicMode={publicMode} text="Инструмент подбирает символы для фокуса дня: камень, цвет, число, фразу силы и маленькое действие." />
+      <VipInputPanel publicMode={publicMode}>
+        <SignSelect publicMode={publicMode} value={signSlug} onChange={setSignSlug} />
+        <GoalSelect publicMode={publicMode} value={goal} onChange={setGoal} />
+      </VipInputPanel>
+      <PrimaryVipButton publicMode={publicMode} onClick={() => {
+        actions.calculate(payload);
+        setCalculated(true);
+      }}>
+        Показать
+      </PrimaryVipButton>
+      {calculated ? (
+        <VipResultPanel publicMode={publicMode} title={`${sign.emoji} ${sign.name} · символы силы`}>
+          <div className="grid gap-2 sm:grid-cols-3">
+            <VipStatusPill publicMode={publicMode} label="Камень" value={dailyTalisman?.stone ?? pick(["лунный камень", "цитрин", "аметист", "гранат"], seed, 1)} />
+            <VipStatusPill publicMode={publicMode} label="Цвет" value={dailyTalisman?.color ?? pick(["золотой", "серебристый", "изумрудный", "синий"], seed, 2)} />
+            <VipStatusPill publicMode={publicMode} label="Число" value={String(dailyTalisman?.number ?? (hashString(seed) % 9) + 1)} />
+          </div>
+          <InfoBlock publicMode={publicMode} title="Фраза силы" text={dailyTalisman?.phrase ?? "я выбираю спокойный шаг и держу фокус на главном"} />
+          <InfoBlock publicMode={publicMode} title="Действие" text={dailyTalisman?.action ?? `для фокуса "${goalLabel(goal)}" выберите один видимый символ и одно маленькое действие`} />
+          <InfoBlock publicMode={publicMode} title="Осторожность" text={dailyTalisman?.avoid ?? "не превращайте символ в обещание результата; он нужен как опора внимания"} />
+          <VipResultActions publicMode={publicMode} saved={actions.saved} shared={actions.shared} onSave={() => actions.save(payload)} onShare={() => actions.share(payload)} />
+        </VipResultPanel>
+      ) : null}
     </VipScreenLayout>
   );
 }
 
-export function VipMysticDayFeature({ publicMode, dateKey, sign, angelNumber, onBack }: { publicMode: boolean; dateKey: string; sign: ZodiacSign | null; angelNumber: AngelNumberProfile; onBack: () => void }) {
-  if (!sign) {
-    return (
-      <VipScreenLayout publicMode={publicMode} title="VIP Мистический день" onBack={onBack}>
-        <VipReadinessBlock
-          publicMode={publicMode}
-          lead="VIP мистический день объединяет несколько мистических разделов в один короткий синтез."
-          items={[
-            { title: "Состав синтеза", text: "Карта дня, Таро, руна, цвет ауры, ангельское число при наличии и главный интуитивный совет." },
-            { title: "Что нужно", text: "Достаточно выбрать знак. Остальные элементы рассчитываются по дате и не требуют личных вводов." },
-          ]}
-        />
-      </VipScreenLayout>
-    );
-  }
-  
-  const synthesis = synthesizeVipMysticDay(dateKey, sign.slug as ZodiacSignId, angelNumber);
-  
+export function VipMysticDayFeature({
+  publicMode,
+  dateKey,
+  sign,
+  angelNumber,
+  onBack,
+  onSave,
+  onShare,
+  onEvent,
+}: VipToolBaseProps & { dateKey: string; sign: ZodiacSign | null; angelNumber: AngelNumberProfile }) {
+  const featureKey: VipFeatureKey = "vipMysticDay";
+  const [signSlug, setSignSlug] = useState((sign ?? signs[0]).slug);
+  const [date, setDate] = useState(dateKey);
+  const [goal, setGoal] = useState<VipGoal>("clarity");
+  const [calculated, setCalculated] = useState(false);
+  const selectedSign = signBySlug(signSlug);
+  const actions = useResultActions(featureKey, onEvent, onSave, onShare);
+  const payload = vipPayload({ sign: selectedSign.slug, goal, inputMode: "date_sign" });
+  const synthesis = synthesizeVipMysticDay(date || dateKey, selectedSign.slug as ZodiacSignId, angelNumber);
+
   return (
-    <VipScreenLayout publicMode={publicMode} title="VIP Мистический день: Синтез" onBack={onBack}>
-      <p className={publicMode ? "text-sm text-slate-300 mb-4" : "text-sm text-slate-600 mb-4"}>Комплексный анализ энергий сегодняшнего дня, объединяющий Таро, руны, цвет и вашу интуицию.</p>
-      <InfoBlock publicMode={publicMode} title="Таро и Карта дня" text={`${synthesis.tarotCard.card} и ${synthesis.dailyCard.title}. ${synthesis.tarotCard.mainMeaning}`} />
-      <InfoBlock publicMode={publicMode} title="Руна дня" text={`${synthesis.runeDay.symbol} ${synthesis.runeDay.name}. ${synthesis.runeDay.mainMeaning}`} />
-      <InfoBlock publicMode={publicMode} title="Цвет и Аура" text={`${synthesis.auraColor.color}. ${synthesis.auraColor.meaning}`} />
-      {synthesis.angelNumber.isValid && (
-        <InfoBlock publicMode={publicMode} title={`Синхрония чисел (${synthesis.angelNumber.safeKey})`} text={synthesis.angelNumber.label} />
-      )}
-      <InfoBlock publicMode={publicMode} title="Главный интуитивный совет" text={synthesis.advice} />
-      <InfoBlock publicMode={publicMode} title="Чего стоит избегать" text={synthesis.warning} />
+    <VipScreenLayout publicMode={publicMode} title="VIP мистический день" onBack={onBack}>
+      <VipIntro publicMode={publicMode} text="Мистический день объединяет Таро, руну, цвет ауры, ангельское число и практичный совет." />
+      <VipInputPanel publicMode={publicMode}>
+        <SignSelect publicMode={publicMode} value={signSlug} onChange={setSignSlug} />
+        <VipField publicMode={publicMode} label="Дата">
+          <input className={inputClass(publicMode)} type="date" value={date} onChange={(event) => setDate(event.target.value)} />
+        </VipField>
+        <GoalSelect publicMode={publicMode} value={goal} onChange={setGoal} />
+      </VipInputPanel>
+      <PrimaryVipButton publicMode={publicMode} onClick={() => {
+        actions.calculate(payload);
+        setCalculated(true);
+      }}>
+        Показать
+      </PrimaryVipButton>
+      {calculated ? (
+        <VipResultPanel publicMode={publicMode} title={`${selectedSign.emoji} ${selectedSign.name} · ${displayDate(date || dateKey)}`}>
+          <InfoBlock publicMode={publicMode} title="Таро и карта дня" text={`${synthesis.tarotCard.card} и ${synthesis.dailyCard.title}. ${synthesis.tarotCard.mainMeaning}`} />
+          <InfoBlock publicMode={publicMode} title="Руна дня" text={`${synthesis.runeDay.symbol} ${synthesis.runeDay.name}. ${synthesis.runeDay.mainMeaning}`} />
+          <InfoBlock publicMode={publicMode} title="Цвет и аура" text={`${synthesis.auraColor.color}. ${synthesis.auraColor.meaning}`} />
+          {synthesis.angelNumber.isValid ? <InfoBlock publicMode={publicMode} title={`Синхрония чисел (${synthesis.angelNumber.safeKey})`} text={synthesis.angelNumber.label} /> : null}
+          <InfoBlock publicMode={publicMode} title="Главный совет" text={synthesis.advice} />
+          <InfoBlock publicMode={publicMode} title="Осторожность" text={synthesis.warning} />
+          <VipResultActions publicMode={publicMode} saved={actions.saved} shared={actions.shared} onSave={() => actions.save(payload)} onShare={() => actions.share(payload)} />
+        </VipResultPanel>
+      ) : null}
     </VipScreenLayout>
   );
 }
