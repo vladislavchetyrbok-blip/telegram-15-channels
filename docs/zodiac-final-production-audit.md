@@ -1,7 +1,7 @@
 # Zodiac Final Production Audit
 
-Audit date: 2026-06-19 00:47 Europe/Kyiv
-Current HEAD: `ef2a970bcec436e3316dbdf502d4565cf23f1b1a`
+Audit date: 2026-06-19 01:07 Europe/Kyiv
+Audit refresh base HEAD: `bd68e02aa58468ee30b0ac2f991b6e32d548f7b6`
 Branch: `main`
 
 This audit is read-only for product/runtime behavior. No live publishing was run, no ledger was edited manually, weekly live schedule stays off, and payments/Telegram Stars stay off.
@@ -16,13 +16,15 @@ The Zodiac product is broadly production-ready for the current free-access phase
 - Channel packaging has live-updated navigation/descriptions and current dry-runs remain valid.
 - Daily and weekly content formats include date/range headers and CTA buttons.
 - Analytics privacy model passes, but persistent storage is not enabled because Redis env is missing.
+- Mini App select/share/dead CTA/chart interaction bugs were repaired and verified by smoke.
+- Fresh production backup was created and restore dry-run passed.
 
 Main remaining production gaps:
 
 - Redis analytics storage is still `noop`.
-- Production backup freshness warning: latest backup is older than 24 hours.
 - 2026-06-19 daily posts are still publishable at audit time because the audit ran before the 09:00-11:00 Kyiv cron window.
 - Weekly lane is dry-run ready, but weekly live schedule remains intentionally off.
+- Real phone Telegram WebView pass should be repeated after the latest Mini App visual/interactions fixes.
 
 ## Daily Status
 
@@ -230,20 +232,25 @@ Result:
 - `npm run lint`: PASS.
 - `npm run build`: PASS.
 - `npm run zodiac:ledger:check`: PASS, `91` total daily ledger entries, `91 sent`, `0 pending`, `0 failed`, problems `0`.
-- `production:safety:check`: WARNING.
+- `production:safety:check`: OK after Package 19 backup refresh.
 - `safeForScheduledPublishing`: `true`.
-- `safeForManualPublish`: `false`.
+- `safeForManualPublish`: `true` at the safety-check level; manual daily live is still product-gated by date-specific dry-run and ledger checks.
 - Production store mode: `json`.
 - Source of truth: `json`.
 - JSON/Supabase compare: OK.
 - Bot token configured: YES.
 - Real publish enabled: `false`.
-- Latest backup: `2026-06-13-19-48-50`.
-- Backup age: about `125` hours.
-- Safety warning: latest backup is older than 24 hours.
+- Latest backup before refresh: `2026-06-13-19-48-50`, about `125` hours old.
+- Fresh backup created: `data/backups/2026-06-19-01-06-53`.
+- Fresh backup manifest: `data/backups/2026-06-19-01-06-53/backup-manifest.json`.
+- Fresh backup copied runtime files: `35`.
+- Assets manifest entries: `165`.
+- Secret policy: `.env.local`, database URL, and Telegram token were not copied.
+- Restore dry-run: PASS, counts match and no files/database records were changed.
+- Backup freshness warning: cleared.
 - `git diff --check`: PASS.
 
-This backup warning is an ops gap, not a product runtime bug. Do not clear it by changing product code.
+Backup freshness is no longer an active warning after Package 19. Keep running backup checks as part of release readiness.
 
 ## Live Publish Safety
 
@@ -259,15 +266,16 @@ This backup warning is an ops gap, not a product runtime bug. Do not clear it by
 
 1. After the 09:00-11:00 Kyiv window on 2026-06-19, verify that `Zodiac Daily Publisher` sent `13/13`; if not, dry-run first before any manual live.
 2. Configure Redis REST env for Mini App analytics and verify dashboard counters.
-3. Refresh or automate production backups so `production:safety:check` clears the backup freshness warning.
+3. Repeat a real phone Telegram WebView pass after the latest select/share/CTA/chart fixes.
 4. Prepare a separate weekly live-readiness package before enabling weekly publishing.
-5. Add GitHub API token support for local workflow monitor runs if local Actions visibility is needed.
-6. Keep payments/Telegram Stars behind a future monetization package; do not enable during free VIP period without a product decision.
+5. Keep backups fresh or automate backup creation before release checkpoints.
+6. Add GitHub API token support for local workflow monitor runs if local Actions visibility is needed.
+7. Keep payments/Telegram Stars behind a future monetization package; do not enable during free VIP period without a product decision.
 
 ## Recommended Next 5 Packages
 
-1. Redis analytics activation and dashboard verification in production.
-2. Backup freshness automation and production safety hardening.
-3. Daily scheduler post-window verification automation with alerting.
+1. Daily scheduler post-window verification after 11:05 Kyiv, then alerting automation.
+2. Redis analytics activation and dashboard verification in production.
+3. Real phone Telegram WebView pass after the latest interaction fixes.
 4. Weekly live readiness package: dedupe, runbook, explicit approval gates, then schedule decision.
 5. Monetization planning package for post-free VIP access: product rules, legal copy, feature flags, and only then Stars/payments implementation.

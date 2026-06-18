@@ -1,10 +1,10 @@
 # Zodiac Production Readiness Snapshot
 
-Date: 2026-06-18
+Date: 2026-06-19
 Repository: `vladislavchetyrbok-blip/telegram-15-channels`
 Branch: `main`
 
-This snapshot captures the current production-readiness state after the Zodiac Daily scheduler hardening, Mini App redesign, VIP/Mystic polish, retention UX, analytics readiness, and Mini App smoke coverage.
+This snapshot captures the current production-readiness state after the Zodiac Daily scheduler hardening, Mini App redesign, VIP functional core, channel packaging live rollout, content quality upgrade, interaction bugfixes, analytics readiness, and backup freshness refresh.
 
 ## Current Status
 
@@ -14,8 +14,11 @@ The Zodiac product is ready for controlled live operation of the daily publishin
 - Weekly Zodiac posts are prepared and dry-run ready, but weekly live scheduling remains OFF.
 - Mini App core UX is implemented: 10-category home, Angel Numbers top-level, Compatibility pair core, Horoscopes, Mystic, Birth Matrix, VIP, Profile, History, Favorites, and Share.
 - VIP is free until `2026-09-17`; payments and Telegram Stars remain OFF.
-- Mini App interaction hardening is expected: custom dark selects, safe share fallback, non-dead pair gates, inline VIP pair pickers, and symbolic chart visuals for key VIP tools.
+- Mini App interaction hardening is implemented and smoke-verified: custom dark selects, safe share fallback, non-dead pair gates, inline VIP pair pickers, and symbolic chart visuals for key VIP tools.
+- Channel packaging live was applied and post-live verified for `13/13` channels.
+- Daily and weekly content quality was upgraded while keeping date/range headers and CTA buttons.
 - Analytics is privacy-safe but storage mode is currently `noop` unless Redis REST env vars are configured.
+- Production backup freshness is currently OK after backup `2026-06-19-01-06-53` and restore dry-run PASS.
 - Manual live publish remains forbidden unless a dry-run and ledger audit prove it is safe.
 
 ## Key Recent Commits
@@ -35,6 +38,13 @@ f36b683 feat: complete zodiac mini app profile retention
 485fa5e feat: complete package 10C final Mini App UX polish
 b3cd52b docs: align mini app smoke category order
 62e0d49 docs: align analytics mini app menu order
+faad69e feat: polish zodiac channel packaging
+1dfeef0 feat: complete zodiac vip functional tools
+1de7b6e fix: verify zodiac vip functional tools
+556b48b feat: improve zodiac daily and weekly content quality
+3798167 fix: repair mini app interactions and chart visuals
+ef2a970 fix: repair mini app interactions and chart visuals
+bd68e02 docs: add zodiac final production audit
 ```
 
 ## Daily Autopublish
@@ -300,6 +310,25 @@ Allowed analytics are aggregate-safe counters and safe categorical fields such a
 
 Compatibility retention is local-only and stores only safe pair summaries: first sign, second sign, relationship mode, score tier, label, feature key, and timestamp. It must not store names, birth dates, birth times, city query, selected city id, raw result text, or raw message text.
 
+## Backup / Restore Readiness
+
+Latest confirmed backup:
+
+```text
+data/backups/2026-06-19-01-06-53
+```
+
+Status:
+
+- Backup manifest exists.
+- Runtime files copied: `35`.
+- Telegram posts/assets manifest entries: `165`.
+- Secret policy confirmed: `.env.local`, database URL, and Telegram token were not copied.
+- Restore dry-run: PASS.
+- Restore dry-run changed files: `0`.
+- Restore dry-run wrote database records: NO.
+- `production:safety:check`: OK after refresh.
+
 ## Operations Checklist
 
 Before declaring a release/checkpoint ready:
@@ -324,14 +353,13 @@ git diff --check
 
 P1/P2 gaps that remain:
 
-1. Real human-device Telegram WebView pass on a physical phone.
+1. Post-cron daily verification for `2026-06-19` after `11:05 Kyiv`.
 2. Redis analytics storage configuration for real retention metrics.
-3. Weekly live scheduling decision after daily stability is proven.
-4. Channel descriptions / pinned navigation are dry-run ready with Mini App startapp links; live pin/description apply still needs explicit approval.
-5. Content quality improvement: less template feel, stronger first lines, more daily variation.
-6. Further Mini App refactor: split remaining stateful sections once product behavior stabilizes.
-7. Monetization plan after audience and analytics validate demand: entitlement model, Telegram Stars/payments, legal text, giveaways rules.
-8. Backup freshness automation if `production:safety:check` reports stale backups.
+3. Real human-device Telegram WebView pass after the latest select/share/CTA/chart fixes.
+4. Weekly live scheduling decision after daily stability is proven.
+5. Monetization plan after audience and analytics validate demand: entitlement model, Telegram Stars/payments, legal text, giveaways rules.
+6. Backup freshness automation for future release checkpoints.
+7. Further Mini App refactor: split remaining stateful sections once product behavior stabilizes.
 
 ## Current Decision
 
