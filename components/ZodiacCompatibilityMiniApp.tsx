@@ -25,6 +25,20 @@ import {
   TalismansFeature,
   TarotCardFeature,
 } from "./ZodiacMysticSections";
+import {
+  ExtendedAngelNumberFeature,
+  ExtendedCompatibilityFeature,
+  ExtendedNameProfileFeature,
+  ExtendedNatalFeature,
+  ExtendedNumerologyFeature,
+  VipCoupleCalendarFeature,
+  VipMentalMapFeature,
+  VipMenuCard,
+  VipMessageHelperFeature,
+  VipMonthForecastFeature,
+  VipMysticDayFeature,
+  VipTalismansFeature,
+} from "./ZodiacVipSections";
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
@@ -66,7 +80,18 @@ type MoreFeatureId =
   | "karmicLessons"
   | "birthMatrix"
   | "vip"
-  | "giveaways";
+  | "giveaways"
+  | "vipNatalChart"
+  | "vipCompatibility"
+  | "vipMentalMap"
+  | "vipCoupleCalendar"
+  | "vipMonthForecast"
+  | "vipMessageHelper"
+  | "vipNameProfile"
+  | "vipNumerology"
+  | "vipAngelNumbers"
+  | "vipTalismans"
+  | "vipMysticDay";
 type MenuFeatureGroup = "love" | "profile" | "forecasts" | "mystic" | "vip";
 
 interface City {
@@ -100,7 +125,7 @@ interface ZodiacCompatibilityMiniAppProps {
   startParam?: string | null;
 }
 
-interface ZodiacVipConfig {
+export interface ZodiacVipConfig {
   vipFreeAccessEnabled: boolean;
   vipFreeAccessUntil: string;
   vipPaymentsEnabled: boolean;
@@ -128,7 +153,7 @@ const signs = [
   { slug: "pisces", emoji: "♓", name: "Рыбы", range: "19 февраля - 20 марта", element: "water" },
 ];
 
-type ZodiacSign = (typeof signs)[number];
+export type ZodiacSign = (typeof signs)[number];
 
 const signSlugs = new Set(signs.map((sign) => sign.slug));
 const cityCatalog = cityCatalogData.cities as City[];
@@ -1358,28 +1383,54 @@ function MoreSection({
           />
         ) : null}
         {activeMoreFeature === "vip" ? (
-          <VipFreeAccessCard
+          <VipMenuCard
             publicMode={publicMode}
             config={zodiacVipConfig}
             untilLabel={formatVipFreeAccessDate(zodiacVipConfig.vipFreeAccessUntil)}
             pairReady={pairReady}
             natalReady={Boolean(natalChart)}
-            result={result}
-            natalChart={natalChart}
-            nameProfile={nameProfile}
-            numerology={numerology}
-            angelNumber={angelNumber}
-            dailyTalisman={dailyTalisman}
-            selfSign={selfSign}
-            messageVariants={messageTones.map((tone) => ({
-              label: tone.label,
-              text: pairReady ? buildPartnerMessage(self, partner, dateKey, tone.id, result) : "выберите два знака, чтобы открыть вариант сообщения",
-            }))}
-            calendarDays={coupleCalendar}
-            monthForecast={monthForecast}
-            onFeatureOpen={onVipFeatureOpen}
-            onFutureSubscriptionClick={onVipFutureSubscriptionClick}
+            nameReady={Boolean(nameProfile)}
+            onFeatureOpen={(feature) => {
+              onVipFeatureOpen(feature);
+              setActiveMoreFeature(feature as MoreFeatureId);
+            }}
           />
+        ) : null}
+        {activeMoreFeature === "vipNatalChart" ? (
+          <ExtendedNatalFeature publicMode={publicMode} natalChart={natalChart} onBack={() => setActiveMoreFeature("vip")} />
+        ) : null}
+        {activeMoreFeature === "vipCompatibility" ? (
+          <ExtendedCompatibilityFeature publicMode={publicMode} result={result} onBack={() => setActiveMoreFeature("vip")} />
+        ) : null}
+        {activeMoreFeature === "vipMentalMap" ? (
+          <VipMentalMapFeature publicMode={publicMode} result={result} onBack={() => setActiveMoreFeature("vip")} />
+        ) : null}
+        {activeMoreFeature === "vipCoupleCalendar" ? (
+          <VipCoupleCalendarFeature publicMode={publicMode} calendarDays={coupleCalendar} pairReady={pairReady} onBack={() => setActiveMoreFeature("vip")} />
+        ) : null}
+        {activeMoreFeature === "vipMonthForecast" ? (
+          <VipMonthForecastFeature publicMode={publicMode} monthForecast={monthForecast} onBack={() => setActiveMoreFeature("vip")} />
+        ) : null}
+        {activeMoreFeature === "vipMessageHelper" ? (
+          <VipMessageHelperFeature publicMode={publicMode} messageVariants={messageTones.map((tone) => ({
+            label: tone.label,
+            text: pairReady ? buildPartnerMessage(self, partner, dateKey, tone.id, result) : "выберите два знака, чтобы открыть вариант сообщения",
+          }))} onBack={() => setActiveMoreFeature("vip")} />
+        ) : null}
+        {activeMoreFeature === "vipNameProfile" ? (
+          <ExtendedNameProfileFeature publicMode={publicMode} nameProfile={nameProfile} onBack={() => setActiveMoreFeature("vip")} />
+        ) : null}
+        {activeMoreFeature === "vipNumerology" ? (
+          <ExtendedNumerologyFeature publicMode={publicMode} numerology={numerology} onBack={() => setActiveMoreFeature("vip")} />
+        ) : null}
+        {activeMoreFeature === "vipAngelNumbers" ? (
+          <ExtendedAngelNumberFeature publicMode={publicMode} angelNumber={angelNumber} onBack={() => setActiveMoreFeature("vip")} />
+        ) : null}
+        {activeMoreFeature === "vipTalismans" ? (
+          <VipTalismansFeature publicMode={publicMode} dailyTalisman={dailyTalisman} selfSign={selfSign} onBack={() => setActiveMoreFeature("vip")} />
+        ) : null}
+        {activeMoreFeature === "vipMysticDay" ? (
+          <VipMysticDayFeature publicMode={publicMode} dateKey={dateKey} sign={selfSign} angelNumber={angelNumber} onBack={() => setActiveMoreFeature("vip")} />
         ) : null}
         {activeMoreFeature === "giveaways" ? (
           <LockedPreviewCard
@@ -3268,7 +3319,7 @@ interface MentalMapDynamic {
   text: string;
 }
 
-interface CompatibilityResult {
+export interface CompatibilityResult {
   title: string;
   modeLabel: string;
   relationshipMode: RelationshipMode;
@@ -3317,7 +3368,7 @@ interface CoupleHoroscope {
   energy: DayEnergy;
 }
 
-interface CoupleCalendarDay {
+export interface CoupleCalendarDay {
   dateKey: string;
   date: string;
   weekday: string;
@@ -3332,7 +3383,7 @@ interface ReconciliationDay {
   energy: DayEnergy;
 }
 
-interface NatalChart {
+export interface NatalChart {
   sign: ZodiacSign;
   element: string;
   modality: string;
@@ -3411,14 +3462,14 @@ interface ZodiacStoneProfile {
   avoid: string;
 }
 
-interface NameProfile {
+export interface NameProfile {
   summary: NatalSummaryItem[];
   sections: NatalInsightSection[];
   portrait: string;
   vipBlocks: NatalVipBlock[];
 }
 
-interface MonthForecast {
+export interface MonthForecast {
   title: string;
   theme: string;
   love: string;
@@ -3429,7 +3480,7 @@ interface MonthForecast {
   advice: string;
 }
 
-interface NumerologyProfile {
+export interface NumerologyProfile {
   lifePath: number | null;
   nameNumber: number | null;
   dayNumber: number;
@@ -3440,7 +3491,7 @@ interface NumerologyProfile {
   summary: string;
 }
 
-interface AngelNumberProfile {
+export interface AngelNumberProfile {
   label: string;
   safeKey: string;
   isValid: boolean;
@@ -3471,7 +3522,7 @@ interface LunarCalendarProfile {
   avoid: string;
 }
 
-interface DailyTalismanProfile {
+export interface DailyTalismanProfile {
   stone: string;
   color: string;
   number: number;

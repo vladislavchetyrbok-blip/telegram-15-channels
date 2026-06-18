@@ -64,6 +64,17 @@ export const ZODIAC_ANALYTICS_EVENTS = [
   "lunar_ritual_opened",
   "karmic_lessons_opened",
   "birth_matrix_opened",
+  "vip_natal_opened",
+  "vip_compatibility_opened",
+  "vip_mental_map_opened",
+  "vip_calendar_opened",
+  "vip_month_forecast_opened",
+  "vip_message_helper_opened",
+  "vip_name_profile_opened",
+  "vip_numerology_opened",
+  "vip_angel_numbers_opened",
+  "vip_talismans_opened",
+  "vip_mystic_day_opened",
 ] as const;
 
 export type ZodiacAnalyticsEventName = (typeof ZODIAC_ANALYTICS_EVENTS)[number];
