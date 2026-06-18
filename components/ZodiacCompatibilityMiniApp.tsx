@@ -107,8 +107,10 @@ import type {
   ChineseHoroscope,
   City,
   CompatibilityResult,
+  CoupleAction,
   CoupleCalendarDay,
   CoupleHoroscope,
+  CoupleMessageTemplate,
   DailyTalismanProfile,
   DayEnergy,
   DreamProfile,
@@ -177,6 +179,7 @@ export function ZodiacCompatibilityMiniApp({
   const initialActiveTab = useMemo(() => resolveInitialHubTab(startParam), [startParam]);
   const initialMoreFeature = useMemo(() => resolveInitialMoreFeature(startParam), [startParam]);
   const initialHomePanel = useMemo(() => resolveInitialHomePanel(startParam), [startParam]);
+  const initialRelationshipMode = useMemo(() => resolveInitialRelationshipMode(startParam), [startParam]);
   const hintSign = hintSignSlug ? findSign(hintSignSlug) : null;
   const retention = useZodiacMiniAppRetention();
   const [appDateKey, setAppDateKey] = useState<string | null>(null);
@@ -185,9 +188,9 @@ export function ZodiacCompatibilityMiniApp({
   const [requestedMoreFeature, setRequestedMoreFeature] = useState<MoreFeatureId | null>(initialMoreFeature);
   const [homePanel, setHomePanel] = useState<"home" | RetentionPanelFocus>(initialHomePanel);
   const [shareFallbackText, setShareFallbackText] = useState("");
-  const [pendingCompatibilityMode, setPendingCompatibilityMode] = useState<RelationshipMode | null>(null);
+  const [pendingCompatibilityMode, setPendingCompatibilityMode] = useState<RelationshipMode | null>(initialRelationshipMode);
   const [mode, setMode] = useState<Mode>(resolvedMode);
-  const [relationshipMode, setRelationshipMode] = useState<RelationshipMode>("love");
+  const [relationshipMode, setRelationshipMode] = useState<RelationshipMode>(initialRelationshipMode ?? "love");
   const [step, setStep] = useState<WizardStep>(1);
   const [self, setSelf] = useState<PersonState>(() => createInitialPerson("", "unspecified", false, ""));
   const [partner, setPartner] = useState<PersonState>(() => createInitialPerson("", "unspecified", false, ""));
@@ -198,6 +201,7 @@ export function ZodiacCompatibilityMiniApp({
   const lastNatalResultTrackedRef = useRef("");
   const telegramReadyTrackedRef = useRef(false);
   const mainMenuTrackedRef = useRef("");
+  const compatibilityWizardTrackedRef = useRef("");
 
   const result = useMemo(() => buildCompatibilityResult(mode, relationshipMode, self, partner), [mode, partner, relationshipMode, self]);
   const selectedSign = selectedSignSlug ? findSign(selectedSignSlug) : null;
@@ -271,6 +275,14 @@ export function ZodiacCompatibilityMiniApp({
     mainMenuTrackedRef.current = trackKey;
     trackZodiacMiniAppEvent("main_menu_opened", analyticsPayload({ section: "main_menu", sign: selectedSignSlug || undefined }));
   }, [activeTab, analyticsPayload, appDateKey, homePanel, selectedSignSlug]);
+
+  useEffect(() => {
+    if (!appDateKey || activeTab !== "love") return;
+    const trackKey = `${appDateKey}:${relationshipMode}:${selectedSignSlug || "no-sign"}`;
+    if (compatibilityWizardTrackedRef.current === trackKey) return;
+    compatibilityWizardTrackedRef.current = trackKey;
+    trackZodiacMiniAppEvent("compatibility_wizard_started", analyticsPayload({ section: "compatibility", relationshipMode, sign: selectedSignSlug || undefined }));
+  }, [activeTab, analyticsPayload, appDateKey, relationshipMode, selectedSignSlug]);
 
   useEffect(() => {
     if (!appDateKey || activeTab !== "today" || (homePanel !== "profile" && homePanel !== "favorites" && homePanel !== "history")) return;
@@ -412,6 +424,7 @@ export function ZodiacCompatibilityMiniApp({
     setPendingCompatibilityMode(nextMode);
     retention.recordAction({ section: "compatibility", label: `Совместимость: ${relationshipModeText(nextMode)}`, featureKey: "compatibilityTool", relationshipMode: nextMode, sign: selectedSignSlug || undefined });
     trackZodiacMiniAppEvent("compatibility_category_selected", analyticsPayload({ section: "compatibility", relationshipMode: nextMode, sign: selectedSignSlug || undefined }));
+    trackZodiacMiniAppEvent("compatibility_mode_selected", analyticsPayload({ section: "compatibility", relationshipMode: nextMode, sign: selectedSignSlug || undefined }));
   }
 
   function openHomePanel(nextPanel: RetentionPanelFocus) {
@@ -463,6 +476,27 @@ export function ZodiacCompatibilityMiniApp({
     trackZodiacMiniAppEvent(modeAnalyticsEvents[nextMode], analyticsPayload({ mode: nextMode, sign: selectedSignSlug || undefined, section: "compatibility" }));
   }
 
+  function changeRelationshipMode(nextMode: RelationshipMode) {
+    setRelationshipMode(nextMode);
+    setPendingCompatibilityMode(nextMode);
+    trackZodiacMiniAppEvent("compatibility_mode_selected", analyticsPayload({ section: "compatibility", relationshipMode: nextMode, sign: selectedSignSlug || undefined }));
+  }
+
+  function trackCompatibilityBirthdateAutosign(personRole: "self" | "partner", person: PersonState, signSlug: string) {
+    trackZodiacMiniAppEvent(
+      "compatibility_birthdate_autosign_used",
+      analyticsPayload({
+        section: "compatibility",
+        category: personRole,
+        relationshipMode,
+        sign: signSlug,
+        hasBirthDate: true,
+        hasBirthTime: person.knowsTime && isValidTime(person.birthTime),
+        hasBirthCity: person.knowsTime && Boolean(getCityById(person.selectedCityId)),
+      }),
+    );
+  }
+
   function calculateCompatibility() {
     if (isReadyToCalculate(mode, self, partner)) {
       const scoreTier = zodiacAnalyticsScoreTier(result.scores.total);
@@ -477,11 +511,7 @@ export function ZodiacCompatibilityMiniApp({
       trackZodiacMiniAppEvent("compatibility_calculated", payload);
       if (result.nameResonance) trackZodiacMiniAppEvent("name_resonance_shown", payload);
       retention.recordAction({
-        section: "compatibility",
-        featureKey: "compatibilityTool",
-        label: `Совместимость: ${findSign(self.sign).name} + ${findSign(partner.sign).name}`,
-        relationshipMode,
-        sign: self.sign,
+        ...compatibilityRetentionAction(self, partner, relationshipMode, result),
       });
     }
     setStep(3);
@@ -574,11 +604,47 @@ export function ZodiacCompatibilityMiniApp({
   function saveFavorite(action: ZodiacRetentionDraft) {
     const item = retention.saveFavorite(action);
     trackZodiacMiniAppEvent("favorite_saved", analyticsPayload({ section: "favorites", category: item.section, featureKey: item.featureKey, sign: item.sign }));
+    if (item.featureKey === "compatibilityTool" || item.section === "compatibility") {
+      trackZodiacMiniAppEvent(
+        "compatibility_pair_saved",
+        analyticsPayload({
+          section: "compatibility",
+          relationshipMode: item.relationshipMode,
+          firstSign: item.firstSign || item.sign,
+          secondSign: item.secondSign,
+          scoreTier: safeAnalyticsScoreTier(item.scoreTier),
+        }),
+      );
+    }
   }
 
   function openFavorite(item: ZodiacRetentionItem) {
     const isFavorite = retention.state.favorites.some((favorite) => favorite.id === item.id);
     if (isFavorite) trackZodiacMiniAppEvent("favorite_opened", analyticsPayload({ section: "favorites", category: item.section, featureKey: item.featureKey, sign: item.sign }));
+    if (item.featureKey === "compatibilityTool" || item.section === "compatibility") {
+      const firstSign = signSlugs.has(item.firstSign || "") ? item.firstSign : signSlugs.has(item.sign || "") ? item.sign : undefined;
+      const secondSign = signSlugs.has(item.secondSign || "") ? item.secondSign : undefined;
+      const nextRelationshipMode = item.relationshipMode ?? "love";
+      setRelationshipMode(nextRelationshipMode);
+      setPendingCompatibilityMode(nextRelationshipMode);
+      setMode("fast");
+      if (firstSign) {
+        setSelectedSignSlug(firstSign);
+        setSelf((current) => ({ ...current, sign: firstSign }));
+      }
+      if (secondSign) setPartner((current) => ({ ...current, sign: secondSign }));
+      if (firstSign && secondSign) setStep(3);
+      trackZodiacMiniAppEvent(
+        "compatibility_pair_reopened",
+        analyticsPayload({
+          section: "compatibility",
+          relationshipMode: nextRelationshipMode,
+          firstSign,
+          secondSign,
+          scoreTier: safeAnalyticsScoreTier(item.scoreTier),
+        }),
+      );
+    }
     const target = targetForRetentionItem(item);
     openMenuCategory(target, item.section || "favorites");
   }
@@ -616,7 +682,7 @@ export function ZodiacCompatibilityMiniApp({
 
   function resetFlow() {
     setMode(resolvedMode);
-    setRelationshipMode("love");
+    setRelationshipMode(initialRelationshipMode ?? "love");
     setSelf(createInitialPerson(selectedSignSlug, "unspecified", false, ""));
     setPartner(createInitialPerson("", "unspecified", false, ""));
     setStep(1);
@@ -894,11 +960,11 @@ export function ZodiacCompatibilityMiniApp({
                   </button>
                   <StepProgress publicMode={publicMode} step={step} />
                   <ModeSelector publicMode={publicMode} mode={mode} onChange={changeMode} />
-                  <RelationshipModeSelector publicMode={publicMode} mode={relationshipMode} onChange={setRelationshipMode} />
+                  <RelationshipModeSelector publicMode={publicMode} mode={relationshipMode} onChange={changeRelationshipMode} />
                   <div className="min-w-0 flex-1 transition-all duration-300">
                     {step === 1 ? (
                       <WizardCard publicMode={publicMode} stepLabel="Шаг 1 из 3" title="Вы">
-                        <PersonPanel publicMode={publicMode} title="Вы" mode={mode} value={self} onChange={setSelf} />
+                        <PersonPanel publicMode={publicMode} title="Вы" mode={mode} value={self} onChange={setSelf} onBirthDateAutosign={(person, signSlug) => trackCompatibilityBirthdateAutosign("self", person, signSlug)} />
                         <div className="mt-5">
                           <button type="button" onClick={() => setStep(2)} className={primaryButtonClass(publicMode)}>
                             Далее
@@ -910,7 +976,7 @@ export function ZodiacCompatibilityMiniApp({
 
                     {step === 2 ? (
                       <WizardCard publicMode={publicMode} stepLabel="Шаг 2 из 3" title="Партнёр">
-                        <PersonPanel publicMode={publicMode} title="Партнёр" mode={mode} value={partner} onChange={setPartner} />
+                        <PersonPanel publicMode={publicMode} title="Партнёр" mode={mode} value={partner} onChange={setPartner} onBirthDateAutosign={(person, signSlug) => trackCompatibilityBirthdateAutosign("partner", person, signSlug)} />
                         <div className="mt-5 grid grid-cols-2 gap-3">
                           <button type="button" onClick={() => setStep(1)} className={secondaryButtonClass(publicMode)}>
                             <ArrowLeft className="h-4 w-4" />
@@ -933,8 +999,8 @@ export function ZodiacCompatibilityMiniApp({
                             levelLabel={compatibilityLevelLabel(result.scores.total)}
                             onEdit={() => setStep(1)}
                             onReset={resetFlow}
-                            onSave={() => saveFavorite(compatibilityRetentionAction(self, partner, relationshipMode))}
-                            onShare={() => shareSafeAction(compatibilityRetentionAction(self, partner, relationshipMode))}
+                            onSave={() => saveFavorite(compatibilityRetentionAction(self, partner, relationshipMode, result))}
+                            onShare={() => shareSafeAction(compatibilityRetentionAction(self, partner, relationshipMode, result))}
                           />
                         ) : (
                           <div className="py-8 text-center">
@@ -1262,13 +1328,16 @@ function MoreSection({
     cityQuery: self.cityQuery,
   }));
   const lastPersonalToolTrackedRef = useRef("");
+  const lastCompatibilityToolTrackedRef = useRef("");
   const dateKey = appDateKey ?? getCurrentZodiacDateKey(DEFAULT_ZODIAC_TIME_ZONE);
   const pairReady = Boolean(self.sign && partner.sign);
   const vipFreeAccess = zodiacVipConfig.vipFreeAccessEnabled && !zodiacVipConfig.vipPaymentsEnabled && !zodiacVipConfig.telegramStarsEnabled;
   const coupleHoroscope = pairReady ? buildCoupleHoroscope(self, partner, dateKey, relationshipMode, result) : null;
-  const coupleCalendar = pairReady ? buildCoupleCalendar(self, partner, dateKey, result, vipFreeAccess ? 30 : 7) : [];
+  const coupleAction = pairReady ? buildCoupleAction(self, partner, dateKey, relationshipMode, result) : null;
+  const coupleCalendar = pairReady ? buildCoupleCalendar(self, partner, dateKey, relationshipMode, result, vipFreeAccess ? 30 : 7) : [];
   const reconciliation = pairReady ? buildReconciliationDay(self, partner, dateKey, result) : null;
   const message = pairReady ? buildPartnerMessage(self, partner, dateKey, messageTone, result) : null;
+  const messageTemplates = pairReady ? buildCoupleMessageTemplates(self, partner, dateKey, relationshipMode, result) : [];
   const natalChart = buildNatalChart(natalPerson);
   const selfSign = self.sign || selectedSignSlug ? findSign(self.sign || selectedSignSlug) : null;
   const chineseHoroscope = buildChineseHoroscope(natalPerson, dateKey);
@@ -1295,10 +1364,12 @@ function MoreSection({
         selectedFeatureShortLabel: selectedMoreFeature.shortLabel,
         selectedSignSlug,
         selfSignSlug: selfSign?.slug,
+        partnerSignSlug: partner.sign,
         relationshipMode,
+        scoreTier: pairReady ? zodiacAnalyticsScoreTier(result.scores.total) : undefined,
         angelNumberLabel: activeMoreFeature === "angelNumbers" || activeMoreFeature === "vipAngelNumbers" ? angelNumber.label : undefined,
       }),
-    [activeMoreFeature, angelNumber.label, category, relationshipMode, selectedMoreFeature.label, selectedMoreFeature.shortLabel, selectedSignSlug, selfSign?.slug],
+    [activeMoreFeature, angelNumber.label, category, pairReady, partner.sign, relationshipMode, result.scores.total, selectedMoreFeature.label, selectedMoreFeature.shortLabel, selectedSignSlug, selfSign?.slug],
   );
   const categoryBackEnabled = Boolean(onCategoryBack);
   const telegramBackVisible = telegram.isTelegramWebApp && (activeMoreFeature !== defaultMoreFeature || categoryBackEnabled);
@@ -1330,12 +1401,50 @@ function MoreSection({
     },
     [onHaptic, onVipFeatureOpen],
   );
+  const handleMessageTemplateCopy = useCallback(
+    (templateId: string) => {
+      if (!pairReady) return;
+      onMessageHelperUsed();
+      onPersonalToolEvent("compatibility_message_copied", {
+        section: "compatibility",
+        category: templateId,
+        featureKey: "messageHelper",
+        relationshipMode,
+        firstSign: self.sign,
+        secondSign: partner.sign,
+        scoreTier: zodiacAnalyticsScoreTier(result.scores.total),
+      });
+    },
+    [onMessageHelperUsed, onPersonalToolEvent, pairReady, partner.sign, relationshipMode, result.scores.total, self.sign],
+  );
 
   useTelegramBackButton(telegram.webApp, telegramBackVisible, handleTelegramBack);
 
   useEffect(() => {
     onRetentionAction(currentRetentionAction);
   }, [currentRetentionAction, onRetentionAction]);
+
+  useEffect(() => {
+    if (!pairReady) return;
+    if (activeMoreFeature !== "coupleCalendar" && activeMoreFeature !== "coupleHoroscope") return;
+    const scoreTier = zodiacAnalyticsScoreTier(result.scores.total);
+    const trackKey = `${activeMoreFeature}:${self.sign}:${partner.sign}:${relationshipMode}:${scoreTier}:${dateKey}`;
+    if (lastCompatibilityToolTrackedRef.current === trackKey) return;
+    lastCompatibilityToolTrackedRef.current = trackKey;
+    const payload = {
+      section: "compatibility",
+      category: activeMoreFeature,
+      featureKey: activeMoreFeature,
+      relationshipMode,
+      firstSign: self.sign,
+      secondSign: partner.sign,
+      scoreTier,
+      hasBirthDate: parseBirthDate(self.birthDate).ok || parseBirthDate(partner.birthDate).ok,
+      hasBirthTime: (self.knowsTime && isValidTime(self.birthTime)) || (partner.knowsTime && isValidTime(partner.birthTime)),
+      hasBirthCity: (self.knowsTime && Boolean(getCityById(self.selectedCityId))) || (partner.knowsTime && Boolean(getCityById(partner.selectedCityId))),
+    };
+    onPersonalToolEvent(activeMoreFeature === "coupleCalendar" ? "compatibility_calendar_opened" : "compatibility_action_opened", payload);
+  }, [activeMoreFeature, dateKey, onPersonalToolEvent, pairReady, partner, relationshipMode, result.scores.total, self]);
 
   useEffect(() => {
     const categoryHasFeature = categoryFeatures.some((item) => item.id === activeMoreFeature) || (category === "vip" && vipDetailFeatureIds.has(activeMoreFeature));
@@ -1584,11 +1693,11 @@ function MoreSection({
         {activeMoreFeature === "todayForecast" ? <TodaySection publicMode={publicMode} sign={selectedSign} dateKey={dateKey} /> : null}
         {activeMoreFeature === "weekForecast" ? <WeekSection publicMode={publicMode} sign={selectedSign} dateKey={dateKey} /> : null}
         {activeMoreFeature === "luckyDays" ? <LuckyDaysSection publicMode={publicMode} sign={selectedSign} dateKey={dateKey} onLuckyDayClick={onLuckyDayClick} /> : null}
-        {activeMoreFeature === "coupleHoroscope" ? <CoupleHoroscopeCard publicMode={publicMode} horoscope={coupleHoroscope} /> : null}
+        {activeMoreFeature === "coupleHoroscope" ? <CoupleHoroscopeCard publicMode={publicMode} horoscope={coupleHoroscope} actionToday={coupleAction} /> : null}
         {activeMoreFeature === "mentalMap" ? <RelationshipMapCard publicMode={publicMode} result={result} pairReady={pairReady} onCategoryOpen={onRelationshipMapCategoryOpen} /> : null}
         {activeMoreFeature === "coupleCalendar" ? <CoupleCalendarCard publicMode={publicMode} days={coupleCalendar} pairReady={pairReady} /> : null}
         {activeMoreFeature === "reconciliation" ? <ReconciliationDayCard publicMode={publicMode} reconciliation={reconciliation} /> : null}
-        {activeMoreFeature === "messageHelper" ? <PartnerMessageCard publicMode={publicMode} message={message} tone={messageTone} onToneChange={setMessageTone} onUsed={onMessageHelperUsed} pairReady={pairReady} /> : null}
+        {activeMoreFeature === "messageHelper" ? <PartnerMessageCard publicMode={publicMode} message={message} messageTemplates={messageTemplates} tone={messageTone} onToneChange={setMessageTone} onUsed={onMessageHelperUsed} onCopy={handleMessageTemplateCopy} pairReady={pairReady} /> : null}
         {activeMoreFeature === "nameCompatibility" ? (
           <NameCompatibilityCard
             publicMode={publicMode}
@@ -1718,7 +1827,7 @@ function MoreSection({
   );
 }
 
-function CoupleHoroscopeCard({ publicMode, horoscope }: { publicMode: boolean; horoscope: CoupleHoroscope | null }) {
+function CoupleHoroscopeCard({ publicMode, horoscope, actionToday }: { publicMode: boolean; horoscope: CoupleHoroscope | null; actionToday: CoupleAction | null }) {
   if (!horoscope) return <EmptyFeatureCard publicMode={publicMode} title="💑 Гороскоп пары" text="Выберите два знака в разделе «Совместимость», чтобы открыть гороскоп пары." />;
 
   return (
@@ -1730,6 +1839,17 @@ function CoupleHoroscopeCard({ publicMode, horoscope }: { publicMode: boolean; h
         <InfoRow publicMode={publicMode} label="🕊 Для примирения" text={horoscope.reconciliation} />
         <InfoRow publicMode={publicMode} label="✅ Стоит сделать" text={horoscope.action} />
         <InfoRow publicMode={publicMode} label="⚠️ Лучше избегать" text={horoscope.avoid} />
+        {actionToday ? (
+          <div className={publicMode ? "rounded-lg border border-emerald-200/20 bg-emerald-200/10 p-3" : "rounded-lg border border-emerald-200 bg-emerald-50 p-3"}>
+            <p className={publicMode ? "text-sm font-semibold text-emerald-50" : "text-sm font-semibold text-emerald-900"}>✅ Действие сегодня</p>
+            <div className="mt-3 grid gap-2">
+              <InfoRow publicMode={publicMode} label="Главный шаг" text={actionToday.mainAction} />
+              <InfoRow publicMode={publicMode} label="Не делать" text={actionToday.avoid} />
+              <InfoRow publicMode={publicMode} label="Лучший тон" text={actionToday.bestTone} />
+              <InfoRow publicMode={publicMode} label="Маленький шаг" text={actionToday.smallStep} />
+            </div>
+          </div>
+        ) : null}
         <EnergyCard publicMode={publicMode} energy={horoscope.energy} />
       </div>
     </FeatureCard>
@@ -1873,7 +1993,7 @@ function CoupleCalendarCard({ publicMode, days, pairReady }: { publicMode: boole
   if (!pairReady) return <EmptyFeatureCard publicMode={publicMode} title="📅 Календарь пары" text="Выберите два знака, чтобы открыть календарь пары без лишних данных." />;
 
   return (
-    <FeatureCard publicMode={publicMode} title="📅 Календарь пары" subtitle={`Ближайшие ${days.length} дней`}>
+    <FeatureCard publicMode={publicMode} title="📅 30 дней пары" subtitle={`Ближайшие ${days.length} дней: тема, энергия, действие и риск`}>
       <div className="grid max-h-[430px] gap-3 overflow-y-auto pr-1">
         {days.map((day) => (
           <div key={day.dateKey} className={publicMode ? "rounded-lg border border-white/12 bg-white/8 p-3" : "rounded-lg border border-slate-200 bg-white p-3"}>
@@ -1884,7 +2004,13 @@ function CoupleCalendarCard({ publicMode, days, pairReady }: { publicMode: boole
               </div>
               <span className={publicMode ? "rounded-full border border-amber-200/25 bg-amber-200/10 px-3 py-1 text-xs font-semibold text-amber-50" : "rounded-full border border-violet-100 bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-800"}>{day.status}</span>
             </div>
-            <p className={publicMode ? "mt-3 text-sm leading-5 text-slate-300" : "mt-3 text-sm leading-5 text-slate-600"}>{day.advice}</p>
+            <div className="mt-3 grid gap-2">
+              <InfoRow publicMode={publicMode} label="Тема" text={day.theme} />
+              <InfoRow publicMode={publicMode} label="Энергия" text={day.energy} />
+              <InfoRow publicMode={publicMode} label="Действие" text={day.action} />
+              <InfoRow publicMode={publicMode} label="Риск" text={day.risk} />
+              <InfoRow publicMode={publicMode} label="Совет" text={day.advice} />
+            </div>
           </div>
         ))}
       </div>
@@ -1909,22 +2035,50 @@ function ReconciliationDayCard({ publicMode, reconciliation }: { publicMode: boo
 function PartnerMessageCard({
   publicMode,
   message,
+  messageTemplates,
   tone,
   onToneChange,
   onUsed,
+  onCopy,
   pairReady,
 }: {
   publicMode: boolean;
   message: string | null;
+  messageTemplates: CoupleMessageTemplate[];
   tone: MessageTone;
   onToneChange: (tone: MessageTone) => void;
   onUsed: () => void;
+  onCopy: (templateId: string) => void;
   pairReady: boolean;
 }) {
   if (!pairReady) return <EmptyFeatureCard publicMode={publicMode} title="💌 Что написать партнёру" text="Выберите два знака, чтобы получить уважительную подсказку для сообщения." />;
 
+  async function copyMessage(template: CoupleMessageTemplate) {
+    try {
+      if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) await navigator.clipboard.writeText(template.text);
+    } catch {
+      // Clipboard access is optional in WebView/browser smoke; copy failure must not break the helper.
+    }
+    onCopy(template.id);
+  }
+
   return (
-    <FeatureCard publicMode={publicMode} title="💌 Что написать партнёру" subtitle="Текст можно скопировать вручную и изменить под себя">
+    <FeatureCard publicMode={publicMode} title="💌 Что написать" subtitle="3 уважительных варианта под выбранный тип отношений">
+      <div className="grid gap-3">
+        {messageTemplates.map((template) => (
+          <div key={template.id} className={publicMode ? "rounded-lg border border-white/12 bg-white/8 p-3" : "rounded-lg border border-slate-200 bg-white p-3"}>
+            <div className="flex items-start justify-between gap-3">
+              <p className={publicMode ? "text-sm font-semibold text-amber-100" : "text-sm font-semibold text-violet-800"}>{template.label}</p>
+              <button type="button" onClick={() => copyMessage(template)} className={secondaryTinyButtonClass(publicMode)}>
+                Скопировать
+              </button>
+            </div>
+            <p className={publicMode ? "mt-2 text-sm leading-6 text-slate-100" : "mt-2 text-sm leading-6 text-slate-700"}>{template.text}</p>
+          </div>
+        ))}
+      </div>
+
+      <p className={publicMode ? "mt-4 text-xs font-semibold text-slate-400" : "mt-4 text-xs font-semibold text-slate-500"}>Дополнительный тон</p>
       <div className="grid grid-cols-2 gap-2">
         {messageTones.map((item) => (
           <button
@@ -2899,12 +3053,14 @@ function PersonPanel({
   mode,
   value,
   onChange,
+  onBirthDateAutosign,
 }: {
   publicMode: boolean;
   title: string;
   mode: Mode;
   value: PersonState;
   onChange: (value: PersonState) => void;
+  onBirthDateAutosign?: (value: PersonState, signSlug: string) => void;
 }) {
   const showBirthDate = mode !== "fast";
   const showPrecise = mode === "precise";
@@ -2974,7 +3130,7 @@ function PersonPanel({
                 autoCorrect="off"
                 spellCheck={false}
                 value={value.birthDate}
-                onChange={(event) => updateBirthDate(value, event.target.value, onChange)}
+                onChange={(event) => updateBirthDate(value, event.target.value, onChange, onBirthDateAutosign)}
                 placeholder="дд.мм.гггг"
                 className={`h-12 w-full rounded-lg border bg-white px-3 text-base text-slate-900 ${
                   value.birthDate && !parsedDate.ok ? "border-rose-300" : "border-slate-200"
@@ -3101,10 +3257,19 @@ function isReadyToCalculate(mode: Mode, self: PersonState, partner: PersonState)
   return true;
 }
 
-function updateBirthDate(value: PersonState, rawValue: string, onChange: (value: PersonState) => void) {
-  const formatted = formatDateInput(rawValue);
+function updateBirthDate(value: PersonState, rawValue: string, onChange: (value: PersonState) => void, onAutosign?: (value: PersonState, signSlug: string) => void) {
+  const formatted = formatBirthDateInput(rawValue);
   const parsed = parseBirthDate(formatted);
-  onChange({ ...value, birthDate: formatted, sign: parsed.ok ? parsed.signSlug : value.sign });
+  const nextValue = { ...value, birthDate: formatted, sign: parsed.ok ? parsed.signSlug : value.sign };
+  onChange(nextValue);
+  if (parsed.ok && parsed.signSlug !== value.sign) onAutosign?.(nextValue, parsed.signSlug);
+}
+
+function formatBirthDateInput(rawValue: string) {
+  const trimmed = String(rawValue || "").trim();
+  const isoMatch = trimmed.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (isoMatch) return `${isoMatch[3]}.${isoMatch[2]}.${isoMatch[1]}`;
+  return formatDateInput(rawValue);
 }
 
 
@@ -3153,11 +3318,20 @@ function buildCompatibilityResult(mode: Mode, relationshipMode: RelationshipMode
   const mentalMapDynamics = buildMentalMapDynamics(mapScores, scores, seed);
   const preciseKnown = mode === "precise" && self.knowsTime && partner.knowsTime && Boolean(selfCity && partnerCity);
   const unknownPreciseTime = mode === "precise" && (!self.knowsTime || !partner.knowsTime);
+  const scoreTierLabel = buildScoreTierLabel(total);
   return {
     title,
     modeLabel: `${modeLabel} · ${relationshipLabel}`,
     relationshipMode,
     dataUseLabel: buildDataUseLabel(mode, preciseKnown),
+    scoreTierLabel,
+    connectionLevel: buildConnectionLevel(total, relationshipMode),
+    overviewText: buildCompatibilityOverview(selfSign, partnerSign, relationshipMode, total, seed),
+    emotionalDynamicsText: buildEmotionalDynamicsText(scores, relationshipMode, seed),
+    communicationPlanText: buildCommunicationPlanText(scores.communication, relationshipMode, seed),
+    conflictPointsText: buildConflictPointsText(scores, relationshipMode, seed),
+    bestContactFormat: buildBestContactFormat(scores, relationshipMode, seed),
+    coupleAdvice: buildCoupleAdviceText(scores, relationshipMode, seed),
     note: preciseKnown ? exactBirthDataNote : unknownPreciseTime ? unknownBirthTimeNote : null,
     validationMessages,
     scores,
@@ -3456,6 +3630,68 @@ function buildRiskText(score: number, seed: number) {
   return pickLine(lines, seed, 5);
 }
 
+function buildScoreTierLabel(score: number) {
+  if (score >= 85) return "сильный ресурс пары";
+  if (score >= 70) return "хороший потенциал";
+  if (score >= 55) return "средний потенциал с зонами роста";
+  if (score >= 40) return "сложная, но рабочая динамика";
+  return "напряжённая динамика";
+}
+
+function buildConnectionLevel(score: number, mode: RelationshipMode) {
+  const modeLabel = relationshipModeText(mode).replace(/^[^A-Za-zА-Яа-яЁё0-9]+/, "").trim();
+  if (score >= 85) return `${modeLabel}: связь легко поддерживать, если не превращать близость в привычку без внимания.`;
+  if (score >= 70) return `${modeLabel}: хороший контакт, которому помогают регулярные маленькие договорённости.`;
+  if (score >= 55) return `${modeLabel}: контакт есть, но его важно не оставлять на догадки и молчаливые ожидания.`;
+  if (score >= 40) return `${modeLabel}: нужна бережная настройка темпа, границ и формата разговора.`;
+  return `${modeLabel}: лучше двигаться короткими спокойными шагами и не требовать быстрых решений.`;
+}
+
+function buildCompatibilityOverview(firstSign: ZodiacSign, secondSign: ZodiacSign, mode: RelationshipMode, score: number, seed: number) {
+  const modeHint = pickLine(relationshipModeAdvice[mode], seed, 22);
+  const tier = buildScoreTierLabel(score);
+  return `${firstSign.name} + ${secondSign.name}: ${tier}. Главная тема пары сейчас — ${modeHint}; результат стоит воспринимать как мягкую навигацию для разговора, а не как диагноз.`;
+}
+
+function buildEmotionalDynamicsText(scores: CompatibilityResult["scores"], mode: RelationshipMode, seed: number) {
+  const emotionalBase = scores.love >= 70 ? "эмоции быстро теплеют через внимание и честное присутствие" : scores.love >= 55 ? "эмоциям помогает предсказуемость и спокойный темп" : "эмоции лучше не ускорять: сначала безопасность, потом сближение";
+  const modeTail = mode === "work" ? "в рабочих задачах это проявляется как уважение к роли и срокам" : mode === "friendship" ? "в дружбе это держится на надёжности без давления" : mode === "family" ? "в семье особенно важны бытовые договорённости" : mode === "reconciliation" ? "для примирения начните с признания чувства, а не с разбора правоты" : mode === "passion" ? "для страсти полезна игра без ревности и проверок" : "в любви лучше работают маленькие тёплые жесты";
+  return `${emotionalBase}; ${modeTail}. ${pickLine(strengthLines, seed, 23)}.`;
+}
+
+function buildCommunicationPlanText(score: number, mode: RelationshipMode, seed: number) {
+  const base = score >= 70 ? "говорите прямо и оставляйте место для лёгкости" : score >= 55 ? "выбирайте одну тему за раз и уточняйте смысл" : "сократите длинные переписки и начинайте с нейтральной фразы";
+  const modeTip = mode === "work" ? "фиксируйте итог письменно" : mode === "family" ? "разделяйте просьбы и заботу" : mode === "reconciliation" ? "не требуйте ответа сразу" : mode === "friendship" ? "поддержку лучше называть конкретно" : mode === "passion" ? "желание стоит проговаривать без игры в догадки" : "тепло важнее проверки чувств";
+  return `${base}: ${modeTip}. ${pickLine(coupleTalkLines[scoreBand(score)], seed, 24)}.`;
+}
+
+function buildConflictPointsText(scores: CompatibilityResult["scores"], mode: RelationshipMode, seed: number) {
+  const lowest = [
+    { label: "притяжение", value: scores.attraction },
+    { label: "общение", value: scores.communication },
+    { label: "эмоциональная близость", value: scores.love },
+    { label: "бытовой ритм", value: scores.household },
+  ].sort((first, second) => first.value - second.value)[0];
+  const modeRisk = mode === "reconciliation" ? "возвращаться к старому спору без новой цели" : mode === "work" ? "смешивать личный тон и рабочие решения" : mode === "family" ? "копить бытовые ожидания молча" : mode === "friendship" ? "обесценивать поддержку, если она выглядит простой" : mode === "passion" ? "проверять интерес ревностью" : "мерить чувства скоростью ответа";
+  return `Главная зона внимания: ${lowest.label}. Лучше не ${modeRisk}; ${pickLine(coupleAvoidLines[scoreBand(lowest.value)], seed, 25)}.`;
+}
+
+function buildBestContactFormat(scores: CompatibilityResult["scores"], mode: RelationshipMode, seed: number) {
+  const base = scores.communication >= 70 ? "живой разговор или короткий голосовой контакт" : scores.communication >= 55 ? "короткое сообщение с ясной просьбой" : "пауза, затем очень спокойная фраза без претензии";
+  const modeFormat = mode === "work" ? "с итогом в одном списке" : mode === "family" ? "с конкретным бытовым шагом" : mode === "reconciliation" ? "с правом другого человека ответить позже" : mode === "friendship" ? "с простым вопросом о состоянии" : mode === "passion" ? "с лёгким приглашением без давления" : "с тёплым жестом внимания";
+  return `${base} ${modeFormat}. ${pickLine(coupleActionLines, seed, 26)}.`;
+}
+
+function buildCoupleAdviceText(scores: CompatibilityResult["scores"], mode: RelationshipMode, seed: number) {
+  const best = [
+    { label: "притяжение", value: scores.attraction },
+    { label: "общение", value: scores.communication },
+    { label: "тепло", value: scores.love },
+    { label: "ритм", value: scores.household },
+  ].sort((first, second) => second.value - first.value)[0];
+  return `Опирайтесь на сильную сторону: ${best.label}. ${buildAdviceText(Math.round((scores.total + best.value) / 2), mode, seed)}.`;
+}
+
 function buildStrengthText(scores: CompatibilityResult["scores"], seed: number) {
   const ranked = [
     { key: "love", value: scores.love, text: "тепло и желание поддерживать друг друга" },
@@ -3503,6 +3739,13 @@ function resolveInitialHomePanel(startParam?: string | null): "home" | Retention
   return "home";
 }
 
+function resolveInitialRelationshipMode(startParam?: string | null): RelationshipMode | null {
+  const normalized = normalizeStartParam(startParam);
+  if (normalized === "compat_love") return "love";
+  if (normalized === "compat_reconciliation") return "reconciliation";
+  return null;
+}
+
 function resolveInitialSign(sign?: string | null, startParam?: string | null) {
   const fromStart = parseCompatibilityStartParam(startParam);
   const normalized = String(sign || fromStart || "").trim().toLowerCase();
@@ -3546,16 +3789,24 @@ function relationshipModeText(mode: RelationshipMode) {
   return relationshipModes.find((item) => item.id === mode)?.label ?? mode;
 }
 
-function compatibilityRetentionAction(self: PersonState, partner: PersonState, relationshipMode: RelationshipMode): ZodiacRetentionDraft {
+function safeAnalyticsScoreTier(value?: string): ZodiacAnalyticsPayload["scoreTier"] {
+  return value === "strong" || value === "good" || value === "medium" || value === "difficult" || value === "tense" ? value : undefined;
+}
+
+function compatibilityRetentionAction(self: PersonState, partner: PersonState, relationshipMode: RelationshipMode, result?: CompatibilityResult): ZodiacRetentionDraft {
   const selfLabel = self.sign ? findSign(self.sign).name : "первый знак";
   const partnerLabel = partner.sign ? findSign(partner.sign).name : "второй знак";
+  const scoreTier = result ? zodiacAnalyticsScoreTier(result.scores.total) : undefined;
   return {
     section: "compatibility",
     featureKey: "compatibilityTool",
     label: `Совместимость: ${selfLabel} + ${partnerLabel}`,
     relationshipMode,
     sign: self.sign || undefined,
-    detail: relationshipModeText(relationshipMode),
+    firstSign: self.sign || undefined,
+    secondSign: partner.sign || undefined,
+    scoreTier,
+    detail: scoreTier ? `${relationshipModeText(relationshipMode)} · ${compatibilityLevelLabel(result?.scores.total ?? 0)}` : relationshipModeText(relationshipMode),
   };
 }
 
@@ -3566,7 +3817,9 @@ function buildFeatureRetentionAction({
   selectedFeatureShortLabel,
   selectedSignSlug,
   selfSignSlug,
+  partnerSignSlug,
   relationshipMode,
+  scoreTier,
   angelNumberLabel,
 }: {
   category: MenuFeatureGroup;
@@ -3575,7 +3828,9 @@ function buildFeatureRetentionAction({
   selectedFeatureShortLabel: string;
   selectedSignSlug: string;
   selfSignSlug?: string;
+  partnerSignSlug?: string;
   relationshipMode: RelationshipMode;
+  scoreTier?: string;
   angelNumberLabel?: string;
 }): ZodiacRetentionDraft {
   const section = sectionForFeature(activeMoreFeature);
@@ -3591,6 +3846,9 @@ function buildFeatureRetentionAction({
     label,
     relationshipMode: activeMoreFeature === "compatibilityTool" ? relationshipMode : undefined,
     sign: selfSignSlug || selectedSignSlug || undefined,
+    firstSign: activeMoreFeature === "compatibilityTool" ? selfSignSlug || selectedSignSlug || undefined : undefined,
+    secondSign: activeMoreFeature === "compatibilityTool" ? partnerSignSlug || undefined : undefined,
+    scoreTier: activeMoreFeature === "compatibilityTool" ? scoreTier : undefined,
     detail: category === "vip" ? "VIP бесплатно до 17.09.2026" : selectedFeatureShortLabel,
   };
 }
@@ -3614,7 +3872,11 @@ function isMoreFeatureId(value: unknown): value is MoreFeatureId {
 }
 
 function shareStartParamForAction(action: ZodiacRetentionDraft) {
-  if (action.featureKey === "compatibilityTool" || action.section === "compatibility") return "compat";
+  if (action.featureKey === "compatibilityTool" || action.section === "compatibility") {
+    if (action.relationshipMode === "reconciliation") return "compat_reconciliation";
+    if (action.relationshipMode === "love") return "compat_love";
+    return "compat";
+  }
   if (action.featureKey === "birthMatrix") return "birth_matrix";
   if (action.featureKey === "angelNumbers" || action.featureKey === "vipAngelNumbers") return "angel_numbers";
   if (action.featureKey === "vip" || String(action.featureKey || "").startsWith("vip")) return "vip";
@@ -3627,7 +3889,10 @@ function buildSafeShareText(action: ZodiacRetentionDraft) {
   const startParam = shareStartParamForAction(action);
   const appLink = `https://t.me/zodiac_love_check_bot?startapp=${startParam}`;
   if (action.featureKey === "compatibilityTool" || action.section === "compatibility") {
-    return `Я проверил(а) совместимость в Астрологическом центре ✨\nОткрой Mini App и попробуй: ${appLink}`;
+    const firstSign = signSlugs.has(action.firstSign || "") ? findSign(action.firstSign || "") : null;
+    const secondSign = signSlugs.has(action.secondSign || "") ? findSign(action.secondSign || "") : null;
+    const pairLabel = firstSign && secondSign ? `${firstSign.name} + ${secondSign.name}` : "пару знаков";
+    return `Я проверил(а) совместимость: ${pairLabel} ✨\nОткрой Mini App и попробуй безопасный расчёт без сохранения личных данных: ${appLink}`;
   }
   if (action.featureKey === "birthMatrix") {
     return `Открыл(а) Матрицу судьбы в Астрологическом центре ✨\nПопробуй свой расчёт: ${appLink}`;
@@ -3820,10 +4085,21 @@ function buildCoupleHoroscope(self: PersonState, partner: PersonState, dateKey: 
   };
 }
 
-function buildCoupleCalendar(self: PersonState, partner: PersonState, dateKey: string, result: CompatibilityResult, count = 7): CoupleCalendarDay[] {
+function buildCoupleAction(self: PersonState, partner: PersonState, dateKey: string, relationshipMode: RelationshipMode, result: CompatibilityResult): CoupleAction {
+  const seed = pairSeed(self, partner, dateKey, `action:${relationshipMode}:${result.scores.total}`);
+  const profile = coupleActionProfiles[relationshipMode];
+  return {
+    mainAction: pickLine(profile.mainAction, seed, 1),
+    avoid: pickLine(profile.avoid, seed, 2),
+    bestTone: pickLine(profile.bestTone, seed, 3),
+    smallStep: pickLine(profile.smallStep, seed, 4),
+  };
+}
+
+function buildCoupleCalendar(self: PersonState, partner: PersonState, dateKey: string, relationshipMode: RelationshipMode, result: CompatibilityResult, count = 7): CoupleCalendarDay[] {
   return Array.from({ length: count }, (_, index) => {
     const currentDateKey = addDaysToDateKey(dateKey, index);
-    const seed = pairSeed(self, partner, currentDateKey, "calendar");
+    const seed = pairSeed(self, partner, currentDateKey, `calendar:${relationshipMode}`);
     const status = pickLine(coupleCalendarStatuses, seed + result.scores.total, 1);
     const advice = pickLine(coupleCalendarAdvice[status] ?? coupleCalendarAdvice["🌙 спокойный день"], seed, 2);
     return {
@@ -3831,6 +4107,10 @@ function buildCoupleCalendar(self: PersonState, partner: PersonState, dateKey: s
       date: formatShortDate(currentDateKey),
       weekday: formatWeekday(currentDateKey),
       status,
+      theme: pickLine(coupleCalendarThemes[relationshipMode], seed, 3),
+      energy: pickLine(coupleCalendarEnergy[relationshipMode], seed, 4),
+      action: pickLine(coupleCalendarActions[relationshipMode], seed, 5),
+      risk: pickLine(coupleCalendarRisks[relationshipMode], seed, 6),
       advice,
     };
   });
@@ -3852,6 +4132,15 @@ function buildPartnerMessage(self: PersonState, partner: PersonState, dateKey: s
   const partnerName = normalizeName(partner.name);
   const prefix = partnerName ? `${partnerName}, ` : "";
   return `${prefix}${pickLine(messageTemplates[tone], seed, 1)}`;
+}
+
+function buildCoupleMessageTemplates(self: PersonState, partner: PersonState, dateKey: string, relationshipMode: RelationshipMode, result: CompatibilityResult): CoupleMessageTemplate[] {
+  const seed = pairSeed(self, partner, dateKey, `message-templates:${relationshipMode}:${result.scores.communication}`);
+  return coupleMessageTemplatesByMode[relationshipMode].map((template, index) => ({
+    id: `${relationshipMode}-${index + 1}`,
+    label: template.label,
+    text: `${template.text} ${pickLine(coupleMessageClosers, seed, index + 1)}`,
+  }));
 }
 
 function buildNatalChart(person: PersonState): NatalChart | null {
@@ -6144,6 +6433,81 @@ const coupleCalendarAdvice: Record<string, string[]> = {
   "🌙 спокойный день": ["подойдёт тихая поддержка без больших решений", "лучше восстановить силы и не торопить события"],
 };
 
+const coupleCalendarThemes: Record<RelationshipMode, string[]> = {
+  love: ["тепло и внимание", "маленький романтический жест", "честный разговор о близости"],
+  friendship: ["поддержка без давления", "общий интерес", "бережная проверка состояния"],
+  work: ["ясные роли", "одно рабочее решение", "сверка ожиданий"],
+  family: ["домашний ритм", "забота и границы", "простая бытовая договорённость"],
+  passion: ["искра без ревности", "игра и лёгкость", "притяжение без проверки"],
+  reconciliation: ["мягкий шаг навстречу", "пауза перед ответом", "признание своей части напряжения"],
+};
+
+const coupleCalendarEnergy: Record<RelationshipMode, string[]> = {
+  love: ["тёплая", "нежная", "романтичная"],
+  friendship: ["ровная", "поддерживающая", "доверительная"],
+  work: ["собранная", "деловая", "структурная"],
+  family: ["заземляющая", "заботливая", "спокойная"],
+  passion: ["яркая", "живая", "магнитная"],
+  reconciliation: ["осторожная", "мягкая", "восстанавливающая"],
+};
+
+const coupleCalendarActions: Record<RelationshipMode, string[]> = {
+  love: ["предложить короткую встречу без спешки", "сказать одну конкретную благодарность", "добавить в день маленький знак внимания"],
+  friendship: ["спросить, чем можно поддержать", "поделиться простой хорошей новостью", "предложить общий спокойный план"],
+  work: ["зафиксировать следующий шаг письменно", "согласовать один приоритет", "разделить задачи без оценок личности"],
+  family: ["договориться об одной бытовой мелочи", "снять с другого человека одну маленькую нагрузку", "сказать просьбу прямо и мягко"],
+  passion: ["предложить лёгкий формат без давления", "оставить место для игры и паузы", "сделать комплимент без ожидания ответа"],
+  reconciliation: ["начать с короткой мирной фразы", "признать чувство без обвинения", "предложить разговор в удобное время"],
+};
+
+const coupleCalendarRisks: Record<RelationshipMode, string[]> = {
+  love: ["проверять чувства скоростью ответа", "ждать угадывания", "сравнивать жесты с идеалом"],
+  friendship: ["обесценить простую поддержку", "исчезнуть без объяснения", "перевести заботу в контроль"],
+  work: ["смешать личные эмоции и задачу", "менять договорённость на ходу", "спорить о статусе вместо результата"],
+  family: ["копить бытовое раздражение", "говорить намёками", "делать заботу обязательством"],
+  passion: ["подменить близость ревностью", "проверять реакцию молчанием", "ускорять то, что просит паузы"],
+  reconciliation: ["требовать примирения сразу", "возвращаться к старому спору без цели", "начинать с доказательств правоты"],
+};
+
+const coupleActionProfiles: Record<RelationshipMode, { mainAction: string[]; avoid: string[]; bestTone: string[]; smallStep: string[] }> = {
+  love: {
+    mainAction: ["сделайте один тёплый жест без проверки ответа", "предложите спокойный момент только для вас"],
+    avoid: ["не измеряйте чувства скоростью переписки", "не задавайте вопрос как проверку"],
+    bestTone: ["мягкий, прямой, с интересом к состоянию другого", "тёплый и не требующий немедленного ответа"],
+    smallStep: ["напишите короткую фразу благодарности", "предложите спокойный вечер без сложных тем"],
+  },
+  friendship: {
+    mainAction: ["спросите, нужна ли поддержка, и оставьте человеку выбор", "предложите простой общий план"],
+    avoid: ["не превращайте заботу в совет без запроса", "не обесценивайте молчание"],
+    bestTone: ["надёжный, простой, без драматизации", "дружеский и спокойный"],
+    smallStep: ["отправьте одно сообщение с вопросом «как ты сегодня?»", "поделитесь короткой хорошей новостью"],
+  },
+  work: {
+    mainAction: ["согласуйте один следующий шаг и критерий результата", "разделите ответственность без оценки личности"],
+    avoid: ["не спорьте о личных качествах вместо задачи", "не меняйте цель без короткого согласования"],
+    bestTone: ["деловой, спокойный, с коротким итогом", "структурный и уважительный"],
+    smallStep: ["запишите договорённость в одном сообщении", "уточните срок и формат результата"],
+  },
+  family: {
+    mainAction: ["разберите одну бытовую мелочь до понятного решения", "снимите напряжение через маленькую понятную помощь"],
+    avoid: ["не копите ожидания молча", "не превращайте заботу в контроль"],
+    bestTone: ["заботливый, конкретный, без упрёка", "домашний и ясный"],
+    smallStep: ["предложите одну посильную помощь", "попросите о конкретной мелочи прямо"],
+  },
+  passion: {
+    mainAction: ["добавьте лёгкую инициативу без давления", "поддержите искру через игру и уважение к границам"],
+    avoid: ["не используйте ревность как проверку интереса", "не ускоряйте ответ там, где нужна пауза"],
+    bestTone: ["живой, уверенный, но бережный", "яркий и не требующий доказательств"],
+    smallStep: ["сделайте комплимент и оставьте пространство для ответа", "предложите лёгкий формат встречи"],
+  },
+  reconciliation: {
+    mainAction: ["начните с признания своей части напряжения", "предложите разговор без требования немедленного решения"],
+    avoid: ["не требуйте быстрого финального решения", "не возвращайтесь к старому спору без новой цели"],
+    bestTone: ["тихий, уважительный, без обвинений", "мягкий и признающий чувства"],
+    smallStep: ["напишите одну фразу о желании понять, а не доказать", "предложите короткий разговор в удобное время"],
+  },
+};
+
 const reconciliationApproachLines: Record<"strong" | "medium" | "tense", string[]> = {
   strong: ["напишите коротко и тепло: начните с желания понять, а не доказать", "подойдите спокойно и назовите, что именно хотите исправить"],
   medium: ["лучше начать с мягкой просьбы о разговоре и дать время на ответ", "скажите о своём чувстве без обвинения и предложите маленький шаг"],
@@ -6165,6 +6529,45 @@ const messageTones: Array<{ id: MessageTone; label: string }> = [
   { id: "reconciliation", label: "для примирения" },
   { id: "short", label: "коротко" },
   { id: "honest", label: "глубже и честнее" },
+];
+
+const coupleMessageTemplatesByMode: Record<RelationshipMode, Array<{ label: string; text: string }>> = {
+  love: [
+    { label: "Тёплый старт", text: "Мне хочется сегодня быть ближе к тебе. Давай выберем спокойный момент и просто побудем рядом без спешки." },
+    { label: "Нежная просьба", text: "Мне важно сохранить между нами тепло. Если тебе удобно, давай поговорим о хорошем и о том, чего каждому сейчас не хватает." },
+    { label: "Короткое приглашение", text: "Хочу добавить в день немного нежности. Предлагаю сделать что-то простое вместе, без ожиданий и давления." },
+  ],
+  friendship: [
+    { label: "Поддержка", text: "Я рядом и хочу понять, как ты. Если нужна помощь или просто спокойный разговор, я открыт(а)." },
+    { label: "Лёгкий контакт", text: "Вспомнил(а) о тебе и захотелось написать. Как проходит день? Можно без подробностей, если не хочется." },
+    { label: "Общий план", text: "Давай на этой неделе выберем простой формат для встречи или созвона, чтобы спокойно восстановить контакт." },
+  ],
+  work: [
+    { label: "Ясность", text: "Предлагаю сверить один следующий шаг: что делаем, кто отвечает и какой результат считаем готовым." },
+    { label: "Спокойное уточнение", text: "Хочу уточнить ожидания, чтобы не спорить о мелочах. Давай зафиксируем главное коротко и спокойно." },
+    { label: "Деловая поддержка", text: "Вижу, что задача важная. Готов(а) обсудить решение без лишних эмоций и выбрать понятный порядок действий." },
+  ],
+  family: [
+    { label: "Быт без упрёка", text: "Давай выберем одну бытовую вещь и договоримся по ней спокойно, чтобы всем стало легче." },
+    { label: "Забота", text: "Я хочу поддержать наш общий ритм. Скажи, где тебе сейчас нужна помощь, а я тоже скажу свою просьбу прямо." },
+    { label: "Тихий вечер", text: "Предлагаю сегодня не разбирать всё сразу, а сделать один маленький шаг для спокойствия дома." },
+  ],
+  passion: [
+    { label: "Искра", text: "Мне нравится энергия между нами. Хочу сохранить лёгкость и добавить немного игры без давления." },
+    { label: "Комплимент", text: "Ты сегодня особенно притягиваешь моё внимание. Просто хочу сказать это прямо и тепло." },
+    { label: "Приглашение", text: "Если тебе откликается, давай устроим небольшой момент только для нас — легко, красиво и без лишних ожиданий." },
+  ],
+  reconciliation: [
+    { label: "Мягкий шаг", text: "Мне жаль, что между нами появилось напряжение. Я хочу поговорить спокойно и понять тебя без спора." },
+    { label: "Без давления", text: "Не хочу требовать ответа сразу. Просто хочу сказать, что мне важно восстановить уважительный контакт." },
+    { label: "Признание", text: "Я вижу свою часть в этом напряжении и готов(а) обсудить её спокойно, когда тебе будет удобно." },
+  ],
+};
+
+const coupleMessageClosers = [
+  "Ответ не обязательно давать сразу.",
+  "Можно начать с одного короткого сообщения.",
+  "Главное — сохранить уважение и спокойный темп.",
 ];
 
 const messageTemplates: Record<MessageTone, string[]> = {

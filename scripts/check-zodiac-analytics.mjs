@@ -14,8 +14,8 @@ const secretEnvNames = [
   "SUPABASE_SERVICE_ROLE_KEY",
   "DATABASE_URL",
 ];
-const sensitiveValues = ["SHOULD_BE_STRIPPED_NAME", "1990-01-02", "12:34", "SHOULD_BE_STRIPPED_CITY"];
-const sensitiveFields = ["name", "birthDate", "birthTime", "birthCity"];
+const sensitiveValues = ["SHOULD_BE_STRIPPED_NAME", "1990-01-02", "12:34", "SHOULD_BE_STRIPPED_CITY", "SHOULD_BE_STRIPPED_CITY_QUERY", "SHOULD_NOT_STORE_RAW_MESSAGE"];
+const sensitiveFields = ["name", "birthDate", "birthTime", "birthCity", "city", "cityId", "cityQuery", "selectedCityId", "message", "messageText"];
 
 let telegramApiCalls = 0;
 let livePublishCalls = 0;
@@ -70,6 +70,14 @@ async function main() {
     const telegramReadyEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "telegram_webapp_ready", { section: "telegram", category: "ios", featureKey: "dark" });
     const telegramBackEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "telegram_back_button_used", { section: "telegram", category: "vip", featureKey: "vipMysticDay" });
     const telegramHapticEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "telegram_haptic_used", { section: "telegram", category: "tab", featureKey: "selection" });
+    const compWizardStartedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "compatibility_wizard_started", { section: "compatibility" });
+    const compModeSelectedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "compatibility_mode_selected", { section: "compatibility", relationshipMode: "love" });
+    const compAutoSignEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "compatibility_birthdate_autosign_used", { section: "compatibility" });
+    const compCalendarOpenedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "compatibility_calendar_opened", { section: "compatibility" });
+    const compActionOpenedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "compatibility_action_opened", { section: "compatibility" });
+    const compMessageCopiedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "compatibility_message_copied", { section: "compatibility" });
+    const compPairSavedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "compatibility_pair_saved", { section: "compatibility" });
+    const compPairReopenedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "compatibility_pair_reopened", { section: "compatibility" });
     const disallowedEvent = await checkDisallowedEvent(`${baseUrl}/api/zodiac/analytics/event`);
     const afterLedgerStats = await collectLedgerStats();
     const ledgerWrites = countLedgerWrites(beforeLedgerStats, afterLedgerStats);
@@ -114,6 +122,14 @@ async function main() {
       telegramReadyEvent,
       telegramBackEvent,
       telegramHapticEvent,
+      compWizardStartedEvent,
+      compModeSelectedEvent,
+      compAutoSignEvent,
+      compCalendarOpenedEvent,
+      compActionOpenedEvent,
+      compMessageCopiedEvent,
+      compPairSavedEvent,
+      compPairReopenedEvent,
       disallowedEvent,
       sensitiveFieldsStripped:
         allowedEvent.sensitiveFieldsStripped &&
@@ -146,7 +162,15 @@ async function main() {
         giveawayLockedEvent.sensitiveFieldsStripped &&
         telegramReadyEvent.sensitiveFieldsStripped &&
         telegramBackEvent.sensitiveFieldsStripped &&
-        telegramHapticEvent.sensitiveFieldsStripped,
+        telegramHapticEvent.sensitiveFieldsStripped &&
+        compWizardStartedEvent.sensitiveFieldsStripped &&
+        compModeSelectedEvent.sensitiveFieldsStripped &&
+        compAutoSignEvent.sensitiveFieldsStripped &&
+        compCalendarOpenedEvent.sensitiveFieldsStripped &&
+        compActionOpenedEvent.sensitiveFieldsStripped &&
+        compMessageCopiedEvent.sensitiveFieldsStripped &&
+        compPairSavedEvent.sensitiveFieldsStripped &&
+        compPairReopenedEvent.sensitiveFieldsStripped,
       noSecretsPrinted: true,
       telegramApiCalls,
       ledgerWrites,
@@ -241,11 +265,15 @@ async function checkAllowedEvent(url, event = "compatibility_calculated", extraP
       birthDate: "1990-01-02",
       birthTime: "12:34",
       birthCity: "SHOULD_BE_STRIPPED_CITY",
+      cityQuery: "SHOULD_BE_STRIPPED_CITY_QUERY",
+      messageText: "SHOULD_NOT_STORE_RAW_MESSAGE",
       payload: {
         name: "SHOULD_BE_STRIPPED_NAME",
         birthDate: "1990-01-02",
         birthTime: "12:34",
         birthCity: "SHOULD_BE_STRIPPED_CITY",
+        cityQuery: "SHOULD_BE_STRIPPED_CITY_QUERY",
+        messageText: "SHOULD_NOT_STORE_RAW_MESSAGE",
       },
     }),
   });

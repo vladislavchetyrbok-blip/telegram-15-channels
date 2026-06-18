@@ -90,6 +90,14 @@ export const ZODIAC_ANALYTICS_EVENTS = [
   "telegram_webapp_ready",
   "telegram_back_button_used",
   "telegram_haptic_used",
+  "compatibility_wizard_started",
+  "compatibility_mode_selected",
+  "compatibility_birthdate_autosign_used",
+  "compatibility_calendar_opened",
+  "compatibility_action_opened",
+  "compatibility_message_copied",
+  "compatibility_pair_saved",
+  "compatibility_pair_reopened",
 ] as const;
 
 export type ZodiacAnalyticsEventName = (typeof ZODIAC_ANALYTICS_EVENTS)[number];
@@ -269,6 +277,7 @@ export function zodiacAnalyticsStartappType(startParam?: string | null) {
   const normalized = String(startParam || "").trim().toLowerCase();
   if (!normalized) return "none";
   if (normalized === "compat") return "compat_general";
+  if (normalized === "compat_love" || normalized === "compat_reconciliation") return "compat_mode";
   if (/^compat_[a-z]+$/.test(normalized)) return "compat_sign";
   if (normalized === "mystic") return "mystic";
   if (normalized === "vip") return "vip";

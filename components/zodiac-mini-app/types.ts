@@ -139,6 +139,14 @@ export interface CompatibilityResult {
   modeLabel: string;
   relationshipMode: RelationshipMode;
   dataUseLabel: string;
+  scoreTierLabel: string;
+  connectionLevel: string;
+  overviewText: string;
+  emotionalDynamicsText: string;
+  communicationPlanText: string;
+  conflictPointsText: string;
+  bestContactFormat: string;
+  coupleAdvice: string;
   note: string | null;
   validationMessages: string[];
   scores: {
@@ -188,7 +196,24 @@ export interface CoupleCalendarDay {
   date: string;
   weekday: string;
   status: string;
+  theme: string;
+  energy: string;
+  action: string;
+  risk: string;
   advice: string;
+}
+
+export interface CoupleAction {
+  mainAction: string;
+  avoid: string;
+  bestTone: string;
+  smallStep: string;
+}
+
+export interface CoupleMessageTemplate {
+  id: string;
+  label: string;
+  text: string;
 }
 
 export interface ReconciliationDay {

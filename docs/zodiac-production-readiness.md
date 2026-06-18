@@ -12,7 +12,7 @@ The Zodiac product is ready for controlled live operation of the daily publishin
 
 - Daily Zodiac publishing is active and ledger-protected.
 - Weekly Zodiac posts are prepared and dry-run ready, but weekly live scheduling remains OFF.
-- Mini App core UX is implemented: 10-category home, Angel Numbers top-level, Compatibility, Horoscopes, Mystic, Birth Matrix, VIP, Profile, History, Favorites, and Share.
+- Mini App core UX is implemented: 10-category home, Angel Numbers top-level, Compatibility pair core, Horoscopes, Mystic, Birth Matrix, VIP, Profile, History, Favorites, and Share.
 - VIP is free until `2026-09-17`; payments and Telegram Stars remain OFF.
 - Analytics is privacy-safe but storage mode is currently `noop` unless Redis REST env vars are configured.
 - Manual live publish remains forbidden unless a dry-run and ledger audit prove it is safe.
@@ -127,6 +127,12 @@ Primary product structure:
 Home -> Category -> Feature -> Result
 ```
 
+Compatibility product structure:
+
+```text
+Compatibility -> Pair Setup -> Relationship Map -> 30-Day Couple Calendar -> Actions / Messages / Save / Share
+```
+
 Home menu has exactly 10 large top-level categories in this order:
 
 1. `Гороскопы`
@@ -152,6 +158,8 @@ Supported `startapp` params:
 
 ```text
 compat
+compat_love
+compat_reconciliation
 compat_gemini
 mystic
 vip
@@ -221,6 +229,13 @@ Browser mode: PASS
 Telegram mock: PASS
 Main menu categories checked: 10/10
 Angel Numbers / Ангельские числа checked: YES
+Compatibility result checked: YES
+Compatibility autosign cases: 1998-06-15 -> Близнецы, 2000-03-21 -> Овен, 2000-12-22 -> Козерог
+Compatibility 30-day calendar checked: YES
+Compatibility action today checked: YES
+Compatibility messages checked: YES
+Compatibility pair saved/reopened: YES
+Compatibility share checked: YES
 VIP cards checked: 11/11
 Giveaways locked: YES
 Mystic checked: YES
@@ -270,6 +285,8 @@ Privacy rules:
 - No tokens, chat ids, or secrets.
 
 Allowed analytics are aggregate-safe counters and safe categorical fields such as sign slug, section, category, featureKey, mode, score tier, and flags.
+
+Compatibility retention is local-only and stores only safe pair summaries: first sign, second sign, relationship mode, score tier, label, feature key, and timestamp. It must not store names, birth dates, birth times, city query, selected city id, raw result text, or raw message text.
 
 ## Operations Checklist
 

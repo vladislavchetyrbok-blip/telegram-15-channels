@@ -80,6 +80,16 @@ const requiredCoverage = {
   birthMatrix: ["birth_matrix_opened"],
   telegram: ["telegram_webapp_ready", "telegram_back_button_used", "telegram_haptic_used"],
   retention: ["profile_opened", "history_opened", "favorite_saved", "favorite_opened", "share_clicked", "local_data_cleared"],
+  compatibility: [
+    "compatibility_wizard_started",
+    "compatibility_mode_selected",
+    "compatibility_birthdate_autosign_used",
+    "compatibility_calendar_opened",
+    "compatibility_action_opened",
+    "compatibility_message_copied",
+    "compatibility_pair_saved",
+    "compatibility_pair_reopened",
+  ],
 };
 
 const secretEnvNames = [
@@ -219,6 +229,7 @@ async function main() {
     `Birth Matrix events covered: ${formatCoverage(report.coverage.birthMatrix)}`,
     `Telegram events covered: ${formatCoverage(report.coverage.telegram)}`,
     `Retention events covered: ${formatCoverage(report.coverage.retention)}`,
+    `Compatibility events covered: ${formatCoverage(report.coverage.compatibility)}`,
     `Tracked events checked: ${usedEvents.length}`,
     `Ledger writes: ${ledgerChanged}`,
     `Live publish calls: 0`,

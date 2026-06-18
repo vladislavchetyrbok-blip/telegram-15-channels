@@ -40,6 +40,16 @@ export function ResultPanel({
         <ScoreBar publicMode={publicMode} label="🏠 Быт и ритм" value={result.scores.household} text={result.householdText} />
       </div>
 
+      <div className="space-y-3">
+        <ResultTextCard publicMode={publicMode} title="✨ Обзор пары" text={result.overviewText} />
+        <ResultTextCard publicMode={publicMode} title="🧭 Уровень связи" text={`${result.scoreTierLabel}. ${result.connectionLevel}`} />
+        <ResultTextCard publicMode={publicMode} title="💗 Эмоциональная динамика" text={result.emotionalDynamicsText} />
+        <ResultTextCard publicMode={publicMode} title="💬 Как общаться" text={result.communicationPlanText} />
+        <ResultTextCard publicMode={publicMode} title="⚠️ Точки конфликта" text={result.conflictPointsText} />
+        <ResultTextCard publicMode={publicMode} title="📨 Лучший формат контакта" text={result.bestContactFormat} />
+        <ResultTextCard publicMode={publicMode} title="⭐ Совет паре" text={result.coupleAdvice} />
+      </div>
+
       {result.nameResonance ? (
         <ResultTextCard publicMode={publicMode} title="✨ Именной резонанс" text={result.nameResonance.text} />
       ) : null}

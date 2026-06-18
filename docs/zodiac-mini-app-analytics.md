@@ -11,7 +11,7 @@ npm run zodiac:analytics:storage:check
 
 `zodiac:analytics:check` starts the app, posts safe sample events, verifies sensitive fields are stripped, and confirms the API still runs in `noop` mode when storage env is not configured.
 
-`zodiac:analytics:storage:check` is a static/readiness audit. It verifies the storage mode contract, required env names, allowlisted events, server-side sanitization, dashboard presence, and coverage for VIP, Mystic, Birth Matrix, Telegram WebApp, and Profile retention events.
+`zodiac:analytics:storage:check` is a static/readiness audit. It verifies the storage mode contract, required env names, allowlisted events, server-side sanitization, dashboard presence, and coverage for Compatibility, VIP, Mystic, Birth Matrix, Telegram WebApp, and Profile retention events.
 
 ## Routes
 
@@ -71,6 +71,7 @@ For Vercel, add both variables in Project Settings -> Environment Variables for 
 The allowlist covers:
 
 - main menu opens, main menu category taps, horoscope category opens, Angel Numbers category opens, compatibility category selection, and profile/saved/history preview panels;
+- Compatibility core funnel events: `compatibility_wizard_started`, `compatibility_mode_selected`, `compatibility_birthdate_autosign_used`, `compatibility_calendar_opened`, `compatibility_action_opened`, `compatibility_message_copied`, `compatibility_pair_saved`, and `compatibility_pair_reopened`;
 - Profile retention events: `profile_opened`, `history_opened`, `favorite_saved`, `favorite_opened`, `share_clicked`, and `local_data_cleared`;
 - app open, sign selection, section opens, compatibility calculation;
 - natal chart, Chinese horoscope, zodiac stones, name profile, numerology, angel numbers, lunar calendar, daily talisman, dream dictionary, gifts, name compatibility, archetype;
@@ -91,14 +92,22 @@ These navigation events must not include names, birth dates, birth times, city q
 
 The current Home menu has 10 large top-level categories, in order: `Гороскопы`, `Совместимость`, `Ангельские числа`, `Матрица судьбы`, `Нумерология`, `Мистика`, `Таро и руны`, `Луна и ритуалы`, `VIP раздел`, and `Мой профиль`. Angel Numbers must stay visible in the first screen zone. `Розыгрыши` stays inside VIP as locked/preview and is tracked only through giveaway locked events.
 
-Profile, History, and Favorites are local retention features. They use localStorage on the device and store only safe shortcuts/summaries: selected sign slug, section id/label, featureKey, compatibility mode, and timestamps. They must not store or send names, exact birth dates, birth times, city query, selected city id, raw result text, raw message text, raw dream text, or raw angel number input. Safe Share sends only generic Mini App text and startapp links.
+Compatibility product structure:
 
-Supported direct profile start params:
+```text
+Compatibility -> Pair Setup -> Relationship Map -> 30-Day Couple Calendar -> Actions / Messages / Save / Share
+```
+
+Profile, History, and Favorites are local retention features. They use localStorage on the device and store only safe shortcuts/summaries: selected sign slug, first sign slug, second sign slug, section id/label, featureKey, compatibility mode, score tier, and timestamps. They must not store or send names, exact birth dates, birth times, city query, selected city id, raw result text, raw message text, raw dream text, or raw angel number input. Safe Share sends only generic Mini App text, safe sign-pair labels, and startapp links.
+
+Supported direct profile and compatibility start params:
 
 ```text
 startapp=profile
 startapp=history
 startapp=favorites
+startapp=compat_love
+startapp=compat_reconciliation
 ```
 
 ## Forbidden Data

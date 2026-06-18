@@ -24,13 +24,15 @@ npm run zodiac:miniapp:smoke -- --url http://localhost:3000/compatibility
 - The expected product structure is `Home -> Category -> Feature -> Result`.
 - Browser mode works without `window.Telegram`.
 - Sign selection works.
-- Mini App start params render the intended section after category/sign selection or direct profile routing: `compat`, `compat_gemini`, `mystic`, `vip`, `birth_matrix`, `angel_numbers`, `week`, `profile`, `history`, and `favorites`.
+- Mini App start params render the intended section after category/sign selection or direct profile routing: `compat`, `compat_love`, `compat_reconciliation`, `compat_gemini`, `mystic`, `vip`, `birth_matrix`, `angel_numbers`, `week`, `profile`, `history`, and `favorites`.
 - Profile opens from the main menu and bottom navigation.
 - Profile shows the History and Favorites blocks with empty states: `Здесь появятся последние расчёты и открытые разделы` and `Здесь появятся сохранённые расчёты и быстрые переходы`.
 - History and Favorites use localStorage only and store safe shortcuts/summaries, not raw personal inputs.
 - A safe Angel Numbers item can be saved, appears in Favorites/Profile, opens back into the feature, and can be cleared with `Очистить данные`.
 - Safe Share can be clicked without crashing; browser fallback shows copy text or a copied state.
-- Basic compatibility flow reaches a stable result state without runtime errors.
+- Compatibility follows `Compatibility -> Pair Setup -> Relationship Map -> 30-Day Couple Calendar -> Actions / Messages / Save / Share`.
+- Compatibility smoke chooses Love mode, fills pair data, verifies birth-date autosign cases `1998-06-15 -> Близнецы`, `2000-03-21 -> Овен`, and `2000-12-22 -> Козерог`, reaches a detailed result, opens the 30-day couple calendar, opens `Что написать`, opens `Действие сегодня`, saves the pair, reopens it from Profile/Favorites/History, and checks safe Share.
+- Compatibility local retention stores only safe summary fields: first sign, second sign, relationship mode, score tier, label, feature key, and timestamp. It must not store names, birth dates, birth times, city query, selected city id, raw result text, or raw message text.
 - Horoscopes category opens from the main menu.
 - Angel Numbers / `Ангельские числа` is visible as a top-level category, opens the existing `angelNumbers` feature, and returns to Home via Back/Main menu.
 - VIP tab opens, free access until `17.09.2026` is visible, and all 11 active VIP cards open non-empty detail screens.
@@ -64,7 +66,14 @@ VIP cards checked: 11/11
 Giveaways locked: YES
 Mystic checked: YES
 Birth Matrix / Матрица судьбы checked: YES
-Startapp params checked: compat, compat_gemini, mystic, vip, birth_matrix, angel_numbers, week, profile, history, favorites
+Compatibility result checked: YES
+Compatibility autosign cases: 1998-06-15 -> Близнецы, 2000-03-21 -> Овен, 2000-12-22 -> Козерог
+Compatibility 30-day calendar checked: YES
+Compatibility action today checked: YES
+Compatibility messages checked: YES
+Compatibility pair saved/reopened: YES
+Compatibility share checked: YES
+Startapp params checked: compat, compat_love, compat_reconciliation, compat_gemini, mystic, vip, birth_matrix, angel_numbers, week, profile, history, favorites
 Profile checked: YES
 History empty state checked: YES
 Favorites empty state checked: YES

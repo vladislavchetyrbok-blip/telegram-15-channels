@@ -124,10 +124,47 @@ async function runBrowserModeSmoke(client, report) {
   await waitForPageText(client, /Выберите знак|Овен/, "Compatibility sign gate did not render.");
   await click(client, "Овен");
   await waitForPageText(client, /Совместимость|Шаг 1/, "Love flow did not render after sign selection.");
+  await click(client, "Персональный");
+  await fillVisibleInputAt(client, 1, "1998-06-15");
+  await waitForPageText(client, /Близнецы/, "Birth date autosign failed for 1998-06-15 -> Близнецы.");
+  await expectVisibleSelectValue(client, 0, "gemini", "Birth date autosign 1998-06-15 -> Близнецы");
+  report.compatibilityAutosignCases.push("1998-06-15 -> Близнецы");
+  await fillVisibleInputAt(client, 1, "2000-03-21");
+  await waitForPageText(client, /Овен/, "Birth date autosign failed for 2000-03-21 -> Овен.");
+  await expectVisibleSelectValue(client, 0, "aries", "Birth date autosign 2000-03-21 -> Овен");
+  report.compatibilityAutosignCases.push("2000-03-21 -> Овен");
   await click(client, "Далее");
   await waitForPageText(client, /Партнёр|Рассчитать/, "Compatibility step 2 did not render.");
+  await click(client, "Женщина");
+  await selectVisibleOption(client, "Козерог");
+  await fillVisibleInputAt(client, 1, "2000-12-22");
+  await waitForPageText(client, /Козерог/, "Birth date autosign failed for 2000-12-22 -> Козерог.");
+  await expectVisibleSelectValue(client, 0, "capricorn", "Birth date autosign 2000-12-22 -> Козерог");
+  report.compatibilityAutosignCases.push("2000-12-22 -> Козерог");
   await click(client, "Рассчитать");
-  await waitForPageText(client, /гармонии|совместимость|Заполните данные/, "Compatibility flow did not reach a stable result state.");
+  await waitForPageText(client, /Обзор пары|Уровень связи|Как общаться|Точки конфликта/, "Compatibility result did not render the relationship map summary.");
+  report.compatibilityResultChecked = true;
+  await click(client, "Сохранить");
+  report.compatibilityPairSaved = true;
+  await click(client, "Поделиться");
+  await settle(client);
+  await waitForPageText(client, /совместимость|Mini App|копирования|скопирован/i, "Compatibility share did not render or copy safely.");
+  report.compatibilityShareChecked = true;
+  await click(client, "Пара");
+  await waitForPageText(client, /Действие сегодня|Главный шаг|Лучший тон/, "Compatibility action today block did not render.");
+  report.compatibilityActionChecked = true;
+  await click(client, "30 дней");
+  await waitForPageText(client, /30 дней пары|Тема|Энергия|Риск/, "30-day couple calendar did not render with detailed fields.");
+  report.compatibilityCalendarChecked = true;
+  await click(client, "Текст");
+  await waitForPageText(client, /Что написать|Скопировать|Тёплый старт|Мягкий шаг/, "Relationship message helper did not render 3 message variants.");
+  await click(client, "Скопировать");
+  report.compatibilityMessageChecked = true;
+  await click(client, "Профиль");
+  await waitForPageText(client, /Избранное|История|Совместимость: Овен \+ Козерог/, "Saved compatibility pair/history did not render in Profile.");
+  await click(client, "Открыть");
+  await waitForPageText(client, /Овен.*Козерог|Козерог.*Овен|Обзор пары|Уровень связи/, "Opening saved compatibility pair did not restore the pair.");
+  report.compatibilityPairReopened = true;
 
   await click(client, "Главная");
   await waitForPageText(client, /Астрологический центр|Выберите, что хотите узнать сегодня/, "Back to main menu did not render after Compatibility.");
@@ -191,6 +228,10 @@ async function runBrowserModeSmoke(client, report) {
   }
 
   await openBirthMatrix(client);
+  if (!(await hasText(client, /ДД\.ММ\.ГГГГ|дд\.мм\.гггг|Введите дату рождения/i))) {
+    await click(client, "Изменить");
+    await waitForPageText(client, /ДД\.ММ\.ГГГГ|дд\.мм\.гггг|Введите дату рождения/i, "Birth Matrix edit mode did not render an input.");
+  }
   await fillVisibleInput(client, "19.06.1992");
   await click(client, "Рассчитать");
   await settle(client);
@@ -205,6 +246,8 @@ async function runBrowserModeSmoke(client, report) {
 async function runStartParamSmoke(client, baseUrl, report) {
   const cases = [
     { param: "compat", sign: "Овен", beforeSign: "Любовная совместимость", landing: /Любовная совместимость|Совместимость/, pattern: /Совместимость|Шаг 1/, message: "startapp=compat did not open Compatibility after sign selection." },
+    { param: "compat_love", sign: "Овен", landing: /Любовная совместимость|Совместимость/, pattern: /Любовь|Шаг 1|Совместимость/, message: "startapp=compat_love did not open Love compatibility after sign selection." },
+    { param: "compat_reconciliation", sign: "Овен", landing: /Примирение|Совместимость/, pattern: /Примирение|Шаг 1|Совместимость/, message: "startapp=compat_reconciliation did not open Reconciliation compatibility after sign selection." },
     { param: "compat_gemini", sign: "Близнецы", beforeSign: "Любовная совместимость", landing: /Любовная совместимость|Совместимость/, pattern: /Совместимость|Шаг 1/, message: "startapp=compat_gemini did not open Compatibility after sign selection." },
     { param: "mystic", sign: "Овен", landing: /Мистика|Выберите знак/, pattern: /Мистика|Ангельские числа|11:11/, message: "startapp=mystic did not open Mystic after sign selection." },
     { param: "vip", sign: "Овен", landing: /VIP раздел|Выберите знак/, pattern: /VIP открыт бесплатно|Ранний доступ до 17\.09\.2026/, message: "startapp=vip did not open VIP after sign selection." },
@@ -556,6 +599,41 @@ async function installSmokeHelpers(client) {
         input.dispatchEvent(new Event("change", { bubbles: true }));
         return { ok: true };
       },
+      fillVisibleInputAt(index, value) {
+        const inputs = Array.from(document.querySelectorAll("input")).filter(isVisible).filter((element) => !element.disabled && !element.readOnly);
+        const input = inputs[index || 0];
+        if (!input) return { ok: false, error: "not_found", count: inputs.length };
+        input.scrollIntoView({ block: "center", inline: "center" });
+        input.focus();
+        const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value")?.set;
+        if (setter) setter.call(input, value);
+        else input.value = value;
+        input.dispatchEvent(new InputEvent("input", { bubbles: true, inputType: "insertText", data: value }));
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+        return { ok: true, count: inputs.length };
+      },
+      selectVisibleOption(valueOrText, options = {}) {
+        const selects = Array.from(document.querySelectorAll("select")).filter(isVisible).filter((element) => !element.disabled);
+        const select = selects[options.index || 0];
+        if (!select) return { ok: false, error: "not_found", count: selects.length };
+        const normalizedNeedle = normalize(valueOrText);
+        const option = Array.from(select.options).find((item) => normalize(item.value) === normalizedNeedle || normalize(item.textContent).includes(normalizedNeedle));
+        if (!option) return { ok: false, error: "option_not_found", count: selects.length, options: Array.from(select.options).map((item) => item.textContent || item.value).slice(0, 20) };
+        select.scrollIntoView({ block: "center", inline: "center" });
+        const setter = Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, "value")?.set;
+        if (setter) setter.call(select, option.value);
+        else select.value = option.value;
+        select.dispatchEvent(new Event("input", { bubbles: true }));
+        select.dispatchEvent(new Event("change", { bubbles: true }));
+        return { ok: true, value: option.value, text: option.textContent, count: selects.length };
+      },
+      visibleSelectValue(index = 0) {
+        const selects = Array.from(document.querySelectorAll("select")).filter(isVisible).filter((element) => !element.disabled);
+        const select = selects[index || 0];
+        if (!select) return { ok: false, error: "not_found", count: selects.length };
+        const option = select.options[select.selectedIndex];
+        return { ok: true, value: select.value, text: option?.textContent || "", count: selects.length };
+      },
     };
     return true;
   })()`, []);
@@ -659,6 +737,25 @@ async function fillVisibleInput(client, value) {
   const result = await evalPage(client, "window.__zodiacSmoke.fillVisibleInput(arguments[0])", [value]);
   if (!result.ok) throw new Error(`Could not fill visible input: ${result.error}.`);
   await settle(client);
+}
+
+async function fillVisibleInputAt(client, index, value) {
+  const result = await evalPage(client, "window.__zodiacSmoke.fillVisibleInputAt(arguments[0], arguments[1])", [index, value]);
+  if (!result.ok) throw new Error(`Could not fill visible input at index ${index}: ${result.error}; visible inputs=${result.count}.`);
+  await settle(client);
+}
+
+async function selectVisibleOption(client, valueOrText, options = {}) {
+  const result = await evalPage(client, "window.__zodiacSmoke.selectVisibleOption(arguments[0], arguments[1])", [valueOrText, options]);
+  if (!result.ok) throw new Error(`Could not select visible option "${valueOrText}": ${result.error}; visible selects=${result.count}; options=${(result.options || []).join(" | ")}.`);
+  await settle(client);
+  return result;
+}
+
+async function expectVisibleSelectValue(client, index, expectedValue, label) {
+  const result = await evalPage(client, "window.__zodiacSmoke.visibleSelectValue(arguments[0])", [index]);
+  if (!result.ok) throw new Error(`Could not read visible select at index ${index}: ${result.error}; visible selects=${result.count}.`);
+  if (result.value !== expectedValue) throw new Error(`${label}: expected select value ${expectedValue}, got ${result.value || "empty"} (${result.text || "no text"}).`);
 }
 
 async function clickHub(client, label) {
@@ -925,6 +1022,14 @@ function createReport() {
     localDataCleared: false,
     horoscopesChecked: false,
     angelNumbersChecked: false,
+    compatibilityAutosignCases: [],
+    compatibilityResultChecked: false,
+    compatibilityCalendarChecked: false,
+    compatibilityActionChecked: false,
+    compatibilityMessageChecked: false,
+    compatibilityPairSaved: false,
+    compatibilityPairReopened: false,
+    compatibilityShareChecked: false,
     vipChecked: 0,
     giveawaysLocked: false,
     mysticChecked: 0,
@@ -965,6 +1070,13 @@ function printSummary(status, report) {
   console.log(`Local data cleared: ${report.localDataCleared ? "YES" : "NO"}`);
   console.log(`Horoscopes checked: ${report.horoscopesChecked ? "YES" : "NO"}`);
   console.log(`Angel Numbers / Ангельские числа checked: ${report.angelNumbersChecked ? "YES" : "NO"}`);
+  console.log(`Compatibility result checked: ${report.compatibilityResultChecked ? "YES" : "NO"}`);
+  console.log(`Compatibility autosign cases: ${report.compatibilityAutosignCases.length ? report.compatibilityAutosignCases.join(", ") : "NO"}`);
+  console.log(`Compatibility 30-day calendar checked: ${report.compatibilityCalendarChecked ? "YES" : "NO"}`);
+  console.log(`Compatibility action today checked: ${report.compatibilityActionChecked ? "YES" : "NO"}`);
+  console.log(`Compatibility messages checked: ${report.compatibilityMessageChecked ? "YES" : "NO"}`);
+  console.log(`Compatibility pair saved/reopened: ${report.compatibilityPairSaved && report.compatibilityPairReopened ? "YES" : "NO"}`);
+  console.log(`Compatibility share checked: ${report.compatibilityShareChecked ? "YES" : "NO"}`);
   console.log(`Telegram ready/expand: ${report.telegramReadyCalled && report.telegramExpandCalled ? "YES" : "NO"}`);
   console.log(`Telegram BackButton: ${report.telegramBackButtonChecked ? "YES" : "NO"}`);
   console.log(`Telegram category back: ${report.telegramCategoryBackChecked ? "YES" : "NO"}`);
