@@ -11,7 +11,7 @@ import {
 import { useTelegramBackButton, useTelegramWebApp, type TelegramWebAppState } from "@/lib/use-telegram-webapp";
 import { trackZodiacMiniAppEvent } from "@/lib/zodiac-mini-app-analytics-client";
 import { zodiacAnalyticsScoreTier, zodiacAnalyticsStartappType, type ZodiacAnalyticsEventName, type ZodiacAnalyticsPayload } from "@/lib/zodiac-mini-app-analytics-shared";
-import { ArrowLeft, ArrowRight, CalendarDays, Crown, Gift, MapPin, ShieldCheck, Sparkles, Star } from "lucide-react";
+import { ArrowLeft, ArrowRight, Bookmark, CalendarDays, Crown, Gift, MapPin, Share2, ShieldCheck, Sparkles, Star } from "lucide-react";
 import Link from "next/link";
 import {
   AuraColorFeature,
@@ -73,11 +73,12 @@ import {
   CategorySignGate,
   CompatibilityCategoryChooser,
   MiniAppBottomNavigation,
-  ReadinessPanel,
   type HomeBottomItem,
   type MainMenuCategoryTarget,
 } from "./zodiac-mini-app/MainMenuSections";
 import { MoreFeatureNavigation } from "./zodiac-mini-app/MoreFeatureNavigation";
+import { ProfileRetentionPanel, type ProfileQuickTarget } from "./zodiac-mini-app/ProfileRetentionPanel";
+import { useZodiacMiniAppRetention, type RetentionPanelFocus, type ZodiacRetentionDraft, type ZodiacRetentionItem } from "./zodiac-mini-app/retention";
 import { ResultPanel, ResultTextCard } from "./zodiac-mini-app/ResultCards";
 import {
   Field,
@@ -175,12 +176,15 @@ export function ZodiacCompatibilityMiniApp({
   const hintSignSlug = useMemo(() => resolveInitialSign(initialSign, startParam), [initialSign, startParam]);
   const initialActiveTab = useMemo(() => resolveInitialHubTab(startParam), [startParam]);
   const initialMoreFeature = useMemo(() => resolveInitialMoreFeature(startParam), [startParam]);
+  const initialHomePanel = useMemo(() => resolveInitialHomePanel(startParam), [startParam]);
   const hintSign = hintSignSlug ? findSign(hintSignSlug) : null;
+  const retention = useZodiacMiniAppRetention();
   const [appDateKey, setAppDateKey] = useState<string | null>(null);
   const [selectedSignSlug, setSelectedSignSlug] = useState("");
   const [activeTab, setActiveTab] = useState<HubTab>(initialActiveTab);
   const [requestedMoreFeature, setRequestedMoreFeature] = useState<MoreFeatureId | null>(initialMoreFeature);
-  const [homePanel, setHomePanel] = useState<"home" | "saved" | "history">("home");
+  const [homePanel, setHomePanel] = useState<"home" | RetentionPanelFocus>(initialHomePanel);
+  const [shareFallbackText, setShareFallbackText] = useState("");
   const [pendingCompatibilityMode, setPendingCompatibilityMode] = useState<RelationshipMode | null>(null);
   const [mode, setMode] = useState<Mode>(resolvedMode);
   const [relationshipMode, setRelationshipMode] = useState<RelationshipMode>("love");
@@ -269,6 +273,12 @@ export function ZodiacCompatibilityMiniApp({
   }, [activeTab, analyticsPayload, appDateKey, homePanel, selectedSignSlug]);
 
   useEffect(() => {
+    if (!appDateKey || activeTab !== "today" || (homePanel !== "profile" && homePanel !== "favorites" && homePanel !== "history")) return;
+    trackZodiacMiniAppEvent("profile_opened", analyticsPayload({ section: "profile", category: homePanel, sign: selectedSignSlug || retention.state.lastSign }));
+    if (homePanel === "history") trackZodiacMiniAppEvent("history_opened", analyticsPayload({ section: "history", category: "profile", sign: selectedSignSlug || retention.state.lastSign }));
+  }, [activeTab, analyticsPayload, appDateKey, homePanel, retention.state.lastSign, selectedSignSlug]);
+
+  useEffect(() => {
     if (!appDateKey || !selectedSign) return;
     const menuCategory = hubCategoryByTab[activeTab];
     const trackKey = `${appDateKey}:${selectedSign.slug}:${activeTab}:${menuCategory.group}`;
@@ -353,6 +363,7 @@ export function ZodiacCompatibilityMiniApp({
     setActiveTab("today");
     setRequestedMoreFeature(null);
     setPendingCompatibilityMode(null);
+    setShareFallbackText("");
   }, [triggerTelegramHaptic]);
 
   const homeTelegramBackVisible = telegram.isTelegramWebApp && !selectedSign && (activeTab !== "today" || homePanel !== "home");
@@ -365,10 +376,16 @@ export function ZodiacCompatibilityMiniApp({
 
   function openMenuCategory(target: MainMenuCategoryTarget, categoryId: string) {
     triggerTelegramHaptic("selection", "main_menu", categoryId);
+    if (categoryId === "profile") {
+      openHomePanel("profile");
+      return;
+    }
     setHomePanel("home");
+    setShareFallbackText("");
     setActiveTab(target.tab);
     setRequestedMoreFeature(target.feature ?? null);
     if (target.tab !== "love") setPendingCompatibilityMode(null);
+    retention.recordAction({ section: categoryId, label: mainMenuCategoryLabel(categoryId), featureKey: target.feature ?? target.tab, sign: selectedSignSlug || undefined });
     trackZodiacMiniAppEvent(
       "main_menu_category_opened",
       analyticsPayload({
@@ -393,26 +410,33 @@ export function ZodiacCompatibilityMiniApp({
     triggerTelegramHaptic("selection", "compatibility", nextMode);
     setRelationshipMode(nextMode);
     setPendingCompatibilityMode(nextMode);
+    retention.recordAction({ section: "compatibility", label: `Совместимость: ${relationshipModeText(nextMode)}`, featureKey: "compatibilityTool", relationshipMode: nextMode, sign: selectedSignSlug || undefined });
     trackZodiacMiniAppEvent("compatibility_category_selected", analyticsPayload({ section: "compatibility", relationshipMode: nextMode, sign: selectedSignSlug || undefined }));
   }
 
-  function openHomePanel(nextPanel: "saved" | "history") {
+  function openHomePanel(nextPanel: RetentionPanelFocus) {
     triggerTelegramHaptic("selection", "bottom_nav", nextPanel);
     setActiveTab("today");
     setHomePanel(nextPanel);
     setRequestedMoreFeature(null);
     setPendingCompatibilityMode(null);
-    trackZodiacMiniAppEvent("profile_preview_opened", analyticsPayload({ section: "profile_preview", category: nextPanel, sign: selectedSignSlug || undefined }));
+    setShareFallbackText("");
+    trackZodiacMiniAppEvent("profile_preview_opened", analyticsPayload({ section: "profile_preview", category: nextPanel, sign: selectedSignSlug || retention.state.lastSign }));
   }
 
   function openProfileFromBottom() {
-    openMenuCategory({ tab: "profile", feature: "natalChart" }, "profile");
+    openHomePanel("profile");
+  }
+
+  function openBottomTarget(target: ProfileQuickTarget, categoryId: string) {
+    openMenuCategory(target, categoryId);
   }
 
   function changeActiveTab(nextTab: HubTab) {
     if (nextTab !== activeTab) triggerTelegramHaptic("selection", "tab", nextTab);
     setHomePanel("home");
     setRequestedMoreFeature(null);
+    setShareFallbackText("");
     if (nextTab !== "love") setPendingCompatibilityMode(null);
     setActiveTab(nextTab);
   }
@@ -422,6 +446,7 @@ export function ZodiacCompatibilityMiniApp({
     setSelectedSignSlug(slug);
     setActiveTab((currentTab) => (currentTab === "today" ? initialActiveTab : currentTab));
     setSelf((current) => ({ ...current, sign: !current.sign || current.sign === selectedSignSlug ? slug : current.sign }));
+    retention.recordAction({ section: "sign", label: `Выбран знак: ${findSign(slug).name}`, featureKey: "sign", sign: slug });
     trackZodiacMiniAppEvent("sign_selected", analyticsPayload({ sign: slug }));
   }
 
@@ -451,6 +476,13 @@ export function ZodiacCompatibilityMiniApp({
       });
       trackZodiacMiniAppEvent("compatibility_calculated", payload);
       if (result.nameResonance) trackZodiacMiniAppEvent("name_resonance_shown", payload);
+      retention.recordAction({
+        section: "compatibility",
+        featureKey: "compatibilityTool",
+        label: `Совместимость: ${findSign(self.sign).name} + ${findSign(partner.sign).name}`,
+        relationshipMode,
+        sign: self.sign,
+      });
     }
     setStep(3);
   }
@@ -539,6 +571,49 @@ export function ZodiacCompatibilityMiniApp({
     trackZodiacMiniAppEvent(event, analyticsPayload(payload));
   }
 
+  function saveFavorite(action: ZodiacRetentionDraft) {
+    const item = retention.saveFavorite(action);
+    trackZodiacMiniAppEvent("favorite_saved", analyticsPayload({ section: "favorites", category: item.section, featureKey: item.featureKey, sign: item.sign }));
+  }
+
+  function openFavorite(item: ZodiacRetentionItem) {
+    const isFavorite = retention.state.favorites.some((favorite) => favorite.id === item.id);
+    if (isFavorite) trackZodiacMiniAppEvent("favorite_opened", analyticsPayload({ section: "favorites", category: item.section, featureKey: item.featureKey, sign: item.sign }));
+    const target = targetForRetentionItem(item);
+    openMenuCategory(target, item.section || "favorites");
+  }
+
+  function clearLocalData() {
+    retention.clearAll();
+    trackZodiacMiniAppEvent("local_data_cleared", analyticsPayload({ section: "profile", category: "local_storage" }));
+  }
+
+  async function shareSafeAction(action: ZodiacRetentionDraft) {
+    const text = buildSafeShareText(action);
+    setShareFallbackText("");
+    trackZodiacMiniAppEvent("share_clicked", analyticsPayload({ section: "share", category: action.section, featureKey: action.featureKey, sign: action.sign }));
+    const appLink = `https://t.me/zodiac_love_check_bot?startapp=${shareStartParamForAction(action)}`;
+    const telegramShareUrl = `https://t.me/share/url?url=${encodeURIComponent(appLink)}&text=${encodeURIComponent(text)}`;
+    try {
+      if (telegram.webApp?.openTelegramLink) {
+        telegram.webApp.openTelegramLink(telegramShareUrl);
+        return;
+      }
+      if (typeof navigator !== "undefined" && navigator.share) {
+        await navigator.share({ text });
+        return;
+      }
+      if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+        setShareFallbackText("Текст скопирован в буфер обмена.");
+        return;
+      }
+    } catch {
+      // Fall through to visible copy text.
+    }
+    setShareFallbackText(text);
+  }
+
   function resetFlow() {
     setMode(resolvedMode);
     setRelationshipMode("love");
@@ -547,28 +622,25 @@ export function ZodiacCompatibilityMiniApp({
     setStep(1);
   }
 
-  const bottomActiveItem: HomeBottomItem = homePanel === "saved" || homePanel === "history" ? homePanel : activeTab === "profile" ? "profile" : "home";
+  const bottomActiveItem: HomeBottomItem =
+    homePanel === "profile" || homePanel === "favorites" || homePanel === "history"
+      ? "profile"
+      : activeTab === "forecasts" || activeTab === "love" || activeTab === "vip"
+        ? activeTab
+        : "home";
   const activeRequestedFeature = requestedMoreFeature ?? (activeTab === initialActiveTab ? initialMoreFeature : null);
 
   function renderHomePanelContent() {
-    if (homePanel === "saved") {
+    if (homePanel === "profile" || homePanel === "favorites" || homePanel === "history") {
       return (
-        <ReadinessPanel
+        <ProfileRetentionPanel
           publicMode={publicMode}
-          title="Сохранённое"
-          text="Сохранение избранного пока не включено: Mini App не хранит личные данные и не создаёт скрытый профиль."
-          items={["Можно пользоваться всеми расчётами без аккаунта.", "Имена, даты рождения, время и город остаются только на экране.", "Постоянное избранное — отдельный будущий этап после storage readiness."]}
-        />
-      );
-    }
-
-    if (homePanel === "history") {
-      return (
-        <ReadinessPanel
-          publicMode={publicMode}
-          title="История"
-          text="История просмотров пока работает как preview: мы не записываем ваши личные вводы и не создаём поведенческий профиль."
-          items={["Текущая сессия остаётся локальной.", "Analytics собирает только безопасные события без имён и дат рождения.", "Историю можно будет включить отдельно, когда появится privacy-safe storage."]}
+          selectedSign={selectedSign}
+          retention={retention.state}
+          focus={homePanel}
+          onQuickAction={openBottomTarget}
+          onOpenFavorite={openFavorite}
+          onClearLocalData={clearLocalData}
         />
       );
     }
@@ -670,7 +742,7 @@ export function ZodiacCompatibilityMiniApp({
         {!selectedSign ? (
           <>
             {activeTab === "today" ? renderHomePanelContent() : renderUnsignedCategoryContent()}
-            <MiniAppBottomNavigation activeItem={bottomActiveItem} onHome={returnToMainMenu} onSaved={() => openHomePanel("saved")} onHistory={() => openHomePanel("history")} onProfile={openProfileFromBottom} />
+            <MiniAppBottomNavigation activeItem={bottomActiveItem} onHome={returnToMainMenu} onForecasts={() => openBottomTarget({ tab: "forecasts", feature: "todayForecast" }, "horoscopes")} onLove={() => openBottomTarget({ tab: "love", feature: "compatibilityTool" }, "compatibility")} onVip={() => openBottomTarget({ tab: "vip", feature: "vip" }, "vip")} onProfile={openProfileFromBottom} />
           </>
         ) : (
           <>
@@ -712,6 +784,9 @@ export function ZodiacCompatibilityMiniApp({
                     onNatalChartSectionOpen={trackNatalChartSectionOpen}
                     onNatalChartVipFreeOpen={trackNatalChartVipFreeOpen}
                     onPersonalToolEvent={trackPersonalToolEvent}
+                    onRetentionAction={retention.recordAction}
+                    onFavoriteSave={saveFavorite}
+                    onShare={shareSafeAction}
                   />
                 </div>
               ) : null}
@@ -742,6 +817,9 @@ export function ZodiacCompatibilityMiniApp({
                   onNatalChartSectionOpen={trackNatalChartSectionOpen}
                   onNatalChartVipFreeOpen={trackNatalChartVipFreeOpen}
                   onPersonalToolEvent={trackPersonalToolEvent}
+                  onRetentionAction={retention.recordAction}
+                  onFavoriteSave={saveFavorite}
+                  onShare={shareSafeAction}
                 />
               ) : null}
               {activeTab === "profile" ? (
@@ -771,6 +849,9 @@ export function ZodiacCompatibilityMiniApp({
                   onNatalChartSectionOpen={trackNatalChartSectionOpen}
                   onNatalChartVipFreeOpen={trackNatalChartVipFreeOpen}
                   onPersonalToolEvent={trackPersonalToolEvent}
+                  onRetentionAction={retention.recordAction}
+                  onFavoriteSave={saveFavorite}
+                  onShare={shareSafeAction}
                 />
               ) : null}
               {activeTab === "mystic" ? (
@@ -800,6 +881,9 @@ export function ZodiacCompatibilityMiniApp({
                   onNatalChartSectionOpen={trackNatalChartSectionOpen}
                   onNatalChartVipFreeOpen={trackNatalChartVipFreeOpen}
                   onPersonalToolEvent={trackPersonalToolEvent}
+                  onRetentionAction={retention.recordAction}
+                  onFavoriteSave={saveFavorite}
+                  onShare={shareSafeAction}
                 />
               ) : null}
               {activeTab === "love" ? (
@@ -843,7 +927,15 @@ export function ZodiacCompatibilityMiniApp({
                     {step === 3 ? (
                       <WizardCard publicMode={publicMode} stepLabel="Шаг 3 из 3" title={stepTitle}>
                         {isReadyToCalculate(mode, self, partner) ? (
-                          <ResultPanel publicMode={publicMode} result={result} levelLabel={compatibilityLevelLabel(result.scores.total)} onEdit={() => setStep(1)} onReset={resetFlow} />
+                          <ResultPanel
+                            publicMode={publicMode}
+                            result={result}
+                            levelLabel={compatibilityLevelLabel(result.scores.total)}
+                            onEdit={() => setStep(1)}
+                            onReset={resetFlow}
+                            onSave={() => saveFavorite(compatibilityRetentionAction(self, partner, relationshipMode))}
+                            onShare={() => shareSafeAction(compatibilityRetentionAction(self, partner, relationshipMode))}
+                          />
                         ) : (
                           <div className="py-8 text-center">
                             <p className="text-slate-300">Заполните данные, чтобы увидеть совместимость.</p>
@@ -884,13 +976,22 @@ export function ZodiacCompatibilityMiniApp({
                     onNatalChartSectionOpen={trackNatalChartSectionOpen}
                     onNatalChartVipFreeOpen={trackNatalChartVipFreeOpen}
                     onPersonalToolEvent={trackPersonalToolEvent}
+                    onRetentionAction={retention.recordAction}
+                    onFavoriteSave={saveFavorite}
+                    onShare={shareSafeAction}
                   />
                 </div>
               ) : null}
             </section>
-            <MiniAppBottomNavigation activeItem={bottomActiveItem} onHome={returnToMainMenu} onSaved={() => openHomePanel("saved")} onHistory={() => openHomePanel("history")} onProfile={openProfileFromBottom} />
+            <MiniAppBottomNavigation activeItem={bottomActiveItem} onHome={returnToMainMenu} onForecasts={() => openBottomTarget({ tab: "forecasts", feature: "todayForecast" }, "horoscopes")} onLove={() => openBottomTarget({ tab: "love", feature: "compatibilityTool" }, "compatibility")} onVip={() => openBottomTarget({ tab: "vip", feature: "vip" }, "vip")} onProfile={openProfileFromBottom} />
           </>
         )}
+        {shareFallbackText ? (
+          <div className={publicMode ? "rounded-lg border border-amber-200/25 bg-amber-200/10 p-3 text-sm leading-5 text-amber-50" : "rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm leading-5 text-amber-900"}>
+            <p className="font-semibold">Текст для копирования</p>
+            <p className="mt-2 whitespace-pre-line break-words">{shareFallbackText}</p>
+          </div>
+        ) : null}
       </div>
     </div>
   );
@@ -1106,6 +1207,9 @@ function MoreSection({
   onNatalChartSectionOpen,
   onNatalChartVipFreeOpen,
   onPersonalToolEvent,
+  onRetentionAction,
+  onFavoriteSave,
+  onShare,
 }: {
   publicMode: boolean;
   appDateKey: string | null;
@@ -1132,6 +1236,9 @@ function MoreSection({
   onNatalChartSectionOpen: (person: PersonState, chart: NatalChart, category: string) => void;
   onNatalChartVipFreeOpen: (person: PersonState, chart: NatalChart) => void;
   onPersonalToolEvent: (event: ZodiacAnalyticsEventName, payload: ZodiacAnalyticsPayload) => void;
+  onRetentionAction: (action: ZodiacRetentionDraft) => void;
+  onFavoriteSave: (action: ZodiacRetentionDraft) => void;
+  onShare: (action: ZodiacRetentionDraft) => void;
 }) {
   const [messageTone, setMessageTone] = useState<MessageTone>("soft");
   const [angelNumberInput, setAngelNumberInput] = useState("11:11");
@@ -1179,6 +1286,20 @@ function MoreSection({
   const archetype = buildPersonalityArchetypeProfile(natalPerson, selfSign, chineseHoroscope, numerology, dailyTalisman, dateKey);
   const monthForecast = selfSign ? buildPersonalMonthForecast(selfSign, dateKey, result) : null;
   const selectedMoreFeature = categoryFeatures.find((item) => item.id === activeMoreFeature) ?? categoryFeatures[0] ?? menuFeatureTabs[0];
+  const currentRetentionAction = useMemo(
+    () =>
+      buildFeatureRetentionAction({
+        category,
+        activeMoreFeature,
+        selectedFeatureLabel: selectedMoreFeature.label,
+        selectedFeatureShortLabel: selectedMoreFeature.shortLabel,
+        selectedSignSlug,
+        selfSignSlug: selfSign?.slug,
+        relationshipMode,
+        angelNumberLabel: activeMoreFeature === "angelNumbers" || activeMoreFeature === "vipAngelNumbers" ? angelNumber.label : undefined,
+      }),
+    [activeMoreFeature, angelNumber.label, category, relationshipMode, selectedMoreFeature.label, selectedMoreFeature.shortLabel, selectedSignSlug, selfSign?.slug],
+  );
   const categoryBackEnabled = Boolean(onCategoryBack);
   const telegramBackVisible = telegram.isTelegramWebApp && (activeMoreFeature !== defaultMoreFeature || categoryBackEnabled);
   const returnToMoreMenu = useCallback(() => {
@@ -1211,6 +1332,10 @@ function MoreSection({
   );
 
   useTelegramBackButton(telegram.webApp, telegramBackVisible, handleTelegramBack);
+
+  useEffect(() => {
+    onRetentionAction(currentRetentionAction);
+  }, [currentRetentionAction, onRetentionAction]);
 
   useEffect(() => {
     const categoryHasFeature = categoryFeatures.some((item) => item.id === activeMoreFeature) || (category === "vip" && vipDetailFeatureIds.has(activeMoreFeature));
@@ -1441,6 +1566,18 @@ function MoreSection({
       <div className={publicMode ? "mt-3 rounded-lg border border-white/10 bg-white/7 p-3" : "mt-3 rounded-lg border border-slate-200 bg-white p-3"}>
         <p className={publicMode ? "text-xs font-semibold text-amber-100" : "text-xs font-semibold text-violet-800"}>Открыт раздел</p>
         <p className={publicMode ? "mt-1 text-base font-semibold text-white" : "mt-1 text-base font-semibold text-slate-950"}>{selectedMoreFeature.label}</p>
+        {activeMoreFeature !== "giveaways" ? (
+          <div className="mt-3 grid grid-cols-2 gap-2">
+            <button type="button" onClick={() => onFavoriteSave(currentRetentionAction)} className={secondaryTinyButtonClass(publicMode)}>
+              <Bookmark className="h-4 w-4" />
+              Сохранить
+            </button>
+            <button type="button" onClick={() => onShare(currentRetentionAction)} className={secondaryTinyButtonClass(publicMode)}>
+              <Share2 className="h-4 w-4" />
+              Поделиться
+            </button>
+          </div>
+        ) : null}
       </div>
       <div className="mt-4">
         {activeMoreFeature === "compatibilityTool" ? <CompatibilityToolCard publicMode={publicMode} /> : null}
@@ -3360,6 +3497,12 @@ function resolveInitialMoreFeature(startParam?: string | null): MoreFeatureId | 
   return null;
 }
 
+function resolveInitialHomePanel(startParam?: string | null): "home" | RetentionPanelFocus {
+  const normalized = normalizeStartParam(startParam);
+  if (normalized === "profile" || normalized === "favorites" || normalized === "history") return normalized;
+  return "home";
+}
+
 function resolveInitialSign(sign?: string | null, startParam?: string | null) {
   const fromStart = parseCompatibilityStartParam(startParam);
   const normalized = String(sign || fromStart || "").trim().toLowerCase();
@@ -3376,6 +3519,127 @@ function parseCompatibilityStartParam(value?: string | null) {
 
 function normalizeStartParam(value?: string | null) {
   return String(value || "").trim().toLowerCase();
+}
+
+function mainMenuCategoryLabel(categoryId: string) {
+  const labels: Record<string, string> = {
+    horoscopes: "Гороскопы",
+    compatibility: "Совместимость",
+    birth_matrix: "Матрица судьбы",
+    angel_numbers: "Ангельские числа",
+    numerology: "Нумерология",
+    mystic: "Мистика",
+    tarot_runes: "Таро и руны",
+    moon_rituals: "Луна и ритуалы",
+    vip: "VIP раздел",
+    profile: "Мой профиль",
+    profile_horoscopes: "Гороскопы",
+    profile_compatibility: "Совместимость",
+    profile_birth_matrix: "Матрица судьбы",
+    profile_angel_numbers: "Ангельские числа",
+    profile_vip: "VIP раздел",
+  };
+  return labels[categoryId] ?? categoryId.replace(/_/g, " ");
+}
+
+function relationshipModeText(mode: RelationshipMode) {
+  return relationshipModes.find((item) => item.id === mode)?.label ?? mode;
+}
+
+function compatibilityRetentionAction(self: PersonState, partner: PersonState, relationshipMode: RelationshipMode): ZodiacRetentionDraft {
+  const selfLabel = self.sign ? findSign(self.sign).name : "первый знак";
+  const partnerLabel = partner.sign ? findSign(partner.sign).name : "второй знак";
+  return {
+    section: "compatibility",
+    featureKey: "compatibilityTool",
+    label: `Совместимость: ${selfLabel} + ${partnerLabel}`,
+    relationshipMode,
+    sign: self.sign || undefined,
+    detail: relationshipModeText(relationshipMode),
+  };
+}
+
+function buildFeatureRetentionAction({
+  category,
+  activeMoreFeature,
+  selectedFeatureLabel,
+  selectedFeatureShortLabel,
+  selectedSignSlug,
+  selfSignSlug,
+  relationshipMode,
+  angelNumberLabel,
+}: {
+  category: MenuFeatureGroup;
+  activeMoreFeature: MoreFeatureId;
+  selectedFeatureLabel: string;
+  selectedFeatureShortLabel: string;
+  selectedSignSlug: string;
+  selfSignSlug?: string;
+  relationshipMode: RelationshipMode;
+  angelNumberLabel?: string;
+}): ZodiacRetentionDraft {
+  const section = sectionForFeature(activeMoreFeature);
+  const label =
+    activeMoreFeature === "angelNumbers" && angelNumberLabel
+      ? `Ангельские числа: ${angelNumberLabel}`
+      : activeMoreFeature === "vipAngelNumbers" && angelNumberLabel
+        ? `VIP ангельские числа: ${angelNumberLabel}`
+        : selectedFeatureLabel;
+  return {
+    section,
+    featureKey: activeMoreFeature,
+    label,
+    relationshipMode: activeMoreFeature === "compatibilityTool" ? relationshipMode : undefined,
+    sign: selfSignSlug || selectedSignSlug || undefined,
+    detail: category === "vip" ? "VIP бесплатно до 17.09.2026" : selectedFeatureShortLabel,
+  };
+}
+
+function targetForRetentionItem(item: ZodiacRetentionItem): MainMenuCategoryTarget {
+  const feature = isMoreFeatureId(item.featureKey) ? item.featureKey : null;
+  if (!feature) return { tab: "today" };
+  if (feature === "compatibilityTool") return { tab: "love", feature };
+  if (feature === "todayForecast" || feature === "weekForecast" || feature === "luckyDays" || feature === "lunarCalendar" || feature === "dailyTalisman" || feature === "giftBySign") {
+    return { tab: "forecasts", feature };
+  }
+  if (feature === "natalChart" || feature === "chineseHoroscope" || feature === "zodiacStones" || feature === "nameProfile" || feature === "numerology" || feature === "archetype") {
+    return { tab: "profile", feature };
+  }
+  if (feature === "vip" || feature === "giveaways" || vipDetailFeatureIds.has(feature)) return { tab: "vip", feature };
+  return { tab: "mystic", feature };
+}
+
+function isMoreFeatureId(value: unknown): value is MoreFeatureId {
+  return typeof value === "string" && (menuFeatureTabs.some((item) => item.id === value) || vipDetailFeatureIds.has(value as MoreFeatureId));
+}
+
+function shareStartParamForAction(action: ZodiacRetentionDraft) {
+  if (action.featureKey === "compatibilityTool" || action.section === "compatibility") return "compat";
+  if (action.featureKey === "birthMatrix") return "birth_matrix";
+  if (action.featureKey === "angelNumbers" || action.featureKey === "vipAngelNumbers") return "angel_numbers";
+  if (action.featureKey === "vip" || String(action.featureKey || "").startsWith("vip")) return "vip";
+  if (action.section === "mystic") return "mystic";
+  if (action.featureKey === "weekForecast") return "week";
+  return "compat";
+}
+
+function buildSafeShareText(action: ZodiacRetentionDraft) {
+  const startParam = shareStartParamForAction(action);
+  const appLink = `https://t.me/zodiac_love_check_bot?startapp=${startParam}`;
+  if (action.featureKey === "compatibilityTool" || action.section === "compatibility") {
+    return `Я проверил(а) совместимость в Астрологическом центре ✨\nОткрой Mini App и попробуй: ${appLink}`;
+  }
+  if (action.featureKey === "birthMatrix") {
+    return `Открыл(а) Матрицу судьбы в Астрологическом центре ✨\nПопробуй свой расчёт: ${appLink}`;
+  }
+  if (action.featureKey === "angelNumbers" || action.featureKey === "vipAngelNumbers") {
+    const label = action.label && action.label.includes(":") ? action.label : "Ангельские числа";
+    return `${label} в Астрологическом центре 👼\nПосмотри значение своего знака: ${appLink}`;
+  }
+  if (action.featureKey === "vip" || String(action.featureKey || "").startsWith("vip")) {
+    return `Открыл(а) VIP раздел в Астрологическом центре 👑\nСейчас доступ бесплатный до 17.09.2026: ${appLink}`;
+  }
+  return `Открыл(а) ${action.label || "раздел"} в Астрологическом центре ✨\nПопробуй тоже: ${appLink}`;
 }
 
 function getDateOrdinal(dateIso: string) {

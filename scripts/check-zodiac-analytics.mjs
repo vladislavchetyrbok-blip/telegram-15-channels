@@ -46,6 +46,12 @@ async function main() {
     const horoscopeCategoryEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "horoscope_category_opened", { section: "week", category: "horoscopes", featureKey: "weekForecast" });
     const angelNumbersCategoryEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "angel_numbers_category_opened", { section: "angel_numbers", category: "angel_numbers", featureKey: "angelNumbers" });
     const profilePreviewEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "profile_preview_opened", { section: "profile_preview", category: "saved" });
+    const profileOpenedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "profile_opened", { section: "profile", category: "profile" });
+    const historyOpenedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "history_opened", { section: "history", category: "profile" });
+    const favoriteSavedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "favorite_saved", { section: "favorites", category: "mystic", featureKey: "birthMatrix" });
+    const favoriteOpenedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "favorite_opened", { section: "favorites", category: "mystic", featureKey: "birthMatrix" });
+    const shareClickedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "share_clicked", { section: "share", category: "angel_numbers", featureKey: "angelNumbers" });
+    const localDataClearedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "local_data_cleared", { section: "profile", category: "local_storage" });
     const mentalMapEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "mental_map_viewed");
     const vipFeatureEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "vip_feature_opened", { category: "month_forecast" });
     const chineseHoroscopeEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "chinese_horoscope_result_viewed", { section: "chinese_horoscope", hasBirthDate: true, hasName: false, freeVipActive: true });
@@ -84,6 +90,12 @@ async function main() {
       horoscopeCategoryEvent,
       angelNumbersCategoryEvent,
       profilePreviewEvent,
+      profileOpenedEvent,
+      historyOpenedEvent,
+      favoriteSavedEvent,
+      favoriteOpenedEvent,
+      shareClickedEvent,
+      localDataClearedEvent,
       mentalMapEvent,
       vipFeatureEvent,
       chineseHoroscopeEvent,
@@ -111,6 +123,12 @@ async function main() {
         horoscopeCategoryEvent.sensitiveFieldsStripped &&
         angelNumbersCategoryEvent.sensitiveFieldsStripped &&
         profilePreviewEvent.sensitiveFieldsStripped &&
+        profileOpenedEvent.sensitiveFieldsStripped &&
+        historyOpenedEvent.sensitiveFieldsStripped &&
+        favoriteSavedEvent.sensitiveFieldsStripped &&
+        favoriteOpenedEvent.sensitiveFieldsStripped &&
+        shareClickedEvent.sensitiveFieldsStripped &&
+        localDataClearedEvent.sensitiveFieldsStripped &&
         mentalMapEvent.sensitiveFieldsStripped &&
         vipFeatureEvent.sensitiveFieldsStripped &&
         chineseHoroscopeEvent.sensitiveFieldsStripped &&

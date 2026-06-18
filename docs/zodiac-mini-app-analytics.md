@@ -11,7 +11,7 @@ npm run zodiac:analytics:storage:check
 
 `zodiac:analytics:check` starts the app, posts safe sample events, verifies sensitive fields are stripped, and confirms the API still runs in `noop` mode when storage env is not configured.
 
-`zodiac:analytics:storage:check` is a static/readiness audit. It verifies the storage mode contract, required env names, allowlisted events, server-side sanitization, dashboard presence, and coverage for VIP, Mystic, Birth Matrix, and Telegram WebApp events.
+`zodiac:analytics:storage:check` is a static/readiness audit. It verifies the storage mode contract, required env names, allowlisted events, server-side sanitization, dashboard presence, and coverage for VIP, Mystic, Birth Matrix, Telegram WebApp, and Profile retention events.
 
 ## Routes
 
@@ -71,6 +71,7 @@ For Vercel, add both variables in Project Settings -> Environment Variables for 
 The allowlist covers:
 
 - main menu opens, main menu category taps, horoscope category opens, Angel Numbers category opens, compatibility category selection, and profile/saved/history preview panels;
+- Profile retention events: `profile_opened`, `history_opened`, `favorite_saved`, `favorite_opened`, `share_clicked`, and `local_data_cleared`;
 - app open, sign selection, section opens, compatibility calculation;
 - natal chart, Chinese horoscope, zodiac stones, name profile, numerology, angel numbers, lunar calendar, daily talisman, dream dictionary, gifts, name compatibility, archetype;
 - VIP opened, free access, feature taps, future subscription tap, and all active VIP detail screens;
@@ -89,6 +90,16 @@ Home -> Category -> Feature -> Result
 These navigation events must not include names, birth dates, birth times, city query, raw text inputs, or Telegram initData. Safe fields are limited to values such as `section`, `category`, `featureKey`, `relationshipMode`, and zodiac sign slugs.
 
 The current Home menu has 10 large top-level categories: `Гороскопы`, `Совместимость`, `Матрица судьбы`, `Ангельские числа`, `Нумерология`, `Мистика`, `Таро и руны`, `Луна и ритуалы`, `VIP раздел`, and `Мой профиль`. `Розыгрыши` stays inside VIP as locked/preview and is tracked only through giveaway locked events.
+
+Profile, History, and Favorites are local retention features. They use localStorage on the device and store only safe shortcuts/summaries: selected sign slug, section id/label, featureKey, compatibility mode, and timestamps. They must not store or send names, exact birth dates, birth times, city query, selected city id, raw result text, raw message text, raw dream text, or raw angel number input. Safe Share sends only generic Mini App text and startapp links.
+
+Supported direct profile start params:
+
+```text
+startapp=profile
+startapp=history
+startapp=favorites
+```
 
 ## Forbidden Data
 

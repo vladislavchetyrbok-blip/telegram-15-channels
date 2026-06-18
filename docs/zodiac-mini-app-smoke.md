@@ -22,7 +22,12 @@ npm run zodiac:miniapp:smoke -- --url http://localhost:3000/compatibility
 - The expected product structure is `Home -> Category -> Feature -> Result`.
 - Browser mode works without `window.Telegram`.
 - Sign selection works.
-- Mini App start params render the intended section after category/sign selection: `compat`, `compat_gemini`, `mystic`, `vip`, `birth_matrix`, `angel_numbers`, and `week`.
+- Mini App start params render the intended section after category/sign selection or direct profile routing: `compat`, `compat_gemini`, `mystic`, `vip`, `birth_matrix`, `angel_numbers`, `week`, `profile`, `history`, and `favorites`.
+- Profile opens from the main menu and bottom navigation.
+- Profile shows the History and Favorites blocks with empty states: `Здесь появятся последние расчёты и открытые разделы` and `Здесь появятся сохранённые расчёты и быстрые переходы`.
+- History and Favorites use localStorage only and store safe shortcuts/summaries, not raw personal inputs.
+- A safe Angel Numbers item can be saved, appears in Favorites/Profile, opens back into the feature, and can be cleared with `Очистить данные`.
+- Safe Share can be clicked without crashing; browser fallback shows copy text or a copied state.
 - Basic compatibility flow reaches a stable result state without runtime errors.
 - Horoscopes category opens from the main menu.
 - Angel Numbers / `Ангельские числа` is visible as a top-level category, opens the existing `angelNumbers` feature, and returns to Home via Back/Main menu.
@@ -57,7 +62,13 @@ VIP cards checked: 11/11
 Giveaways locked: YES
 Mystic checked: YES
 Birth Matrix / Матрица судьбы checked: YES
-Startapp params checked: compat, compat_gemini, mystic, vip, birth_matrix, angel_numbers, week
+Startapp params checked: compat, compat_gemini, mystic, vip, birth_matrix, angel_numbers, week, profile, history, favorites
+Profile checked: YES
+History empty state checked: YES
+Favorites empty state checked: YES
+Favorite saved/opened: YES
+Share checked: YES
+Local data cleared: YES
 Console errors: 0
 Runtime errors: 0
 HTTP/network errors: 0

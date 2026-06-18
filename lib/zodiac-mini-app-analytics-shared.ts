@@ -6,6 +6,12 @@ export const ZODIAC_ANALYTICS_EVENTS = [
   "horoscope_category_opened",
   "angel_numbers_category_opened",
   "profile_preview_opened",
+  "profile_opened",
+  "history_opened",
+  "favorite_saved",
+  "favorite_opened",
+  "share_clicked",
+  "local_data_cleared",
   "sign_selected",
   "section_open_today",
   "section_open_week",
@@ -174,6 +180,10 @@ const sections = new Set([
   "telegram",
   "main_menu",
   "profile_preview",
+  "profile",
+  "history",
+  "favorites",
+  "share",
 ]);
 
 export function isAllowedZodiacAnalyticsEvent(value: unknown): value is ZodiacAnalyticsEventName {
@@ -264,6 +274,9 @@ export function zodiacAnalyticsStartappType(startParam?: string | null) {
   if (normalized === "vip") return "vip";
   if (normalized === "birth_matrix") return "birth_matrix";
   if (normalized === "angel_numbers") return "angel_numbers";
+  if (normalized === "profile") return "profile";
+  if (normalized === "favorites") return "favorites";
+  if (normalized === "history") return "history";
   if (normalized === "week") return "week";
   return "other";
 }

@@ -1,10 +1,10 @@
 import type { ReactNode } from "react";
-import { ArrowRight, BadgeCheck, Bookmark, CalendarDays, CircleDot, Crown, Gem, Hash, HeartHandshake, History, Sparkles, Star, Stars, User, WandSparkles } from "lucide-react";
+import { ArrowRight, BadgeCheck, CalendarDays, CircleDot, Crown, Gem, Hash, HeartHandshake, Sparkles, Star, Stars, User, WandSparkles } from "lucide-react";
 import { relationshipModes } from "./constants";
 import { panelClass } from "./ui-primitives";
 import type { HubTab, MoreFeatureId, RelationshipMode, ZodiacSign } from "./types";
 
-export type HomeBottomItem = "home" | "saved" | "history" | "profile";
+export type HomeBottomItem = "home" | "forecasts" | "love" | "vip" | "profile";
 
 export interface MainMenuCategoryTarget {
   tab: HubTab;
@@ -276,25 +276,28 @@ export function ReadinessPanel({ publicMode, title, text, items }: { publicMode:
 export function MiniAppBottomNavigation({
   activeItem,
   onHome,
-  onSaved,
-  onHistory,
+  onForecasts,
+  onLove,
+  onVip,
   onProfile,
 }: {
   activeItem: HomeBottomItem;
   onHome: () => void;
-  onSaved: () => void;
-  onHistory: () => void;
+  onForecasts: () => void;
+  onLove: () => void;
+  onVip: () => void;
   onProfile: () => void;
 }) {
   const items: Array<{ id: HomeBottomItem; label: string; icon: ReactNode; action: () => void }> = [
     { id: "home", label: "Главная", icon: <Sparkles className="h-4 w-4" />, action: onHome },
-    { id: "saved", label: "Сохранённое", icon: <Bookmark className="h-4 w-4" />, action: onSaved },
-    { id: "history", label: "История", icon: <History className="h-4 w-4" />, action: onHistory },
+    { id: "forecasts", label: "Гороскопы", icon: <CalendarDays className="h-4 w-4" />, action: onForecasts },
+    { id: "love", label: "Совмест.", icon: <HeartHandshake className="h-4 w-4" />, action: onLove },
+    { id: "vip", label: "VIP", icon: <Crown className="h-4 w-4" />, action: onVip },
     { id: "profile", label: "Профиль", icon: <User className="h-4 w-4" />, action: onProfile },
   ];
 
   return (
-    <nav className="sticky bottom-[calc(0.75rem+var(--zma-safe-area-bottom,0px))] z-20 mt-auto grid grid-cols-4 gap-2 rounded-lg border border-white/12 bg-[#0c0b18]/90 p-2 shadow-[0_18px_60px_rgba(0,0,0,0.45)] backdrop-blur">
+    <nav className="sticky bottom-[calc(0.75rem+var(--zma-safe-area-bottom,0px))] z-20 mt-auto grid grid-cols-5 gap-1 rounded-lg border border-white/12 bg-[#0c0b18]/90 p-2 shadow-[0_18px_60px_rgba(0,0,0,0.45)] backdrop-blur">
       {items.map((item) => {
         const active = activeItem === item.id;
         return (

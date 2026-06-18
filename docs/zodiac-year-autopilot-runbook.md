@@ -110,7 +110,11 @@ Supported Mini App start params:
 - `mystic`
 - `vip`
 - `birth_matrix`
+- `angel_numbers`
 - `week`
+- `profile`
+- `history`
+- `favorites`
 
 `vip` is supported for deep links and internal navigation, but Telegram posts avoid adding an extra VIP button by default to keep the keyboard compact. VIP free access remains enabled until `2026-09-17`; payments and Telegram Stars remain off.
 

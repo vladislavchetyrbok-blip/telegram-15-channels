@@ -105,6 +105,19 @@ async function runBrowserModeSmoke(client, report) {
   report.mainMenuCategoryCount = mainCategories.length;
   report.mainMenuChecked = true;
 
+  await click(client, "Мой профиль");
+  await waitForPageText(client, /Мой профиль|Локальные данные/, "Profile screen did not render from main menu.");
+  await waitForPageText(client, /Здесь появятся последние расчёты и открытые разделы/, "History empty state did not render.");
+  await waitForPageText(client, /Здесь появятся сохранённые расчёты и быстрые переходы/, "Favorites empty state did not render.");
+  report.profileChecked = true;
+  report.historyEmptyStateChecked = true;
+  report.favoritesEmptyStateChecked = true;
+  await click(client, "Очистить данные");
+  await waitForPageText(client, /Здесь появятся последние расчёты и открытые разделы/, "History empty state did not remain after clearing local data.");
+  report.localDataCleared = true;
+  await click(client, "Главная");
+  await waitForPageText(client, /Астрологический центр|Выберите, что хотите узнать сегодня/, "Back to main menu did not render after Profile.");
+
   await click(client, "Совместимость");
   await waitForPageText(client, /Любовная совместимость|Дружеская совместимость|Совместимость/, "Compatibility category did not render.");
   await click(client, "Любовная совместимость");
@@ -116,20 +129,37 @@ async function runBrowserModeSmoke(client, report) {
   await click(client, "Рассчитать");
   await waitForPageText(client, /гармонии|совместимость|Заполните данные/, "Compatibility flow did not reach a stable result state.");
 
-  await click(client, "Главное меню");
+  await click(client, "Главная");
   await waitForPageText(client, /Астрологический центр|Выберите, что хотите узнать сегодня/, "Back to main menu did not render after Compatibility.");
   await click(client, "Гороскопы");
-  await waitForPageText(client, /Гороскопы|Гороскоп недели|Удачные дни|Лунный календарь/, "Horoscopes category did not render.");
+  await waitForPageText(client, /Открыт раздел|Гороскоп недели|Удачные дни|Лунный календарь/, "Horoscopes category did not render.");
   report.horoscopesChecked = true;
 
-  await click(client, "Главное меню");
+  await click(client, "Главная");
   await waitForPageText(client, /Астрологический центр|Ангельские числа/, "Back to main menu did not render after Horoscopes.");
   await click(client, "Ангельские числа");
   await waitForPageText(client, /Ангельские числа|11:11|22:22/, "Angel Numbers category did not render.");
   await assertFeatureScreen(client, "Ангельские числа", { allowSoon: false, minLength: 260 });
   report.angelNumbersChecked = true;
+  await click(client, "Сохранить");
+  report.favoriteSaved = true;
+  await click(client, "Поделиться");
+  await settle(client);
+  await waitForPageText(client, /Текст для копирования|Текст скопирован|Ангельские числа/, "Share fallback/copy state did not render for Angel Numbers.");
+  report.shareChecked = true;
+  await click(client, "Профиль");
+  await waitForPageText(client, /Избранное|История|Мой профиль/, "Profile bottom nav did not render after saving Angel Numbers.");
+  await waitForPageText(client, /Ангельские числа/, "Saved Angel Numbers favorite/history did not render in Profile.");
+  await click(client, "Открыть");
+  await waitForPageText(client, /Ангельские числа|11:11|22:22/, "Opening saved Angel Numbers favorite did not return to the feature.");
+  report.favoriteOpened = true;
+  await click(client, "Профиль");
+  await waitForPageText(client, /Мой профиль|Локальные данные/, "Profile did not render after opening favorite.");
+  await click(client, "Очистить данные");
+  await waitForPageText(client, /Здесь появятся сохранённые расчёты и быстрые переходы/, "Favorites empty state did not render after clearing local data.");
+  report.localDataCleared = true;
 
-  await click(client, "Главное меню");
+  await click(client, "Главная");
   await waitForPageText(client, /Астрологический центр|VIP раздел/, "Back to main menu did not render after Angel Numbers.");
   await click(client, "VIP раздел");
   await waitForPageText(client, /VIP открыт бесплатно|Ранний доступ до 17\.09\.2026/, "VIP menu did not render.");
@@ -181,6 +211,9 @@ async function runStartParamSmoke(client, baseUrl, report) {
     { param: "birth_matrix", sign: "Овен", landing: /Матрица судьбы|Выберите знак/, pattern: /Матрица|дд\.мм\.гггг|Дата/, message: "startapp=birth_matrix did not open Birth Matrix after sign selection." },
     { param: "angel_numbers", sign: "Овен", landing: /Ангельские числа|Выберите знак/, pattern: /Ангельские числа|11:11|22:22/, message: "startapp=angel_numbers did not open Angel Numbers after sign selection." },
     { param: "week", sign: "Овен", landing: /Гороскопы|Выберите знак/, pattern: /Неделя|Прогнозы|Удачные дни/, message: "startapp=week did not open weekly forecasts after sign selection." },
+    { param: "profile", landing: /Мой профиль|Локальные данные/, pattern: /Мой профиль|Избранное|История/, message: "startapp=profile did not open Profile." },
+    { param: "history", landing: /История|последние расчёты/, pattern: /История|Здесь появятся последние расчёты/, message: "startapp=history did not open Profile history." },
+    { param: "favorites", landing: /Избранное|сохранённые расчёты/, pattern: /Избранное|Здесь появятся сохранённые расчёты/, message: "startapp=favorites did not open Profile favorites." },
   ];
 
   for (const item of cases) {
@@ -191,7 +224,7 @@ async function runStartParamSmoke(client, baseUrl, report) {
       await click(client, item.beforeSign);
       await waitForPageText(client, /Выберите знак|Овен|Близнецы/, `startapp=${item.param} sign gate did not render.`);
     }
-    await click(client, item.sign);
+    if (item.sign) await click(client, item.sign);
     await waitForPageText(client, item.pattern, item.message);
     report.startParamsChecked.push(item.param);
   }
@@ -540,6 +573,7 @@ async function installTelegramMock(client) {
         backOffClick: 0,
         impact: 0,
         selection: 0,
+        openTelegramLink: 0,
         callbacks: [],
       };
       window.__telegramMockCalls = calls;
@@ -553,6 +587,7 @@ async function installTelegramMock(client) {
         WebApp: {
           ready() { calls.ready += 1; },
           expand() { calls.expand += 1; this.isExpanded = true; },
+          openTelegramLink(url) { calls.openTelegramLink += 1; calls.lastTelegramLink = url; },
           BackButton: {
             show() { calls.backShow += 1; },
             hide() { calls.backHide += 1; },
@@ -881,6 +916,13 @@ function createReport() {
     telegramMock: "NOT_RUN",
     mainMenuChecked: false,
     mainMenuCategoryCount: 0,
+    profileChecked: false,
+    historyEmptyStateChecked: false,
+    favoritesEmptyStateChecked: false,
+    favoriteSaved: false,
+    favoriteOpened: false,
+    shareChecked: false,
+    localDataCleared: false,
     horoscopesChecked: false,
     angelNumbersChecked: false,
     vipChecked: 0,
@@ -915,6 +957,12 @@ function printSummary(status, report) {
   console.log(`Telegram mock: ${report.telegramMock}`);
   console.log(`Main menu checked: ${report.mainMenuChecked ? "YES" : "NO"}`);
   console.log(`Main menu categories checked: ${report.mainMenuCategoryCount}/10`);
+  console.log(`Profile checked: ${report.profileChecked ? "YES" : "NO"}`);
+  console.log(`History empty state checked: ${report.historyEmptyStateChecked ? "YES" : "NO"}`);
+  console.log(`Favorites empty state checked: ${report.favoritesEmptyStateChecked ? "YES" : "NO"}`);
+  console.log(`Favorite saved/opened: ${report.favoriteSaved && report.favoriteOpened ? "YES" : "NO"}`);
+  console.log(`Share checked: ${report.shareChecked ? "YES" : "NO"}`);
+  console.log(`Local data cleared: ${report.localDataCleared ? "YES" : "NO"}`);
   console.log(`Horoscopes checked: ${report.horoscopesChecked ? "YES" : "NO"}`);
   console.log(`Angel Numbers / Ангельские числа checked: ${report.angelNumbersChecked ? "YES" : "NO"}`);
   console.log(`Telegram ready/expand: ${report.telegramReadyCalled && report.telegramExpandCalled ? "YES" : "NO"}`);

@@ -1,0 +1,179 @@
+"use client";
+
+import { useCallback, useEffect, useState } from "react";
+import type { MoreFeatureId, RelationshipMode } from "./types";
+
+export type RetentionPanelFocus = "profile" | "favorites" | "history";
+
+export interface ZodiacRetentionItem {
+  id: string;
+  label: string;
+  section: string;
+  featureKey?: MoreFeatureId | string;
+  sign?: string;
+  relationshipMode?: RelationshipMode;
+  detail?: string;
+  createdAt: string;
+}
+
+export interface ZodiacRetentionState {
+  version: 1;
+  lastSign?: string;
+  lastSection?: {
+    id: string;
+    label: string;
+  };
+  lastCompatibilityMode?: RelationshipMode;
+  history: ZodiacRetentionItem[];
+  favorites: ZodiacRetentionItem[];
+}
+
+export type ZodiacRetentionDraft = Omit<ZodiacRetentionItem, "id" | "createdAt"> & {
+  id?: string;
+  createdAt?: string;
+};
+
+export const ZODIAC_RETENTION_STORAGE_KEY = "zodiac-mini-app-retention-v1";
+
+const emptyState: ZodiacRetentionState = {
+  version: 1,
+  history: [],
+  favorites: [],
+};
+
+const maxItems = 10;
+
+export function useZodiacMiniAppRetention() {
+  const [state, setState] = useState<ZodiacRetentionState>(emptyState);
+
+  useEffect(() => {
+    setState(loadRetentionState());
+  }, []);
+
+  const updateState = useCallback((updater: (current: ZodiacRetentionState) => ZodiacRetentionState) => {
+    setState((current) => {
+      const next = normalizeState(updater(current));
+      writeRetentionState(next);
+      return next;
+    });
+  }, []);
+
+  const recordAction = useCallback(
+    (draft: ZodiacRetentionDraft) => {
+      const item = normalizeItem(draft);
+      updateState((current) => ({
+        ...current,
+        lastSign: item.sign || current.lastSign,
+        lastSection: item.section ? { id: item.section, label: item.label } : current.lastSection,
+        lastCompatibilityMode: item.relationshipMode || current.lastCompatibilityMode,
+        history: upsertItem(current.history, item),
+      }));
+    },
+    [updateState],
+  );
+
+  const saveFavorite = useCallback(
+    (draft: ZodiacRetentionDraft) => {
+      const item = normalizeItem(draft);
+      updateState((current) => ({
+        ...current,
+        lastSign: item.sign || current.lastSign,
+        favorites: upsertItem(current.favorites, item),
+      }));
+      return item;
+    },
+    [updateState],
+  );
+
+  const clearAll = useCallback(() => {
+    if (typeof window !== "undefined") window.localStorage.removeItem(ZODIAC_RETENTION_STORAGE_KEY);
+    setState(emptyState);
+  }, []);
+
+  return {
+    state,
+    recordAction,
+    saveFavorite,
+    clearAll,
+  };
+}
+
+function loadRetentionState(): ZodiacRetentionState {
+  if (typeof window === "undefined") return emptyState;
+  try {
+    const raw = window.localStorage.getItem(ZODIAC_RETENTION_STORAGE_KEY);
+    if (!raw) return emptyState;
+    return normalizeState(JSON.parse(raw));
+  } catch {
+    return emptyState;
+  }
+}
+
+function writeRetentionState(state: ZodiacRetentionState) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(ZODIAC_RETENTION_STORAGE_KEY, JSON.stringify(state));
+  } catch {
+    // Local retention is optional; quota/private-mode failures must not break the Mini App.
+  }
+}
+
+function normalizeState(value: unknown): ZodiacRetentionState {
+  const source = typeof value === "object" && value ? (value as Partial<ZodiacRetentionState>) : {};
+  return {
+    version: 1,
+    lastSign: sanitizeToken(source.lastSign),
+    lastSection: normalizeLastSection(source.lastSection),
+    lastCompatibilityMode: sanitizeRelationshipMode(source.lastCompatibilityMode),
+    history: Array.isArray(source.history) ? source.history.map(normalizeItem).slice(0, maxItems) : [],
+    favorites: Array.isArray(source.favorites) ? source.favorites.map(normalizeItem).slice(0, maxItems) : [],
+  };
+}
+
+function normalizeLastSection(value: unknown) {
+  if (typeof value !== "object" || !value) return undefined;
+  const source = value as { id?: unknown; label?: unknown };
+  const id = sanitizeToken(source.id);
+  const label = sanitizeLabel(source.label);
+  return id && label ? { id, label } : undefined;
+}
+
+function normalizeItem(value: ZodiacRetentionDraft | Partial<ZodiacRetentionItem>): ZodiacRetentionItem {
+  const label = sanitizeLabel(value.label) || "Астрологический центр";
+  const section = sanitizeToken(value.section) || "mini_app";
+  const featureKey = sanitizeToken(value.featureKey);
+  const sign = sanitizeToken(value.sign);
+  const relationshipMode = sanitizeRelationshipMode(value.relationshipMode);
+  const detail = sanitizeLabel(value.detail);
+  const id = sanitizeToken(value.id) || [section, featureKey, sign, relationshipMode, label].filter(Boolean).join(":").slice(0, 140);
+  const createdAt = typeof value.createdAt === "string" && !Number.isNaN(Date.parse(value.createdAt)) ? value.createdAt : new Date().toISOString();
+  return {
+    id,
+    label,
+    section,
+    featureKey,
+    sign,
+    relationshipMode,
+    detail,
+    createdAt,
+  };
+}
+
+function upsertItem(items: ZodiacRetentionItem[], item: ZodiacRetentionItem) {
+  return [item, ...items.filter((current) => current.id !== item.id)].slice(0, maxItems);
+}
+
+function sanitizeLabel(value: unknown) {
+  if (typeof value !== "string") return undefined;
+  return value.replace(/\s+/g, " ").trim().slice(0, 120) || undefined;
+}
+
+function sanitizeToken(value: unknown) {
+  if (typeof value !== "string") return undefined;
+  const normalized = value.trim();
+  return /^[A-Za-z0-9_-]{1,64}$/.test(normalized) ? normalized : undefined;
+}
+
+function sanitizeRelationshipMode(value: unknown): RelationshipMode | undefined {
+  return value === "love" || value === "friendship" || value === "work" || value === "family" || value === "passion" || value === "reconciliation" ? value : undefined;
+}

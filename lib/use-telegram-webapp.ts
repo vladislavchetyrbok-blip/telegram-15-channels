@@ -44,6 +44,7 @@ export interface TelegramWebApp {
   viewportStableHeight?: number;
   isExpanded?: boolean;
   platform?: string;
+  openTelegramLink?: (url: string) => void;
   onEvent?: (event: "themeChanged" | "viewportChanged", callback: () => void) => void;
   offEvent?: (event: "themeChanged" | "viewportChanged", callback: () => void) => void;
 }

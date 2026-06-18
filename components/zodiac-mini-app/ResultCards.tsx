@@ -1,4 +1,4 @@
-import { ArrowLeft, HeartHandshake, RotateCcw } from "lucide-react";
+import { ArrowLeft, Bookmark, HeartHandshake, RotateCcw, Share2 } from "lucide-react";
 import type { CompatibilityResult } from "./types";
 import { primaryButtonClass, secondaryButtonClass } from "./WizardControls";
 
@@ -8,12 +8,16 @@ export function ResultPanel({
   levelLabel,
   onEdit,
   onReset,
+  onSave,
+  onShare,
 }: {
   publicMode: boolean;
   result: CompatibilityResult;
   levelLabel: string;
   onEdit: () => void;
   onReset: () => void;
+  onSave?: () => void;
+  onShare?: () => void;
 }) {
   return (
     <div className="min-w-0 space-y-4">
@@ -50,6 +54,23 @@ export function ResultPanel({
         <p key={message} className="rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm font-semibold text-rose-800">{message}</p>
       ))}
       {result.note ? <p className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">{result.note}</p> : null}
+
+      {onSave || onShare ? (
+        <div className="grid grid-cols-2 gap-3 pt-1">
+          {onSave ? (
+            <button type="button" onClick={onSave} className={secondaryButtonClass(publicMode)}>
+              <Bookmark className="h-4 w-4" />
+              Сохранить
+            </button>
+          ) : null}
+          {onShare ? (
+            <button type="button" onClick={onShare} className={secondaryButtonClass(publicMode)}>
+              <Share2 className="h-4 w-4" />
+              Поделиться
+            </button>
+          ) : null}
+        </div>
+      ) : null}
 
       <div className="grid grid-cols-2 gap-3 pt-1">
         <button type="button" onClick={onEdit} className={secondaryButtonClass(publicMode)}>

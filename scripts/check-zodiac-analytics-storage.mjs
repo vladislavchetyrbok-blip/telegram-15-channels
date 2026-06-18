@@ -79,6 +79,7 @@ const requiredCoverage = {
   ],
   birthMatrix: ["birth_matrix_opened"],
   telegram: ["telegram_webapp_ready", "telegram_back_button_used", "telegram_haptic_used"],
+  retention: ["profile_opened", "history_opened", "favorite_saved", "favorite_opened", "share_clicked", "local_data_cleared"],
 };
 
 const secretEnvNames = [
@@ -217,6 +218,7 @@ async function main() {
     `Mystic events covered: ${formatCoverage(report.coverage.mystic)}`,
     `Birth Matrix events covered: ${formatCoverage(report.coverage.birthMatrix)}`,
     `Telegram events covered: ${formatCoverage(report.coverage.telegram)}`,
+    `Retention events covered: ${formatCoverage(report.coverage.retention)}`,
     `Tracked events checked: ${usedEvents.length}`,
     `Ledger writes: ${ledgerChanged}`,
     `Live publish calls: 0`,
