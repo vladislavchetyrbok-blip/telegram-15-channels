@@ -435,19 +435,28 @@ async function runVipToolSmoke(client, label, report) {
   await assertFeatureScreen(client, label, { allowSoon: false, minLength: 420 });
   await waitForPageText(client, /Ввод для расчёта/, `VIP tool "${label}" did not render an input block.`);
   await assertNoNativeSelects(client, report, `VIP tool "${label}"`);
+  if (label === "Расширенная натальная карта") {
+    await fillVisibleInputAt(client, 0, "1998-06-15");
+    await waitForPageText(client, /Близнецы|Карта по дате рождения и знаку/, "VIP Natal date input did not auto-detect Близнецы.");
+    await expectVisibleSelectValue(client, 0, "gemini", "VIP Natal birth date autosign 1998-06-15 -> Близнецы");
+    report.vipNatalAutosignChecked = true;
+  }
   await clickAny(client, ["Рассчитать", "Показать"]);
   await waitForPageText(client, /Результат VIP/, `VIP tool "${label}" did not render a result block after calculation.`);
   await assertFeatureScreen(client, label, { allowSoon: false, minLength: 700 });
   if (["Расширенная натальная карта", "Расширенная совместимость", "Ментальная карта пары", "Расширенная нумерология", "VIP мистический день"].includes(label)) {
     await assertChartVisual(client, label, report);
   }
+  if (label === "Расширенная натальная карта") {
+    await assertPremiumNatalChart(client, report);
+  }
   report.vipCalculated += 1;
 
-  await click(client, "Сохранить результат");
+  await clickAny(client, ["Сохранить карту", "Сохранить результат"]);
   await waitForPageText(client, /Сохранено/, `VIP tool "${label}" did not show saved state.`);
   report.vipSaved += 1;
 
-  await click(client, "Поделиться результатом");
+  await clickAny(client, ["Поделиться картой", "Поделиться результатом"]);
   await waitForPageText(client, /Готово к отправке|Ссылка готова|Скопировано|Откройте Telegram|Не удалось открыть отправку|Текст для копирования|Текст скопирован/i, `VIP tool "${label}" did not show share state or safe share fallback.`);
   report.vipShared += 1;
 
@@ -729,6 +738,17 @@ async function installSmokeHelpers(client) {
       finalAstroLegendCount() {
         return Array.from(document.querySelectorAll("[data-final-astro-legend]")).filter(isVisible).length;
       },
+      premiumNatalChartCount() {
+        return Array.from(document.querySelectorAll("[data-premium-natal-chart]")).filter(isVisible).length;
+      },
+      natalAspectLineCount() {
+        return Array.from(document.querySelectorAll("[data-premium-natal-chart]"))
+          .filter(isVisible)
+          .reduce((sum, map) => sum + map.querySelectorAll("[data-natal-aspect-line]").length, 0);
+      },
+      natalLegendCount() {
+        return Array.from(document.querySelectorAll("[data-natal-chart-legend]")).filter(isVisible).length;
+      },
       hasText(patternSource) {
         return new RegExp(patternSource, "i").test(document.body?.innerText || "");
       },
@@ -980,6 +1000,18 @@ async function assertFinalAstroMap(client, label, report) {
   report.finalAstroLinesChecked = Math.max(report.finalAstroLinesChecked, lineCount);
   report.finalAstroArrowsChecked = Math.max(report.finalAstroArrowsChecked, arrowCount);
   report.finalAstroLegendChecked = true;
+}
+
+async function assertPremiumNatalChart(client, report) {
+  const mapCount = await evalPage(client, "window.__zodiacSmoke.premiumNatalChartCount()", []);
+  const aspectLineCount = await evalPage(client, "window.__zodiacSmoke.natalAspectLineCount()", []);
+  const legendCount = await evalPage(client, "window.__zodiacSmoke.natalLegendCount()", []);
+  if (mapCount < 1) throw new Error("VIP Natal did not render Premium Natal Chart visual.");
+  if (aspectLineCount < 5) throw new Error(`VIP Natal expected at least 5 symbolic aspect lines, got ${aspectLineCount}.`);
+  if (legendCount < 1) throw new Error("VIP Natal legend did not render.");
+  await waitForPageText(client, /Символическая натальная карта|Символическая карта|без точных домов и асцендента/i, "VIP Natal did not show symbolic/honesty wording.");
+  await waitForPageText(client, /Главный код личности|Стихия и темперамент|Сильные стороны|Внутренний конфликт|Отношения и близость|Работа \/ деньги \/ реализация|Что делать сегодня|3 персональные рекомендации/, "VIP Natal did not render the required deep result blocks.");
+  report.vipNatalPremiumChartChecked = true;
 }
 
 async function clickHub(client, label) {
@@ -1262,6 +1294,8 @@ function createReport() {
     vipShared: 0,
     vipMessageCopyChecked: false,
     vipChartVisualsChecked: 0,
+    vipNatalAutosignChecked: false,
+    vipNatalPremiumChartChecked: false,
     finalAstroMapsChecked: 0,
     finalAstroLinesChecked: 0,
     finalAstroArrowsChecked: 0,
@@ -1326,6 +1360,8 @@ function printSummary(status, report) {
   console.log(`VIP tools calculated: ${report.vipCalculated}/11`);
   console.log(`VIP save/share checked: ${report.vipSaved}/11 saved, ${report.vipShared}/11 shared`);
   console.log(`VIP chart visuals checked: ${report.vipChartVisualsChecked}/5`);
+  console.log(`VIP Natal autosign checked: ${report.vipNatalAutosignChecked ? "YES" : "NO"}`);
+  console.log(`VIP Premium Natal Chart checked: ${report.vipNatalPremiumChartChecked ? "YES" : "NO"}`);
   console.log(`Final Astro Maps checked: ${report.finalAstroMapsChecked} (lines max: ${report.finalAstroLinesChecked}, arrows max: ${report.finalAstroArrowsChecked}, legend: ${report.finalAstroLegendChecked ? "YES" : "NO"})`);
   console.log(`VIP pair inline picker checked: ${report.vipPairGateInlinePickerChecked ? "YES" : "NO"}`);
   console.log(`Karta+ pair gate checked: ${report.vipKartaPlusInlinePickerChecked ? "YES" : "NO"}`);

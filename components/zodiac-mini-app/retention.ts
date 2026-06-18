@@ -15,6 +15,7 @@ export interface ZodiacRetentionItem {
   secondSign?: string;
   scoreTier?: string;
   relationshipMode?: RelationshipMode;
+  mode?: string;
   detail?: string;
   createdAt: string;
 }
@@ -150,8 +151,9 @@ function normalizeItem(value: ZodiacRetentionDraft | Partial<ZodiacRetentionItem
   const secondSign = sanitizeToken(value.secondSign);
   const scoreTier = sanitizeToken(value.scoreTier);
   const relationshipMode = sanitizeRelationshipMode(value.relationshipMode);
+  const mode = sanitizeToken(value.mode);
   const detail = sanitizeLabel(value.detail);
-  const id = sanitizeToken(value.id) || [section, featureKey, sign, firstSign, secondSign, relationshipMode, label].filter(Boolean).join(":").slice(0, 140);
+  const id = sanitizeToken(value.id) || [section, featureKey, sign, firstSign, secondSign, relationshipMode, mode, label].filter(Boolean).join(":").slice(0, 140);
   const createdAt = typeof value.createdAt === "string" && !Number.isNaN(Date.parse(value.createdAt)) ? value.createdAt : new Date().toISOString();
   return {
     id,
@@ -163,6 +165,7 @@ function normalizeItem(value: ZodiacRetentionDraft | Partial<ZodiacRetentionItem
     secondSign,
     scoreTier,
     relationshipMode,
+    mode,
     detail,
     createdAt,
   };

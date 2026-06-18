@@ -160,6 +160,9 @@ function parseDashboardResults(results: unknown[], dateKeys: string[], todayDate
       natalChartOpens: countEvents(events, [
         "section_open_natal_chart",
         "natal_chart_started",
+        "natal_chart_calculated",
+        "natal_chart_saved",
+        "natal_chart_shared",
         "natal_chart_completed",
         "natal_chart_opened",
         "natal_chart_result_viewed",

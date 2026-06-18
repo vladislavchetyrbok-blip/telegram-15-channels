@@ -6,11 +6,14 @@ import { synthesizeVipMysticDay } from "@/lib/zodiac-vip-content";
 import type { ZodiacSignId } from "@/lib/zodiac-mystic-content";
 import { relationshipModes, signs } from "./zodiac-mini-app/constants";
 import { AstroChartVisual } from "./zodiac-mini-app/AstroChartVisual";
+import { NatalChartVisual, type NatalChartMode } from "./zodiac-mini-app/NatalChartVisual";
+import type { ZodiacRetentionDraft } from "./zodiac-mini-app/retention";
 import { ZodiacSelect, type ZodiacSelectOption } from "./zodiac-mini-app/ZodiacSelect";
 import type {
   AngelNumberProfile,
   CompatibilityResult,
   CoupleCalendarDay,
+  Gender,
   MonthForecast,
   MoreFeatureId,
   NameProfile,
@@ -31,8 +34,8 @@ interface VipStatusPillProps {
 interface VipToolBaseProps {
   publicMode: boolean;
   onBack: () => void;
-  onSave?: () => void;
-  onShare?: () => Promise<string | void> | string | void;
+  onSave?: (action?: ZodiacRetentionDraft) => void;
+  onShare?: (action?: ZodiacRetentionDraft) => Promise<string | void> | string | void;
   onEvent?: (event: ZodiacAnalyticsEventName, payload: ZodiacAnalyticsPayload) => void;
   defaultSign?: ZodiacSign | null;
   defaultSecondSign?: ZodiacSign | null;
@@ -73,6 +76,12 @@ const toneOptions: Array<{ id: VipTone; label: string }> = [
   { id: "romantic", label: "Романтичный" },
 ];
 
+const genderOptions: Array<{ id: Gender; label: string }> = [
+  { id: "unspecified", label: "Не указывать" },
+  { id: "female", label: "Женщина" },
+  { id: "male", label: "Мужчина" },
+];
+
 const signSelectOptions: ZodiacSelectOption[] = signs.map((sign) => ({
   value: sign.slug,
   label: `${sign.emoji} ${sign.name}`,
@@ -87,6 +96,11 @@ const goalSelectOptions: Array<ZodiacSelectOption<VipGoal>> = goalOptions.map((g
 const toneSelectOptions: Array<ZodiacSelectOption<VipTone>> = toneOptions.map((tone) => ({
   value: tone.id,
   label: tone.label,
+}));
+
+const genderSelectOptions: Array<ZodiacSelectOption<Gender>> = genderOptions.map((gender) => ({
+  value: gender.id,
+  label: gender.label,
 }));
 
 const relationshipModeSelectOptions: Array<ZodiacSelectOption<RelationshipMode>> = relationshipModes.map((mode) => ({
@@ -291,6 +305,12 @@ function ToneSelect({ publicMode, value, onChange }: { publicMode: boolean; valu
   );
 }
 
+function GenderSelect({ publicMode, value, onChange }: { publicMode: boolean; value: Gender; onChange: (value: Gender) => void }) {
+  return (
+    <ZodiacSelect publicMode={publicMode} label="Пол (необязательно)" value={value} options={genderSelectOptions} onChange={onChange} />
+  );
+}
+
 function PrimaryVipButton({ publicMode, onClick, children }: { publicMode: boolean; onClick: () => void; children: ReactNode }) {
   return (
     <button
@@ -349,6 +369,8 @@ function VipResultActions({
   shareStatus,
   onSave,
   onShare,
+  saveLabel = "Сохранить результат",
+  shareLabel = "Поделиться результатом",
 }: {
   publicMode: boolean;
   saved: boolean;
@@ -356,16 +378,18 @@ function VipResultActions({
   shareStatus?: string;
   onSave: () => void;
   onShare: () => void;
+  saveLabel?: string;
+  shareLabel?: string;
 }) {
   return (
     <div className="grid gap-2 sm:grid-cols-2">
       <SecondaryVipButton publicMode={publicMode} onClick={onSave}>
         {saved ? <Check className="h-4 w-4" /> : <Bookmark className="h-4 w-4" />}
-        {saved ? "Сохранено" : "Сохранить результат"}
+        {saved ? "Сохранено" : saveLabel}
       </SecondaryVipButton>
       <SecondaryVipButton publicMode={publicMode} onClick={onShare}>
         {shared ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
-        {shared ? shareStatus || "Готово к отправке" : "Поделиться результатом"}
+        {shared ? shareStatus || "Готово к отправке" : shareLabel}
       </SecondaryVipButton>
     </div>
   );
@@ -380,23 +404,25 @@ function VipReuseButton({ publicMode, onClick }: { publicMode: boolean; onClick:
   );
 }
 
-function useResultActions(featureKey: VipFeatureKey, onEvent?: VipToolBaseProps["onEvent"], onSave?: () => void, onShare?: () => void) {
+function useResultActions(featureKey: VipFeatureKey, onEvent?: VipToolBaseProps["onEvent"], onSave?: VipToolBaseProps["onSave"], onShare?: VipToolBaseProps["onShare"]) {
   const [saved, setSaved] = useState(false);
   const [shared, setShared] = useState(false);
   const [shareStatus, setShareStatus] = useState("");
 
-  function save(payload: ZodiacAnalyticsPayload) {
+  function save(payload: ZodiacAnalyticsPayload, retentionAction?: ZodiacRetentionDraft) {
     onEvent?.("vip_tool_saved", { featureKey, ...payload });
+    if (featureKey === "vipNatalChart") onEvent?.("natal_chart_saved", { featureKey, chartType: "natal", ...payload });
     trackFinalMapEvent("final_map_saved", payload);
-    onSave?.();
+    onSave?.(retentionAction);
     setSaved(true);
   }
 
-  async function share(payload: ZodiacAnalyticsPayload) {
+  async function share(payload: ZodiacAnalyticsPayload, retentionAction?: ZodiacRetentionDraft) {
     onEvent?.("vip_tool_shared", { featureKey, ...payload });
+    if (featureKey === "vipNatalChart") onEvent?.("natal_chart_shared", { featureKey, chartType: "natal", ...payload });
     trackFinalMapEvent("final_map_shared", payload);
     if (onShare) {
-      const status = await onShare();
+      const status = await onShare(retentionAction);
       setShareStatus(typeof status === "string" && status ? status : "Ссылка готова");
     } else {
       const result = await shareZodiacMiniAppContent({
@@ -411,6 +437,10 @@ function useResultActions(featureKey: VipFeatureKey, onEvent?: VipToolBaseProps[
   function calculate(payload: ZodiacAnalyticsPayload) {
     onEvent?.("vip_tool_started", { featureKey, ...payload });
     onEvent?.("vip_tool_calculated", { featureKey, ...payload });
+    if (featureKey === "vipNatalChart") {
+      onEvent?.("natal_chart_started", { featureKey, chartType: "natal", ...payload });
+      onEvent?.("natal_chart_calculated", { featureKey, chartType: "natal", ...payload });
+    }
   }
 
   function chart(payload: ZodiacAnalyticsPayload) {
@@ -444,6 +474,9 @@ function vipFinalMapChartType(featureKey: VipFeatureKey) {
 }
 
 function buildVipToolShareText(featureKey: VipFeatureKey) {
+  if (featureKey === "vipNatalChart") {
+    return "Я открыл(а) натальную карту в Астрологическом центре ✨\nПопробуй тоже: https://t.me/zodiac_love_check_bot?startapp=vip";
+  }
   const labels: Record<VipFeatureKey, string> = {
     vipNatalChart: "Расширенная натальная карта",
     vipCompatibility: "Расширенная совместимость",
@@ -564,6 +597,7 @@ function vipPayload(input: {
   hasBirthTime?: boolean;
   hasBirthCity?: boolean;
   inputMode?: string;
+  chartType?: string;
   goal?: VipGoal | string;
   tone?: VipTone | string;
   selectedPresetKey?: string;
@@ -572,21 +606,93 @@ function vipPayload(input: {
   return input;
 }
 
-function buildNatalBlocks(sign: ZodiacSign, birthDate: string, birthTime: string, birthCity: string, natalChart: NatalChart | null) {
-  const hasDate = Boolean(parseIsoDate(birthDate));
-  const seed = `${sign.slug}:${birthDate || "no-date"}:${birthTime || "no-time"}:${birthCity ? "city" : "no-city"}`;
+function buildNatalBlocks(sign: ZodiacSign, birthDate: string, birthTime: string, birthCity: string, gender: Gender, natalChart: NatalChart | null) {
+  const mode = natalChartMode(birthDate, birthTime, birthCity);
+  const hasDate = mode !== "basic";
+  const traits = vipNatalTraits(sign);
+  const seed = `${sign.slug}:${birthDate || "no-date"}:${birthTime ? "time" : "no-time"}:${birthCity ? "city" : "no-city"}:${gender}`;
+  const element = vipElementLabel(sign.element);
   return {
-    title: `${sign.emoji} ${sign.name} · личная карта`,
-    summary: natalChart?.summary?.[0]?.value ?? `${sign.name} раскрывается через стихию ${sign.element}: важно соединять личный темп, чувства и практичный выбор без давления.`,
+    mode,
+    modeLabel: natalChartModeLabel(mode),
+    title: `${sign.emoji} ${sign.name} · премиальная натальная карта`,
+    summary: natalChart?.summary?.[0]?.value ?? `${sign.name} раскрывается через стихию ${element}: важно соединять личный темп, чувства и практичный выбор без давления. Карта показывает не судьбу как приговор, а рабочий компас на день, месяц и отношения.`,
     items: [
-      { title: "Сильные стороны", text: natalChart?.archetype ? `${natalChart.archetype}: это даёт умение быстро распознавать, где нужна инициатива, а где лучше удержать паузу.` : pick(["инициатор перемен: сильнее всего раскрывается, когда сам выбирает первый шаг", "тихий стратег: видит скрытый порядок и умеет собирать план без лишнего шума", "сердечный проводник: помогает людям возвращаться к теплу и простым словам", "исследователь смысла: умеет находить связь между событиями и внутренним выбором"], seed, 1) },
-      { title: "Внутренний конфликт", text: pick(["хочется действовать быстрее, чем созревает ясность; помогает короткая пауза перед обещанием", "часть энергии тянет к стабильности, а часть просит обновления; не смешивайте оба решения в один день", "эмоция может звучать громче факта; сначала проверьте, что именно задело", "желание быть полезным иногда превращается в контроль; лучше предлагать, а не спасать"], seed, 2) },
-      { title: "Отношения", text: natalChart?.loveStyle ?? pick(["лучше открывается через честный интерес и маленькие подтверждения внимания", "ценит тепло, но не любит эмоциональные проверки", "сближается там, где есть уважение к личному пространству"], seed, 3) },
-      { title: "Решения", text: pick(["выбирайте вариант, который можно объяснить одним предложением и выполнить без драматичного рывка", "сначала фиксируйте критерий, потом сравнивайте варианты; так меньше риска пойти за чужой тревогой", "важное решение лучше делить на тестовый шаг и финальное подтверждение", "если тело устало, решение нужно отложить хотя бы до восстановления ритма"], seed, 4) },
-      { title: "Рекомендации", text: natalChart?.growth ?? pick(["не торопить выводы и выбирать один ясный шаг", "мягко отделять своё желание от чужого ожидания", "держать баланс между вдохновением и режимом"], seed, 5) },
-      { title: "Точность", text: hasDate ? "Дата учтена в расчёте; время и город только повышают детализацию и не сохраняются." : "Можно начать по знаку, а дату добавить позже для более точного слоя." },
+      { title: "Главный код личности", text: natalChart?.archetype ? `${natalChart.archetype}. В повседневности это проявляется как способность видеть главный импульс ситуации и выбирать форму реакции, а не жить только на автомате.` : `${sign.name} действует через энергию "${traits.energy}": сильнее всего раскрывается, когда есть понятная цель, честный контакт с собой и один видимый шаг вместо десятка тревожных вариантов.` },
+      { title: "Стихия и темперамент", text: `${element} даёт темперамент, который ${traits.tempo}. Качество знака — ${traits.quality}, поэтому важно не ломать свой ритм чужой скоростью, а переводить его в понятный план.` },
+      { title: "Сильные стороны", text: natalChart?.strengths ?? pick(["умение быстро собирать смысл из разрозненных деталей; способность вдохновлять без давления; готовность начинать заново после честного вывода", "внимание к нюансам, устойчивость в долгих задачах и талант создавать вокруг себя ощущение надёжности", "легкость в контакте, гибкость мышления и способность находить слова там, где другие застревают в эмоции", "интуиция, тонкое считывание атмосферы и способность поддерживать людей без громких обещаний"], seed, 1) },
+      { title: "Внутренний конфликт", text: pick(["хочется действовать быстрее, чем созревает ясность. Помогает короткая пауза перед обещанием и один вопрос: что я действительно выбираю?", "часть энергии тянет к стабильности, а часть просит обновления. Не смешивайте оба решения в один день: сначала база, потом эксперимент.", "эмоция может звучать громче факта. Сначала проверьте, что именно задело, затем выбирайте слова.", "желание быть полезным иногда превращается в контроль. Лучше предлагать, а не спасать."], seed, 2) },
+      { title: "Как человек принимает решения", text: pick(["лучшее решение рождается после короткого теста реальностью: один маленький шаг покажет больше, чем долгий внутренний спор", "нужен критерий заранее: что важно, что допустимо, что точно нельзя; тогда выбор становится спокойнее", "решение созревает через разговор, но финальное слово стоит оставлять себе", "перед важным выбором полезно отделить факт, страх и желание — это сразу снижает шум"], seed, 3) },
+      { title: "Отношения и близость", text: natalChart?.loveStyle ?? pick(["лучше открывается через честный интерес и маленькие подтверждения внимания. Не любит эмоциональные проверки и холодное молчание.", "сближается там, где есть уважение к личному пространству, ясные обещания и спокойный тон.", "нуждается в диалоге, где можно быть живым человеком, а не идеальной ролью.", "важно, чтобы близость не забирала свободу выбора и не превращалась в постоянный экзамен."], seed, 4) },
+      { title: "Работа / деньги / реализация", text: pick(["деньги лучше приходят через понятную систему, повторяемый навык и умение не распыляться на чужие срочности", "реализация растёт, когда есть пространство для инициативы и критерий завершённости", "сильная сторона в работе — связывать людей, идеи и процессы; риск — обещать больше, чем даёт текущий ресурс", "лучше работает стратегия маленьких улучшений: регулярный темп, чистые договорённости и один фокус на неделю"], seed, 5) },
+      { title: "Энергия месяца", text: natalChart?.vipBlocks?.[1]?.text ?? pick(["месяц просит снизить внутренний шум и выбрать одну задачу, которая даст чувство опоры", "главная энергия месяца — не рывок, а выравнивание: сон, план, контакт и бережный отказ от лишнего", "месяц подходит для пересборки привычек: меньше драматичных обещаний, больше маленьких повторяемых действий", "лучший период начинается там, где вы перестаёте доказывать и начинаете спокойно делать"], seed, 6) },
+      { title: "Зона роста", text: natalChart?.growth ?? pick(["не торопить выводы и выбирать один ясный шаг", "мягко отделять своё желание от чужого ожидания", "держать баланс между вдохновением и режимом", "не превращать сильную сторону в обязанность быть сильным всегда"], seed, 7) },
+      { title: "Что делать сегодня", text: pick(["запишите одну главную мысль дня и переведите её в действие на 15 минут", "сделайте один разговор короче, теплее и конкретнее обычного", "закройте маленький долг перед собой: сон, порядок, сообщение или честный отказ", "выберите символ дня и держите его как напоминание не распыляться"], seed, 8) },
+      { title: "Точность и честность", text: hasDate ? "Дата учтена в символической интерпретации. Время и город могут расширять нюансы, но точные дома, асцендент и планетные градусы требуют отдельного astro engine." : "Можно начать по знаку, а дату добавить позже для более личного слоя. Без даты это базовая карта по знаку." },
+    ],
+    recommendations: [
+      pick(["Сформулируйте один главный выбор дня и не добавляйте к нему вторую большую цель.", "Держите темп через короткий список: сделать, обсудить, отпустить.", "Сначала восстановите ресурс, потом принимайте решение с последствиями."], seed, 9),
+      pick(["В отношениях замените намёк на одну прямую просьбу.", "В работе уберите лишнее обещание и оставьте один измеримый результат.", "Для энергии тела выберите мягкую дисциплину, а не наказание."], seed, 10),
+      pick(["Не спорьте с собой на усталости: перенесите сложный вывод на время, когда есть опора.", "Если хочется всё поменять сразу, начните с одной привычки на три дня.", "Сохраняйте карту как компас, но проверяйте советы реальным опытом."], seed, 11),
     ],
   };
+}
+
+function natalChartMode(birthDate: string, birthTime: string, birthCity: string): NatalChartMode {
+  if (parseIsoDate(birthDate) && /^\d{2}:\d{2}$/.test(birthTime) && birthCity.trim()) return "extended";
+  if (parseIsoDate(birthDate)) return "date";
+  return "basic";
+}
+
+function natalInputMode(mode: NatalChartMode) {
+  if (mode === "extended") return "natal_extended";
+  if (mode === "date") return "natal_date";
+  return "natal_basic";
+}
+
+function natalChartModeLabel(mode: NatalChartMode) {
+  if (mode === "extended") return "Расширенная карта по введённым данным";
+  if (mode === "date") return "Карта по дате рождения и знаку";
+  return "Базовая карта по знаку";
+}
+
+function buildNatalRetentionAction(sign: ZodiacSign, mode: NatalChartMode): ZodiacRetentionDraft {
+  return {
+    section: "natal_chart",
+    featureKey: "vipNatalChart",
+    label: `Натальная карта: ${sign.name}`,
+    sign: sign.slug,
+    mode,
+    detail: natalChartModeLabel(mode),
+  };
+}
+
+function vipElementLabel(element: ZodiacSign["element"]) {
+  const labels: Record<ZodiacSign["element"], string> = {
+    fire: "Огонь",
+    earth: "Земля",
+    air: "Воздух",
+    water: "Вода",
+  };
+  return labels[element];
+}
+
+function vipNatalTraits(sign: ZodiacSign) {
+  const traits: Record<string, { quality: string; tempo: string; energy: string }> = {
+    aries: { quality: "кардинальное", tempo: "любит старт, честный вызов и быстрый отклик", energy: "инициатива" },
+    taurus: { quality: "фиксированное", tempo: "раскрывается через устойчивость, тело и понятный режим", energy: "опора" },
+    gemini: { quality: "мутабельное", tempo: "оживает через разговор, движение и смену угла зрения", energy: "связи" },
+    cancer: { quality: "кардинальное", tempo: "собирается через заботу, безопасность и эмоциональный смысл", energy: "дом" },
+    leo: { quality: "фиксированное", tempo: "любит тепло, признание и пространство для самовыражения", energy: "сердце" },
+    virgo: { quality: "мутабельное", tempo: "усиливается через порядок, пользу и точную настройку деталей", energy: "мастерство" },
+    libra: { quality: "кардинальное", tempo: "ищет баланс, диалог и красивую форму решения", energy: "гармония" },
+    scorpio: { quality: "фиксированное", tempo: "идёт глубоко, требует честности и не любит поверхностных ответов", energy: "трансформация" },
+    sagittarius: { quality: "мутабельное", tempo: "раскрывается через смысл, свободу и большой горизонт", energy: "поиск" },
+    capricorn: { quality: "кардинальное", tempo: "держится на структуре, ответственности и длинной дистанции", energy: "цель" },
+    aquarius: { quality: "фиксированное", tempo: "сильнее всего там, где есть свобода мысли и нестандартное решение", energy: "обновление" },
+    pisces: { quality: "мутабельное", tempo: "тонко чувствует поток, символы и эмоциональную атмосферу", energy: "интуиция" },
+  };
+  return traits[sign.slug] ?? traits.aries;
 }
 
 export function ExtendedNatalFeature({
@@ -603,25 +709,33 @@ export function ExtendedNatalFeature({
   const [birthDate, setBirthDate] = useState("");
   const [birthTime, setBirthTime] = useState("");
   const [birthCity, setBirthCity] = useState("");
+  const [gender, setGender] = useState<Gender>("unspecified");
   const [calculated, setCalculated] = useState(false);
   const actions = useResultActions(featureKey, onEvent, onSave, onShare);
   const resultSign = birthDate ? signFromBirthDate(birthDate, signSlug) : signBySlug(signSlug);
+  const result = buildNatalBlocks(resultSign, birthDate, birthTime, birthCity, gender, natalChart?.sign.slug === resultSign.slug ? natalChart : null);
   const payload = vipPayload({
     sign: resultSign.slug,
     hasBirthDate: Boolean(parseIsoDate(birthDate)),
     hasBirthTime: /^\d{2}:\d{2}$/.test(birthTime),
     hasBirthCity: Boolean(birthCity.trim()),
-    inputMode: birthDate ? "birth_date" : "sign_only",
+    inputMode: natalInputMode(result.mode),
+    chartType: "natal",
   });
-  const result = buildNatalBlocks(resultSign, birthDate, birthTime, birthCity, natalChart?.sign.slug === resultSign.slug ? natalChart : null);
+
+  function updateBirthDate(value: string) {
+    setBirthDate(value);
+    const nextSign = signFromBirthDate(value, signSlug);
+    if (parseIsoDate(value)) setSignSlug(nextSign.slug);
+  }
 
   return (
     <VipScreenLayout publicMode={publicMode} title="Расширенная натальная карта" onBack={onBack}>
-      <VipIntro publicMode={publicMode} text="Персональная карта показывает сильные стороны, любовь, рост и мягкие риски. Данные используются только на экране расчёта." />
+      <VipIntro publicMode={publicMode} text="Премиальная натальная карта показывает личный код, темперамент, отношения, решения, работу, рост и действие на сегодня. Данные используются только на экране расчёта." />
       <VipInputPanel publicMode={publicMode}>
         <SignSelect publicMode={publicMode} value={signSlug} onChange={setSignSlug} />
         <VipField publicMode={publicMode} label="Дата рождения">
-          <input className={inputClass(publicMode)} type="date" value={birthDate} onChange={(event) => setBirthDate(event.target.value)} />
+          <input className={inputClass(publicMode)} type="date" value={birthDate} onChange={(event) => updateBirthDate(event.target.value)} />
         </VipField>
         <VipField publicMode={publicMode} label="Время рождения">
           <input className={inputClass(publicMode)} type="time" value={birthTime} onChange={(event) => setBirthTime(event.target.value)} />
@@ -629,7 +743,11 @@ export function ExtendedNatalFeature({
         <VipField publicMode={publicMode} label="Город рождения">
           <input className={inputClass(publicMode)} value={birthCity} onChange={(event) => setBirthCity(event.target.value)} />
         </VipField>
+        <GenderSelect publicMode={publicMode} value={gender} onChange={setGender} />
       </VipInputPanel>
+      <div className={publicMode ? "rounded-lg border border-white/10 bg-white/5 p-3 text-sm leading-6 text-slate-300" : "rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm leading-6 text-slate-600"}>
+        {result.mode === "extended" ? "Данные учтены в расширенной интерпретации, но точные дома и асцендент не заявляются без real astro engine." : result.mode === "date" ? "Базовый расчёт без точного времени: дата определяет знак автоматически, время и город можно не вводить." : "Базовая карта по знаку: дату можно добавить позже, чтобы открыть более личный слой."}
+      </div>
       {natalChart ? (
         <VipReuseButton publicMode={publicMode} onClick={() => {
           setSignSlug(natalChart.sign.slug);
@@ -645,12 +763,25 @@ export function ExtendedNatalFeature({
       </PrimaryVipButton>
       {calculated ? (
         <VipResultPanel publicMode={publicMode} title={result.title}>
-          <AstroChartVisual publicMode={publicMode} kind="natal" primarySign={resultSign} title="VIP натальная схема" />
+          <NatalChartVisual publicMode={publicMode} sign={resultSign} birthDate={birthDate} birthTime={birthTime} birthCity={birthCity} gender={gender} mode={result.mode} title={`${resultSign.name} · символическая натальная карта`} />
+          <div className="grid gap-2 sm:grid-cols-3">
+            <VipStatusPill publicMode={publicMode} label="Режим" value={result.modeLabel} />
+            <VipStatusPill publicMode={publicMode} label="Стихия" value={vipElementLabel(resultSign.element)} />
+            <VipStatusPill publicMode={publicMode} label="Точность" value={result.mode === "extended" ? "расширенная" : result.mode === "date" ? "по дате" : "по знаку"} />
+          </div>
           <InfoBlock publicMode={publicMode} title="Главный вывод" text={result.summary} />
           {result.items.map((item) => (
             <InfoBlock key={item.title} publicMode={publicMode} title={item.title} text={item.text} />
           ))}
-          <VipResultActions publicMode={publicMode} saved={actions.saved} shared={actions.shared} shareStatus={actions.shareStatus} onSave={() => actions.save(payload)} onShare={() => actions.share(payload)} />
+          <div className={publicMode ? "rounded-lg bg-white/5 p-3" : "rounded-lg border border-slate-100 bg-white/80 p-3"}>
+            <h4 className={publicMode ? "text-sm font-semibold text-amber-100" : "text-sm font-semibold text-amber-800"}>3 персональные рекомендации</h4>
+            <ul className="mt-2 grid gap-2">
+              {result.recommendations.map((item) => (
+                <li key={item} className={publicMode ? "rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm leading-5 text-slate-200" : "rounded-md border border-slate-100 bg-slate-50 px-3 py-2 text-sm leading-5 text-slate-700"}>{item}</li>
+              ))}
+            </ul>
+          </div>
+          <VipResultActions publicMode={publicMode} saved={actions.saved} shared={actions.shared} shareStatus={actions.shareStatus} saveLabel="Сохранить карту" shareLabel="Поделиться картой" onSave={() => actions.save(payload, buildNatalRetentionAction(resultSign, result.mode))} onShare={() => actions.share(payload, buildNatalRetentionAction(resultSign, result.mode))} />
         </VipResultPanel>
       ) : null}
     </VipScreenLayout>

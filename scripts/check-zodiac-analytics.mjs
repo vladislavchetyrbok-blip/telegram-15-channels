@@ -88,6 +88,9 @@ async function main() {
     const finalMapSavedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "final_map_saved", { section: "vip", featureKey: "vipNatalChart", sign: "gemini", inputMode: "birth_date", chartType: "personal" });
     const finalMapSharedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "final_map_shared", { section: "vip", featureKey: "vipMentalMap", firstSign: "gemini", secondSign: "leo", relationshipMode: "love", scoreTier: "good", chartType: "couple" });
     const featureDepthViewedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "feature_depth_viewed", { section: "vip", featureKey: "vipMysticDay", sign: "gemini", chartType: "mystic" });
+    const natalCalculatedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "natal_chart_calculated", { section: "natal_chart", featureKey: "vipNatalChart", sign: "gemini", chartType: "natal", inputMode: "natal_extended", hasBirthDate: true, hasBirthTime: true, hasBirthCity: true });
+    const natalSavedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "natal_chart_saved", { section: "natal_chart", featureKey: "vipNatalChart", sign: "gemini", chartType: "natal", inputMode: "natal_date", hasBirthDate: true, hasBirthTime: false, hasBirthCity: false });
+    const natalSharedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "natal_chart_shared", { section: "natal_chart", featureKey: "vipNatalChart", sign: "gemini", chartType: "natal", inputMode: "natal_basic", hasBirthDate: false, hasBirthTime: false, hasBirthCity: false });
     const disallowedEvent = await checkDisallowedEvent(`${baseUrl}/api/zodiac/analytics/event`);
     const afterLedgerStats = await collectLedgerStats();
     const ledgerWrites = countLedgerWrites(beforeLedgerStats, afterLedgerStats);
@@ -150,6 +153,9 @@ async function main() {
       finalMapSavedEvent,
       finalMapSharedEvent,
       featureDepthViewedEvent,
+      natalCalculatedEvent,
+      natalSavedEvent,
+      natalSharedEvent,
       disallowedEvent,
       sensitiveFieldsStripped:
         allowedEvent.sensitiveFieldsStripped &&
@@ -200,7 +206,10 @@ async function main() {
         finalMapOpenedEvent.sensitiveFieldsStripped &&
         finalMapSavedEvent.sensitiveFieldsStripped &&
         finalMapSharedEvent.sensitiveFieldsStripped &&
-        featureDepthViewedEvent.sensitiveFieldsStripped,
+        featureDepthViewedEvent.sensitiveFieldsStripped &&
+        natalCalculatedEvent.sensitiveFieldsStripped &&
+        natalSavedEvent.sensitiveFieldsStripped &&
+        natalSharedEvent.sensitiveFieldsStripped,
       noSecretsPrinted: true,
       telegramApiCalls,
       ledgerWrites,

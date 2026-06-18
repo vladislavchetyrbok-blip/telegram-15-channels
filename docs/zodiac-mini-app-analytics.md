@@ -72,6 +72,7 @@ The allowlist covers:
 
 - main menu opens, main menu category taps, horoscope category opens, Angel Numbers category opens, compatibility category selection, and profile/saved/history preview panels;
 - Compatibility core funnel events: `compatibility_wizard_started`, `compatibility_mode_selected`, `compatibility_birthdate_autosign_used`, `compatibility_calendar_opened`, `compatibility_action_opened`, `compatibility_message_copied`, `compatibility_pair_saved`, and `compatibility_pair_reopened`;
+- Premium Natal Chart events: `natal_chart_started`, `natal_chart_calculated`, `natal_chart_saved`, `natal_chart_shared`, `natal_chart_opened`, `natal_chart_result_viewed`, `natal_chart_section_opened`, and `natal_chart_vip_free_opened`;
 - Profile retention events: `profile_opened`, `history_opened`, `favorite_saved`, `favorite_opened`, `share_clicked`, and `local_data_cleared`;
 - Interaction hardening and visual-depth events: `dead_cta_resolved`, `pair_required_action_clicked`, `chart_visual_opened`, `final_map_opened`, `final_map_saved`, `final_map_shared`, and `feature_depth_viewed`;
 - app open, sign selection, section opens, compatibility calculation;
@@ -122,6 +123,16 @@ chartType
 ```
 
 The VIP events must never include names, birth dates, birth times, birth city/city query, raw angel number input, generated message text, or raw result text.
+
+Premium Natal Chart uses safe input modes only:
+
+```text
+natal_basic
+natal_date
+natal_extended
+```
+
+These modes describe data completeness, not the raw data. The payload may include `hasBirthDate`, `hasBirthTime`, and `hasBirthCity` booleans, but must never include the birth date value, birth time value, city query, selected city, gender, name, or raw result text.
 
 Share, Final AstroMap, and interaction-hardening events use only safe routing/status fields such as `section`, `category`, `featureKey`, `chartType`, sign slugs, `relationshipMode`, and `scoreTier`. They must not include copied text, raw generated messages, raw angel-number input, names, dates, time, city query, or Telegram initData.
 

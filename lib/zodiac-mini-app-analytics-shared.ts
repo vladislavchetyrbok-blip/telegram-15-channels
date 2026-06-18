@@ -35,6 +35,9 @@ export const ZODIAC_ANALYTICS_EVENTS = [
   "compatibility_mode_precise",
   "name_resonance_shown",
   "natal_chart_started",
+  "natal_chart_calculated",
+  "natal_chart_saved",
+  "natal_chart_shared",
   "natal_chart_completed",
   "natal_chart_opened",
   "natal_chart_result_viewed",
@@ -193,6 +196,9 @@ const vipInputModes = new Set([
   "angel_time",
   "sign_goal",
   "date_sign",
+  "natal_basic",
+  "natal_date",
+  "natal_extended",
 ]);
 const vipGoals = new Set(["love", "work", "energy", "clarity", "reconciliation"]);
 const vipTones = new Set(["soft", "warm", "direct", "romantic"]);

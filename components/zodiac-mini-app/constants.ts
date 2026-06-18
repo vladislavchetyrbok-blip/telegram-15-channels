@@ -42,6 +42,6 @@ export const relationshipModes: Array<{ id: RelationshipMode; label: string; cap
   { id: "reconciliation", label: "🕊 Примирение", caption: "мягкий диалог" },
 ];
 
-export const unknownBirthTimeNote = "Расчёт выполнен без точного времени рождения. Некоторые детали могут быть приблизительными.";
-export const exactBirthDataNote = "Расчёт выполнен с учётом времени и города рождения.";
-export const citySelectionWarning = "Выберите город из списка, чтобы расчёт был точнее.";
+export const unknownBirthTimeNote = "Расчёт выполнен без точного времени рождения. Точные дома и асцендент в этой версии не рассчитываются.";
+export const exactBirthDataNote = "Время и город учтены как расширяющие нюансы интерпретации, без заявлений о точных домах и асценденте.";
+export const citySelectionWarning = "Выберите город из списка, чтобы интерпретация была детальнее.";

@@ -43,6 +43,7 @@ npm run zodiac:miniapp:smoke -- --url http://localhost:3000/compatibility
 - Natal chart VIP CTA buttons `Смотреть бесплатные расширения`, `Глубже про отношения`, `Фокус месяца`, and `Стиль лучших дней` must open the intended VIP tool; any button-looking CTA that does nothing is a regression.
 - VIP Natal Chart, Extended Compatibility, Mental Map, Numerology, and VIP Mystic Day render a non-empty symbolic `FinalAstroMap` / `AstroChartVisual` block after calculation.
 - Final AstroMap checks require a visible SVG map, 12-sign wheel, highlighted selected sign(s), at least five energy lines, at least five arrows, a legend, and the honest caption that the map is symbolic and not an ephemeris/house/ascendant calculation.
+- VIP Natal Chart has a dedicated premium smoke path: enter `1998-06-15`, verify auto-sign `Близнецы`, calculate, render `Символическая натальная карта`, show the premium natal circle/aspect lines/legend, and verify result blocks `Главный код личности`, `Стихия и темперамент`, `Сильные стороны`, `Внутренний конфликт`, `Отношения и близость`, `Работа / деньги / реализация`, `Что делать сегодня`, and `3 персональные рекомендации`.
 - Giveaways is not a top-level main category; it remains locked/disabled inside VIP.
 - Open VIP feature screens do not contain `TODO`, `lorem ipsum`, `placeholder`, or unexpected `Скоро появится` text.
 - VIP smoke checks all 11 active tools: natal chart, monthly forecast, name profile, compatibility, mental map, 30-day couple calendar, message helper, numerology, angel numbers, talismans, and VIP mystic day.
@@ -77,6 +78,8 @@ VIP cards checked: 11/11
 VIP tools calculated: 11/11
 VIP save/share checked: 11/11 saved, 11/11 shared
 VIP chart visuals checked: 5/5
+VIP Natal autosign checked: YES
+VIP Premium Natal Chart checked: YES
 Final Astro Maps checked: 6 (lines max: 5, arrows max: 5, legend: YES)
 VIP pair inline picker checked: YES
 Karta+ pair gate checked: YES

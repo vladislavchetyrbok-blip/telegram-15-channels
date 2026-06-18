@@ -193,6 +193,8 @@ VIP:
 - Pair-dependent VIP tools include inline sign/mode pickers and can calculate even when the user has not created a pair in the main compatibility wizard.
 - Key VIP result screens render symbolic Final AstroMap visuals: Natal Chart, Extended Compatibility, Mental Map, Numerology, and VIP Mystic Day.
 - Final AstroMap captions must stay honest: `Символическая карта энергий` and `Базовая визуализация без точных домов и асцендента`.
+- Premium Natal Chart now has a dedicated symbolic visual map with a 12-sign wheel, highlighted sign/element, symbolic aspect lines, element/quality/polarity/leading-energy labels, and deep result blocks. It still does not claim exact houses, ascendant, planet degrees, or real aspects without a future astro engine.
+- `lib/zodiac-astro-engine.ts` exposes the current `symbolic` / `exact_unavailable` status so a future exact engine can be added without changing the UI contract.
 - VIP message helper supports copy state without storing message text.
 - Giveaways remain locked/preview.
 
@@ -256,6 +258,8 @@ VIP cards checked: 11/11
 VIP tools calculated: 11/11
 VIP save/share checked: 11/11 saved, 11/11 shared
 VIP chart visuals checked: 5/5
+VIP Natal autosign checked: YES
+VIP Premium Natal Chart checked: YES
 Final Astro Maps checked: 6
 Karta+ pair gate checked: YES
 30 days pair gate checked: YES

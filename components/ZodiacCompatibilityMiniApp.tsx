@@ -1892,7 +1892,7 @@ function MoreSection({
           />
         ) : null}
         {activeMoreFeature === "vipNatalChart" ? (
-          <ExtendedNatalFeature publicMode={publicMode} natalChart={natalChart} defaultSign={selfSign} onBack={returnToMoreMenu} onSave={() => onFavoriteSave(currentRetentionAction)} onShare={() => onShare(currentRetentionAction)} onEvent={onPersonalToolEvent} />
+          <ExtendedNatalFeature publicMode={publicMode} natalChart={natalChart} defaultSign={selfSign} onBack={returnToMoreMenu} onSave={(action) => onFavoriteSave(action ?? currentRetentionAction)} onShare={(action) => onShare(action ?? currentRetentionAction)} onEvent={onPersonalToolEvent} />
         ) : null}
         {activeMoreFeature === "vipCompatibility" ? (
           <ExtendedCompatibilityFeature publicMode={publicMode} result={result} pairReady={pairReady} defaultSign={selfSign} defaultSecondSign={partnerSign} relationshipMode={relationshipMode} scoreTier={vipScoreTier} onBack={returnToMoreMenu} onSave={() => onFavoriteSave(currentRetentionAction)} onShare={() => onShare(currentRetentionAction)} onEvent={onPersonalToolEvent} />
@@ -4135,6 +4135,7 @@ function shareStartParamForAction(action: ZodiacRetentionDraft) {
   }
   if (action.featureKey === "birthMatrix") return "birth_matrix";
   if (action.featureKey === "angelNumbers" || action.featureKey === "vipAngelNumbers") return "angel_numbers";
+  if (action.featureKey === "vipNatalChart" || action.featureKey === "natalChart" || action.section === "natal_chart") return "vip";
   if (action.featureKey === "vip" || String(action.featureKey || "").startsWith("vip")) return "vip";
   if (action.section === "mystic") return "mystic";
   if (action.featureKey === "weekForecast") return "week";
@@ -4176,6 +4177,9 @@ function buildSafeShareText(action: ZodiacRetentionDraft) {
   }
   if (action.featureKey === "angelNumbers" || action.featureKey === "vipAngelNumbers") {
     return `Ангельские числа в Астрологическом центре 👼\nПосмотри значение своего знака: ${appLink}`;
+  }
+  if (action.featureKey === "vipNatalChart" || action.featureKey === "natalChart" || action.section === "natal_chart") {
+    return `Я открыл(а) натальную карту в Астрологическом центре ✨\nПопробуй тоже: ${appLink}`;
   }
   if (action.featureKey === "vip" || String(action.featureKey || "").startsWith("vip")) {
     return `Открыл(а) VIP раздел в Астрологическом центре 👑\nСейчас доступ бесплатный до 17.09.2026: ${appLink}`;
@@ -4440,8 +4444,8 @@ function buildNatalChart(person: PersonState): NatalChart | null {
     communicationStyle: pickLine(natalCommunicationStyles[traits.polarity], seed, 5),
     ...v1Details,
     precisionNote: hasPreciseData
-      ? "Точность выше, потому что указаны время и город рождения. Асцендент и дома не рассчитываются в этой версии."
-      : "Расчёт выполнен без точного времени рождения. Асцендент и дома могут быть приблизительными.",
+      ? "Время и город учтены как расширяющие нюансы интерпретации. Асцендент, дома и точные градусы планет не рассчитываются в этой версии."
+      : "Расчёт выполнен без точного времени рождения. Асцендент, дома и точные градусы планет не рассчитываются в этой версии.",
   };
 }
 
@@ -4475,8 +4479,8 @@ function buildNatalV1Details(person: PersonState, parsed: Extract<ParsedDate, { 
   const emotionalStyle = pickLine([...element.emotionalStyles, timeProfile.emotion], seed, 12);
   const profileLabel = `${sign.emoji} ${sign.name} · ${elementLabels[sign.element]} · ${modalityLabels[traits.modality]}`;
   const accuracyNote = hasBirthTime && hasBirthCity
-    ? "Время и город добавляют личные нюансы, но результат остаётся мягкой астрологической подсказкой."
-    : "Расчёт выполнен без точного времени и места рождения. Некоторые детали могут быть приблизительными.";
+    ? "Время и город добавляют личные нюансы, но результат остаётся символической интерпретацией без точных домов и асцендента."
+    : "Расчёт выполнен без точного времени и места рождения. Точные дома, асцендент и планетные градусы здесь не заявляются.";
 
   const summary: NatalSummaryItem[] = [
     { label: "Тип энергии", value: energyType },
