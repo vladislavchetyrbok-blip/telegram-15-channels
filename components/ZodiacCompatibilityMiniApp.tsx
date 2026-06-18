@@ -1369,9 +1369,8 @@ function MoreSection({
         partnerSignSlug: partner.sign,
         relationshipMode,
         scoreTier: pairReady ? zodiacAnalyticsScoreTier(result.scores.total) : undefined,
-        angelNumberLabel: activeMoreFeature === "angelNumbers" || activeMoreFeature === "vipAngelNumbers" ? angelNumber.label : undefined,
       }),
-    [activeMoreFeature, angelNumber.label, category, pairReady, partner.sign, relationshipMode, result.scores.total, selectedMoreFeature.label, selectedMoreFeature.shortLabel, selectedSignSlug, selfSign?.slug],
+    [activeMoreFeature, category, pairReady, partner.sign, relationshipMode, result.scores.total, selectedMoreFeature.label, selectedMoreFeature.shortLabel, selectedSignSlug, selfSign?.slug],
   );
   const categoryBackEnabled = Boolean(onCategoryBack);
   const telegramBackVisible = telegram.isTelegramWebApp && (activeMoreFeature !== defaultMoreFeature || categoryBackEnabled);
@@ -3897,7 +3896,6 @@ function buildFeatureRetentionAction({
   partnerSignSlug,
   relationshipMode,
   scoreTier,
-  angelNumberLabel,
 }: {
   category: MenuFeatureGroup;
   activeMoreFeature: MoreFeatureId;
@@ -3908,25 +3906,19 @@ function buildFeatureRetentionAction({
   partnerSignSlug?: string;
   relationshipMode: RelationshipMode;
   scoreTier?: string;
-  angelNumberLabel?: string;
 }): ZodiacRetentionDraft {
   const section = sectionForFeature(activeMoreFeature);
-  const label =
-    activeMoreFeature === "angelNumbers" && angelNumberLabel
-      ? `Ангельские числа: ${angelNumberLabel}`
-      : activeMoreFeature === "vipAngelNumbers" && angelNumberLabel
-        ? `VIP ангельские числа: ${angelNumberLabel}`
-        : selectedFeatureLabel;
+  const isAngelNumberFeature = activeMoreFeature === "angelNumbers" || activeMoreFeature === "vipAngelNumbers";
   return {
     section,
     featureKey: activeMoreFeature,
-    label,
+    label: selectedFeatureLabel,
     relationshipMode: activeMoreFeature === "compatibilityTool" ? relationshipMode : undefined,
     sign: selfSignSlug || selectedSignSlug || undefined,
     firstSign: activeMoreFeature === "compatibilityTool" ? selfSignSlug || selectedSignSlug || undefined : undefined,
     secondSign: activeMoreFeature === "compatibilityTool" ? partnerSignSlug || undefined : undefined,
     scoreTier: activeMoreFeature === "compatibilityTool" ? scoreTier : undefined,
-    detail: category === "vip" ? "VIP бесплатно до 17.09.2026" : selectedFeatureShortLabel,
+    detail: isAngelNumberFeature ? "Без сохранения числового ввода" : category === "vip" ? "VIP бесплатно до 17.09.2026" : selectedFeatureShortLabel,
   };
 }
 
@@ -3975,8 +3967,7 @@ function buildSafeShareText(action: ZodiacRetentionDraft) {
     return `Открыл(а) Матрицу судьбы в Астрологическом центре ✨\nПопробуй свой расчёт: ${appLink}`;
   }
   if (action.featureKey === "angelNumbers" || action.featureKey === "vipAngelNumbers") {
-    const label = action.label && action.label.includes(":") ? action.label : "Ангельские числа";
-    return `${label} в Астрологическом центре 👼\nПосмотри значение своего знака: ${appLink}`;
+    return `Ангельские числа в Астрологическом центре 👼\nПосмотри значение своего знака: ${appLink}`;
   }
   if (action.featureKey === "vip" || String(action.featureKey || "").startsWith("vip")) {
     return `Открыл(а) VIP раздел в Астрологическом центре 👑\nСейчас доступ бесплатный до 17.09.2026: ${appLink}`;

@@ -25,6 +25,17 @@ const VIP_ACTIVE_CARDS = [
 const MYSTIC_FEATURES = ["Карта", "Таро", "Руна"];
 const BIRTH_MATRIX_LABELS = ["Матрица судьбы", "Матрица рождения", "Матрица"];
 const PLACEHOLDER_PATTERNS = [/TODO/i, /lorem ipsum/i, /placeholder/i, /Скоро появится/i];
+const RETENTION_STORAGE_KEY = "zodiac-mini-app-retention-v1";
+const FORBIDDEN_RETENTION_VALUES = [
+  "1998-06-15",
+  "2000-03-21",
+  "2000-12-22",
+  "19.06.1992",
+  "11:11",
+  "Мне важно сказать",
+  "Мне важно не победить",
+  "Спасибо, что слышишь",
+];
 
 const options = parseArgs(process.argv.slice(2));
 const startedProcesses = [];
@@ -217,6 +228,7 @@ async function runBrowserModeSmoke(client, report) {
     await clickBackIcon(client);
     await waitForPageText(client, /VIP открыт бесплатно|Ранний доступ до 17\.09\.2026/, `Back did not return from VIP card "${card}".`);
   }
+  await assertRetentionPrivacy(client, report);
 
   await click(client, "Главное меню");
   await waitForPageText(client, /Астрологический центр|Мистика/, "Back to main menu did not render after VIP.");
@@ -363,6 +375,34 @@ async function runVipToolSmoke(client, label, report) {
     await waitForPageText(client, /Скопировано/, "VIP message helper did not show copied state.");
     report.vipMessageCopyChecked = true;
   }
+}
+
+async function assertRetentionPrivacy(client, report) {
+  const retentionText = await evalPage(client, "window.localStorage.getItem(arguments[0]) || ''", [RETENTION_STORAGE_KEY]);
+  if (!retentionText) {
+    report.localStoragePrivacyChecked = true;
+    return;
+  }
+
+  for (const forbiddenValue of FORBIDDEN_RETENTION_VALUES) {
+    if (retentionText.includes(forbiddenValue)) {
+      throw new Error(`Retention localStorage contains forbidden raw value: ${forbiddenValue}`);
+    }
+  }
+
+  let parsed;
+  try {
+    parsed = JSON.parse(retentionText);
+  } catch {
+    throw new Error("Retention localStorage is not valid JSON.");
+  }
+  const serialized = JSON.stringify(parsed);
+  for (const forbiddenField of ["birthDate", "birthTime", "cityQuery", "selectedCityId", "messageText", "rawInput", "rawResult"]) {
+    if (serialized.includes(`"${forbiddenField}"`)) {
+      throw new Error(`Retention localStorage contains forbidden field: ${forbiddenField}`);
+    }
+  }
+  report.localStoragePrivacyChecked = true;
 }
 
 async function ensureMiniAppServer(rawUrl, timeoutMs, urlProvided) {
@@ -1062,6 +1102,7 @@ function createReport() {
     vipSaved: 0,
     vipShared: 0,
     vipMessageCopyChecked: false,
+    localStoragePrivacyChecked: false,
     giveawaysLocked: false,
     mysticChecked: 0,
     freeAccessVisible: false,
@@ -1116,6 +1157,7 @@ function printSummary(status, report) {
   console.log(`VIP tools calculated: ${report.vipCalculated}/11`);
   console.log(`VIP save/share checked: ${report.vipSaved}/11 saved, ${report.vipShared}/11 shared`);
   console.log(`VIP message copy checked: ${report.vipMessageCopyChecked ? "YES" : "NO"}`);
+  console.log(`localStorage privacy checked: ${report.localStoragePrivacyChecked ? "YES" : "NO"}`);
   console.log(`Free access visible: ${report.freeAccessVisible ? "YES" : "NO"}`);
   console.log(`Giveaways locked: ${report.giveawaysLocked ? "YES" : "NO"}`);
   console.log(`Mystic checked: ${report.mysticChecked >= 3 ? "YES" : "NO"} (${report.mysticChecked}/3)`);
