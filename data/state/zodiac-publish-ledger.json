@@ -907,8 +907,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-06-18T10:38:42.040Z"
+      "status": "sent",
+      "updatedAt": "2026-06-18T10:38:45.658Z",
+      "messageId": "18,",
+      "sentAt": "2026-06-18T10:38:45.658Z"
     }
   }
 }
