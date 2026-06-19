@@ -187,6 +187,7 @@ export function ZodiacCompatibilityMiniApp({
   const publicMode = variant === "public";
   const telegram = useTelegramWebApp();
   const resolvedMode = normalizeMode(initialMode);
+  const normalizedStartParam = useMemo(() => normalizeStartParam(startParam), [startParam]);
   const hintSignSlug = useMemo(() => resolveInitialSign(initialSign, startParam), [initialSign, startParam]);
   const initialActiveTab = useMemo(() => resolveInitialHubTab(startParam), [startParam]);
   const initialMoreFeature = useMemo(() => resolveInitialMoreFeature(startParam), [startParam]);
@@ -259,7 +260,7 @@ export function ZodiacCompatibilityMiniApp({
 
   useEffect(() => {
     const syncKey = [
-      normalizeStartParam(startParam),
+      normalizedStartParam,
       hintSignSlug ?? "",
       initialActiveTab,
       initialMoreFeature ?? "",
@@ -276,11 +277,15 @@ export function ZodiacCompatibilityMiniApp({
     setRelationshipMode(initialRelationshipMode ?? "love");
     setShareFallbackText("");
 
-    if (normalizeStartParam(startParam)) {
-      setSelectedSignSlug("");
-      setSelf((current) => ({ ...current, sign: "" }));
+    setSelectedSignSlug("");
+    setSelf((current) => ({ ...current, sign: "" }));
+
+    if (!normalizedStartParam || normalizedStartParam === "compat") {
+      setPartner((current) => ({ ...current, sign: "" }));
+      setMode(resolvedMode);
+      setStep(1);
     }
-  }, [hintSignSlug, initialActiveTab, initialHomePanel, initialMoreFeature, initialRelationshipMode, startParam]);
+  }, [hintSignSlug, initialActiveTab, initialHomePanel, initialMoreFeature, initialRelationshipMode, normalizedStartParam, resolvedMode]);
 
   useEffect(() => {
     if (!appDateKey || process.env.NODE_ENV === "production") return;
@@ -759,7 +764,7 @@ export function ZodiacCompatibilityMiniApp({
       : activeTab === "forecasts" || activeTab === "love" || activeTab === "vip"
         ? activeTab
         : "home";
-  const activeRequestedFeature = requestedMoreFeature ?? (activeTab === initialActiveTab ? initialMoreFeature : null);
+  const activeRequestedFeature = requestedMoreFeature;
 
   function renderHomePanelContent() {
     if (homePanel === "profile" || homePanel === "favorites" || homePanel === "history") {
@@ -800,6 +805,12 @@ export function ZodiacCompatibilityMiniApp({
 
   return (
     <div
+      data-zodiac-mini-app-root="true"
+      data-zodiac-active-tab={activeTab}
+      data-zodiac-home-panel={homePanel}
+      data-zodiac-requested-feature={requestedMoreFeature ?? ""}
+      data-zodiac-selected-sign={selectedSignSlug}
+      data-zodiac-start-param={normalizedStartParam}
       data-telegram-webapp={telegram.isTelegramWebApp ? "true" : "false"}
       data-telegram-platform={telegram.platform ?? "browser"}
       data-telegram-color-scheme={telegram.colorScheme ?? "dark"}
@@ -1602,11 +1613,14 @@ function MoreSection({
     const syncKey = `${category}:${initialFeature ?? ""}`;
     if (lastInitialFeatureSyncRef.current === syncKey) return;
     lastInitialFeatureSyncRef.current = syncKey;
-    if (!initialFeature) return;
+    if (!initialFeature) {
+      setActiveMoreFeature(defaultMoreFeature);
+      return;
+    }
 
     const categoryHasInitialFeature = categoryFeatures.some((item) => item.id === initialFeature) || (category === "vip" && vipDetailFeatureIds.has(initialFeature));
     if (categoryHasInitialFeature) setActiveMoreFeature(initialFeature);
-  }, [category, categoryFeatures, initialFeature]);
+  }, [category, categoryFeatures, defaultMoreFeature, initialFeature]);
 
   useEffect(() => {
     if (!self.sign && !selectedSignSlug) return;
@@ -1809,7 +1823,7 @@ function MoreSection({
   const menuGroup = menuFeatureGroups.find((item) => item.id === category) ?? menuFeatureGroups[0];
 
   return (
-    <section className={panelClass(publicMode)}>
+    <section className={panelClass(publicMode)} data-zodiac-more-section="true" data-zodiac-more-category={category} data-zodiac-more-feature={activeMoreFeature}>
       {onCategoryBack ? (
         <button type="button" onClick={onCategoryBack} className={secondaryButtonClass(publicMode)}>
           <ArrowLeft className="h-4 w-4" />
@@ -4019,7 +4033,8 @@ function normalizeMode(value?: string | null): Mode {
 function resolveInitialHubTab(startParam?: string | null): HubTab {
   const normalized = normalizeStartParam(startParam);
   if (!normalized) return "today";
-  if (normalized === "compat" || normalized.startsWith("compat_")) return "love";
+  if (normalized === "compat") return "today";
+  if (normalized.startsWith("compat_")) return "love";
   if (normalized === "mystic" || normalized === "birth_matrix") return "mystic";
   if (normalized === "angel_numbers" || normalized === "week") return "forecasts";
   if (normalized === "vip") return "vip";

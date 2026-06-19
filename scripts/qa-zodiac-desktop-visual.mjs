@@ -51,6 +51,7 @@ async function main() {
     status: overallStatus,
     scenarios: {
       mainMenu: scenarioStatus(allSmokeOutput, /Main menu checked: YES/),
+      defaultOpenRoute: scenarioStatus(allSmokeOutput, /Default app open checked: YES[\s\S]*Stale Mystic state cleared: YES[\s\S]*startapp=compat opens home: YES/),
       compatibility: scenarioStatus(allSmokeOutput, /Compatibility result checked: YES/),
       premiumNatal: scenarioStatus(allSmokeOutput, /VIP Premium Natal Chart checked: YES/),
       birthMatrix: scenarioStatus(allSmokeOutput, /Birth Matrix depth checked: YES/),
@@ -62,6 +63,7 @@ async function main() {
       profileHistoryFavorites: scenarioStatus(allSmokeOutput, /Profile checked: YES[\s\S]*Favorite saved\/opened: YES/),
       feedback: scenarioStatus(allSmokeOutput, /Feedback CTA\/panel checked: YES[\s\S]*Feedback draft copy\/share: YES/),
       safeShare: scenarioStatus(allSmokeOutput, /Safe share drafts checked: (?!NO)/),
+      backButtonNoStaleMystic: scenarioStatus(allSmokeOutput, /BackButton stale Mystic regression: YES/),
     },
     screenshotsPath: screenshotsRoot,
     screenshots,

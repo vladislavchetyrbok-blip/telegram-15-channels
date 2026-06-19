@@ -24,7 +24,10 @@ npm run zodiac:miniapp:smoke -- --url http://localhost:3000/compatibility
 - The expected product structure is `Home -> Category -> Feature -> Result`.
 - Browser mode works without `window.Telegram`.
 - Sign selection works.
-- Mini App start params render the intended section after category/sign selection or direct profile routing: `compat`, `compat_love`, `compat_reconciliation`, `compat_gemini`, `mystic`, `vip`, `birth_matrix`, `angel_numbers`, `week`, `profile`, `history`, and `favorites`.
+- A plain `/compatibility` fresh open must render Home/Main Menu with no selected sign, no requested feature, and no stale Mystic section.
+- A fresh open after a previous Mystic state in localStorage/browser state must still render Home/Main Menu.
+- `startapp=compat` is treated as the default Home/Main Menu open, not as Mystic and not as the Compatibility wizard.
+- Mini App start params render the intended section after category/sign selection or direct profile routing: `compat` (Home), `compat_love`, `compat_reconciliation`, `compat_gemini`, `mystic`, `vip`, `birth_matrix`, `angel_numbers`, `week`, `profile`, `history`, and `favorites`.
 - Profile opens from the main menu and bottom navigation.
 - Profile shows the History and Favorites blocks with empty states: `Здесь появятся последние расчёты и открытые разделы` and `Здесь появятся сохранённые расчёты и быстрые переходы`.
 - History and Favorites use localStorage only and store safe shortcuts/summaries, not raw personal inputs.
@@ -58,7 +61,7 @@ npm run zodiac:miniapp:smoke -- --url http://localhost:3000/compatibility
 - Birth Matrix local retention stores only safe summary fields such as feature key, matrix type, archetype key, central number, label, and timestamp. It must not store raw birth date, name, result text, or generated text.
 - Telegram WebApp mock is injected before page load.
 - Telegram `ready()` and `expand()` are called.
-- Telegram BackButton show/hide/onClick/offClick wiring works: hidden on Home, detail -> category, category -> Home.
+- Telegram BackButton show/hide/onClick/offClick wiring works: hidden on Home, detail -> category, category -> Home, and no stale Mystic return after a fresh Home launch.
 - Telegram haptics are callable and do not throw.
 - Browser console, runtime, and HTTP/network errors are collected.
 
@@ -110,6 +113,13 @@ Browser mode: PASS
 Telegram mock: PASS
 Main menu checked: YES
 Main menu categories checked: 10/10
+Default app open checked: YES
+Stale Mystic state cleared: YES
+startapp=compat opens home: YES
+startapp=mystic opens Mystic: YES
+Deep links regression checked: YES
+BackButton stale Mystic regression: YES
+Sonnik hidden/backlog checked: YES
 Horoscopes checked: YES
 Angel Numbers / Ангельские числа checked: YES
 Custom selects checked: YES (native visible: 0)
