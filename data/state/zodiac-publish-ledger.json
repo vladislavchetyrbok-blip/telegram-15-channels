@@ -1243,8 +1243,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-06-19T10:47:23.451Z"
+      "status": "sent",
+      "updatedAt": "2026-06-19T10:47:27.671Z",
+      "messageId": "19,",
+      "sentAt": "2026-06-19T10:47:27.670Z"
     }
   }
 }
