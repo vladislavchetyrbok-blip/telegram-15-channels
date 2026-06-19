@@ -31,6 +31,18 @@ Package 42 adds a disabled Profile Sync status block in `Мой профиль`.
 display-only, has no toggle, does not mount a provider, and must not call
 `/api/zodiac/profile/sync` while flags are OFF.
 
+Package 43 adds Profile Sync privacy stress tests and route hardening. Raw birth
+data, city, name, phone, questions, intentions, feedback, result text, and
+Telegram initData are stripped or rejected without enabling sync.
+
+Package 44 adds the Real Astro Engine fixture harness. Exact astrology remains
+unavailable, fixtures are non-personal placeholders, and no external astro API
+calls are added.
+
+Package 45 completes the post-sync-foundation regression. Full checks pass,
+profile sync remains disabled/no-network, and the release candidate remains for
+controlled soft launch only.
+
 ## Release Candidate Status
 
 - RC status: READY for controlled `5-20` users.
@@ -45,6 +57,10 @@ display-only, has no toggle, does not mount a provider, and must not call
 - Profile Sync merge logic: READY but disabled and not wired to UI.
 - Profile Sync storage readiness: READY but disabled, production writes OFF.
 - Profile Sync status UI: READY, disabled/no-network.
+- Profile Sync privacy stress tests: PASS.
+- Real Astro Engine fixture harness: PASS, exact mode unavailable.
+- Post-sync-foundation regression: PASS.
+- Product readiness: `92%` for controlled soft launch.
 
 ## Current Product Readiness
 
@@ -89,6 +105,12 @@ Mini App smoke baseline:
 - Profile Sync storage: backend `none`, production reads/writes OFF, check-only
   memory adapter for local validation.
 - Profile Sync UI status: visible in Profile as disabled; no remote sync calls.
+- Profile Sync privacy: malicious sync payloads stripped/rejected; raw
+  sensitive values are not accepted.
+- Real Astro Engine: symbolic-only current mode, exact provider
+  `exact_unavailable`, fixture harness PASS.
+- Package 45 full regression: PASS, see
+  `docs/zodiac-post-sync-foundation-regression.md`.
 
 ## Manual Blockers Before Mass Launch
 
@@ -269,7 +291,12 @@ Clean baseline was run after removing `.next`.
 | `npm run lint` | PASS |
 | `npm run build` | PASS |
 | `npm run zodiac:miniapp:smoke` | PASS |
+| `npm run zodiac:desktop:qa` | PASS |
 | `npm run zodiac:astro:check` | PASS |
+| `npm run zodiac:astro:fixtures:check` | PASS |
+| `npm run zodiac:ledger:safety:check` | PASS |
+| `npm run zodiac:telegram-auth:check` | PASS |
+| `npm run zodiac:profile-sync:check` | PASS, `65/65` |
 | `npm run zodiac:analytics:check` | PASS |
 | `npm run zodiac:analytics:storage:check` | PASS, storage `noop` warning |
 | `npm run zodiac:workflow:check -- --date 2026-06-20` | Static PASS, warning only: no GitHub token/local report |

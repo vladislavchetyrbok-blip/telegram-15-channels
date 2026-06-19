@@ -40,6 +40,11 @@ Package 44 adds the Real Astro Engine provider fixture harness and provider
 decision docs. Exact mode remains `exact_unavailable`; fixtures are non-personal
 placeholders and no external astro API calls are added.
 
+Package 45 completes the full post-sync-foundation regression. The full local
+suite passes, profile sync remains disabled/no-network, exact astro remains
+unavailable, analytics storage remains `noop`, and the product is still limited
+to controlled soft launch rather than mass launch.
+
 ## Current Status
 
 The Zodiac product is ready for controlled live operation of the daily publishing lane and user-facing Mini App checks, with the following boundaries:
@@ -75,6 +80,9 @@ The Zodiac product is ready for controlled live operation of the daily publishin
 - Real Astro Engine fixture harness is available. It validates placeholder
   fixtures and confirms exact provider remains unavailable with no fake planets,
   houses, ascendant, or external API calls.
+- Post-sync-foundation regression report is available at
+  `docs/zodiac-post-sync-foundation-regression.md`; current controlled
+  soft-launch readiness is `92%`.
 - Manual live publish remains forbidden unless a dry-run and ledger audit prove it is safe.
 
 ## Key Recent Commits
@@ -711,3 +719,26 @@ Status:
 - Current Premium Natal UI mode: symbolic.
 - Payments/Stars: OFF.
 - Weekly live: OFF.
+
+## Package 45: Post Sync Foundation Regression
+
+Status:
+
+- Regression report: `docs/zodiac-post-sync-foundation-regression.md`.
+- Full local suite: PASS.
+- Product readiness for controlled soft launch: `92%`.
+- Controlled `5-20` tester invite: YES, with real-phone Telegram WebView sanity
+  pass as the next practical gate.
+- Mass launch: NO.
+- Profile sync enabled: NO.
+- Profile sync provider mounted: NO.
+- Profile sync API calls while disabled: `0`.
+- Backend profile writes: NO.
+- localStorage fallback: preserved.
+- Exact astro mode: `exact_unavailable`.
+- Fake planets/houses/ascendant: NO.
+- Redis analytics: `noop`; Redis env missing.
+- Daily dry-run for `2026-06-20`: Would Publish `13/13`, CTA rows `13/13 OK`,
+  Telegram API calls `0`, ledger writes `0`.
+- Weekly live: OFF.
+- Payments/Stars: OFF.
