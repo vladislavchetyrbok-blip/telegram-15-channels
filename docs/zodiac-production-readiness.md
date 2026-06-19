@@ -238,6 +238,12 @@ Navigation policy:
 - category -> home
 - home -> BackButton hidden
 
+Real phone status:
+
+- Browser smoke and Telegram mock are PASS.
+- Real physical-phone Telegram WebView pass is still manual-required and must not be claimed from browser/mock checks.
+- Manual checklist: `docs/zodiac-real-phone-webview-checklist.md`.
+
 ## Mini App Regression Smoke
 
 Command:

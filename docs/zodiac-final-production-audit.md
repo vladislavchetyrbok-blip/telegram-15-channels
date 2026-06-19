@@ -24,7 +24,7 @@ Main remaining production gaps:
 - Redis analytics storage is still `noop`.
 - 2026-06-19 daily posts were later published by automation (`13/13 sent`), but the run arrived late around `13:36 Kyiv`; scheduler minutes have been shifted away from `:00` / `:30` to reduce GitHub Actions congestion risk.
 - Weekly lane is dry-run ready, but weekly live schedule remains intentionally off.
-- Real phone Telegram WebView pass should be repeated after the latest Mini App visual/interactions fixes.
+- Real phone Telegram WebView pass remains manual-required after the latest Mini App visual/interactions fixes; browser smoke and Telegram mock do not count as a real phone pass.
 
 ## Daily Status
 
@@ -281,7 +281,7 @@ Backup freshness is no longer an active warning after Package 19. Keep running b
 
 1. Watch the next daily runs after the cron-minute shift and confirm they arrive closer to the intended Kyiv morning window.
 2. Configure Redis REST env for Mini App analytics and verify dashboard counters.
-3. Repeat a real phone Telegram WebView pass after the latest select/share/CTA/chart fixes.
+3. Repeat a real phone Telegram WebView pass after the latest select/share/CTA/chart fixes using `docs/zodiac-real-phone-webview-checklist.md`.
 4. Prepare a separate weekly live-readiness package before enabling weekly publishing.
 5. Keep backups fresh or automate backup creation before release checkpoints.
 6. Add GitHub API token support for local workflow monitor runs if local Actions visibility is needed.
@@ -291,6 +291,6 @@ Backup freshness is no longer an active warning after Package 19. Keep running b
 
 1. Daily scheduler post-window verification after 11:05 Kyiv, then alerting automation.
 2. Redis analytics activation and dashboard verification in production.
-3. Real phone Telegram WebView pass after the latest interaction fixes.
+3. Real phone Telegram WebView pass after the latest interaction fixes using `docs/zodiac-real-phone-webview-checklist.md`.
 4. Weekly live readiness package: dedupe, runbook, explicit approval gates, then schedule decision.
 5. Monetization planning package for post-free VIP access: product rules, legal copy, feature flags, and only then Stars/payments implementation.
