@@ -1,8 +1,8 @@
 # Zodiac Autopilot Reliability
 
 ## Scheduled Cron Triggers
-* **Primary Window**: `0 6 * * *`, `30 6 * * *` (06:00/06:30 UTC)
-* **Backup Window**: `0 7 * * *`, `30 7 * * *`, `0 8 * * *` (07:00/07:30/08:00 UTC)
+* **Staggered Window**: `7 6 * * *`, `19 6 * * *`, `37 6 * * *`, `52 6 * * *`, `11 7 * * *` (06:07/06:19/06:37/06:52/07:11 UTC)
+* The schedule intentionally avoids common `:00` / `:30` congestion minutes after the 2026-06-19 run arrived late around 13:36 Kyiv.
 
 ## Why a Backup Exists
 GitHub Actions schedule events can be delayed, missed, or dropped during high load periods on GitHub's infrastructure. Multiple attempts give the daily Zodiac publish more chances to run without requiring manual recovery.
@@ -20,7 +20,7 @@ Use the dedicated monitor for the `Zodiac Daily Publisher` workflow:
 npm run zodiac:workflow:check -- --date YYYY-MM-DD
 ```
 
-This checks `.github/workflows/zodiac-scheduler.yml`, the five cron attempts, scheduled live mode, `Europe/Kyiv` target date calculation, the ledger-protected live command, manual `dry-run` default, report artifact upload, and local ledger/report counts for the requested date.
+This checks `.github/workflows/zodiac-scheduler.yml`, the five staggered cron attempts, scheduled live mode, `Europe/Kyiv` target date calculation, the ledger-protected live command, manual `dry-run` default, report artifact upload, and local ledger/report counts for the requested date.
 
 If `GITHUB_TOKEN` or `GH_TOKEN` is not configured, the monitor still completes static and local checks and reports: `GitHub API token not configured; static workflow checks completed`.
 

@@ -9,7 +9,7 @@ const root = process.cwd();
 const workflowRelativePath = ".github/workflows/zodiac-scheduler.yml";
 const workflowPath = path.join(root, workflowRelativePath);
 const expectedWorkflowName = "Zodiac Daily Publisher";
-const expectedCrons = ["0 6 * * *", "30 6 * * *", "0 7 * * *", "30 7 * * *", "0 8 * * *"];
+const expectedCrons = ["7 6 * * *", "19 6 * * *", "37 6 * * *", "52 6 * * *", "11 7 * * *"];
 const githubApiVersion = "2022-11-28";
 
 function parseArgs() {

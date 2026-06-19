@@ -60,21 +60,23 @@ Workflow name: Zodiac Daily Publisher
 Scheduled attempts:
 
 ```text
-0 6 * * *
-30 6 * * *
-0 7 * * *
-30 7 * * *
-0 8 * * *
+7 6 * * *
+19 6 * * *
+37 6 * * *
+52 6 * * *
+11 7 * * *
 ```
 
 Policy:
 
 - GitHub Actions cron is UTC-only and can be delayed.
-- Primary window: `06:00/06:30 UTC`.
-- Backup window: `07:00/07:30/08:00 UTC`.
+- Staggered attempts avoid common `:00` / `:30` GitHub Actions congestion minutes.
+- Current UTC window: `06:07`, `06:19`, `06:37`, `06:52`, and `07:11`.
+- During Kyiv summer time this maps to roughly `09:07`, `09:19`, `09:37`, `09:52`, and `10:11 Kyiv`.
 - Scheduled runs use live mode.
 - Duplicate safety is provided by durable ledger and publish-date dedupe before Telegram API calls.
 - Target date is calculated using the Europe/Kyiv calendar policy.
+- 2026-06-19 autopublish completed successfully (`13/13 sent`) but arrived late, around `13:36 Kyiv` start with ledger entries at `13:46-13:47 Kyiv`; this timing hardening shifts future attempts away from the most congested minute marks.
 
 Required safe check:
 

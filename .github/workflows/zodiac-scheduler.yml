@@ -3,15 +3,16 @@ name: Zodiac Daily Publisher
 on:
   schedule:
     # GitHub Actions cron is UTC-only and can be delayed under platform load.
-    # Primary window: 06:00/06:30 UTC. Backup window: 07:00/07:30/08:00 UTC.
+    # Staggered daily attempts avoid common :00/:30 congestion minutes.
+    # Target window: 06:07/06:19/06:37/06:52/07:11 UTC.
     # Every scheduled run uses live mode, but the durable ledger/dedupe guard
     # makes repeated attempts safe once the target date is already sent.
     # See docs/zodiac-year-autopilot-runbook.md.
-    - cron: "0 6 * * *"
-    - cron: "30 6 * * *"
-    - cron: "0 7 * * *"
-    - cron: "30 7 * * *"
-    - cron: "0 8 * * *"
+    - cron: "7 6 * * *"
+    - cron: "19 6 * * *"
+    - cron: "37 6 * * *"
+    - cron: "52 6 * * *"
+    - cron: "11 7 * * *"
   workflow_dispatch:
     inputs:
       mode:

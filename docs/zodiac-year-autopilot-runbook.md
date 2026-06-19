@@ -32,19 +32,19 @@ Manual `workflow_dispatch` defaults to `dry-run`. Scheduled runs use `live` mode
 Current cron attempts:
 
 ```text
-0 6 * * *
-30 6 * * *
-0 7 * * *
-30 7 * * *
-0 8 * * *
+7 6 * * *
+19 6 * * *
+37 6 * * *
+52 6 * * *
+11 7 * * *
 ```
 
 GitHub Actions cron is UTC-only and can start late under platform load.
 
-- During Kyiv summer time, 06:00 UTC is 09:00 Kyiv.
-- During Kyiv winter time, 06:00 UTC is 08:00 Kyiv.
-- Primary publish window: 06:00 and 06:30 UTC.
-- Backup publish window: 07:00, 07:30, and 08:00 UTC.
+- The attempts intentionally avoid common `:00` and `:30` congestion minutes.
+- During Kyiv summer time, the current attempts map to roughly 09:07, 09:19, 09:37, 09:52, and 10:11 Kyiv.
+- During Kyiv winter time, the current attempts map to roughly 08:07, 08:19, 08:37, 08:52, and 09:11 Kyiv.
+- The 2026-06-19 autopublish succeeded (`13/13 sent`) but arrived late around 13:36 Kyiv, so the scheduler was shifted to less common minute marks.
 
 All scheduled attempts run in `live` mode after preflight, but repeated attempts are safe because the durable ledger and publish-date dedupe guard block already sent date/slug pairs before Telegram publish calls.
 
@@ -156,7 +156,7 @@ The low-level zodiac pipeline blocks direct live use unless it is called as an a
 
 ## Delayed Schedule Recovery
 
-GitHub Actions schedule runs can be delayed. Do not start manual live recovery just because the 06:00 or 06:30 UTC attempt has not appeared yet; first check the backup window and the ledger.
+GitHub Actions schedule runs can be delayed. Do not start manual live recovery just because the first staggered attempt has not appeared yet; first check the full attempt window and the ledger.
 
 Manual live recovery is allowed only when all are true:
 

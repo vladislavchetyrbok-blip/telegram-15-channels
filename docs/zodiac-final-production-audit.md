@@ -22,7 +22,7 @@ The Zodiac product is broadly production-ready for the current free-access phase
 Main remaining production gaps:
 
 - Redis analytics storage is still `noop`.
-- 2026-06-19 daily posts are still publishable at audit time because the audit ran before the 09:00-11:00 Kyiv cron window.
+- 2026-06-19 daily posts were later published by automation (`13/13 sent`), but the run arrived late around `13:36 Kyiv`; scheduler minutes have been shifted away from `:00` / `:30` to reduce GitHub Actions congestion risk.
 - Weekly lane is dry-run ready, but weekly live schedule remains intentionally off.
 - Real phone Telegram WebView pass should be repeated after the latest Mini App visual/interactions fixes.
 
@@ -40,11 +40,11 @@ Result:
 
 - Workflow file exists: `.github/workflows/zodiac-scheduler.yml`.
 - Workflow name: `Zodiac Daily Publisher`.
-- Cron attempts: `0 6 * * *`, `30 6 * * *`, `0 7 * * *`, `30 7 * * *`, `0 8 * * *`.
+- Cron attempts after timing hardening: `7 6 * * *`, `19 6 * * *`, `37 6 * * *`, `52 6 * * *`, `11 7 * * *`.
 - Static workflow checks: PASS.
 - GitHub API run lookup: WARNING only, token not configured in this local environment.
-- Ledger for `2026-06-19`: `sent=0`, `missing=13`, `failed=0`, `pending=0`, `duplicateBlocked=0`.
-- Dry-run for `2026-06-19`: would publish `13/13`.
+- Ledger for `2026-06-19` after post-cron verification: `sent=13`, `missing=0`, `failed=0`, `pending=0`, `duplicateBlocked=13`.
+- Dry-run for `2026-06-19` after publication: `Already Sent 13`, `Duplicate Blocked 13`, `Would Publish 0`, `Telegram API calls 0`.
 - Date headers: present, including `Общий гороскоп на 19.06.2026`.
 - CTA rows: `13/13 OK`.
 - Image posts: `13`.
@@ -54,7 +54,7 @@ Result:
 
 Interpretation:
 
-At audit time it was before the expected Kyiv publication window, so `sent=0` is not yet an incident. Manual live is not needed now. If the window passes and posts are still missing, run dry-run first and allow manual live only when it still reports `Would Publish 13`, `Already Sent 0`, and `Duplicate Blocked 0`.
+The original audit ran before the expected Kyiv publication window. Post-cron verification later confirmed that automation sent `13/13`, but it was late for the target window. Manual live was not needed. If a future window passes and posts are still missing, run dry-run first and allow manual live only when it reports `Would Publish 13`, `Already Sent 0`, and `Duplicate Blocked 0`.
 
 ## Mini App Status
 
@@ -264,7 +264,7 @@ Backup freshness is no longer an active warning after Package 19. Keep running b
 
 ## Remaining TODO
 
-1. After the 09:00-11:00 Kyiv window on 2026-06-19, verify that `Zodiac Daily Publisher` sent `13/13`; if not, dry-run first before any manual live.
+1. Watch the next daily runs after the cron-minute shift and confirm they arrive closer to the intended Kyiv morning window.
 2. Configure Redis REST env for Mini App analytics and verify dashboard counters.
 3. Repeat a real phone Telegram WebView pass after the latest select/share/CTA/chart fixes.
 4. Prepare a separate weekly live-readiness package before enabling weekly publishing.
