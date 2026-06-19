@@ -4,6 +4,9 @@ Status: `Real phone pass: NOT EXECUTED, manual user pass required`
 
 This document is the manual QA checklist for validating the Zodiac Mini App as a real Telegram Mini App on a physical phone. Browser checks, desktop responsive mode, Telegram mock smoke, and `npm run zodiac:desktop:qa` are useful regressions, but they do not count as a real phone Telegram WebView pass.
 
+Package 37 adds server-side Telegram WebApp `initData` validation readiness. Do
+not enable profile sync or remote profile storage during this phone pass.
+
 Desktop QA harness reference:
 
 ```text
@@ -400,3 +403,26 @@ git diff --check
 ```
 
 These checks do not replace the real phone pass.
+
+## Telegram initData Auth Foundation
+
+During the real phone pass, record whether the Mini App opens inside Telegram
+normally. Do not enable profile sync or remote profile storage.
+
+Identity safety rules:
+
+- Do not trust `initDataUnsafe` as identity.
+- Do not store raw `initData`.
+- Do not send raw `initData` to analytics.
+- Do not log bot tokens.
+- Do not persist names, birth dates, birth times, city queries, raw questions,
+  raw intentions, or raw result text.
+
+Optional technical check, only if needed by a developer:
+
+```text
+POST /api/zodiac/telegram-auth/check
+Authorization: tma <initData>
+```
+
+The response must contain only safe status fields and a masked user id.

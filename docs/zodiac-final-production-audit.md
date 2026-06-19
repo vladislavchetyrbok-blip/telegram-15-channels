@@ -6,6 +6,10 @@ Branch: `main`
 
 This audit is read-only for product/runtime behavior. No live publishing was run, no ledger was edited manually, weekly live schedule stays off, and payments/Telegram Stars stay off.
 
+Package 37 adds Telegram WebApp `initData` server-validation readiness. It does
+not implement profile sync, remote profile storage, payments, Stars, or weekly
+live.
+
 ## Executive Status
 
 The Zodiac product is broadly production-ready for the current free-access phase:
@@ -360,3 +364,24 @@ Backup freshness is no longer an active warning after Package 19. Keep running b
 3. Real phone Telegram WebView pass after the latest interaction fixes using `docs/zodiac-real-phone-webview-checklist.md`.
 4. First-user feedback triage package: collect tester notes, classify P0/P1/P2, fix P0/P1 only.
 5. Weekly controlled-live package: first manual approved weekly publish, post-live ledger duplicate-block verification, then a later schedule decision.
+
+## Package 37 Refresh: Telegram initData Auth
+
+Current status:
+
+- Telegram WebApp `initData` validation foundation: READY.
+- Safe validation utility: `lib/zodiac-telegram-auth.ts`.
+- Safe check route: `POST /api/zodiac/telegram-auth/check`.
+- Self-check command: `npm run zodiac:telegram-auth:check`.
+- Raw `initData` storage: NO.
+- Raw `initData` analytics: NO.
+- Bot token logging: NO.
+- Client Telegram user id trusted without server validation: NO.
+- Profile sync implemented: NO.
+- Profile sync enabled: NO.
+- Remote profile storage: NO.
+- Payments/Stars: OFF.
+- Weekly live: OFF.
+
+Next readiness step: run the real phone Telegram WebView checklist and confirm
+that any future identity-dependent feature uses server-validated `initData`.

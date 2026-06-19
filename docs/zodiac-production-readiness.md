@@ -6,6 +6,10 @@ Branch: `main`
 
 This snapshot captures the current production-readiness state after the Zodiac Daily scheduler hardening, Mini App redesign, VIP functional core, channel packaging live rollout, content quality upgrade, interaction bugfixes, analytics readiness, and backup freshness refresh.
 
+Package 37 adds Telegram WebApp `initData` server-validation readiness. Profile
+sync, remote profile storage, payments, Telegram Stars, and weekly live remain
+OFF.
+
 ## Current Status
 
 The Zodiac product is ready for controlled live operation of the daily publishing lane and user-facing Mini App checks, with the following boundaries:
@@ -465,3 +469,30 @@ P1/P2 gaps that remain:
 The system is safe for continued daily autonomous publishing and controlled Mini App user testing.
 
 Do not start manual live publishing unless dry-run and ledger checks prove it is required and safe. Do not enable weekly live or payments until they are approved as separate packages.
+
+## Package 37: Telegram initData Auth Foundation
+
+Status:
+
+- Server-side Telegram WebApp `initData` validation foundation added.
+- `initDataUnsafe` must not be treated as trusted identity.
+- Raw `initData` must not be stored, logged, or sent to analytics.
+- Profile sync remains OFF and not implemented.
+- Remote profile storage remains not implemented.
+- Payments/Stars remain OFF.
+- Weekly live remains OFF.
+
+New command:
+
+```bash
+npm run zodiac:telegram-auth:check
+```
+
+Profile sync flags remain documented as disabled:
+
+```text
+ZODIAC_PROFILE_SYNC_ENABLED=false
+ZODIAC_PROFILE_SYNC_BACKEND=none
+ZODIAC_PROFILE_SYNC_READ_ENABLED=false
+ZODIAC_PROFILE_SYNC_WRITE_ENABLED=false
+```
