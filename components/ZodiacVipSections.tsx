@@ -475,7 +475,7 @@ function vipFinalMapChartType(featureKey: VipFeatureKey) {
 
 function buildVipToolShareText(featureKey: VipFeatureKey) {
   if (featureKey === "vipNatalChart") {
-    return "Я открыл(а) натальную карту в Астрологическом центре ✨\nПопробуй тоже: https://t.me/zodiac_love_check_bot?startapp=vip";
+    return "Я открыл(а) символическую натальную карту ✨\nПопробуй тоже:";
   }
   const labels: Record<VipFeatureKey, string> = {
     vipNatalChart: "Расширенная натальная карта",
@@ -490,7 +490,7 @@ function buildVipToolShareText(featureKey: VipFeatureKey) {
     vipTalismans: "Талисманы и символы силы",
     vipMysticDay: "VIP мистический день",
   };
-  return `Открыл(а) ${labels[featureKey]} в Астрологическом центре 👑\nVIP доступ сейчас бесплатный до 17.09.2026.`;
+  return `Я открыл(а) ${labels[featureKey]} в Астрологическом центре ✨\nПопробуй тоже:`;
 }
 
 function signBySlug(slug?: string | null) {

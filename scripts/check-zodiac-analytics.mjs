@@ -53,6 +53,9 @@ async function main() {
     const favoriteSavedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "favorite_saved", { section: "favorites", category: "mystic", featureKey: "birthMatrix" });
     const favoriteOpenedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "favorite_opened", { section: "favorites", category: "mystic", featureKey: "birthMatrix" });
     const shareClickedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "share_clicked", { section: "share", category: "angel_numbers", featureKey: "angelNumbers" });
+    const shareCtaViewedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "share_cta_viewed", { section: "mystic", featureKey: "birthMatrix", shareType: "birth_matrix", resultTier: "deep" });
+    const shareStartedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "share_started", { section: "vip", featureKey: "vipNatalChart", shareType: "premium_natal" });
+    const shareCompletedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "share_completed_or_fallback", { section: "compatibility", featureKey: "compatibilityTool", shareType: "compatibility", scoreTier: "good" });
     const localDataClearedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "local_data_cleared", { section: "profile", category: "local_storage" });
     const feedbackOpenedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "feedback_opened", { section: "feedback", feedbackType: "feedback", featureKey: "profile", ratingBucket: "7_8", hasComment: true, rawFeedback: "SHOULD_NOT_STORE_RAW_FEEDBACK" });
     const feedbackDraftCopiedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "feedback_draft_copied", { section: "feedback", feedbackType: "bug", featureKey: "birth_matrix", ratingBucket: "4_6", hasComment: true, feedbackText: "SHOULD_NOT_STORE_RAW_FEEDBACK" });
@@ -138,6 +141,9 @@ async function main() {
       favoriteSavedEvent,
       favoriteOpenedEvent,
       shareClickedEvent,
+      shareCtaViewedEvent,
+      shareStartedEvent,
+      shareCompletedEvent,
       localDataClearedEvent,
       feedbackOpenedEvent,
       feedbackDraftCopiedEvent,
@@ -212,6 +218,9 @@ async function main() {
         favoriteSavedEvent.sensitiveFieldsStripped &&
         favoriteOpenedEvent.sensitiveFieldsStripped &&
         shareClickedEvent.sensitiveFieldsStripped &&
+        shareCtaViewedEvent.sensitiveFieldsStripped &&
+        shareStartedEvent.sensitiveFieldsStripped &&
+        shareCompletedEvent.sensitiveFieldsStripped &&
         localDataClearedEvent.sensitiveFieldsStripped &&
         feedbackOpenedEvent.sensitiveFieldsStripped &&
         feedbackDraftCopiedEvent.sensitiveFieldsStripped &&

@@ -104,6 +104,61 @@ Testers can also use the in-app feedback panel:
 
 The panel creates a safe copy/share draft with feature, type, optional rating, device hint, and a screenshot reminder. The optional comment is transient only and is not inserted into the copied draft automatically. Do not ask testers to include names, birth dates, birth time, city, private relationship details, or raw result text.
 
+## Safe Share Loop
+
+Soft launch can use gentle sharing, but not referral tracking or personal identifiers. Result screens may show `Поделиться`, `Сохранить`, and a small next-step CTA, but they should not become aggressive marketing panels.
+
+Safe share drafts are generic and must not include:
+
+- names;
+- birth dates;
+- birth times;
+- city query;
+- raw tarot/rune question;
+- raw lunar intention;
+- raw angel number input;
+- raw result text or personal conclusions.
+
+Approved examples:
+
+```text
+Я проверил(а) совместимость в Астрологическом центре ✨
+Попробуй тоже:
+https://t.me/zodiac_love_check_bot?startapp=compat
+```
+
+```text
+Я открыл(а) символическую натальную карту ✨
+Попробуй тоже:
+https://t.me/zodiac_love_check_bot?startapp=vip
+```
+
+```text
+Я открыл(а) Матрицу судьбы ✨
+Попробуй тоже:
+https://t.me/zodiac_love_check_bot?startapp=birth_matrix
+```
+
+```text
+Я открыл(а) символический расклад ✨
+Попробуй тоже:
+https://t.me/zodiac_love_check_bot?startapp=mystic
+```
+
+```text
+Я открыл(а) лунный ритуал ✨
+Попробуй тоже:
+https://t.me/zodiac_love_check_bot?startapp=mystic
+```
+
+```text
+Я проверил(а) значение ангельского числа ✨
+Попробуй тоже:
+https://t.me/zodiac_love_check_bot?startapp=compat
+```
+
+Share analytics are aggregate-only: feature, section, share type, score/result tier where safe, and completion/fallback method. Do not add referral IDs, user IDs, invite codes, or personal tokens.
+
 ## P0 / P1 / P2 Bug Classification
 
 ### P0

@@ -136,7 +136,7 @@ const requiredCoverage = {
     "natal_chart_vip_free_opened",
   ],
   telegram: ["telegram_webapp_ready", "telegram_back_button_used", "telegram_haptic_used"],
-  retention: ["profile_opened", "history_opened", "favorite_saved", "favorite_opened", "share_clicked", "local_data_cleared"],
+  retention: ["profile_opened", "history_opened", "favorite_saved", "favorite_opened", "share_clicked", "share_cta_viewed", "share_started", "share_completed_or_fallback", "local_data_cleared"],
   softLaunchFeedback: ["feedback_opened", "feedback_draft_copied", "feedback_share_started"],
   compatibility: [
     "compatibility_wizard_started",

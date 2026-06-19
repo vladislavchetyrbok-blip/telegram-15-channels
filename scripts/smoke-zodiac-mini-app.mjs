@@ -171,6 +171,7 @@ async function runBrowserModeSmoke(client, report) {
   await click(client, "Поделиться");
   await settle(client);
   await waitForPageText(client, /совместимость|Mini App|копирования|скопирован/i, "Compatibility share did not render or copy safely.");
+  await assertLastShareText(client, report, "Compatibility", ["совместимость", "startapp=compat"], ["1998-06-15", "2000-03-21", "2000-12-22", "Овен + Козерог"]);
   report.compatibilityShareChecked = true;
   await click(client, "Пара");
   await waitForPageText(client, /Действие сегодня|Главный шаг|Лучший тон/, "Compatibility action today block did not render.");
@@ -211,6 +212,7 @@ async function runBrowserModeSmoke(client, report) {
   await click(client, "Поделиться");
   await settle(client);
   await waitForPageText(client, /Текст для копирования|Текст скопирован|Ангельские числа/, "Share fallback/copy state did not render for Angel Numbers.");
+  await assertLastShareText(client, report, "Angel Numbers", ["ангельского числа", "startapp=compat"], ["11:11", "22:22", "1998-06-15"]);
   report.shareChecked = true;
   await click(client, "Профиль");
   await waitForPageText(client, /Избранное|История|Мой профиль/, "Profile bottom nav did not render after saving Angel Numbers.");
@@ -499,6 +501,7 @@ async function runTarotSmoke(client, report) {
   await waitForPageText(client, /Сохранено/, "Tarot save did not show saved state.");
   await click(client, "Поделиться", { index: 1 });
   await waitForPageText(client, /Ссылка готова|Готово к отправке|Скопировано|Текст для копирования|Текст скопирован|Откройте Telegram/i, "Tarot share did not show safe share state.");
+  await assertLastShareText(client, report, "Tarot", ["символический расклад", "startapp=mystic"], ["Что мне выбрать?", "1998-06-15"]);
   await assertRetentionPrivacy(client, report);
   report.tarotFlowChecked = true;
   report.tarotCardsChecked = cardCount;
@@ -520,6 +523,7 @@ async function runRuneSmoke(client, report) {
   await waitForPageText(client, /Сохранено/, "Rune save did not show saved state.");
   await click(client, "Поделиться", { index: 1 });
   await waitForPageText(client, /Ссылка готова|Готово к отправке|Скопировано|Текст для копирования|Текст скопирован|Откройте Telegram/i, "Rune share did not show safe share state.");
+  await assertLastShareText(client, report, "Rune", ["символический расклад", "startapp=mystic"], ["Где нужна защита?", "1998-06-15"]);
   await assertRetentionPrivacy(client, report);
   report.runeFlowChecked = true;
   report.runesChecked = runeCount;
@@ -546,6 +550,7 @@ async function runLunarRitualSmoke(client, report) {
   await waitForPageText(client, /Сохранено/, "Lunar ritual save did not show saved state.");
   await click(client, "Поделиться");
   await waitForPageText(client, /Ссылка готова|Готово к отправке|Скопировано|Текст для копирования|Текст скопирован|Откройте Telegram/i, "Lunar ritual share did not show safe share state.");
+  await assertLastShareText(client, report, "Lunar/Ritual", ["лунный ритуал", "startapp=mystic"], ["Хочу спокойствия", "1998-06-15"]);
   await assertRetentionPrivacy(client, report);
   report.lunarRitualChecked = true;
   report.lunarCalendarVisualChecked = true;
@@ -581,6 +586,9 @@ async function runVipToolSmoke(client, label, report) {
 
   await clickAny(client, ["Поделиться картой", "Поделиться результатом"]);
   await waitForPageText(client, /Готово к отправке|Ссылка готова|Скопировано|Откройте Telegram|Не удалось открыть отправку|Текст для копирования|Текст скопирован/i, `VIP tool "${label}" did not show share state or safe share fallback.`);
+  if (label === "Расширенная натальная карта") {
+    await assertLastShareText(client, report, "Premium Natal", ["символическую натальную карту", "startapp=vip"], ["1998-06-15", "23:55", "Dnipro"]);
+  }
   report.vipShared += 1;
 
   if (label === "Помощник сообщений") {
@@ -1153,6 +1161,18 @@ async function assertNoNativeSelects(client, report, label) {
   report.customSelectChecked = true;
 }
 
+async function assertLastShareText(client, report, label, expectedFragments = [], forbiddenFragments = []) {
+  const shareText = await evalPage(client, "window.__zodiacLastShareText || ''", []);
+  if (!shareText) throw new Error(`${label} share did not expose a transient smoke share draft.`);
+  for (const fragment of expectedFragments) {
+    if (!String(shareText).includes(fragment)) throw new Error(`${label} share draft is missing expected fragment: ${fragment}`);
+  }
+  for (const fragment of forbiddenFragments) {
+    if (String(shareText).includes(fragment)) throw new Error(`${label} share draft leaked forbidden fragment: ${fragment}`);
+  }
+  report.safeShareDraftsChecked.push(label);
+}
+
 async function assertChartVisual(client, label, report) {
   const count = await evalPage(client, "window.__zodiacSmoke.chartVisualCount()", []);
   if (count < 1) throw new Error(`VIP tool "${label}" did not render an AstroChartVisual.`);
@@ -1239,6 +1259,7 @@ async function assertBirthMatrixDepth(client, report) {
   await waitForPageText(client, /Сохранено/, "Birth Matrix save did not show saved state.");
   await click(client, "Поделиться");
   await waitForPageText(client, /Ссылка готова|Готово к отправке|Скопировано|Текст для копирования|Текст скопирован|Откройте Telegram/i, "Birth Matrix share did not show safe share state.");
+  await assertLastShareText(client, report, "Birth Matrix", ["Матрицу судьбы", "startapp=birth_matrix"], ["1998-06-15", "23:55", "Dnipro"]);
   await assertRetentionPrivacy(client, report);
   report.birthMatrixDepthChecked = true;
 }
@@ -1508,6 +1529,7 @@ function createReport() {
     favoriteSaved: false,
     favoriteOpened: false,
     shareChecked: false,
+    safeShareDraftsChecked: [],
     localDataCleared: false,
     horoscopesChecked: false,
     angelNumbersChecked: false,
@@ -1585,6 +1607,7 @@ function printSummary(status, report) {
   console.log(`Favorites empty state checked: ${report.favoritesEmptyStateChecked ? "YES" : "NO"}`);
   console.log(`Favorite saved/opened: ${report.favoriteSaved && report.favoriteOpened ? "YES" : "NO"}`);
   console.log(`Share checked: ${report.shareChecked ? "YES" : "NO"}`);
+  console.log(`Safe share drafts checked: ${report.safeShareDraftsChecked.length ? report.safeShareDraftsChecked.join(", ") : "NO"}`);
   console.log(`Local data cleared: ${report.localDataCleared ? "YES" : "NO"}`);
   console.log(`Horoscopes checked: ${report.horoscopesChecked ? "YES" : "NO"}`);
   console.log(`Angel Numbers / Ангельские числа checked: ${report.angelNumbersChecked ? "YES" : "NO"}`);

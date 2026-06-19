@@ -697,10 +697,14 @@ export function ZodiacCompatibilityMiniApp({
   async function shareSafeAction(action: ZodiacRetentionDraft) {
     const text = buildSafeShareText(action);
     setShareFallbackText("");
-    trackZodiacMiniAppEvent("share_clicked", analyticsPayload({ section: "share", category: action.section, featureKey: action.featureKey, sign: action.sign }));
+    const payload = shareAnalyticsPayload(action);
+    trackZodiacMiniAppEvent("share_clicked", analyticsPayload({ ...payload, category: action.section, sign: action.sign }));
+    trackZodiacMiniAppEvent("share_cta_viewed", analyticsPayload(payload));
+    trackZodiacMiniAppEvent("share_started", analyticsPayload(payload));
     const appLink = `https://t.me/zodiac_love_check_bot?startapp=${shareStartParamForAction(action)}`;
     const result = await shareZodiacMiniAppContent({ text, url: appLink, telegramWebApp: telegram.webApp });
     setShareFallbackText(result.fallbackText ?? result.label);
+    trackZodiacMiniAppEvent("share_completed_or_fallback", analyticsPayload({ ...payload, category: result.method }));
     return result.label;
   }
 
@@ -4170,17 +4174,46 @@ function isMoreFeatureId(value: unknown): value is MoreFeatureId {
 
 function shareStartParamForAction(action: ZodiacRetentionDraft) {
   if (action.featureKey === "compatibilityTool" || action.section === "compatibility") {
-    if (action.relationshipMode === "reconciliation") return "compat_reconciliation";
-    if (action.relationshipMode === "love") return "compat_love";
     return "compat";
   }
   if (action.featureKey === "birthMatrix") return "birth_matrix";
-  if (action.featureKey === "angelNumbers" || action.featureKey === "vipAngelNumbers") return "angel_numbers";
+  if (action.featureKey === "angelNumbers" || action.featureKey === "vipAngelNumbers") return "compat";
   if (action.featureKey === "vipNatalChart" || action.featureKey === "natalChart" || action.section === "natal_chart") return "vip";
   if (action.featureKey === "vip" || String(action.featureKey || "").startsWith("vip")) return "vip";
   if (action.section === "mystic") return "mystic";
   if (action.featureKey === "weekForecast") return "week";
   return "compat";
+}
+
+function shareAnalyticsPayload(action: ZodiacRetentionDraft): ZodiacAnalyticsPayload {
+  return {
+    section: sanitizeShareSection(action.section),
+    featureKey: action.featureKey,
+    shareType: shareTypeForAction(action),
+    scoreTier: safeAnalyticsScoreTier(action.scoreTier),
+    resultTier: safeShareResultTier(action.archetype),
+  };
+}
+
+function shareTypeForAction(action: ZodiacRetentionDraft) {
+  if (action.featureKey === "compatibilityTool" || action.section === "compatibility") return "compatibility";
+  if (action.featureKey === "birthMatrix") return "birth_matrix";
+  if (action.featureKey === "lunarRitual") return "lunar_ritual";
+  if (action.featureKey === "tarotCard" || action.featureKey === "runeDay") return "tarot_rune";
+  if (action.featureKey === "angelNumbers" || action.featureKey === "vipAngelNumbers") return "angel_numbers";
+  if (action.featureKey === "vipNatalChart" || action.featureKey === "natalChart" || action.section === "natal_chart") return "premium_natal";
+  if (action.featureKey === "vip" || String(action.featureKey || "").startsWith("vip")) return "vip";
+  if (action.section === "profile" || action.section === "history" || action.section === "favorites") return "profile";
+  return "mini_app";
+}
+
+function safeShareResultTier(value?: string) {
+  return value === "soft" || value === "clear" || value === "deep" || value === "grounded" ? value : undefined;
+}
+
+function sanitizeShareSection(value?: string) {
+  if (!value) return "share";
+  return /^[A-Za-z0-9_-]{1,48}$/.test(value) ? value : "share";
 }
 
 function vipFeatureForNatalBlock(title: string): MoreFeatureId {
@@ -4205,33 +4238,28 @@ function natalVipBlockCategory(title: string) {
 }
 
 function buildSafeShareText(action: ZodiacRetentionDraft) {
-  const startParam = shareStartParamForAction(action);
-  const appLink = `https://t.me/zodiac_love_check_bot?startapp=${startParam}`;
   if (action.featureKey === "compatibilityTool" || action.section === "compatibility") {
-    const firstSign = signSlugs.has(action.firstSign || "") ? findSign(action.firstSign || "") : null;
-    const secondSign = signSlugs.has(action.secondSign || "") ? findSign(action.secondSign || "") : null;
-    const pairLabel = firstSign && secondSign ? `${firstSign.name} + ${secondSign.name}` : "пару знаков";
-    return `Я проверил(а) совместимость: ${pairLabel} ✨\nОткрой Mini App и попробуй безопасный расчёт без сохранения личных данных: ${appLink}`;
+    return "Я проверил(а) совместимость в Астрологическом центре ✨\nПопробуй тоже:";
   }
   if (action.featureKey === "birthMatrix") {
-    return `Открыл(а) Матрицу судьбы в Астрологическом центре ✨\nПопробуй свой расчёт: ${appLink}`;
+    return "Я открыл(а) Матрицу судьбы ✨\nПопробуй тоже:";
   }
   if (action.featureKey === "lunarRitual") {
-    return `Открыл(а) лунный ритуал в Астрологическом центре ✨\nПопробуй тоже: ${appLink}`;
+    return "Я открыл(а) лунный ритуал ✨\nПопробуй тоже:";
   }
   if (action.featureKey === "tarotCard" || action.featureKey === "runeDay") {
-    return `Открыл(а) символический расклад в Астрологическом центре ✨\nПопробуй тоже: ${appLink}`;
+    return "Я открыл(а) символический расклад ✨\nПопробуй тоже:";
   }
   if (action.featureKey === "angelNumbers" || action.featureKey === "vipAngelNumbers") {
-    return `Ангельские числа в Астрологическом центре 👼\nПосмотри значение своего знака: ${appLink}`;
+    return "Я проверил(а) значение ангельского числа ✨\nПопробуй тоже:";
   }
   if (action.featureKey === "vipNatalChart" || action.featureKey === "natalChart" || action.section === "natal_chart") {
-    return `Я открыл(а) натальную карту в Астрологическом центре ✨\nПопробуй тоже: ${appLink}`;
+    return "Я открыл(а) символическую натальную карту ✨\nПопробуй тоже:";
   }
   if (action.featureKey === "vip" || String(action.featureKey || "").startsWith("vip")) {
-    return `Открыл(а) VIP раздел в Астрологическом центре 👑\nСейчас доступ бесплатный до 17.09.2026: ${appLink}`;
+    return "Я открыл(а) VIP-инструмент в Астрологическом центре ✨\nПопробуй тоже:";
   }
-  return `Открыл(а) ${action.label || "раздел"} в Астрологическом центре ✨\nПопробуй тоже: ${appLink}`;
+  return "Я открыл(а) Астрологический центр ✨\nПопробуй тоже:";
 }
 
 function getDateOrdinal(dateIso: string) {

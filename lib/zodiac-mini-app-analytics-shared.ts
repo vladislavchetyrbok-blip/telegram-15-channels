@@ -11,6 +11,9 @@ export const ZODIAC_ANALYTICS_EVENTS = [
   "favorite_saved",
   "favorite_opened",
   "share_clicked",
+  "share_cta_viewed",
+  "share_started",
+  "share_completed_or_fallback",
   "dead_cta_resolved",
   "pair_required_action_clicked",
   "chart_visual_opened",
@@ -183,6 +186,7 @@ export interface ZodiacAnalyticsPayload {
   feedbackType?: string;
   ratingBucket?: string;
   hasComment?: boolean;
+  shareType?: string;
 }
 
 export interface SanitizedZodiacAnalyticsEvent extends ZodiacAnalyticsPayload {
@@ -217,6 +221,7 @@ const lunarDateBuckets = new Set(["today", "tomorrow", "custom"]);
 const lunarEnergyTiers = new Set(["soft", "active", "deep", "restorative", "focused", "intuitive"]);
 const feedbackTypes = new Set(["feedback", "bug", "idea"]);
 const feedbackRatingBuckets = new Set(["none", "1_3", "4_6", "7_8", "9_10"]);
+const shareTypes = new Set(["compatibility", "premium_natal", "birth_matrix", "tarot_rune", "lunar_ritual", "angel_numbers", "vip", "profile", "mini_app"]);
 const relationshipModes = new Set(["love", "friendship", "work", "family", "passion", "reconciliation"]);
 const patternTypes = new Set(["repeated", "mirror", "amplified", "custom", "fallback"]);
 const vipInputModes = new Set([
@@ -326,6 +331,7 @@ export function sanitizeZodiacAnalyticsPayload(input: unknown): ZodiacAnalyticsP
   const feedbackType = sanitizeEnum(raw.feedbackType, feedbackTypes);
   const ratingBucket = sanitizeEnum(raw.ratingBucket, feedbackRatingBuckets);
   const hasComment = sanitizeBoolean(raw.hasComment);
+  const shareType = sanitizeEnum(raw.shareType, shareTypes);
 
   if (dateKey) payload.dateKey = dateKey;
   if (section) payload.section = section;
@@ -368,6 +374,7 @@ export function sanitizeZodiacAnalyticsPayload(input: unknown): ZodiacAnalyticsP
   if (feedbackType) payload.feedbackType = feedbackType;
   if (ratingBucket) payload.ratingBucket = ratingBucket;
   if (typeof hasComment === "boolean") payload.hasComment = hasComment;
+  if (shareType) payload.shareType = shareType;
 
   return payload;
 }

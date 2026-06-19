@@ -21,6 +21,7 @@ The Zodiac product is ready for controlled live operation of the daily publishin
 - Analytics is privacy-safe but storage mode is currently `noop` unless Redis REST env vars are configured.
 - Production backup freshness is currently OK after backup `2026-06-19-01-06-53` and restore dry-run PASS.
 - Soft-launch pack is ready for `5-20` first users through `docs/zodiac-soft-launch-runbook.md`.
+- Safe share loop is ready for controlled testing: generic share drafts, no raw personal inputs, no referral IDs, and aggregate-only share lifecycle analytics.
 - Manual live publish remains forbidden unless a dry-run and ledger audit prove it is safe.
 
 ## Key Recent Commits

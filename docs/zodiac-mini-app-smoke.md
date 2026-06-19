@@ -31,6 +31,7 @@ npm run zodiac:miniapp:smoke -- --url http://localhost:3000/compatibility
 - Soft-launch feedback CTA is visible in Profile: `Оставить отзыв` / `Сообщить о баге`. The smoke opens the panel, selects a feature/type/rating, checks copy/share status, and verifies raw feedback text does not enter the generated draft or localStorage.
 - A safe Angel Numbers item can be saved, appears in Favorites/Profile, opens back into the feature, and can be cleared with `Очистить данные`.
 - Safe Share can be clicked without crashing; browser fallback shows copy text or a copied state.
+- Safe Share draft privacy is checked for Compatibility, Premium Natal, Birth Matrix, Tarot, Rune, Lunar/Ritual, and Angel Numbers. Drafts must contain the expected generic CTA and must not contain raw birth dates, birth time, city, tarot/rune question, lunar intention, or raw angel number input.
 - Mini App forms use custom `ZodiacSelect` controls in Telegram/browser mode; visible native `<select>` controls inside active Mini App screens are treated as a regression.
 - Compatibility follows `Compatibility -> Pair Setup -> Relationship Card -> 30-Day Couple Calendar -> Actions / Messages / Save / Share`.
 - Compatibility result must show the visual markers `Карта отношений`, `Главный совет`, `Эмоции`, `Общение`, and `Быт / ритм`, plus a non-empty `FinalAstroMap` with energy lines, arrows, and legend.
@@ -147,6 +148,7 @@ History empty state checked: YES
 Favorites empty state checked: YES
 Favorite saved/opened: YES
 Share checked: YES
+Safe share drafts checked: Compatibility, Angel Numbers, Tarot, Rune, Lunar/Ritual, Premium Natal, Birth Matrix
 Local data cleared: YES
 Console errors: 0
 Runtime errors: 0
