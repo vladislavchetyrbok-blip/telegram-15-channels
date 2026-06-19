@@ -27,6 +27,10 @@ default backend remains `none`, the test-memory adapter is check-only, productio
 Redis/Vercel KV/Supabase adapters are not wired, and profile sync reads/writes
 remain OFF.
 
+Package 42 adds a small disabled Profile Sync status block in `Мой профиль`.
+It is display-only: no toggle, no mounted provider, and no remote sync network
+calls while flags are OFF.
+
 ## Current Status
 
 The Zodiac product is ready for controlled live operation of the daily publishing lane and user-facing Mini App checks, with the following boundaries:
@@ -52,6 +56,9 @@ The Zodiac product is ready for controlled live operation of the daily publishin
   no provider is mounted and no remote reads/writes are active.
 - Profile Sync storage readiness is available for a future backend rollout, but
   production profile reads/writes remain fail-closed and OFF.
+- Profile shows that cross-device sync is currently disabled; History and
+  Favorites remain local-only and smoke checks that no profile sync API calls
+  happen while disabled.
 - Manual live publish remains forbidden unless a dry-run and ledger audit prove it is safe.
 
 ## Key Recent Commits
@@ -630,6 +637,23 @@ Status:
 
 Future rollout:
 
-1. Package 42: read-only remote fetch in test mode for an internal test user.
-2. Package 43: controlled cohort write with explicit backend.
-3. Package 44: conflict UX/status for users.
+1. Package 42: disabled status UI in Profile.
+2. Package 43: privacy stress tests and route hardening.
+3. Package 44: real astro engine provider fixture harness.
+4. Package 45: full safety regression after sync/astro foundations.
+
+## Package 42: Profile Sync Status UI
+
+Status:
+
+- Profile status UI: READY, disabled/no-network.
+- Text: `Синхронизация между устройствами: выключена`.
+- Mounted `ProfileSyncProvider`: NO.
+- Sync toggle/button: NO.
+- Remote GET/POST/DELETE from UI: NO.
+- Smoke guard for `/api/zodiac/profile/sync`: YES.
+- localStorage fallback: unchanged.
+- Profile sync enabled: NO.
+- Backend writes: NO.
+- Payments/Stars: OFF.
+- Weekly live: OFF.

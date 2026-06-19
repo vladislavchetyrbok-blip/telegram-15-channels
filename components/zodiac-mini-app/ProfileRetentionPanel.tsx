@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Bookmark, History, ShieldCheck, Trash2, User } from "lucide-react";
+import { Bookmark, CloudOff, History, ShieldCheck, Trash2, User } from "lucide-react";
 import type { ZodiacAnalyticsEventName, ZodiacAnalyticsPayload } from "@/lib/zodiac-mini-app-analytics-shared";
 import { relationshipModes } from "./constants";
 import { SoftLaunchFeedbackPanel } from "./SoftLaunchFeedbackPanel";
@@ -54,6 +54,16 @@ export function ProfileRetentionPanel({
         <ProfileStat publicMode={publicMode} label="Знак" value={signLabel} />
         <ProfileStat publicMode={publicMode} label="Последний раздел" value={lastSectionLabel} />
         <ProfileStat publicMode={publicMode} label="Совместимость" value={compatibilityModeLabel} />
+      </div>
+
+      <div className="mt-4 rounded-lg border border-sky-200/20 bg-sky-200/10 p-4">
+        <div className="flex items-start gap-3">
+          <CloudOff className="mt-0.5 h-5 w-5 shrink-0 text-sky-100" />
+          <div className="min-w-0">
+            <p className="text-sm font-semibold text-sky-50">Синхронизация между устройствами: выключена</p>
+            <p className="mt-2 text-sm leading-5 text-sky-50/85">История и избранное сейчас сохраняются только на этом устройстве.</p>
+          </div>
+        </div>
       </div>
 
       <div className="mt-4">

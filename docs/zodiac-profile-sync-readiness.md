@@ -18,6 +18,7 @@ This package does not enable remote sync for users.
 - Test-memory adapter: check-only
 - Frontend sync client scaffold: implemented, disabled by default
 - Frontend `ProfileSyncProvider`: not mounted
+- Profile UI sync status: visible as disabled/no-network
 - Pure merge logic: implemented, not wired to UI
 - Existing localStorage retention: unchanged
 
@@ -213,6 +214,20 @@ Current Package 39 behavior:
 - Push payloads are sanitized before any future network call.
 - Clear local data remains local-only.
 
+## Profile Status UI
+
+Package 42 adds an honest status block inside `Мой профиль`:
+
+```text
+Синхронизация между устройствами: выключена
+История и избранное сейчас сохраняются только на этом устройстве.
+```
+
+This is display-only. It has no toggle, no `sync now` button, no mounted
+`ProfileSyncProvider`, and no remote GET/POST/DELETE calls while sync flags are
+OFF. `npm run zodiac:miniapp:smoke` now fails if `/api/zodiac/profile/sync` is
+called during the disabled Profile flow.
+
 ## Read-Only Merge Logic
 
 Package 40 adds pure, disabled-by-default merge helpers:
@@ -254,6 +269,7 @@ The check uses fake deterministic Telegram auth data only. It verifies:
 - frontend fetch/push/delete do not call the network while disabled;
 - frontend client does not call the network outside Telegram or without
   `initData`;
+- Profile shows disabled sync status without calling `/api/zodiac/profile/sync`;
 - merge local-only, remote-only, and local+remote cases;
 - duplicate `id` and duplicate safe-key conflict resolution;
 - newest timestamp wins;
@@ -278,11 +294,15 @@ The check uses fake deterministic Telegram auth data only. It verifies:
 1. Routes disabled: current state.
 2. Pure merge utilities: current Package 40 state.
 3. Storage readiness and check-only memory adapter: current Package 41 state.
-4. Package 42: read-only remote fetch in test mode for an internal test user.
-5. Package 43: controlled cohort write with explicit storage backend.
-6. Package 44: conflict UX/status around `ProfileSyncProvider` with localStorage
+4. Disabled status UI in Profile: current Package 42 state.
+5. Package 43: privacy stress tests and route hardening.
+6. Package 44: real astro engine provider fixture harness.
+7. Package 45: full safety regression after sync/astro foundations.
+8. Future package: read-only remote fetch in test mode for an internal test user.
+9. Future package: controlled cohort write with explicit storage backend.
+10. Future package: conflict UX/status around `ProfileSyncProvider` with localStorage
    fallback and no automatic overwrite.
-7. Conflict/merge testing across two phones and Telegram desktop.
+11. Conflict/merge testing across two phones and Telegram desktop.
 
 Preferred backend order:
 

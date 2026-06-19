@@ -27,6 +27,10 @@ default backend remains `none`, test-memory is check-only, production
 Redis/Vercel KV/Supabase adapters are not wired, and profile sync reads/writes
 remain OFF.
 
+Package 42 adds a disabled Profile Sync status block in `Мой профиль`. It is
+display-only, has no toggle, does not mount a provider, and must not call
+`/api/zodiac/profile/sync` while flags are OFF.
+
 ## Release Candidate Status
 
 - RC status: READY for controlled `5-20` users.
@@ -40,6 +44,7 @@ remain OFF.
 - Profile Sync frontend scaffold: READY but disabled and not mounted.
 - Profile Sync merge logic: READY but disabled and not wired to UI.
 - Profile Sync storage readiness: READY but disabled, production writes OFF.
+- Profile Sync status UI: READY, disabled/no-network.
 
 ## Current Product Readiness
 
@@ -83,6 +88,7 @@ Mini App smoke baseline:
 - Real Astro Engine: readiness scaffold added, current natal chart remains symbolic, exact mode is `exact_unavailable`, and no fake planet/house/ascendant values are shown.
 - Profile Sync storage: backend `none`, production reads/writes OFF, check-only
   memory adapter for local validation.
+- Profile Sync UI status: visible in Profile as disabled; no remote sync calls.
 
 ## Manual Blockers Before Mass Launch
 
@@ -166,6 +172,15 @@ logs, and dashboards.
 - Env validation: presence-only; secret values must never be printed.
 - Remote sync for users: OFF.
 - Existing localStorage Profile/History/Favorites: unchanged.
+
+## Profile Sync Status UI
+
+- Visible in `Мой профиль`: YES.
+- Text: `Синхронизация между устройствами: выключена`.
+- Toggle or `sync now` button: NO.
+- Mounted provider: NO.
+- Remote profile sync network calls while disabled: `0`.
+- localStorage fallback remains the active storage for History/Favorites.
 
 Ask testers to open this from a phone inside Telegram.
 

@@ -104,6 +104,11 @@ async function main() {
 
   await client.close();
 
+  if (report.profileSyncNetworkCalls.length) {
+    printSummary("FAIL", report);
+    throw new Error(`Profile sync API must not be called while disabled: ${report.profileSyncNetworkCalls.join(" | ")}`);
+  }
+
   if (report.consoleErrors.length || report.runtimeErrors.length || report.networkErrors.length) {
     printSummary("FAIL", report);
     throw new Error(`Browser reported errors: console=${report.consoleErrors.length}, runtime=${report.runtimeErrors.length}, network=${report.networkErrors.length}.`);
@@ -127,9 +132,11 @@ async function runBrowserModeSmoke(client, report) {
 
   await click(client, "Мой профиль");
   await waitForPageText(client, /Мой профиль|Локальные данные/, "Profile screen did not render from main menu.");
+  await waitForPageText(client, /Синхронизация между устройствами: выключена|История и избранное сейчас сохраняются только на этом устройстве/, "Disabled profile sync status did not render.");
   await waitForPageText(client, /Здесь появятся последние расчёты и открытые разделы/, "History empty state did not render.");
   await waitForPageText(client, /Здесь появятся сохранённые расчёты и быстрые переходы/, "Favorites empty state did not render.");
   report.profileChecked = true;
+  report.profileSyncStatusChecked = true;
   report.historyEmptyStateChecked = true;
   report.favoritesEmptyStateChecked = true;
   await captureSmokeScreenshot(client, report, "profile-history-favorites");
@@ -759,7 +766,11 @@ function attachErrorCollectors(client, report) {
     if (event.entry?.level === "error") report.consoleErrors.push(event.entry.text || "Log error");
   });
   client.on("Network.requestWillBeSent", (event) => {
-    requestUrls.set(event.requestId, event.request?.url);
+    const url = event.request?.url || "";
+    requestUrls.set(event.requestId, url);
+    if (url.includes("/api/zodiac/profile/sync")) {
+      report.profileSyncNetworkCalls.push(`${event.request?.method || "GET"} ${url}`);
+    }
   });
   client.on("Network.responseReceived", (event) => {
     const status = event.response?.status;
@@ -1614,6 +1625,8 @@ function createReport() {
     feedbackDraftCopied: false,
     feedbackShareChecked: false,
     feedbackLocalStoragePrivacyChecked: false,
+    profileSyncStatusChecked: false,
+    profileSyncNetworkCalls: [],
     historyEmptyStateChecked: false,
     favoritesEmptyStateChecked: false,
     favoriteSaved: false,
@@ -1694,6 +1707,8 @@ function printSummary(status, report) {
   console.log(`Main menu checked: ${report.mainMenuChecked ? "YES" : "NO"}`);
   console.log(`Main menu categories checked: ${report.mainMenuCategoryCount}/10`);
   console.log(`Profile checked: ${report.profileChecked ? "YES" : "NO"}`);
+  console.log(`Profile sync status visible: ${report.profileSyncStatusChecked ? "YES" : "NO"}`);
+  console.log(`Profile sync network calls: ${report.profileSyncNetworkCalls.length}`);
   console.log(`Feedback CTA/panel checked: ${report.feedbackChecked ? "YES" : "NO"}`);
   console.log(`Feedback draft copy/share: ${report.feedbackDraftCopied && report.feedbackShareChecked ? "YES" : "NO"}`);
   console.log(`Feedback localStorage privacy checked: ${report.feedbackLocalStoragePrivacyChecked ? "YES" : "NO"}`);
@@ -1749,6 +1764,7 @@ function printSummary(status, report) {
   if (report.consoleErrors.length) console.log(`Console error sample: ${report.consoleErrors.slice(0, 3).join(" | ")}`);
   if (report.runtimeErrors.length) console.log(`Runtime error sample: ${report.runtimeErrors.slice(0, 3).join(" | ")}`);
   if (report.networkErrors.length) console.log(`Network error sample: ${report.networkErrors.slice(0, 3).join(" | ")}`);
+  if (report.profileSyncNetworkCalls.length) console.log(`Profile sync call sample: ${report.profileSyncNetworkCalls.slice(0, 3).join(" | ")}`);
 }
 
 function formatConsoleArgs(args = []) {
