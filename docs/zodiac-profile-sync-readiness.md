@@ -16,6 +16,7 @@ This package does not enable remote sync for users.
 - Backend storage: `none`
 - Frontend sync client scaffold: implemented, disabled by default
 - Frontend `ProfileSyncProvider`: not mounted
+- Pure merge logic: implemented, not wired to UI
 - Existing localStorage retention: unchanged
 
 ## Feature Flags
@@ -151,8 +152,32 @@ Current Package 39 behavior:
 - Push payloads are sanitized before any future network call.
 - Clear local data remains local-only.
 
-Remote merge is intentionally not implemented yet. A future package must add a
-controlled read-only merge test before write sync can be considered.
+## Read-Only Merge Logic
+
+Package 40 adds pure, disabled-by-default merge helpers:
+
+```text
+lib/zodiac-profile-sync-merge.ts
+lib/zodiac-profile-sync-retention-map.ts
+```
+
+The merge utility:
+
+- sanitizes local and remote payloads before merging;
+- preserves only safe history/favorites summary fields;
+- merges history append-only;
+- merges favorites as a deterministic set-like collection;
+- dedupes by safe `id`, or by a generated safe key when an item has no safe id;
+- keeps the newer timestamp when duplicates conflict;
+- sorts newest first;
+- clamps history/favorites to the configured max and the global sync max;
+- never throws on malformed input;
+- reports dropped/clamped/duplicate items and warnings;
+- produces a valid `syncVersion: 1` payload with a fresh `updatedAt`.
+
+This logic is not mounted, does not fetch remote data, does not POST/DELETE,
+and does not write to remote storage. It exists only for future read-only
+rollout tests.
 
 ## Check Command
 
@@ -168,6 +193,13 @@ The check uses fake deterministic Telegram auth data only. It verifies:
 - frontend fetch/push/delete do not call the network while disabled;
 - frontend client does not call the network outside Telegram or without
   `initData`;
+- merge local-only, remote-only, and local+remote cases;
+- duplicate `id` and duplicate safe-key conflict resolution;
+- newest timestamp wins;
+- max history/favorites clamp behavior;
+- malformed merge input does not throw;
+- retention-to-sync and sync-to-retention mapping keeps only safe summary
+  fields;
 - raw birth date, birth time, city, question, intention, feedback, result text,
   and raw initData are not preserved;
 - disabled route does not store data;
@@ -177,11 +209,12 @@ The check uses fake deterministic Telegram auth data only. It verifies:
 ## Future Rollout Phases
 
 1. Routes disabled: current state.
-2. Read-only remote profile endpoint for an internal test user.
-3. Frontend `ProfileSyncProvider` mounted in read-only mode with localStorage
+2. Pure merge utilities: current Package 40 state.
+3. Package 41: read-only remote fetch in test mode for an internal test user.
+4. Package 42: controlled cohort write with explicit storage backend.
+5. Package 43: conflict UX/status around `ProfileSyncProvider` with localStorage
    fallback and no automatic overwrite.
-4. Conflict/merge testing across two phones and Telegram desktop.
-5. Write-enabled controlled cohort with explicit storage backend.
+6. Conflict/merge testing across two phones and Telegram desktop.
 
 Preferred backend order:
 

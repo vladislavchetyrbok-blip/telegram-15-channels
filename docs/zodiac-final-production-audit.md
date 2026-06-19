@@ -19,6 +19,10 @@ scaffold. It does not mount a provider, show sync UI, auto-sync, call remote
 GET/POST/DELETE while disabled, enable backend writes, payments, Stars, or
 weekly live.
 
+Package 40 adds pure Profile Sync merge and retention-mapping helpers. It does
+not mount a provider, fetch remote data, write to any backend, enable profile
+sync, payments, Stars, or weekly live.
+
 ## Executive Status
 
 The Zodiac product is broadly production-ready for the current free-access phase:
@@ -35,6 +39,8 @@ The Zodiac product is broadly production-ready for the current free-access phase
 - Soft-launch release candidate snapshot is available at `docs/zodiac-soft-launch-release-candidate.md`.
 - Profile Sync frontend scaffold is ready for a future controlled rollout, but
   sync remains disabled, unmounted, and localStorage-only.
+- Profile Sync merge logic is ready for a future read-only rollout test, but no
+  remote reads/writes are active.
 
 Main remaining production gaps:
 
@@ -443,3 +449,31 @@ Current status:
 
 Next readiness step: a separate controlled read-only sync/merge package after
 real-phone Telegram WebView validation and storage backend review.
+
+## Package 40 Refresh: Profile Sync Read-Only Merge Logic
+
+Current status:
+
+- Pure merge utility: READY but disabled.
+- Retention mapper utility: READY but disabled.
+- Files: `lib/zodiac-profile-sync-merge.ts` and
+  `lib/zodiac-profile-sync-retention-map.ts`.
+- Provider mounted in Mini App: NO.
+- Remote GET from UI: NO.
+- Remote POST/DELETE from UI: NO.
+- Backend writes: NO.
+- Merge behavior: sanitize-first, history append-only, favorites set-like,
+  duplicate-safe, newest timestamp wins, newest-first sorting, max clamps, and
+  malformed input fail-safe.
+- Raw birth date/time/city/question/intention/feedback/result text sync: NO.
+- Raw initData sync/storage/analytics: NO.
+- Existing localStorage retention: unchanged.
+- Profile sync enabled: NO.
+- Payments/Stars: OFF.
+- Weekly live: OFF.
+
+Next readiness steps:
+
+1. Package 41: read-only remote fetch in test mode.
+2. Package 42: controlled cohort write with explicit storage backend.
+3. Package 43: conflict UX/status after two-device Telegram testing.

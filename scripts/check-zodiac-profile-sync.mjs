@@ -28,12 +28,16 @@ const forbiddenValues = [
 const loader = createTsLoader();
 const profileSync = loader.load(path.join(projectRoot, "lib", "zodiac-profile-sync.ts"));
 const profileSyncTypes = loader.load(path.join(projectRoot, "lib", "zodiac-profile-sync-types.ts"));
+const profileSyncMerge = loader.load(path.join(projectRoot, "lib", "zodiac-profile-sync-merge.ts"));
+const profileSyncRetentionMap = loader.load(path.join(projectRoot, "lib", "zodiac-profile-sync-retention-map.ts"));
 const profileSyncClient = loader.load(path.join(projectRoot, "components", "zodiac-mini-app", "profile-sync-client.ts"));
 const {
   getZodiacProfileSyncConfig,
   resolveZodiacProfileSyncRequest,
   sanitizeZodiacProfileSyncPayload,
 } = profileSync;
+const { mergeZodiacProfileSyncPayloads } = profileSyncMerge;
+const { retentionItemToSyncedItem, syncedItemToRetentionItem } = profileSyncRetentionMap;
 const {
   deleteRemoteProfileIfEnabled,
   fetchRemoteProfileIfEnabled,
@@ -61,6 +65,184 @@ const tests = [
       const item = result.payload.history[0];
       assert(item.unexpectedField === undefined, "unknown field should not survive");
       assert(result.strippedFields.includes("history.0.unexpectedField"), "unknown field should be reported");
+    },
+  },
+  {
+    name: "merge local only returns valid payload",
+    run: () => {
+      const result = mergeZodiacProfileSyncPayloads({
+        local: makeSyncPayload({ history: [makeSyncedItem("local-history", "birthMatrix", "2027-01-15T09:00:00.000Z")], favorites: [makeSyncedItem("local-favorite", "vipNatalChart", "2027-01-15T09:10:00.000Z")] }),
+        remote: null,
+        nowIso: fixedNowIso,
+      });
+      assert(result.payload.syncVersion === 1, "merge should produce syncVersion 1");
+      assert(result.localCount.history === 1 && result.remoteCount.history === 0, "local-only counts should be correct");
+      assert(result.mergedCount.history === 1 && result.mergedCount.favorites === 1, "local-only items should survive");
+    },
+  },
+  {
+    name: "merge remote only returns valid payload",
+    run: () => {
+      const result = mergeZodiacProfileSyncPayloads({
+        local: null,
+        remote: makeSyncPayload({ history: [makeSyncedItem("remote-history", "angelNumbers", "2027-01-15T09:00:00.000Z")] }),
+        nowIso: fixedNowIso,
+      });
+      assert(result.payload.syncVersion === 1, "remote-only merge should produce syncVersion 1");
+      assert(result.localCount.history === 0 && result.remoteCount.history === 1, "remote-only counts should be correct");
+      assert(result.payload.history[0].id === "remote-history", "remote-only item should survive");
+    },
+  },
+  {
+    name: "merge local and remote combines safe items",
+    run: () => {
+      const result = mergeZodiacProfileSyncPayloads({
+        local: makeSyncPayload({ history: [makeSyncedItem("local-history", "birthMatrix", "2027-01-15T09:00:00.000Z")] }),
+        remote: makeSyncPayload({ history: [makeSyncedItem("remote-history", "vipNatalChart", "2027-01-15T09:05:00.000Z")] }),
+        nowIso: fixedNowIso,
+      });
+      assert(result.mergedCount.history === 2, "local and remote history should be merged");
+      assert(result.changed === true, "remote item should make merged payload changed from local");
+    },
+  },
+  {
+    name: "merge duplicate id keeps newer timestamp",
+    run: () => {
+      const result = mergeZodiacProfileSyncPayloads({
+        local: makeSyncPayload({ history: [makeSyncedItem("same-id", "birthMatrix", "2027-01-15T09:00:00.000Z", { label: "Old matrix" })] }),
+        remote: makeSyncPayload({ history: [makeSyncedItem("same-id", "birthMatrix", "2027-01-15T09:30:00.000Z", { label: "New matrix" })] }),
+        nowIso: fixedNowIso,
+      });
+      assert(result.mergedCount.history === 1, "duplicate id should collapse to one item");
+      assert(result.payload.history[0].label === "New matrix", "newer duplicate id should win");
+      assert(result.dropped.some((item) => item.reason === "history_duplicate_newer_item_kept"), "duplicate drop should be reported");
+    },
+  },
+  {
+    name: "merge duplicate safe key without id keeps newer timestamp",
+    run: () => {
+      const local = makeSyncedItem(undefined, "angelNumbers", "2027-01-15T09:00:00.000Z", { label: "Angel 1111", section: "forecasts", sign: "gemini" });
+      const remote = makeSyncedItem(undefined, "angelNumbers", "2027-01-15T09:45:00.000Z", { label: "Angel 1111", section: "forecasts", sign: "gemini" });
+      const result = mergeZodiacProfileSyncPayloads({
+        local: makeSyncPayload({ history: [local] }),
+        remote: makeSyncPayload({ history: [remote] }),
+        nowIso: fixedNowIso,
+      });
+      assert(result.mergedCount.history === 1, "duplicate safe key should collapse to one item");
+      assert(result.payload.history[0].timestamp === "2027-01-15T09:45:00.000Z", "newer safe-key duplicate should win");
+      assert(Boolean(result.payload.history[0].id), "safe-key item should receive a safe generated id");
+    },
+  },
+  {
+    name: "merge strips unknown fields",
+    run: () => {
+      const result = mergeZodiacProfileSyncPayloads({
+        local: makeUnsafePayload(),
+        remote: null,
+        nowIso: fixedNowIso,
+      });
+      assert(!JSON.stringify(result.payload).includes("SHOULD_NOT_SURVIVE"), "unknown fields should not survive merge");
+    },
+  },
+  {
+    name: "merge strips raw birth date",
+    run: () => assertMergedOutputExcludes("1998-06-15"),
+  },
+  {
+    name: "merge strips raw birth time",
+    run: () => assertMergedOutputExcludes("23:55"),
+  },
+  {
+    name: "merge strips raw city",
+    run: () => assertMergedOutputExcludes("Dnipro"),
+  },
+  {
+    name: "merge strips raw question",
+    run: () => assertMergedOutputExcludes(rawQuestion),
+  },
+  {
+    name: "merge strips raw intention",
+    run: () => assertMergedOutputExcludes(rawIntention),
+  },
+  {
+    name: "merge strips raw feedback text",
+    run: () => assertMergedOutputExcludes(rawFeedback),
+  },
+  {
+    name: "merge strips raw result text",
+    run: () => assertMergedOutputExcludes(rawResultText),
+  },
+  {
+    name: "merge malformed payload does not throw",
+    run: () => {
+      const result = mergeZodiacProfileSyncPayloads({
+        local: "not-an-object",
+        remote: { history: "also-bad" },
+        nowIso: fixedNowIso,
+      });
+      assert(result.payload.syncVersion === 1, "malformed merge should still produce payload");
+      assert(result.mergedCount.history === 0, "malformed history should be empty");
+    },
+  },
+  {
+    name: "merge max history clamp works",
+    run: () => {
+      const result = mergeZodiacProfileSyncPayloads({
+        local: makeSyncPayload({ history: makeManySyncedItems("history", 5) }),
+        remote: null,
+        nowIso: fixedNowIso,
+        maxHistory: 3,
+      });
+      assert(result.payload.history.length === 3, "history should be clamped to maxHistory");
+      assert(result.dropped.some((item) => item.reason === "history_max_clamp"), "history clamp should be reported");
+    },
+  },
+  {
+    name: "merge max favorites clamp works",
+    run: () => {
+      const result = mergeZodiacProfileSyncPayloads({
+        local: makeSyncPayload({ favorites: makeManySyncedItems("favorite", 5) }),
+        remote: null,
+        nowIso: fixedNowIso,
+        maxFavorites: 2,
+      });
+      assert(result.payload.favorites.length === 2, "favorites should be clamped to maxFavorites");
+      assert(result.dropped.some((item) => item.reason === "favorites_max_clamp"), "favorites clamp should be reported");
+    },
+  },
+  {
+    name: "merge deterministic sorting newest first",
+    run: () => {
+      const result = mergeZodiacProfileSyncPayloads({
+        local: makeSyncPayload({
+          history: [
+            makeSyncedItem("old", "birthMatrix", "2027-01-15T09:00:00.000Z"),
+            makeSyncedItem("new", "vipNatalChart", "2027-01-15T11:00:00.000Z"),
+            makeSyncedItem("middle", "angelNumbers", "2027-01-15T10:00:00.000Z"),
+          ],
+        }),
+        remote: null,
+        nowIso: fixedNowIso,
+      });
+      assert(result.payload.history.map((item) => item.id).join(",") === "new,middle,old", "history should sort newest first");
+    },
+  },
+  {
+    name: "retention mapper keeps only safe summary fields",
+    run: () => {
+      const synced = retentionItemToSyncedItem({
+        id: "retention:birthMatrix",
+        featureKey: "birthMatrix",
+        section: "mystic",
+        label: "Birth Matrix safe label",
+        createdAt: "2027-01-15T09:00:00.000Z",
+        birthDate: "1998-06-15",
+        resultText: rawResultText,
+      }, { nowIso: fixedNowIso });
+      assert(synced?.timestamp === "2027-01-15T09:00:00.000Z", "retention createdAt should map to sync timestamp");
+      assert(!JSON.stringify(synced).includes("1998-06-15"), "retention mapper should strip raw birth date");
+      const retained = syncedItemToRetentionItem(synced, { nowIso: fixedNowIso });
+      assert(retained?.createdAt === "2027-01-15T09:00:00.000Z", "synced timestamp should map to retention createdAt");
     },
   },
   {
@@ -301,11 +483,55 @@ function makeUnsafePayload() {
   };
 }
 
+function makeSyncPayload({ history = [], favorites = [], updatedAt = fixedNowIso } = {}) {
+  return {
+    syncVersion: 1,
+    history,
+    favorites,
+    updatedAt,
+  };
+}
+
+function makeSyncedItem(id, featureKey, timestamp, overrides = {}) {
+  return {
+    id,
+    featureKey,
+    section: overrides.section ?? "mystic",
+    sign: overrides.sign,
+    firstSign: overrides.firstSign,
+    secondSign: overrides.secondSign,
+    mode: overrides.mode ?? "symbolic",
+    tier: overrides.tier,
+    scoreTier: overrides.scoreTier,
+    label: overrides.label ?? `${featureKey} safe summary`,
+    timestamp,
+  };
+}
+
+function makeManySyncedItems(prefix, count) {
+  return Array.from({ length: count }, (_, index) => makeSyncedItem(
+    `${prefix}-${index}`,
+    index % 2 === 0 ? "birthMatrix" : "vipNatalChart",
+    new Date(Date.parse("2027-01-15T09:00:00.000Z") + index * 60_000).toISOString(),
+    { label: `${prefix} ${index}` },
+  ));
+}
+
 function assertSanitizedOutputExcludes(forbiddenValue) {
   const result = sanitizeZodiacProfileSyncPayload(makeUnsafePayload(), { nowIso: fixedNowIso });
   assert(result.ok, "payload should sanitize");
   const serialized = JSON.stringify(result.payload);
   assert(!serialized.includes(forbiddenValue), `sanitized payload must not contain ${forbiddenValue}`);
+}
+
+function assertMergedOutputExcludes(forbiddenValue) {
+  const result = mergeZodiacProfileSyncPayloads({
+    local: makeUnsafePayload(),
+    remote: null,
+    nowIso: fixedNowIso,
+  });
+  const serialized = JSON.stringify(result.payload);
+  assert(!serialized.includes(forbiddenValue), `merged payload must not contain ${forbiddenValue}`);
 }
 
 function createSignedInitData({ userId }) {

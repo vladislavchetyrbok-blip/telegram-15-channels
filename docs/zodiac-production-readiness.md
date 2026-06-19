@@ -18,6 +18,10 @@ It is not mounted in the Mini App, does not show a sync UI, and does not call
 GET/POST/DELETE while sync flags are OFF. localStorage remains the source of
 truth for Profile, History, Favorites, and saved readings.
 
+Package 40 adds pure Profile Sync merge and retention-mapping helpers. They are
+not wired to UI, do not fetch remote profiles, do not write to any backend, and
+keep profile sync disabled by default.
+
 ## Current Status
 
 The Zodiac product is ready for controlled live operation of the daily publishing lane and user-facing Mini App checks, with the following boundaries:
@@ -39,6 +43,8 @@ The Zodiac product is ready for controlled live operation of the daily publishin
 - Monetization readiness is documented in `docs/zodiac-monetization-readiness.md`; payments, Telegram Stars, and entitlement enforcement remain OFF.
 - Frontend Profile Sync scaffold is available for a future controlled rollout,
   but sync remains disabled, unmounted, and localStorage-only.
+- Profile Sync merge logic is available for future read-only rollout tests, but
+  no provider is mounted and no remote reads/writes are active.
 - Manual live publish remains forbidden unless a dry-run and ledger audit prove it is safe.
 
 ## Key Recent Commits
@@ -569,3 +575,31 @@ NEXT_PUBLIC_ZODIAC_PROFILE_SYNC_WRITE_ENABLED=false
 Future rollout must start with a controlled read-only merge test. Write sync
 requires a separate package, explicit storage backend decision, and real-phone
 Telegram WebView validation.
+
+## Package 40: Profile Sync Read-Only Merge Logic
+
+Status:
+
+- Pure merge helper: READY but disabled.
+- Retention mapper helper: READY but disabled.
+- Files: `lib/zodiac-profile-sync-merge.ts` and
+  `lib/zodiac-profile-sync-retention-map.ts`.
+- Mounted in Mini App: NO.
+- Remote GET from UI: NO.
+- Remote POST/DELETE from UI: NO.
+- Backend writes: NO.
+- localStorage fallback: unchanged.
+- Merge behavior: sanitize-first, history append-only, favorites set-like,
+  duplicate-safe, newest timestamp wins, newest-first sorting, max clamps, and
+  malformed input fail-safe.
+- Raw birth date/time/city/question/intention/feedback/result text: stripped.
+- Raw `initData`: not stored, logged, or sent to analytics.
+- Profile sync enabled: NO.
+- Payments/Stars: OFF.
+- Weekly live: OFF.
+
+Future rollout:
+
+1. Package 41: read-only remote fetch in test mode.
+2. Package 42: controlled cohort write with explicit backend.
+3. Package 43: conflict UX/status for users.

@@ -18,6 +18,10 @@ Package 39 adds a disabled-by-default frontend Profile Sync client/hook
 scaffold. It is not mounted, does not show sync UI, and does not call remote
 GET/POST/DELETE while flags are OFF.
 
+Package 40 adds pure Profile Sync merge and retention-mapping helpers. They are
+not mounted, do not fetch remote profiles, do not write to backend storage, and
+keep sync disabled.
+
 ## Release Candidate Status
 
 - RC status: READY for controlled `5-20` users.
@@ -29,6 +33,7 @@ GET/POST/DELETE while flags are OFF.
 - Telegram initData auth foundation: READY, profile sync OFF.
 - Profile Sync API foundation: READY but disabled.
 - Profile Sync frontend scaffold: READY but disabled and not mounted.
+- Profile Sync merge logic: READY but disabled and not wired to UI.
 
 ## Current Product Readiness
 
@@ -126,6 +131,20 @@ logs, and dashboards.
 - localStorage remains the only active Profile/History/Favorites storage.
 - Future read-only sync rollout requires a separate package and real-phone
   Telegram WebView validation.
+
+## Profile Sync Merge Logic
+
+- Merge utility: `lib/zodiac-profile-sync-merge.ts`.
+- Retention mapper: `lib/zodiac-profile-sync-retention-map.ts`.
+- Mounted in Mini App: NO.
+- Remote reads/writes: NO.
+- Backend writes: NO.
+- Behavior: sanitize-first, append-only history merge, set-like favorites merge,
+  duplicate-safe, newest timestamp wins, deterministic newest-first sorting,
+  max clamps, and malformed input safe fallback.
+- Raw birth date/time/city/question/intention/feedback/result text: stripped.
+- Future rollout path: Package 41 read-only fetch, Package 42 controlled write,
+  Package 43 conflict UX/status.
 
 Ask testers to open this from a phone inside Telegram.
 
