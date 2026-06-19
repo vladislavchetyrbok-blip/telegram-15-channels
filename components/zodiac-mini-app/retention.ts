@@ -16,6 +16,10 @@ export interface ZodiacRetentionItem {
   scoreTier?: string;
   relationshipMode?: RelationshipMode;
   mode?: string;
+  topic?: string;
+  spreadType?: string;
+  cardKeys?: string[];
+  runeKeys?: string[];
   matrixType?: string;
   archetype?: string;
   mainNumber?: number;
@@ -155,11 +159,15 @@ function normalizeItem(value: ZodiacRetentionDraft | Partial<ZodiacRetentionItem
   const scoreTier = sanitizeToken(value.scoreTier);
   const relationshipMode = sanitizeRelationshipMode(value.relationshipMode);
   const mode = sanitizeToken(value.mode);
+  const topic = sanitizeToken(value.topic);
+  const spreadType = sanitizeToken(value.spreadType);
+  const cardKeys = sanitizeTokenArray(value.cardKeys);
+  const runeKeys = sanitizeTokenArray(value.runeKeys);
   const matrixType = sanitizeToken(value.matrixType);
   const archetype = sanitizeToken(value.archetype);
   const mainNumber = sanitizeSafeNumber(value.mainNumber);
   const detail = sanitizeLabel(value.detail);
-  const id = sanitizeToken(value.id) || [section, featureKey, sign, firstSign, secondSign, relationshipMode, mode, matrixType, archetype, mainNumber, label].filter(Boolean).join(":").slice(0, 140);
+  const id = sanitizeToken(value.id) || [section, featureKey, sign, firstSign, secondSign, relationshipMode, mode, topic, spreadType, cardKeys?.join("_"), runeKeys?.join("_"), matrixType, archetype, mainNumber, label].filter(Boolean).join(":").slice(0, 140);
   const createdAt = typeof value.createdAt === "string" && !Number.isNaN(Date.parse(value.createdAt)) ? value.createdAt : new Date().toISOString();
   return {
     id,
@@ -172,6 +180,10 @@ function normalizeItem(value: ZodiacRetentionDraft | Partial<ZodiacRetentionItem
     scoreTier,
     relationshipMode,
     mode,
+    topic,
+    spreadType,
+    cardKeys,
+    runeKeys,
     matrixType,
     archetype,
     mainNumber,
@@ -193,6 +205,12 @@ function sanitizeToken(value: unknown) {
   if (typeof value !== "string") return undefined;
   const normalized = value.trim();
   return /^[A-Za-z0-9_-]{1,64}$/.test(normalized) ? normalized : undefined;
+}
+
+function sanitizeTokenArray(value: unknown) {
+  if (!Array.isArray(value)) return undefined;
+  const tokens = value.map(sanitizeToken).filter((item): item is string => Boolean(item)).slice(0, 8);
+  return tokens.length ? tokens : undefined;
 }
 
 function sanitizeSafeNumber(value: unknown) {

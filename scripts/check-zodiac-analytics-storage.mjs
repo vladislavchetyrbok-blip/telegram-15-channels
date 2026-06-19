@@ -13,6 +13,7 @@ const clientPath = path.join(projectRoot, "lib", "zodiac-mini-app-analytics-clie
 const routePath = path.join(projectRoot, "app", "api", "zodiac", "analytics", "event", "route.ts");
 const dashboardPath = path.join(projectRoot, "app", "dashboard", "networks", "zodiac", "analytics", "page.tsx");
 const miniAppPath = path.join(projectRoot, "components", "ZodiacCompatibilityMiniApp.tsx");
+const mysticSectionsPath = path.join(projectRoot, "components", "ZodiacMysticSections.tsx");
 const vipSectionsPath = path.join(projectRoot, "components", "ZodiacVipSections.tsx");
 const miniAppAnalyticsPath = path.join(projectRoot, "components", "zodiac-mini-app", "analytics.ts");
 const featureRoutingPath = path.join(projectRoot, "components", "zodiac-mini-app", "feature-routing.ts");
@@ -76,7 +77,15 @@ const requiredCoverage = {
     "mystic_category_opened",
     "daily_card_opened",
     "tarot_card_opened",
+    "tarot_started",
+    "tarot_spread_calculated",
+    "tarot_spread_saved",
+    "tarot_spread_shared",
     "rune_day_opened",
+    "rune_started",
+    "rune_spread_calculated",
+    "rune_spread_saved",
+    "rune_spread_shared",
     "intuitive_sign_opened",
     "talismans_opened",
     "aura_color_opened",
@@ -87,6 +96,19 @@ const requiredCoverage = {
     "birth_matrix_calculated",
     "birth_matrix_saved",
     "birth_matrix_shared",
+  ],
+  tarotRune: [
+    "tarot_card_opened",
+    "tarot_started",
+    "tarot_spread_calculated",
+    "tarot_spread_saved",
+    "tarot_spread_shared",
+    "rune_day_opened",
+    "rune_started",
+    "rune_spread_calculated",
+    "rune_spread_saved",
+    "rune_spread_shared",
+    "feature_depth_viewed",
   ],
   birthMatrix: ["birth_matrix_opened", "birth_matrix_started", "birth_matrix_calculated", "birth_matrix_saved", "birth_matrix_shared", "feature_depth_viewed"],
   natal: [
@@ -177,6 +199,7 @@ async function main() {
   const usedEvents = extractUsedAnalyticsEvents([
     sources.miniApp,
     sources.miniAppAnalytics,
+    sources.mysticSections,
     sources.featureRouting,
     sources.vipSections,
   ]);
@@ -285,6 +308,7 @@ async function readSources() {
     ["client", clientPath],
     ["route", routePath],
     ["miniApp", miniAppPath],
+    ["mysticSections", mysticSectionsPath],
     ["vipSections", vipSectionsPath],
     ["miniAppAnalytics", miniAppAnalyticsPath],
     ["featureRouting", featureRoutingPath],

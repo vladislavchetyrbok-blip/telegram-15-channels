@@ -2,7 +2,9 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   generateDailyCard,
   generateTarotDay,
+  generateTarotSpread,
   generateRuneDay,
+  generateRuneSpread,
   generateIntuitiveSign,
   generateTalismans,
   generateAuraColor,
@@ -11,11 +13,18 @@ import {
   generateBirthMatrix,
   type BirthMatrixSectionId,
   type MysticBirthMatrix,
+  type MysticRuneSpread,
+  type MysticRuneSpreadMode,
+  type MysticTarotSpread,
+  type MysticTarotSpreadType,
+  type MysticTarotTopicId,
   ZodiacSignId,
 } from "../lib/zodiac-mystic-content";
 import type { ZodiacAnalyticsEventName, ZodiacAnalyticsPayload } from "@/lib/zodiac-mini-app-analytics-shared";
 import type { ZodiacRetentionDraft } from "./zodiac-mini-app/retention";
 import { BirthMatrixVisual } from "./zodiac-mini-app/BirthMatrixVisual";
+import { RuneSpreadVisual } from "./zodiac-mini-app/RuneSpreadVisual";
+import { TarotSpreadVisual } from "./zodiac-mini-app/TarotSpreadVisual";
 import { FeatureCard, EmptyFeatureCard } from "./zodiac-mini-app/ui-primitives";
 
 const signNames: Record<ZodiacSignId, string> = {
@@ -27,6 +36,36 @@ const signNames: Record<ZodiacSignId, string> = {
 interface CommonProps {
   publicMode: boolean;
 }
+
+type InteractiveMysticProps = CommonProps & {
+  dateKey: string;
+  sign: ZodiacSignId;
+  onSave?: (action: ZodiacRetentionDraft) => void;
+  onShare?: (action: ZodiacRetentionDraft) => Promise<string | void> | string | void;
+  onEvent?: (event: ZodiacAnalyticsEventName, payload: ZodiacAnalyticsPayload) => void;
+};
+
+const tarotTopics: Array<{ id: MysticTarotTopicId; label: string }> = [
+  { id: "love", label: "Любовь" },
+  { id: "money", label: "Деньги" },
+  { id: "work", label: "Работа" },
+  { id: "decision", label: "Решение" },
+  { id: "hidden_reason", label: "Скрытая причина" },
+  { id: "daily_advice", label: "Совет дня" },
+];
+
+const tarotSpreadOptions: Array<{ id: MysticTarotSpreadType; label: string; description: string }> = [
+  { id: "one_card", label: "1 карта", description: "быстрый совет" },
+  { id: "three_cards", label: "3 карты", description: "прошлое / настоящее / возможный шаг" },
+  { id: "five_cards", label: "5 карт", description: "ситуация / скрытое / ресурс / риск / действие" },
+];
+
+const runeModeOptions: Array<{ id: MysticRuneSpreadMode; label: string; description: string }> = [
+  { id: "daily_rune", label: "Руна дня", description: "главный символ дня" },
+  { id: "three_runes", label: "Три руны", description: "поддержка / риск / шаг" },
+  { id: "question_rune", label: "Руна на вопрос", description: "символический ответ без сохранения вопроса" },
+  { id: "protection_rune", label: "Руна защиты", description: "знак опоры и границы" },
+];
 
 export function DailyCardFeature({ publicMode, dateKey, sign }: CommonProps & { dateKey: string; sign: ZodiacSignId }) {
   const card = generateDailyCard(dateKey, sign);
@@ -46,7 +85,7 @@ export function DailyCardFeature({ publicMode, dateKey, sign }: CommonProps & { 
   );
 }
 
-export function TarotCardFeature({ publicMode, dateKey, sign }: CommonProps & { dateKey: string; sign: ZodiacSignId }) {
+export function LegacyTarotCardFeature({ publicMode, dateKey, sign }: CommonProps & { dateKey: string; sign: ZodiacSignId }) {
   const card = generateTarotDay(dateKey, sign);
   return (
     <FeatureCard publicMode={publicMode} title={`🃏 Таро дня: ${card.card}`} subtitle={card.mainMeaning}>
@@ -70,7 +109,7 @@ export function TarotCardFeature({ publicMode, dateKey, sign }: CommonProps & { 
   );
 }
 
-export function RuneDayFeature({ publicMode, dateKey, sign }: CommonProps & { dateKey: string; sign: ZodiacSignId }) {
+export function LegacyRuneDayFeature({ publicMode, dateKey, sign }: CommonProps & { dateKey: string; sign: ZodiacSignId }) {
   const rune = generateRuneDay(dateKey, sign);
   return (
     <FeatureCard publicMode={publicMode} title={`ᚱ Руна дня: ${rune.name} (${rune.symbol})`} subtitle={rune.mainMeaning}>
@@ -82,6 +121,268 @@ export function RuneDayFeature({ publicMode, dateKey, sign }: CommonProps & { da
         <div className={publicMode ? "rounded bg-white/10 p-3 text-center" : "rounded bg-slate-50 p-3 text-center"}>
           <p className={publicMode ? "text-sm font-medium text-white" : "text-sm font-medium text-slate-800"}>{rune.advice}</p>
         </div>
+      </div>
+    </FeatureCard>
+  );
+}
+
+export function TarotCardFeature({ publicMode, dateKey, sign, onSave, onShare, onEvent }: InteractiveMysticProps) {
+  const dayCard = useMemo(() => generateTarotDay(dateKey, sign), [dateKey, sign]);
+  const [topic, setTopic] = useState<MysticTarotTopicId>("decision");
+  const [spreadType, setSpreadType] = useState<MysticTarotSpreadType>("three_cards");
+  const [question, setQuestion] = useState("");
+  const [spread, setSpread] = useState<MysticTarotSpread | null>(null);
+  const [saveStatus, setSaveStatus] = useState("");
+  const [shareStatus, setShareStatus] = useState("");
+  const startedTrackedRef = useRef(false);
+
+  useEffect(() => {
+    if (startedTrackedRef.current) return;
+    startedTrackedRef.current = true;
+    onEvent?.("tarot_started", tarotAnalyticsPayload({ topic, spreadType }));
+  }, [onEvent, spreadType, topic]);
+
+  const action = useMemo(() => (spread ? buildTarotRetentionAction(spread) : null), [spread]);
+
+  const handleCalculate = () => {
+    const nextSpread = generateTarotSpread(dateKey, sign, topic, spreadType, question);
+    setSpread(nextSpread);
+    setSaveStatus("");
+    setShareStatus("");
+    onEvent?.("tarot_spread_calculated", tarotAnalyticsPayload(nextSpread));
+    onEvent?.("feature_depth_viewed", tarotAnalyticsPayload(nextSpread, "tarot_result"));
+  };
+
+  const handleSave = () => {
+    if (!action || !spread) return;
+    onSave?.(action);
+    onEvent?.("tarot_spread_saved", tarotAnalyticsPayload(spread));
+    setSaveStatus("Сохранено");
+  };
+
+  const handleShare = async () => {
+    if (!action || !spread) return;
+    onEvent?.("tarot_spread_shared", tarotAnalyticsPayload(spread));
+    const result = await onShare?.(action);
+    setShareStatus(typeof result === "string" && result ? result : "Ссылка готова");
+  };
+
+  return (
+    <FeatureCard publicMode={publicMode} title="🃏 Таро: символический расклад" subtitle="Выберите тему и тип расклада. Вопрос можно написать для себя: он не сохраняется и не уходит в аналитику.">
+      <div className="mt-4 space-y-4">
+        <div className={publicMode ? "rounded-lg border border-amber-200/20 bg-amber-200/10 p-3" : "rounded-lg border border-amber-200 bg-amber-50 p-3"}>
+          <p className={publicMode ? "text-xs font-semibold uppercase tracking-wide text-amber-100" : "text-xs font-semibold uppercase tracking-wide text-amber-800"}>Честно о формате</p>
+          <p className={publicMode ? "mt-1 text-sm leading-5 text-slate-200" : "mt-1 text-sm leading-5 text-slate-700"}>
+            Это символическая интерпретация для размышления и выбора действия, а не фатальное предсказание. Карта дня для фона: <strong>{dayCard.card}</strong> — {dayCard.mainMeaning}.
+          </p>
+        </div>
+
+        <div>
+          <p className={publicMode ? "mb-2 text-sm font-semibold text-white" : "mb-2 text-sm font-semibold text-slate-900"}>Тема вопроса</p>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+            {tarotTopics.map((item) => (
+              <button key={item.id} type="button" onClick={() => setTopic(item.id)} className={choiceButtonClass(publicMode, topic === item.id)}>
+                {item.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <label className={publicMode ? "mb-2 block text-sm font-semibold text-white" : "mb-2 block text-sm font-semibold text-slate-900"} htmlFor="tarot-question">
+            Сформулируйте вопрос
+          </label>
+          <textarea
+            id="tarot-question"
+            value={question}
+            onChange={(event) => setQuestion(event.target.value.slice(0, 160))}
+            placeholder="Например: что мне выбрать? Поле необязательное и не сохраняется."
+            className={
+              publicMode
+                ? "min-h-24 w-full rounded-lg border border-white/15 bg-white/7 px-3 py-3 text-sm text-white placeholder-slate-500 focus:border-amber-200 focus:outline-none"
+                : "min-h-24 w-full rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-amber-400 focus:outline-none"
+            }
+          />
+          <p className={publicMode ? "mt-1 text-xs text-slate-400" : "mt-1 text-xs text-slate-500"}>Сырой текст вопроса не сохраняется в истории, избранном, share или analytics.</p>
+        </div>
+
+        <div>
+          <p className={publicMode ? "mb-2 text-sm font-semibold text-white" : "mb-2 text-sm font-semibold text-slate-900"}>Тип расклада</p>
+          <div className="grid gap-2">
+            {tarotSpreadOptions.map((item) => (
+              <button key={item.id} type="button" onClick={() => setSpreadType(item.id)} className={choiceButtonClass(publicMode, spreadType === item.id)}>
+                <span className="block text-left">{item.label}</span>
+                <span className={publicMode ? "mt-1 block text-left text-xs font-normal text-slate-300" : "mt-1 block text-left text-xs font-normal text-slate-500"}>{item.description}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <button type="button" onClick={handleCalculate} className={primaryMysticButtonClass(publicMode)}>
+          Рассчитать расклад
+        </button>
+
+        {spread ? (
+          <div className="space-y-4">
+            <div className={publicMode ? "rounded-xl border border-white/10 bg-white/7 p-4" : "rounded-xl border border-slate-200 bg-white p-4"}>
+              <p className={publicMode ? "text-xs font-semibold uppercase tracking-wide text-amber-100" : "text-xs font-semibold uppercase tracking-wide text-amber-700"}>Hero summary</p>
+              <h3 className={publicMode ? "mt-1 text-xl font-semibold text-white" : "mt-1 text-xl font-semibold text-slate-950"}>{spread.spreadLabel} · {spread.topicLabel}</h3>
+              <p className={publicMode ? "mt-2 text-sm leading-6 text-slate-300" : "mt-2 text-sm leading-6 text-slate-600"}>{spread.hero}</p>
+            </div>
+
+            <TarotSpreadVisual publicMode={publicMode} spread={spread} />
+
+            <MysticResultBlock publicMode={publicMode} title="Краткий ответ" body={spread.shortAnswer} />
+            <div className={publicMode ? "rounded-xl border border-white/10 bg-white/7 p-4" : "rounded-xl border border-slate-200 bg-white p-4"}>
+              <p className={publicMode ? "text-sm font-semibold text-white" : "text-sm font-semibold text-slate-900"}>Карты расклада</p>
+              <div className="mt-3 grid gap-2">
+                {spread.cards.map((item) => (
+                  <div key={`deep-${item.key}`} className={publicMode ? "rounded-lg border border-white/10 bg-black/15 p-3" : "rounded-lg border border-slate-100 bg-slate-50 p-3"}>
+                    <p className={publicMode ? "text-xs font-semibold uppercase tracking-wide text-amber-100" : "text-xs font-semibold uppercase tracking-wide text-amber-700"}>{item.position}</p>
+                    <p className={publicMode ? "mt-1 text-sm font-semibold text-white" : "mt-1 text-sm font-semibold text-slate-900"}>{item.card.card}</p>
+                    <p className={publicMode ? "mt-2 text-sm leading-5 text-slate-300" : "mt-2 text-sm leading-5 text-slate-600"}>{item.deepMeaning}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <MysticResultBlock publicMode={publicMode} title="Скрытый смысл" body={spread.hiddenMeaning} />
+            <MysticResultBlock publicMode={publicMode} title="Риск" body={spread.risk} tone="risk" />
+            <MysticResultBlock publicMode={publicMode} title="Действие сегодня" body={spread.actionToday} tone="action" />
+            <MysticResultBlock publicMode={publicMode} title="Что не делать" body={spread.avoidToday} />
+            <MysticResultBlock publicMode={publicMode} title="Итоговый вывод" body={spread.conclusion} tone="action" />
+
+            <div className="grid gap-2 sm:grid-cols-2">
+              <button type="button" onClick={handleSave} className={secondaryMysticButtonClass(publicMode)}>
+                Сохранить расклад
+              </button>
+              <button type="button" onClick={handleShare} className={secondaryMysticButtonClass(publicMode)}>
+                Поделиться
+              </button>
+            </div>
+            {saveStatus || shareStatus ? <p className={publicMode ? "text-center text-sm font-semibold text-emerald-300" : "text-center text-sm font-semibold text-emerald-700"}>{saveStatus || shareStatus}</p> : null}
+          </div>
+        ) : (
+          <p className={publicMode ? "text-center text-sm text-slate-400" : "text-center text-sm text-slate-500"}>Выберите тему и нажмите «Рассчитать расклад», чтобы открыть визуальные карты и интерпретацию.</p>
+        )}
+      </div>
+    </FeatureCard>
+  );
+}
+
+export function RuneDayFeature({ publicMode, dateKey, sign, onSave, onShare, onEvent }: InteractiveMysticProps) {
+  const dayRune = useMemo(() => generateRuneDay(dateKey, sign), [dateKey, sign]);
+  const [runeMode, setRuneMode] = useState<MysticRuneSpreadMode>("daily_rune");
+  const [question, setQuestion] = useState("");
+  const [spread, setSpread] = useState<MysticRuneSpread | null>(null);
+  const [saveStatus, setSaveStatus] = useState("");
+  const [shareStatus, setShareStatus] = useState("");
+  const startedTrackedRef = useRef(false);
+
+  useEffect(() => {
+    if (startedTrackedRef.current) return;
+    startedTrackedRef.current = true;
+    onEvent?.("rune_started", runeAnalyticsPayload({ runeMode }));
+  }, [onEvent, runeMode]);
+
+  const action = useMemo(() => (spread ? buildRuneRetentionAction(spread) : null), [spread]);
+
+  const handleCalculate = () => {
+    const nextSpread = generateRuneSpread(dateKey, sign, runeMode, question);
+    setSpread(nextSpread);
+    setSaveStatus("");
+    setShareStatus("");
+    onEvent?.("rune_spread_calculated", runeAnalyticsPayload(nextSpread));
+    onEvent?.("feature_depth_viewed", runeAnalyticsPayload(nextSpread, "rune_result"));
+  };
+
+  const handleSave = () => {
+    if (!action || !spread) return;
+    onSave?.(action);
+    onEvent?.("rune_spread_saved", runeAnalyticsPayload(spread));
+    setSaveStatus("Сохранено");
+  };
+
+  const handleShare = async () => {
+    if (!action || !spread) return;
+    onEvent?.("rune_spread_shared", runeAnalyticsPayload(spread));
+    const result = await onShare?.(action);
+    setShareStatus(typeof result === "string" && result ? result : "Ссылка готова");
+  };
+
+  return (
+    <FeatureCard publicMode={publicMode} title="ᚱ Руны: символический расклад" subtitle="Выберите режим рунической подсказки. Вопрос можно держать на экране, но он не сохраняется.">
+      <div className="mt-4 space-y-4">
+        <div className={publicMode ? "rounded-lg border border-cyan-200/20 bg-cyan-200/10 p-3" : "rounded-lg border border-cyan-200 bg-cyan-50 p-3"}>
+          <p className={publicMode ? "text-xs font-semibold uppercase tracking-wide text-cyan-100" : "text-xs font-semibold uppercase tracking-wide text-cyan-800"}>Честно о формате</p>
+          <p className={publicMode ? "mt-1 text-sm leading-5 text-slate-200" : "mt-1 text-sm leading-5 text-slate-700"}>
+            Руны работают как символическая подсказка для внимания и действия. Руна дня для фона: <strong>{dayRune.name}</strong> — {dayRune.mainMeaning}.
+          </p>
+        </div>
+
+        <div>
+          <p className={publicMode ? "mb-2 text-sm font-semibold text-white" : "mb-2 text-sm font-semibold text-slate-900"}>Режим</p>
+          <div className="grid gap-2 sm:grid-cols-2">
+            {runeModeOptions.map((item) => (
+              <button key={item.id} type="button" onClick={() => setRuneMode(item.id)} className={choiceButtonClass(publicMode, runeMode === item.id)}>
+                <span className="block text-left">{item.label}</span>
+                <span className={publicMode ? "mt-1 block text-left text-xs font-normal text-slate-300" : "mt-1 block text-left text-xs font-normal text-slate-500"}>{item.description}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <label className={publicMode ? "mb-2 block text-sm font-semibold text-white" : "mb-2 block text-sm font-semibold text-slate-900"} htmlFor="rune-question">
+            Вопрос к рунам
+          </label>
+          <textarea
+            id="rune-question"
+            value={question}
+            onChange={(event) => setQuestion(event.target.value.slice(0, 160))}
+            placeholder="Можно написать вопрос для себя. Текст не сохраняется."
+            className={
+              publicMode
+                ? "min-h-20 w-full rounded-lg border border-white/15 bg-white/7 px-3 py-3 text-sm text-white placeholder-slate-500 focus:border-cyan-200 focus:outline-none"
+                : "min-h-20 w-full rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-cyan-400 focus:outline-none"
+            }
+          />
+          <p className={publicMode ? "mt-1 text-xs text-slate-400" : "mt-1 text-xs text-slate-500"}>В сохранение и аналитику попадет только режим и безопасные ключи рун.</p>
+        </div>
+
+        <button type="button" onClick={handleCalculate} className={primaryMysticButtonClass(publicMode)}>
+          Рассчитать руны
+        </button>
+
+        {spread ? (
+          <div className="space-y-4">
+            <div className={publicMode ? "rounded-xl border border-white/10 bg-white/7 p-4" : "rounded-xl border border-slate-200 bg-white p-4"}>
+              <p className={publicMode ? "text-xs font-semibold uppercase tracking-wide text-cyan-100" : "text-xs font-semibold uppercase tracking-wide text-cyan-700"}>Hero summary</p>
+              <h3 className={publicMode ? "mt-1 text-xl font-semibold text-white" : "mt-1 text-xl font-semibold text-slate-950"}>{spread.modeLabel}</h3>
+              <p className={publicMode ? "mt-2 text-sm leading-6 text-slate-300" : "mt-2 text-sm leading-6 text-slate-600"}>{spread.hero}</p>
+            </div>
+
+            <RuneSpreadVisual publicMode={publicMode} spread={spread} />
+
+            <MysticResultBlock publicMode={publicMode} title="Главная руна" body={`${spread.mainRune.rune.name}: ${spread.mainRune.rune.mainMeaning}`} />
+            <MysticResultBlock publicMode={publicMode} title="Сила" body={spread.power} tone="action" />
+            <MysticResultBlock publicMode={publicMode} title="Риск" body={spread.risk} tone="risk" />
+            <MysticResultBlock publicMode={publicMode} title="Совет" body={spread.advice} />
+            <MysticResultBlock publicMode={publicMode} title="Действие сегодня" body={spread.actionToday} tone="action" />
+            <MysticResultBlock publicMode={publicMode} title="Талисман" body={spread.talisman} />
+
+            <div className="grid gap-2 sm:grid-cols-2">
+              <button type="button" onClick={handleSave} className={secondaryMysticButtonClass(publicMode)}>
+                Сохранить расклад
+              </button>
+              <button type="button" onClick={handleShare} className={secondaryMysticButtonClass(publicMode)}>
+                Поделиться
+              </button>
+            </div>
+            {saveStatus || shareStatus ? <p className={publicMode ? "text-center text-sm font-semibold text-emerald-300" : "text-center text-sm font-semibold text-emerald-700"}>{saveStatus || shareStatus}</p> : null}
+          </div>
+        ) : (
+          <p className={publicMode ? "text-center text-sm text-slate-400" : "text-center text-sm text-slate-500"}>Выберите режим и нажмите «Рассчитать руны», чтобы открыть визуальный расклад.</p>
+        )}
       </div>
     </FeatureCard>
   );
@@ -419,6 +720,129 @@ function Metric({ publicMode, label, value }: { publicMode: boolean; label: stri
       <p className={publicMode ? "mt-1 text-2xl font-bold text-indigo-200" : "mt-1 text-2xl font-bold text-indigo-700"}>{value}</p>
     </div>
   );
+}
+
+function MysticResultBlock({ publicMode, title, body, tone = "default" }: { publicMode: boolean; title: string; body: string; tone?: "default" | "risk" | "action" }) {
+  const toneClass =
+    tone === "risk"
+      ? publicMode
+        ? "border-rose-200/20 bg-rose-200/10"
+        : "border-rose-200 bg-rose-50"
+      : tone === "action"
+        ? publicMode
+          ? "border-emerald-200/20 bg-emerald-200/10"
+          : "border-emerald-200 bg-emerald-50"
+        : publicMode
+          ? "border-white/10 bg-white/7"
+          : "border-slate-200 bg-white";
+  const titleClass =
+    tone === "risk"
+      ? publicMode
+        ? "text-rose-100"
+        : "text-rose-800"
+      : tone === "action"
+        ? publicMode
+          ? "text-emerald-100"
+          : "text-emerald-800"
+        : publicMode
+          ? "text-white"
+          : "text-slate-900";
+
+  return (
+    <div className={`rounded-xl border p-4 ${toneClass}`}>
+      <p className={`text-sm font-semibold ${titleClass}`}>{title}</p>
+      <p className={publicMode ? "mt-2 text-sm leading-6 text-slate-300" : "mt-2 text-sm leading-6 text-slate-600"}>{body}</p>
+    </div>
+  );
+}
+
+function choiceButtonClass(publicMode: boolean, active: boolean) {
+  if (active) {
+    return publicMode
+      ? "min-h-11 rounded-lg border border-amber-200/45 bg-amber-200/15 px-3 py-2 text-sm font-semibold text-amber-50"
+      : "min-h-11 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-900";
+  }
+  return publicMode
+    ? "min-h-11 rounded-lg border border-white/10 bg-white/7 px-3 py-2 text-sm font-semibold text-slate-300 hover:bg-white/12"
+    : "min-h-11 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50";
+}
+
+function primaryMysticButtonClass(publicMode: boolean) {
+  return publicMode
+    ? "min-h-12 w-full rounded-xl bg-gradient-to-r from-amber-300 via-fuchsia-300 to-cyan-300 px-4 py-3 text-sm font-bold text-slate-950 shadow-lg shadow-amber-950/20"
+    : "min-h-12 w-full rounded-xl bg-gradient-to-r from-amber-500 via-fuchsia-500 to-cyan-500 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-slate-900/15";
+}
+
+function secondaryMysticButtonClass(publicMode: boolean) {
+  return publicMode
+    ? "min-h-11 rounded-lg border border-white/15 bg-white/8 px-3 text-sm font-semibold text-white hover:bg-white/12"
+    : "min-h-11 rounded-lg border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-800 hover:bg-slate-50";
+}
+
+function buildTarotRetentionAction(spread: MysticTarotSpread): ZodiacRetentionDraft {
+  return {
+    section: "mystic",
+    featureKey: "tarotCard",
+    label: `Таро: ${spread.spreadLabel}`,
+    mode: "tarot",
+    topic: spread.topic,
+    spreadType: spread.spreadType,
+    cardKeys: spread.cardKeys,
+    matrixType: spread.spreadType,
+    archetype: spread.topic,
+    mainNumber: spread.cardCount,
+    detail: spread.cardKeys.join(" "),
+  };
+}
+
+function buildRuneRetentionAction(spread: MysticRuneSpread): ZodiacRetentionDraft {
+  return {
+    section: "mystic",
+    featureKey: "runeDay",
+    label: `Руны: ${spread.modeLabel}`,
+    mode: "rune",
+    topic: spread.runeMode,
+    spreadType: spread.runeMode,
+    runeKeys: spread.runeKeys,
+    matrixType: spread.runeMode,
+    archetype: spread.resultTier,
+    mainNumber: spread.runeCount,
+    detail: spread.runeKeys.join(" "),
+  };
+}
+
+function tarotAnalyticsPayload(
+  value: MysticTarotSpread | { topic: MysticTarotTopicId; spreadType: MysticTarotSpreadType },
+  category = "tarot_spread",
+): ZodiacAnalyticsPayload {
+  const hasResult = "cardCount" in value;
+  return {
+    section: "mystic",
+    category,
+    featureKey: "tarotCard",
+    mode: "tarot",
+    topic: value.topic,
+    spreadType: value.spreadType,
+    cardCount: hasResult ? value.cardCount : undefined,
+    resultTier: hasResult ? value.resultTier : undefined,
+  };
+}
+
+function runeAnalyticsPayload(
+  value: MysticRuneSpread | { runeMode: MysticRuneSpreadMode },
+  category = "rune_spread",
+): ZodiacAnalyticsPayload {
+  const hasResult = "runeCount" in value;
+  return {
+    section: "mystic",
+    category,
+    featureKey: "runeDay",
+    mode: "rune",
+    topic: value.runeMode,
+    spreadType: value.runeMode,
+    runeCount: hasResult ? value.runeCount : undefined,
+    resultTier: hasResult ? value.resultTier : undefined,
+  };
 }
 
 function buildBirthMatrixRetentionAction(matrix: MysticBirthMatrix): ZodiacRetentionDraft {

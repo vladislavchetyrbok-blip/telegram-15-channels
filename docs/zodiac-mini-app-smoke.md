@@ -58,6 +58,21 @@ npm run zodiac:miniapp:smoke -- --url http://localhost:3000/compatibility
 - Telegram haptics are callable and do not throw.
 - Browser console, runtime, and HTTP/network errors are collected.
 
+## Tarot / Rune Richer Flow Checks
+
+The smoke command now verifies the richer Mystic Tarot/Rune flow, not only that the screens open.
+
+- Tarot: opens `Таро`, selects `Решение`, selects `3 карты`, enters a test question, calculates, checks `data-tarot-spread-visual`, 3 visible cards, spread positions, `Краткий ответ`, `Действие сегодня`, safe Save, safe Share, and localStorage privacy.
+- Rune: opens `Руна`, selects `Три руны`, enters a test question, calculates, checks `data-rune-spread-visual`, 3 visible runes, `Главная руна`, `Сила`, `Риск`, `Действие сегодня`, `Талисман`, safe Save, safe Share, and localStorage privacy.
+- The raw test questions must not appear in retention localStorage, analytics payloads, share text, or saved shortcuts.
+
+Expected PASS summary includes:
+
+```text
+Tarot richer spread checked: YES (3/3 cards)
+Rune richer spread checked: YES (3/3 runes)
+```
+
 ## Result Meanings
 
 - `Mini App Smoke: PASS` means the browser flow, Telegram mock flow, VIP, Mystic, and error checks completed successfully.

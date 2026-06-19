@@ -79,7 +79,15 @@ export const ZODIAC_ANALYTICS_EVENTS = [
   "mystic_category_opened",
   "daily_card_opened",
   "tarot_card_opened",
+  "tarot_started",
+  "tarot_spread_calculated",
+  "tarot_spread_saved",
+  "tarot_spread_shared",
   "rune_day_opened",
+  "rune_started",
+  "rune_spread_calculated",
+  "rune_spread_saved",
+  "rune_spread_shared",
   "intuitive_sign_opened",
   "talismans_opened",
   "aura_color_opened",
@@ -122,7 +130,7 @@ export const ZODIAC_ANALYTICS_EVENTS = [
 
 export type ZodiacAnalyticsEventName = (typeof ZODIAC_ANALYTICS_EVENTS)[number];
 
-export type ZodiacAnalyticsMode = "fast" | "personal" | "precise";
+export type ZodiacAnalyticsMode = "fast" | "personal" | "precise" | "tarot" | "rune";
 export type ZodiacAnalyticsScoreTier = "strong" | "good" | "medium" | "difficult" | "tense";
 
 export interface ZodiacAnalyticsPayload {
@@ -145,6 +153,11 @@ export interface ZodiacAnalyticsPayload {
   hasName?: boolean;
   hasSecondName?: boolean;
   featureKey?: string;
+  topic?: string;
+  spreadType?: string;
+  cardCount?: number;
+  runeCount?: number;
+  resultTier?: string;
   selectedPresetKey?: string;
   patternType?: string;
   inputMode?: string;
@@ -182,8 +195,9 @@ const zodiacSignSlugs = new Set([
   "pisces",
 ]);
 
-const modes = new Set(["fast", "personal", "precise"]);
+const modes = new Set(["fast", "personal", "precise", "tarot", "rune"]);
 const scoreTiers = new Set(["strong", "good", "medium", "difficult", "tense"]);
+const spreadResultTiers = new Set(["soft", "clear", "deep", "grounded"]);
 const relationshipModes = new Set(["love", "friendship", "work", "family", "passion", "reconciliation"]);
 const patternTypes = new Set(["repeated", "mirror", "amplified", "custom", "fallback"]);
 const vipInputModes = new Set([
@@ -270,6 +284,11 @@ export function sanitizeZodiacAnalyticsPayload(input: unknown): ZodiacAnalyticsP
   const hasName = sanitizeBoolean(raw.hasName);
   const hasSecondName = sanitizeBoolean(raw.hasSecondName);
   const featureKey = sanitizeToken(raw.featureKey, 64);
+  const topic = sanitizeToken(raw.topic, 64);
+  const spreadType = sanitizeToken(raw.spreadType, 64);
+  const cardCount = sanitizeSafeInteger(raw.cardCount, 1, 5);
+  const runeCount = sanitizeSafeInteger(raw.runeCount, 1, 3);
+  const resultTier = sanitizeEnum(raw.resultTier, spreadResultTiers);
   const selectedPresetKey = sanitizeToken(raw.selectedPresetKey, 64);
   const patternType = sanitizeEnum(raw.patternType, patternTypes);
   const inputMode = sanitizeEnum(raw.inputMode, vipInputModes);
@@ -300,6 +319,11 @@ export function sanitizeZodiacAnalyticsPayload(input: unknown): ZodiacAnalyticsP
   if (typeof hasName === "boolean") payload.hasName = hasName;
   if (typeof hasSecondName === "boolean") payload.hasSecondName = hasSecondName;
   if (featureKey) payload.featureKey = featureKey;
+  if (topic) payload.topic = topic;
+  if (spreadType) payload.spreadType = spreadType;
+  if (typeof cardCount === "number") payload.cardCount = cardCount;
+  if (typeof runeCount === "number") payload.runeCount = runeCount;
+  if (resultTier) payload.resultTier = resultTier;
   if (selectedPresetKey) payload.selectedPresetKey = selectedPresetKey;
   if (patternType) payload.patternType = patternType;
   if (inputMode) payload.inputMode = inputMode;

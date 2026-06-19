@@ -95,6 +95,14 @@ async function main() {
     const birthMatrixCalculatedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "birth_matrix_calculated", { section: "mystic", featureKey: "birthMatrix", matrixType: "symbolic_birth_date", mainNumber: 3, archetype: "creator", inputMode: "date", hasBirthDate: true, hasName: false });
     const birthMatrixSavedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "birth_matrix_saved", { section: "mystic", featureKey: "birthMatrix", matrixType: "symbolic_birth_date", mainNumber: 3, archetype: "creator", inputMode: "date", hasBirthDate: true, hasName: false });
     const birthMatrixSharedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "birth_matrix_shared", { section: "mystic", featureKey: "birthMatrix", matrixType: "symbolic_birth_date", mainNumber: 3, archetype: "creator", inputMode: "date", hasBirthDate: true, hasName: false });
+    const tarotStartedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "tarot_started", { section: "mystic", featureKey: "tarotCard", mode: "tarot", topic: "decision", spreadType: "three_cards" });
+    const tarotCalculatedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "tarot_spread_calculated", { section: "mystic", featureKey: "tarotCard", mode: "tarot", topic: "decision", spreadType: "three_cards", cardCount: 3, resultTier: "clear" });
+    const tarotSavedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "tarot_spread_saved", { section: "mystic", featureKey: "tarotCard", mode: "tarot", topic: "decision", spreadType: "three_cards", cardCount: 3, resultTier: "clear" });
+    const tarotSharedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "tarot_spread_shared", { section: "mystic", featureKey: "tarotCard", mode: "tarot", topic: "decision", spreadType: "three_cards", cardCount: 3, resultTier: "clear" });
+    const runeStartedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "rune_started", { section: "mystic", featureKey: "runeDay", mode: "rune", topic: "daily_rune", spreadType: "daily_rune" });
+    const runeCalculatedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "rune_spread_calculated", { section: "mystic", featureKey: "runeDay", mode: "rune", topic: "three_runes", spreadType: "three_runes", runeCount: 3, resultTier: "grounded" });
+    const runeSavedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "rune_spread_saved", { section: "mystic", featureKey: "runeDay", mode: "rune", topic: "three_runes", spreadType: "three_runes", runeCount: 3, resultTier: "grounded" });
+    const runeSharedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "rune_spread_shared", { section: "mystic", featureKey: "runeDay", mode: "rune", topic: "three_runes", spreadType: "three_runes", runeCount: 3, resultTier: "grounded" });
     const disallowedEvent = await checkDisallowedEvent(`${baseUrl}/api/zodiac/analytics/event`);
     const afterLedgerStats = await collectLedgerStats();
     const ledgerWrites = countLedgerWrites(beforeLedgerStats, afterLedgerStats);
@@ -164,6 +172,14 @@ async function main() {
       birthMatrixCalculatedEvent,
       birthMatrixSavedEvent,
       birthMatrixSharedEvent,
+      tarotStartedEvent,
+      tarotCalculatedEvent,
+      tarotSavedEvent,
+      tarotSharedEvent,
+      runeStartedEvent,
+      runeCalculatedEvent,
+      runeSavedEvent,
+      runeSharedEvent,
       disallowedEvent,
       sensitiveFieldsStripped:
         allowedEvent.sensitiveFieldsStripped &&
@@ -221,7 +237,15 @@ async function main() {
         birthMatrixStartedEvent.sensitiveFieldsStripped &&
         birthMatrixCalculatedEvent.sensitiveFieldsStripped &&
         birthMatrixSavedEvent.sensitiveFieldsStripped &&
-        birthMatrixSharedEvent.sensitiveFieldsStripped,
+        birthMatrixSharedEvent.sensitiveFieldsStripped &&
+        tarotStartedEvent.sensitiveFieldsStripped &&
+        tarotCalculatedEvent.sensitiveFieldsStripped &&
+        tarotSavedEvent.sensitiveFieldsStripped &&
+        tarotSharedEvent.sensitiveFieldsStripped &&
+        runeStartedEvent.sensitiveFieldsStripped &&
+        runeCalculatedEvent.sensitiveFieldsStripped &&
+        runeSavedEvent.sensitiveFieldsStripped &&
+        runeSharedEvent.sensitiveFieldsStripped,
       noSecretsPrinted: true,
       telegramApiCalls,
       ledgerWrites,

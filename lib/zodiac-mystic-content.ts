@@ -139,6 +139,230 @@ export function generateRuneDay(dateKey: string, signId: ZodiacSignId): MysticRu
   return pickRandomly(runesFuthark, seed);
 }
 
+export type MysticTarotTopicId = "love" | "money" | "work" | "decision" | "hidden_reason" | "daily_advice";
+export type MysticTarotSpreadType = "one_card" | "three_cards" | "five_cards";
+export type MysticRuneSpreadMode = "daily_rune" | "three_runes" | "question_rune" | "protection_rune";
+export type MysticSpreadResultTier = "soft" | "clear" | "deep" | "grounded";
+
+export interface MysticTarotSpreadCard {
+  key: string;
+  position: string;
+  card: MysticTarotCard;
+  shortMeaning: string;
+  deepMeaning: string;
+  warning: string;
+  action: string;
+  avoid: string;
+}
+
+export interface MysticTarotSpread {
+  mode: "tarot";
+  topic: MysticTarotTopicId;
+  topicLabel: string;
+  spreadType: MysticTarotSpreadType;
+  spreadLabel: string;
+  cardCount: number;
+  cards: MysticTarotSpreadCard[];
+  hero: string;
+  shortAnswer: string;
+  hiddenMeaning: string;
+  risk: string;
+  actionToday: string;
+  avoidToday: string;
+  conclusion: string;
+  resultTier: MysticSpreadResultTier;
+  safeKey: string;
+  cardKeys: string[];
+  honesty: string;
+}
+
+export interface MysticRuneSpreadRune {
+  key: string;
+  position: string;
+  rune: MysticRuneDay;
+  orientation: "upright" | "reversed";
+  power: string;
+  risk: string;
+  advice: string;
+  action: string;
+  talisman: string;
+}
+
+export interface MysticRuneSpread {
+  mode: "rune";
+  runeMode: MysticRuneSpreadMode;
+  modeLabel: string;
+  runeCount: number;
+  runes: MysticRuneSpreadRune[];
+  hero: string;
+  mainRune: MysticRuneSpreadRune;
+  power: string;
+  risk: string;
+  advice: string;
+  actionToday: string;
+  talisman: string;
+  resultTier: MysticSpreadResultTier;
+  safeKey: string;
+  runeKeys: string[];
+  honesty: string;
+}
+
+const tarotTopicProfiles: Record<MysticTarotTopicId, { label: string; focus: string; actionTone: string }> = {
+  love: { label: "Любовь", focus: "что поможет говорить теплее и видеть реальное состояние связи", actionTone: "мягкий честный жест" },
+  money: { label: "Деньги", focus: "где сейчас ресурс, риск импульса и практичный следующий шаг", actionTone: "один измеримый финансовый шаг" },
+  work: { label: "Работа", focus: "как выстроить день, разговор или проект без лишнего давления", actionTone: "рабочий шаг с понятным результатом" },
+  decision: { label: "Решение", focus: "что уже ясно, что скрыто и какой шаг можно проверить без резкого рывка", actionTone: "маленькая проверка выбранного варианта" },
+  hidden_reason: { label: "Скрытая причина", focus: "какая внутренняя тема влияет на ситуацию сильнее, чем кажется", actionTone: "пауза и честное наблюдение" },
+  daily_advice: { label: "Совет дня", focus: "какой настрой дня даст больше спокойствия и действия", actionTone: "простое действие до конца дня" },
+};
+
+const tarotSpreadProfiles: Record<MysticTarotSpreadType, { label: string; positions: string[] }> = {
+  one_card: { label: "1 карта", positions: ["Быстрый совет"] },
+  three_cards: { label: "3 карты", positions: ["Прошлое", "Настоящее", "Возможный шаг"] },
+  five_cards: { label: "5 карт", positions: ["Ситуация", "Скрытое", "Ресурс", "Риск", "Действие"] },
+};
+
+const runeSpreadProfiles: Record<MysticRuneSpreadMode, { label: string; positions: string[] }> = {
+  daily_rune: { label: "Руна дня", positions: ["Главная руна"] },
+  three_runes: { label: "Три руны", positions: ["Что поддерживает", "Что требует внимания", "Какой шаг выбрать"] },
+  question_rune: { label: "Руна на вопрос", positions: ["Ответ-символ"] },
+  protection_rune: { label: "Руна защиты", positions: ["Защитный знак"] },
+};
+
+const resultTiers: MysticSpreadResultTier[] = ["soft", "clear", "deep", "grounded"];
+const tarotHonesty = "символическая интерпретация для размышления и выбора действия";
+const runeHonesty = "символическая руническая подсказка без фатальных обещаний";
+
+function pickDistinctIndexes(length: number, count: number, seed: string): number[] {
+  const start = safeHashString(seed) % length;
+  const step = (safeHashString(`${seed}:step`) % (length - 1)) + 1;
+  const indexes: number[] = [];
+  let cursor = start;
+  while (indexes.length < count) {
+    if (!indexes.includes(cursor)) indexes.push(cursor);
+    cursor = (cursor + step) % length;
+  }
+  return indexes;
+}
+
+function normalizeQuestionMode(questionText?: string) {
+  const trimmed = String(questionText || "").trim();
+  if (!trimmed) return "no_question";
+  if (trimmed.length < 24) return "short_question";
+  return "question_entered";
+}
+
+function cardKey(index: number) {
+  return `card_${String(index + 1).padStart(2, "0")}`;
+}
+
+function runeKey(index: number) {
+  return `rune_${String(index + 1).padStart(2, "0")}`;
+}
+
+export function generateTarotSpread(
+  dateKey: string,
+  signId: ZodiacSignId,
+  topic: MysticTarotTopicId = "daily_advice",
+  spreadType: MysticTarotSpreadType = "three_cards",
+  questionText?: string,
+): MysticTarotSpread {
+  const topicProfile = tarotTopicProfiles[topic] ?? tarotTopicProfiles.daily_advice;
+  const spreadProfile = tarotSpreadProfiles[spreadType] ?? tarotSpreadProfiles.three_cards;
+  const questionMode = normalizeQuestionMode(questionText);
+  const seed = `tarotSpread:${dateKey}:${signId}:${topic}:${spreadType}:${questionMode}`;
+  const indexes = pickDistinctIndexes(tarotMajorArcana.length, spreadProfile.positions.length, seed);
+  const resultTier = pickRandomly(resultTiers, `${seed}:tier`);
+  const cards = indexes.map((index, positionIndex) => {
+    const card = tarotMajorArcana[index];
+    const position = spreadProfile.positions[positionIndex];
+    return {
+      key: cardKey(index),
+      position,
+      card,
+      shortMeaning: `${position}: ${card.mainMeaning}`,
+      deepMeaning: `В этой позиции ${card.card} показывает, где тема "${topicProfile.label}" просит внимания: ${card.lightSide}. Если энергия уходит в тень, проявляется ${card.shadowSide.toLowerCase()}, поэтому расклад предлагает действовать мягко и проверять выводы фактами.`,
+      warning: `Не превращайте карту в приговор: ${card.shadowSide.toLowerCase()} здесь только зона внимания, а не готовый сценарий.`,
+      action: `${topicProfile.actionTone}: ${card.advice}`,
+      avoid: `Не усиливайте ${card.shadowSide.toLowerCase()} автоматическими реакциями.`,
+    };
+  });
+  const first = cards[0];
+  const last = cards[cards.length - 1];
+  const hiddenCard = cards[Math.min(1, cards.length - 1)];
+
+  return {
+    mode: "tarot",
+    topic,
+    topicLabel: topicProfile.label,
+    spreadType,
+    spreadLabel: spreadProfile.label,
+    cardCount: cards.length,
+    cards,
+    hero: `Расклад смотрит на тему "${topicProfile.label}" как на карту внимания: ${topicProfile.focus}.`,
+    shortAnswer: `${first.card.card} задает главный тон: ${first.card.mainMeaning}. Начните с того, что можно проверить спокойно, без резких обещаний себе или другим.`,
+    hiddenMeaning: `${hiddenCard.card.card} подсвечивает скрытый слой: ${hiddenCard.card.lightSide}. Это место, где полезно спросить себя, что вы уже чувствуете, но пока не оформили словами.`,
+    risk: `${last.card.card} предупреждает: ${last.card.shadowSide}. Это не знак остановки, а просьба не действовать из напряжения.`,
+    actionToday: `${last.action}. Сделайте это в маленьком формате, чтобы к вечеру появился реальный ориентир.`,
+    avoidToday: `${last.avoid} Лучше выбрать паузу, короткую запись мысли или один ясный разговор.`,
+    conclusion: `Итог расклада: тема "${topicProfile.label}" сейчас раскрывается через ${first.card.lightSide.toLowerCase()} и требует бережной проверки, а не фатального вывода.`,
+    resultTier,
+    safeKey: `tarot_${topic}_${spreadType}_${resultTier}`,
+    cardKeys: indexes.map(cardKey),
+    honesty: tarotHonesty,
+  };
+}
+
+export function generateRuneSpread(
+  dateKey: string,
+  signId: ZodiacSignId,
+  runeMode: MysticRuneSpreadMode = "daily_rune",
+  questionText?: string,
+): MysticRuneSpread {
+  const modeProfile = runeSpreadProfiles[runeMode] ?? runeSpreadProfiles.daily_rune;
+  const questionMode = normalizeQuestionMode(questionText);
+  const seed = `runeSpread:${dateKey}:${signId}:${runeMode}:${questionMode}`;
+  const indexes = pickDistinctIndexes(runesFuthark.length, modeProfile.positions.length, seed);
+  const resultTier = pickRandomly(resultTiers, `${seed}:tier`);
+  const runes = indexes.map((index, positionIndex) => {
+    const rune = runesFuthark[index];
+    const orientation: MysticRuneSpreadRune["orientation"] = safeHashString(`${seed}:orientation:${index}`) % 4 === 0 ? "reversed" : "upright";
+    const position = modeProfile.positions[positionIndex];
+    return {
+      key: runeKey(index),
+      position,
+      rune,
+      orientation,
+      power: orientation === "upright" ? rune.power : `Сила руны проявляется тише: ${rune.power}`,
+      risk: orientation === "upright" ? rune.risk : `Перевернутая позиция просит не игнорировать: ${rune.risk}`,
+      advice: rune.advice,
+      action: `Сегодня выберите один практичный шаг: ${rune.advice}`,
+      talisman: pickRandomly(["нить на запястье", "камень в кармане", "короткая запись в заметках", "символ на бумаге", "стакан воды как якорь внимания"], `${seed}:talisman:${index}`),
+    };
+  });
+  const mainRune = runes[0];
+  const last = runes[runes.length - 1];
+
+  return {
+    mode: "rune",
+    runeMode,
+    modeLabel: modeProfile.label,
+    runeCount: runes.length,
+    runes,
+    hero: `${modeProfile.label} показывает не готовую судьбу, а символический маршрут внимания: где усилить опору, где снизить риск и какой шаг сделать сегодня.`,
+    mainRune,
+    power: `${mainRune.rune.name} несет ресурс: ${mainRune.power}`,
+    risk: `${last.rune.name} напоминает о зоне риска: ${last.risk}`,
+    advice: `${mainRune.rune.advice} Проверьте этот совет на одном небольшом действии.`,
+    actionToday: last.action,
+    talisman: `Символический талисман: ${last.talisman}. Используйте его как напоминание о выбранном действии, а не как гарантию результата.`,
+    resultTier,
+    safeKey: `rune_${runeMode}_${resultTier}`,
+    runeKeys: indexes.map(runeKey),
+    honesty: runeHonesty,
+  };
+}
+
 export interface MysticIntuitiveSign {
   sign: string;
   meaning: string;

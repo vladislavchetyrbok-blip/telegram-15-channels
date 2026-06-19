@@ -79,6 +79,7 @@ The allowlist covers:
 - natal chart, Chinese horoscope, zodiac stones, name profile, numerology, angel numbers, lunar calendar, daily talisman, dream dictionary, gifts, name compatibility, archetype;
 - VIP opened, free access, feature taps, future subscription tap, all active VIP detail screens, and functional VIP tool events: `vip_tool_started`, `vip_tool_calculated`, `vip_tool_saved`, `vip_tool_shared`, `vip_input_reused`, and `vip_message_copied`;
 - Mystic category, daily card, Tarot, rune, intuitive sign, talismans, aura, lunar ritual, karmic lessons, and Birth Matrix lifecycle events (`birth_matrix_started`, `birth_matrix_calculated`, `birth_matrix_saved`, `birth_matrix_shared`);
+- Tarot/Rune richer-flow events: `tarot_started`, `tarot_spread_calculated`, `tarot_spread_saved`, `tarot_spread_shared`, `rune_started`, `rune_spread_calculated`, `rune_spread_saved`, and `rune_spread_shared`;
 - Telegram WebApp ready, BackButton usage, and haptics;
 - giveaways locked/preview events.
 
@@ -149,6 +150,20 @@ inputMode
 ```
 
 `mainNumber` is numeric only, `archetype` is an ASCII-safe archetype key such as `creator`, and `matrixType` is `symbolic_birth_date`. Payloads must never include the birth date value, name, raw matrix text, or raw result sections.
+
+Tarot/Rune richer-flow payloads are limited to:
+
+```text
+featureKey
+mode
+topic
+spreadType
+cardCount
+runeCount
+resultTier
+```
+
+`topic`, `spreadType`, and `resultTier` are sanitized tokens. `cardCount` and `runeCount` are small integers. Payloads must never include the optional raw question, generated interpretation text, card prose, rune prose, names, dates, time, city query, or Telegram initData.
 
 Supported direct profile and compatibility start params:
 

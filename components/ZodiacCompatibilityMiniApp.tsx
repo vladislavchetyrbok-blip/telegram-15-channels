@@ -1866,8 +1866,26 @@ function MoreSection({
         {activeMoreFeature === "giftBySign" ? <GiftBySignCard publicMode={publicMode} recipientType={giftRecipientType} profile={giftProfile} onRecipientTypeChange={setGiftRecipientType} /> : null}
         {activeMoreFeature === "archetype" ? <PersonalityArchetypeCard publicMode={publicMode} person={natalPerson} profile={archetype} onPersonChange={setNatalPerson} vipFreeAccess={vipFreeAccess} /> : null}
         {activeMoreFeature === "dailyCard" ? <DailyCardFeature publicMode={publicMode} dateKey={dateKey} sign={(selfSign?.slug as any) || "aries"} /> : null}
-        {activeMoreFeature === "tarotCard" ? <TarotCardFeature publicMode={publicMode} dateKey={dateKey} sign={(selfSign?.slug as any) || "aries"} /> : null}
-        {activeMoreFeature === "runeDay" ? <RuneDayFeature publicMode={publicMode} dateKey={dateKey} sign={(selfSign?.slug as any) || "aries"} /> : null}
+        {activeMoreFeature === "tarotCard" ? (
+          <TarotCardFeature
+            publicMode={publicMode}
+            dateKey={dateKey}
+            sign={(selfSign?.slug as any) || "aries"}
+            onSave={(action) => onFavoriteSave(action)}
+            onShare={(action) => onShare(action)}
+            onEvent={onPersonalToolEvent}
+          />
+        ) : null}
+        {activeMoreFeature === "runeDay" ? (
+          <RuneDayFeature
+            publicMode={publicMode}
+            dateKey={dateKey}
+            sign={(selfSign?.slug as any) || "aries"}
+            onSave={(action) => onFavoriteSave(action)}
+            onShare={(action) => onShare(action)}
+            onEvent={onPersonalToolEvent}
+          />
+        ) : null}
         {activeMoreFeature === "intuitiveSign" ? <IntuitiveSignFeature publicMode={publicMode} dateKey={dateKey} sign={(selfSign?.slug as any) || "aries"} /> : null}
         {activeMoreFeature === "talismans" ? <TalismansFeature publicMode={publicMode} sign={(selfSign?.slug as any) || ""} /> : null}
         {activeMoreFeature === "auraColor" ? <AuraColorFeature publicMode={publicMode} dateKey={dateKey} sign={(selfSign?.slug as any) || "aries"} /> : null}
@@ -4177,6 +4195,9 @@ function buildSafeShareText(action: ZodiacRetentionDraft) {
   }
   if (action.featureKey === "birthMatrix") {
     return `Открыл(а) Матрицу судьбы в Астрологическом центре ✨\nПопробуй свой расчёт: ${appLink}`;
+  }
+  if (action.featureKey === "tarotCard" || action.featureKey === "runeDay") {
+    return `Открыл(а) символический расклад в Астрологическом центре ✨\nПопробуй тоже: ${appLink}`;
   }
   if (action.featureKey === "angelNumbers" || action.featureKey === "vipAngelNumbers") {
     return `Ангельские числа в Астрологическом центре 👼\nПосмотри значение своего знака: ${appLink}`;

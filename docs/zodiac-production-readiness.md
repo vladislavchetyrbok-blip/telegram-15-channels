@@ -201,6 +201,7 @@ VIP:
 Mystic:
 
 - Mystic category opens and renders content.
+- Tarot and Runes now have richer symbolic flows: topic/mode selection, optional unsaved question input, deterministic safe spread generation, visual Tarot/Rune components, structured result sections, safe Save/Share, and smoke coverage for visual cards/runes plus localStorage privacy.
 - Tarot, Runes, Daily Card, Lunar Ritual, Aura, Talismans, and related features are covered by smoke checks.
 
 Birth Matrix:

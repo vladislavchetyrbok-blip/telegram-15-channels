@@ -35,6 +35,8 @@ const FORBIDDEN_RETENTION_VALUES = [
   "2000-12-22",
   "19.06.1992",
   "11:11",
+  "Что мне выбрать?",
+  "Где нужна защита?",
   "Мне важно сказать",
   "Мне важно не победить",
   "Спасибо, что слышишь",
@@ -248,6 +250,13 @@ async function runBrowserModeSmoke(client, report) {
     await waitForPageText(client, /Ангельские числа|11:11/, `Mystic default tab did not return after "${feature}".`);
   }
 
+  await runTarotSmoke(client, report);
+  await click(client, "11:11");
+  await waitForPageText(client, /Ангельские числа|11:11/, "Mystic default tab did not return after Tarot richer flow.");
+  await runRuneSmoke(client, report);
+  await click(client, "11:11");
+  await waitForPageText(client, /Ангельские числа|11:11/, "Mystic default tab did not return after Rune richer flow.");
+
   await openBirthMatrix(client);
   if (!(await hasText(client, /ДД\.ММ\.ГГГГ|дд\.мм\.гггг|Введите дату рождения/i))) {
     await click(client, "Изменить");
@@ -433,6 +442,51 @@ async function assertFeatureScreen(client, label, options = {}) {
   if (bad && !options.allowSoon) {
     throw new Error(`Feature "${label}" contains placeholder text matching ${bad}.`);
   }
+}
+
+async function runTarotSmoke(client, report) {
+  await click(client, "Таро");
+  await settle(client);
+  await waitForPageText(client, /Таро|Сформулируйте вопрос|Тип расклада/, "Tarot flow did not render inputs.");
+  await click(client, "Решение");
+  await click(client, "3 карты");
+  await fillVisibleTextarea(client, "Что мне выбрать?");
+  await click(client, "Рассчитать расклад");
+  await waitForPageText(client, /Краткий ответ|Действие сегодня|Карты расклада/, "Tarot spread did not render structured result.");
+  const visualCount = await evalPage(client, "document.querySelectorAll('[data-tarot-spread-visual=\"true\"]').length", []);
+  const cardCount = await evalPage(client, "document.querySelectorAll('[data-tarot-card]').length", []);
+  const positionCount = await evalPage(client, "document.querySelectorAll('[data-tarot-position]').length", []);
+  if (visualCount < 1) throw new Error("Tarot spread visual did not render.");
+  if (cardCount < 3) throw new Error(`Tarot spread expected 3 cards, got ${cardCount}.`);
+  if (positionCount < 3) throw new Error(`Tarot spread expected 3 positions, got ${positionCount}.`);
+  await click(client, "Сохранить расклад");
+  await waitForPageText(client, /Сохранено/, "Tarot save did not show saved state.");
+  await click(client, "Поделиться", { index: 1 });
+  await waitForPageText(client, /Ссылка готова|Готово к отправке|Скопировано|Текст для копирования|Текст скопирован|Откройте Telegram/i, "Tarot share did not show safe share state.");
+  await assertRetentionPrivacy(client, report);
+  report.tarotFlowChecked = true;
+  report.tarotCardsChecked = cardCount;
+}
+
+async function runRuneSmoke(client, report) {
+  await click(client, "Руна");
+  await settle(client);
+  await waitForPageText(client, /Руны|Режим|Вопрос к рунам/, "Rune flow did not render inputs.");
+  await click(client, "Три руны");
+  await fillVisibleTextarea(client, "Где нужна защита?");
+  await click(client, "Рассчитать руны");
+  await waitForPageText(client, /Главная руна|Сила|Риск|Действие сегодня|Талисман/, "Rune spread did not render structured result.");
+  const visualCount = await evalPage(client, "document.querySelectorAll('[data-rune-spread-visual=\"true\"]').length", []);
+  const runeCount = await evalPage(client, "document.querySelectorAll('[data-rune-card]').length", []);
+  if (visualCount < 1) throw new Error("Rune spread visual did not render.");
+  if (runeCount < 3) throw new Error(`Rune spread expected 3 runes, got ${runeCount}.`);
+  await click(client, "Сохранить расклад");
+  await waitForPageText(client, /Сохранено/, "Rune save did not show saved state.");
+  await click(client, "Поделиться", { index: 1 });
+  await waitForPageText(client, /Ссылка готова|Готово к отправке|Скопировано|Текст для копирования|Текст скопирован|Откройте Telegram/i, "Rune share did not show safe share state.");
+  await assertRetentionPrivacy(client, report);
+  report.runeFlowChecked = true;
+  report.runesChecked = runeCount;
 }
 
 async function runVipToolSmoke(client, label, report) {
@@ -847,6 +901,19 @@ async function installSmokeHelpers(client) {
         input.dispatchEvent(new Event("change", { bubbles: true }));
         return { ok: true, count: inputs.length };
       },
+      fillVisibleTextarea(value) {
+        const textareas = Array.from(document.querySelectorAll("textarea")).filter(isVisible).filter((element) => !element.disabled && !element.readOnly);
+        const textarea = textareas[0];
+        if (!textarea) return { ok: false, error: "not_found", count: textareas.length };
+        textarea.scrollIntoView({ block: "center", inline: "center" });
+        textarea.focus();
+        const setter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value")?.set;
+        if (setter) setter.call(textarea, value);
+        else textarea.value = value;
+        textarea.dispatchEvent(new InputEvent("input", { bubbles: true, inputType: "insertText", data: value }));
+        textarea.dispatchEvent(new Event("change", { bubbles: true }));
+        return { ok: true, count: textareas.length };
+      },
       async selectVisibleOption(valueOrText, options = {}) {
         const selects = nativeSelects();
         const select = selects[options.index || 0];
@@ -994,6 +1061,12 @@ async function fillVisibleInput(client, value) {
 async function fillVisibleInputAt(client, index, value) {
   const result = await evalPage(client, "window.__zodiacSmoke.fillVisibleInputAt(arguments[0], arguments[1])", [index, value]);
   if (!result.ok) throw new Error(`Could not fill visible input at index ${index}: ${result.error}; visible inputs=${result.count}.`);
+  await settle(client);
+}
+
+async function fillVisibleTextarea(client, value) {
+  const result = await evalPage(client, "window.__zodiacSmoke.fillVisibleTextarea(arguments[0])", [value]);
+  if (!result.ok) throw new Error(`Could not fill visible textarea: ${result.error}; visible textareas=${result.count}.`);
   await settle(client);
 }
 
@@ -1400,6 +1473,10 @@ function createReport() {
     localStoragePrivacyChecked: false,
     giveawaysLocked: false,
     mysticChecked: 0,
+    tarotFlowChecked: false,
+    tarotCardsChecked: 0,
+    runeFlowChecked: false,
+    runesChecked: 0,
     freeAccessVisible: false,
     telegramReadyCalled: false,
     telegramExpandCalled: false,
@@ -1466,6 +1543,8 @@ function printSummary(status, report) {
   console.log(`Free access visible: ${report.freeAccessVisible ? "YES" : "NO"}`);
   console.log(`Giveaways locked: ${report.giveawaysLocked ? "YES" : "NO"}`);
   console.log(`Mystic checked: ${report.mysticChecked >= 3 ? "YES" : "NO"} (${report.mysticChecked}/3)`);
+  console.log(`Tarot richer spread checked: ${report.tarotFlowChecked ? "YES" : "NO"} (${report.tarotCardsChecked}/3 cards)`);
+  console.log(`Rune richer spread checked: ${report.runeFlowChecked ? "YES" : "NO"} (${report.runesChecked}/3 runes)`);
   console.log(`Birth Matrix / Матрица судьбы checked: ${report.birthMatrixChecked ? "YES" : "NO"}`);
   console.log(`Birth Matrix depth checked: ${report.birthMatrixDepthChecked ? "YES" : "NO"}`);
   console.log(`Startapp params checked: ${report.startParamsChecked.length ? report.startParamsChecked.join(", ") : "NO"}`);
