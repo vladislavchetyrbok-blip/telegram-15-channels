@@ -13,6 +13,12 @@ npm run zodiac:analytics:storage:check
 
 `zodiac:analytics:storage:check` is a static/readiness audit. It verifies the storage mode contract, required env names, allowlisted events, server-side sanitization, dashboard presence, and coverage for Compatibility, VIP, Mystic, Birth Matrix, Telegram WebApp, Profile retention, and soft-launch feedback events.
 
+Redis activation runbook:
+
+```text
+docs/zodiac-redis-analytics-activation.md
+```
+
 ## Routes
 
 Dashboard:
@@ -242,6 +248,15 @@ Disallowed events are rejected and not stored:
 The dashboard shows analytics mode, storage status, setup checklist, tracked/not-tracked data, today opens, last 7 days opens, top sections, top signs, compatibility mode split, VIP activity, Final AstroMap / relationship-map aggregate opens, giveaways, Mystic-related counters through aggregate events, and funnel metrics.
 
 When storage is missing, panels stay visible with zero values so the activation state is obvious without hiding the dashboard structure.
+
+In `noop`, the dashboard must explicitly show:
+
+```text
+Analytics storage: noop
+Redis env not configured
+Events are sanitized but not persisted
+Add ZODIAC_ANALYTICS_REDIS_URL and ZODIAC_ANALYTICS_REDIS_TOKEN to enable real counters
+```
 
 ## Readiness Policy
 

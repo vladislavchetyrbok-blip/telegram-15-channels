@@ -243,6 +243,12 @@ async function main() {
     noopWhenUnconfigured: sources.store.includes('storageMode: configured ? "redis"') && sources.store.includes(': "noop"'),
     usesRedisRestPipeline: sources.store.includes('/pipeline'),
     dashboardExists: await fileExists(dashboardPath),
+    dashboardNoopStateCopy: [
+      "Analytics storage: noop",
+      "Redis env not configured",
+      "Events are sanitized but not persisted",
+      "Add ZODIAC_ANALYTICS_REDIS_URL and ZODIAC_ANALYTICS_REDIS_TOKEN to enable real counters",
+    ].every((text) => sources.dashboard.includes(text)),
   };
   for (const [name, ok] of Object.entries(storageChecks)) {
     if (!ok) errors.push(`storage check failed: ${name}`);
@@ -323,6 +329,7 @@ async function readSources() {
     ["store", storePath],
     ["client", clientPath],
     ["route", routePath],
+    ["dashboard", dashboardPath],
     ["miniApp", miniAppPath],
     ["mysticSections", mysticSectionsPath],
     ["vipSections", vipSectionsPath],

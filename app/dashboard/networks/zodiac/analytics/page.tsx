@@ -61,6 +61,12 @@ export default async function ZodiacMiniAppAnalyticsPage() {
             <p className="mt-2 text-sm leading-6">
               Добавьте переменные окружения для Upstash Redis REST. До этого API работает в noop-режиме, а Mini App не ломается.
             </p>
+            <div className="mt-4 rounded-md border border-amber-200 bg-white p-4 text-sm leading-6 text-amber-950">
+              <p className="font-semibold">Analytics storage: noop</p>
+              <p>Redis env not configured</p>
+              <p>Events are sanitized but not persisted</p>
+              <p>Add ZODIAC_ANALYTICS_REDIS_URL and ZODIAC_ANALYTICS_REDIS_TOKEN to enable real counters</p>
+            </div>
             <div className="mt-4 grid gap-2 sm:grid-cols-2">
               {analytics.requiredEnv.map((envName) => (
                 <code key={envName} className="rounded-md border border-amber-200 bg-white px-3 py-2 text-sm font-semibold text-amber-900">

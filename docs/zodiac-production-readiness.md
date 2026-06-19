@@ -457,6 +457,12 @@ ZODIAC_ANALYTICS_REDIS_URL
 ZODIAC_ANALYTICS_REDIS_TOKEN
 ```
 
+Activation runbook:
+
+```text
+docs/zodiac-redis-analytics-activation.md
+```
+
 Production activation checklist:
 
 1. Use a Redis REST URL/token pair, not a raw `redis://` TCP URL.
