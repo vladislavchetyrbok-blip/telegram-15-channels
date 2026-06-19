@@ -126,3 +126,32 @@ Do not add profile sync until all are true:
 
 Payments, Stars, weekly live, and profile sync require separate explicit
 approval packages.
+
+## Package 38 Profile Sync API Foundation
+
+Profile sync API routes now exist, but they are disabled by default:
+
+```text
+GET|POST|DELETE /api/zodiac/profile/sync
+```
+
+They require server-validated Telegram `initData`. With default flags, valid
+auth still returns `disabled`, and no profile data is read from or written to a
+remote backend.
+
+Additional command:
+
+```bash
+npm run zodiac:profile-sync:check
+```
+
+Profile sync remains OFF:
+
+```text
+ZODIAC_PROFILE_SYNC_ENABLED=false
+ZODIAC_PROFILE_SYNC_BACKEND=none
+ZODIAC_PROFILE_SYNC_READ_ENABLED=false
+ZODIAC_PROFILE_SYNC_WRITE_ENABLED=false
+```
+
+See `docs/zodiac-profile-sync-readiness.md`.

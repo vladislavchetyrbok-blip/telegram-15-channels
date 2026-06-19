@@ -10,6 +10,10 @@ Package 37 adds Telegram WebApp `initData` server-validation readiness. It does
 not implement profile sync, remote profile storage, payments, Stars, or weekly
 live.
 
+Package 38 adds disabled-by-default Profile Sync API readiness. It does not
+enable remote sync, backend storage writes, a frontend sync provider, payments,
+Stars, or weekly live.
+
 ## Executive Status
 
 The Zodiac product is broadly production-ready for the current free-access phase:
@@ -385,3 +389,22 @@ Current status:
 
 Next readiness step: run the real phone Telegram WebView checklist and confirm
 that any future identity-dependent feature uses server-validated `initData`.
+
+## Package 38 Refresh: Profile Sync API Foundation
+
+Current status:
+
+- Profile Sync API route: READY but disabled.
+- Route: `GET|POST|DELETE /api/zodiac/profile/sync`.
+- Config helper: `lib/zodiac-profile-sync-config.ts`.
+- Sanitizer: `lib/zodiac-profile-sync-sanitize.ts`.
+- Storage adapter placeholder: `lib/zodiac-profile-sync-storage.ts`.
+- Check command: `npm run zodiac:profile-sync:check`.
+- Backend storage: `none`.
+- Backend writes: NO.
+- Frontend sync provider: NO.
+- Existing localStorage retention: unchanged.
+- Raw birth date/time/city/question/intention/feedback/result text sync: NO.
+- Raw initData sync/storage/analytics: NO.
+- Payments/Stars: OFF.
+- Weekly live: OFF.

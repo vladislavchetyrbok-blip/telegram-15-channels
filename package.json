@@ -112,6 +112,7 @@
     "zodiac:analytics:check": "node scripts/check-zodiac-analytics.mjs",
     "zodiac:analytics:storage:check": "node scripts/check-zodiac-analytics-storage.mjs",
     "zodiac:telegram-auth:check": "node scripts/check-telegram-webapp-auth.mjs",
+    "zodiac:profile-sync:check": "node scripts/check-zodiac-profile-sync.mjs",
     "zodiac:publish:date:dry": "node scripts/publish-zodiac-by-date.mjs --dry-run",
     "zodiac:publish:date:live": "node scripts/publish-zodiac-by-date.mjs --live --approved",
     "zodiac:publish-date:dry": "node scripts/publish-zodiac-by-date.mjs --dry-run",
