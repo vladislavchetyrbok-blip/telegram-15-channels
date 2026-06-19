@@ -43,6 +43,12 @@ Package 45 completes the post-sync-foundation regression. Full checks pass,
 profile sync remains disabled/no-network, and the release candidate remains for
 controlled soft launch only.
 
+Package 50 adds the controlled launch freeze checkpoint at
+`docs/zodiac-controlled-launch-freeze.md`. It confirms the final stop/go matrix:
+first 5 users `GO`, 20 users `CONDITIONAL`, mass launch `STOP`, weekly live
+`STOP`, payments/Stars `STOP`, profile sync `STOP`, exact astro claims `STOP`,
+and Redis analytics activation `CONDITIONAL` on env configuration.
+
 ## Release Candidate Status
 
 - RC status: READY for controlled `5-20` users.
@@ -63,6 +69,7 @@ controlled soft launch only.
 - Product readiness: `92%` for controlled soft launch.
 - Execution pack: `docs/zodiac-controlled-soft-launch-execution.md`.
 - Anonymous batch template: `docs/zodiac-soft-launch-batch-template.md`.
+- Controlled launch freeze: `docs/zodiac-controlled-launch-freeze.md`.
 
 ## Current Product Readiness
 
@@ -97,6 +104,7 @@ Mini App smoke baseline:
 - Daily scheduler: ON and timing-hardened.
 - Daily duplicate protection: ledger/dedupe confirmed.
 - Daily stability report: `docs/zodiac-daily-autopilot-stability-report.md`.
+- Controlled launch freeze: `docs/zodiac-controlled-launch-freeze.md`.
 - 2026-06-19: `13/13 sent`, `Already Sent 13`, `Duplicate Blocked 13`, dry-run Telegram API calls `0`.
 - Daily dry-run for `2026-06-20`: `Would Publish 13/13`, CTA rows `13/13 OK`, Telegram API calls `0`, ledger writes `0`.
 - Weekly live: OFF.

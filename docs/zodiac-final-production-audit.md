@@ -28,6 +28,12 @@ keeps backend `none` by default, exposes only a check-only test-memory adapter,
 does not wire production Redis/Vercel KV/Supabase storage, and does not enable
 profile sync reads/writes.
 
+Package 50 adds the controlled launch freeze checkpoint:
+`docs/zodiac-controlled-launch-freeze.md`. It preserves the same safety boundary:
+first 5 controlled testers are `GO`, expansion to 20 is `CONDITIONAL`, and mass
+launch, weekly live, payments/Stars, profile sync, and exact astrology claims
+remain `STOP`.
+
 ## Executive Status
 
 The Zodiac product is broadly production-ready for the current free-access phase:
@@ -42,6 +48,7 @@ The Zodiac product is broadly production-ready for the current free-access phase
 - Fresh production backup was created and restore dry-run passed.
 - Soft-launch runbook is available for a controlled `5-20` first-user test.
 - Soft-launch release candidate snapshot is available at `docs/zodiac-soft-launch-release-candidate.md`.
+- Controlled launch freeze checkpoint is available at `docs/zodiac-controlled-launch-freeze.md`.
 - Profile Sync frontend scaffold is ready for a future controlled rollout, but
   sync remains disabled, unmounted, and localStorage-only.
 - Profile Sync merge logic is ready for a future read-only rollout test, but no
@@ -262,6 +269,12 @@ Feedback intake and triage:
 ```text
 docs/zodiac-soft-launch-feedback.md
 docs/zodiac-bug-triage.md
+```
+
+Controlled launch freeze:
+
+```text
+docs/zodiac-controlled-launch-freeze.md
 ```
 
 Result:

@@ -45,6 +45,12 @@ suite passes, profile sync remains disabled/no-network, exact astro remains
 unavailable, analytics storage remains `noop`, and the product is still limited
 to controlled soft launch rather than mass launch.
 
+Package 50 adds the controlled launch freeze checkpoint:
+`docs/zodiac-controlled-launch-freeze.md`. The freeze decision is first 5 users
+`GO`, 20 users `CONDITIONAL`, mass launch `STOP`, weekly live `STOP`,
+payments/Stars `STOP`, profile sync `STOP`, exact astro claims `STOP`, and Redis
+analytics activation `CONDITIONAL` with env.
+
 ## Current Status
 
 The Zodiac product is ready for controlled live operation of the daily publishing lane and user-facing Mini App checks, with the following boundaries:
@@ -61,6 +67,7 @@ The Zodiac product is ready for controlled live operation of the daily publishin
 - Production backup freshness is currently OK after backup `2026-06-19-01-06-53` and restore dry-run PASS.
 - Soft-launch pack is ready for `5-20` first users through `docs/zodiac-soft-launch-runbook.md`.
 - Soft-launch release candidate snapshot is available at `docs/zodiac-soft-launch-release-candidate.md`.
+- Controlled launch freeze checkpoint is available at `docs/zodiac-controlled-launch-freeze.md`.
 - Desktop visual QA harness is available at `docs/zodiac-desktop-qa-harness.md` and runs through `npm run zodiac:desktop:qa`; it accelerates local/staging UI checks but does not replace the real phone pass.
 - Safe share loop is ready for controlled testing: generic share drafts, no raw personal inputs, no referral IDs, and aggregate-only share lifecycle analytics.
 - Monetization readiness is documented in `docs/zodiac-monetization-readiness.md`; payments, Telegram Stars, and entitlement enforcement remain OFF.
@@ -225,6 +232,12 @@ Controlled execution pack:
 ```text
 docs/zodiac-controlled-soft-launch-execution.md
 docs/zodiac-soft-launch-batch-template.md
+```
+
+Controlled launch freeze:
+
+```text
+docs/zodiac-controlled-launch-freeze.md
 ```
 
 Real phone evidence intake:
