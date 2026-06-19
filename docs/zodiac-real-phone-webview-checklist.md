@@ -2,7 +2,15 @@
 
 Status: `Real phone pass: NOT EXECUTED, manual user pass required`
 
-This document is the manual QA checklist for validating the Zodiac Mini App as a real Telegram Mini App on a physical phone. Browser checks, desktop responsive mode, and Telegram mock smoke are useful regressions, but they do not count as a real phone Telegram WebView pass.
+This document is the manual QA checklist for validating the Zodiac Mini App as a real Telegram Mini App on a physical phone. Browser checks, desktop responsive mode, Telegram mock smoke, and `npm run zodiac:desktop:qa` are useful regressions, but they do not count as a real phone Telegram WebView pass.
+
+Desktop QA harness reference:
+
+```text
+docs/zodiac-desktop-qa-harness.md
+```
+
+Use it before the manual phone pass to catch obvious UI regressions, screenshot key screens, and verify console/network/localStorage privacy. Still complete this checklist on real iPhone/Android Telegram because desktop automation cannot prove Telegram keyboard overlays, safe-area clipping, or native share sheet behavior.
 
 ## Scope
 

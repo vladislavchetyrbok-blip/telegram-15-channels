@@ -8,7 +8,7 @@ import path from "node:path";
 
 const DEFAULT_URL = "http://localhost:3000/compatibility";
 const DEFAULT_TIMEOUT_MS = 120_000;
-const VIEWPORT = { width: 390, height: 844 };
+const DEFAULT_VIEWPORT = { width: 390, height: 844 };
 const VIP_ACTIVE_CARDS = [
   "Расширенная натальная карта",
   "Месячный прогноз",
@@ -44,6 +44,7 @@ const FORBIDDEN_RETENTION_VALUES = [
 ];
 
 const options = parseArgs(process.argv.slice(2));
+const VIEWPORT = parseViewportOption(options.viewport) ?? DEFAULT_VIEWPORT;
 const startedProcesses = [];
 let tempBrowserProfile = null;
 
@@ -122,6 +123,7 @@ async function runBrowserModeSmoke(client, report) {
   if (await hasText(client, /Розыгрыши/i)) throw new Error("Giveaways should not be a top-level main menu category.");
   report.mainMenuCategoryCount = mainCategories.length;
   report.mainMenuChecked = true;
+  await captureSmokeScreenshot(client, report, "main-menu");
 
   await click(client, "Мой профиль");
   await waitForPageText(client, /Мой профиль|Локальные данные/, "Profile screen did not render from main menu.");
@@ -130,6 +132,7 @@ async function runBrowserModeSmoke(client, report) {
   report.profileChecked = true;
   report.historyEmptyStateChecked = true;
   report.favoritesEmptyStateChecked = true;
+  await captureSmokeScreenshot(client, report, "profile-history-favorites");
   await runFeedbackPanelSmoke(client, report);
   await click(client, "Очистить данные");
   await waitForPageText(client, /Здесь появятся последние расчёты и открытые разделы/, "History empty state did not remain after clearing local data.");
@@ -165,6 +168,7 @@ async function runBrowserModeSmoke(client, report) {
   await waitForPageText(client, /Карта отношений|Главный совет|Эмоции|Быт \/ ритм|Как общаться/, "Compatibility result did not render the polished relationship card.");
   await assertFinalAstroMap(client, "Compatibility relationship result", report);
   report.compatibilityResultChecked = true;
+  await captureSmokeScreenshot(client, report, "compatibility-result");
   await click(client, "Сохранить пару");
   await waitForPageText(client, /Пара сохранена/, "Compatibility save button did not show saved state.");
   report.compatibilityPairSaved = true;
@@ -207,6 +211,7 @@ async function runBrowserModeSmoke(client, report) {
   await waitForPageText(client, /Ангельские числа|11:11|22:22/, "Angel Numbers category did not render.");
   await assertFeatureScreen(client, "Ангельские числа", { allowSoon: false, minLength: 260 });
   report.angelNumbersChecked = true;
+  await captureSmokeScreenshot(client, report, "angel-numbers");
   await click(client, "Сохранить");
   report.favoriteSaved = true;
   await click(client, "Поделиться");
@@ -235,6 +240,7 @@ async function runBrowserModeSmoke(client, report) {
   const giveawayStatus = await evalPage(client, "window.__zodiacSmoke.buttonStatus(arguments[0])", ["Розыгрыши (Скоро)"]);
   report.giveawaysLocked = Boolean(giveawayStatus.exists && giveawayStatus.disabled);
   if (!report.giveawaysLocked) throw new Error("Giveaways card must remain locked/disabled inside VIP.");
+  await captureSmokeScreenshot(client, report, "vip-page");
 
   for (const card of VIP_ACTIVE_CARDS) {
     await click(client, card);
@@ -287,6 +293,7 @@ async function runFeedbackPanelSmoke(client, report) {
   await waitForPageText(client, /Оставить отзыв|Сообщить о баге/, "Feedback CTA did not render in Profile.");
   await click(client, "Оставить отзыв");
   await waitForPageText(client, /Безопасный драфт отзыва|Скопировать текст|Поделиться отзывом/, "Feedback panel did not open.");
+  await captureSmokeScreenshot(client, report, "feedback-panel");
   await click(client, "Баг");
   await click(client, "Birth Matrix");
   await fillVisibleTextarea(client, "SHOULD_NOT_STORE_RAW_FEEDBACK 1998-06-15 Dnipro +380501112233");
@@ -497,6 +504,7 @@ async function runTarotSmoke(client, report) {
   if (visualCount < 1) throw new Error("Tarot spread visual did not render.");
   if (cardCount < 3) throw new Error(`Tarot spread expected 3 cards, got ${cardCount}.`);
   if (positionCount < 3) throw new Error(`Tarot spread expected 3 positions, got ${positionCount}.`);
+  await captureSmokeScreenshot(client, report, "tarot-spread");
   await click(client, "Сохранить расклад");
   await waitForPageText(client, /Сохранено/, "Tarot save did not show saved state.");
   await click(client, "Поделиться", { index: 1 });
@@ -519,6 +527,7 @@ async function runRuneSmoke(client, report) {
   const runeCount = await evalPage(client, "document.querySelectorAll('[data-rune-card]').length", []);
   if (visualCount < 1) throw new Error("Rune spread visual did not render.");
   if (runeCount < 3) throw new Error(`Rune spread expected 3 runes, got ${runeCount}.`);
+  await captureSmokeScreenshot(client, report, "rune-spread");
   await click(client, "Сохранить расклад");
   await waitForPageText(client, /Сохранено/, "Rune save did not show saved state.");
   await click(client, "Поделиться", { index: 1 });
@@ -546,6 +555,7 @@ async function runLunarRitualSmoke(client, report) {
   if (selectedDayCount < 1) throw new Error("Lunar calendar did not mark a selected day.");
   if (legendCount < 1) throw new Error("Lunar calendar did not render a legend.");
   if (gridDayCount < 14) throw new Error(`Lunar calendar expected 14 days, got ${gridDayCount}.`);
+  await captureSmokeScreenshot(client, report, "lunar-ritual");
   await click(client, "Сохранить ритуал");
   await waitForPageText(client, /Сохранено/, "Lunar ritual save did not show saved state.");
   await click(client, "Поделиться");
@@ -577,6 +587,7 @@ async function runVipToolSmoke(client, label, report) {
   }
   if (label === "Расширенная натальная карта") {
     await assertPremiumNatalChart(client, report);
+    await captureSmokeScreenshot(client, report, "premium-natal-result");
   }
   report.vipCalculated += 1;
 
@@ -1255,6 +1266,7 @@ async function assertBirthMatrixDepth(client, report) {
     await settle(client);
     await waitForPageText(client, item.pattern, `Birth Matrix tab "${item.label}" did not render expected content.`);
   }
+  await captureSmokeScreenshot(client, report, "birth-matrix");
   await click(client, "Сохранить матрицу");
   await waitForPageText(client, /Сохранено/, "Birth Matrix save did not show saved state.");
   await click(client, "Поделиться");
@@ -1476,7 +1488,60 @@ function sleep(ms) {
 
 async function settle(client) {
   await sleep(350);
-  await evalPage(client, "new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))", []);
+  try {
+    await evalPage(client, "new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))", []);
+  } catch (error) {
+    if (!String(error?.message || error).includes("Promise was collected")) throw error;
+    await sleep(150);
+  }
+}
+
+async function captureSmokeScreenshot(client, report, name) {
+  if (!options.desktopQaDir) return;
+  const screenshotsDir = path.resolve(options.desktopQaDir);
+  fs.mkdirSync(screenshotsDir, { recursive: true });
+  await settle(client);
+  const visualState = await evalPage(client, `(() => {
+    const body = document.body;
+    const root = document.documentElement;
+    const viewportWidth = window.innerWidth || root.clientWidth || 0;
+    const scrollWidth = Math.max(root.scrollWidth || 0, body?.scrollWidth || 0);
+    const visibleNativeSelects = Array.from(document.querySelectorAll("select")).filter((element) => {
+      const style = window.getComputedStyle(element);
+      const rect = element.getBoundingClientRect();
+      return style.display !== "none" && style.visibility !== "hidden" && rect.width > 2 && rect.height > 2 && element.offsetParent !== null;
+    }).length;
+    return {
+      viewportWidth,
+      scrollWidth,
+      horizontalOverflow: scrollWidth > viewportWidth + 2,
+      visibleNativeSelects,
+    };
+  })()`, []);
+  report.visualChecks.push({ name, ...visualState });
+  if (visualState.horizontalOverflow) {
+    throw new Error(`Horizontal overflow detected on ${name}: scrollWidth=${visualState.scrollWidth}, viewportWidth=${visualState.viewportWidth}.`);
+  }
+  if (visualState.visibleNativeSelects > 0) {
+    throw new Error(`Visible native select detected on ${name}: ${visualState.visibleNativeSelects}.`);
+  }
+  const result = await client.call("Page.captureScreenshot", {
+    format: "png",
+    fromSurface: true,
+    captureBeyondViewport: true,
+  });
+  const fileName = `${sanitizeArtifactName(name)}.png`;
+  const filePath = path.join(screenshotsDir, fileName);
+  fs.writeFileSync(filePath, Buffer.from(result.data || "", "base64"));
+  report.screenshots.push({ name, path: filePath });
+}
+
+function sanitizeArtifactName(value) {
+  return String(value || "screenshot")
+    .toLowerCase()
+    .replace(/[^a-z0-9а-яё_-]+/gi, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80) || "screenshot";
 }
 
 function withSmokeParam(rawUrl, mode) {
@@ -1500,8 +1565,22 @@ function parseArgs(args) {
     else if (arg.startsWith("--url=")) parsed.url = arg.slice("--url=".length);
     else if (arg === "--timeout") parsed.timeout = args[++index];
     else if (arg.startsWith("--timeout=")) parsed.timeout = arg.slice("--timeout=".length);
+    else if (arg === "--viewport") parsed.viewport = args[++index];
+    else if (arg.startsWith("--viewport=")) parsed.viewport = arg.slice("--viewport=".length);
+    else if (arg === "--desktop-qa-dir") parsed.desktopQaDir = args[++index];
+    else if (arg.startsWith("--desktop-qa-dir=")) parsed.desktopQaDir = arg.slice("--desktop-qa-dir=".length);
   }
   return parsed;
+}
+
+function parseViewportOption(value) {
+  if (!value) return null;
+  const match = String(value).trim().match(/^(\d{3,5})x(\d{3,5})$/i);
+  if (!match) return null;
+  const width = Number(match[1]);
+  const height = Number(match[2]);
+  if (!Number.isFinite(width) || !Number.isFinite(height) || width < 320 || height < 480) return null;
+  return { width, height };
 }
 
 function numberOption(value, fallback) {
@@ -1581,6 +1660,9 @@ function createReport() {
     consoleErrors: [],
     runtimeErrors: [],
     networkErrors: [],
+    screenshots: [],
+    visualChecks: [],
+    viewport: VIEWPORT,
   };
 }
 
@@ -1595,6 +1677,7 @@ function printSummary(status, report) {
   console.log(`URL: ${report.serverUrl || "n/a"}`);
   console.log(`Server: ${report.startedDevServer ? `started by smoke (${report.serverMode})` : "external/already running"}`);
   console.log(`HTTP status: ${report.httpStatus || "n/a"}`);
+  console.log(`Viewport: ${report.viewport.width}x${report.viewport.height}`);
   console.log(`Browser mode: ${report.browserMode}`);
   console.log(`Telegram mock: ${report.telegramMock}`);
   console.log(`Main menu checked: ${report.mainMenuChecked ? "YES" : "NO"}`);
@@ -1650,6 +1733,8 @@ function printSummary(status, report) {
   console.log(`Console errors: ${report.consoleErrors.length}`);
   console.log(`Runtime errors: ${report.runtimeErrors.length}`);
   console.log(`HTTP/network errors: ${report.networkErrors.length}`);
+  console.log(`Screenshots captured: ${report.screenshots.length}`);
+  console.log(`Visual overflow/select checks: ${report.visualChecks.length}`);
   if (report.consoleErrors.length) console.log(`Console error sample: ${report.consoleErrors.slice(0, 3).join(" | ")}`);
   if (report.runtimeErrors.length) console.log(`Runtime error sample: ${report.runtimeErrors.slice(0, 3).join(" | ")}`);
   if (report.networkErrors.length) console.log(`Network error sample: ${report.networkErrors.slice(0, 3).join(" | ")}`);

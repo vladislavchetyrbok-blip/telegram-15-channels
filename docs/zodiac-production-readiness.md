@@ -22,6 +22,7 @@ The Zodiac product is ready for controlled live operation of the daily publishin
 - Production backup freshness is currently OK after backup `2026-06-19-01-06-53` and restore dry-run PASS.
 - Soft-launch pack is ready for `5-20` first users through `docs/zodiac-soft-launch-runbook.md`.
 - Soft-launch release candidate snapshot is available at `docs/zodiac-soft-launch-release-candidate.md`.
+- Desktop visual QA harness is available at `docs/zodiac-desktop-qa-harness.md` and runs through `npm run zodiac:desktop:qa`; it accelerates local/staging UI checks but does not replace the real phone pass.
 - Safe share loop is ready for controlled testing: generic share drafts, no raw personal inputs, no referral IDs, and aggregate-only share lifecycle analytics.
 - Monetization readiness is documented in `docs/zodiac-monetization-readiness.md`; payments, Telegram Stars, and entitlement enforcement remain OFF.
 - Manual live publish remains forbidden unless a dry-run and ledger audit prove it is safe.
@@ -289,6 +290,21 @@ Real phone status:
 - Manual checklist: `docs/zodiac-real-phone-webview-checklist.md`.
 
 ## Mini App Regression Smoke
+
+Desktop visual QA harness:
+
+```bash
+npm run zodiac:desktop:qa
+```
+
+Artifacts:
+
+```text
+data/runtime/zodiac-desktop-qa/latest-report.json
+data/runtime/zodiac-desktop-qa/<run>/screenshots/
+```
+
+This harness checks iPhone-like, Android-like, and desktop viewports through local CDP automation. It captures screenshots and verifies no horizontal overflow, visible native white selects, console/runtime/network errors, and raw sensitive localStorage/share leaks. It does not replace `docs/zodiac-real-phone-webview-checklist.md`.
 
 Command:
 
