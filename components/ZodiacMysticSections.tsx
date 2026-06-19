@@ -8,11 +8,16 @@ import {
   generateIntuitiveSign,
   generateTalismans,
   generateAuraColor,
-  generateLunarRitual,
+  generateLunarRitualFlow,
   generateKarmicLessons,
   generateBirthMatrix,
+  normalizeLunarDateKey,
+  shiftLunarDateKey,
   type BirthMatrixSectionId,
   type MysticBirthMatrix,
+  type MysticLunarDateBucket,
+  type MysticLunarMode,
+  type MysticLunarPlan,
   type MysticRuneSpread,
   type MysticRuneSpreadMode,
   type MysticTarotSpread,
@@ -23,6 +28,7 @@ import {
 import type { ZodiacAnalyticsEventName, ZodiacAnalyticsPayload } from "@/lib/zodiac-mini-app-analytics-shared";
 import type { ZodiacRetentionDraft } from "./zodiac-mini-app/retention";
 import { BirthMatrixVisual } from "./zodiac-mini-app/BirthMatrixVisual";
+import { LunarCalendarVisual } from "./zodiac-mini-app/LunarCalendarVisual";
 import { RuneSpreadVisual } from "./zodiac-mini-app/RuneSpreadVisual";
 import { TarotSpreadVisual } from "./zodiac-mini-app/TarotSpreadVisual";
 import { FeatureCard, EmptyFeatureCard } from "./zodiac-mini-app/ui-primitives";
@@ -65,6 +71,21 @@ const runeModeOptions: Array<{ id: MysticRuneSpreadMode; label: string; descript
   { id: "three_runes", label: "Три руны", description: "поддержка / риск / шаг" },
   { id: "question_rune", label: "Руна на вопрос", description: "символический ответ без сохранения вопроса" },
   { id: "protection_rune", label: "Руна защиты", description: "знак опоры и границы" },
+];
+
+const lunarModeOptions: Array<{ id: MysticLunarMode; label: string; description: string }> = [
+  { id: "lunar_day", label: "Лунный день", description: "ритм, энергия и мягкий фокус" },
+  { id: "daily_ritual", label: "Ритуал дня", description: "короткая практика для настройки" },
+  { id: "love_ritual", label: "Любовный ритуал", description: "теплый контакт без давления" },
+  { id: "money_work", label: "Деньги / работа", description: "фокус, порядок и ресурс" },
+  { id: "cleansing", label: "Очищение", description: "убрать лишнее и освободить внимание" },
+  { id: "sleep_intuition", label: "Сон / интуиция", description: "вечерняя тишина и внутренний сигнал" },
+];
+
+const lunarDateOptions: Array<{ id: MysticLunarDateBucket; label: string }> = [
+  { id: "today", label: "Сегодня" },
+  { id: "tomorrow", label: "Завтра" },
+  { id: "custom", label: "Выбрать дату" },
 ];
 
 export function DailyCardFeature({ publicMode, dateKey, sign }: CommonProps & { dateKey: string; sign: ZodiacSignId }) {
@@ -458,22 +479,191 @@ export function AuraColorFeature({ publicMode, dateKey, sign }: CommonProps & { 
   );
 }
 
-export function LunarRitualFeature({ publicMode, dateKey }: CommonProps & { dateKey: string }) {
-  const ritual = generateLunarRitual(dateKey);
+export function LunarRitualFeature({ publicMode, dateKey, onSave, onShare, onEvent }: InteractiveMysticProps) {
+  const [mode, setMode] = useState<MysticLunarMode>("daily_ritual");
+  const [dateBucket, setDateBucket] = useState<MysticLunarDateBucket>("today");
+  const [customDate, setCustomDate] = useState("");
+  const [intention, setIntention] = useState("");
+  const [plan, setPlan] = useState<MysticLunarPlan | null>(null);
+  const [saveStatus, setSaveStatus] = useState("");
+  const [shareStatus, setShareStatus] = useState("");
+  const startedTrackedRef = useRef(false);
+  const selectedDateKey = useMemo(() => resolveLunarSelectedDate(dateKey, dateBucket, customDate), [customDate, dateBucket, dateKey]);
+  const hasIntention = intention.trim().length > 0;
+  const action = useMemo(() => (plan ? buildLunarRetentionAction(plan) : null), [plan]);
+
+  useEffect(() => {
+    if (startedTrackedRef.current) return;
+    startedTrackedRef.current = true;
+    onEvent?.("lunar_started", lunarAnalyticsPayload({ mode, dateBucket, hasIntention: false }));
+  }, [dateBucket, mode, onEvent]);
+
+  const handleCalculate = () => {
+    if (!selectedDateKey) return;
+    const nextPlan = generateLunarRitualFlow(selectedDateKey, mode, dateBucket, dateKey, hasIntention);
+    setPlan(nextPlan);
+    setSaveStatus("");
+    setShareStatus("");
+    onEvent?.(mode === "lunar_day" ? "lunar_day_calculated" : "lunar_ritual_calculated", lunarAnalyticsPayload(nextPlan, hasIntention));
+    onEvent?.("feature_depth_viewed", lunarAnalyticsPayload(nextPlan, hasIntention, "lunar_result"));
+  };
+
+  const handleCalendarSelect = (nextDateKey: string) => {
+    setDateBucket(nextDateKey === dateKey ? "today" : nextDateKey === shiftLunarDateKey(dateKey, 1) ? "tomorrow" : "custom");
+    setCustomDate(nextDateKey);
+    const nextPlan = generateLunarRitualFlow(nextDateKey, mode, nextDateKey === dateKey ? "today" : nextDateKey === shiftLunarDateKey(dateKey, 1) ? "tomorrow" : "custom", dateKey, hasIntention);
+    setPlan(nextPlan);
+    setSaveStatus("");
+    setShareStatus("");
+    onEvent?.("feature_depth_viewed", lunarAnalyticsPayload(nextPlan, hasIntention, "lunar_calendar_day"));
+  };
+
+  const handleSave = () => {
+    if (!action || !plan) return;
+    onSave?.(action);
+    onEvent?.("lunar_ritual_saved", lunarAnalyticsPayload(plan, hasIntention));
+    setSaveStatus("Сохранено");
+  };
+
+  const handleShare = async () => {
+    if (!action || !plan) return;
+    onEvent?.("lunar_ritual_shared", lunarAnalyticsPayload(plan, hasIntention));
+    const result = await onShare?.(action);
+    setShareStatus(typeof result === "string" && result ? result : "Ссылка готова");
+  };
+
   return (
-    <FeatureCard publicMode={publicMode} title={`🌙 Лунный ритуал`} subtitle={ritual.theme}>
-      <div className="mt-4 space-y-3">
-        <div className={publicMode ? "rounded bg-white/5 p-3" : "rounded bg-slate-50 p-3"}>
-          <p className={publicMode ? "text-sm font-medium text-white mb-2" : "text-sm font-medium text-slate-800 mb-2"}>Намерение дня:</p>
-          <p className={publicMode ? "text-sm text-emerald-400 italic" : "text-sm text-emerald-600 italic"}>«{ritual.intention}»</p>
+    <FeatureCard publicMode={publicMode} title="🌙 Лунный ритуал" subtitle="Символический лунный ритм, календарь на 14 дней и безопасная практика без обещаний и фатальности.">
+      <div className="mt-4 space-y-5">
+        <div className={publicMode ? "rounded-xl border border-violet-200/20 bg-violet-200/10 p-4" : "rounded-xl border border-violet-100 bg-violet-50 p-4"}>
+          <p className={publicMode ? "text-xs font-semibold uppercase tracking-wide text-violet-100" : "text-xs font-semibold uppercase tracking-wide text-violet-800"}>честно о формате</p>
+          <p className={publicMode ? "mt-2 text-sm leading-6 text-slate-200" : "mt-2 text-sm leading-6 text-slate-700"}>
+            Это приближённая лунная интерпретация для самонаблюдения и мягких действий. Текст намерения не сохраняется, не уходит в analytics и не попадает в share.
+          </p>
         </div>
-        <p className={publicMode ? "text-sm text-slate-300" : "text-sm text-slate-600"}><strong>Что понадобится:</strong> {ritual.preparation}</p>
-        <div className="pl-4 border-l-2 border-indigo-500/50 space-y-2">
-          <p className={publicMode ? "text-sm text-slate-300" : "text-sm text-slate-700"}>1. {ritual.step1}</p>
-          <p className={publicMode ? "text-sm text-slate-300" : "text-sm text-slate-700"}>2. {ritual.step2}</p>
-          <p className={publicMode ? "text-sm text-slate-300" : "text-sm text-slate-700"}>3. {ritual.step3}</p>
+
+        <div>
+          <p className={publicMode ? "mb-2 text-sm font-semibold text-white" : "mb-2 text-sm font-semibold text-slate-900"}>Режим</p>
+          <div className="grid gap-2 sm:grid-cols-2">
+            {lunarModeOptions.map((item) => (
+              <button key={item.id} type="button" onClick={() => setMode(item.id)} className={choiceButtonClass(publicMode, mode === item.id)}>
+                <span className="block text-left">{item.label}</span>
+                <span className={publicMode ? "mt-1 block text-left text-xs font-normal text-slate-300" : "mt-1 block text-left text-xs font-normal text-slate-500"}>{item.description}</span>
+              </button>
+            ))}
+          </div>
         </div>
-        <p className={publicMode ? "text-sm text-slate-300 mt-2" : "text-sm text-slate-600 mt-2"}><strong>Символически отпустить:</strong> {ritual.release}</p>
+
+        <div>
+          <p className={publicMode ? "mb-2 text-sm font-semibold text-white" : "mb-2 text-sm font-semibold text-slate-900"}>Дата</p>
+          <div className="grid grid-cols-3 gap-2">
+            {lunarDateOptions.map((item) => (
+              <button key={item.id} type="button" onClick={() => setDateBucket(item.id)} className={choiceButtonClass(publicMode, dateBucket === item.id)}>
+                {item.label}
+              </button>
+            ))}
+          </div>
+          {dateBucket === "custom" ? (
+            <input
+              type="text"
+              inputMode="numeric"
+              value={customDate}
+              onChange={(event) => setCustomDate(event.target.value.slice(0, 10))}
+              placeholder="2026-06-19 или 19.06.2026"
+              className={
+                publicMode
+                  ? "mt-3 w-full rounded-lg border border-white/15 bg-white/7 px-3 py-3 text-sm text-white placeholder-slate-500 focus:border-violet-200 focus:outline-none"
+                  : "mt-3 w-full rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-violet-400 focus:outline-none"
+              }
+            />
+          ) : null}
+          {dateBucket === "custom" && !selectedDateKey ? <p className={publicMode ? "mt-2 text-xs text-amber-200" : "mt-2 text-xs text-amber-700"}>Введите дату в формате YYYY-MM-DD или DD.MM.YYYY.</p> : null}
+        </div>
+
+        <div>
+          <label className={publicMode ? "mb-2 block text-sm font-semibold text-white" : "mb-2 block text-sm font-semibold text-slate-900"} htmlFor="lunar-intention">
+            Намерение
+          </label>
+          <textarea
+            id="lunar-intention"
+            value={intention}
+            onChange={(event) => setIntention(event.target.value.slice(0, 120))}
+            placeholder="Например: Хочу спокойствия. Поле необязательное и не сохраняется."
+            className={
+              publicMode
+                ? "min-h-24 w-full rounded-lg border border-white/15 bg-white/7 px-3 py-3 text-sm text-white placeholder-slate-500 focus:border-violet-200 focus:outline-none"
+                : "min-h-24 w-full rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-violet-400 focus:outline-none"
+            }
+          />
+          <p className={publicMode ? "mt-1 text-xs text-slate-400" : "mt-1 text-xs text-slate-500"}>Сохраняется только факт, что намерение было задано, без текста.</p>
+        </div>
+
+        <button type="button" onClick={handleCalculate} disabled={!selectedDateKey} className={`${primaryMysticButtonClass(publicMode)} disabled:cursor-not-allowed disabled:opacity-50`}>
+          Показать лунный ритуал
+        </button>
+
+        {plan ? (
+          <div className="space-y-4">
+            <div data-lunar-result-hero="true" className={publicMode ? "rounded-2xl border border-violet-200/20 bg-gradient-to-br from-violet-300/18 via-indigo-300/12 to-cyan-300/10 p-4" : "rounded-2xl border border-violet-100 bg-gradient-to-br from-violet-50 via-indigo-50 to-cyan-50 p-4"}>
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className={publicMode ? "text-xs font-semibold uppercase tracking-wide text-violet-100" : "text-xs font-semibold uppercase tracking-wide text-violet-800"}>Лунный ритуал</p>
+                  <h3 className={publicMode ? "mt-1 text-2xl font-semibold leading-tight text-white" : "mt-1 text-2xl font-semibold leading-tight text-slate-950"}>
+                    {plan.modeLabel} · {plan.displayDate}
+                  </h3>
+                  <p className={publicMode ? "mt-2 text-sm leading-6 text-slate-200" : "mt-2 text-sm leading-6 text-slate-700"}>{plan.hero}</p>
+                </div>
+                <div className={publicMode ? "shrink-0 rounded-2xl border border-white/15 bg-black/20 px-3 py-2 text-center" : "shrink-0 rounded-2xl border border-white bg-white/75 px-3 py-2 text-center"}>
+                  <p className={publicMode ? "text-3xl text-violet-100" : "text-3xl text-violet-800"}>{plan.phaseSymbol}</p>
+                  <p className={publicMode ? "mt-1 text-xs font-semibold text-slate-300" : "mt-1 text-xs font-semibold text-slate-600"}>{plan.energyTierLabel}</p>
+                </div>
+              </div>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <span className={publicMode ? "rounded-full border border-emerald-200/25 bg-emerald-200/10 px-3 py-1 text-xs font-semibold text-emerald-100" : "rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700"}>
+                  {plan.honesty}
+                </span>
+                <span className={publicMode ? "rounded-full border border-white/12 bg-white/8 px-3 py-1 text-xs font-semibold text-slate-200" : "rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-600"}>
+                  {plan.rhythmLabel}
+                </span>
+              </div>
+            </div>
+
+            <LunarCalendarVisual publicMode={publicMode} days={plan.calendarDays} selectedDateKey={plan.selectedDateKey} onSelectDate={handleCalendarSelect} />
+
+            <MysticResultBlock publicMode={publicMode} title="Энергия дня" body={plan.energy} tone="action" />
+            <LunarListBlock publicMode={publicMode} title="Что делать" items={plan.doItems} tone="action" />
+            <LunarListBlock publicMode={publicMode} title="Что не делать" items={plan.avoidItems} tone="risk" />
+
+            <div className={publicMode ? "rounded-xl border border-violet-200/20 bg-violet-200/10 p-4" : "rounded-xl border border-violet-100 bg-violet-50 p-4"} data-lunar-ritual-result="true">
+              <p className={publicMode ? "text-sm font-semibold text-violet-100" : "text-sm font-semibold text-violet-900"}>Ритуал</p>
+              <h4 className={publicMode ? "mt-1 text-lg font-semibold text-white" : "mt-1 text-lg font-semibold text-slate-950"}>{plan.ritual.title}</h4>
+              <p className={publicMode ? "mt-2 text-sm leading-5 text-slate-300" : "mt-2 text-sm leading-5 text-slate-600"}><strong>Когда:</strong> {plan.ritual.timing}</p>
+              <p className={publicMode ? "mt-1 text-sm leading-5 text-slate-300" : "mt-1 text-sm leading-5 text-slate-600"}><strong>Подготовить:</strong> {plan.ritual.preparation}</p>
+              <ol className="mt-3 space-y-2">
+                {plan.ritual.steps.map((step, index) => (
+                  <li key={step} className={publicMode ? "rounded-lg border border-white/10 bg-black/15 p-3 text-sm leading-5 text-slate-200" : "rounded-lg border border-violet-100 bg-white/75 p-3 text-sm leading-5 text-slate-700"}>
+                    <strong>{index + 1}.</strong> {step}
+                  </li>
+                ))}
+              </ol>
+              <p className={publicMode ? "mt-3 text-sm font-semibold text-emerald-100" : "mt-3 text-sm font-semibold text-emerald-800"}>{plan.ritual.finalAction}</p>
+            </div>
+
+            <LunarListBlock publicMode={publicMode} title="Чек-лист" items={plan.checklist} />
+            <MysticResultBlock publicMode={publicMode} title="Действие сегодня" body={plan.actionToday} tone="action" />
+            <MysticResultBlock publicMode={publicMode} title="Вечерний итог" body={plan.eveningSummary} />
+
+            <div className="grid gap-2 sm:grid-cols-2">
+              <button type="button" onClick={handleSave} className={secondaryMysticButtonClass(publicMode)}>
+                Сохранить ритуал
+              </button>
+              <button type="button" onClick={handleShare} className={secondaryMysticButtonClass(publicMode)}>
+                Поделиться
+              </button>
+            </div>
+            {saveStatus || shareStatus ? <p className={publicMode ? "text-center text-sm font-semibold text-emerald-300" : "text-center text-sm font-semibold text-emerald-700"}>{saveStatus || shareStatus}</p> : null}
+          </div>
+        ) : null}
       </div>
     </FeatureCard>
   );
@@ -756,6 +946,34 @@ function MysticResultBlock({ publicMode, title, body, tone = "default" }: { publ
   );
 }
 
+function LunarListBlock({ publicMode, title, items, tone = "default" }: { publicMode: boolean; title: string; items: string[]; tone?: "default" | "risk" | "action" }) {
+  const toneClass =
+    tone === "risk"
+      ? publicMode
+        ? "border-rose-200/20 bg-rose-200/10"
+        : "border-rose-200 bg-rose-50"
+      : tone === "action"
+        ? publicMode
+          ? "border-emerald-200/20 bg-emerald-200/10"
+          : "border-emerald-200 bg-emerald-50"
+        : publicMode
+          ? "border-white/10 bg-white/7"
+          : "border-slate-200 bg-white";
+  return (
+    <div className={`rounded-xl border p-4 ${toneClass}`}>
+      <p className={publicMode ? "text-sm font-semibold text-white" : "text-sm font-semibold text-slate-900"}>{title}</p>
+      <ul className="mt-3 space-y-2">
+        {items.map((item) => (
+          <li key={item} className={publicMode ? "flex gap-2 text-sm leading-5 text-slate-200" : "flex gap-2 text-sm leading-5 text-slate-700"}>
+            <span className={tone === "risk" ? "mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-300" : "mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-300"} />
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 function choiceButtonClass(publicMode: boolean, active: boolean) {
   if (active) {
     return publicMode
@@ -811,6 +1029,24 @@ function buildRuneRetentionAction(spread: MysticRuneSpread): ZodiacRetentionDraf
   };
 }
 
+function buildLunarRetentionAction(plan: MysticLunarPlan): ZodiacRetentionDraft {
+  return {
+    section: "mystic",
+    featureKey: "lunarRitual",
+    label: plan.mode === "lunar_day" ? `Лунный календарь: ${dateBucketLabel(plan.dateBucket)}` : `Лунный ритуал: ${plan.modeLabel.toLowerCase()}`,
+    mode: plan.mode,
+    topic: plan.energyKey,
+    spreadType: plan.ritualKey,
+    matrixType: "symbolic_lunar_ritual",
+    archetype: plan.energyTier,
+    detail: `${plan.energyLabel} · ${plan.ritualKey}`,
+    dateBucket: plan.dateBucket,
+    selectedDateKey: plan.selectedDateKey,
+    energyTier: plan.energyTier,
+    ritualKey: plan.ritualKey,
+  };
+}
+
 function tarotAnalyticsPayload(
   value: MysticTarotSpread | { topic: MysticTarotTopicId; spreadType: MysticTarotSpreadType },
   category = "tarot_spread",
@@ -845,6 +1081,24 @@ function runeAnalyticsPayload(
   };
 }
 
+function lunarAnalyticsPayload(
+  value: MysticLunarPlan | { mode: MysticLunarMode; dateBucket: MysticLunarDateBucket; hasIntention: boolean },
+  hasIntention?: boolean,
+  category = "lunar_ritual",
+): ZodiacAnalyticsPayload {
+  const hasResult = "ritualKey" in value;
+  return {
+    section: "mystic",
+    category,
+    featureKey: "lunarRitual",
+    mode: value.mode,
+    dateBucket: value.dateBucket,
+    energyTier: hasResult ? value.energyTier : undefined,
+    ritualKey: hasResult ? value.ritualKey : undefined,
+    hasIntention: hasResult ? Boolean(hasIntention) : value.hasIntention,
+  };
+}
+
 function buildBirthMatrixRetentionAction(matrix: MysticBirthMatrix): ZodiacRetentionDraft {
   return {
     section: "mystic",
@@ -870,4 +1124,16 @@ function birthMatrixAnalyticsPayload(matrix: MysticBirthMatrix | null, hasBirthD
     hasBirthDate,
     hasName: false,
   };
+}
+
+function resolveLunarSelectedDate(baseDateKey: string, dateBucket: MysticLunarDateBucket, customDate: string) {
+  if (dateBucket === "today") return baseDateKey;
+  if (dateBucket === "tomorrow") return shiftLunarDateKey(baseDateKey, 1);
+  return normalizeLunarDateKey(customDate);
+}
+
+function dateBucketLabel(bucket: MysticLunarDateBucket) {
+  if (bucket === "today") return "сегодня";
+  if (bucket === "tomorrow") return "завтра";
+  return "выбранная дата";
 }

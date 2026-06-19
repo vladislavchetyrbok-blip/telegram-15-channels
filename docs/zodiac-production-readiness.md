@@ -17,6 +17,7 @@ The Zodiac product is ready for controlled live operation of the daily publishin
 - Mini App interaction hardening is implemented and smoke-verified: custom dark selects, safe share fallback, non-dead pair gates, inline VIP pair pickers, and symbolic Final AstroMap visuals for relationship/VIP tools.
 - Channel packaging live was applied and post-live verified for `13/13` channels.
 - Daily and weekly content quality was upgraded while keeping date/range headers and CTA buttons.
+- Lunar/Ritual now has a richer symbolic flow with modes, 14-day visual calendar, ritual result sections, safe Save/Share, and localStorage privacy checks.
 - Analytics is privacy-safe but storage mode is currently `noop` unless Redis REST env vars are configured.
 - Production backup freshness is currently OK after backup `2026-06-19-01-06-53` and restore dry-run PASS.
 - Manual live publish remains forbidden unless a dry-run and ledger audit prove it is safe.
@@ -202,6 +203,8 @@ Mystic:
 
 - Mystic category opens and renders content.
 - Tarot and Runes now have richer symbolic flows: topic/mode selection, optional unsaved question input, deterministic safe spread generation, visual Tarot/Rune components, structured result sections, safe Save/Share, and smoke coverage for visual cards/runes plus localStorage privacy.
+- Lunar/Ritual now has modes (`Лунный день`, `Ритуал дня`, `Любовный ритуал`, `Деньги / работа`, `Очищение`, `Сон / интуиция`), date selection (`Сегодня`, `Завтра`, custom date), optional unsaved intention, a 14-day `LunarCalendarVisual`, structured sections (`Энергия дня`, `Что делать`, `Что не делать`, `Ритуал`, `Чек-лист`, `Действие сегодня`, `Вечерний итог`), and safe Save/Share.
+- Lunar/Ritual is explicitly a symbolic lunar interpretation. It must not claim exact astronomical phase, medical/financial/love guarantees, or ephemeris-level precision until a future real lunar engine is added.
 - Tarot, Runes, Daily Card, Lunar Ritual, Aura, Talismans, and related features are covered by smoke checks.
 
 Birth Matrix:
@@ -269,6 +272,9 @@ Dead CTA checked: YES
 VIP message copy checked: YES
 Giveaways locked: YES
 Mystic checked: YES
+Lunar ritual checked: YES
+Lunar calendar visual checked: YES
+Lunar calendar legend checked: YES
 Birth Matrix / Матрица судьбы checked: YES
 Profile checked: YES
 History empty state checked: YES

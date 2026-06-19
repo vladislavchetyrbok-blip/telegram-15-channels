@@ -36,6 +36,8 @@ npm run zodiac:miniapp:smoke -- --url http://localhost:3000/compatibility
 - Compatibility smoke chooses Love mode, fills pair data, verifies birth-date autosign cases `1998-06-15 -> Близнецы`, `2000-03-21 -> Овен`, and `2000-12-22 -> Козерог`, reaches a detailed result, opens the 30-day couple calendar, opens `Что написать`, verifies the message copy state `Скопировано`, opens `Действие сегодня`, saves the pair with the `Пара сохранена` state, reopens it from Profile/Favorites/History, and checks safe Share.
 - Compatibility local retention stores only safe summary fields: first sign, second sign, relationship mode, score tier, label, feature key, and timestamp. It must not store names, birth dates, birth times, city query, selected city id, raw result text, or raw message text.
 - Horoscopes category opens from the main menu.
+- Lunar/Ritual opens from the main menu category `Луна и ритуалы`, selects `Ритуал дня`, selects `Сегодня`, enters the test intention `Хочу спокойствия`, calculates, renders `Лунный ритуал`, renders `LunarCalendarVisual`, marks a selected day, shows the legend, `Энергия дня`, `Что делать`, `Что не делать`, `Ритуал`, `Чек-лист`, and `Вечерний итог`, then verifies safe Save/Share.
+- Lunar/Ritual local retention must not store the raw intention `Хочу спокойствия`; it may store only safe fields such as feature key, mode, date bucket or selected date key, energy tier, ritual key, label, and timestamp.
 - Angel Numbers / `Ангельские числа` is visible as a top-level category, opens the existing `angelNumbers` feature, and returns to Home via Back/Main menu.
 - VIP tab opens, free access until `17.09.2026` is visible, and all 11 active VIP cards open as functional tools with an input block, calculate/show action, non-empty `Результат VIP`, safe Save, and safe Share.
 - VIP pair tools support inline pair selection when no pair exists, show `Нужна пара для расчёта`, and can calculate without sending users into a dead end.
@@ -73,6 +75,25 @@ Tarot richer spread checked: YES (3/3 cards)
 Rune richer spread checked: YES (3/3 runes)
 ```
 
+## Lunar / Ritual Flow Checks
+
+The smoke command verifies the richer Lunar/Ritual flow, not only that the screen opens.
+
+- Opens `Луна и ритуалы` from the Home menu.
+- Uses mode `Ритуал дня` and date `Сегодня`.
+- Enters test intention `Хочу спокойствия`; the raw text must not appear in retention localStorage, analytics payloads, share text, or saved shortcuts.
+- Calculates and checks the hero `Лунный ритуал`, honesty wording for a symbolic lunar rhythm, `data-lunar-calendar-visual`, 14 visible days, selected day marker, and `data-lunar-calendar-legend`.
+- Checks structured sections: `Энергия дня`, `Что делать`, `Что не делать`, `Ритуал`, `Чек-лист`, `Действие сегодня`, and `Вечерний итог`.
+- Checks `Сохранить ритуал` and `Поделиться` states.
+
+Expected PASS summary includes:
+
+```text
+Lunar ritual checked: YES
+Lunar calendar visual checked: YES
+Lunar calendar legend checked: YES
+```
+
 ## Result Meanings
 
 - `Mini App Smoke: PASS` means the browser flow, Telegram mock flow, VIP, Mystic, and error checks completed successfully.
@@ -104,6 +125,9 @@ Dead CTA checked: YES
 VIP message copy checked: YES
 Giveaways locked: YES
 Mystic checked: YES
+Lunar ritual checked: YES
+Lunar calendar visual checked: YES
+Lunar calendar legend checked: YES
 Birth Matrix / Матрица судьбы checked: YES
 Birth Matrix depth checked: YES
 Compatibility result checked: YES

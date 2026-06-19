@@ -14,8 +14,8 @@ const secretEnvNames = [
   "SUPABASE_SERVICE_ROLE_KEY",
   "DATABASE_URL",
 ];
-const sensitiveValues = ["SHOULD_BE_STRIPPED_NAME", "1990-01-02", "12:34", "SHOULD_BE_STRIPPED_CITY", "SHOULD_BE_STRIPPED_CITY_QUERY", "SHOULD_NOT_STORE_RAW_MESSAGE"];
-const sensitiveFields = ["name", "birthDate", "birthTime", "birthCity", "city", "cityId", "cityQuery", "selectedCityId", "message", "messageText"];
+const sensitiveValues = ["SHOULD_BE_STRIPPED_NAME", "1990-01-02", "12:34", "SHOULD_BE_STRIPPED_CITY", "SHOULD_BE_STRIPPED_CITY_QUERY", "SHOULD_NOT_STORE_RAW_MESSAGE", "Хочу спокойствия"];
+const sensitiveFields = ["name", "birthDate", "birthTime", "birthCity", "city", "cityId", "cityQuery", "selectedCityId", "message", "messageText", "question", "intention", "rawResult", "resultText"];
 
 let telegramApiCalls = 0;
 let livePublishCalls = 0;
@@ -103,6 +103,11 @@ async function main() {
     const runeCalculatedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "rune_spread_calculated", { section: "mystic", featureKey: "runeDay", mode: "rune", topic: "three_runes", spreadType: "three_runes", runeCount: 3, resultTier: "grounded" });
     const runeSavedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "rune_spread_saved", { section: "mystic", featureKey: "runeDay", mode: "rune", topic: "three_runes", spreadType: "three_runes", runeCount: 3, resultTier: "grounded" });
     const runeSharedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "rune_spread_shared", { section: "mystic", featureKey: "runeDay", mode: "rune", topic: "three_runes", spreadType: "three_runes", runeCount: 3, resultTier: "grounded" });
+    const lunarStartedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "lunar_started", { section: "mystic", featureKey: "lunarRitual", mode: "daily_ritual", dateBucket: "today", hasIntention: true, intention: "Хочу спокойствия" });
+    const lunarDayCalculatedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "lunar_day_calculated", { section: "mystic", featureKey: "lunarRitual", mode: "lunar_day", dateBucket: "today", energyTier: "soft", ritualKey: "lunar_day_reflection", hasIntention: false });
+    const lunarRitualCalculatedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "lunar_ritual_calculated", { section: "mystic", featureKey: "lunarRitual", mode: "cleansing", dateBucket: "custom", energyTier: "deep", ritualKey: "cleansing_release", hasIntention: true, intention: "Хочу спокойствия" });
+    const lunarRitualSavedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "lunar_ritual_saved", { section: "mystic", featureKey: "lunarRitual", mode: "daily_ritual", dateBucket: "tomorrow", energyTier: "active", ritualKey: "daily_moon_ritual", hasIntention: true });
+    const lunarRitualSharedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "lunar_ritual_shared", { section: "mystic", featureKey: "lunarRitual", mode: "sleep_intuition", dateBucket: "today", energyTier: "intuitive", ritualKey: "sleep_intuition", hasIntention: false, rawResult: "SHOULD_NOT_STORE_RAW_MESSAGE" });
     const disallowedEvent = await checkDisallowedEvent(`${baseUrl}/api/zodiac/analytics/event`);
     const afterLedgerStats = await collectLedgerStats();
     const ledgerWrites = countLedgerWrites(beforeLedgerStats, afterLedgerStats);
@@ -180,6 +185,11 @@ async function main() {
       runeCalculatedEvent,
       runeSavedEvent,
       runeSharedEvent,
+      lunarStartedEvent,
+      lunarDayCalculatedEvent,
+      lunarRitualCalculatedEvent,
+      lunarRitualSavedEvent,
+      lunarRitualSharedEvent,
       disallowedEvent,
       sensitiveFieldsStripped:
         allowedEvent.sensitiveFieldsStripped &&
@@ -245,7 +255,12 @@ async function main() {
         runeStartedEvent.sensitiveFieldsStripped &&
         runeCalculatedEvent.sensitiveFieldsStripped &&
         runeSavedEvent.sensitiveFieldsStripped &&
-        runeSharedEvent.sensitiveFieldsStripped,
+        runeSharedEvent.sensitiveFieldsStripped &&
+        lunarStartedEvent.sensitiveFieldsStripped &&
+        lunarDayCalculatedEvent.sensitiveFieldsStripped &&
+        lunarRitualCalculatedEvent.sensitiveFieldsStripped &&
+        lunarRitualSavedEvent.sensitiveFieldsStripped &&
+        lunarRitualSharedEvent.sensitiveFieldsStripped,
       noSecretsPrinted: true,
       telegramApiCalls,
       ledgerWrites,

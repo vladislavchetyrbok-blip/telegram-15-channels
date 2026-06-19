@@ -37,6 +37,7 @@ const FORBIDDEN_RETENTION_VALUES = [
   "11:11",
   "Что мне выбрать?",
   "Где нужна защита?",
+  "Хочу спокойствия",
   "Мне важно сказать",
   "Мне важно не победить",
   "Спасибо, что слышишь",
@@ -192,6 +193,11 @@ async function runBrowserModeSmoke(client, report) {
   await click(client, "Гороскопы");
   await waitForPageText(client, /Открыт раздел|Гороскоп недели|Удачные дни|Лунный календарь/, "Horoscopes category did not render.");
   report.horoscopesChecked = true;
+
+  await click(client, "Главная");
+  await waitForPageText(client, /Астрологический центр|Луна и ритуалы/, "Back to main menu did not render after Horoscopes.");
+  await click(client, "Луна и ритуалы");
+  await runLunarRitualSmoke(client, report);
 
   await click(client, "Главная");
   await waitForPageText(client, /Астрологический центр|Ангельские числа/, "Back to main menu did not render after Horoscopes.");
@@ -487,6 +493,33 @@ async function runRuneSmoke(client, report) {
   await assertRetentionPrivacy(client, report);
   report.runeFlowChecked = true;
   report.runesChecked = runeCount;
+}
+
+async function runLunarRitualSmoke(client, report) {
+  await waitForPageText(client, /Лунный ритуал|символический лунный ритм|Режим/, "Lunar/Ritual section did not render.");
+  await click(client, "Ритуал дня");
+  await click(client, "Сегодня");
+  await fillVisibleTextarea(client, "Хочу спокойствия");
+  await click(client, "Показать");
+  await settle(client);
+  await waitForPageText(client, /Лунный ритуал|символический лунный календарь|14 дней ритма/, "Lunar ritual result did not render the hero/calendar.");
+  await waitForPageText(client, /Энергия дня|Что делать|Что не делать|Ритуал|Чек-лист|Вечерний итог/, "Lunar ritual result did not render all structured sections.");
+  const visualCount = await evalPage(client, "document.querySelectorAll('[data-lunar-calendar-visual=\"true\"]').length", []);
+  const selectedDayCount = await evalPage(client, "document.querySelectorAll('[data-lunar-selected=\"true\"]').length", []);
+  const legendCount = await evalPage(client, "document.querySelectorAll('[data-lunar-calendar-legend=\"true\"]').length", []);
+  const gridDayCount = await evalPage(client, "document.querySelectorAll('[data-lunar-calendar-day]').length", []);
+  if (visualCount < 1) throw new Error("Lunar ritual did not render LunarCalendarVisual.");
+  if (selectedDayCount < 1) throw new Error("Lunar calendar did not mark a selected day.");
+  if (legendCount < 1) throw new Error("Lunar calendar did not render a legend.");
+  if (gridDayCount < 14) throw new Error(`Lunar calendar expected 14 days, got ${gridDayCount}.`);
+  await click(client, "Сохранить ритуал");
+  await waitForPageText(client, /Сохранено/, "Lunar ritual save did not show saved state.");
+  await click(client, "Поделиться");
+  await waitForPageText(client, /Ссылка готова|Готово к отправке|Скопировано|Текст для копирования|Текст скопирован|Откройте Telegram/i, "Lunar ritual share did not show safe share state.");
+  await assertRetentionPrivacy(client, report);
+  report.lunarRitualChecked = true;
+  report.lunarCalendarVisualChecked = true;
+  report.lunarCalendarLegendChecked = true;
 }
 
 async function runVipToolSmoke(client, label, report) {
@@ -1473,6 +1506,9 @@ function createReport() {
     localStoragePrivacyChecked: false,
     giveawaysLocked: false,
     mysticChecked: 0,
+    lunarRitualChecked: false,
+    lunarCalendarVisualChecked: false,
+    lunarCalendarLegendChecked: false,
     tarotFlowChecked: false,
     tarotCardsChecked: 0,
     runeFlowChecked: false,
@@ -1543,6 +1579,9 @@ function printSummary(status, report) {
   console.log(`Free access visible: ${report.freeAccessVisible ? "YES" : "NO"}`);
   console.log(`Giveaways locked: ${report.giveawaysLocked ? "YES" : "NO"}`);
   console.log(`Mystic checked: ${report.mysticChecked >= 3 ? "YES" : "NO"} (${report.mysticChecked}/3)`);
+  console.log(`Lunar ritual checked: ${report.lunarRitualChecked ? "YES" : "NO"}`);
+  console.log(`Lunar calendar visual checked: ${report.lunarCalendarVisualChecked ? "YES" : "NO"}`);
+  console.log(`Lunar calendar legend checked: ${report.lunarCalendarLegendChecked ? "YES" : "NO"}`);
   console.log(`Tarot richer spread checked: ${report.tarotFlowChecked ? "YES" : "NO"} (${report.tarotCardsChecked}/3 cards)`);
   console.log(`Rune richer spread checked: ${report.runeFlowChecked ? "YES" : "NO"} (${report.runesChecked}/3 runes)`);
   console.log(`Birth Matrix / Матрица судьбы checked: ${report.birthMatrixChecked ? "YES" : "NO"}`);

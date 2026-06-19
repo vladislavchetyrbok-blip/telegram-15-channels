@@ -23,6 +23,10 @@ export interface ZodiacRetentionItem {
   matrixType?: string;
   archetype?: string;
   mainNumber?: number;
+  dateBucket?: string;
+  selectedDateKey?: string;
+  energyTier?: string;
+  ritualKey?: string;
   detail?: string;
   createdAt: string;
 }
@@ -166,8 +170,12 @@ function normalizeItem(value: ZodiacRetentionDraft | Partial<ZodiacRetentionItem
   const matrixType = sanitizeToken(value.matrixType);
   const archetype = sanitizeToken(value.archetype);
   const mainNumber = sanitizeSafeNumber(value.mainNumber);
+  const dateBucket = sanitizeToken(value.dateBucket);
+  const selectedDateKey = sanitizeDateKey(value.selectedDateKey);
+  const energyTier = sanitizeToken(value.energyTier);
+  const ritualKey = sanitizeToken(value.ritualKey);
   const detail = sanitizeLabel(value.detail);
-  const id = sanitizeToken(value.id) || [section, featureKey, sign, firstSign, secondSign, relationshipMode, mode, topic, spreadType, cardKeys?.join("_"), runeKeys?.join("_"), matrixType, archetype, mainNumber, label].filter(Boolean).join(":").slice(0, 140);
+  const id = sanitizeToken(value.id) || [section, featureKey, sign, firstSign, secondSign, relationshipMode, mode, topic, spreadType, cardKeys?.join("_"), runeKeys?.join("_"), matrixType, archetype, mainNumber, dateBucket, selectedDateKey, energyTier, ritualKey, label].filter(Boolean).join(":").slice(0, 140);
   const createdAt = typeof value.createdAt === "string" && !Number.isNaN(Date.parse(value.createdAt)) ? value.createdAt : new Date().toISOString();
   return {
     id,
@@ -187,6 +195,10 @@ function normalizeItem(value: ZodiacRetentionDraft | Partial<ZodiacRetentionItem
     matrixType,
     archetype,
     mainNumber,
+    dateBucket,
+    selectedDateKey,
+    energyTier,
+    ritualKey,
     detail,
     createdAt,
   };
@@ -205,6 +217,11 @@ function sanitizeToken(value: unknown) {
   if (typeof value !== "string") return undefined;
   const normalized = value.trim();
   return /^[A-Za-z0-9_-]{1,64}$/.test(normalized) ? normalized : undefined;
+}
+
+function sanitizeDateKey(value: unknown) {
+  if (typeof value !== "string") return undefined;
+  return /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : undefined;
 }
 
 function sanitizeTokenArray(value: unknown) {

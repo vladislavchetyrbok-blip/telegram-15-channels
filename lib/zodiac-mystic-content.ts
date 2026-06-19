@@ -476,6 +476,362 @@ export function generateLunarRitual(dateKey: string): MysticLunarRitual {
   return pickRandomly(lunarRituals, seed);
 }
 
+export type MysticLunarMode = "lunar_day" | "daily_ritual" | "love_ritual" | "money_work" | "cleansing" | "sleep_intuition";
+export type MysticLunarDateBucket = "today" | "tomorrow" | "custom";
+export type MysticLunarEnergyKey = "growth" | "cleansing" | "love" | "money" | "rest" | "intuition";
+export type MysticLunarEnergyTier = "soft" | "active" | "deep" | "restorative" | "focused" | "intuitive";
+
+export interface MysticLunarCalendarDay {
+  dateKey: string;
+  dayLabel: string;
+  weekdayLabel: string;
+  phaseSymbol: string;
+  rhythmLabel: string;
+  energyKey: MysticLunarEnergyKey;
+  energyLabel: string;
+  energyTier: MysticLunarEnergyTier;
+  isToday: boolean;
+  isSelected: boolean;
+}
+
+export interface MysticLunarPlan {
+  mode: MysticLunarMode;
+  modeLabel: string;
+  dateBucket: MysticLunarDateBucket;
+  selectedDateKey: string;
+  displayDate: string;
+  moonDayNumber: number;
+  phaseSymbol: string;
+  rhythmLabel: string;
+  energyKey: MysticLunarEnergyKey;
+  energyLabel: string;
+  energyTier: MysticLunarEnergyTier;
+  energyTierLabel: string;
+  ritualKey: string;
+  honesty: string;
+  hero: string;
+  energy: string;
+  doItems: string[];
+  avoidItems: string[];
+  ritual: {
+    title: string;
+    timing: string;
+    preparation: string;
+    steps: string[];
+    finalAction: string;
+  };
+  checklist: string[];
+  actionToday: string;
+  eveningSummary: string;
+  calendarDays: MysticLunarCalendarDay[];
+}
+
+const lunarModeLabels: Record<MysticLunarMode, string> = {
+  lunar_day: "Лунный день",
+  daily_ritual: "Ритуал дня",
+  love_ritual: "Любовный ритуал",
+  money_work: "Деньги / работа",
+  cleansing: "Очищение",
+  sleep_intuition: "Сон / интуиция",
+};
+
+const lunarEnergyProfiles: Record<MysticLunarEnergyKey, { label: string; tier: MysticLunarEnergyTier; tierLabel: string; symbol: string; rhythm: string }> = {
+  growth: { label: "рост", tier: "active", tierLabel: "активная", symbol: "◐", rhythm: "растущий импульс" },
+  cleansing: { label: "очищение", tier: "deep", tierLabel: "глубокая", symbol: "◑", rhythm: "ритм освобождения" },
+  love: { label: "любовь", tier: "soft", tierLabel: "мягкая", symbol: "●", rhythm: "ритм близости" },
+  money: { label: "деньги", tier: "focused", tierLabel: "собранная", symbol: "◒", rhythm: "ритм фокуса" },
+  rest: { label: "отдых", tier: "restorative", tierLabel: "восстанавливающая", symbol: "○", rhythm: "ритм тишины" },
+  intuition: { label: "интуиция", tier: "intuitive", tierLabel: "интуитивная", symbol: "◓", rhythm: "ритм внутреннего слуха" },
+};
+
+const lunarEnergyCycle: MysticLunarEnergyKey[] = ["growth", "love", "money", "cleansing", "intuition", "rest"];
+const lunarWeekdays = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
+
+const lunarModeBlueprints: Record<MysticLunarMode, {
+  ritualKey: string;
+  hero: string[];
+  energy: string[];
+  doItems: string[];
+  avoidItems: string[];
+  ritualTitle: string;
+  timing: string;
+  preparation: string;
+  steps: string[];
+  finalAction: string;
+  checklist: string[];
+  actionToday: string[];
+  eveningSummary: string[];
+}> = {
+  lunar_day: {
+    ritualKey: "lunar_day_reflection",
+    hero: [
+      "Сегодня полезно смотреть на день как на мягкий ритм: что растет, что просит паузы и где нужно меньше давления.",
+      "Лунный день лучше раскрывается через наблюдение: выберите одно главное направление и не распыляйте внимание.",
+    ],
+    energy: [
+      "Энергия дня подходит для спокойной настройки, коротких решений и внимательного отношения к телу и эмоциям.",
+      "День хорошо поддерживает маленькие шаги, честный внутренний диалог и аккуратное завершение хвостов.",
+    ],
+    doItems: ["выберите один главный фокус", "запишите три наблюдения о своем состоянии", "оставьте место для тишины между делами"],
+    avoidItems: ["перегружать день обещаниями", "делать выводы на пике эмоций", "сравнивать свой темп с чужим"],
+    ritualTitle: "Ритуал настройки на лунный день",
+    timing: "утром или в первой спокойной паузе дня",
+    preparation: "стакан воды, заметка в телефоне или бумажный блокнот",
+    steps: ["Сформулируйте один фокус дня без жестких требований к себе.", "Сделайте три медленных вдоха и отметьте, где в теле есть напряжение.", "Запишите маленькое действие, которое можно выполнить за 10 минут."],
+    finalAction: "Вернитесь к этому фокусу вечером и отметьте один спокойный результат.",
+    checklist: ["один фокус выбран", "лишние задачи перенесены", "короткая пауза запланирована", "вечерний итог оставлен открытым"],
+    actionToday: ["Сделайте один маленький шаг, который возвращает ощущение управления днем."],
+    eveningSummary: ["Вечером отметьте, где день стал легче после того, как вы выбрали один главный фокус."],
+  },
+  daily_ritual: {
+    ritualKey: "daily_moon_ritual",
+    hero: [
+      "Ритуал дня помогает собрать внимание и превратить хаотичный настрой в одно понятное действие.",
+      "Сегодня ритуал лучше делать без драматизма: как короткий якорь, который возвращает к себе.",
+    ],
+    energy: [
+      "Энергия дня подходит для бережной перезагрузки, наведения порядка и символического выбора нового тона.",
+      "День поддерживает простые действия: убрать лишнее, назвать главное и дать себе больше ясности.",
+    ],
+    doItems: ["сделайте короткий ритуал без спешки", "уберите один визуальный раздражитель", "назовите вслух желаемое состояние дня"],
+    avoidItems: ["ожидать мгновенного результата", "делать ритуал из тревоги", "перегружать его сложными правилами"],
+    ritualTitle: "Ритуал мягкой настройки",
+    timing: "днем, когда нужно вернуть собранность",
+    preparation: "свеча, вода или просто тихое место на 5 минут",
+    steps: ["Положите ладонь на грудь или на стол и замедлите дыхание.", "Назовите одно состояние, которое хотите поддержать сегодня.", "Сделайте небольшой порядок вокруг себя: один предмет, одно письмо или одна заметка."],
+    finalAction: "Закройте ритуал фразой: «Я выбираю спокойный следующий шаг».",
+    checklist: ["тихое место найдено", "состояние дня названо", "один предмет убран", "следующий шаг выбран"],
+    actionToday: ["Выберите действие на 10 минут, которое делает пространство или мысли чуть яснее."],
+    eveningSummary: ["Вечером спросите себя: какой один жест помог мне вернуться в равновесие?"],
+  },
+  love_ritual: {
+    ritualKey: "love_soft_contact",
+    hero: [
+      "Любовный ритуал здесь не про обещания и контроль, а про мягкость, ясность и экологичный контакт.",
+      "День подходит для бережного внимания к близости: меньше давления, больше честного тепла.",
+    ],
+    energy: [
+      "Энергия дня поддерживает открытый тон, заботливый жест и разговор без попытки победить.",
+      "Лучший фокус для отношений сегодня - тепло, простота и уважение к границам.",
+    ],
+    doItems: ["напишите короткое доброе сообщение", "услышьте собеседника без перебивания", "выберите один честный комплимент"],
+    avoidItems: ["проверять чувства провокациями", "требовать немедленного ответа", "возвращаться к старому спору без готовности слушать"],
+    ritualTitle: "Ритуал теплого контакта",
+    timing: "после полудня или вечером, когда можно говорить мягко",
+    preparation: "спокойная музыка или тихая пауза перед сообщением",
+    steps: ["Сделайте три вдоха и вспомните, что хотите передать: тепло, ясность или благодарность.", "Напишите одну фразу без обвинения и скрытого требования.", "Отправляйте только если внутри есть уважение к любому ответу."],
+    finalAction: "После сообщения не проверяйте реакцию каждые пять минут: вернитесь к своему делу.",
+    checklist: ["тон мягкий", "нет скрытого давления", "одна главная мысль", "границы сохранены"],
+    actionToday: ["Выберите один добрый жест, который ничего не требует взамен."],
+    eveningSummary: ["Вечером отметьте, где вы смогли быть теплее без потери себя."],
+  },
+  money_work: {
+    ritualKey: "money_work_focus",
+    hero: [
+      "Этот режим помогает перевести тему денег и работы из тревоги в понятный фокус и аккуратный план.",
+      "Сегодня лучше не гнаться за большим рывком: сильнее сработает порядок, ясная цифра и один завершенный шаг.",
+    ],
+    energy: [
+      "Энергия дня поддерживает расчистку задач, проверку договоренностей и спокойный фокус на ресурсе.",
+      "День подходит для практичного взгляда: что приносит результат, что съедает время и что можно упростить.",
+    ],
+    doItems: ["выберите одну денежную или рабочую задачу", "проверьте сроки и обязательства", "завершите маленький, но видимый кусок работы"],
+    avoidItems: ["импульсивных покупок из эмоций", "обещаний без ресурса", "финансовых решений в состоянии спешки"],
+    ritualTitle: "Ритуал рабочего фокуса",
+    timing: "утром или перед рабочим блоком",
+    preparation: "лист задач, таймер на 25 минут, стакан воды",
+    steps: ["Запишите одну задачу, которая реально двигает дело вперед.", "Уберите один отвлекающий фактор на время таймера.", "После 25 минут отметьте результат, даже если он маленький."],
+    finalAction: "Закройте блок короткой записью: что готово, что переносится, что больше не нужно.",
+    checklist: ["одна задача выбрана", "таймер поставлен", "отвлекающий фактор убран", "результат зафиксирован"],
+    actionToday: ["Закройте один рабочий хвост, который давно висит в фоне."],
+    eveningSummary: ["Вечером отметьте, какая маленькая структура дала больше всего спокойствия."],
+  },
+  cleansing: {
+    ritualKey: "cleansing_release",
+    hero: [
+      "Очищение сегодня лучше понимать как освобождение пространства и внимания, а не борьбу с собой.",
+      "Ритм дня помогает убрать лишний шум: один угол, одна мысль, одна эмоциональная петля.",
+    ],
+    energy: [
+      "Энергия дня поддерживает расхламление, честный отказ от лишнего и бережное закрытие старого.",
+      "День хорош для символического отпускания: не через резкость, а через спокойное решение больше не тащить лишнее.",
+    ],
+    doItems: ["уберите одну небольшую зону", "удалите один цифровой шум", "напишите, что больше не хотите кормить вниманием"],
+    avoidItems: ["устраивать тотальную чистку на износ", "ссориться под видом честности", "возвращаться к старой обиде как к доказательству"],
+    ritualTitle: "Ритуал освобождения пространства",
+    timing: "вечером или после завершения дел",
+    preparation: "пакет для мусора, влажная салфетка или заметка для списка",
+    steps: ["Выберите одну небольшую зону: стол, полку, чат или список задач.", "Уберите три лишних элемента и назовите, что они символически освобождают.", "Проветрите комнату или сделайте один глубокий выдох у открытого окна."],
+    finalAction: "Скажите: «Я оставляю место для того, что действительно важно».",
+    checklist: ["одна зона выбрана", "три лишних элемента убраны", "воздух обновлен", "граница с лишним названа"],
+    actionToday: ["Удалите один источник шума: уведомление, лишнюю вкладку или ненужную задачу."],
+    eveningSummary: ["Вечером отметьте, где стало просторнее: в комнате, в голове или в расписании."],
+  },
+  sleep_intuition: {
+    ritualKey: "sleep_intuition",
+    hero: [
+      "Режим сна и интуиции помогает мягко завершить день и услышать тихий внутренний сигнал без мистического давления.",
+      "Сегодня вечер лучше сделать спокойным: меньше экранного шума, больше наблюдения за телом и образами.",
+    ],
+    energy: [
+      "Энергия дня поддерживает восстановление, дневник образов и бережный переход ко сну.",
+      "День подходит для тихого вопроса к себе: что я уже знаю, но пока не произнес вслух?",
+    ],
+    doItems: ["завершите экранное время чуть раньше", "запишите один вопрос для сна", "подготовьте спокойный вечерний ритм"],
+    avoidItems: ["читать тревожные новости перед сном", "искать знаки в каждом совпадении", "делать выводы из усталости"],
+    ritualTitle: "Ритуал тихого сна",
+    timing: "за 30-40 минут до сна",
+    preparation: "приглушенный свет, вода, заметка для утренней записи",
+    steps: ["Запишите один спокойный вопрос без ожидания немедленного ответа.", "Сделайте 6 медленных выдохов, удлиняя каждый следующий.", "Положите заметку рядом и договоритесь с собой записать утром любой образ или мысль."],
+    finalAction: "Закройте день фразой: «Ответ может прийти мягко, когда я отдохну».",
+    checklist: ["экранный шум снижен", "вопрос записан", "дыхание замедлено", "утренняя заметка готова"],
+    actionToday: ["Подготовьте сон как пространство восстановления, а не как продолжение рабочих мыслей."],
+    eveningSummary: ["Утром или вечером отметьте один образ, чувство или мысль, которая повторялась мягче всего."],
+  },
+};
+
+export function normalizeLunarDateKey(value: string): string | null {
+  const trimmed = value.trim();
+  const iso = trimmed.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (iso) return isValidDateParts(Number(iso[1]), Number(iso[2]), Number(iso[3])) ? trimmed : null;
+  const ru = trimmed.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+  if (!ru) return null;
+  const [, day, month, year] = ru;
+  return isValidDateParts(Number(year), Number(month), Number(day)) ? `${year}-${month}-${day}` : null;
+}
+
+export function shiftLunarDateKey(dateKey: string, days: number): string {
+  const date = parseLunarDateKey(dateKey);
+  date.setUTCDate(date.getUTCDate() + days);
+  return toDateKey(date);
+}
+
+export function generateLunarRitualFlow(
+  selectedDateKey: string,
+  mode: MysticLunarMode,
+  dateBucket: MysticLunarDateBucket,
+  baseDateKey = selectedDateKey,
+  hasIntention = false,
+): MysticLunarPlan {
+  const normalizedDateKey = normalizeLunarDateKey(selectedDateKey) ?? baseDateKey;
+  const safeMode = lunarModeLabels[mode] ? mode : "daily_ritual";
+  const energyKey = energyKeyForDate(normalizedDateKey, safeMode);
+  const energy = lunarEnergyProfiles[energyKey];
+  const blueprint = lunarModeBlueprints[safeMode];
+  const moonDayNumber = (dateOrdinal(normalizedDateKey) % 29) + 1;
+  const phaseSymbol = phaseSymbolForMoonDay(moonDayNumber);
+  const seed = `lunar-flow:${normalizedDateKey}:${safeMode}:${energyKey}`;
+  const intentionNote = hasIntention ? " Намерение учтено только как факт фокуса: его текст не сохраняется и не передается в аналитику." : "";
+  const displayDate = formatLunarDisplayDate(normalizedDateKey);
+  return {
+    mode: safeMode,
+    modeLabel: lunarModeLabels[safeMode],
+    dateBucket,
+    selectedDateKey: normalizedDateKey,
+    displayDate,
+    moonDayNumber,
+    phaseSymbol,
+    rhythmLabel: `${energy.rhythm} · ${moonDayNumber}-й символический лунный день`,
+    energyKey,
+    energyLabel: energy.label,
+    energyTier: energy.tier,
+    energyTierLabel: energy.tierLabel,
+    ritualKey: blueprint.ritualKey,
+    honesty: "символический лунный ритм",
+    hero: `${pickRandomly(blueprint.hero, seed + ":hero")} ${intentionNote}`.trim(),
+    energy: `${pickRandomly(blueprint.energy, seed + ":energy")} Тон дня: ${energy.tierLabel} энергия, тема - ${energy.label}.`,
+    doItems: rotateItems(blueprint.doItems, seed + ":do", 3),
+    avoidItems: rotateItems(blueprint.avoidItems, seed + ":avoid", 3),
+    ritual: {
+      title: blueprint.ritualTitle,
+      timing: blueprint.timing,
+      preparation: blueprint.preparation,
+      steps: rotateItems(blueprint.steps, seed + ":steps", Math.min(5, blueprint.steps.length)),
+      finalAction: blueprint.finalAction,
+    },
+    checklist: rotateItems(blueprint.checklist, seed + ":checklist", Math.min(5, blueprint.checklist.length)),
+    actionToday: pickRandomly(blueprint.actionToday, seed + ":action"),
+    eveningSummary: pickRandomly(blueprint.eveningSummary, seed + ":evening"),
+    calendarDays: generateLunarCalendarWindow(baseDateKey, normalizedDateKey),
+  };
+}
+
+function generateLunarCalendarWindow(baseDateKey: string, selectedDateKey: string): MysticLunarCalendarDay[] {
+  const days: MysticLunarCalendarDay[] = [];
+  for (let offset = 0; offset < 14; offset++) {
+    const dateKey = shiftLunarDateKey(baseDateKey, offset);
+    const energyKey = energyKeyForDate(dateKey, "lunar_day");
+    const energy = lunarEnergyProfiles[energyKey];
+    const moonDayNumber = (dateOrdinal(dateKey) % 29) + 1;
+    days.push({
+      dateKey,
+      dayLabel: formatLunarDayLabel(dateKey),
+      weekdayLabel: lunarWeekdays[parseLunarDateKey(dateKey).getUTCDay()],
+      phaseSymbol: phaseSymbolForMoonDay(moonDayNumber),
+      rhythmLabel: energy.rhythm,
+      energyKey,
+      energyLabel: energy.label,
+      energyTier: energy.tier,
+      isToday: dateKey === baseDateKey,
+      isSelected: dateKey === selectedDateKey,
+    });
+  }
+  return days;
+}
+
+function energyKeyForDate(dateKey: string, mode: MysticLunarMode): MysticLunarEnergyKey {
+  const modeBias: Partial<Record<MysticLunarMode, MysticLunarEnergyKey>> = {
+    love_ritual: "love",
+    money_work: "money",
+    cleansing: "cleansing",
+    sleep_intuition: "intuition",
+  };
+  if (modeBias[mode] && safeHashString(`${dateKey}:${mode}`) % 3 !== 0) return modeBias[mode]!;
+  return lunarEnergyCycle[dateOrdinal(dateKey) % lunarEnergyCycle.length];
+}
+
+function phaseSymbolForMoonDay(moonDayNumber: number) {
+  if (moonDayNumber <= 3) return "○";
+  if (moonDayNumber <= 10) return "◔";
+  if (moonDayNumber <= 17) return "●";
+  if (moonDayNumber <= 24) return "◑";
+  return "◌";
+}
+
+function rotateItems<T>(items: T[], seed: string, count: number): T[] {
+  const start = safeHashString(seed) % items.length;
+  return Array.from({ length: count }, (_, index) => items[(start + index) % items.length]);
+}
+
+function parseLunarDateKey(dateKey: string) {
+  const normalized = normalizeLunarDateKey(dateKey) ?? "2026-06-19";
+  const [year, month, day] = normalized.split("-").map(Number);
+  return new Date(Date.UTC(year, month - 1, day));
+}
+
+function toDateKey(date: Date) {
+  return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}-${String(date.getUTCDate()).padStart(2, "0")}`;
+}
+
+function dateOrdinal(dateKey: string) {
+  return Math.floor(parseLunarDateKey(dateKey).getTime() / 86400000);
+}
+
+function formatLunarDisplayDate(dateKey: string) {
+  const [year, month, day] = dateKey.split("-");
+  return `${day}.${month}.${year}`;
+}
+
+function formatLunarDayLabel(dateKey: string) {
+  const [, month, day] = dateKey.split("-");
+  return `${day}.${month}`;
+}
+
+function isValidDateParts(year: number, month: number, day: number) {
+  const date = new Date(Date.UTC(year, month - 1, day));
+  return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
+}
+
 export interface MysticKarmicLessons {
   mainLesson: string;
   recurringScenario: string;

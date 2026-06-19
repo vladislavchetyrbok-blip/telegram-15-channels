@@ -1889,7 +1889,16 @@ function MoreSection({
         {activeMoreFeature === "intuitiveSign" ? <IntuitiveSignFeature publicMode={publicMode} dateKey={dateKey} sign={(selfSign?.slug as any) || "aries"} /> : null}
         {activeMoreFeature === "talismans" ? <TalismansFeature publicMode={publicMode} sign={(selfSign?.slug as any) || ""} /> : null}
         {activeMoreFeature === "auraColor" ? <AuraColorFeature publicMode={publicMode} dateKey={dateKey} sign={(selfSign?.slug as any) || "aries"} /> : null}
-        {activeMoreFeature === "lunarRitual" ? <LunarRitualFeature publicMode={publicMode} dateKey={dateKey} /> : null}
+        {activeMoreFeature === "lunarRitual" ? (
+          <LunarRitualFeature
+            publicMode={publicMode}
+            dateKey={dateKey}
+            sign={(selfSign?.slug as any) || "aries"}
+            onSave={(action) => onFavoriteSave(action)}
+            onShare={(action) => onShare(action)}
+            onEvent={onPersonalToolEvent}
+          />
+        ) : null}
         {activeMoreFeature === "karmicLessons" ? <KarmicLessonsFeature publicMode={publicMode} sign={(selfSign?.slug as any) || ""} birthDateKey={self.birthDate} /> : null}
         {activeMoreFeature === "birthMatrix" ? (
           <BirthMatrixFeature
@@ -4195,6 +4204,9 @@ function buildSafeShareText(action: ZodiacRetentionDraft) {
   }
   if (action.featureKey === "birthMatrix") {
     return `Открыл(а) Матрицу судьбы в Астрологическом центре ✨\nПопробуй свой расчёт: ${appLink}`;
+  }
+  if (action.featureKey === "lunarRitual") {
+    return `Открыл(а) лунный ритуал в Астрологическом центре ✨\nПопробуй тоже: ${appLink}`;
   }
   if (action.featureKey === "tarotCard" || action.featureKey === "runeDay") {
     return `Открыл(а) символический расклад в Астрологическом центре ✨\nПопробуй тоже: ${appLink}`;

@@ -80,6 +80,7 @@ The allowlist covers:
 - VIP opened, free access, feature taps, future subscription tap, all active VIP detail screens, and functional VIP tool events: `vip_tool_started`, `vip_tool_calculated`, `vip_tool_saved`, `vip_tool_shared`, `vip_input_reused`, and `vip_message_copied`;
 - Mystic category, daily card, Tarot, rune, intuitive sign, talismans, aura, lunar ritual, karmic lessons, and Birth Matrix lifecycle events (`birth_matrix_started`, `birth_matrix_calculated`, `birth_matrix_saved`, `birth_matrix_shared`);
 - Tarot/Rune richer-flow events: `tarot_started`, `tarot_spread_calculated`, `tarot_spread_saved`, `tarot_spread_shared`, `rune_started`, `rune_spread_calculated`, `rune_spread_saved`, and `rune_spread_shared`;
+- Lunar/Ritual richer-flow events: `lunar_started`, `lunar_day_calculated`, `lunar_ritual_calculated`, `lunar_ritual_saved`, and `lunar_ritual_shared`;
 - Telegram WebApp ready, BackButton usage, and haptics;
 - giveaways locked/preview events.
 
@@ -164,6 +165,19 @@ resultTier
 ```
 
 `topic`, `spreadType`, and `resultTier` are sanitized tokens. `cardCount` and `runeCount` are small integers. Payloads must never include the optional raw question, generated interpretation text, card prose, rune prose, names, dates, time, city query, or Telegram initData.
+
+Lunar/Ritual richer-flow payloads are limited to:
+
+```text
+featureKey
+mode
+dateBucket
+energyTier
+ritualKey
+hasIntention
+```
+
+`mode` is one of `lunar_day`, `daily_ritual`, `love_ritual`, `money_work`, `cleansing`, or `sleep_intuition`. `dateBucket` is `today`, `tomorrow`, or `custom`; it must not be confused with a birth date. `hasIntention` is boolean only. Payloads must never include the raw intention, generated ritual text, raw result text, names, birth dates, birth times, city query, or Telegram initData.
 
 Supported direct profile and compatibility start params:
 

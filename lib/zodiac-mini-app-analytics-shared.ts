@@ -92,6 +92,11 @@ export const ZODIAC_ANALYTICS_EVENTS = [
   "talismans_opened",
   "aura_color_opened",
   "lunar_ritual_opened",
+  "lunar_started",
+  "lunar_day_calculated",
+  "lunar_ritual_calculated",
+  "lunar_ritual_saved",
+  "lunar_ritual_shared",
   "karmic_lessons_opened",
   "birth_matrix_opened",
   "birth_matrix_started",
@@ -130,7 +135,7 @@ export const ZODIAC_ANALYTICS_EVENTS = [
 
 export type ZodiacAnalyticsEventName = (typeof ZODIAC_ANALYTICS_EVENTS)[number];
 
-export type ZodiacAnalyticsMode = "fast" | "personal" | "precise" | "tarot" | "rune";
+export type ZodiacAnalyticsMode = "fast" | "personal" | "precise" | "tarot" | "rune" | "lunar_day" | "daily_ritual" | "love_ritual" | "money_work" | "cleansing" | "sleep_intuition";
 export type ZodiacAnalyticsScoreTier = "strong" | "good" | "medium" | "difficult" | "tense";
 
 export interface ZodiacAnalyticsPayload {
@@ -168,6 +173,10 @@ export interface ZodiacAnalyticsPayload {
   matrixType?: string;
   mainNumber?: number;
   archetype?: string;
+  dateBucket?: string;
+  energyTier?: string;
+  ritualKey?: string;
+  hasIntention?: boolean;
 }
 
 export interface SanitizedZodiacAnalyticsEvent extends ZodiacAnalyticsPayload {
@@ -195,9 +204,11 @@ const zodiacSignSlugs = new Set([
   "pisces",
 ]);
 
-const modes = new Set(["fast", "personal", "precise", "tarot", "rune"]);
+const modes = new Set(["fast", "personal", "precise", "tarot", "rune", "lunar_day", "daily_ritual", "love_ritual", "money_work", "cleansing", "sleep_intuition"]);
 const scoreTiers = new Set(["strong", "good", "medium", "difficult", "tense"]);
 const spreadResultTiers = new Set(["soft", "clear", "deep", "grounded"]);
+const lunarDateBuckets = new Set(["today", "tomorrow", "custom"]);
+const lunarEnergyTiers = new Set(["soft", "active", "deep", "restorative", "focused", "intuitive"]);
 const relationshipModes = new Set(["love", "friendship", "work", "family", "passion", "reconciliation"]);
 const patternTypes = new Set(["repeated", "mirror", "amplified", "custom", "fallback"]);
 const vipInputModes = new Set([
@@ -299,6 +310,10 @@ export function sanitizeZodiacAnalyticsPayload(input: unknown): ZodiacAnalyticsP
   const matrixType = sanitizeToken(raw.matrixType, 64);
   const mainNumber = sanitizeSafeInteger(raw.mainNumber, 1, 33);
   const archetype = sanitizeToken(raw.archetype, 64);
+  const dateBucket = sanitizeEnum(raw.dateBucket, lunarDateBuckets);
+  const energyTier = sanitizeEnum(raw.energyTier, lunarEnergyTiers);
+  const ritualKey = sanitizeToken(raw.ritualKey, 64);
+  const hasIntention = sanitizeBoolean(raw.hasIntention);
 
   if (dateKey) payload.dateKey = dateKey;
   if (section) payload.section = section;
@@ -334,6 +349,10 @@ export function sanitizeZodiacAnalyticsPayload(input: unknown): ZodiacAnalyticsP
   if (matrixType) payload.matrixType = matrixType;
   if (typeof mainNumber === "number") payload.mainNumber = mainNumber;
   if (archetype) payload.archetype = archetype;
+  if (dateBucket) payload.dateBucket = dateBucket;
+  if (energyTier) payload.energyTier = energyTier;
+  if (ritualKey) payload.ritualKey = ritualKey;
+  if (typeof hasIntention === "boolean") payload.hasIntention = hasIntention;
 
   return payload;
 }
