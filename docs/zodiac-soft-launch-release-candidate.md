@@ -49,6 +49,9 @@ first 5 users `GO`, 20 users `CONDITIONAL`, mass launch `STOP`, weekly live
 `STOP`, payments/Stars `STOP`, profile sync `STOP`, exact astro claims `STOP`,
 and Redis analytics activation `CONDITIONAL` on env configuration.
 
+Package 51 adds a new-chat context handoff snapshot at
+`docs/zodiac-new-chat-handoff.md`.
+
 ## Release Candidate Status
 
 - RC status: READY for controlled `5-20` users.
@@ -70,6 +73,7 @@ and Redis analytics activation `CONDITIONAL` on env configuration.
 - Execution pack: `docs/zodiac-controlled-soft-launch-execution.md`.
 - Anonymous batch template: `docs/zodiac-soft-launch-batch-template.md`.
 - Controlled launch freeze: `docs/zodiac-controlled-launch-freeze.md`.
+- New chat handoff: `docs/zodiac-new-chat-handoff.md`.
 
 ## Current Product Readiness
 

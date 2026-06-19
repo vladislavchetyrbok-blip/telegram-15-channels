@@ -6,6 +6,12 @@ Freeze base HEAD: `5cfc4ac6e0ab5f2daa2ff758604fb46608215b6e`
 
 This document freezes the current Zodiac product state as a controlled soft-launch checkpoint. It does not authorize mass launch, weekly live publishing, payments, Telegram Stars, profile sync activation, exact astrology claims, manual daily live publish, or manual ledger edits.
 
+New chat handoff snapshot:
+
+```text
+docs/zodiac-new-chat-handoff.md
+```
+
 ## Launch Status
 
 | Area | Decision |
@@ -121,4 +127,3 @@ Desktop QA and Telegram mock checks are valuable, but they do not replace real i
 - Production profile writes: NO.
 - Exact astrology claims: NO.
 - Real tester feedback/screenshots committed: NO.
-
