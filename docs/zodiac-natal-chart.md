@@ -37,6 +37,7 @@ Package 35 adds an explicit real-engine readiness layer:
 - `calculateExactNatalChart()` returns `exact_unavailable` until a real ephemeris/provider engine exists.
 - `NatalChartVisual` shows a calm engine status panel: exact mode is not connected yet, symbolic chart remains active.
 - `npm run zodiac:astro:check` protects against fake planet degrees, fake houses, fake ascendant selectors, and raw birth data analytics allowlist regressions.
+- `npm run zodiac:astro:fixtures:check` validates non-personal placeholder fixtures and confirms exact mode remains unavailable.
 
 ## Inputs
 
@@ -157,5 +158,15 @@ Never send raw birth date, birth time, city query, name, or raw result text.
 ## Future Astro Engine
 
 `lib/zodiac-astro-engine.ts` now contains the typed future adapter/status contract. A future package can replace `exact_unavailable` with exact calculations only after explicit approval, fixture tests, timezone/geocoding readiness, and a real astronomical calculation source.
+
+Package 44 fixture harness:
+
+```text
+data/fixtures/zodiac-astro-engine/fixture-set.json
+```
+
+The fixtures are not real user charts. They use placeholder dates, UTC,
+placeholder city labels, and placeholder coordinates only. They exist to test
+future exact-provider behavior without collecting or sending birth data.
 
 See `docs/zodiac-real-astro-engine.md`.

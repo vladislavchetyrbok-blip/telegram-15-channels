@@ -36,6 +36,10 @@ Malicious payloads with birth data, city, name, phone, raw questions,
 intentions, feedback, result text, and initData are stripped or rejected without
 echoing user input. Profile sync still remains OFF.
 
+Package 44 adds the Real Astro Engine provider fixture harness and provider
+decision docs. Exact mode remains `exact_unavailable`; fixtures are non-personal
+placeholders and no external astro API calls are added.
+
 ## Current Status
 
 The Zodiac product is ready for controlled live operation of the daily publishing lane and user-facing Mini App checks, with the following boundaries:
@@ -68,6 +72,9 @@ The Zodiac product is ready for controlled live operation of the daily publishin
   route paths do not read POST bodies, production route cannot use test-memory
   storage, and raw sensitive fields are stripped from sanitizer/merge/storage
   checks.
+- Real Astro Engine fixture harness is available. It validates placeholder
+  fixtures and confirms exact provider remains unavailable with no fake planets,
+  houses, ascendant, or external API calls.
 - Manual live publish remains forbidden unless a dry-run and ledger audit prove it is safe.
 
 ## Key Recent Commits
@@ -684,5 +691,23 @@ Status:
 - Route responses echo raw submitted payload: NO.
 - Profile sync enabled: NO.
 - Backend writes: NO.
+- Payments/Stars: OFF.
+- Weekly live: OFF.
+
+## Package 44: Real Astro Engine Fixture Harness
+
+Status:
+
+- Fixture directory: `data/fixtures/zodiac-astro-engine/`.
+- Fixture command: `npm run zodiac:astro:fixtures:check`.
+- Fixture data: non-personal placeholders only.
+- Exact provider enabled: NO.
+- Exact mode: `exact_unavailable`.
+- Fake planet degrees: NO.
+- Fake houses: NO.
+- Fake ascendant: NO.
+- External astro API calls: NO.
+- Birth data sent remotely: NO.
+- Current Premium Natal UI mode: symbolic.
 - Payments/Stars: OFF.
 - Weekly live: OFF.

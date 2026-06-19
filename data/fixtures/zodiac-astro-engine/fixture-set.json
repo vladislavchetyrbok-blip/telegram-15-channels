@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "description": "Non-personal deterministic fixtures for future exact astro engine validation. These are placeholders only and must not be presented as real user charts.",
+  "fixtures": [
+    {
+      "id": "placeholder-1990-01-01-utc",
+      "birthDate": "1990-01-01",
+      "birthTime": "12:00",
+      "timezone": "UTC",
+      "cityLabel": "city placeholder alpha",
+      "coordinates": {
+        "latitude": 0,
+        "longitude": 0
+      },
+      "signSlug": "capricorn",
+      "expected": {
+        "exactMode": "exact_unavailable",
+        "symbolicMode": "symbolic"
+      },
+      "nonPersonal": true
+    },
+    {
+      "id": "placeholder-2000-06-15-utc",
+      "birthDate": "2000-06-15",
+      "birthTime": "09:30",
+      "timezone": "UTC",
+      "cityLabel": "city placeholder beta",
+      "coordinates": {
+        "latitude": 10,
+        "longitude": 20
+      },
+      "signSlug": "gemini",
+      "expected": {
+        "exactMode": "exact_unavailable",
+        "symbolicMode": "symbolic"
+      },
+      "nonPersonal": true
+    }
+  ]
+}

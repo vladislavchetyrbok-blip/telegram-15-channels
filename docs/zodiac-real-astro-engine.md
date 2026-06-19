@@ -55,17 +55,58 @@ lib/zodiac-astro-providers/exact-provider-placeholder.ts
 
 `exact-provider-placeholder.ts` returns `exact_unavailable`. It does not return planets, houses, ascendant, or degrees.
 
+## Provider Decision and Fixture Harness
+
+Package 44 adds a future-provider fixture harness without enabling exact mode.
+
+Current decision:
+
+- keep the active UI in symbolic mode;
+- keep exact provider status `exact_unavailable`;
+- do not add external API calls;
+- do not send birth data to any remote service;
+- validate future fixture shape before choosing an exact provider.
+
+Fixture files:
+
+```text
+data/fixtures/zodiac-astro-engine/fixture-set.json
+scripts/check-zodiac-astro-fixtures.mjs
+```
+
+Fixtures are deterministic placeholders only. They use non-personal sample dates
+such as `1990-01-01` and `2000-06-15`, UTC timezone, placeholder city labels,
+and placeholder coordinates. They must not include names, user ids, phone
+numbers, real user city queries, or any personal notes.
+
+Run:
+
+```bash
+npm run zodiac:astro:fixtures:check
+```
+
+The fixture check verifies:
+
+- fixture format is valid and marked non-personal;
+- symbolic provider returns safe symbolic output;
+- exact provider remains `exact_unavailable`;
+- no fake planet degrees, houses, or ascendant are returned;
+- no external API calls are introduced;
+- docs keep exact mode documented as unavailable.
+
 ## Implementation Phases
 
 Phase 1: interface, provider placeholders, UI status, and checks. This package.
 
-Phase 2: geocoding and timezone strategy. Decide how city ambiguity, aliases, DST, and coordinates are resolved without leaking user data.
+Phase 2: fixture harness and provider decision docs. Current Package 44 state.
 
-Phase 3: ephemeris provider integration. Add a real provider only after Windows/build/deploy validation and fixture tests.
+Phase 3: geocoding and timezone strategy. Decide how city ambiguity, aliases, DST, and coordinates are resolved without leaking user data.
 
-Phase 4: exact natal chart UI. Show ascendant, planets, houses, warnings, and source/provider status only when exact mode is genuinely available.
+Phase 4: ephemeris provider integration. Add a real provider only after Windows/build/deploy validation and fixture tests.
 
-Phase 5: exact compatibility and aspects. Reuse the provider for synastry/aspects after natal exact mode is stable.
+Phase 5: exact natal chart UI. Show ascendant, planets, houses, warnings, and source/provider status only when exact mode is genuinely available.
+
+Phase 6: exact compatibility and aspects. Reuse the provider for synastry/aspects after natal exact mode is stable.
 
 ## Risks
 
@@ -83,6 +124,7 @@ Run:
 
 ```bash
 npm run zodiac:astro:check
+npm run zodiac:astro:fixtures:check
 ```
 
 The check must pass before soft launch or future exact-engine work is considered ready.
