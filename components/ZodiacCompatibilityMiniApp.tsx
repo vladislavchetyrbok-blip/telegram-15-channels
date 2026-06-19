@@ -213,6 +213,7 @@ export function ZodiacCompatibilityMiniApp({
   const telegramReadyTrackedRef = useRef(false);
   const mainMenuTrackedRef = useRef("");
   const compatibilityWizardTrackedRef = useRef("");
+  const lastStartParamSyncRef = useRef("");
 
   const result = useMemo(() => buildCompatibilityResult(mode, relationshipMode, self, partner), [mode, partner, relationshipMode, self]);
   const selectedSign = selectedSignSlug ? findSign(selectedSignSlug) : null;
@@ -253,6 +254,31 @@ export function ZodiacCompatibilityMiniApp({
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, []);
+
+  useEffect(() => {
+    const syncKey = [
+      normalizeStartParam(startParam),
+      hintSignSlug ?? "",
+      initialActiveTab,
+      initialMoreFeature ?? "",
+      initialHomePanel,
+      initialRelationshipMode ?? "",
+    ].join(":");
+    if (lastStartParamSyncRef.current === syncKey) return;
+    lastStartParamSyncRef.current = syncKey;
+
+    setActiveTab(initialActiveTab);
+    setRequestedMoreFeature(initialMoreFeature);
+    setHomePanel(initialHomePanel);
+    setPendingCompatibilityMode(initialRelationshipMode);
+    setRelationshipMode(initialRelationshipMode ?? "love");
+    setShareFallbackText("");
+
+    if (normalizeStartParam(startParam)) {
+      setSelectedSignSlug("");
+      setSelf((current) => ({ ...current, sign: "" }));
+    }
+  }, [hintSignSlug, initialActiveTab, initialHomePanel, initialMoreFeature, initialRelationshipMode, startParam]);
 
   useEffect(() => {
     if (!appDateKey || process.env.NODE_ENV === "production") return;
@@ -1120,6 +1146,14 @@ export function ZodiacCompatibilityMiniApp({
 }
 
 function getCategoryStartCopy(tab: HubTab, feature: MoreFeatureId | null) {
+  if (tab === "forecasts" && feature === "angelNumbers") {
+    return {
+      title: "👼 Ангельские числа",
+      subtitle: "Выберите знак для входа и откройте толкование 11:11, 22:22, зеркальных чисел и знаков дня.",
+      features: ["11:11 и 22:22", "Зеркальные комбинации", "Знаки Вселенной", "Базовое толкование", "VIP-расширение внутри VIP"],
+    };
+  }
+
   if (tab === "forecasts") {
     return {
       title: "✨ Гороскопы",
@@ -1133,14 +1167,6 @@ function getCategoryStartCopy(tab: HubTab, feature: MoreFeatureId | null) {
       title: "🧿 Матрица судьбы",
       subtitle: "Выберите знак для входа, затем рассчитайте матрицу по дате рождения без сохранения данных.",
       features: ["Расчёт по дате рождения", "Личные коды", "Сильные стороны", "Точки роста"],
-    };
-  }
-
-  if (tab === "mystic" && feature === "angelNumbers") {
-    return {
-      title: "👼 Ангельские числа",
-      subtitle: "Выберите знак для входа и откройте толкование 11:11, 22:22, зеркальных чисел и знаков дня.",
-      features: ["11:11 и 22:22", "Зеркальные комбинации", "Знаки Вселенной", "Базовое толкование", "VIP-расширение внутри VIP"],
     };
   }
 
@@ -1382,6 +1408,7 @@ function MoreSection({
     const categoryHasInitialFeature = initialFeature ? categoryFeatures.some((item) => item.id === initialFeature) || (category === "vip" && vipDetailFeatureIds.has(initialFeature)) : false;
     return categoryHasInitialFeature && initialFeature ? initialFeature : defaultMoreFeature;
   });
+  const lastInitialFeatureSyncRef = useRef("");
   const [natalPerson, setNatalPerson] = useState<PersonState>(() => ({
     ...createInitialPerson(self.sign || selectedSignSlug, self.gender, self.knowsTime, self.selectedCityId),
     name: self.name,
@@ -1568,6 +1595,16 @@ function MoreSection({
     const categoryHasFeature = categoryFeatures.some((item) => item.id === activeMoreFeature) || (category === "vip" && vipDetailFeatureIds.has(activeMoreFeature));
     if (!categoryHasFeature) setActiveMoreFeature(defaultMenuFeatureByGroup[category]);
   }, [activeMoreFeature, category, categoryFeatures]);
+
+  useEffect(() => {
+    const syncKey = `${category}:${initialFeature ?? ""}`;
+    if (lastInitialFeatureSyncRef.current === syncKey) return;
+    lastInitialFeatureSyncRef.current = syncKey;
+    if (!initialFeature) return;
+
+    const categoryHasInitialFeature = categoryFeatures.some((item) => item.id === initialFeature) || (category === "vip" && vipDetailFeatureIds.has(initialFeature));
+    if (categoryHasInitialFeature) setActiveMoreFeature(initialFeature);
+  }, [category, categoryFeatures, initialFeature]);
 
   useEffect(() => {
     if (!self.sign && !selectedSignSlug) return;
@@ -4019,9 +4056,9 @@ function resolveInitialHubTab(startParam?: string | null): HubTab {
   const normalized = normalizeStartParam(startParam);
   if (!normalized) return "today";
   if (normalized === "compat" || normalized.startsWith("compat_")) return "love";
-  if (normalized === "mystic" || normalized === "birth_matrix" || normalized === "angel_numbers") return "mystic";
+  if (normalized === "mystic" || normalized === "birth_matrix") return "mystic";
+  if (normalized === "angel_numbers" || normalized === "week") return "forecasts";
   if (normalized === "vip") return "vip";
-  if (normalized === "week") return "forecasts";
   return "today";
 }
 
@@ -4158,7 +4195,7 @@ function targetForRetentionItem(item: ZodiacRetentionItem): MainMenuCategoryTarg
   const feature = isMoreFeatureId(item.featureKey) ? item.featureKey : null;
   if (!feature) return { tab: "today" };
   if (feature === "compatibilityTool") return { tab: "love", feature };
-  if (feature === "todayForecast" || feature === "weekForecast" || feature === "luckyDays" || feature === "lunarCalendar" || feature === "dailyTalisman" || feature === "giftBySign") {
+  if (feature === "todayForecast" || feature === "weekForecast" || feature === "luckyDays" || feature === "lunarCalendar" || feature === "dailyTalisman" || feature === "angelNumbers" || feature === "giftBySign") {
     return { tab: "forecasts", feature };
   }
   if (feature === "natalChart" || feature === "chineseHoroscope" || feature === "zodiacStones" || feature === "nameProfile" || feature === "numerology" || feature === "archetype") {

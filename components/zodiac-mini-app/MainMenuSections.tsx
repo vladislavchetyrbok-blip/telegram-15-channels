@@ -65,7 +65,7 @@ export function AstrologyCenterHome({
       title: "👼 Ангельские числа",
       text: "11:11, 22:22, 15:15 и знаки Вселенной",
       icon: <Stars className="h-6 w-6" />,
-      target: { tab: "mystic", feature: "angelNumbers" },
+      target: { tab: "forecasts", feature: "angelNumbers" },
       tone: "cyan",
       badge: "Популярное",
     },
@@ -150,7 +150,7 @@ export function AstrologyCenterHome({
         
         <button
           type="button"
-          onClick={() => onOpenCategory({ tab: "mystic", feature: "angelNumbers" }, "angel_numbers")}
+          onClick={() => onOpenCategory({ tab: "forecasts", feature: "angelNumbers" }, "angel_numbers")}
           className="mt-4 flex w-full items-center justify-between rounded-lg border border-cyan-300/30 bg-gradient-to-r from-cyan-950/50 to-blue-900/40 p-3 text-left transition hover:border-cyan-300/50"
         >
           <div className="flex items-center gap-3">

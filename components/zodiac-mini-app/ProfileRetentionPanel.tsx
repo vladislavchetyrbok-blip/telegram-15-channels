@@ -171,7 +171,7 @@ const quickActions: Array<{ id: string; title: string; text: string; icon: strin
   { id: "profile_horoscopes", title: "Гороскопы", text: "сегодня и неделя", icon: "✨", target: { tab: "forecasts", feature: "todayForecast" } },
   { id: "profile_compatibility", title: "Совместимость", text: "любовь и диалог", icon: "💞", target: { tab: "love", feature: "compatibilityTool" } },
   { id: "profile_birth_matrix", title: "Матрица судьбы", text: "расчёт по дате", icon: "🧿", target: { tab: "mystic", feature: "birthMatrix" } },
-  { id: "profile_angel_numbers", title: "Ангельские числа", text: "11:11 и знаки", icon: "👼", target: { tab: "mystic", feature: "angelNumbers" } },
+  { id: "profile_angel_numbers", title: "Ангельские числа", text: "11:11 и знаки", icon: "👼", target: { tab: "forecasts", feature: "angelNumbers" } },
   { id: "profile_vip", title: "VIP", text: "доступ бесплатно", icon: "👑", target: { tab: "vip", feature: "vip" } },
 ];
 

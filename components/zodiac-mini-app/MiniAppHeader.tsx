@@ -79,7 +79,7 @@ export function HomeQuickSection({
   const cards = [
     { title: "Сегодня", text: "короткий прогноз дня", action: onOpenForecasts, icon: <Sparkles className="h-4 w-4" /> },
     { title: "Совместимость", text: "расчёт пары", action: onOpenLove, icon: <HeartHandshake className="h-4 w-4" /> },
-    { title: "Ангельские числа", text: "10:10, 12:12, 02:22", action: onOpenMystic, icon: <Star className="h-4 w-4" /> },
+    { title: "Ангельские числа", text: "10:10, 12:12, 02:22", action: onOpenForecasts, icon: <Star className="h-4 w-4" /> },
     { title: "Натальная карта", text: "профиль рождения", action: onOpenProfile, icon: <CalendarDays className="h-4 w-4" /> },
     { title: "VIP бесплатно", text: "до 17.09.2026", action: onOpenVip, icon: <Crown className="h-4 w-4" /> },
     { title: "Ментальная карта", text: "карта отношений", action: onOpenLove, icon: <Sparkles className="h-4 w-4" /> },
