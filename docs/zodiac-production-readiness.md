@@ -22,6 +22,7 @@ The Zodiac product is ready for controlled live operation of the daily publishin
 - Production backup freshness is currently OK after backup `2026-06-19-01-06-53` and restore dry-run PASS.
 - Soft-launch pack is ready for `5-20` first users through `docs/zodiac-soft-launch-runbook.md`.
 - Safe share loop is ready for controlled testing: generic share drafts, no raw personal inputs, no referral IDs, and aggregate-only share lifecycle analytics.
+- Monetization readiness is documented in `docs/zodiac-monetization-readiness.md`; payments, Telegram Stars, and entitlement enforcement remain OFF.
 - Manual live publish remains forbidden unless a dry-run and ledger audit prove it is safe.
 
 ## Key Recent Commits
@@ -226,6 +227,8 @@ VIP:
 
 - Free access until `2026-09-17`.
 - Payments and Telegram Stars are OFF.
+- Future monetization must use disabled-by-default flags: `ZODIAC_PAYMENTS_ENABLED=false`, `ZODIAC_STARS_ENABLED=false`, `ZODIAC_VIP_ENTITLEMENTS_ENABLED=false`, and `ZODIAC_VIP_FREE_UNTIL=2026-09-17`.
+- Candidate future paid surfaces are documented, but no current VIP tool is locked by payment or entitlement checks.
 - 11 active VIP cards are functional tools with visible inputs, calculate/show action, non-empty result, safe Save, and safe Share.
 - Pair-dependent VIP tools include inline sign/mode pickers and can calculate even when the user has not created a pair in the main compatibility wizard.
 - Key VIP result screens render symbolic Final AstroMap visuals: Natal Chart, Extended Compatibility, Mental Map, Numerology, and VIP Mystic Day.
@@ -426,7 +429,7 @@ P1/P2 gaps that remain:
 2. Redis analytics storage configuration for real retention metrics.
 3. Real human-device Telegram WebView pass after the latest select/share/CTA/chart fixes.
 4. Weekly live scheduling decision after daily stability is proven.
-5. Monetization plan after audience and analytics validate demand: entitlement model, Telegram Stars/payments, legal text, giveaways rules.
+5. Monetization implementation remains future work after `docs/zodiac-monetization-readiness.md`: entitlements, Telegram Stars/payments, legal/refund/support text, and giveaways rules.
 6. Backup freshness automation for future release checkpoints.
 7. Further Mini App refactor: split remaining stateful sections once product behavior stabilizes.
 

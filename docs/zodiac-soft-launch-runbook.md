@@ -13,6 +13,7 @@ This runbook is for a careful first user pass of the Zodiac Telegram Mini App. I
 - Mini App: smoke PASS for main menu, compatibility, VIP, Mystic, Birth Matrix, Angel Numbers, Tarot/Rune, Lunar/Ritual, Profile, History, Favorites, Share, and Telegram mock.
 - Weekly live: `OFF`.
 - Payments/Stars: `OFF`.
+- Monetization readiness: documented in `docs/zodiac-monetization-readiness.md`; no paid gates or entitlement enforcement are active.
 - Analytics mode: `noop` until Redis REST env vars are configured.
 - Real phone Telegram WebView pass: required before any mass launch.
 - VIP access: free until `2026-09-17`.
@@ -203,6 +204,7 @@ During soft launch:
 
 - Do not enable weekly live.
 - Do not enable payments or Telegram Stars.
+- Do not enable VIP entitlement enforcement or hide current free promo access.
 - Do not run manual daily live without a separate explicit approval.
 - Do not run weekly live publish.
 - Do not manually edit ledgers.
@@ -285,6 +287,7 @@ Before showing the product to more than the first small group:
 - P1 count is `0`.
 - Weekly live is still OFF unless a separate explicit weekly live approval package is completed.
 - Payments/Stars are still OFF unless a separate monetization package is completed.
+- Monetization implementation must satisfy `docs/zodiac-monetization-readiness.md` activation gates first: real phone pass, P0/P1 = `0`, test-mode payment verification, support/refund text, privacy review, and explicit approval.
 
 ## Message To First Testers
 

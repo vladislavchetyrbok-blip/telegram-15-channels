@@ -26,6 +26,7 @@ Main remaining production gaps:
 - 2026-06-19 daily posts were later published by automation (`13/13 sent`), but the run arrived late around `13:36 Kyiv`; scheduler minutes have been shifted away from `:00` / `:30` to reduce GitHub Actions congestion risk.
 - Weekly lane is dry-run ready, but weekly live schedule remains intentionally off.
 - Real phone Telegram WebView pass remains manual-required after the latest Mini App visual/interactions fixes; browser smoke and Telegram mock do not count as a real phone pass.
+- Monetization readiness is documented, but payments, Telegram Stars, and entitlement enforcement remain OFF.
 - Mass public launch should wait until real-phone pass is complete, Redis analytics is enabled or explicitly waived, daily stability is observed, and P0/P1 issues are `0`.
 
 ## Daily Status
@@ -111,6 +112,13 @@ Confirmed by smoke:
 - Pair-dependent VIP screens have inline pair actions.
 - Giveaways remain locked.
 - Payments and Telegram Stars are not enabled.
+
+Monetization readiness:
+
+- Readiness plan: `docs/zodiac-monetization-readiness.md`.
+- Current flags remain free/promo: `vipFreeAccessEnabled=true`, `vipPaymentsEnabled=false`, `telegramStarsEnabled=false`.
+- Future payment flags must default OFF and must not lock current promo access without a separate approved package.
+- No payment-sensitive data is stored.
 
 ## Couple Core Status
 
@@ -322,7 +330,7 @@ Backup freshness is no longer an active warning after Package 19. Keep running b
 5. Keep weekly live OFF until the Package 28 gates are satisfied: several stable daily runs, real-phone Telegram WebView pass, two consecutive weekly dry-run passes, duplicate-block confirmation, and explicit approval.
 6. Keep backups fresh or automate backup creation before release checkpoints.
 7. Add GitHub API token support for local workflow monitor runs if local Actions visibility is needed.
-8. Keep payments/Telegram Stars behind a future monetization package; do not enable during free VIP period without a product decision.
+8. Keep payments/Telegram Stars behind a future monetization implementation package; use `docs/zodiac-monetization-readiness.md` as the plan and do not enable during free VIP period without a product decision.
 
 ## Recommended Next 5 Packages
 
