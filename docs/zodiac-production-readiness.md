@@ -144,6 +144,13 @@ Soft-launch runbook:
 docs/zodiac-soft-launch-runbook.md
 ```
 
+Feedback intake and triage:
+
+```text
+docs/zodiac-soft-launch-feedback.md
+docs/zodiac-bug-triage.md
+```
+
 Soft-launch state:
 
 - Controlled first-user test: READY for `5-20` trusted testers.

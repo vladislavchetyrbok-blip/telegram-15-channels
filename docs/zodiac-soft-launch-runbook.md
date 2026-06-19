@@ -83,6 +83,18 @@ Use these short questions after the tester has tried the app:
 9. Did anything feel broken or dead?
 10. What would you remove or simplify?
 
+Detailed feedback intake:
+
+```text
+docs/zodiac-soft-launch-feedback.md
+```
+
+Bug triage workflow:
+
+```text
+docs/zodiac-bug-triage.md
+```
+
 ## P0 / P1 / P2 Bug Classification
 
 ### P0
