@@ -12,8 +12,11 @@ const fixedNow = 1_800_000_000;
 const fixedNowIso = "2027-01-15T10:00:00.000Z";
 const rawQuestion = "\u0427\u0442\u043e \u043c\u043d\u0435 \u0432\u044b\u0431\u0440\u0430\u0442\u044c?";
 const rawIntention = "\u0425\u043e\u0447\u0443 \u0441\u043f\u043e\u043a\u043e\u0439\u0441\u0442\u0432\u0438\u044f";
-const rawFeedback = "\u041a\u043d\u043e\u043f\u043a\u0430 \u043d\u0435 \u0440\u0430\u0431\u043e\u0442\u0430\u0435\u0442";
-const rawResultText = "\u042d\u0442\u043e \u043f\u043e\u043b\u043d\u044b\u0439 raw \u0442\u0435\u043a\u0441\u0442 \u0440\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442\u0430";
+const rawFeedback = "\u0442\u0435\u0441\u0442\u043e\u0432\u044b\u0439 \u043b\u0438\u0447\u043d\u044b\u0439 \u043a\u043e\u043c\u043c\u0435\u043d\u0442\u0430\u0440\u0438\u0439";
+const rawResultText = "raw generated result";
+const rawName = "\u0412\u043b\u0430\u0434\u0438\u0441\u043b\u0430\u0432";
+const rawPhone = "+380501234567";
+const rawInitData = "RAW_INIT_DATA_SHOULD_NOT_SURVIVE";
 const forbiddenValues = [
   "1998-06-15",
   "23:55",
@@ -22,7 +25,9 @@ const forbiddenValues = [
   rawIntention,
   rawFeedback,
   rawResultText,
-  "RAW_INIT_DATA_SHOULD_NOT_SURVIVE",
+  rawName,
+  rawPhone,
+  rawInitData,
 ];
 
 const loader = createTsLoader();
@@ -169,6 +174,18 @@ const tests = [
   {
     name: "test-memory adapter strips raw result text",
     run: async () => assertTestMemoryOutputExcludes(rawResultText),
+  },
+  {
+    name: "test-memory adapter strips raw name",
+    run: async () => assertTestMemoryOutputExcludes(rawName),
+  },
+  {
+    name: "test-memory adapter strips raw phone",
+    run: async () => assertTestMemoryOutputExcludes(rawPhone),
+  },
+  {
+    name: "test-memory adapter strips raw initData",
+    run: async () => assertTestMemoryOutputExcludes(rawInitData),
   },
   {
     name: "test-memory delete works in test only",
@@ -337,6 +354,18 @@ const tests = [
   {
     name: "merge strips raw result text",
     run: () => assertMergedOutputExcludes(rawResultText),
+  },
+  {
+    name: "merge strips raw name",
+    run: () => assertMergedOutputExcludes(rawName),
+  },
+  {
+    name: "merge strips raw phone",
+    run: () => assertMergedOutputExcludes(rawPhone),
+  },
+  {
+    name: "merge strips raw initData",
+    run: () => assertMergedOutputExcludes(rawInitData),
   },
   {
     name: "merge malformed payload does not throw",
@@ -532,6 +561,29 @@ const tests = [
     run: () => assertSanitizedOutputExcludes(rawResultText),
   },
   {
+    name: "sanitizer strips raw name",
+    run: () => assertSanitizedOutputExcludes(rawName),
+  },
+  {
+    name: "sanitizer strips raw phone",
+    run: () => assertSanitizedOutputExcludes(rawPhone),
+  },
+  {
+    name: "sanitizer strips raw initData",
+    run: () => assertSanitizedOutputExcludes(rawInitData),
+  },
+  {
+    name: "sanitizer strips all known malicious values",
+    run: () => {
+      const result = sanitizeZodiacProfileSyncPayload(makeUnsafePayload(), { nowIso: fixedNowIso });
+      assert(result.ok, "payload should sanitize");
+      const serialized = JSON.stringify(result.payload);
+      for (const value of forbiddenValues) {
+        assert(!serialized.includes(value), `sanitized payload must not contain ${value}`);
+      }
+    },
+  },
+  {
     name: "disabled route does not read or store POST data",
     run: async () => {
       let bodyRead = false;
@@ -549,6 +601,52 @@ const tests = [
       assert(response.body.status === "disabled", "disabled route should return disabled");
       assert(response.body.stored === false, "disabled POST must report stored=false");
       assert(bodyRead === false, "disabled route must not read POST payload");
+      assertResponseExcludesForbiddenValues(response);
+    },
+  },
+  {
+    name: "invalid Telegram auth rejects before payload processing",
+    run: async () => {
+      let bodyRead = false;
+      const response = await resolveZodiacProfileSyncRequest({
+        method: "POST",
+        authorizationHeader: "tma invalid_auth_payload",
+        botToken: fakeBotToken,
+        readBody: async () => {
+          bodyRead = true;
+          return makeUnsafePayload();
+        },
+      });
+      assert(response.httpStatus === 401, "invalid auth should return 401");
+      assert(response.body.status === "invalid_auth", "invalid auth should be rejected");
+      assert(bodyRead === false, "invalid auth must not read POST payload");
+      assertResponseExcludesForbiddenValues(response);
+    },
+  },
+  {
+    name: "production route cannot use test-memory storage",
+    run: async () => {
+      let bodyRead = false;
+      const response = await resolveZodiacProfileSyncRequest({
+        method: "POST",
+        authorizationHeader: `tma ${createSignedInitData({ userId: "1001" })}`,
+        botToken: fakeBotToken,
+        config: getZodiacProfileSyncConfig({
+          ZODIAC_PROFILE_SYNC_ENABLED: "true",
+          ZODIAC_PROFILE_SYNC_BACKEND: "test_memory",
+          ZODIAC_PROFILE_SYNC_WRITE_ENABLED: "true",
+          ZODIAC_PROFILE_SYNC_TEST_MEMORY_ENABLED: "true",
+        }),
+        readBody: async () => {
+          bodyRead = true;
+          return makeUnsafePayload();
+        },
+      });
+      assert(response.httpStatus === 503, "runtime route should not expose test-memory storage");
+      assert(response.body.status === "backend_unavailable", "runtime route should fail closed");
+      assert(response.body.stored === false, "runtime route must not store to test-memory");
+      assert(bodyRead === false, "unavailable backend must not read POST payload");
+      assertResponseExcludesForbiddenValues(response);
     },
   },
   {
@@ -565,6 +663,7 @@ const tests = [
       });
       assert(response.httpStatus === 401, "invalid auth should return 401");
       assert(response.body.status === "invalid_auth", "invalid auth should be rejected before disabled response");
+      assertResponseExcludesForbiddenValues(response);
     },
   },
   {
@@ -586,6 +685,8 @@ const tests = [
       assert(getResponse.body.status === "disabled", "GET should be disabled");
       assert(deleteResponse.body.status === "disabled", "DELETE should be disabled");
       assert(deleteResponse.body.deleted === false, "DELETE should not delete");
+      assertResponseExcludesForbiddenValues(getResponse);
+      assertResponseExcludesForbiddenValues(deleteResponse);
     },
   },
 ];
@@ -617,7 +718,7 @@ function makeUnsafePayload() {
         id: "history:birthMatrix:1998-06-15",
         featureKey: "birthMatrix",
         section: "mystic",
-        label: `Birth Matrix 1998-06-15 23:55 Dnipro ${rawQuestion}`,
+        label: `Birth Matrix 1998-06-15 23:55 Dnipro ${rawQuestion} ${rawName} ${rawPhone} ${rawResultText}`,
         timestamp: fixedNowIso,
         sign: "gemini",
         mode: "symbolic",
@@ -631,7 +732,12 @@ function makeUnsafePayload() {
         intention: rawIntention,
         rawFeedback,
         rawResult: rawResultText,
-        initData: "RAW_INIT_DATA_SHOULD_NOT_SURVIVE",
+        resultText: rawResultText,
+        rawResultText,
+        name: rawName,
+        phone: rawPhone,
+        initData: rawInitData,
+        initDataUnsafe: rawInitData,
       },
     ],
     favorites: [
@@ -639,13 +745,19 @@ function makeUnsafePayload() {
         id: "favorite:vipNatalChart",
         featureKey: "vipNatalChart",
         section: "vip",
-        label: `Premium Natal ${rawIntention}`,
+        label: `Premium Natal ${rawIntention} ${rawFeedback} ${rawInitData}`,
         timestamp: fixedNowIso,
         resultText: rawResultText,
         feedbackText: rawFeedback,
+        name: rawName,
+        phoneNumber: rawPhone,
+        initData: rawInitData,
       },
     ],
     updatedAt: fixedNowIso,
+    name: rawName,
+    phone: rawPhone,
+    initData: rawInitData,
   };
 }
 
@@ -706,6 +818,13 @@ async function assertTestMemoryOutputExcludes(forbiddenValue) {
   const saved = await storage.getProfile("1001");
   const serialized = JSON.stringify(saved);
   assert(!serialized.includes(forbiddenValue), `test-memory payload must not contain ${forbiddenValue}`);
+}
+
+function assertResponseExcludesForbiddenValues(response) {
+  const serialized = JSON.stringify(response);
+  for (const value of forbiddenValues) {
+    assert(!serialized.includes(value), `route response must not contain ${value}`);
+  }
 }
 
 function createSignedInitData({ userId }) {

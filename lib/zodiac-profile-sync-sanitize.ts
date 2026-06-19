@@ -44,6 +44,9 @@ const blockedFieldNames = new Set([
   "generatedText",
   "message",
   "messageText",
+  "phone",
+  "phoneNumber",
+  "contactPhone",
   "initData",
   "initDataUnsafe",
 ]);
@@ -56,12 +59,17 @@ const forbiddenValuePatterns = [
   /\bDnepr\b/gi,
   /\bKyiv\b/gi,
   /\bKiev\b/gi,
+  /\+?\d[\d\s().-]{8,}\d/g,
   /\bTelegram WebApp initData\b/gi,
 ];
 
 const forbiddenTextFragments = [
   "\u0427\u0442\u043e \u043c\u043d\u0435 \u0432\u044b\u0431\u0440\u0430\u0442\u044c?",
   "\u0425\u043e\u0447\u0443 \u0441\u043f\u043e\u043a\u043e\u0439\u0441\u0442\u0432\u0438\u044f",
+  "\u0442\u0435\u0441\u0442\u043e\u0432\u044b\u0439 \u043b\u0438\u0447\u043d\u044b\u0439 \u043a\u043e\u043c\u043c\u0435\u043d\u0442\u0430\u0440\u0438\u0439",
+  "raw generated result",
+  "\u0412\u043b\u0430\u0434\u0438\u0441\u043b\u0430\u0432",
+  "RAW_INIT_DATA_SHOULD_NOT_SURVIVE",
 ];
 
 export function sanitizeZodiacProfileSyncPayload(

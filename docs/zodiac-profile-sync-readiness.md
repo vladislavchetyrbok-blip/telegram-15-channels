@@ -153,6 +153,7 @@ Never sync, store remotely, log, or send to analytics:
 - raw feedback
 - raw result text
 - generated message text
+- phone or phone number
 - raw Telegram user JSON
 
 ## Disabled API Behavior
@@ -169,6 +170,15 @@ DELETE -> { "ok": false, "status": "disabled", "deleted": false }
 
 Invalid or missing auth returns a safe auth error and does not reveal user data,
 raw `initData`, or bot token details.
+
+Package 43 strengthens disabled-route privacy checks:
+
+- invalid auth is rejected before payload processing;
+- disabled POST does not read or store the request body;
+- unavailable backend paths do not read or echo submitted payloads;
+- production runtime route cannot use the check-only `test_memory` adapter;
+- responses never echo submitted birth date, birth time, city, name, phone,
+  question, intention, feedback, result text, or raw `initData`.
 
 ## Frontend Scaffold
 
@@ -283,8 +293,11 @@ The check uses fake deterministic Telegram auth data only. It verifies:
 - test-memory adapter can save/delete sanitized payloads in checks only;
 - test-memory adapter strips sensitive fields before save;
 - no production storage/network adapter is used during checks;
-- raw birth date, birth time, city, question, intention, feedback, result text,
-  and raw initData are not preserved;
+- raw birth date, birth time, city, name, phone, question, intention, feedback,
+  result text, and raw initData are not preserved;
+- malicious payload fragments are stripped from labels and safe summaries;
+- invalid auth/disabled/backend-unavailable route paths do not read POST bodies
+  and do not echo submitted data;
 - disabled route does not store data;
 - invalid Telegram auth is rejected;
 - valid fake auth with disabled flags still returns disabled/no-write.
@@ -295,7 +308,7 @@ The check uses fake deterministic Telegram auth data only. It verifies:
 2. Pure merge utilities: current Package 40 state.
 3. Storage readiness and check-only memory adapter: current Package 41 state.
 4. Disabled status UI in Profile: current Package 42 state.
-5. Package 43: privacy stress tests and route hardening.
+5. Privacy stress tests and route hardening: current Package 43 state.
 6. Package 44: real astro engine provider fixture harness.
 7. Package 45: full safety regression after sync/astro foundations.
 8. Future package: read-only remote fetch in test mode for an internal test user.

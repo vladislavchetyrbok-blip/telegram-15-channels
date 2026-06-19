@@ -31,6 +31,11 @@ Package 42 adds a small disabled Profile Sync status block in `Мой профи
 It is display-only: no toggle, no mounted provider, and no remote sync network
 calls while flags are OFF.
 
+Package 43 adds stronger Profile Sync privacy stress checks and route hardening.
+Malicious payloads with birth data, city, name, phone, raw questions,
+intentions, feedback, result text, and initData are stripped or rejected without
+echoing user input. Profile sync still remains OFF.
+
 ## Current Status
 
 The Zodiac product is ready for controlled live operation of the daily publishing lane and user-facing Mini App checks, with the following boundaries:
@@ -59,6 +64,10 @@ The Zodiac product is ready for controlled live operation of the daily publishin
 - Profile shows that cross-device sync is currently disabled; History and
   Favorites remain local-only and smoke checks that no profile sync API calls
   happen while disabled.
+- Profile Sync privacy stress tests pass: disabled/auth/backend-unavailable
+  route paths do not read POST bodies, production route cannot use test-memory
+  storage, and raw sensitive fields are stripped from sanitizer/merge/storage
+  checks.
 - Manual live publish remains forbidden unless a dry-run and ledger audit prove it is safe.
 
 ## Key Recent Commits
@@ -653,6 +662,26 @@ Status:
 - Remote GET/POST/DELETE from UI: NO.
 - Smoke guard for `/api/zodiac/profile/sync`: YES.
 - localStorage fallback: unchanged.
+- Profile sync enabled: NO.
+- Backend writes: NO.
+- Payments/Stars: OFF.
+- Weekly live: OFF.
+
+## Package 43: Profile Sync Privacy Stress Tests
+
+Status:
+
+- Malicious payload checks: READY.
+- Additional raw values covered: birth date, birth time, city, name, phone, raw
+  question, raw intention, raw feedback, raw result text, raw initData.
+- Sanitizer strips malicious fragments from labels/summaries: YES.
+- Merge reintroduces stripped fields: NO.
+- Check-only memory storage sanitizes before save: YES.
+- Disabled POST reads body: NO.
+- Invalid auth reads body: NO.
+- Backend unavailable reads body: NO.
+- Runtime route can use `test_memory`: NO.
+- Route responses echo raw submitted payload: NO.
 - Profile sync enabled: NO.
 - Backend writes: NO.
 - Payments/Stars: OFF.

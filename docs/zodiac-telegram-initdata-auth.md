@@ -71,8 +71,10 @@ Never store, log, or send to analytics:
 - city or city query
 - raw question
 - raw intention
+- raw feedback
 - raw result text
 - raw generated messages
+- phone or phone number
 
 ## Profile Sync Flags
 
@@ -155,3 +157,18 @@ ZODIAC_PROFILE_SYNC_WRITE_ENABLED=false
 ```
 
 See `docs/zodiac-profile-sync-readiness.md`.
+
+## Package 43 Profile Sync Privacy Stress
+
+The profile sync check now stresses malicious POST payloads containing birth
+date, birth time, city, name, phone, raw question, raw intention, raw feedback,
+raw result text, and raw initData.
+
+Auth and route behavior must remain fail-closed:
+
+- invalid `initData` is rejected before payload processing;
+- disabled profile sync does not read POST bodies;
+- backend-unavailable paths do not read or echo submitted payloads;
+- raw `initData` is never stored, logged, returned, or sent to analytics;
+- the check-only `test_memory` storage adapter is not available to the runtime
+  API route.
