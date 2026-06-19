@@ -48,8 +48,8 @@ export function releaseLock() {
   }
 }
 
-export function loadLedger() {
-  const ledgerPath = fs.existsSync(LEDGER_PATH) ? LEDGER_PATH : LEGACY_LEDGER_PATH;
+export function loadLedger(overridePath) {
+  const ledgerPath = overridePath || (fs.existsSync(LEDGER_PATH) ? LEDGER_PATH : LEGACY_LEDGER_PATH);
   if (!fs.existsSync(ledgerPath)) return { entries: {} };
 
   try {

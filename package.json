@@ -107,6 +107,7 @@
     "zodiac:admin-alert": "node scripts/zodiac-admin-alert.mjs",
     "zodiac:export-image-prompts": "node scripts/export-zodiac-image-prompts.mjs",
     "zodiac:ledger:check": "node scripts/check-zodiac-publish-ledger.mjs",
+    "zodiac:ledger:safety:check": "node scripts/check-zodiac-ledger-safety.mjs",
     "zodiac:ledger:backfill": "node scripts/backfill-zodiac-publish-ledger.mjs",
     "zodiac:analytics:check": "node scripts/check-zodiac-analytics.mjs",
     "zodiac:analytics:storage:check": "node scripts/check-zodiac-analytics-storage.mjs",

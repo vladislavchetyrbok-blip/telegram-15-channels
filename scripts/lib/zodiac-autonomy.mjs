@@ -81,8 +81,8 @@ export function getKyivDate(offsetDays = 0) {
   return addDays(`${values.year}-${values.month}-${values.day}`, offsetDays);
 }
 
-export function readLedgerReadOnly() {
-  const ledgerPath = fs.existsSync(LEDGER_PATH) ? LEDGER_PATH : LEGACY_LEDGER_PATH;
+export function readLedgerReadOnly(overridePath) {
+  const ledgerPath = overridePath || (fs.existsSync(LEDGER_PATH) ? LEDGER_PATH : LEGACY_LEDGER_PATH);
   if (!fs.existsSync(ledgerPath)) {
     return { entries: {}, warning: "Ledger file not found; treating ledger as empty." };
   }
