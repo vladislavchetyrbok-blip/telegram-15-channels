@@ -1,0 +1,171 @@
+# Zodiac Soft Launch Release Candidate
+
+Date: 2026-06-19
+Base HEAD: `e54a0fd docs: add zodiac monetization readiness plan`
+Branch: `main`
+
+This document freezes the current Zodiac product state as a soft-launch release candidate for the first controlled `5-20` users. It does not authorize mass launch, weekly live publishing, payments, Telegram Stars, manual daily live publish, or manual ledger edits.
+
+## Release Candidate Status
+
+- RC status: READY for controlled `5-20` users.
+- Mass launch: NOT READY.
+- Weekly live: NOT READY / OFF.
+- Payments/Stars: NOT READY / OFF.
+- Redis analytics: code ready, storage currently `noop`.
+- Real phone Telegram WebView pass: still required before mass launch.
+
+## Current Product Readiness
+
+| Area | Status |
+| --- | --- |
+| Horoscopes | PASS |
+| Compatibility | PASS |
+| Angel Numbers | PASS |
+| Birth Matrix | PASS |
+| Numerology | PASS |
+| Mystic | PASS |
+| Tarot/Rune | PASS |
+| Lunar/Ritual | PASS |
+| VIP 11/11 | PASS |
+| Profile/History/Favorites | PASS |
+| Feedback flow | PASS |
+| Safe share loop | PASS |
+
+Mini App smoke baseline:
+
+- Main menu categories: `10/10`.
+- VIP cards/tools: `11/11`.
+- Feedback CTA/panel: PASS.
+- Safe share drafts: Compatibility, Lunar/Ritual, Angel Numbers, Premium Natal, Tarot, Rune, Birth Matrix.
+- Telegram mock: PASS.
+- Console errors: `0`.
+- Runtime errors: `0`.
+- HTTP/network errors: `0`.
+
+## Infrastructure Readiness
+
+- Daily scheduler: ON and timing-hardened.
+- Daily duplicate protection: ledger/dedupe confirmed.
+- Daily dry-run for `2026-06-20`: `Would Publish 13/13`, CTA rows `13/13 OK`, Telegram API calls `0`, ledger writes `0`.
+- Weekly live: OFF.
+- Redis analytics: API/privacy model ready, storage mode `noop`, required Redis env missing.
+- Payments/Stars: OFF.
+- VIP entitlements: OFF, no paid gates active.
+- Backups/safety: production safety PASS.
+- Channel packaging: already live and verified in earlier package.
+
+## Manual Blockers Before Mass Launch
+
+- Complete a real phone Telegram WebView pass after the latest UI/share/feedback changes.
+- Configure Redis env or explicitly accept `noop` analytics for the first test group.
+- Observe several stable daily scheduler runs after cron timing shift.
+- Keep P0/P1 feedback count at `0`.
+- Keep weekly live OFF until weekly readiness gates are met.
+- Keep payments/Stars OFF until a separate monetization implementation package is approved.
+
+## First User Test Link
+
+```text
+https://t.me/zodiac_love_check_bot?startapp=compat
+```
+
+Ask testers to open this from a phone inside Telegram.
+
+## First Tester Message
+
+```text
+Привет! Я собрал Telegram Mini App с гороскопами, совместимостью, натальной картой, матрицей судьбы, таро/рунами, лунными практиками и VIP-разделом.
+
+Открой, пожалуйста, с телефона прямо в Telegram:
+https://t.me/zodiac_love_check_bot?startapp=compat
+
+Проверь 2-3 функции, которые тебе интересны. Особенно важно:
+- понятно ли, куда нажимать;
+- красиво ли выглядит на телефоне;
+- работает ли результат;
+- работает ли "Поделиться";
+- где текст слишком длинный или слишком общий;
+- где хочется закрыть приложение.
+
+Напиши честно: что понравилось, что непонятно, что сломано и какую функцию ты бы отправил(а) другу.
+```
+
+## Stop Conditions
+
+Stop inviting users and triage immediately if any of these happen:
+
+- Mini App white screen.
+- Telegram WebView buttons overlap or become unreachable.
+- Save/share broken.
+- Privacy leak: raw name, birth date, birth time, city query, raw question/intention, raw result text, or raw feedback stored/sent.
+- Result screens fail or show empty content.
+- Daily publish duplicates.
+- Any P0/P1 bug is found.
+
+## Commands Before Showing Users
+
+Run this local checklist before sending the test link:
+
+```bash
+npm run lint
+npm run build
+npm run zodiac:miniapp:smoke
+npm run zodiac:analytics:check
+npm run zodiac:analytics:storage:check
+npm run production:safety:check
+```
+
+For a full RC baseline, also run:
+
+```bash
+npm run zodiac:workflow:check -- --date YYYY-MM-DD
+npm run zodiac:publish-date:dry -- --date YYYY-MM-DD
+git diff --check
+```
+
+## Current Forbidden Actions
+
+- No weekly live.
+- No payments/Stars.
+- No VIP entitlement enforcement.
+- No manual live publish without explicit approval and dry-run/ledger proof.
+- No manual ledger edits.
+- No mass launch.
+- No scheduler timing changes during this RC.
+- No Mini App UX changes unless a clear P0/P1 bug is found.
+
+## Recommended Next Sequence
+
+1. Run a real phone Telegram WebView pass.
+2. Invite `5-10` trusted testers first.
+3. Collect feedback using `docs/zodiac-soft-launch-runbook.md` and `docs/zodiac-bug-triage.md`.
+4. Fix P0/P1 only if found.
+5. Add Redis env if ready, or explicitly accept `noop` for the first loop.
+6. Observe daily scheduler timing and duplicate protection.
+7. Invite up to `20` users only if P0/P1 remains `0`.
+8. Decide weekly live later.
+9. Decide payments/Stars later using `docs/zodiac-monetization-readiness.md`.
+
+## Baseline Checks
+
+Clean baseline was run after removing `.next`.
+
+| Check | Result |
+| --- | --- |
+| `npm run lint` | PASS |
+| `npm run build` | PASS |
+| `npm run zodiac:miniapp:smoke` | PASS |
+| `npm run zodiac:analytics:check` | PASS |
+| `npm run zodiac:analytics:storage:check` | PASS, storage `noop` warning |
+| `npm run zodiac:workflow:check -- --date 2026-06-20` | Static PASS, warning only: no GitHub token/local report |
+| `npm run zodiac:publish-date:dry -- --date 2026-06-20` | PASS, Would Publish `13/13`, Telegram API calls `0`, ledger writes `0` |
+| `npm run production:safety:check` | PASS |
+| `git diff --check` | PASS |
+
+## Recommendation
+
+- Can invite `5-20` users: YES, after real-phone Telegram WebView sanity pass or with it as the first tester activity.
+- Can mass launch: NO.
+- Can enable weekly live: NO.
+- Can enable payments/Stars: NO.

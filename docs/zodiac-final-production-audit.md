@@ -19,6 +19,7 @@ The Zodiac product is broadly production-ready for the current free-access phase
 - Mini App select/share/dead CTA/chart interaction bugs were repaired and verified by smoke.
 - Fresh production backup was created and restore dry-run passed.
 - Soft-launch runbook is available for a controlled `5-20` first-user test.
+- Soft-launch release candidate snapshot is available at `docs/zodiac-soft-launch-release-candidate.md`.
 
 Main remaining production gaps:
 
@@ -199,6 +200,12 @@ Runbook:
 
 ```text
 docs/zodiac-soft-launch-runbook.md
+```
+
+Release candidate snapshot:
+
+```text
+docs/zodiac-soft-launch-release-candidate.md
 ```
 
 Feedback intake and triage:

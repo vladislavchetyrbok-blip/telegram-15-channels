@@ -9,6 +9,7 @@ This runbook is for a careful first user pass of the Zodiac Telegram Mini App. I
 ## Current Status
 
 - Launch readiness: `9/10`.
+- Release candidate snapshot: `docs/zodiac-soft-launch-release-candidate.md`.
 - Daily publishing: active, scheduler-hardened, ledger-protected.
 - Mini App: smoke PASS for main menu, compatibility, VIP, Mystic, Birth Matrix, Angel Numbers, Tarot/Rune, Lunar/Ritual, Profile, History, Favorites, Share, and Telegram mock.
 - Weekly live: `OFF`.
