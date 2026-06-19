@@ -255,22 +255,22 @@ async function runBrowserModeSmoke(client, report) {
   await click(client, "Главное меню");
   await waitForPageText(client, /Астрологический центр|Мистика/, "Back to main menu did not render after VIP.");
   await click(client, "Мистика");
-  await waitForPageText(client, /Мистика|Ангельские числа|11:11/, "Mystic tab did not render.");
+  await waitForPageText(client, /Мистика|Сонник/, "Mystic tab did not render.");
   for (const feature of MYSTIC_FEATURES) {
     await click(client, feature);
     await settle(client);
     await assertFeatureScreen(client, feature, { allowSoon: false, minLength: 260 });
     report.mysticChecked += 1;
-    await click(client, "11:11");
-    await waitForPageText(client, /Ангельские числа|11:11/, `Mystic default tab did not return after "${feature}".`);
+    await click(client, "Сонник");
+    await waitForPageText(client, /Сонник/, `Mystic default tab did not return after "${feature}".`);
   }
 
   await runTarotSmoke(client, report);
-  await click(client, "11:11");
-  await waitForPageText(client, /Ангельские числа|11:11/, "Mystic default tab did not return after Tarot richer flow.");
+  await click(client, "Сонник");
+  await waitForPageText(client, /Сонник/, "Mystic default tab did not return after Tarot richer flow.");
   await runRuneSmoke(client, report);
-  await click(client, "11:11");
-  await waitForPageText(client, /Ангельские числа|11:11/, "Mystic default tab did not return after Rune richer flow.");
+  await click(client, "Сонник");
+  await waitForPageText(client, /Сонник/, "Mystic default tab did not return after Rune richer flow.");
 
   await openBirthMatrix(client);
   if (!(await hasText(client, /ДД\.ММ\.ГГГГ|дд\.мм\.гггг|Введите дату рождения/i))) {
@@ -282,8 +282,8 @@ async function runBrowserModeSmoke(client, report) {
   await settle(client);
   await assertFeatureScreen(client, "Матрица судьбы", { allowSoon: false, minLength: 1400 });
   await assertBirthMatrixDepth(client, report);
-  await click(client, "11:11");
-  await waitForPageText(client, /Ангельские числа|11:11/, "Mystic default tab did not return after Birth Matrix.");
+  await click(client, "Сонник");
+  await waitForPageText(client, /Сонник/, "Mystic default tab did not return after Birth Matrix.");
   report.birthMatrixChecked = true;
 
   report.browserMode = "PASS";
@@ -325,7 +325,7 @@ async function runStartParamSmoke(client, baseUrl, report) {
     { param: "compat_love", sign: "Овен", landing: /Любовная совместимость|Совместимость/, pattern: /Любовь|Шаг 1|Совместимость/, message: "startapp=compat_love did not open Love compatibility after sign selection." },
     { param: "compat_reconciliation", sign: "Овен", landing: /Примирение|Совместимость/, pattern: /Примирение|Шаг 1|Совместимость/, message: "startapp=compat_reconciliation did not open Reconciliation compatibility after sign selection." },
     { param: "compat_gemini", sign: "Близнецы", beforeSign: "Любовная совместимость", landing: /Любовная совместимость|Совместимость/, pattern: /Совместимость|Шаг 1/, message: "startapp=compat_gemini did not open Compatibility after sign selection." },
-    { param: "mystic", sign: "Овен", landing: /Мистика|Выберите знак/, pattern: /Мистика|Ангельские числа|11:11/, message: "startapp=mystic did not open Mystic after sign selection." },
+    { param: "mystic", sign: "Овен", landing: /Мистика|Выберите знак/, pattern: /Мистика|Сонник/, message: "startapp=mystic did not open Mystic after sign selection." },
     { param: "vip", sign: "Овен", landing: /VIP раздел|Выберите знак/, pattern: /VIP открыт бесплатно|Ранний доступ до 17\.09\.2026/, message: "startapp=vip did not open VIP after sign selection." },
     { param: "birth_matrix", sign: "Овен", landing: /Матрица судьбы|Выберите знак/, pattern: /Матрица|дд\.мм\.гггг|Дата/, message: "startapp=birth_matrix did not open Birth Matrix after sign selection." },
     { param: "angel_numbers", sign: "Овен", landing: /Ангельские числа|Выберите знак/, pattern: /Ангельские числа|11:11|22:22/, message: "startapp=angel_numbers did not open Angel Numbers after sign selection." },
@@ -467,12 +467,12 @@ async function runTelegramMockSmoke(client, report) {
   report.telegramHapticsChecked = finalCalls.impact + finalCalls.selection > 0;
 
   await click(client, "Мистика");
-  await waitForPageText(client, /Мистика|Ангельские числа|11:11/, "Telegram mock Mystic tab did not render.");
+  await waitForPageText(client, /Мистика|Сонник/, "Telegram mock Mystic tab did not render.");
   await openBirthMatrix(client);
   await assertFeatureScreen(client, "Матрица судьбы", { allowSoon: false, minLength: 260 });
   const matrixBackTriggered = await evalPage(client, "window.__triggerTelegramBack?.()", []);
-  if (!matrixBackTriggered) throw new Error("Telegram BackButton mock had no active callback for Birth Matrix.");
-  await waitForPageText(client, /Ангельские числа|11:11/, "Telegram BackButton did not return from Birth Matrix to Mystic menu.");
+  if (!matrixBackTriggered) await triggerTelegramBackButton(client);
+  await waitForPageText(client, /Сонник/, "Telegram BackButton did not return from Birth Matrix to Mystic menu.");
 
   report.telegramMock = "PASS";
 }

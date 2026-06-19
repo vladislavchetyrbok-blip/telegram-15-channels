@@ -54,10 +54,15 @@ export function loadLedger() {
 
   try {
     const data = fs.readFileSync(ledgerPath, "utf8");
-    return JSON.parse(data);
+    if (!data.trim()) return { entries: {} };
+    const parsed = JSON.parse(data);
+    if (!parsed || typeof parsed !== "object" || !parsed.entries) {
+      throw new Error("Ledger missing 'entries' object");
+    }
+    return parsed;
   } catch (error) {
-    console.error(`Failed to parse ledger at ${ledgerPath}:`, error);
-    return { entries: {} };
+    console.error(`CRITICAL: Failed to parse ledger at ${ledgerPath}. Failing closed to prevent duplicate sends:`, error);
+    throw new Error(`Ledger corruption detected: ${error.message}`);
   }
 }
 
@@ -65,7 +70,9 @@ export function saveLedger(ledgerData) {
   if (!fs.existsSync(STATE_DIR)) {
     fs.mkdirSync(STATE_DIR, { recursive: true });
   }
-  fs.writeFileSync(LEDGER_PATH, `${JSON.stringify(ledgerData, null, 2)}\n`, "utf8");
+  const tempPath = `${LEDGER_PATH}.tmp.${Date.now()}`;
+  fs.writeFileSync(tempPath, `${JSON.stringify(ledgerData, null, 2)}\n`, "utf8");
+  fs.renameSync(tempPath, LEDGER_PATH);
 }
 
 export function hasSent(date, slug) {

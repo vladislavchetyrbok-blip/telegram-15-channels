@@ -26,6 +26,17 @@ export async function getProductionSafetyReport(options = {}) {
   const store = await getStoreSafety();
   const backup = await getBackupSafety(lastCheckedAt);
 
+  const vipConfig = readJson(path.join(root, "data", "config", "zodiac-vip-config.json"), {});
+  if (vipConfig.vipFreeAccessUntil) {
+    const expiryTime = new Date(vipConfig.vipFreeAccessUntil).getTime();
+    const daysUntilExpiry = (expiryTime - new Date(lastCheckedAt).getTime()) / 864e5;
+    if (daysUntilExpiry < 0) {
+      warnings.push(`VIP Free Access expired on ${vipConfig.vipFreeAccessUntil}.`);
+    } else if (daysUntilExpiry < 30) {
+      warnings.push(`VIP Free Access will expire in ${Math.ceil(daysUntilExpiry)} days (${vipConfig.vipFreeAccessUntil}).`);
+    }
+  }
+
   warnings.push(...git.warnings, ...production.warnings, ...telegram.warnings, ...scheduler.warnings, ...store.warnings, ...backup.warnings);
   errors.push(...git.errors, ...production.errors, ...telegram.errors, ...scheduler.errors, ...store.errors, ...backup.errors);
 

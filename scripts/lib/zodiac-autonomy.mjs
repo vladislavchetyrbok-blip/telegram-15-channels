@@ -87,11 +87,21 @@ export function readLedgerReadOnly() {
     return { entries: {}, warning: "Ledger file not found; treating ledger as empty." };
   }
 
-  const parsed = JSON.parse(fs.readFileSync(ledgerPath, "utf8"));
-  return {
-    entries: parsed && typeof parsed.entries === "object" && parsed.entries !== null ? parsed.entries : {},
-    warning: ledgerPath === LEGACY_LEDGER_PATH ? "Using legacy runtime ledger; tracked durable ledger is missing." : null,
-  };
+  try {
+    const data = fs.readFileSync(ledgerPath, "utf8");
+    if (!data.trim()) return { entries: {} };
+    const parsed = JSON.parse(data);
+    if (!parsed || typeof parsed !== "object" || !parsed.entries) {
+      throw new Error("Ledger missing 'entries' object");
+    }
+    return {
+      entries: parsed.entries,
+      warning: ledgerPath === LEGACY_LEDGER_PATH ? "Using legacy runtime ledger; tracked durable ledger is missing." : null,
+    };
+  } catch (error) {
+    console.error(`CRITICAL: Failed to parse ledger at ${ledgerPath}. Failing closed:`, error);
+    throw new Error(`Ledger corruption detected: ${error.message}`);
+  }
 }
 
 export function readLedgerForWrite() {
@@ -102,15 +112,27 @@ export function readLedgerForWrite() {
     return { entries: {} };
   }
 
-  const parsed = JSON.parse(fs.readFileSync(LEDGER_PATH, "utf8"));
-  return parsed && typeof parsed.entries === "object" && parsed.entries !== null ? parsed : { entries: {} };
+  try {
+    const data = fs.readFileSync(LEDGER_PATH, "utf8");
+    if (!data.trim()) return { entries: {} };
+    const parsed = JSON.parse(data);
+    if (!parsed || typeof parsed !== "object" || !parsed.entries) {
+      throw new Error("Ledger missing 'entries' object");
+    }
+    return parsed;
+  } catch (error) {
+    console.error(`CRITICAL: Failed to parse ledger at ${LEDGER_PATH}. Failing closed to prevent duplicate sends:`, error);
+    throw new Error(`Ledger corruption detected: ${error.message}`);
+  }
 }
 
 export function writeLedger(ledger) {
   if (!fs.existsSync(STATE_DIR)) {
     fs.mkdirSync(STATE_DIR, { recursive: true });
   }
-  fs.writeFileSync(LEDGER_PATH, `${JSON.stringify(ledger, null, 2)}\n`, "utf8");
+  const tempPath = `${LEDGER_PATH}.tmp.${Date.now()}`;
+  fs.writeFileSync(tempPath, `${JSON.stringify(ledger, null, 2)}\n`, "utf8");
+  fs.renameSync(tempPath, LEDGER_PATH);
 }
 
 export function normalizeStatus(status) {
