@@ -212,6 +212,13 @@ Release candidate snapshot:
 docs/zodiac-soft-launch-release-candidate.md
 ```
 
+Controlled execution pack:
+
+```text
+docs/zodiac-controlled-soft-launch-execution.md
+docs/zodiac-soft-launch-batch-template.md
+```
+
 Feedback intake and triage:
 
 ```text
@@ -223,6 +230,7 @@ Soft-launch state:
 
 - Controlled first-user test: READY for `5-20` trusted testers.
 - Public/mass launch: NOT READY until real phone Telegram WebView pass is completed and P0/P1 issues are `0`.
+- Batch 1 should start with `5` Telegram-only users; expand toward `20` only if P0 = `0`, P1 = `0` or fixed, average rating is `>= 7`, share/save work, and no privacy leaks are reported.
 - Analytics: Redis env is still missing, so metrics remain `noop` unless hosting env is configured.
 - In-app feedback CTA: READY in `Мой профиль` with `Оставить отзыв` / `Сообщить о баге`; comments stay transient and analytics uses only safe categorical payload.
 - Weekly live: OFF and not ready to enable.

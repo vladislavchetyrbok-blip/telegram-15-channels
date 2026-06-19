@@ -61,6 +61,8 @@ controlled soft launch only.
 - Real Astro Engine fixture harness: PASS, exact mode unavailable.
 - Post-sync-foundation regression: PASS.
 - Product readiness: `92%` for controlled soft launch.
+- Execution pack: `docs/zodiac-controlled-soft-launch-execution.md`.
+- Anonymous batch template: `docs/zodiac-soft-launch-batch-template.md`.
 
 ## Current Product Readiness
 
@@ -273,12 +275,12 @@ git diff --check
 ## Recommended Next Sequence
 
 1. Run a real phone Telegram WebView pass.
-2. Invite `5-10` trusted testers first.
-3. Collect feedback using `docs/zodiac-soft-launch-runbook.md` and `docs/zodiac-bug-triage.md`.
+2. Invite Batch 1: `5` trusted Telegram-only testers using `docs/zodiac-controlled-soft-launch-execution.md`.
+3. Collect anonymous aggregate feedback using `docs/zodiac-soft-launch-batch-template.md`, `docs/zodiac-soft-launch-runbook.md`, and `docs/zodiac-bug-triage.md`.
 4. Fix P0/P1 only if found.
 5. Add Redis env if ready, or explicitly accept `noop` for the first loop.
 6. Observe daily scheduler timing and duplicate protection.
-7. Invite up to `20` users only if P0/P1 remains `0`.
+7. Invite up to `20` users only if P0 = `0`, P1 = `0` or fixed, share/save work, average rating is `>= 7`, and no privacy leaks appear.
 8. Decide weekly live later.
 9. Decide payments/Stars later using `docs/zodiac-monetization-readiness.md`.
 
