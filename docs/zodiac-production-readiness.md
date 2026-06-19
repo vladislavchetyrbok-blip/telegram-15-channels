@@ -314,6 +314,17 @@ ZODIAC_ANALYTICS_REDIS_URL
 ZODIAC_ANALYTICS_REDIS_TOKEN
 ```
 
+Production activation checklist:
+
+1. Use a Redis REST URL/token pair, not a raw `redis://` TCP URL.
+2. Add both env vars only in hosting/deployment settings; never commit `.env`, `.env.local`, or token values.
+3. Redeploy so the server runtime receives both variables.
+4. Run `npm run zodiac:analytics:storage:check` and confirm mode `redis`.
+5. Open `/dashboard/networks/zodiac/analytics`.
+6. Trigger a safe Mini App action such as a category open, sign selection, save, or share.
+7. Refresh the dashboard and confirm aggregate counters move.
+8. Confirm no names, birth dates, birth times, cities, raw questions, raw intentions, raw result text, generated messages, Telegram initData, tokens, or raw angel-number inputs appear in logs, API responses, dashboard, or storage.
+
 Privacy rules:
 
 - No names.
@@ -371,7 +382,7 @@ git diff --check
 
 P1/P2 gaps that remain:
 
-1. Post-cron daily verification for `2026-06-19` after `11:05 Kyiv`.
+1. Watch the next daily runs after the cron-minute shift and confirm they arrive closer to the intended Kyiv morning window.
 2. Redis analytics storage configuration for real retention metrics.
 3. Real human-device Telegram WebView pass after the latest select/share/CTA/chart fixes.
 4. Weekly live scheduling decision after daily stability is proven.

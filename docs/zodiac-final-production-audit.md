@@ -195,12 +195,17 @@ Result:
 - Sensitive fields stripped: YES.
 - Forbidden payload fields present: `0`.
 - VIP events covered: `22/22`.
-- Mystic events covered: `10/10`.
-- Birth Matrix events covered: `1/1`.
+- Mystic events covered: `27/27`.
+- Tarot/Rune events covered: `11/11`.
+- Lunar/Ritual events covered: `7/7`.
+- Birth Matrix events covered: `6/6`.
+- Premium Natal events covered: `9/9`.
 - Telegram events covered: `3/3`.
 - Retention events covered: `6/6`.
 - Compatibility events covered: `8/8`.
-- Interaction hardening events covered: `3/3`.
+- Interaction hardening events covered: `7/7`.
+- Tracked events checked: `124`.
+- Dashboard route: `/dashboard/networks/zodiac/analytics`, empty/noop state visible and privacy-safe.
 - Ledger writes: `0`.
 - Live publish calls: `0`.
 
@@ -213,7 +218,17 @@ ZODIAC_ANALYTICS_REDIS_URL
 ZODIAC_ANALYTICS_REDIS_TOKEN
 ```
 
-Use a Redis REST URL/token pair, redeploy, run `npm run zodiac:analytics:storage:check`, then verify counters on `/dashboard/networks/zodiac/analytics`.
+Use a Redis REST URL/token pair, not a raw `redis://` TCP URL. Store both values only as hosting/deployment env vars, redeploy, run `npm run zodiac:analytics:storage:check`, then verify counters on `/dashboard/networks/zodiac/analytics`.
+
+Production verification checklist:
+
+1. Add `ZODIAC_ANALYTICS_REDIS_URL` and `ZODIAC_ANALYTICS_REDIS_TOKEN` in hosting env without committing values.
+2. Redeploy the app.
+3. Run `npm run zodiac:analytics:storage:check` and confirm mode `redis`.
+4. Open `/dashboard/networks/zodiac/analytics`.
+5. Trigger a safe Mini App action such as opening a category or selecting a sign.
+6. Refresh the dashboard and confirm aggregate counters move.
+7. Confirm logs/dashboard/storage do not show names, birth dates, birth times, cities, raw questions, raw intentions, raw result text, Telegram initData, tokens, or raw generated messages.
 
 ## Production Safety Status
 
