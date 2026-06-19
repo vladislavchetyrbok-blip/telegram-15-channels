@@ -13,6 +13,11 @@ OFF.
 Package 38 adds disabled-by-default Profile Sync API readiness. Remote profile
 sync, frontend sync provider, and backend writes remain OFF.
 
+Package 39 adds a disabled-by-default frontend Profile Sync client/hook scaffold.
+It is not mounted in the Mini App, does not show a sync UI, and does not call
+GET/POST/DELETE while sync flags are OFF. localStorage remains the source of
+truth for Profile, History, Favorites, and saved readings.
+
 ## Current Status
 
 The Zodiac product is ready for controlled live operation of the daily publishing lane and user-facing Mini App checks, with the following boundaries:
@@ -32,6 +37,8 @@ The Zodiac product is ready for controlled live operation of the daily publishin
 - Desktop visual QA harness is available at `docs/zodiac-desktop-qa-harness.md` and runs through `npm run zodiac:desktop:qa`; it accelerates local/staging UI checks but does not replace the real phone pass.
 - Safe share loop is ready for controlled testing: generic share drafts, no raw personal inputs, no referral IDs, and aggregate-only share lifecycle analytics.
 - Monetization readiness is documented in `docs/zodiac-monetization-readiness.md`; payments, Telegram Stars, and entitlement enforcement remain OFF.
+- Frontend Profile Sync scaffold is available for a future controlled rollout,
+  but sync remains disabled, unmounted, and localStorage-only.
 - Manual live publish remains forbidden unless a dry-run and ledger audit prove it is safe.
 
 ## Key Recent Commits
@@ -527,3 +534,38 @@ Readiness doc:
 ```text
 docs/zodiac-profile-sync-readiness.md
 ```
+
+## Package 39: Frontend Profile Sync Scaffold
+
+Status:
+
+- Frontend sync client scaffold: READY but disabled.
+- Files: `components/zodiac-mini-app/profile-sync-client.ts` and
+  `components/zodiac-mini-app/useProfileSync.ts`.
+- Mounted in Mini App: NO.
+- Visible sync UI status: NO.
+- Auto-sync loop: NO.
+- GET while disabled: NO.
+- POST while disabled: NO.
+- DELETE while disabled: NO.
+- Outside Telegram or missing `window.Telegram.WebApp.initData`: no network
+  calls.
+- `initDataUnsafe`: not used.
+- Raw `initData`: not stored, logged, or sent to analytics.
+- Existing localStorage Profile/History/Favorites: unchanged.
+- Backend writes: NO.
+- Profile sync enabled: NO.
+- Payments/Stars: OFF.
+- Weekly live: OFF.
+
+Client public flags remain disabled by default:
+
+```text
+NEXT_PUBLIC_ZODIAC_PROFILE_SYNC_ENABLED=false
+NEXT_PUBLIC_ZODIAC_PROFILE_SYNC_READ_ENABLED=false
+NEXT_PUBLIC_ZODIAC_PROFILE_SYNC_WRITE_ENABLED=false
+```
+
+Future rollout must start with a controlled read-only merge test. Write sync
+requires a separate package, explicit storage backend decision, and real-phone
+Telegram WebView validation.

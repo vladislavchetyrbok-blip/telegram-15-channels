@@ -14,6 +14,11 @@ Package 38 adds disabled-by-default Profile Sync API readiness. It does not
 enable remote sync, backend storage writes, a frontend sync provider, payments,
 Stars, or weekly live.
 
+Package 39 adds a disabled-by-default frontend Profile Sync client/hook
+scaffold. It does not mount a provider, show sync UI, auto-sync, call remote
+GET/POST/DELETE while disabled, enable backend writes, payments, Stars, or
+weekly live.
+
 ## Executive Status
 
 The Zodiac product is broadly production-ready for the current free-access phase:
@@ -28,6 +33,8 @@ The Zodiac product is broadly production-ready for the current free-access phase
 - Fresh production backup was created and restore dry-run passed.
 - Soft-launch runbook is available for a controlled `5-20` first-user test.
 - Soft-launch release candidate snapshot is available at `docs/zodiac-soft-launch-release-candidate.md`.
+- Profile Sync frontend scaffold is ready for a future controlled rollout, but
+  sync remains disabled, unmounted, and localStorage-only.
 
 Main remaining production gaps:
 
@@ -408,3 +415,31 @@ Current status:
 - Raw initData sync/storage/analytics: NO.
 - Payments/Stars: OFF.
 - Weekly live: OFF.
+
+## Package 39 Refresh: Frontend Profile Sync Scaffold
+
+Current status:
+
+- Frontend sync client: READY but disabled.
+- Hook scaffold: READY but disabled.
+- Files: `components/zodiac-mini-app/profile-sync-client.ts` and
+  `components/zodiac-mini-app/useProfileSync.ts`.
+- Provider mounted in Mini App: NO.
+- Visible sync UI status: NO.
+- Auto-sync loop: NO.
+- GET while disabled: NO.
+- POST while disabled: NO.
+- DELETE while disabled: NO.
+- Outside Telegram or missing `window.Telegram.WebApp.initData`: no network
+  calls.
+- `initDataUnsafe` usage: NO.
+- Raw `initData` stored/logged/analytics: NO.
+- Remote merge implemented: NO.
+- Existing localStorage retention: unchanged.
+- Backend writes: NO.
+- Profile sync enabled: NO.
+- Payments/Stars: OFF.
+- Weekly live: OFF.
+
+Next readiness step: a separate controlled read-only sync/merge package after
+real-phone Telegram WebView validation and storage backend review.

@@ -28,11 +28,18 @@ const forbiddenValues = [
 const loader = createTsLoader();
 const profileSync = loader.load(path.join(projectRoot, "lib", "zodiac-profile-sync.ts"));
 const profileSyncTypes = loader.load(path.join(projectRoot, "lib", "zodiac-profile-sync-types.ts"));
+const profileSyncClient = loader.load(path.join(projectRoot, "components", "zodiac-mini-app", "profile-sync-client.ts"));
 const {
   getZodiacProfileSyncConfig,
   resolveZodiacProfileSyncRequest,
   sanitizeZodiacProfileSyncPayload,
 } = profileSync;
+const {
+  deleteRemoteProfileIfEnabled,
+  fetchRemoteProfileIfEnabled,
+  getProfileSyncClientStatus,
+  pushRemoteProfileIfEnabled,
+} = profileSyncClient;
 
 const tests = [
   {
@@ -54,6 +61,98 @@ const tests = [
       const item = result.payload.history[0];
       assert(item.unexpectedField === undefined, "unknown field should not survive");
       assert(result.strippedFields.includes("history.0.unexpectedField"), "unknown field should be reported");
+    },
+  },
+  {
+    name: "frontend client default status disabled",
+    run: async () => {
+      const status = await getProfileSyncClientStatus({
+        config: { enabled: false, readEnabled: false, writeEnabled: false },
+      });
+      assert(status.status === "disabled", "frontend client should default to disabled");
+      assert(status.enabled === false, "frontend sync should not be enabled");
+    },
+  },
+  {
+    name: "fetchRemoteProfileIfEnabled does not call network when disabled",
+    run: async () => {
+      let calls = 0;
+      const result = await fetchRemoteProfileIfEnabled({
+        config: { enabled: false, readEnabled: false, writeEnabled: false },
+        fetcher: async () => {
+          calls += 1;
+          return fakeFetchResponse({ ok: true });
+        },
+      });
+      assert(result.ok === false && result.status === "disabled", "disabled fetch should return disabled");
+      assert(result.networkCalled === false, "disabled fetch should report no network");
+      assert(calls === 0, "disabled fetch must not call network");
+    },
+  },
+  {
+    name: "pushRemoteProfileIfEnabled does not call network when disabled",
+    run: async () => {
+      let calls = 0;
+      const result = await pushRemoteProfileIfEnabled(makeUnsafePayload(), {
+        config: { enabled: false, readEnabled: false, writeEnabled: false },
+        fetcher: async () => {
+          calls += 1;
+          return fakeFetchResponse({ ok: true });
+        },
+      });
+      assert(result.ok === false && result.status === "disabled", "disabled push should return disabled");
+      assert(result.networkCalled === false, "disabled push should report no network");
+      assert(calls === 0, "disabled push must not call network");
+    },
+  },
+  {
+    name: "deleteRemoteProfileIfEnabled does not call network when disabled",
+    run: async () => {
+      let calls = 0;
+      const result = await deleteRemoteProfileIfEnabled({
+        config: { enabled: false, readEnabled: false, writeEnabled: false },
+        fetcher: async () => {
+          calls += 1;
+          return fakeFetchResponse({ ok: true });
+        },
+      });
+      assert(result.ok === false && result.status === "disabled", "disabled delete should return disabled");
+      assert(result.networkCalled === false, "disabled delete should report no network");
+      assert(calls === 0, "disabled delete must not call network");
+    },
+  },
+  {
+    name: "frontend client enabled outside Telegram does not call network",
+    run: async () => {
+      let calls = 0;
+      const result = await fetchRemoteProfileIfEnabled({
+        config: { enabled: true, readEnabled: true, writeEnabled: false },
+        windowRef: {},
+        fetcher: async () => {
+          calls += 1;
+          return fakeFetchResponse({ ok: true });
+        },
+      });
+      assert(result.ok === false && result.status === "outside_telegram", "outside Telegram should be detected");
+      assert(result.networkCalled === false, "outside Telegram should not call network");
+      assert(calls === 0, "outside Telegram fetch must not call network");
+    },
+  },
+  {
+    name: "frontend client missing initData does not call network",
+    run: async () => {
+      let calls = 0;
+      const result = await fetchRemoteProfileIfEnabled({
+        config: { enabled: true, readEnabled: true, writeEnabled: false },
+        windowRef: { Telegram: { WebApp: {} } },
+        fetcher: async () => {
+          calls += 1;
+          return fakeFetchResponse({ ok: true });
+        },
+      });
+      assert(result.ok === false && result.status === "auth_missing", "missing initData should be detected");
+      assert(result.networkCalled === false, "missing initData should not call network");
+      assert(calls === 0, "missing initData fetch must not call network");
     },
   },
   {
@@ -232,6 +331,14 @@ function signInitData(fields) {
     .update(fakeBotToken)
     .digest();
   return createHmac("sha256", secret).update(dataCheckString).digest("hex");
+}
+
+function fakeFetchResponse(body) {
+  return {
+    ok: true,
+    status: 200,
+    json: async () => body,
+  };
 }
 
 function createTsLoader() {

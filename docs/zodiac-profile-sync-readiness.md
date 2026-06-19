@@ -14,7 +14,8 @@ This package does not enable remote sync for users.
 - Read sync enabled: NO
 - Write sync enabled: NO
 - Backend storage: `none`
-- Frontend `ProfileSyncProvider`: not implemented
+- Frontend sync client scaffold: implemented, disabled by default
+- Frontend `ProfileSyncProvider`: not mounted
 - Existing localStorage retention: unchanged
 
 ## Feature Flags
@@ -26,6 +27,9 @@ ZODIAC_PROFILE_SYNC_ENABLED=false
 ZODIAC_PROFILE_SYNC_BACKEND=none
 ZODIAC_PROFILE_SYNC_READ_ENABLED=false
 ZODIAC_PROFILE_SYNC_WRITE_ENABLED=false
+NEXT_PUBLIC_ZODIAC_PROFILE_SYNC_ENABLED=false
+NEXT_PUBLIC_ZODIAC_PROFILE_SYNC_READ_ENABLED=false
+NEXT_PUBLIC_ZODIAC_PROFILE_SYNC_WRITE_ENABLED=false
 ```
 
 Supported future backend names:
@@ -37,6 +41,9 @@ supabase
 ```
 
 No Redis, Vercel KV, or Supabase writes are active in Package 38.
+
+Client-side public flags are only a UX/network guard. Server flags remain the
+source of truth for auth, read, write, and backend behavior.
 
 ## Safe Sync Schema
 
@@ -100,6 +107,53 @@ DELETE -> { "ok": false, "status": "disabled", "deleted": false }
 Invalid or missing auth returns a safe auth error and does not reveal user data,
 raw `initData`, or bot token details.
 
+## Frontend Scaffold
+
+Package 39 adds disabled-by-default frontend helpers:
+
+```text
+components/zodiac-mini-app/profile-sync-client.ts
+components/zodiac-mini-app/useProfileSync.ts
+```
+
+The client exposes:
+
+```text
+getProfileSyncClientStatus
+fetchRemoteProfileIfEnabled
+pushRemoteProfileIfEnabled
+deleteRemoteProfileIfEnabled
+```
+
+Supported client statuses:
+
+```text
+disabled
+outside_telegram
+auth_missing
+ready_readonly
+ready_write
+error
+```
+
+Current Package 39 behavior:
+
+- Sync client defaults to `disabled`.
+- The hook is available for a future provider, but is not mounted in the Mini
+  App.
+- No auto-sync loop exists.
+- No GET/POST/DELETE is called while public flags are OFF.
+- Outside Telegram or without `window.Telegram.WebApp.initData`, no network
+  call is made.
+- `initDataUnsafe` is not used.
+- Raw `initData` is used only as an Authorization header when sync is explicitly
+  enabled by future flags; it is not stored, logged, or sent to analytics.
+- Push payloads are sanitized before any future network call.
+- Clear local data remains local-only.
+
+Remote merge is intentionally not implemented yet. A future package must add a
+controlled read-only merge test before write sync can be considered.
+
 ## Check Command
 
 ```bash
@@ -110,6 +164,10 @@ The check uses fake deterministic Telegram auth data only. It verifies:
 
 - default flags are disabled;
 - sanitizer strips unknown fields;
+- frontend client default status is disabled;
+- frontend fetch/push/delete do not call the network while disabled;
+- frontend client does not call the network outside Telegram or without
+  `initData`;
 - raw birth date, birth time, city, question, intention, feedback, result text,
   and raw initData are not preserved;
 - disabled route does not store data;
@@ -120,9 +178,10 @@ The check uses fake deterministic Telegram auth data only. It verifies:
 
 1. Routes disabled: current state.
 2. Read-only remote profile endpoint for an internal test user.
-3. Write-enabled controlled cohort with explicit storage backend.
-4. Frontend `ProfileSyncProvider` with localStorage fallback.
-5. Conflict/merge testing across two phones and Telegram desktop.
+3. Frontend `ProfileSyncProvider` mounted in read-only mode with localStorage
+   fallback and no automatic overwrite.
+4. Conflict/merge testing across two phones and Telegram desktop.
+5. Write-enabled controlled cohort with explicit storage backend.
 
 Preferred backend order:
 
