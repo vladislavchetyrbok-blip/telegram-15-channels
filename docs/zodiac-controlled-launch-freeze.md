@@ -12,6 +12,12 @@ New chat handoff snapshot:
 docs/zodiac-new-chat-handoff.md
 ```
 
+Package 53 full audit and roadmap:
+
+```text
+docs/zodiac-full-project-audit-and-roadmap.md
+```
+
 ## Launch Status
 
 | Area | Decision |

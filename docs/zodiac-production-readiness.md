@@ -59,6 +59,11 @@ and keeps it as future backlog only. It also replaces Mini App date fields with
 a mobile-friendly `ДД.ММ.ГГГГ` input, verifies `01012000 -> 01.01.2000`, and
 removes personal test fixture values from smoke/docs.
 
+Package 53 adds the full project audit and improvement roadmap:
+`docs/zodiac-full-project-audit-and-roadmap.md`. It keeps controlled soft launch
+as the only approved launch stage and keeps mass launch, weekly live,
+payments/Stars, profile sync, and exact astro claims OFF.
+
 ## Current Status
 
 The Zodiac product is ready for controlled live operation of the daily publishing lane and user-facing Mini App checks, with the following boundaries:

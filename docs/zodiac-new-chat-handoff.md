@@ -5,6 +5,12 @@ Purpose: safe context handoff for a new ChatGPT/Codex chat.
 
 This document is a compact but complete handoff for the Telegram Zodiac / Horoscope Mini App project. It is documentation-only. It does not authorize live publishing, weekly live, payments, Stars, profile sync, exact astrology claims, manual ledger edits, or product behavior changes.
 
+Latest full audit and roadmap:
+
+```text
+docs/zodiac-full-project-audit-and-roadmap.md
+```
+
 ## 1. Project Identity
 
 ```text
@@ -21,6 +27,7 @@ Important docs to read first in a new chat:
 
 ```text
 docs/zodiac-new-chat-handoff.md
+docs/zodiac-full-project-audit-and-roadmap.md
 docs/zodiac-controlled-launch-freeze.md
 docs/zodiac-soft-launch-release-candidate.md
 docs/zodiac-production-readiness.md

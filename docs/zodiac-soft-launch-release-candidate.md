@@ -56,6 +56,11 @@ Package 52 hides weak Sonnik/Dream Dictionary from the current soft-launch path
 as future backlog, adds a reusable mobile `ДД.ММ.ГГГГ` date input, and replaces
 personal smoke/docs fixture values with neutral examples.
 
+Package 53 adds the full project audit and improvement roadmap:
+`docs/zodiac-full-project-audit-and-roadmap.md`. It confirms the product is
+ready for a first small trusted tester loop, not for mass launch, weekly live,
+payments/Stars, profile sync, or exact astro claims.
+
 ## Release Candidate Status
 
 - RC status: READY for controlled `5-20` users.
@@ -335,5 +340,4 @@ Clean baseline was run after removing `.next`.
 - Can mass launch: NO.
 - Can enable weekly live: NO.
 - Can enable payments/Stars: NO.
--   G i v e a w a y s   l o c k e d / p r e v i e w   i s   a n   i n t e n t i o n a l   p r o d u c t   d e c i s i o n .  
- 
+- Giveaways locked/preview is an intentional product decision.
