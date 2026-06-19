@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 import { Bookmark, History, ShieldCheck, Trash2, User } from "lucide-react";
+import type { ZodiacAnalyticsEventName, ZodiacAnalyticsPayload } from "@/lib/zodiac-mini-app-analytics-shared";
 import { relationshipModes } from "./constants";
+import { SoftLaunchFeedbackPanel } from "./SoftLaunchFeedbackPanel";
 import { panelClass } from "./ui-primitives";
 import type { HubTab, MoreFeatureId, RelationshipMode, ZodiacSign } from "./types";
 import type { RetentionPanelFocus, ZodiacRetentionItem, ZodiacRetentionState } from "./retention";
@@ -18,6 +20,8 @@ export function ProfileRetentionPanel({
   onQuickAction,
   onOpenFavorite,
   onClearLocalData,
+  onFeedbackEvent,
+  onShareFeedbackDraft,
 }: {
   publicMode: boolean;
   selectedSign: ZodiacSign | null;
@@ -26,6 +30,8 @@ export function ProfileRetentionPanel({
   onQuickAction: (target: ProfileQuickTarget, categoryId: string) => void;
   onOpenFavorite: (item: ZodiacRetentionItem) => void;
   onClearLocalData: () => void;
+  onFeedbackEvent: (event: ZodiacAnalyticsEventName, payload: ZodiacAnalyticsPayload) => void;
+  onShareFeedbackDraft: (draft: string, payload: ZodiacAnalyticsPayload) => Promise<string> | string;
 }) {
   const signLabel = selectedSign ? `${selectedSign.emoji} ${selectedSign.name}` : retention.lastSign ? retention.lastSign : "знак ещё не выбран";
   const lastSectionLabel = retention.lastSection?.label ?? "откройте любой раздел";
@@ -87,6 +93,8 @@ export function ProfileRetentionPanel({
         emptyText="Здесь появятся последние расчёты и открытые разделы"
         onOpen={onOpenFavorite}
       />
+
+      <SoftLaunchFeedbackPanel publicMode={publicMode} onEvent={onFeedbackEvent} onShareDraft={onShareFeedbackDraft} />
 
       <div className="mt-4 rounded-lg border border-emerald-200/20 bg-emerald-200/10 p-4">
         <div className="flex items-start gap-3">

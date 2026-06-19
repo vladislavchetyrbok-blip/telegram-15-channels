@@ -17,6 +17,7 @@ const mysticSectionsPath = path.join(projectRoot, "components", "ZodiacMysticSec
 const vipSectionsPath = path.join(projectRoot, "components", "ZodiacVipSections.tsx");
 const miniAppAnalyticsPath = path.join(projectRoot, "components", "zodiac-mini-app", "analytics.ts");
 const featureRoutingPath = path.join(projectRoot, "components", "zodiac-mini-app", "feature-routing.ts");
+const softLaunchFeedbackPath = path.join(projectRoot, "components", "zodiac-mini-app", "SoftLaunchFeedbackPanel.tsx");
 
 const expectedRequiredEnv = ["ZODIAC_ANALYTICS_REDIS_URL", "ZODIAC_ANALYTICS_REDIS_TOKEN"];
 const supportedStorageModes = ["noop", "redis"];
@@ -45,6 +46,8 @@ const forbiddenPayloadFields = new Set([
   "rawInput",
   "rawResult",
   "resultText",
+  "rawFeedback",
+  "feedbackText",
   "input",
   "telegramInitData",
   "initData",
@@ -134,6 +137,7 @@ const requiredCoverage = {
   ],
   telegram: ["telegram_webapp_ready", "telegram_back_button_used", "telegram_haptic_used"],
   retention: ["profile_opened", "history_opened", "favorite_saved", "favorite_opened", "share_clicked", "local_data_cleared"],
+  softLaunchFeedback: ["feedback_opened", "feedback_draft_copied", "feedback_share_started"],
   compatibility: [
     "compatibility_wizard_started",
     "compatibility_mode_selected",
@@ -212,6 +216,7 @@ async function main() {
     sources.mysticSections,
     sources.featureRouting,
     sources.vipSections,
+    sources.softLaunchFeedback,
   ]);
   pushMissing(errors, "tracked events missing from allowlist", usedEvents.filter((event) => !allowlistedEvents.includes(event)));
 
@@ -295,6 +300,7 @@ async function main() {
     `Natal events covered: ${formatCoverage(report.coverage.natal)}`,
     `Telegram events covered: ${formatCoverage(report.coverage.telegram)}`,
     `Retention events covered: ${formatCoverage(report.coverage.retention)}`,
+    `Soft launch feedback events covered: ${formatCoverage(report.coverage.softLaunchFeedback)}`,
     `Compatibility events covered: ${formatCoverage(report.coverage.compatibility)}`,
     `Interaction hardening events covered: ${formatCoverage(report.coverage.interactionHardening)}`,
     `Tracked events checked: ${usedEvents.length}`,
@@ -322,6 +328,7 @@ async function readSources() {
     ["vipSections", vipSectionsPath],
     ["miniAppAnalytics", miniAppAnalyticsPath],
     ["featureRouting", featureRoutingPath],
+    ["softLaunchFeedback", softLaunchFeedbackPath],
   ].map(async ([key, filePath]) => [key, await readFile(filePath, "utf8")]));
   return Object.fromEntries(entries);
 }
@@ -353,6 +360,7 @@ function extractUsedAnalyticsEvents(sources) {
   const patterns = [
     /trackZodiacMiniAppEvent\(\s*"([^"]+)"/g,
     /onPersonalToolEvent\(\s*"([^"]+)"/g,
+    /onEvent\(\s*"([^"]+)"/g,
     /onEvent\?\.\(\s*"([^"]+)"/g,
   ];
   const events = new Set();

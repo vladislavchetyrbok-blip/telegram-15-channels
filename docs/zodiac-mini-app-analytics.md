@@ -11,7 +11,7 @@ npm run zodiac:analytics:storage:check
 
 `zodiac:analytics:check` starts the app, posts safe sample events, verifies sensitive fields are stripped, and confirms the API still runs in `noop` mode when storage env is not configured.
 
-`zodiac:analytics:storage:check` is a static/readiness audit. It verifies the storage mode contract, required env names, allowlisted events, server-side sanitization, dashboard presence, and coverage for Compatibility, VIP, Mystic, Birth Matrix, Telegram WebApp, and Profile retention events.
+`zodiac:analytics:storage:check` is a static/readiness audit. It verifies the storage mode contract, required env names, allowlisted events, server-side sanitization, dashboard presence, and coverage for Compatibility, VIP, Mystic, Birth Matrix, Telegram WebApp, Profile retention, and soft-launch feedback events.
 
 ## Routes
 
@@ -74,6 +74,7 @@ The allowlist covers:
 - Compatibility core funnel events: `compatibility_wizard_started`, `compatibility_mode_selected`, `compatibility_birthdate_autosign_used`, `compatibility_calendar_opened`, `compatibility_action_opened`, `compatibility_message_copied`, `compatibility_pair_saved`, and `compatibility_pair_reopened`;
 - Premium Natal Chart events: `natal_chart_started`, `natal_chart_calculated`, `natal_chart_saved`, `natal_chart_shared`, `natal_chart_opened`, `natal_chart_result_viewed`, `natal_chart_section_opened`, and `natal_chart_vip_free_opened`;
 - Profile retention events: `profile_opened`, `history_opened`, `favorite_saved`, `favorite_opened`, `share_clicked`, and `local_data_cleared`;
+- Soft-launch feedback events: `feedback_opened`, `feedback_draft_copied`, and `feedback_share_started`;
 - Interaction hardening and visual-depth events: `dead_cta_resolved`, `pair_required_action_clicked`, `chart_visual_opened`, `final_map_opened`, `final_map_saved`, `final_map_shared`, and `feature_depth_viewed`;
 - app open, sign selection, section opens, compatibility calculation;
 - natal chart, Chinese horoscope, zodiac stones, name profile, numerology, angel numbers, lunar calendar, daily talisman, dream dictionary, gifts, name compatibility, archetype;
@@ -105,6 +106,8 @@ Compatibility -> Pair Setup -> Relationship Map -> 30-Day Couple Calendar -> Act
 ```
 
 Profile, History, and Favorites are local retention features. They use localStorage on the device and store only safe shortcuts/summaries: selected sign slug, first sign slug, second sign slug, section id/label, featureKey, compatibility mode, score tier, matrix type, Birth Matrix archetype key, Birth Matrix central number, and timestamps. They must not store or send names, exact birth dates, birth times, city query, selected city id, raw result text, raw message text, raw dream text, or raw angel number input. VIP tool Save and Birth Matrix Save use the same safe shortcut model. Safe Share sends only generic Mini App text, safe sign-pair labels, and startapp links.
+
+Soft-launch feedback is deliberately draft-based. The Profile screen has `Оставить отзыв` and `Сообщить о баге` CTAs, but the optional comment stays only in transient component state while the tester prepares a copy/share draft. The comment is not inserted into the copied draft automatically. Analytics payloads are limited to `section=feedback`, `feedbackType`, `featureKey`, `ratingBucket`, and `hasComment`. Analytics, localStorage, and the generated draft must never contain raw feedback comment text, names, phone numbers, birth dates, birth times, city query, private questions, or raw result text.
 
 VIP functional tool payloads are limited to safe categorical fields:
 

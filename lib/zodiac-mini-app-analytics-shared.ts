@@ -131,6 +131,9 @@ export const ZODIAC_ANALYTICS_EVENTS = [
   "compatibility_message_copied",
   "compatibility_pair_saved",
   "compatibility_pair_reopened",
+  "feedback_opened",
+  "feedback_draft_copied",
+  "feedback_share_started",
 ] as const;
 
 export type ZodiacAnalyticsEventName = (typeof ZODIAC_ANALYTICS_EVENTS)[number];
@@ -177,6 +180,9 @@ export interface ZodiacAnalyticsPayload {
   energyTier?: string;
   ritualKey?: string;
   hasIntention?: boolean;
+  feedbackType?: string;
+  ratingBucket?: string;
+  hasComment?: boolean;
 }
 
 export interface SanitizedZodiacAnalyticsEvent extends ZodiacAnalyticsPayload {
@@ -209,6 +215,8 @@ const scoreTiers = new Set(["strong", "good", "medium", "difficult", "tense"]);
 const spreadResultTiers = new Set(["soft", "clear", "deep", "grounded"]);
 const lunarDateBuckets = new Set(["today", "tomorrow", "custom"]);
 const lunarEnergyTiers = new Set(["soft", "active", "deep", "restorative", "focused", "intuitive"]);
+const feedbackTypes = new Set(["feedback", "bug", "idea"]);
+const feedbackRatingBuckets = new Set(["none", "1_3", "4_6", "7_8", "9_10"]);
 const relationshipModes = new Set(["love", "friendship", "work", "family", "passion", "reconciliation"]);
 const patternTypes = new Set(["repeated", "mirror", "amplified", "custom", "fallback"]);
 const vipInputModes = new Set([
@@ -267,6 +275,7 @@ const sections = new Set([
   "history",
   "favorites",
   "share",
+  "feedback",
 ]);
 
 export function isAllowedZodiacAnalyticsEvent(value: unknown): value is ZodiacAnalyticsEventName {
@@ -314,6 +323,9 @@ export function sanitizeZodiacAnalyticsPayload(input: unknown): ZodiacAnalyticsP
   const energyTier = sanitizeEnum(raw.energyTier, lunarEnergyTiers);
   const ritualKey = sanitizeToken(raw.ritualKey, 64);
   const hasIntention = sanitizeBoolean(raw.hasIntention);
+  const feedbackType = sanitizeEnum(raw.feedbackType, feedbackTypes);
+  const ratingBucket = sanitizeEnum(raw.ratingBucket, feedbackRatingBuckets);
+  const hasComment = sanitizeBoolean(raw.hasComment);
 
   if (dateKey) payload.dateKey = dateKey;
   if (section) payload.section = section;
@@ -353,6 +365,9 @@ export function sanitizeZodiacAnalyticsPayload(input: unknown): ZodiacAnalyticsP
   if (energyTier) payload.energyTier = energyTier;
   if (ritualKey) payload.ritualKey = ritualKey;
   if (typeof hasIntention === "boolean") payload.hasIntention = hasIntention;
+  if (feedbackType) payload.feedbackType = feedbackType;
+  if (ratingBucket) payload.ratingBucket = ratingBucket;
+  if (typeof hasComment === "boolean") payload.hasComment = hasComment;
 
   return payload;
 }

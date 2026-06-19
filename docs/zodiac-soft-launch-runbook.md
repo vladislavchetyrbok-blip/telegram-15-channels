@@ -16,6 +16,7 @@ This runbook is for a careful first user pass of the Zodiac Telegram Mini App. I
 - Analytics mode: `noop` until Redis REST env vars are configured.
 - Real phone Telegram WebView pass: required before any mass launch.
 - VIP access: free until `2026-09-17`.
+- In-app feedback CTA: available in `Мой профиль` as `Оставить отзыв` / `Сообщить о баге`; raw comments are not stored in localStorage or analytics.
 
 ## First Users Target
 
@@ -94,6 +95,14 @@ Bug triage workflow:
 ```text
 docs/zodiac-bug-triage.md
 ```
+
+Testers can also use the in-app feedback panel:
+
+```text
+Мой профиль -> Оставить отзыв / Сообщить о баге
+```
+
+The panel creates a safe copy/share draft with feature, type, optional rating, device hint, and a screenshot reminder. The optional comment is transient only and is not inserted into the copied draft automatically. Do not ask testers to include names, birth dates, birth time, city, private relationship details, or raw result text.
 
 ## P0 / P1 / P2 Bug Classification
 
@@ -196,6 +205,7 @@ After Redis is configured and the app is redeployed, the dashboard should show a
 - Favorites / History;
 - Profile;
 - Telegram WebApp events.
+- soft-launch feedback opens/copies/shares, with only safe categorical payload.
 
 Sensitive data must not be stored or sent:
 

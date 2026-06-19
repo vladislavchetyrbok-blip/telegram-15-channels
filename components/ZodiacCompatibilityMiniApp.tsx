@@ -704,6 +704,15 @@ export function ZodiacCompatibilityMiniApp({
     return result.label;
   }
 
+  function trackFeedbackEvent(event: ZodiacAnalyticsEventName, payload: ZodiacAnalyticsPayload) {
+    trackZodiacMiniAppEvent(event, analyticsPayload(payload));
+  }
+
+  async function shareFeedbackDraft(draft: string) {
+    const result = await shareZodiacMiniAppContent({ text: draft, url: "https://t.me/zodiac_love_check_bot?startapp=compat", telegramWebApp: telegram.webApp });
+    return result.label;
+  }
+
   function resetFlow() {
     setMode(resolvedMode);
     setRelationshipMode(initialRelationshipMode ?? "love");
@@ -731,6 +740,8 @@ export function ZodiacCompatibilityMiniApp({
           onQuickAction={openBottomTarget}
           onOpenFavorite={openFavorite}
           onClearLocalData={clearLocalData}
+          onFeedbackEvent={trackFeedbackEvent}
+          onShareFeedbackDraft={shareFeedbackDraft}
         />
       );
     }

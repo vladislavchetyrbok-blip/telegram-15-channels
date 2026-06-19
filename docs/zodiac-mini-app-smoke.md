@@ -28,6 +28,7 @@ npm run zodiac:miniapp:smoke -- --url http://localhost:3000/compatibility
 - Profile opens from the main menu and bottom navigation.
 - Profile shows the History and Favorites blocks with empty states: `Здесь появятся последние расчёты и открытые разделы` and `Здесь появятся сохранённые расчёты и быстрые переходы`.
 - History and Favorites use localStorage only and store safe shortcuts/summaries, not raw personal inputs.
+- Soft-launch feedback CTA is visible in Profile: `Оставить отзыв` / `Сообщить о баге`. The smoke opens the panel, selects a feature/type/rating, checks copy/share status, and verifies raw feedback text does not enter the generated draft or localStorage.
 - A safe Angel Numbers item can be saved, appears in Favorites/Profile, opens back into the feature, and can be cleared with `Очистить данные`.
 - Safe Share can be clicked without crashing; browser fallback shows copy text or a copied state.
 - Mini App forms use custom `ZodiacSelect` controls in Telegram/browser mode; visible native `<select>` controls inside active Mini App screens are treated as a regression.
@@ -139,6 +140,9 @@ Compatibility pair saved/reopened: YES
 Compatibility share checked: YES
 Startapp params checked: compat, compat_love, compat_reconciliation, compat_gemini, mystic, vip, birth_matrix, angel_numbers, week, profile, history, favorites
 Profile checked: YES
+Feedback CTA/panel checked: YES
+Feedback draft copy/share: YES
+Feedback localStorage privacy checked: YES
 History empty state checked: YES
 Favorites empty state checked: YES
 Favorite saved/opened: YES

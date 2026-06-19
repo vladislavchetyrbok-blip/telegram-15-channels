@@ -62,6 +62,34 @@ Use these questions. Keep the form short so people actually answer it.
 13. Скриншот бага, если есть, без личных данных
 ```
 
+## In-App Feedback CTA
+
+The Mini App now has a soft-launch feedback panel in `Мой профиль`:
+
+- `Оставить отзыв`;
+- `Сообщить о баге`.
+
+The panel lets the tester choose `Отзыв`, `Баг`, or `Идея`, choose a feature area, optionally choose a 1-10 rating, and optionally type a short comment. The comment is transient only: it is not written to localStorage, not sent to analytics as raw text, and not inserted into the copied draft automatically. The draft leaves safe fields that the tester can complete manually after checking for personal data.
+
+Allowed analytics from this panel:
+
+```text
+feedback_opened
+feedback_draft_copied
+feedback_share_started
+```
+
+Allowed payload only:
+
+```text
+feedbackType
+featureKey
+ratingBucket
+hasComment
+```
+
+If a tester includes personal data in the optional comment, do not copy it into the tracker. Summarize the issue without the personal detail.
+
 ## What Not To Ask
 
 Do not ask testers to send:

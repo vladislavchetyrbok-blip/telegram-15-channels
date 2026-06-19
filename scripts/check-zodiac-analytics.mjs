@@ -16,6 +16,8 @@ const secretEnvNames = [
 ];
 const sensitiveValues = ["SHOULD_BE_STRIPPED_NAME", "1990-01-02", "12:34", "SHOULD_BE_STRIPPED_CITY", "SHOULD_BE_STRIPPED_CITY_QUERY", "SHOULD_NOT_STORE_RAW_MESSAGE", "Хочу спокойствия"];
 const sensitiveFields = ["name", "birthDate", "birthTime", "birthCity", "city", "cityId", "cityQuery", "selectedCityId", "message", "messageText", "question", "intention", "rawResult", "resultText"];
+sensitiveValues.push("SHOULD_NOT_STORE_RAW_FEEDBACK");
+sensitiveFields.push("rawFeedback", "feedbackText");
 
 let telegramApiCalls = 0;
 let livePublishCalls = 0;
@@ -52,6 +54,9 @@ async function main() {
     const favoriteOpenedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "favorite_opened", { section: "favorites", category: "mystic", featureKey: "birthMatrix" });
     const shareClickedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "share_clicked", { section: "share", category: "angel_numbers", featureKey: "angelNumbers" });
     const localDataClearedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "local_data_cleared", { section: "profile", category: "local_storage" });
+    const feedbackOpenedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "feedback_opened", { section: "feedback", feedbackType: "feedback", featureKey: "profile", ratingBucket: "7_8", hasComment: true, rawFeedback: "SHOULD_NOT_STORE_RAW_FEEDBACK" });
+    const feedbackDraftCopiedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "feedback_draft_copied", { section: "feedback", feedbackType: "bug", featureKey: "birth_matrix", ratingBucket: "4_6", hasComment: true, feedbackText: "SHOULD_NOT_STORE_RAW_FEEDBACK" });
+    const feedbackShareStartedEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "feedback_share_started", { section: "feedback", feedbackType: "idea", featureKey: "vip", ratingBucket: "9_10", hasComment: false });
     const mentalMapEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "mental_map_viewed");
     const vipFeatureEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "vip_feature_opened", { category: "month_forecast" });
     const chineseHoroscopeEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "chinese_horoscope_result_viewed", { section: "chinese_horoscope", hasBirthDate: true, hasName: false, freeVipActive: true });
@@ -134,6 +139,9 @@ async function main() {
       favoriteOpenedEvent,
       shareClickedEvent,
       localDataClearedEvent,
+      feedbackOpenedEvent,
+      feedbackDraftCopiedEvent,
+      feedbackShareStartedEvent,
       mentalMapEvent,
       vipFeatureEvent,
       chineseHoroscopeEvent,
@@ -205,6 +213,9 @@ async function main() {
         favoriteOpenedEvent.sensitiveFieldsStripped &&
         shareClickedEvent.sensitiveFieldsStripped &&
         localDataClearedEvent.sensitiveFieldsStripped &&
+        feedbackOpenedEvent.sensitiveFieldsStripped &&
+        feedbackDraftCopiedEvent.sensitiveFieldsStripped &&
+        feedbackShareStartedEvent.sensitiveFieldsStripped &&
         mentalMapEvent.sensitiveFieldsStripped &&
         vipFeatureEvent.sensitiveFieldsStripped &&
         chineseHoroscopeEvent.sensitiveFieldsStripped &&
@@ -357,6 +368,7 @@ async function checkAllowedEvent(url, event = "compatibility_calculated", extraP
       birthCity: "SHOULD_BE_STRIPPED_CITY",
       cityQuery: "SHOULD_BE_STRIPPED_CITY_QUERY",
       messageText: "SHOULD_NOT_STORE_RAW_MESSAGE",
+      rawFeedback: "SHOULD_NOT_STORE_RAW_FEEDBACK",
       payload: {
         name: "SHOULD_BE_STRIPPED_NAME",
         birthDate: "1990-01-02",
@@ -364,6 +376,7 @@ async function checkAllowedEvent(url, event = "compatibility_calculated", extraP
         birthCity: "SHOULD_BE_STRIPPED_CITY",
         cityQuery: "SHOULD_BE_STRIPPED_CITY_QUERY",
         messageText: "SHOULD_NOT_STORE_RAW_MESSAGE",
+        feedbackText: "SHOULD_NOT_STORE_RAW_FEEDBACK",
       },
     }),
   });

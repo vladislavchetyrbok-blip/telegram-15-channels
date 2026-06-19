@@ -130,6 +130,7 @@ async function runBrowserModeSmoke(client, report) {
   report.profileChecked = true;
   report.historyEmptyStateChecked = true;
   report.favoritesEmptyStateChecked = true;
+  await runFeedbackPanelSmoke(client, report);
   await click(client, "Очистить данные");
   await waitForPageText(client, /Здесь появятся последние расчёты и открытые разделы/, "History empty state did not remain after clearing local data.");
   report.localDataCleared = true;
@@ -278,6 +279,35 @@ async function runBrowserModeSmoke(client, report) {
   report.birthMatrixChecked = true;
 
   report.browserMode = "PASS";
+}
+
+async function runFeedbackPanelSmoke(client, report) {
+  await waitForPageText(client, /Оставить отзыв|Сообщить о баге/, "Feedback CTA did not render in Profile.");
+  await click(client, "Оставить отзыв");
+  await waitForPageText(client, /Безопасный драфт отзыва|Скопировать текст|Поделиться отзывом/, "Feedback panel did not open.");
+  await click(client, "Баг");
+  await click(client, "Birth Matrix");
+  await fillVisibleTextarea(client, "SHOULD_NOT_STORE_RAW_FEEDBACK 1998-06-15 Dnipro +380501112233");
+  await waitForPageText(client, /добавьте коротко вручную|Что сломалось/, "Feedback draft did not render a safe manual-comment placeholder.");
+  const draftText = await evalPage(client, "Array.from(document.querySelectorAll('pre')).map((element) => element.innerText || element.textContent || '').join('\\n')", []);
+  for (const forbidden of ["SHOULD_NOT_STORE_RAW_FEEDBACK", "1998-06-15", "Dnipro", "+380501112233"]) {
+    if (String(draftText || "").includes(forbidden)) throw new Error(`Feedback raw value leaked into copied draft: ${forbidden}`);
+  }
+  await click(client, "Скопировать текст");
+  await waitForPageText(client, /Скопировано|Текст готов/, "Feedback copy action did not show a status.");
+  report.feedbackDraftCopied = true;
+  await click(client, "Поделиться отзывом");
+  await waitForPageText(client, /Ссылка готова|Скопировано|Текст скопирован|копирования|готов/i, "Feedback share action did not show a fallback status.");
+  report.feedbackShareChecked = true;
+
+  const storageText = await evalPage(client, "JSON.stringify(Object.fromEntries(Array.from({ length: window.localStorage.length }, (_, index) => { const key = window.localStorage.key(index); return [key, window.localStorage.getItem(key)]; })))", []);
+  for (const forbidden of ["SHOULD_NOT_STORE_RAW_FEEDBACK", "1998-06-15", "Dnipro", "+380501112233"]) {
+    if (String(storageText || "").includes(forbidden)) throw new Error(`Feedback raw value leaked into localStorage: ${forbidden}`);
+  }
+  report.feedbackLocalStoragePrivacyChecked = true;
+  report.feedbackChecked = true;
+  await click(client, "Закрыть");
+  await waitForPageText(client, /Помогите улучшить Mini App|Оставить отзыв/, "Feedback panel did not close back to the Profile CTA.");
 }
 
 async function runStartParamSmoke(client, baseUrl, report) {
@@ -1469,6 +1499,10 @@ function createReport() {
     mainMenuChecked: false,
     mainMenuCategoryCount: 0,
     profileChecked: false,
+    feedbackChecked: false,
+    feedbackDraftCopied: false,
+    feedbackShareChecked: false,
+    feedbackLocalStoragePrivacyChecked: false,
     historyEmptyStateChecked: false,
     favoritesEmptyStateChecked: false,
     favoriteSaved: false,
@@ -1544,6 +1578,9 @@ function printSummary(status, report) {
   console.log(`Main menu checked: ${report.mainMenuChecked ? "YES" : "NO"}`);
   console.log(`Main menu categories checked: ${report.mainMenuCategoryCount}/10`);
   console.log(`Profile checked: ${report.profileChecked ? "YES" : "NO"}`);
+  console.log(`Feedback CTA/panel checked: ${report.feedbackChecked ? "YES" : "NO"}`);
+  console.log(`Feedback draft copy/share: ${report.feedbackDraftCopied && report.feedbackShareChecked ? "YES" : "NO"}`);
+  console.log(`Feedback localStorage privacy checked: ${report.feedbackLocalStoragePrivacyChecked ? "YES" : "NO"}`);
   console.log(`History empty state checked: ${report.historyEmptyStateChecked ? "YES" : "NO"}`);
   console.log(`Favorites empty state checked: ${report.favoritesEmptyStateChecked ? "YES" : "NO"}`);
   console.log(`Favorite saved/opened: ${report.favoriteSaved && report.favoriteOpened ? "YES" : "NO"}`);

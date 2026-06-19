@@ -74,6 +74,17 @@ Owner:
 Commit/fix:
 ```
 
+## In-App Feedback Drafts
+
+Users can open `Мой профиль` and use `Оставить отзыв` / `Сообщить о баге`. Treat that output as a helper draft, not as raw evidence to store blindly.
+
+When triaging in-app drafts:
+
+- keep the selected feature, feedback type, rating bucket, device class, and sanitized reproduction steps;
+- do not store raw comment text if it contains names, dates of birth, birth time, city, phone, private relationship details, or raw result text;
+- if a screenshot is attached manually, sanitize it before filing;
+- analytics for this flow must stay limited to `feedback_opened`, `feedback_draft_copied`, `feedback_share_started` with no raw comment payload.
+
 ## Decision Rules
 
 - P0: stop expansion, fix immediately, then rerun smoke and targeted phone verification.

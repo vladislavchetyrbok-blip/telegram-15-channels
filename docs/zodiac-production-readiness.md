@@ -156,6 +156,7 @@ Soft-launch state:
 - Controlled first-user test: READY for `5-20` trusted testers.
 - Public/mass launch: NOT READY until real phone Telegram WebView pass is completed and P0/P1 issues are `0`.
 - Analytics: Redis env is still missing, so metrics remain `noop` unless hosting env is configured.
+- In-app feedback CTA: READY in `Мой профиль` with `Оставить отзыв` / `Сообщить о баге`; comments stay transient and analytics uses only safe categorical payload.
 - Weekly live: OFF and not ready to enable.
 - Payments/Stars: OFF.
 
