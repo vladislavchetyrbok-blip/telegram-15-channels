@@ -22,6 +22,11 @@ Package 40 adds pure Profile Sync merge and retention-mapping helpers. They are
 not mounted, do not fetch remote profiles, do not write to backend storage, and
 keep sync disabled.
 
+Package 41 adds Profile Sync storage adapter readiness and env validation. The
+default backend remains `none`, test-memory is check-only, production
+Redis/Vercel KV/Supabase adapters are not wired, and profile sync reads/writes
+remain OFF.
+
 ## Release Candidate Status
 
 - RC status: READY for controlled `5-20` users.
@@ -34,6 +39,7 @@ keep sync disabled.
 - Profile Sync API foundation: READY but disabled.
 - Profile Sync frontend scaffold: READY but disabled and not mounted.
 - Profile Sync merge logic: READY but disabled and not wired to UI.
+- Profile Sync storage readiness: READY but disabled, production writes OFF.
 
 ## Current Product Readiness
 
@@ -75,6 +81,8 @@ Mini App smoke baseline:
 - Backups/safety: production safety PASS.
 - Channel packaging: already live and verified in earlier package.
 - Real Astro Engine: readiness scaffold added, current natal chart remains symbolic, exact mode is `exact_unavailable`, and no fake planet/house/ascendant values are shown.
+- Profile Sync storage: backend `none`, production reads/writes OFF, check-only
+  memory adapter for local validation.
 
 ## Manual Blockers Before Mass Launch
 
@@ -143,8 +151,21 @@ logs, and dashboards.
   duplicate-safe, newest timestamp wins, deterministic newest-first sorting,
   max clamps, and malformed input safe fallback.
 - Raw birth date/time/city/question/intention/feedback/result text: stripped.
-- Future rollout path: Package 41 read-only fetch, Package 42 controlled write,
-  Package 43 conflict UX/status.
+- Future rollout path: Package 42 read-only fetch, Package 43 controlled write,
+  Package 44 conflict UX/status.
+
+## Profile Sync Storage Readiness
+
+- Storage adapter contract: READY but disabled.
+- Backend default: `none`.
+- Production reads: OFF.
+- Production writes: OFF.
+- Test-memory adapter: check-only.
+- Production Redis REST / Vercel KV adapter: not wired.
+- Production Supabase adapter: not wired.
+- Env validation: presence-only; secret values must never be printed.
+- Remote sync for users: OFF.
+- Existing localStorage Profile/History/Favorites: unchanged.
 
 Ask testers to open this from a phone inside Telegram.
 

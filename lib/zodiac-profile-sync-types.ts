@@ -6,7 +6,20 @@ export type ZodiacProfileSyncStatus =
   | "backend_unavailable"
   | "validation_failed";
 
-export type ZodiacProfileSyncBackend = "none" | "vercel_kv" | "supabase";
+export type ZodiacProfileSyncBackend =
+  | "none"
+  | "vercel_kv"
+  | "redis_rest"
+  | "supabase"
+  | "test_memory";
+
+export type ZodiacProfileSyncStorageStatus =
+  | "disabled"
+  | "backend_none"
+  | "env_missing"
+  | "test_ready"
+  | "production_not_enabled"
+  | "ready";
 
 export type ZodiacSyncedRetentionItem = {
   id: string;
@@ -30,11 +43,15 @@ export type ZodiacProfileSyncPayload = {
 };
 
 export type ZodiacProfileSyncConfig = {
+  backend: ZodiacProfileSyncBackend;
   enabled: boolean;
   readEnabled: boolean;
   writeEnabled: boolean;
-  backend: ZodiacProfileSyncBackend;
+  hasRequiredEnv: boolean;
+  status: ZodiacProfileSyncStorageStatus;
 };
+
+export type ZodiacProfileSyncStorageConfig = ZodiacProfileSyncConfig;
 
 export type ZodiacProfileSyncValidationResult =
   | {
@@ -52,8 +69,10 @@ export type ZodiacProfileSyncValidationResult =
     };
 
 export const ZODIAC_PROFILE_SYNC_DEFAULT_CONFIG: ZodiacProfileSyncConfig = {
+  backend: "none",
   enabled: false,
   readEnabled: false,
   writeEnabled: false,
-  backend: "none",
+  hasRequiredEnv: false,
+  status: "disabled",
 };

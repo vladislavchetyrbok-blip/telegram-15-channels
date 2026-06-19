@@ -22,6 +22,11 @@ Package 40 adds pure Profile Sync merge and retention-mapping helpers. They are
 not wired to UI, do not fetch remote profiles, do not write to any backend, and
 keep profile sync disabled by default.
 
+Package 41 adds Profile Sync storage adapter readiness and env validation. The
+default backend remains `none`, the test-memory adapter is check-only, production
+Redis/Vercel KV/Supabase adapters are not wired, and profile sync reads/writes
+remain OFF.
+
 ## Current Status
 
 The Zodiac product is ready for controlled live operation of the daily publishing lane and user-facing Mini App checks, with the following boundaries:
@@ -45,6 +50,8 @@ The Zodiac product is ready for controlled live operation of the daily publishin
   but sync remains disabled, unmounted, and localStorage-only.
 - Profile Sync merge logic is available for future read-only rollout tests, but
   no provider is mounted and no remote reads/writes are active.
+- Profile Sync storage readiness is available for a future backend rollout, but
+  production profile reads/writes remain fail-closed and OFF.
 - Manual live publish remains forbidden unless a dry-run and ledger audit prove it is safe.
 
 ## Key Recent Commits
@@ -598,8 +605,31 @@ Status:
 - Payments/Stars: OFF.
 - Weekly live: OFF.
 
+## Package 41: Profile Sync Storage Adapter Readiness
+
+Status:
+
+- Storage adapter contract: READY but disabled.
+- Backend default: `none`.
+- Storage status default: `disabled`.
+- Test-memory adapter: check-only, explicit allow flag required.
+- Production Redis REST / Vercel KV adapter: not wired.
+- Production Supabase adapter: not wired.
+- Required env validation: presence-only, no secret values printed.
+- Mounted in Mini App: NO.
+- Remote GET from UI: NO.
+- Remote POST/DELETE from UI: NO.
+- Backend writes: NO.
+- localStorage fallback: unchanged.
+- Sanitizer before save: enforced by the check-only memory adapter.
+- Raw birth date/time/city/question/intention/feedback/result text: stripped.
+- Raw `initData`: not stored, logged, or sent to analytics.
+- Profile sync enabled: NO.
+- Payments/Stars: OFF.
+- Weekly live: OFF.
+
 Future rollout:
 
-1. Package 41: read-only remote fetch in test mode.
-2. Package 42: controlled cohort write with explicit backend.
-3. Package 43: conflict UX/status for users.
+1. Package 42: read-only remote fetch in test mode for an internal test user.
+2. Package 43: controlled cohort write with explicit backend.
+3. Package 44: conflict UX/status for users.

@@ -14,6 +14,8 @@ This package does not enable remote sync for users.
 - Read sync enabled: NO
 - Write sync enabled: NO
 - Backend storage: `none`
+- Storage adapter readiness: implemented, production adapters not wired
+- Test-memory adapter: check-only
 - Frontend sync client scaffold: implemented, disabled by default
 - Frontend `ProfileSyncProvider`: not mounted
 - Pure merge logic: implemented, not wired to UI
@@ -33,18 +35,77 @@ NEXT_PUBLIC_ZODIAC_PROFILE_SYNC_READ_ENABLED=false
 NEXT_PUBLIC_ZODIAC_PROFILE_SYNC_WRITE_ENABLED=false
 ```
 
+Future storage env names:
+
+```text
+# Future Redis REST / Vercel KV
+ZODIAC_PROFILE_SYNC_REDIS_URL
+ZODIAC_PROFILE_SYNC_REDIS_TOKEN
+
+# Future Supabase
+ZODIAC_PROFILE_SYNC_SUPABASE_URL
+ZODIAC_PROFILE_SYNC_SUPABASE_SERVICE_ROLE_KEY
+
+# Internal check-only memory adapter guard
+ZODIAC_PROFILE_SYNC_TEST_MEMORY_ENABLED=false
+```
+
 Supported future backend names:
 
 ```text
 none
 vercel_kv
+redis_rest
 supabase
+test_memory
 ```
 
-No Redis, Vercel KV, or Supabase writes are active in Package 38.
+No Redis, Vercel KV, Supabase, or production writes are active.
 
 Client-side public flags are only a UX/network guard. Server flags remain the
 source of truth for auth, read, write, and backend behavior.
+
+## Profile Sync Storage Status
+
+- Current backend: `none`
+- Production reads: OFF
+- Production writes: OFF
+- Test-memory adapter: check-only
+- Remote sync for users: OFF
+- Production Redis REST / Vercel KV adapter: not wired
+- Production Supabase adapter: not wired
+
+Package 41 adds storage readiness and env validation without enabling any
+production adapter. Backend behavior:
+
+- `none`: never writes.
+- `redis_rest` / `vercel_kv`: require Redis URL and token env presence before
+  future use.
+- `supabase`: requires Supabase URL and service-role env presence before future
+  use.
+- `test_memory`: available only in the check script through an explicit
+  check-only factory/allow flag.
+
+Production reads require all of:
+
+```text
+ZODIAC_PROFILE_SYNC_ENABLED=true
+ZODIAC_PROFILE_SYNC_READ_ENABLED=true
+backend != none
+required env present
+```
+
+Production writes require all of:
+
+```text
+ZODIAC_PROFILE_SYNC_ENABLED=true
+ZODIAC_PROFILE_SYNC_WRITE_ENABLED=true
+backend != none
+required env present
+```
+
+Even when env presence validates, production storage remains fail-closed until a
+future package wires and verifies the real backend adapter.
 
 ## Safe Sync Schema
 
@@ -200,6 +261,12 @@ The check uses fake deterministic Telegram auth data only. It verifies:
 - malformed merge input does not throw;
 - retention-to-sync and sync-to-retention mapping keeps only safe summary
   fields;
+- storage backend defaults to `none`;
+- storage env validation reports presence only, never values;
+- production backend without env fails closed and does not read POST payload;
+- test-memory adapter can save/delete sanitized payloads in checks only;
+- test-memory adapter strips sensitive fields before save;
+- no production storage/network adapter is used during checks;
 - raw birth date, birth time, city, question, intention, feedback, result text,
   and raw initData are not preserved;
 - disabled route does not store data;
@@ -210,11 +277,12 @@ The check uses fake deterministic Telegram auth data only. It verifies:
 
 1. Routes disabled: current state.
 2. Pure merge utilities: current Package 40 state.
-3. Package 41: read-only remote fetch in test mode for an internal test user.
-4. Package 42: controlled cohort write with explicit storage backend.
-5. Package 43: conflict UX/status around `ProfileSyncProvider` with localStorage
+3. Storage readiness and check-only memory adapter: current Package 41 state.
+4. Package 42: read-only remote fetch in test mode for an internal test user.
+5. Package 43: controlled cohort write with explicit storage backend.
+6. Package 44: conflict UX/status around `ProfileSyncProvider` with localStorage
    fallback and no automatic overwrite.
-6. Conflict/merge testing across two phones and Telegram desktop.
+7. Conflict/merge testing across two phones and Telegram desktop.
 
 Preferred backend order:
 

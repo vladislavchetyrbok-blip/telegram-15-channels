@@ -27,17 +27,25 @@ const forbiddenValues = [
 
 const loader = createTsLoader();
 const profileSync = loader.load(path.join(projectRoot, "lib", "zodiac-profile-sync.ts"));
+const profileSyncConfig = loader.load(path.join(projectRoot, "lib", "zodiac-profile-sync-config.ts"));
 const profileSyncTypes = loader.load(path.join(projectRoot, "lib", "zodiac-profile-sync-types.ts"));
 const profileSyncMerge = loader.load(path.join(projectRoot, "lib", "zodiac-profile-sync-merge.ts"));
 const profileSyncRetentionMap = loader.load(path.join(projectRoot, "lib", "zodiac-profile-sync-retention-map.ts"));
+const profileSyncStorage = loader.load(path.join(projectRoot, "lib", "zodiac-profile-sync-storage.ts"));
 const profileSyncClient = loader.load(path.join(projectRoot, "components", "zodiac-mini-app", "profile-sync-client.ts"));
 const {
   getZodiacProfileSyncConfig,
   resolveZodiacProfileSyncRequest,
   sanitizeZodiacProfileSyncPayload,
 } = profileSync;
+const { getZodiacProfileSyncEnvPresence } = profileSyncConfig;
 const { mergeZodiacProfileSyncPayloads } = profileSyncMerge;
 const { retentionItemToSyncedItem, syncedItemToRetentionItem } = profileSyncRetentionMap;
+const {
+  createZodiacProfileSyncTestMemoryStorage,
+  getZodiacProfileSyncStorage,
+  isZodiacProfileSyncBackendAvailable,
+} = profileSyncStorage;
 const {
   deleteRemoteProfileIfEnabled,
   fetchRemoteProfileIfEnabled,
@@ -55,6 +63,164 @@ const tests = [
       assert(config.writeEnabled === false, "write should be disabled by default");
       assert(config.backend === "none", "backend should default to none");
       assert(profileSyncTypes.ZODIAC_PROFILE_SYNC_DEFAULT_CONFIG.backend === "none");
+    },
+  },
+  {
+    name: "default storage backend is none",
+    run: () => {
+      const config = getZodiacProfileSyncConfig({});
+      assert(config.backend === "none", "backend should default to none");
+      assert(config.status === "disabled", "default storage status should be disabled");
+      assert(config.hasRequiredEnv === false, "backend none should not report required env");
+    },
+  },
+  {
+    name: "default sync enabled false",
+    run: () => {
+      assert(getZodiacProfileSyncConfig({}).enabled === false, "sync enabled must default false");
+    },
+  },
+  {
+    name: "default read enabled false",
+    run: () => {
+      assert(getZodiacProfileSyncConfig({}).readEnabled === false, "read must default false");
+    },
+  },
+  {
+    name: "default write enabled false",
+    run: () => {
+      assert(getZodiacProfileSyncConfig({}).writeEnabled === false, "write must default false");
+    },
+  },
+  {
+    name: "storage env missing returns fail-closed",
+    run: () => {
+      const config = getZodiacProfileSyncConfig({
+        ZODIAC_PROFILE_SYNC_ENABLED: "true",
+        ZODIAC_PROFILE_SYNC_BACKEND: "redis_rest",
+        ZODIAC_PROFILE_SYNC_READ_ENABLED: "true",
+        ZODIAC_PROFILE_SYNC_WRITE_ENABLED: "true",
+      });
+      assert(config.backend === "redis_rest", "redis_rest backend should be recognized");
+      assert(config.status === "env_missing", "missing Redis env should fail closed");
+      assert(config.hasRequiredEnv === false, "missing Redis env should be reported");
+      assert(getZodiacProfileSyncStorage(config) === null, "missing env should not create storage");
+    },
+  },
+  {
+    name: "production backend without env does not write",
+    run: async () => {
+      let bodyRead = false;
+      const response = await resolveZodiacProfileSyncRequest({
+        method: "POST",
+        authorizationHeader: `tma ${createSignedInitData({ userId: "1001" })}`,
+        botToken: fakeBotToken,
+        config: getZodiacProfileSyncConfig({
+          ZODIAC_PROFILE_SYNC_ENABLED: "true",
+          ZODIAC_PROFILE_SYNC_BACKEND: "redis_rest",
+          ZODIAC_PROFILE_SYNC_WRITE_ENABLED: "true",
+        }),
+        readBody: async () => {
+          bodyRead = true;
+          return makeUnsafePayload();
+        },
+      });
+      assert(response.httpStatus === 503, "missing env should return backend_unavailable");
+      assert(response.body.status === "backend_unavailable", "missing env should fail closed");
+      assert(response.body.stored === false, "missing env must not store");
+      assert(bodyRead === false, "missing env must not read POST payload");
+    },
+  },
+  {
+    name: "test-memory adapter can save sanitized payload",
+    run: async () => {
+      const storage = createZodiacProfileSyncTestMemoryStorage({ nowIso: fixedNowIso });
+      await storage.saveProfile("1001", makeUnsafePayload());
+      const saved = await storage.getProfile("1001");
+      assert(saved?.history.length === 1, "test-memory should save sanitized history");
+      assert(saved?.favorites.length === 1, "test-memory should save sanitized favorites");
+      assert(!JSON.stringify(saved).includes("SHOULD_NOT_SURVIVE"), "test-memory should strip unknown fields");
+    },
+  },
+  {
+    name: "test-memory adapter strips raw birth date",
+    run: async () => assertTestMemoryOutputExcludes("1998-06-15"),
+  },
+  {
+    name: "test-memory adapter strips raw birth time",
+    run: async () => assertTestMemoryOutputExcludes("23:55"),
+  },
+  {
+    name: "test-memory adapter strips raw city",
+    run: async () => assertTestMemoryOutputExcludes("Dnipro"),
+  },
+  {
+    name: "test-memory adapter strips raw question",
+    run: async () => assertTestMemoryOutputExcludes(rawQuestion),
+  },
+  {
+    name: "test-memory adapter strips raw intention",
+    run: async () => assertTestMemoryOutputExcludes(rawIntention),
+  },
+  {
+    name: "test-memory adapter strips raw feedback",
+    run: async () => assertTestMemoryOutputExcludes(rawFeedback),
+  },
+  {
+    name: "test-memory adapter strips raw result text",
+    run: async () => assertTestMemoryOutputExcludes(rawResultText),
+  },
+  {
+    name: "test-memory delete works in test only",
+    run: async () => {
+      const storage = createZodiacProfileSyncTestMemoryStorage({ nowIso: fixedNowIso });
+      await storage.saveProfile("1001", makeUnsafePayload());
+      assert(await storage.getProfile("1001"), "test-memory should have saved profile before delete");
+      await storage.deleteProfile("1001");
+      assert((await storage.getProfile("1001")) === null, "test-memory delete should remove profile");
+      const config = getZodiacProfileSyncConfig({
+        ZODIAC_PROFILE_SYNC_ENABLED: "true",
+        ZODIAC_PROFILE_SYNC_BACKEND: "test_memory",
+        ZODIAC_PROFILE_SYNC_READ_ENABLED: "true",
+        ZODIAC_PROFILE_SYNC_WRITE_ENABLED: "true",
+        ZODIAC_PROFILE_SYNC_TEST_MEMORY_ENABLED: "true",
+      });
+      assert(getZodiacProfileSyncStorage(config) === null, "runtime storage getter should not expose test-memory by default");
+      assert(getZodiacProfileSyncStorage(config, { allowTestMemory: true }), "test-memory requires explicit allowTestMemory");
+    },
+  },
+  {
+    name: "storage config does not print secrets",
+    run: () => {
+      const env = {
+        ZODIAC_PROFILE_SYNC_ENABLED: "true",
+        ZODIAC_PROFILE_SYNC_BACKEND: "redis_rest",
+        ZODIAC_PROFILE_SYNC_READ_ENABLED: "true",
+        ZODIAC_PROFILE_SYNC_WRITE_ENABLED: "true",
+        ZODIAC_PROFILE_SYNC_REDIS_URL: "https://SECRET-REDIS.example",
+        ZODIAC_PROFILE_SYNC_REDIS_TOKEN: "SECRET_TOKEN_SHOULD_NOT_PRINT",
+      };
+      const config = getZodiacProfileSyncConfig(env);
+      const presence = getZodiacProfileSyncEnvPresence("redis_rest", env);
+      const serialized = `${JSON.stringify(config)} ${JSON.stringify(presence)}`;
+      assert(!serialized.includes("SECRET"), "config/presence output must not include secret values");
+      assert(presence.every((item) => typeof item.name === "string" && typeof item.configured === "boolean"), "presence should expose names and booleans only");
+    },
+  },
+  {
+    name: "no production network calls during storage check",
+    run: () => {
+      const config = getZodiacProfileSyncConfig({
+        ZODIAC_PROFILE_SYNC_ENABLED: "true",
+        ZODIAC_PROFILE_SYNC_BACKEND: "redis_rest",
+        ZODIAC_PROFILE_SYNC_READ_ENABLED: "true",
+        ZODIAC_PROFILE_SYNC_WRITE_ENABLED: "true",
+        ZODIAC_PROFILE_SYNC_REDIS_URL: "https://redis.example",
+        ZODIAC_PROFILE_SYNC_REDIS_TOKEN: "configured-token",
+      });
+      assert(config.status === "ready", "production config can validate env presence");
+      assert(getZodiacProfileSyncStorage(config) === null, "production storage adapter should remain unwired in Package 41");
+      assert(isZodiacProfileSyncBackendAvailable(config) === false, "production backend should not be available yet");
     },
   },
   {
@@ -532,6 +698,14 @@ function assertMergedOutputExcludes(forbiddenValue) {
   });
   const serialized = JSON.stringify(result.payload);
   assert(!serialized.includes(forbiddenValue), `merged payload must not contain ${forbiddenValue}`);
+}
+
+async function assertTestMemoryOutputExcludes(forbiddenValue) {
+  const storage = createZodiacProfileSyncTestMemoryStorage({ nowIso: fixedNowIso });
+  await storage.saveProfile("1001", makeUnsafePayload());
+  const saved = await storage.getProfile("1001");
+  const serialized = JSON.stringify(saved);
+  assert(!serialized.includes(forbiddenValue), `test-memory payload must not contain ${forbiddenValue}`);
 }
 
 function createSignedInitData({ userId }) {

@@ -23,6 +23,11 @@ Package 40 adds pure Profile Sync merge and retention-mapping helpers. It does
 not mount a provider, fetch remote data, write to any backend, enable profile
 sync, payments, Stars, or weekly live.
 
+Package 41 adds Profile Sync storage adapter readiness and env validation. It
+keeps backend `none` by default, exposes only a check-only test-memory adapter,
+does not wire production Redis/Vercel KV/Supabase storage, and does not enable
+profile sync reads/writes.
+
 ## Executive Status
 
 The Zodiac product is broadly production-ready for the current free-access phase:
@@ -41,6 +46,8 @@ The Zodiac product is broadly production-ready for the current free-access phase
   sync remains disabled, unmounted, and localStorage-only.
 - Profile Sync merge logic is ready for a future read-only rollout test, but no
   remote reads/writes are active.
+- Profile Sync storage readiness is documented and check-covered, but production
+  profile reads/writes remain OFF and fail-closed.
 
 Main remaining production gaps:
 
@@ -472,8 +479,33 @@ Current status:
 - Payments/Stars: OFF.
 - Weekly live: OFF.
 
+## Package 41 Refresh: Profile Sync Storage Adapter Readiness
+
+Current status:
+
+- Storage adapter contract: READY but disabled.
+- Backend default: `none`.
+- Storage status default: `disabled`.
+- Test-memory adapter: check-only and unavailable to runtime unless explicitly
+  allowed by a test/check caller.
+- Production Redis REST / Vercel KV adapter: not wired.
+- Production Supabase adapter: not wired.
+- Env validation: presence-only for future Redis/Supabase env names; no secret
+  values printed.
+- Provider mounted in Mini App: NO.
+- Remote GET from UI: NO.
+- Remote POST/DELETE from UI: NO.
+- Backend writes: NO.
+- Existing localStorage retention: unchanged.
+- Sanitizer before storage save: YES in check-only memory adapter.
+- Raw birth date/time/city/question/intention/feedback/result text sync: NO.
+- Raw initData sync/storage/analytics: NO.
+- Profile sync enabled: NO.
+- Payments/Stars: OFF.
+- Weekly live: OFF.
+
 Next readiness steps:
 
-1. Package 41: read-only remote fetch in test mode.
-2. Package 42: controlled cohort write with explicit storage backend.
-3. Package 43: conflict UX/status after two-device Telegram testing.
+1. Package 42: read-only remote fetch in test mode for an internal test user.
+2. Package 43: controlled cohort write with explicit storage backend.
+3. Package 44: conflict UX/status after two-device Telegram testing.
