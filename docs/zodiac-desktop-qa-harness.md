@@ -96,6 +96,14 @@ Desktop QA is useful for fast regression checks, but it does not prove:
 - real device scrolling feel.
 
 Use `docs/zodiac-real-phone-webview-checklist.md` for the final phone pass.
+For screenshot/video intake and bug triage, use
+`docs/zodiac-real-phone-evidence-intake.md` and
+`docs/zodiac-real-phone-bug-report-template.md`.
+
+Desktop QA must not be used as proof of:
+
+- real Telegram phone WebView behavior;
+- real iOS/Android keyboard overlay behavior.
 
 ## Before Soft Launch
 

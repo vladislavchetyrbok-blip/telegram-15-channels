@@ -98,6 +98,16 @@ Bug triage workflow:
 docs/zodiac-bug-triage.md
 ```
 
+Real phone evidence intake:
+
+```text
+docs/zodiac-real-phone-evidence-intake.md
+docs/zodiac-real-phone-bug-report-template.md
+```
+
+Use these only with anonymized summaries. Do not commit real phone screenshots,
+videos, private chats, Telegram handles, or personal inputs.
+
 Testers can also use the in-app feedback panel:
 
 ```text
@@ -220,6 +230,8 @@ Use the detailed phone/WebView checklist here:
 
 ```text
 docs/zodiac-real-phone-webview-checklist.md
+docs/zodiac-real-phone-evidence-intake.md
+docs/zodiac-real-phone-bug-report-template.md
 ```
 
 Minimum first pass:

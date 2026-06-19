@@ -15,6 +15,17 @@ docs/zodiac-desktop-qa-harness.md
 
 Use it before the manual phone pass to catch obvious UI regressions, screenshot key screens, and verify console/network/localStorage privacy. Still complete this checklist on real iPhone/Android Telegram because desktop automation cannot prove Telegram keyboard overlays, safe-area clipping, or native share sheet behavior.
 
+Evidence intake templates:
+
+```text
+docs/zodiac-real-phone-evidence-intake.md
+docs/zodiac-real-phone-bug-report-template.md
+```
+
+Use these templates when screenshots/videos are uploaded. Blur private chats,
+avoid personal birth data when possible, and never commit raw tester evidence
+with personal data.
+
 ## Scope
 
 Open the Mini App from Telegram on a phone:
@@ -49,14 +60,20 @@ For each device/session, record:
 
 Recommended screenshots:
 
+- first open screen;
 - first loaded home screen;
+- main menu;
 - compatibility result;
+- Premium Natal Chart with keyboard open;
 - Premium Natal Chart result;
 - Birth Matrix result;
 - Tarot/Rune result;
 - Lunar/Ritual result;
+- Profile/History/Favorites;
+- Share flow;
+- BackButton behavior;
+- bottom buttons / safe area;
 - one VIP result;
-- Profile with saved history/favorites;
 - any visual overflow or keyboard issue.
 
 ## Pass / Fail Matrix
