@@ -20,6 +20,7 @@ The Zodiac product is ready for controlled live operation of the daily publishin
 - Lunar/Ritual now has a richer symbolic flow with modes, 14-day visual calendar, ritual result sections, safe Save/Share, and localStorage privacy checks.
 - Analytics is privacy-safe but storage mode is currently `noop` unless Redis REST env vars are configured.
 - Production backup freshness is currently OK after backup `2026-06-19-01-06-53` and restore dry-run PASS.
+- Soft-launch pack is ready for `5-20` first users through `docs/zodiac-soft-launch-runbook.md`.
 - Manual live publish remains forbidden unless a dry-run and ledger audit prove it is safe.
 
 ## Key Recent Commits
@@ -134,6 +135,22 @@ docs/zodiac-weekly-live-readiness-audit.md
 Result: weekly dry-run is ready, weekly live remains OFF, and enabling weekly live now is `NO`.
 
 Weekly live publishing should be enabled only after several stable daily publishing days, a completed real-phone Telegram WebView pass, two consecutive weekly dry-run passes, confirmed weekly duplicate-block behavior, and a separate explicit GO decision. The first weekly live run should be controlled/manual, not cron.
+
+## Soft Launch
+
+Soft-launch runbook:
+
+```text
+docs/zodiac-soft-launch-runbook.md
+```
+
+Soft-launch state:
+
+- Controlled first-user test: READY for `5-20` trusted testers.
+- Public/mass launch: NOT READY until real phone Telegram WebView pass is completed and P0/P1 issues are `0`.
+- Analytics: Redis env is still missing, so metrics remain `noop` unless hosting env is configured.
+- Weekly live: OFF and not ready to enable.
+- Payments/Stars: OFF.
 
 ## Mini App UX
 
