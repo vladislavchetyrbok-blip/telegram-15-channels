@@ -66,10 +66,10 @@ VIP 11/11: PASS
 Profile/History/Favorites: PASS
 Feedback flow: PASS
 Safe share: PASS
-Sonnik/Dream Dictionary: reachable
+Sonnik/Dream Dictionary: hidden backlog, not part of current soft launch
 ```
 
-Mini App smoke currently covers the 10-category home, Compatibility, Premium Natal, Birth Matrix, Tarot/Rune, Lunar/Ritual, Angel Numbers, VIP 11/11, Profile/History/Favorites, Feedback, safe Share, Telegram mock, BackButton, haptics, custom selects, and localStorage privacy.
+Mini App smoke currently covers the 10-category home, mobile date input normalization, Compatibility, Premium Natal, Birth Matrix, Tarot/Rune, Lunar/Ritual, Angel Numbers, VIP 11/11, Profile/History/Favorites, Feedback, safe Share, Telegram mock, BackButton, haptics, custom selects, hidden Sonnik regression checks, and localStorage privacy.
 
 ## 4. Major Completed Packages / Milestones
 

@@ -39,6 +39,8 @@ Controlled launch readiness remains `92%`. The product is ready for a small trus
 - Exact astrology remains unavailable. Current natal and map features are symbolic and must not claim exact houses, ascendant, real planet degrees, or ephemeris-level precision.
 - Redis analytics env is not configured, so dashboard counters remain `noop`.
 - Real phone Telegram WebView evidence is still required before wider rollout.
+- Sonnik/Dream Dictionary is hidden backlog and is not a current soft-launch feature.
+- Mini App date inputs use visible `ДД.ММ.ГГГГ` fields with digit/paste normalization.
 
 ## Checks Summary
 
@@ -64,7 +66,7 @@ The Package 50 final suite was run after removing `.next`.
 
 Desktop QA covered `390x844`, `412x915`, and `1440x900`; all viewports passed with console/runtime/network errors `0/0/0`.
 
-Mini App smoke covered the 10-category home, Compatibility, Premium Natal, Birth Matrix, Tarot/Rune, Lunar/Ritual, Angel Numbers, VIP `11/11`, Profile/History/Favorites, Feedback, safe Share, Telegram mock, BackButton, haptics, custom selects, and localStorage privacy.
+Mini App smoke covered the 10-category home, mobile date input normalization, Compatibility, Premium Natal, Birth Matrix, Tarot/Rune, Lunar/Ritual, Angel Numbers, VIP `11/11`, Profile/History/Favorites, Feedback, safe Share, Telegram mock, BackButton, haptics, custom selects, hidden Sonnik regression, and localStorage privacy.
 
 ## Final Stop/Go Matrix
 

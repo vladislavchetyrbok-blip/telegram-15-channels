@@ -169,13 +169,13 @@ npm run zodiac:compatibility:dry -- --pair gemini-leo
 Personal preview:
 
 ```bash
-npm run zodiac:compatibility:dry -- --mode personal --first-sign gemini --first-gender male --first-birth-date 1998-06-15 --second-sign leo --second-gender female --second-birth-date 1998-08-10
+npm run zodiac:compatibility:dry -- --mode personal --first-sign capricorn --first-gender male --first-birth-date 2000-01-01 --second-sign aries --second-gender female --second-birth-date 2000-03-21
 ```
 
 Precise preview with unknown second birth time:
 
 ```bash
-npm run zodiac:compatibility:dry -- --mode precise --first-sign gemini --first-gender male --first-birth-date 1998-06-15 --first-knows-time --first-birth-time 14:30 --first-birth-city Kyiv --second-sign leo --second-gender female --second-birth-date 1998-08-10 --second-unknown-time
+npm run zodiac:compatibility:dry -- --mode precise --first-sign capricorn --first-gender male --first-birth-date 2000-01-01 --first-knows-time --first-birth-time 12:00 --first-birth-city "Test City" --second-sign aries --second-gender female --second-birth-date 2000-03-21 --second-unknown-time
 ```
 
 Live channel publishing is intentionally disabled for this command.

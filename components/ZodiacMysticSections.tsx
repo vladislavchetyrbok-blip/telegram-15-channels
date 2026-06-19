@@ -31,6 +31,7 @@ import { BirthMatrixVisual } from "./zodiac-mini-app/BirthMatrixVisual";
 import { LunarCalendarVisual } from "./zodiac-mini-app/LunarCalendarVisual";
 import { RuneSpreadVisual } from "./zodiac-mini-app/RuneSpreadVisual";
 import { TarotSpreadVisual } from "./zodiac-mini-app/TarotSpreadVisual";
+import { ZodiacDateInput } from "./zodiac-mini-app/ZodiacDateInput";
 import { FeatureCard, EmptyFeatureCard } from "./zodiac-mini-app/ui-primitives";
 
 const signNames: Record<ZodiacSignId, string> = {
@@ -564,20 +565,11 @@ export function LunarRitualFeature({ publicMode, dateKey, onSave, onShare, onEve
             ))}
           </div>
           {dateBucket === "custom" ? (
-            <input
-              type="text"
-              inputMode="numeric"
-              value={customDate}
-              onChange={(event) => setCustomDate(event.target.value.slice(0, 10))}
-              placeholder="2026-06-19 или 19.06.2026"
-              className={
-                publicMode
-                  ? "mt-3 w-full rounded-lg border border-white/15 bg-white/7 px-3 py-3 text-sm text-white placeholder-slate-500 focus:border-violet-200 focus:outline-none"
-                  : "mt-3 w-full rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-violet-400 focus:outline-none"
-              }
-            />
+            <div className="mt-3">
+              <ZodiacDateInput publicMode={publicMode} value={customDate} onChange={setCustomDate} autoComplete="off" hasError={Boolean(customDate && !selectedDateKey)} />
+            </div>
           ) : null}
-          {dateBucket === "custom" && !selectedDateKey ? <p className={publicMode ? "mt-2 text-xs text-amber-200" : "mt-2 text-xs text-amber-700"}>Введите дату в формате YYYY-MM-DD или DD.MM.YYYY.</p> : null}
+          {dateBucket === "custom" && !selectedDateKey ? <p className={publicMode ? "mt-2 text-xs text-amber-200" : "mt-2 text-xs text-amber-700"}>Введите дату в формате ДД.ММ.ГГГГ.</p> : null}
         </div>
 
         <div>
@@ -774,19 +766,7 @@ export function BirthMatrixFeature({
             <p className={publicMode ? "text-sm text-slate-300 mb-3" : "text-sm text-slate-600 mb-3"}>
               Введите дату рождения, чтобы рассчитать число пути, число души, реализацию, отношения и главный архетип. Сырая дата не сохраняется в истории или аналитике.
             </p>
-            <input
-              type="text"
-              inputMode="numeric"
-              autoComplete="bday"
-              placeholder="1998-06-15 или 15.06.1998"
-              value={inputVal}
-              onChange={(e) => setInputVal(e.target.value)}
-              className={
-                publicMode
-                  ? "w-full rounded border border-white/20 bg-white/5 px-3 py-2 text-center text-sm text-white placeholder-slate-500 focus:border-indigo-400 focus:outline-none"
-                  : "w-full rounded border border-slate-300 bg-white px-3 py-2 text-center text-sm text-slate-900 placeholder-slate-400 focus:border-indigo-500 focus:outline-none"
-              }
-            />
+            <ZodiacDateInput publicMode={publicMode} value={inputVal} onChange={setInputVal} hasError={Boolean(inputVal && !generateBirthMatrix(inputVal))} />
             <button
               onClick={handleApply}
               disabled={!generateBirthMatrix(inputVal)}

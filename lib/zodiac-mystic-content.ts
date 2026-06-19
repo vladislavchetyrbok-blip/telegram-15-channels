@@ -1,3 +1,5 @@
+import { dateInputToIsoDate, parseDateInput } from "./zodiac-date-input";
+
 export type ZodiacSignId = "aries" | "taurus" | "gemini" | "cancer" | "leo" | "virgo" | "libra" | "scorpio" | "sagittarius" | "capricorn" | "aquarius" | "pisces";
 
 function safeHashString(str: string): number {
@@ -691,13 +693,7 @@ const lunarModeBlueprints: Record<MysticLunarMode, {
 };
 
 export function normalizeLunarDateKey(value: string): string | null {
-  const trimmed = value.trim();
-  const iso = trimmed.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-  if (iso) return isValidDateParts(Number(iso[1]), Number(iso[2]), Number(iso[3])) ? trimmed : null;
-  const ru = trimmed.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
-  if (!ru) return null;
-  const [, day, month, year] = ru;
-  return isValidDateParts(Number(year), Number(month), Number(day)) ? `${year}-${month}-${day}` : null;
+  return dateInputToIsoDate(value);
 }
 
 export function shiftLunarDateKey(dateKey: string, days: number): string {
@@ -825,11 +821,6 @@ function formatLunarDisplayDate(dateKey: string) {
 function formatLunarDayLabel(dateKey: string) {
   const [, month, day] = dateKey.split("-");
   return `${day}.${month}`;
-}
-
-function isValidDateParts(year: number, month: number, day: number) {
-  const date = new Date(Date.UTC(year, month - 1, day));
-  return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
 }
 
 export interface MysticKarmicLessons {
@@ -1099,31 +1090,14 @@ function getNumberProfile(number: number): BirthMatrixNumberProfile {
 }
 
 function parseBirthMatrixDate(value: string) {
-  const trimmed = String(value || "").trim();
-  const isoMatch = trimmed.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-  const displayMatch = trimmed.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
-  const parts = isoMatch
-    ? { year: Number(isoMatch[1]), month: Number(isoMatch[2]), day: Number(isoMatch[3]) }
-    : displayMatch
-      ? { day: Number(displayMatch[1]), month: Number(displayMatch[2]), year: Number(displayMatch[3]) }
-      : null;
-  if (!parts) return null;
-
-  const { day, month, year } = parts;
-  const date = new Date(Date.UTC(year, month - 1, day));
-  const isValid =
-    date.getUTCFullYear() === year &&
-    date.getUTCMonth() === month - 1 &&
-    date.getUTCDate() === day &&
-    year >= 1900 &&
-    year <= 2099;
-  if (!isValid) return null;
+  const parsed = parseDateInput(value, { emptyError: "" });
+  if (!parsed.ok || parsed.year > 2099) return null;
 
   return {
-    day,
-    month,
-    year,
-    displayDate: `${String(day).padStart(2, "0")}.${String(month).padStart(2, "0")}.${year}`,
+    day: parsed.day,
+    month: parsed.month,
+    year: parsed.year,
+    displayDate: parsed.display,
   };
 }
 

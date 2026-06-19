@@ -8,6 +8,10 @@ This report closes Package 45 after Packages 41-44. It is a safety regression
 checkpoint only. It does not authorize live publishing, profile sync rollout,
 weekly live scheduling, payments, Telegram Stars, or exact astrology claims.
 
+Package 52 follow-up note: Sonnik/Dream Dictionary is now hidden backlog for the
+current soft launch, date inputs use a mobile-friendly `ДД.ММ.ГГГГ` field, and
+personal smoke/docs fixture values have been replaced with neutral examples.
+
 ## Scope
 
 Packages covered:

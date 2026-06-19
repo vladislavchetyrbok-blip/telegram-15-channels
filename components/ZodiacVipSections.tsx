@@ -7,8 +7,10 @@ import type { ZodiacSignId } from "@/lib/zodiac-mystic-content";
 import { relationshipModes, signs } from "./zodiac-mini-app/constants";
 import { AstroChartVisual } from "./zodiac-mini-app/AstroChartVisual";
 import { NatalChartVisual, type NatalChartMode } from "./zodiac-mini-app/NatalChartVisual";
+import { ZodiacDateInput } from "./zodiac-mini-app/ZodiacDateInput";
 import type { ZodiacRetentionDraft } from "./zodiac-mini-app/retention";
 import { ZodiacSelect, type ZodiacSelectOption } from "./zodiac-mini-app/ZodiacSelect";
+import { dateInputToIsoDate, isoDateToDateInput } from "@/lib/zodiac-date-input";
 import type {
   AngelNumberProfile,
   CompatibilityResult,
@@ -536,7 +538,8 @@ function reduceNumber(value: number): number {
 }
 
 function parseIsoDate(value: string) {
-  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  const isoValue = dateInputToIsoDate(value);
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(isoValue ?? "");
   if (!match) return null;
   const year = Number(match[1]);
   const month = Number(match[2]);
@@ -546,15 +549,13 @@ function parseIsoDate(value: string) {
 }
 
 function addDays(value: string, offset: number) {
-  const date = new Date(`${value}T00:00:00.000Z`);
+  const date = new Date(`${dateInputToIsoDate(value) ?? value}T00:00:00.000Z`);
   date.setUTCDate(date.getUTCDate() + offset);
   return date.toISOString().slice(0, 10);
 }
 
 function displayDate(value: string) {
-  const parsed = parseIsoDate(value);
-  if (!parsed) return value;
-  return `${String(parsed.day).padStart(2, "0")}.${String(parsed.month).padStart(2, "0")}.${parsed.year}`;
+  return isoDateToDateInput(value) || value;
 }
 
 function displayMonth(value: string) {
@@ -930,7 +931,7 @@ export function ExtendedNatalFeature({
   });
 
   function updateBirthDate(value: string) {
-    setBirthDate(value);
+    setBirthDate(isoDateToDateInput(value) || value);
     const nextSign = signFromBirthDate(value, signSlug);
     if (parseIsoDate(value)) setSignSlug(nextSign.slug);
   }
@@ -941,7 +942,7 @@ export function ExtendedNatalFeature({
       <VipInputPanel publicMode={publicMode}>
         <SignSelect publicMode={publicMode} value={signSlug} onChange={setSignSlug} />
         <VipField publicMode={publicMode} label="Дата рождения">
-          <input className={inputClass(publicMode)} type="date" value={birthDate} onChange={(event) => updateBirthDate(event.target.value)} />
+          <ZodiacDateInput publicMode={publicMode} value={birthDate} onChange={updateBirthDate} />
         </VipField>
         <VipField publicMode={publicMode} label="Время рождения">
           <input className={inputClass(publicMode)} type="time" value={birthTime} onChange={(event) => setBirthTime(event.target.value)} />
@@ -1237,7 +1238,7 @@ export function VipCoupleCalendarFeature({
   const featureKey: VipFeatureKey = "vipCoupleCalendar";
   const [firstSlug, setFirstSlug] = useState((defaultSign ?? signs[0]).slug);
   const [secondSlug, setSecondSlug] = useState((defaultSecondSign ?? signs[2]).slug);
-  const [startDate, setStartDate] = useState("2026-06-19");
+  const [startDate, setStartDate] = useState("19.06.2026");
   const [calculated, setCalculated] = useState(false);
   const first = signBySlug(firstSlug);
   const second = signBySlug(secondSlug);
@@ -1269,7 +1270,7 @@ export function VipCoupleCalendarFeature({
         <SignSelect publicMode={publicMode} value={firstSlug} onChange={setFirstSlug} label="Первый знак" />
         <SignSelect publicMode={publicMode} value={secondSlug} onChange={setSecondSlug} label="Второй знак" />
         <VipField publicMode={publicMode} label="Старт">
-          <input className={inputClass(publicMode)} type="date" value={startDate} onChange={(event) => setStartDate(event.target.value)} />
+          <ZodiacDateInput publicMode={publicMode} value={startDate} onChange={setStartDate} autoComplete="off" />
         </VipField>
       </VipInputPanel>
       <PrimaryVipButton publicMode={publicMode} onClick={() => {
@@ -1423,7 +1424,7 @@ export function ExtendedNumerologyFeature({
       <VipIntro publicMode={publicMode} text="Нумерология показывает число пути, число имени, личный месяц и практичный совет. Имя и дата остаются только на экране." />
       <VipInputPanel publicMode={publicMode}>
         <VipField publicMode={publicMode} label="Дата рождения">
-          <input className={inputClass(publicMode)} type="date" value={birthDate} onChange={(event) => setBirthDate(event.target.value)} />
+          <ZodiacDateInput publicMode={publicMode} value={birthDate} onChange={setBirthDate} />
         </VipField>
         <VipField publicMode={publicMode} label="Имя">
           <input className={inputClass(publicMode)} value={name} onChange={(event) => setName(event.target.value)} />
@@ -1566,13 +1567,14 @@ export function VipMysticDayFeature({
 }: VipToolBaseProps & { dateKey: string; sign: ZodiacSign | null; angelNumber: AngelNumberProfile }) {
   const featureKey: VipFeatureKey = "vipMysticDay";
   const [signSlug, setSignSlug] = useState((sign ?? signs[0]).slug);
-  const [date, setDate] = useState(dateKey);
+  const [date, setDate] = useState(() => isoDateToDateInput(dateKey) || dateKey);
   const [goal, setGoal] = useState<VipGoal>("clarity");
   const [calculated, setCalculated] = useState(false);
   const selectedSign = signBySlug(signSlug);
   const actions = useResultActions(featureKey, onEvent, onSave, onShare);
   const payload = vipPayload({ sign: selectedSign.slug, goal, inputMode: "date_sign" });
-  const synthesis = synthesizeVipMysticDay(date || dateKey, selectedSign.slug as ZodiacSignId, angelNumber);
+  const selectedDateKey = dateInputToIsoDate(date) ?? dateKey;
+  const synthesis = synthesizeVipMysticDay(selectedDateKey, selectedSign.slug as ZodiacSignId, angelNumber);
 
   return (
     <VipScreenLayout publicMode={publicMode} title="VIP мистический день" onBack={onBack}>
@@ -1580,7 +1582,7 @@ export function VipMysticDayFeature({
       <VipInputPanel publicMode={publicMode}>
         <SignSelect publicMode={publicMode} value={signSlug} onChange={setSignSlug} />
         <VipField publicMode={publicMode} label="Дата">
-          <input className={inputClass(publicMode)} type="date" value={date} onChange={(event) => setDate(event.target.value)} />
+          <ZodiacDateInput publicMode={publicMode} value={date} onChange={setDate} autoComplete="off" />
         </VipField>
         <GoalSelect publicMode={publicMode} value={goal} onChange={setGoal} />
       </VipInputPanel>
@@ -1592,7 +1594,7 @@ export function VipMysticDayFeature({
         Показать
       </PrimaryVipButton>
       {calculated ? (
-        <VipResultPanel publicMode={publicMode} title={`${selectedSign.emoji} ${selectedSign.name} · ${displayDate(date || dateKey)}`}>
+        <VipResultPanel publicMode={publicMode} title={`${selectedSign.emoji} ${selectedSign.name} · ${displayDate(selectedDateKey)}`}>
           <AstroChartVisual publicMode={publicMode} kind="matrix" primarySign={selectedSign} title="VIP мистическая карта дня" caption="Символическая карта связывает знак, дату, цвет, руну, предупреждение и действие дня без обещаний точного предсказания." />
           <InfoBlock publicMode={publicMode} title="Таро и карта дня" text={`${synthesis.tarotCard.card} и ${synthesis.dailyCard.title}. ${synthesis.tarotCard.mainMeaning}`} />
           <InfoBlock publicMode={publicMode} title="Руна дня" text={`${synthesis.runeDay.symbol} ${synthesis.runeDay.name}. ${synthesis.runeDay.mainMeaning}`} />

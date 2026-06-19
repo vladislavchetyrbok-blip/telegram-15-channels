@@ -27,10 +27,10 @@ const BIRTH_MATRIX_LABELS = ["Матрица судьбы", "Матрица ро
 const PLACEHOLDER_PATTERNS = [/TODO/i, /lorem ipsum/i, /placeholder/i, /Скоро появится/i];
 const RETENTION_STORAGE_KEY = "zodiac-mini-app-retention-v1";
 const FORBIDDEN_RETENTION_VALUES = [
-  "1998-06-15",
-  "15.06.1998",
-  "23:55",
-  "Dnipro",
+  "2000-01-01",
+  "01.01.2000",
+  "12:00",
+  "Test City",
   "2000-03-21",
   "2000-12-22",
   "19.06.1992",
@@ -155,10 +155,12 @@ async function runBrowserModeSmoke(client, report) {
   await waitForPageText(client, /Совместимость|Шаг 1/, "Love flow did not render after sign selection.");
   await assertNoNativeSelects(client, report, "Compatibility step 1");
   await click(client, "Персональный");
-  await fillVisibleInputAt(client, 1, "1998-06-15");
-  await waitForPageText(client, /Близнецы/, "Birth date autosign failed for 1998-06-15 -> Близнецы.");
-  await expectVisibleSelectValue(client, 0, "gemini", "Birth date autosign 1998-06-15 -> Близнецы");
-  report.compatibilityAutosignCases.push("1998-06-15 -> Близнецы");
+  await fillVisibleInputAt(client, 1, "01012000");
+  await expectVisibleInputValueAt(client, 1, "01.01.2000", "Compatibility date input 01012000 -> 01.01.2000");
+  await waitForPageText(client, /Козерог/, "Birth date autosign failed for 01012000 -> Козерог.");
+  await expectVisibleSelectValue(client, 0, "capricorn", "Birth date autosign 01012000 -> Козерог");
+  report.dateInputUxChecked = true;
+  report.compatibilityAutosignCases.push("01012000 -> 01.01.2000 -> Козерог");
   await fillVisibleInputAt(client, 1, "2000-03-21");
   await waitForPageText(client, /Овен/, "Birth date autosign failed for 2000-03-21 -> Овен.");
   await expectVisibleSelectValue(client, 0, "aries", "Birth date autosign 2000-03-21 -> Овен");
@@ -182,7 +184,7 @@ async function runBrowserModeSmoke(client, report) {
   await click(client, "Поделиться");
   await settle(client);
   await waitForPageText(client, /совместимость|Mini App|копирования|скопирован/i, "Compatibility share did not render or copy safely.");
-  await assertLastShareText(client, report, "Compatibility", ["совместимость", "startapp=compat"], ["1998-06-15", "2000-03-21", "2000-12-22", "Овен + Козерог"]);
+  await assertLastShareText(client, report, "Compatibility", ["совместимость", "startapp=compat"], ["2000-01-01", "01.01.2000", "2000-03-21", "21.03.2000", "2000-12-22", "22.12.2000"]);
   report.compatibilityShareChecked = true;
   await click(client, "Пара");
   await waitForPageText(client, /Действие сегодня|Главный шаг|Лучший тон/, "Compatibility action today block did not render.");
@@ -224,7 +226,7 @@ async function runBrowserModeSmoke(client, report) {
   await click(client, "Поделиться");
   await settle(client);
   await waitForPageText(client, /Текст для копирования|Текст скопирован|Ангельские числа/, "Share fallback/copy state did not render for Angel Numbers.");
-  await assertLastShareText(client, report, "Angel Numbers", ["ангельского числа", "startapp=compat"], ["11:11", "22:22", "1998-06-15"]);
+  await assertLastShareText(client, report, "Angel Numbers", ["ангельского числа", "startapp=compat"], ["11:11", "22:22", "2000-01-01", "01.01.2000"]);
   report.shareChecked = true;
   await click(client, "Профиль");
   await waitForPageText(client, /Избранное|История|Мой профиль/, "Profile bottom nav did not render after saving Angel Numbers.");
@@ -262,35 +264,38 @@ async function runBrowserModeSmoke(client, report) {
   await click(client, "Главное меню");
   await waitForPageText(client, /Астрологический центр|Мистика/, "Back to main menu did not render after VIP.");
   await click(client, "Мистика");
-  await waitForPageText(client, /Мистика|Сонник/, "Mystic tab did not render.");
+  await waitForPageText(client, /Мистика|Карта дня/, "Mystic tab did not render.");
+  await assertPageTextAbsent(client, /Сонник/, "Sonnik should be hidden from the active Mystic path.");
   for (const feature of MYSTIC_FEATURES) {
     await click(client, feature);
     await settle(client);
     await assertFeatureScreen(client, feature, { allowSoon: false, minLength: 260 });
     report.mysticChecked += 1;
-    await click(client, "Сонник");
-    await waitForPageText(client, /Сонник/, `Mystic default tab did not return after "${feature}".`);
+    await click(client, "Карта");
+    await waitForPageText(client, /Карта дня/, `Mystic default tab did not return after "${feature}".`);
+    await assertPageTextAbsent(client, /Сонник/, `Sonnik appeared after "${feature}".`);
   }
 
   await runTarotSmoke(client, report);
-  await click(client, "Сонник");
-  await waitForPageText(client, /Сонник/, "Mystic default tab did not return after Tarot richer flow.");
+  await click(client, "Карта");
+  await waitForPageText(client, /Карта дня/, "Mystic default tab did not return after Tarot richer flow.");
   await runRuneSmoke(client, report);
-  await click(client, "Сонник");
-  await waitForPageText(client, /Сонник/, "Mystic default tab did not return after Rune richer flow.");
+  await click(client, "Карта");
+  await waitForPageText(client, /Карта дня/, "Mystic default tab did not return after Rune richer flow.");
 
   await openBirthMatrix(client);
   if (!(await hasText(client, /ДД\.ММ\.ГГГГ|дд\.мм\.гггг|Введите дату рождения/i))) {
     await click(client, "Изменить");
-    await waitForPageText(client, /ДД\.ММ\.ГГГГ|дд\.мм\.гггг|Введите дату рождения|1998-06-15/i, "Birth Matrix edit mode did not render an input.");
+    await waitForPageText(client, /ДД\.ММ\.ГГГГ|дд\.мм\.гггг|Введите дату рождения/i, "Birth Matrix edit mode did not render an input.");
   }
-  await fillVisibleInput(client, "1998-06-15");
+  await fillVisibleInput(client, "01012000");
+  await expectVisibleInputValueAt(client, 0, "01.01.2000", "Birth Matrix date input 01012000 -> 01.01.2000");
   await click(client, "Рассчитать");
   await settle(client);
   await assertFeatureScreen(client, "Матрица судьбы", { allowSoon: false, minLength: 1400 });
   await assertBirthMatrixDepth(client, report);
-  await click(client, "Сонник");
-  await waitForPageText(client, /Сонник/, "Mystic default tab did not return after Birth Matrix.");
+  await click(client, "Карта");
+  await waitForPageText(client, /Карта дня/, "Mystic default tab did not return after Birth Matrix.");
   report.birthMatrixChecked = true;
 
   report.browserMode = "PASS";
@@ -303,10 +308,10 @@ async function runFeedbackPanelSmoke(client, report) {
   await captureSmokeScreenshot(client, report, "feedback-panel");
   await click(client, "Баг");
   await click(client, "Birth Matrix");
-  await fillVisibleTextarea(client, "SHOULD_NOT_STORE_RAW_FEEDBACK 1998-06-15 Dnipro +380501112233");
+  await fillVisibleTextarea(client, "SHOULD_NOT_STORE_RAW_FEEDBACK 2000-01-01 Test City +380501112233");
   await waitForPageText(client, /добавьте коротко вручную|Что сломалось/, "Feedback draft did not render a safe manual-comment placeholder.");
   const draftText = await evalPage(client, "Array.from(document.querySelectorAll('pre')).map((element) => element.innerText || element.textContent || '').join('\\n')", []);
-  for (const forbidden of ["SHOULD_NOT_STORE_RAW_FEEDBACK", "1998-06-15", "Dnipro", "+380501112233"]) {
+  for (const forbidden of ["SHOULD_NOT_STORE_RAW_FEEDBACK", "2000-01-01", "Test City", "+380501112233"]) {
     if (String(draftText || "").includes(forbidden)) throw new Error(`Feedback raw value leaked into copied draft: ${forbidden}`);
   }
   await click(client, "Скопировать текст");
@@ -317,7 +322,7 @@ async function runFeedbackPanelSmoke(client, report) {
   report.feedbackShareChecked = true;
 
   const storageText = await evalPage(client, "JSON.stringify(Object.fromEntries(Array.from({ length: window.localStorage.length }, (_, index) => { const key = window.localStorage.key(index); return [key, window.localStorage.getItem(key)]; })))", []);
-  for (const forbidden of ["SHOULD_NOT_STORE_RAW_FEEDBACK", "1998-06-15", "Dnipro", "+380501112233"]) {
+  for (const forbidden of ["SHOULD_NOT_STORE_RAW_FEEDBACK", "2000-01-01", "Test City", "+380501112233"]) {
     if (String(storageText || "").includes(forbidden)) throw new Error(`Feedback raw value leaked into localStorage: ${forbidden}`);
   }
   report.feedbackLocalStoragePrivacyChecked = true;
@@ -332,7 +337,7 @@ async function runStartParamSmoke(client, baseUrl, report) {
     { param: "compat_love", sign: "Овен", landing: /Любовная совместимость|Совместимость/, pattern: /Любовь|Шаг 1|Совместимость/, message: "startapp=compat_love did not open Love compatibility after sign selection." },
     { param: "compat_reconciliation", sign: "Овен", landing: /Примирение|Совместимость/, pattern: /Примирение|Шаг 1|Совместимость/, message: "startapp=compat_reconciliation did not open Reconciliation compatibility after sign selection." },
     { param: "compat_gemini", sign: "Близнецы", beforeSign: "Любовная совместимость", landing: /Любовная совместимость|Совместимость/, pattern: /Совместимость|Шаг 1/, message: "startapp=compat_gemini did not open Compatibility after sign selection." },
-    { param: "mystic", sign: "Овен", landing: /Мистика|Выберите знак/, pattern: /Мистика|Сонник/, message: "startapp=mystic did not open Mystic after sign selection." },
+    { param: "mystic", sign: "Овен", landing: /Мистика|Выберите знак/, pattern: /Мистика|Карта дня/, message: "startapp=mystic did not open Mystic after sign selection." },
     { param: "vip", sign: "Овен", landing: /VIP раздел|Выберите знак/, pattern: /VIP открыт бесплатно|Ранний доступ до 17\.09\.2026/, message: "startapp=vip did not open VIP after sign selection." },
     { param: "birth_matrix", sign: "Овен", landing: /Матрица судьбы|Выберите знак/, pattern: /Матрица|дд\.мм\.гггг|Дата/, message: "startapp=birth_matrix did not open Birth Matrix after sign selection." },
     { param: "angel_numbers", sign: "Овен", landing: /Ангельские числа|Выберите знак/, pattern: /Ангельские числа|11:11|22:22/, message: "startapp=angel_numbers did not open Angel Numbers after sign selection." },
@@ -474,12 +479,14 @@ async function runTelegramMockSmoke(client, report) {
   report.telegramHapticsChecked = finalCalls.impact + finalCalls.selection > 0;
 
   await click(client, "Мистика");
-  await waitForPageText(client, /Мистика|Сонник/, "Telegram mock Mystic tab did not render.");
+  await waitForPageText(client, /Мистика|Карта дня/, "Telegram mock Mystic tab did not render.");
+  await assertPageTextAbsent(client, /Сонник/, "Sonnik should be hidden in Telegram mock Mystic path.");
   await openBirthMatrix(client);
   await assertFeatureScreen(client, "Матрица судьбы", { allowSoon: false, minLength: 260 });
   const matrixBackTriggered = await evalPage(client, "window.__triggerTelegramBack?.()", []);
   if (!matrixBackTriggered) await triggerTelegramBackButton(client);
-  await waitForPageText(client, /Сонник/, "Telegram BackButton did not return from Birth Matrix to Mystic menu.");
+  await waitForPageText(client, /Карта дня/, "Telegram BackButton did not return from Birth Matrix to Mystic menu.");
+  await assertPageTextAbsent(client, /Сонник/, "Sonnik appeared after Telegram mock Birth Matrix back navigation.");
 
   report.telegramMock = "PASS";
 }
@@ -516,7 +523,7 @@ async function runTarotSmoke(client, report) {
   await waitForPageText(client, /Сохранено/, "Tarot save did not show saved state.");
   await click(client, "Поделиться", { index: 1 });
   await waitForPageText(client, /Ссылка готова|Готово к отправке|Скопировано|Текст для копирования|Текст скопирован|Откройте Telegram/i, "Tarot share did not show safe share state.");
-  await assertLastShareText(client, report, "Tarot", ["символический расклад", "startapp=mystic"], ["Что мне выбрать?", "1998-06-15"]);
+  await assertLastShareText(client, report, "Tarot", ["символический расклад", "startapp=mystic"], ["Что мне выбрать?", "2000-01-01", "01.01.2000"]);
   await assertRetentionPrivacy(client, report);
   report.tarotFlowChecked = true;
   report.tarotCardsChecked = cardCount;
@@ -539,7 +546,7 @@ async function runRuneSmoke(client, report) {
   await waitForPageText(client, /Сохранено/, "Rune save did not show saved state.");
   await click(client, "Поделиться", { index: 1 });
   await waitForPageText(client, /Ссылка готова|Готово к отправке|Скопировано|Текст для копирования|Текст скопирован|Откройте Telegram/i, "Rune share did not show safe share state.");
-  await assertLastShareText(client, report, "Rune", ["символический расклад", "startapp=mystic"], ["Где нужна защита?", "1998-06-15"]);
+  await assertLastShareText(client, report, "Rune", ["символический расклад", "startapp=mystic"], ["Где нужна защита?", "2000-01-01", "01.01.2000"]);
   await assertRetentionPrivacy(client, report);
   report.runeFlowChecked = true;
   report.runesChecked = runeCount;
@@ -567,7 +574,7 @@ async function runLunarRitualSmoke(client, report) {
   await waitForPageText(client, /Сохранено/, "Lunar ritual save did not show saved state.");
   await click(client, "Поделиться");
   await waitForPageText(client, /Ссылка готова|Готово к отправке|Скопировано|Текст для копирования|Текст скопирован|Откройте Telegram/i, "Lunar ritual share did not show safe share state.");
-  await assertLastShareText(client, report, "Lunar/Ritual", ["лунный ритуал", "startapp=mystic"], ["Хочу спокойствия", "1998-06-15"]);
+  await assertLastShareText(client, report, "Lunar/Ritual", ["лунный ритуал", "startapp=mystic"], ["Хочу спокойствия", "2000-01-01", "01.01.2000"]);
   await assertRetentionPrivacy(client, report);
   report.lunarRitualChecked = true;
   report.lunarCalendarVisualChecked = true;
@@ -579,11 +586,12 @@ async function runVipToolSmoke(client, label, report) {
   await waitForPageText(client, /Ввод для расчёта/, `VIP tool "${label}" did not render an input block.`);
   await assertNoNativeSelects(client, report, `VIP tool "${label}"`);
   if (label === "Расширенная натальная карта") {
-    await fillVisibleInputAt(client, 0, "1998-06-15");
-    await fillVisibleInputAt(client, 1, "23:55");
-    await fillVisibleInputAt(client, 2, "Dnipro");
-    await waitForPageText(client, /Близнецы|Карта по дате рождения и знаку/, "VIP Natal date input did not auto-detect Близнецы.");
-    await expectVisibleSelectValue(client, 0, "gemini", "VIP Natal birth date autosign 1998-06-15 -> Близнецы");
+    await fillVisibleInputAt(client, 0, "01012000");
+    await expectVisibleInputValueAt(client, 0, "01.01.2000", "VIP Natal date input 01012000 -> 01.01.2000");
+    await fillVisibleInputAt(client, 1, "12:00");
+    await fillVisibleInputAt(client, 2, "Test City");
+    await waitForPageText(client, /Козерог|Карта по дате рождения и знаку/, "VIP Natal date input did not auto-detect Козерог.");
+    await expectVisibleSelectValue(client, 0, "capricorn", "VIP Natal birth date autosign 01012000 -> Козерог");
     report.vipNatalAutosignChecked = true;
   }
   await clickAny(client, ["Рассчитать", "Показать"]);
@@ -605,7 +613,7 @@ async function runVipToolSmoke(client, label, report) {
   await clickAny(client, ["Поделиться картой", "Поделиться результатом"]);
   await waitForPageText(client, /Готово к отправке|Ссылка готова|Скопировано|Откройте Telegram|Не удалось открыть отправку|Текст для копирования|Текст скопирован/i, `VIP tool "${label}" did not show share state or safe share fallback.`);
   if (label === "Расширенная натальная карта") {
-    await assertLastShareText(client, report, "Premium Natal", ["символическую натальную карту", "startapp=vip"], ["1998-06-15", "23:55", "Dnipro"]);
+    await assertLastShareText(client, report, "Premium Natal", ["символическую натальную карту", "startapp=vip"], ["2000-01-01", "01.01.2000", "12:00", "Test City"]);
   }
   report.vipShared += 1;
 
@@ -1000,6 +1008,12 @@ async function installSmokeHelpers(client) {
         input.dispatchEvent(new Event("change", { bubbles: true }));
         return { ok: true, count: inputs.length };
       },
+      visibleInputValueAt(index) {
+        const inputs = Array.from(document.querySelectorAll("input")).filter(isVisible).filter((element) => !element.disabled && !element.readOnly);
+        const input = inputs[index || 0];
+        if (!input) return { ok: false, error: "not_found", count: inputs.length };
+        return { ok: true, value: input.value || "", count: inputs.length };
+      },
       fillVisibleTextarea(value) {
         const textareas = Array.from(document.querySelectorAll("textarea")).filter(isVisible).filter((element) => !element.disabled && !element.readOnly);
         const textarea = textareas[0];
@@ -1013,23 +1027,24 @@ async function installSmokeHelpers(client) {
         textarea.dispatchEvent(new Event("change", { bubbles: true }));
         return { ok: true, count: textareas.length };
       },
-      async selectVisibleOption(valueOrText, options = {}) {
+      selectVisibleOption(valueOrText, options = {}) {
         const selects = nativeSelects();
         const select = selects[options.index || 0];
         const normalizedNeedle = normalize(valueOrText);
         if (!select) {
+          const optionsList = Array.from(document.querySelectorAll("[data-zodiac-select-option-value]")).filter(isVisible);
+          const option = optionsList.find((item) => normalize(item.getAttribute("data-zodiac-select-option-value")) === normalizedNeedle || normalize(item.textContent).includes(normalizedNeedle));
+          if (option) {
+            option.click();
+            return { ok: true, value: option.getAttribute("data-zodiac-select-option-value"), text: option.textContent, count: 0, customCount: customSelects().length };
+          }
           const custom = customSelects()[options.index || 0];
           if (!custom) return { ok: false, error: "not_found", count: 0, customCount: customSelects().length };
           const trigger = custom.querySelector("button[aria-haspopup='listbox']");
           if (!trigger) return { ok: false, error: "custom_trigger_not_found", count: 0, customCount: customSelects().length };
           trigger.scrollIntoView({ block: "center", inline: "center" });
           trigger.click();
-          await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-          const optionsList = Array.from(document.querySelectorAll("[data-zodiac-select-option-value]")).filter(isVisible);
-          const option = optionsList.find((item) => normalize(item.getAttribute("data-zodiac-select-option-value")) === normalizedNeedle || normalize(item.textContent).includes(normalizedNeedle));
-          if (!option) return { ok: false, error: "custom_option_not_found", count: 0, customCount: customSelects().length, options: optionsList.map((item) => item.textContent || item.getAttribute("data-zodiac-select-option-value")).slice(0, 20) };
-          option.click();
-          return { ok: true, value: option.getAttribute("data-zodiac-select-option-value"), text: option.textContent, count: 0, customCount: customSelects().length };
+          return { ok: false, error: "custom_options_pending", count: 0, customCount: customSelects().length };
         }
         const option = Array.from(select.options).find((item) => normalize(item.value) === normalizedNeedle || normalize(item.textContent).includes(normalizedNeedle));
         if (!option) return { ok: false, error: "option_not_found", count: selects.length, options: Array.from(select.options).map((item) => item.textContent || item.value).slice(0, 20) };
@@ -1163,6 +1178,12 @@ async function fillVisibleInputAt(client, index, value) {
   await settle(client);
 }
 
+async function expectVisibleInputValueAt(client, index, expectedValue, label) {
+  const result = await evalPage(client, "window.__zodiacSmoke.visibleInputValueAt(arguments[0])", [index]);
+  if (!result.ok) throw new Error(`Could not read visible input at index ${index}: ${result.error}; visible inputs=${result.count}.`);
+  if (result.value !== expectedValue) throw new Error(`${label}: expected input value ${expectedValue}, got ${result.value || "empty"}.`);
+}
+
 async function fillVisibleTextarea(client, value) {
   const result = await evalPage(client, "window.__zodiacSmoke.fillVisibleTextarea(arguments[0])", [value]);
   if (!result.ok) throw new Error(`Could not fill visible textarea: ${result.error}; visible textareas=${result.count}.`);
@@ -1170,7 +1191,11 @@ async function fillVisibleTextarea(client, value) {
 }
 
 async function selectVisibleOption(client, valueOrText, options = {}) {
-  const result = await evalPage(client, "window.__zodiacSmoke.selectVisibleOption(arguments[0], arguments[1])", [valueOrText, options]);
+  let result = await evalPage(client, "window.__zodiacSmoke.selectVisibleOption(arguments[0], arguments[1])", [valueOrText, options]);
+  if (!result.ok && result.error === "custom_options_pending") {
+    await settle(client);
+    result = await evalPage(client, "window.__zodiacSmoke.selectVisibleOption(arguments[0], arguments[1])", [valueOrText, options]);
+  }
   if (!result.ok) throw new Error(`Could not select visible option "${valueOrText}": ${result.error}; visible selects=${result.count}; options=${(result.options || []).join(" | ")}.`);
   await settle(client);
   return result;
@@ -1273,7 +1298,7 @@ async function assertBirthMatrixDepth(client, report) {
   if (tabCount < 6) throw new Error(`Birth Matrix expected 6 sections/tabs, got ${tabCount}.`);
   if (sectionCount < 1) throw new Error("Birth Matrix did not render the active section card.");
   await waitForPageText(client, /символическая интерпретация по дате рождения/i, "Birth Matrix did not show the honesty badge.");
-  await waitForPageText(client, /Центр|Число пути|код 3|Творец/i, "Birth Matrix did not show central number/result summary.");
+  await waitForPageText(client, /Центр|Число пути|код 4|Архитектор/i, "Birth Matrix did not show central number/result summary.");
   const tabChecks = [
     { id: "main", label: "Главное", pattern: /Главный код|Центр матрицы/ },
     { id: "character", label: "Характер", pattern: /Характер|Внутренний конфликт|Как проявляется/ },
@@ -1293,7 +1318,7 @@ async function assertBirthMatrixDepth(client, report) {
   await waitForPageText(client, /Сохранено/, "Birth Matrix save did not show saved state.");
   await click(client, "Поделиться");
   await waitForPageText(client, /Ссылка готова|Готово к отправке|Скопировано|Текст для копирования|Текст скопирован|Откройте Telegram/i, "Birth Matrix share did not show safe share state.");
-  await assertLastShareText(client, report, "Birth Matrix", ["Матрицу судьбы", "startapp=birth_matrix"], ["1998-06-15", "23:55", "Dnipro"]);
+  await assertLastShareText(client, report, "Birth Matrix", ["Матрицу судьбы", "startapp=birth_matrix"], ["2000-01-01", "01.01.2000", "12:00", "Test City"]);
   await assertRetentionPrivacy(client, report);
   report.birthMatrixDepthChecked = true;
 }
@@ -1319,6 +1344,10 @@ async function waitForPageText(client, pattern, message) {
   await waitFor(() => hasText(client, pattern), message, 15_000, 250);
 }
 
+async function assertPageTextAbsent(client, pattern, message) {
+  if (await hasText(client, pattern)) throw new Error(message);
+}
+
 async function telegramCalls(client) {
   return evalPage(client, "window.__telegramMockCalls", []);
 }
@@ -1335,7 +1364,8 @@ async function evalPage(client, expression, args = []) {
   });
   if (response.exceptionDetails) {
     const details = response.exceptionDetails;
-    throw new Error(details.exception?.description || details.text || "Runtime.evaluate failed.");
+    const detailText = details.exception?.description || details.text || "Runtime.evaluate failed.";
+    throw new Error(`${detailText} while evaluating ${expression.slice(0, 180)}`);
   }
   return response.result?.value;
 }
@@ -1371,7 +1401,7 @@ class CdpClient {
     this.nextId += 1;
     const payload = JSON.stringify({ id, method, params });
     return new Promise((resolve, reject) => {
-      this.pending.set(id, { resolve, reject });
+      this.pending.set(id, { resolve, reject, method, params });
       this.ws.send(payload);
     });
   }
@@ -1389,7 +1419,10 @@ class CdpClient {
       const pending = this.pending.get(message.id);
       if (!pending) return;
       this.pending.delete(message.id);
-      if (message.error) pending.reject(new Error(`${message.error.message}${message.error.data ? `: ${message.error.data}` : ""}`));
+      if (message.error) {
+        const expressionContext = typeof pending.params?.expression === "string" ? ` while evaluating ${pending.params.expression.slice(0, 180)}` : "";
+        pending.reject(new Error(`${message.error.message}${message.error.data ? `: ${message.error.data}` : ""} during ${pending.method}${expressionContext}`));
+      }
       else pending.resolve(message.result ?? {});
       return;
     }
@@ -1638,6 +1671,7 @@ function createReport() {
     angelNumbersChecked: false,
     customSelectChecked: false,
     nativeSelectsVisible: 0,
+    dateInputUxChecked: false,
     compatibilityAutosignCases: [],
     compatibilityResultChecked: false,
     compatibilityCalendarChecked: false,
@@ -1721,6 +1755,7 @@ function printSummary(status, report) {
   console.log(`Horoscopes checked: ${report.horoscopesChecked ? "YES" : "NO"}`);
   console.log(`Angel Numbers / Ангельские числа checked: ${report.angelNumbersChecked ? "YES" : "NO"}`);
   console.log(`Custom selects checked: ${report.customSelectChecked ? "YES" : "NO"} (native visible: ${report.nativeSelectsVisible})`);
+  console.log(`Date input UX checked: ${report.dateInputUxChecked ? "YES" : "NO"}`);
   console.log(`Compatibility result checked: ${report.compatibilityResultChecked ? "YES" : "NO"}`);
   console.log(`Compatibility autosign cases: ${report.compatibilityAutosignCases.length ? report.compatibilityAutosignCases.join(", ") : "NO"}`);
   console.log(`Compatibility 30-day calendar checked: ${report.compatibilityCalendarChecked ? "YES" : "NO"}`);

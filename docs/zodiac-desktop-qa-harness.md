@@ -83,7 +83,7 @@ The QA harness must not commit or publish artifacts containing:
 - Telegram session data;
 - private chats or production channel screens.
 
-The scripted test uses synthetic data such as `1998-06-15`, `23:55`, and `Dnipro`, and smoke assertions verify these values do not leak into localStorage/share drafts. Runtime artifacts are still intentionally ignored because screenshots can contain transient UI state.
+The scripted test uses synthetic data such as `01012000 -> 01.01.2000`, `12:00`, and `Test City`, and smoke assertions verify these values do not leak into localStorage/share drafts. Runtime artifacts are still intentionally ignored because screenshots can contain transient UI state.
 
 ## Manual Limitations
 

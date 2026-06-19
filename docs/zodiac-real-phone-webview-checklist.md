@@ -175,14 +175,15 @@ Privacy:
 Use:
 
 ```text
-date: 1998-06-15
-time: 23:55
-city: Dnipro
+date: 01012000 -> 01.01.2000
+time: 12:00
+city: Test City
 ```
 
 Check:
 
-- auto sign is `Близнецы`;
+- mobile date input shows `01.01.2000` after entering `01012000`;
+- auto sign is `Козерог`;
 - chart visual is visible;
 - hero/summary is visible;
 - tabs work;
@@ -194,14 +195,14 @@ Check:
 
 Privacy:
 
-- share text must not expose `1998-06-15`, `23:55`, `Dnipro`, raw city query, or raw result text.
+- share text must not expose `2000-01-01`, `01.01.2000`, `12:00`, `Test City`, raw city query, or raw result text.
 
 ## Birth Matrix
 
 Use:
 
 ```text
-date: 1998-06-15
+date: 01012000 -> 01.01.2000
 ```
 
 Check:

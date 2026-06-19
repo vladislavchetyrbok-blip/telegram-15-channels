@@ -54,6 +54,11 @@ analytics activation `CONDITIONAL` with env.
 Package 51 adds a new-chat context handoff snapshot:
 `docs/zodiac-new-chat-handoff.md`.
 
+Package 52 hides weak Sonnik/Dream Dictionary from the current soft-launch path
+and keeps it as future backlog only. It also replaces Mini App date fields with
+a mobile-friendly `ДД.ММ.ГГГГ` input, verifies `01012000 -> 01.01.2000`, and
+removes personal test fixture values from smoke/docs.
+
 ## Current Status
 
 The Zodiac product is ready for controlled live operation of the daily publishing lane and user-facing Mini App checks, with the following boundaries:
@@ -61,6 +66,8 @@ The Zodiac product is ready for controlled live operation of the daily publishin
 - Daily Zodiac publishing is active and ledger-protected.
 - Weekly Zodiac posts are prepared and dry-run ready, but weekly live scheduling remains OFF.
 - Mini App core UX is implemented: 10-category home, Angel Numbers top-level, Compatibility pair core, Horoscopes, Mystic, premium Birth Matrix, VIP, Profile, History, Favorites, and Share.
+- Sonnik/Dream Dictionary is hidden/backlog for the current soft launch; Mystic continues through Card of the Day, Tarot/Rune, Lunar/Ritual, talismans, aura, karma, and Birth Matrix.
+- Date input UX uses visible `ДД.ММ.ГГГГ` text fields with digit entry/paste normalization instead of native date controls in Mini App birth date, natal, matrix, ritual, and VIP date flows.
 - VIP is free until `2026-09-17`; payments and Telegram Stars remain OFF.
 - Mini App interaction hardening is implemented and smoke-verified: custom dark selects, safe share fallback, non-dead pair gates, inline VIP pair pickers, and symbolic Final AstroMap visuals for relationship/VIP tools.
 - Channel packaging live was applied and post-live verified for `13/13` channels.
@@ -429,7 +436,8 @@ Telegram mock: PASS
 Main menu categories checked: 10/10
 Angel Numbers / Ангельские числа checked: YES
 Compatibility result checked: YES
-Compatibility autosign cases: 1998-06-15 -> Близнецы, 2000-03-21 -> Овен, 2000-12-22 -> Козерог
+Date input UX checked: YES
+Compatibility autosign cases: 01012000 -> 01.01.2000 -> Козерог, 2000-03-21 -> Овен, 2000-12-22 -> Козерог
 Compatibility 30-day calendar checked: YES
 Compatibility action today checked: YES
 Compatibility messages checked: YES

@@ -14,13 +14,13 @@ const rawQuestion = "\u0427\u0442\u043e \u043c\u043d\u0435 \u0432\u044b\u0431\u0
 const rawIntention = "\u0425\u043e\u0447\u0443 \u0441\u043f\u043e\u043a\u043e\u0439\u0441\u0442\u0432\u0438\u044f";
 const rawFeedback = "\u0442\u0435\u0441\u0442\u043e\u0432\u044b\u0439 \u043b\u0438\u0447\u043d\u044b\u0439 \u043a\u043e\u043c\u043c\u0435\u043d\u0442\u0430\u0440\u0438\u0439";
 const rawResultText = "raw generated result";
-const rawName = "\u0412\u043b\u0430\u0434\u0438\u0441\u043b\u0430\u0432";
-const rawPhone = "+380501234567";
+const rawName = "Test User";
+const rawPhone = "+15550123456";
 const rawInitData = "RAW_INIT_DATA_SHOULD_NOT_SURVIVE";
 const forbiddenValues = [
-  "1998-06-15",
-  "23:55",
-  "Dnipro",
+  "2000-01-01",
+  "12:00",
+  "Test City",
   rawQuestion,
   rawIntention,
   rawFeedback,
@@ -149,15 +149,15 @@ const tests = [
   },
   {
     name: "test-memory adapter strips raw birth date",
-    run: async () => assertTestMemoryOutputExcludes("1998-06-15"),
+    run: async () => assertTestMemoryOutputExcludes("2000-01-01"),
   },
   {
     name: "test-memory adapter strips raw birth time",
-    run: async () => assertTestMemoryOutputExcludes("23:55"),
+    run: async () => assertTestMemoryOutputExcludes("12:00"),
   },
   {
     name: "test-memory adapter strips raw city",
-    run: async () => assertTestMemoryOutputExcludes("Dnipro"),
+    run: async () => assertTestMemoryOutputExcludes("Test City"),
   },
   {
     name: "test-memory adapter strips raw question",
@@ -329,15 +329,15 @@ const tests = [
   },
   {
     name: "merge strips raw birth date",
-    run: () => assertMergedOutputExcludes("1998-06-15"),
+    run: () => assertMergedOutputExcludes("2000-01-01"),
   },
   {
     name: "merge strips raw birth time",
-    run: () => assertMergedOutputExcludes("23:55"),
+    run: () => assertMergedOutputExcludes("12:00"),
   },
   {
     name: "merge strips raw city",
-    run: () => assertMergedOutputExcludes("Dnipro"),
+    run: () => assertMergedOutputExcludes("Test City"),
   },
   {
     name: "merge strips raw question",
@@ -431,11 +431,11 @@ const tests = [
         section: "mystic",
         label: "Birth Matrix safe label",
         createdAt: "2027-01-15T09:00:00.000Z",
-        birthDate: "1998-06-15",
+        birthDate: "2000-01-01",
         resultText: rawResultText,
       }, { nowIso: fixedNowIso });
       assert(synced?.timestamp === "2027-01-15T09:00:00.000Z", "retention createdAt should map to sync timestamp");
-      assert(!JSON.stringify(synced).includes("1998-06-15"), "retention mapper should strip raw birth date");
+      assert(!JSON.stringify(synced).includes("2000-01-01"), "retention mapper should strip raw birth date");
       const retained = syncedItemToRetentionItem(synced, { nowIso: fixedNowIso });
       assert(retained?.createdAt === "2027-01-15T09:00:00.000Z", "synced timestamp should map to retention createdAt");
     },
@@ -534,15 +534,15 @@ const tests = [
   },
   {
     name: "sanitizer strips raw birth date",
-    run: () => assertSanitizedOutputExcludes("1998-06-15"),
+    run: () => assertSanitizedOutputExcludes("2000-01-01"),
   },
   {
     name: "sanitizer strips raw birth time",
-    run: () => assertSanitizedOutputExcludes("23:55"),
+    run: () => assertSanitizedOutputExcludes("12:00"),
   },
   {
     name: "sanitizer strips raw city",
-    run: () => assertSanitizedOutputExcludes("Dnipro"),
+    run: () => assertSanitizedOutputExcludes("Test City"),
   },
   {
     name: "sanitizer strips raw question",
@@ -715,19 +715,19 @@ function makeUnsafePayload() {
     unknownRoot: "SHOULD_NOT_SURVIVE",
     history: [
       {
-        id: "history:birthMatrix:1998-06-15",
+        id: "history:birthMatrix:2000-01-01",
         featureKey: "birthMatrix",
         section: "mystic",
-        label: `Birth Matrix 1998-06-15 23:55 Dnipro ${rawQuestion} ${rawName} ${rawPhone} ${rawResultText}`,
+        label: `Birth Matrix 2000-01-01 12:00 Test City ${rawQuestion} ${rawName} ${rawPhone} ${rawResultText}`,
         timestamp: fixedNowIso,
         sign: "gemini",
         mode: "symbolic",
         tier: "deep",
         scoreTier: "good",
         unexpectedField: "SHOULD_NOT_SURVIVE",
-        birthDate: "1998-06-15",
-        birthTime: "23:55",
-        city: "Dnipro",
+        birthDate: "2000-01-01",
+        birthTime: "12:00",
+        city: "Test City",
         question: rawQuestion,
         intention: rawIntention,
         rawFeedback,

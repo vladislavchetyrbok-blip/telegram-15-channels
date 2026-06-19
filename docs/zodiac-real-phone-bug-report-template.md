@@ -49,9 +49,9 @@ HIGH examples:
 Prefer synthetic inputs:
 
 ```text
-date: 1998-06-15
-time: 23:55
-city: Dnipro
+date: 01012000 -> 01.01.2000
+time: 12:00
+city: Test City
 question: test question
 intention: test intention
 ```

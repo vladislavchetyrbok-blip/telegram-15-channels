@@ -69,7 +69,6 @@ async function main() {
     const angelEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "angel_number_viewed", { section: "angel_numbers", featureKey: "angelNumbers", selectedPresetKey: "angel_1111", patternType: "amplified", hasName: true, hasBirthDate: true, freeVipActive: true });
     const lunarEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "lunar_calendar_opened", { section: "lunar_calendar", freeVipActive: true });
     const talismanEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "daily_talisman_opened", { section: "daily_talisman", freeVipActive: true });
-    const dreamEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "dream_symbol_viewed", { section: "dream_dictionary", selectedPresetKey: "water", freeVipActive: true });
     const giftEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "gift_by_sign_opened", { section: "gift_by_sign", freeVipActive: true });
     const nameCompatibilityEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "name_compatibility_result_viewed", { section: "name_compatibility", hasName: true, hasSecondName: true, freeVipActive: true });
     const archetypeEvent = await checkAllowedEvent(`${baseUrl}/api/zodiac/analytics/event`, "archetype_result_viewed", { section: "archetype", hasBirthDate: true, hasName: true, freeVipActive: true });
@@ -157,7 +156,6 @@ async function main() {
       angelEvent,
       lunarEvent,
       talismanEvent,
-      dreamEvent,
       giftEvent,
       nameCompatibilityEvent,
       archetypeEvent,
@@ -234,7 +232,6 @@ async function main() {
         angelEvent.sensitiveFieldsStripped &&
         lunarEvent.sensitiveFieldsStripped &&
         talismanEvent.sensitiveFieldsStripped &&
-        dreamEvent.sensitiveFieldsStripped &&
         giftEvent.sensitiveFieldsStripped &&
         nameCompatibilityEvent.sensitiveFieldsStripped &&
         archetypeEvent.sensitiveFieldsStripped &&

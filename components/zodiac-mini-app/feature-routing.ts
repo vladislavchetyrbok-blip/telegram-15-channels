@@ -28,7 +28,6 @@ export function sectionForFeature(feature: MoreFeatureId) {
     angelNumbers: "angel_numbers",
     lunarCalendar: "lunar_calendar",
     dailyTalisman: "daily_talisman",
-    dreamDictionary: "dream_dictionary",
     giftBySign: "gift_by_sign",
     archetype: "archetype",
     dailyCard: "hub",

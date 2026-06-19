@@ -52,6 +52,10 @@ and Redis analytics activation `CONDITIONAL` on env configuration.
 Package 51 adds a new-chat context handoff snapshot at
 `docs/zodiac-new-chat-handoff.md`.
 
+Package 52 hides weak Sonnik/Dream Dictionary from the current soft-launch path
+as future backlog, adds a reusable mobile `ДД.ММ.ГГГГ` date input, and replaces
+personal smoke/docs fixture values with neutral examples.
+
 ## Release Candidate Status
 
 - RC status: READY for controlled `5-20` users.
@@ -74,6 +78,8 @@ Package 51 adds a new-chat context handoff snapshot at
 - Anonymous batch template: `docs/zodiac-soft-launch-batch-template.md`.
 - Controlled launch freeze: `docs/zodiac-controlled-launch-freeze.md`.
 - New chat handoff: `docs/zodiac-new-chat-handoff.md`.
+- Sonnik/Dream Dictionary: hidden backlog, not a current production-ready feature.
+- Date input UX: mobile-friendly `ДД.ММ.ГГГГ`, including `01012000 -> 01.01.2000`.
 
 ## Current Product Readiness
 
@@ -98,6 +104,8 @@ Mini App smoke baseline:
 - VIP cards/tools: `11/11`.
 - Feedback CTA/panel: PASS.
 - Safe share drafts: Compatibility, Lunar/Ritual, Angel Numbers, Premium Natal, Tarot, Rune, Birth Matrix.
+- Sonnik hidden regression: PASS in Mystic browser and Telegram mock paths.
+- Date input UX normalization: PASS.
 - Telegram mock: PASS.
 - Console errors: `0`.
 - Runtime errors: `0`.

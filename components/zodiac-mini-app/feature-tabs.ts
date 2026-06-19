@@ -40,7 +40,6 @@ export const menuFeatureTabs: Array<{ id: MoreFeatureId; label: string; shortLab
   { id: "dailyTalisman", label: "🧿 Талисман дня", shortLabel: "Талисман", group: "forecasts", requirement: "sign" },
   { id: "angelNumbers", label: "👼 Ангельские числа", shortLabel: "11:11", group: "forecasts" },
   { id: "giftBySign", label: "🎁 Подарок по знаку", shortLabel: "Подарок", group: "forecasts", requirement: "sign" },
-  { id: "dreamDictionary", label: "🌙 Сонник", shortLabel: "Сонник", group: "mystic" },
   { id: "dailyCard", label: "🃏 Карта дня", shortLabel: "Карта", group: "mystic", requirement: "sign" },
   { id: "tarotCard", label: "🔮 Таро дня", shortLabel: "Таро", group: "mystic", requirement: "sign" },
   { id: "runeDay", label: "ᚱ Руна дня", shortLabel: "Руна", group: "mystic", requirement: "sign" },
@@ -70,6 +69,6 @@ export const defaultMenuFeatureByGroup: Record<MenuFeatureGroup, MoreFeatureId> 
   love: "compatibilityTool",
   profile: "natalChart",
   forecasts: "todayForecast",
-  mystic: "dreamDictionary",
+  mystic: "dailyCard",
   vip: "vip",
 };

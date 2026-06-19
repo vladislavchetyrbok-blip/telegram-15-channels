@@ -284,7 +284,6 @@ const trackedAnalyticsItems = [
   "angel_numbers_opened / angel_number_viewed",
   "lunar_calendar_opened",
   "daily_talisman_opened",
-  "dream_dictionary_opened / dream_symbol_viewed",
   "gift_by_sign_opened",
   "name_compatibility_opened / name_compatibility_result_viewed",
   "archetype_opened / archetype_result_viewed",

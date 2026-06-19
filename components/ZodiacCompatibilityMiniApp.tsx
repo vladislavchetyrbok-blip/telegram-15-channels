@@ -78,6 +78,8 @@ import {
   type MainMenuCategoryTarget,
 } from "./zodiac-mini-app/MainMenuSections";
 import { MoreFeatureNavigation } from "./zodiac-mini-app/MoreFeatureNavigation";
+import { ZodiacDateInput } from "./zodiac-mini-app/ZodiacDateInput";
+import { parseDateInput } from "@/lib/zodiac-date-input";
 import { ProfileRetentionPanel, type ProfileQuickTarget } from "./zodiac-mini-app/ProfileRetentionPanel";
 import { useZodiacMiniAppRetention, type RetentionPanelFocus, type ZodiacRetentionDraft, type ZodiacRetentionItem } from "./zodiac-mini-app/retention";
 import { ResultPanel, ResultTextCard } from "./zodiac-mini-app/ResultCards";
@@ -1675,9 +1677,7 @@ function MoreSection({
     const selectedPresetKey =
       activeMoreFeature === "angelNumbers"
         ? angelNumberSafePresetKey
-        : activeMoreFeature === "dreamDictionary"
-          ? dreamProfile.safeKey
-          : undefined;
+        : undefined;
     const patternType = activeMoreFeature === "angelNumbers" ? angelNumber.patternType : undefined;
     const trackKey = [
       activeMoreFeature,
@@ -1726,11 +1726,6 @@ function MoreSection({
     if (activeMoreFeature === "dailyTalisman") {
       lastPersonalToolTrackedRef.current = trackKey;
       onPersonalToolEvent("daily_talisman_opened", payload);
-    }
-    if (activeMoreFeature === "dreamDictionary") {
-      lastPersonalToolTrackedRef.current = trackKey;
-      onPersonalToolEvent("dream_dictionary_opened", payload);
-      onPersonalToolEvent("dream_symbol_viewed", payload);
     }
     if (activeMoreFeature === "giftBySign") {
       lastPersonalToolTrackedRef.current = trackKey;
@@ -2474,7 +2469,7 @@ function NumerologyCard({
             <input value={person.name} onChange={(event) => onPersonChange({ ...person, name: sanitizeNameInput(event.target.value) })} placeholder="можно оставить пустым" autoComplete="off" autoCorrect="off" spellCheck={false} className="h-12 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900" />
           </Field>
           <Field label="Дата рождения (необязательно)" publicMode={publicMode}>
-            <input value={person.birthDate} onChange={(event) => updateBirthDate(person, event.target.value, onPersonChange)} placeholder="дд.мм.гггг" inputMode="numeric" autoComplete="off" className={`h-12 w-full rounded-lg border bg-white px-3 text-base text-slate-900 ${dateError ? "border-rose-300" : "border-slate-200"}`} />
+            <ZodiacDateInput publicMode={publicMode} value={person.birthDate} onChange={(nextValue) => updateBirthDate(person, nextValue, onPersonChange)} hasError={Boolean(dateError)} />
             {dateError ? <p className="mt-2 text-xs font-semibold text-rose-600">{dateError}</p> : null}
           </Field>
           <p className={publicMode ? "text-xs font-semibold text-emerald-100" : "text-xs font-semibold text-emerald-800"}>имя и дата остаются только на экране</p>
@@ -2737,7 +2732,7 @@ function PersonalityArchetypeCard({ publicMode, person, profile, onPersonChange,
             <input value={person.name} onChange={(event) => onPersonChange({ ...person, name: sanitizeNameInput(event.target.value) })} placeholder="можно оставить пустым" autoComplete="off" autoCorrect="off" spellCheck={false} className="h-12 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900" />
           </Field>
           <Field label="Дата рождения (необязательно)" publicMode={publicMode}>
-            <input value={person.birthDate} onChange={(event) => updateBirthDate(person, event.target.value, onPersonChange)} placeholder="дд.мм.гггг" inputMode="numeric" autoComplete="off" className={`h-12 w-full rounded-lg border bg-white px-3 text-base text-slate-900 ${dateError ? "border-rose-300" : "border-slate-200"}`} />
+            <ZodiacDateInput publicMode={publicMode} value={person.birthDate} onChange={(nextValue) => updateBirthDate(person, nextValue, onPersonChange)} hasError={Boolean(dateError)} />
             {dateError ? <p className="mt-2 text-xs font-semibold text-rose-600">{dateError}</p> : null}
           </Field>
         </div>
@@ -2866,14 +2861,7 @@ function NatalChartV1Card({
           </Field>
 
           <Field label="Дата рождения" publicMode={publicMode}>
-            <input
-              value={person.birthDate}
-              onChange={(event) => updateBirthDate(person, event.target.value, onPersonChange)}
-              placeholder="дд.мм.гггг"
-              inputMode="numeric"
-              autoComplete="off"
-              className={`h-12 w-full rounded-lg border bg-white px-3 text-base text-slate-900 ${dateError ? "border-rose-300" : "border-slate-200"}`}
-            />
+            <ZodiacDateInput publicMode={publicMode} value={person.birthDate} onChange={(nextValue) => updateBirthDate(person, nextValue, onPersonChange)} hasError={Boolean(dateError)} />
             {dateError ? <p className="mt-2 text-xs font-semibold text-rose-600">{dateError}</p> : null}
           </Field>
 
@@ -3086,14 +3074,7 @@ function ChineseHoroscopeCard({
         </div>
 
         <Field label="Дата рождения" publicMode={publicMode}>
-          <input
-            value={person.birthDate}
-            onChange={(event) => updateBirthDate(person, event.target.value, onPersonChange)}
-            placeholder="дд.мм.гггг"
-            inputMode="numeric"
-            autoComplete="off"
-            className={`h-12 w-full rounded-lg border bg-white px-3 text-base text-slate-900 ${dateError ? "border-rose-300" : "border-slate-200"}`}
-          />
+          <ZodiacDateInput publicMode={publicMode} value={person.birthDate} onChange={(nextValue) => updateBirthDate(person, nextValue, onPersonChange)} hasError={Boolean(dateError)} />
           {dateError ? <p className="mt-2 text-xs font-semibold text-rose-600">{dateError}</p> : null}
         </Field>
 
@@ -3213,14 +3194,7 @@ function NameProfileCard({
           </Field>
 
           <Field label="Дата рождения (необязательно)" publicMode={publicMode}>
-            <input
-              value={person.birthDate}
-              onChange={(event) => updateBirthDate(person, event.target.value, onPersonChange)}
-              placeholder="дд.мм.гггг"
-              inputMode="numeric"
-              autoComplete="off"
-              className={`h-12 w-full rounded-lg border bg-white px-3 text-base text-slate-900 ${dateError ? "border-rose-300" : "border-slate-200"}`}
-            />
+            <ZodiacDateInput publicMode={publicMode} value={person.birthDate} onChange={(nextValue) => updateBirthDate(person, nextValue, onPersonChange)} hasError={Boolean(dateError)} />
             {dateError ? <p className="mt-2 text-xs font-semibold text-rose-600">{dateError}</p> : null}
           </Field>
         </div>
@@ -3457,18 +3431,11 @@ function PersonPanel({
               </div>
             </Field>
             <Field label="Дата рождения" publicMode={publicMode}>
-              <input
-                type="text"
-                inputMode="numeric"
-                autoComplete="off"
-                autoCorrect="off"
-                spellCheck={false}
+              <ZodiacDateInput
+                publicMode={publicMode}
                 value={value.birthDate}
-                onChange={(event) => updateBirthDate(value, event.target.value, onChange, onBirthDateAutosign)}
-                placeholder="дд.мм.гггг"
-                className={`h-12 w-full rounded-lg border bg-white px-3 text-base text-slate-900 ${
-                  value.birthDate && !parsedDate.ok ? "border-rose-300" : "border-slate-200"
-                }`}
+                onChange={(nextValue) => updateBirthDate(value, nextValue, onChange, onBirthDateAutosign)}
+                hasError={Boolean(value.birthDate && !parsedDate.ok)}
               />
               {detectedSign ? (
                 <p className="mt-2 rounded-md border border-cyan-100 bg-cyan-50 px-3 py-2 text-xs font-semibold text-cyan-900">
@@ -3600,9 +3567,6 @@ function updateBirthDate(value: PersonState, rawValue: string, onChange: (value:
 }
 
 function formatBirthDateInput(rawValue: string) {
-  const trimmed = String(rawValue || "").trim();
-  const isoMatch = trimmed.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-  if (isoMatch) return `${isoMatch[3]}.${isoMatch[2]}.${isoMatch[1]}`;
   return formatDateInput(rawValue);
 }
 
@@ -5716,14 +5680,6 @@ const knownNameProfiles: Record<string, { meaning: string; strength: string; ris
     communication: "лучше всего звучит спокойно, без намёков и ожидания, что другой догадается",
     work: "сильна там, где нужны вкус, забота, точность и спокойная дипломатия",
   },
-  владислав: {
-    meaning: "Имя Владислав символически связано с достоинством, управлением силой и умением отвечать за выбранный путь.",
-    strength: "воля, стратегическое мышление и способность держать направление",
-    risk: "перегруз ответственностью и желание контролировать результат слишком жёстко",
-    relationship: "в отношениях важно сочетать силу с тёплой открытостью и простыми словами",
-    communication: "лучше звучит через спокойную уверенность, без необходимости доказывать правоту",
-    work: "сильнее всего проявляется в задачах, где нужны план, лидерство и выдержка",
-  },
   дарья: {
     meaning: "Имя Дарья символически связано с энергией дара, живостью и способностью быстро оживлять пространство.",
     strength: "эмоциональная выразительность, щедрость и быстрый контакт",
@@ -5886,30 +5842,16 @@ const nameCompatibilityHints = [
 
 
 function parseBirthDate(value: string): ParsedDate {
-  const raw = String(value || "").trim();
-  if (!raw) return { ok: false, error: "Введите дату рождения." };
-  const isoMatch = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-  const dotMatch = raw.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
-  const year = isoMatch ? Number(isoMatch[1]) : dotMatch ? Number(dotMatch[3]) : NaN;
-  const month = isoMatch ? Number(isoMatch[2]) : dotMatch ? Number(dotMatch[2]) : NaN;
-  const day = isoMatch ? Number(isoMatch[3]) : dotMatch ? Number(dotMatch[1]) : NaN;
-
-  if (!Number.isInteger(day) || !Number.isInteger(month) || !Number.isInteger(year)) {
-    return { ok: false, error: "Используйте формат ДД.ММ.ГГГГ." };
-  }
-  if (year < 1900 || year > 2100) return { ok: false, error: "Проверьте год рождения." };
-  const date = new Date(Date.UTC(year, month - 1, day));
-  if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day) {
-    return { ok: false, error: "Такой даты не существует." };
-  }
+  const parsed = parseDateInput(value, { emptyError: "Введите дату рождения." });
+  if (!parsed.ok) return parsed;
 
   return {
     ok: true,
-    iso: `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`,
-    day,
-    month,
-    year,
-    signSlug: signFromDate(day, month),
+    iso: parsed.iso,
+    day: parsed.day,
+    month: parsed.month,
+    year: parsed.year,
+    signSlug: signFromDate(parsed.day, parsed.month),
   };
 }
 

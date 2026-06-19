@@ -35,7 +35,7 @@ npm run zodiac:miniapp:smoke -- --url http://localhost:3000/compatibility
 - Mini App forms use custom `ZodiacSelect` controls in Telegram/browser mode; visible native `<select>` controls inside active Mini App screens are treated as a regression.
 - Compatibility follows `Compatibility -> Pair Setup -> Relationship Card -> 30-Day Couple Calendar -> Actions / Messages / Save / Share`.
 - Compatibility result must show the visual markers `Карта отношений`, `Главный совет`, `Эмоции`, `Общение`, and `Быт / ритм`, plus a non-empty `FinalAstroMap` with energy lines, arrows, and legend.
-- Compatibility smoke chooses Love mode, fills pair data, verifies birth-date autosign cases `1998-06-15 -> Близнецы`, `2000-03-21 -> Овен`, and `2000-12-22 -> Козерог`, reaches a detailed result, opens the 30-day couple calendar, opens `Что написать`, verifies the message copy state `Скопировано`, opens `Действие сегодня`, saves the pair with the `Пара сохранена` state, reopens it from Profile/Favorites/History, and checks safe Share.
+- Compatibility smoke chooses Love mode, fills pair data, verifies mobile date input normalization `01012000 -> 01.01.2000`, verifies birth-date autosign cases `01012000 -> Козерог`, `2000-03-21 -> Овен`, and `2000-12-22 -> Козерог`, reaches a detailed result, opens the 30-day couple calendar, opens `Что написать`, verifies the message copy state `Скопировано`, opens `Действие сегодня`, saves the pair with the `Пара сохранена` state, reopens it from Profile/Favorites/History, and checks safe Share.
 - Compatibility local retention stores only safe summary fields: first sign, second sign, relationship mode, score tier, label, feature key, and timestamp. It must not store names, birth dates, birth times, city query, selected city id, raw result text, or raw message text.
 - Horoscopes category opens from the main menu.
 - Lunar/Ritual opens from the main menu category `Луна и ритуалы`, selects `Ритуал дня`, selects `Сегодня`, enters the test intention `Хочу спокойствия`, calculates, renders `Лунный ритуал`, renders `LunarCalendarVisual`, marks a selected day, shows the legend, `Энергия дня`, `Что делать`, `Что не делать`, `Ритуал`, `Чек-лист`, and `Вечерний итог`, then verifies safe Save/Share.
@@ -47,14 +47,14 @@ npm run zodiac:miniapp:smoke -- --url http://localhost:3000/compatibility
 - Natal chart VIP CTA buttons `Смотреть бесплатные расширения`, `Глубже про отношения`, `Фокус месяца`, and `Стиль лучших дней` must open the intended VIP tool; any button-looking CTA that does nothing is a regression.
 - VIP Natal Chart, Extended Compatibility, Mental Map, Numerology, and VIP Mystic Day render a non-empty symbolic `FinalAstroMap` / `AstroChartVisual` block after calculation.
 - Final AstroMap checks require a visible SVG map, 12-sign wheel, highlighted selected sign(s), at least five energy lines, at least five arrows, a legend, and the honest caption that the map is symbolic and not an ephemeris/house/ascendant calculation.
-- VIP Natal Chart has a dedicated premium smoke path: enter `1998-06-15`, `23:55`, and `Dnipro`, verify auto-sign `Близнецы`, calculate, render the structured hero `Символическая натальная карта`, show the premium natal circle/aspect lines/legend, show the honesty badge `без точных домов и асцендента`, render 6 internal tabs (`Главное`, `Характер`, `Отношения`, `Деньги`, `Рост`, `Сегодня`), verify at least 5 structured sections are reachable, and keep one bottom Save/Share action area.
+- VIP Natal Chart has a dedicated premium smoke path: enter `01012000`, `12:00`, and `Test City`, verify date normalization to `01.01.2000` and auto-sign `Козерог`, calculate, render the structured hero `Символическая натальная карта`, show the premium natal circle/aspect lines/legend, show the honesty badge `без точных домов и асцендента`, render 6 internal tabs (`Главное`, `Характер`, `Отношения`, `Деньги`, `Рост`, `Сегодня`), verify at least 5 structured sections are reachable, and keep one bottom Save/Share action area.
 - Giveaways is not a top-level main category; it remains locked/disabled inside VIP.
 - Open VIP feature screens do not contain `TODO`, `lorem ipsum`, `placeholder`, or unexpected `Скоро появится` text.
 - VIP smoke checks all 11 active tools: natal chart, monthly forecast, name profile, compatibility, mental map, 30-day couple calendar, message helper, numerology, angel numbers, talismans, and VIP mystic day.
 - VIP message helper must show `Скопировано` after copying a generated message.
 - VIP local retention must store only safe shortcuts: feature key, sign slugs, relationship mode, score tier, label, section, mode, and timestamp. It must not store names, birth dates, birth times, birth city/city query, raw input, raw result text, or raw message text.
 - Mystic tab opens and at least three Mystic features can be opened.
-- Birth Matrix / `Матрица судьбы` opens from Mystic, accepts sample date `1998-06-15`, renders the premium symbolic result, visual matrix, central number, legend, 6 sections (`Главное`, `Характер`, `Отношения`, `Деньги`, `Урок`, `Сегодня`), safe Save/Share states, and returns to the Mystic menu.
+- Birth Matrix / `Матрица судьбы` opens from Mystic, accepts sample date `01012000`, normalizes it to `01.01.2000`, renders the premium symbolic result, visual matrix, central number, legend, 6 sections (`Главное`, `Характер`, `Отношения`, `Деньги`, `Урок`, `Сегодня`), safe Save/Share states, and returns to the Mystic menu.
 - Birth Matrix local retention stores only safe summary fields such as feature key, matrix type, archetype key, central number, label, and timestamp. It must not store raw birth date, name, result text, or generated text.
 - Telegram WebApp mock is injected before page load.
 - Telegram `ready()` and `expand()` are called.
@@ -133,7 +133,8 @@ Lunar calendar legend checked: YES
 Birth Matrix / Матрица судьбы checked: YES
 Birth Matrix depth checked: YES
 Compatibility result checked: YES
-Compatibility autosign cases: 1998-06-15 -> Близнецы, 2000-03-21 -> Овен, 2000-12-22 -> Козерог
+Date input UX checked: YES
+Compatibility autosign cases: 01012000 -> 01.01.2000 -> Козерог, 2000-03-21 -> Овен, 2000-12-22 -> Козерог
 Compatibility 30-day calendar checked: YES
 Compatibility action today checked: YES
 Compatibility messages checked: YES

@@ -79,4 +79,4 @@ npm run zodiac:analytics:check
 npm run zodiac:analytics:storage:check
 ```
 
-Smoke must enter `1998-06-15`, render the visual matrix, central number, legend, at least six Birth Matrix tabs/sections, safe Save/Share states, and verify localStorage does not contain the raw date.
+Smoke must enter `01012000`, verify the field normalizes to `01.01.2000`, render the visual matrix, central number, legend, at least six Birth Matrix tabs/sections, safe Save/Share states, and verify localStorage does not contain the raw date.

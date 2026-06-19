@@ -52,7 +52,7 @@ VIP Natal Chart accepts:
 If date of birth is entered, the sign is auto-detected. Example smoke case:
 
 ```text
-1998-06-15 -> Близнецы
+01012000 -> 01.01.2000 -> Козерог
 ```
 
 Input modes:

@@ -84,10 +84,12 @@ The allowlist covers:
 - Soft-launch feedback events: `feedback_opened`, `feedback_draft_copied`, and `feedback_share_started`;
 - Interaction hardening and visual-depth events: `dead_cta_resolved`, `pair_required_action_clicked`, `chart_visual_opened`, `final_map_opened`, `final_map_saved`, `final_map_shared`, and `feature_depth_viewed`;
 - app open, sign selection, section opens, compatibility calculation;
-- natal chart, Chinese horoscope, zodiac stones, name profile, numerology, angel numbers, lunar calendar, daily talisman, dream dictionary, gifts, name compatibility, archetype;
+- natal chart, Chinese horoscope, zodiac stones, name profile, numerology, angel numbers, lunar calendar, daily talisman, gifts, name compatibility, archetype;
 - VIP opened, free access, feature taps, future subscription tap, all active VIP detail screens, and functional VIP tool events: `vip_tool_started`, `vip_tool_calculated`, `vip_tool_saved`, `vip_tool_shared`, `vip_input_reused`, and `vip_message_copied`;
 - Mystic category, daily card, Tarot, rune, intuitive sign, talismans, aura, lunar ritual, karmic lessons, and Birth Matrix lifecycle events (`birth_matrix_started`, `birth_matrix_calculated`, `birth_matrix_saved`, `birth_matrix_shared`);
 - Tarot/Rune richer-flow events: `tarot_started`, `tarot_spread_calculated`, `tarot_spread_saved`, `tarot_spread_shared`, `rune_started`, `rune_spread_calculated`, `rune_spread_saved`, and `rune_spread_shared`;
+
+Sonnik / Dream Dictionary is a future backlog item and is hidden from the current soft launch. It has no active Mini App menu entry, active section, or active analytics event in this release.
 - Lunar/Ritual richer-flow events: `lunar_started`, `lunar_day_calculated`, `lunar_ritual_calculated`, `lunar_ritual_saved`, and `lunar_ritual_shared`;
 - Telegram WebApp ready, BackButton usage, and haptics;
 - giveaways locked/preview events.

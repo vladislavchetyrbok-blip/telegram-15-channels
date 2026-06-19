@@ -1,5 +1,6 @@
 import { cityCatalog } from "./constants";
 import type { City, Gender, PersonState } from "./types";
+export { formatDateInput } from "@/lib/zodiac-date-input";
 
 export function createInitialPerson(sign: string, gender: Gender, knowsTime: boolean, cityId: string): PersonState {
   const selectedCity = getCityById(cityId);
@@ -24,13 +25,6 @@ export function sanitizeNameInput(value: string) {
 
 export function normalizeName(value: string) {
   return sanitizeNameInput(value).trim().replace(/\s{2,}/g, " ");
-}
-
-export function formatDateInput(value: string) {
-  const digits = value.replace(/\D/g, "").slice(0, 8);
-  if (digits.length <= 2) return digits;
-  if (digits.length <= 4) return `${digits.slice(0, 2)}.${digits.slice(2)}`;
-  return `${digits.slice(0, 2)}.${digits.slice(2, 4)}.${digits.slice(4)}`;
 }
 
 export function formatTimeInput(value: string) {
