@@ -889,6 +889,12 @@ async function installSmokeHelpers(client) {
       premiumNatalHonestyBadgeCount() {
         return Array.from(document.querySelectorAll("[data-premium-natal-honesty-badge]")).filter(isVisible).length;
       },
+      premiumNatalEngineStatusCount() {
+        return Array.from(document.querySelectorAll("[data-premium-natal-engine-status][data-astro-engine-mode='exact_unavailable']")).filter(isVisible).length;
+      },
+      premiumNatalFakeExactClaimCount() {
+        return Array.from(document.querySelectorAll("[data-exact-planet-degree], [data-exact-house-cusp], [data-exact-ascendant]")).filter(isVisible).length;
+      },
       premiumNatalTabCount() {
         return Array.from(document.querySelectorAll("[data-premium-natal-tab]")).filter(isVisible).length;
       },
@@ -1210,6 +1216,8 @@ async function assertPremiumNatalChart(client, report) {
   const mapCount = await evalPage(client, "window.__zodiacSmoke.premiumNatalChartCount()", []);
   const heroCount = await evalPage(client, "window.__zodiacSmoke.premiumNatalHeroCount()", []);
   const honestyBadgeCount = await evalPage(client, "window.__zodiacSmoke.premiumNatalHonestyBadgeCount()", []);
+  const engineStatusCount = await evalPage(client, "window.__zodiacSmoke.premiumNatalEngineStatusCount()", []);
+  const fakeExactClaimCount = await evalPage(client, "window.__zodiacSmoke.premiumNatalFakeExactClaimCount()", []);
   const tabCount = await evalPage(client, "window.__zodiacSmoke.premiumNatalTabCount()", []);
   const sectionCount = await evalPage(client, "window.__zodiacSmoke.premiumNatalSectionCount()", []);
   const bottomActionsCount = await evalPage(client, "window.__zodiacSmoke.premiumNatalBottomActionsCount()", []);
@@ -1218,12 +1226,15 @@ async function assertPremiumNatalChart(client, report) {
   if (heroCount < 1) throw new Error("VIP Natal did not render the structured hero summary.");
   if (mapCount < 1) throw new Error("VIP Natal did not render Premium Natal Chart visual.");
   if (honestyBadgeCount < 1) throw new Error("VIP Natal did not render the honesty badge.");
+  if (engineStatusCount < 1) throw new Error("VIP Natal did not render the exact-unavailable astro engine status panel.");
+  if (fakeExactClaimCount > 0) throw new Error(`VIP Natal rendered fake exact selectors before exact provider is available: ${fakeExactClaimCount}.`);
   if (tabCount < 6) throw new Error(`VIP Natal expected 6 structured tabs, got ${tabCount}.`);
   if (sectionCount < 1) throw new Error("VIP Natal did not render an active structured section.");
   if (bottomActionsCount < 1) throw new Error("VIP Natal did not render the bottom action bar.");
   if (aspectLineCount < 5) throw new Error(`VIP Natal expected at least 5 symbolic aspect lines, got ${aspectLineCount}.`);
   if (legendCount < 1) throw new Error("VIP Natal legend did not render.");
   await waitForPageText(client, /Символическая натальная карта|Символическая карта|без точных домов и асцендента/i, "VIP Natal did not show symbolic/honesty wording.");
+  await waitForPageText(client, /Точный астрологический движок ещё не подключён|ephemeris\/provider engine|градусы планет/i, "VIP Natal did not show exact-unavailable engine wording.");
   const tabChecks = [
     { id: "main", label: "Главное", pattern: /Главный код личности|Стихия и темперамент/ },
     { id: "character", label: "Характер", pattern: /Сильные стороны|Внутренний конфликт|Как человек принимает решения/ },

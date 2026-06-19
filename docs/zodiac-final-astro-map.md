@@ -72,6 +72,14 @@ Required wording:
 
 Do not claim exact houses, ascendant, planet degrees, or astronomical transits unless a future package adds a real calculation engine and required user inputs.
 
+Package 35 adds a separate Real Astro Engine readiness layer:
+
+- `lib/zodiac-astro-engine.ts` exposes symbolic and exact-readiness status.
+- `lib/zodiac-astro-providers/exact-provider-placeholder.ts` returns `exact_unavailable` and no fake planet/house/ascendant data.
+- `npm run zodiac:astro:check` verifies that Final AstroMap and Premium Natal Chart remain honest while exact mode is unavailable.
+
+FinalAstroMap stays a symbolic visual layer even after the engine scaffold exists.
+
 ## Analytics
 
 Allowed safe events:

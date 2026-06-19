@@ -48,6 +48,7 @@ The harness uses the existing Mini App smoke coverage as its functional backbone
 - main menu 10 categories;
 - Compatibility result;
 - Premium Natal Chart;
+- Premium Natal Chart exact-unavailable engine status;
 - Birth Matrix;
 - Tarot 3-card spread;
 - Rune spread;
@@ -65,6 +66,7 @@ During screenshot capture it also checks:
 - no horizontal overflow;
 - no visible native white `<select>`;
 - screenshot artifacts for main menu, compatibility result, premium natal, birth matrix, tarot, rune, lunar ritual, VIP page, profile/history/favorites, and feedback panel.
+- the Premium Natal screenshot includes the Real Astro Engine status panel when the result is open.
 
 ## Privacy Rules
 

@@ -1,4 +1,4 @@
-import { getAstroEngineStatus } from "@/lib/zodiac-astro-engine";
+import { getExactChartReadiness, getSymbolicAstroEngineStatus } from "@/lib/zodiac-astro-engine";
 import { signs } from "./constants";
 import type { Gender, ZodiacElement, ZodiacSign } from "./types";
 
@@ -72,7 +72,8 @@ export function NatalChartVisual({
   mode,
   title = "Символическая натальная карта",
 }: NatalChartVisualProps) {
-  const engineStatus = getAstroEngineStatus();
+  const engineStatus = getSymbolicAstroEngineStatus({ sign, birthDate, birthTime, birthCity });
+  const exactReadiness = getExactChartReadiness({ sign, birthDate, birthTime, birthCity });
   const signIndexValue = signIndex(sign);
   const traits = signTraits[sign.slug] ?? signTraits.aries;
   const seed = hashString([sign.slug, birthDate || "no-date", birthTime ? "time" : "no-time", birthCity ? "city" : "no-city", gender].join("|"));
@@ -192,6 +193,24 @@ export function NatalChartVisual({
           <p className={publicMode ? "mt-2 text-xs leading-5 text-slate-400" : "mt-2 text-xs leading-5 text-slate-500"}>
             {engineStatus.note} Сейчас это честная интерпретация без точных домов и асцендента.
           </p>
+
+          <div
+            className={
+              publicMode
+                ? "mt-3 rounded-lg border border-cyan-200/20 bg-cyan-200/10 p-3"
+                : "mt-3 rounded-lg border border-cyan-100 bg-cyan-50 p-3"
+            }
+            data-premium-natal-engine-status
+            data-astro-engine-mode={exactReadiness.status.mode}
+          >
+            <p className={publicMode ? "text-xs font-semibold uppercase tracking-widest text-cyan-100" : "text-xs font-semibold uppercase tracking-widest text-cyan-800"}>
+              {exactReadiness.status.label}
+            </p>
+            <p className={publicMode ? "mt-1 text-xs leading-5 text-slate-200" : "mt-1 text-xs leading-5 text-slate-700"}>
+              Точный астрологический движок ещё не подключён. Сейчас используется символическая карта по знаку и введённым данным.
+              Точные дома, асцендент и градусы планет появятся после подключения ephemeris/provider engine.
+            </p>
+          </div>
 
           <div className="mt-3 grid gap-2 sm:grid-cols-2">
             <NatalMetric publicMode={publicMode} label="Стихия" value={elementLabels[sign.element]} />

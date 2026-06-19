@@ -28,7 +28,21 @@ Main remaining production gaps:
 - Weekly lane is dry-run ready, but weekly live schedule remains intentionally off.
 - Real phone Telegram WebView pass remains manual-required after the latest Mini App visual/interactions fixes; browser smoke and Telegram mock do not count as a real phone pass.
 - Monetization readiness is documented, but payments, Telegram Stars, and entitlement enforcement remain OFF.
+- Real Astro Engine readiness layer is documented and scaffolded: current natal chart remains symbolic, exact mode is `exact_unavailable`, and fake exact planet/house/ascendant data is blocked by `npm run zodiac:astro:check`.
 - Mass public launch should wait until real-phone pass is complete, Redis analytics is enabled or explicitly waived, daily stability is observed, and P0/P1 issues are `0`.
+
+## Real Astro Engine Readiness
+
+Package 35 status:
+
+- Current Premium Natal Chart remains symbolic and visually preserved.
+- `lib/zodiac-astro-engine.ts` defines `AstroEngineMode`, `BirthInput`, `AstroEngineStatus`, and `ExactChartResult`.
+- `lib/zodiac-astro-providers/symbolic-provider.ts` supports the current symbolic UI.
+- `lib/zodiac-astro-providers/exact-provider-placeholder.ts` returns `exact_unavailable`.
+- The exact placeholder does not return planet degrees, houses, ascendant, or fake ephemeris values.
+- Premium Natal UI shows an exact-unavailable engine status panel.
+- Privacy policy remains unchanged: no raw birth date, birth time, city query, names, raw results, or generated content in analytics/localStorage.
+- Future exact work must follow `docs/zodiac-real-astro-engine.md`.
 
 ## Daily Status
 

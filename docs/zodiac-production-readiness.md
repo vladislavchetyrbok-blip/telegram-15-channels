@@ -242,7 +242,9 @@ VIP:
 - Key VIP result screens render symbolic Final AstroMap visuals: Natal Chart, Extended Compatibility, Mental Map, Numerology, and VIP Mystic Day.
 - Final AstroMap captions must stay honest: `Символическая карта энергий` and `Базовая визуализация без точных домов и асцендента`.
 - Premium Natal Chart now has a structured premium result layout: hero summary, 12-sign symbolic visual map, highlighted sign/element, symbolic aspect lines, element/quality/polarity/leading-energy labels, 6 internal tabs, and one bottom Save/Share action area. It still does not claim exact houses, ascendant, planet degrees, or real aspects without a future astro engine.
-- `lib/zodiac-astro-engine.ts` exposes the current `symbolic` / `exact_unavailable` status so a future exact engine can be added without changing the UI contract.
+- Package 35 adds a Real Astro Engine readiness layer. `lib/zodiac-astro-engine.ts` exposes typed `symbolic`, `exact_unavailable`, and future `exact_available` status; `lib/zodiac-astro-providers/symbolic-provider.ts` powers current symbolic mode; `lib/zodiac-astro-providers/exact-provider-placeholder.ts` returns `exact_unavailable` without fake planets, houses, ascendant, or degrees.
+- Premium Natal Chart shows an engine status panel explaining that the exact engine is not connected yet and the current chart remains symbolic.
+- `npm run zodiac:astro:check` must pass before soft launch and before any future exact-engine work.
 - VIP message helper supports copy state without storing message text.
 - Giveaways remain locked/preview.
 
@@ -310,6 +312,7 @@ Command:
 
 ```bash
 npm run zodiac:miniapp:smoke
+npm run zodiac:astro:check
 ```
 
 Expected summary:
@@ -437,6 +440,7 @@ npm run zodiac:weekly-assets:validate
 npm run zodiac:weekly:dry -- --week YYYY-Www
 npm run zodiac:weekly:ledger:check
 npm run zodiac:miniapp:smoke
+npm run zodiac:astro:check
 npm run zodiac:analytics:check
 npm run zodiac:analytics:storage:check
 npm run zodiac:ledger:check

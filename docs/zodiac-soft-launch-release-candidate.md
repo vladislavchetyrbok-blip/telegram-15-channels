@@ -54,6 +54,7 @@ Mini App smoke baseline:
 - VIP entitlements: OFF, no paid gates active.
 - Backups/safety: production safety PASS.
 - Channel packaging: already live and verified in earlier package.
+- Real Astro Engine: readiness scaffold added, current natal chart remains symbolic, exact mode is `exact_unavailable`, and no fake planet/house/ascendant values are shown.
 
 ## Manual Blockers Before Mass Launch
 
@@ -111,6 +112,7 @@ Run this local checklist before sending the test link:
 npm run lint
 npm run build
 npm run zodiac:miniapp:smoke
+npm run zodiac:astro:check
 npm run zodiac:analytics:check
 npm run zodiac:analytics:storage:check
 npm run production:safety:check
@@ -156,6 +158,7 @@ Clean baseline was run after removing `.next`.
 | `npm run lint` | PASS |
 | `npm run build` | PASS |
 | `npm run zodiac:miniapp:smoke` | PASS |
+| `npm run zodiac:astro:check` | PASS |
 | `npm run zodiac:analytics:check` | PASS |
 | `npm run zodiac:analytics:storage:check` | PASS, storage `noop` warning |
 | `npm run zodiac:workflow:check -- --date 2026-06-20` | Static PASS, warning only: no GitHub token/local report |
