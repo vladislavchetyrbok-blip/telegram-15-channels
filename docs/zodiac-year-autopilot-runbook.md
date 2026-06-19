@@ -50,6 +50,16 @@ All scheduled attempts run in `live` mode after preflight, but repeated attempts
 
 If a stable 09:00 Kyiv wall-clock time is mandatory year-round, update the cron seasonally or move the scheduler to a runtime with timezone-aware cron, such as VPS/Coolify.
 
+Daily stability report:
+
+```text
+docs/zodiac-daily-autopilot-stability-report.md
+```
+
+Latest documented status: 2026-06-19 is `13/13 sent` and duplicate-protected;
+2026-06-20 was dry-run publishable before its scheduled cron window with
+Telegram API calls `0` and ledger writes `0`.
+
 ## Workflow Monitor
 
 Use the dedicated Zodiac Daily workflow monitor for `.github/workflows/zodiac-scheduler.yml`:
@@ -180,6 +190,8 @@ Manual live recovery is allowed only when all are true:
 - The target date is explicit and was checked with the `Europe/Kyiv` calendar policy.
 
 Manual live recovery is forbidden when the dry-run or report shows the date is already protected, including `Already Sent 13` or `Duplicate Blocked 13`. In that case, the scheduled or backup run already did its job and another live attempt must not be started.
+
+Manual live also requires explicit approval after post-cron read-only checks.
 
 ## Daily Status
 

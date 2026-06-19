@@ -4,6 +4,17 @@
 * **Staggered Window**: `7 6 * * *`, `19 6 * * *`, `37 6 * * *`, `52 6 * * *`, `11 7 * * *` (06:07/06:19/06:37/06:52/07:11 UTC)
 * The schedule intentionally avoids common `:00` / `:30` congestion minutes after the 2026-06-19 run arrived late around 13:36 Kyiv.
 
+Current stability report:
+
+```text
+docs/zodiac-daily-autopilot-stability-report.md
+```
+
+Latest documented status:
+
+- 2026-06-19: `13/13 sent`, `Already Sent 13`, `Duplicate Blocked 13`, dry-run Telegram API calls `0`.
+- 2026-06-20 at the pre-cron checkpoint: dry-run `Would Publish 13/13`, Telegram API calls `0`, ledger writes `0`.
+
 ## Why a Backup Exists
 GitHub Actions schedule events can be delayed, missed, or dropped during high load periods on GitHub's infrastructure. Multiple attempts give the daily Zodiac publish more chances to run without requiring manual recovery.
 
@@ -67,6 +78,9 @@ If both crons fail or the pipeline stalls:
 3. Continue only if dry-run shows 13 publishable posts, `Already Sent 0`, `Duplicate Blocked 0`, and the ledger has no `sent` entries for the date.
 4. If dry-run shows `Already Sent 13` or `Duplicate Blocked 13`, manual live is forbidden because the date is already protected.
 5. Once verified, you may trigger the workflow manually using GitHub Actions `workflow_dispatch` (Live mode, with the correct explicit date).
+
+Manual live must never be started before post-cron read-only checks and explicit
+approval.
 
 ## 🚨 RULE: Never Run Live Twice
 **NEVER** run the live publish pipeline twice for the same date unless a `dry-run` and a full ledger audit have confirmed it is 100% safe to do so. The system is designed to autonomously protect itself from duplicates using the durable ledger.

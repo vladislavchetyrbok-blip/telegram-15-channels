@@ -96,6 +96,8 @@ Mini App smoke baseline:
 
 - Daily scheduler: ON and timing-hardened.
 - Daily duplicate protection: ledger/dedupe confirmed.
+- Daily stability report: `docs/zodiac-daily-autopilot-stability-report.md`.
+- 2026-06-19: `13/13 sent`, `Already Sent 13`, `Duplicate Blocked 13`, dry-run Telegram API calls `0`.
 - Daily dry-run for `2026-06-20`: `Would Publish 13/13`, CTA rows `13/13 OK`, Telegram API calls `0`, ledger writes `0`.
 - Weekly live: OFF.
 - Redis analytics: API/privacy model ready, storage mode `noop`, required Redis env missing.
@@ -267,6 +269,7 @@ git diff --check
 - No payments/Stars.
 - No VIP entitlement enforcement.
 - No manual live publish without explicit approval and dry-run/ledger proof.
+- No manual live publish before post-cron read-only checks.
 - No manual ledger edits.
 - No mass launch.
 - No scheduler timing changes during this RC.

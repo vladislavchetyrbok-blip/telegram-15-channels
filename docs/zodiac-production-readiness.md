@@ -120,6 +120,12 @@ Workflow:
 Workflow name: Zodiac Daily Publisher
 ```
 
+Stability report:
+
+```text
+docs/zodiac-daily-autopilot-stability-report.md
+```
+
 Scheduled attempts:
 
 ```text
@@ -140,6 +146,8 @@ Policy:
 - Duplicate safety is provided by durable ledger and publish-date dedupe before Telegram API calls.
 - Target date is calculated using the Europe/Kyiv calendar policy.
 - 2026-06-19 autopublish completed successfully (`13/13 sent`) but arrived late, around `13:36 Kyiv` start with ledger entries at `13:46-13:47 Kyiv`; this timing hardening shifts future attempts away from the most congested minute marks.
+- 2026-06-19 dry-run after publish shows `Already Sent 13`, `Duplicate Blocked 13`, Telegram API calls `0`, ledger writes `0`.
+- 2026-06-20 pre-cron dry-run shows `Would Publish 13/13`, CTA rows `13/13 OK`, Telegram API calls `0`, ledger writes `0`.
 
 Required safe check:
 
