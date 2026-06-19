@@ -87,7 +87,21 @@ Expected while weekly is still prepared-only:
 - `Live Publish Calls 0`.
 - `Ledger Writes 0`.
 
-Do not enable weekly live schedule from this runbook. Enabling weekly publishing requires a separate plan that confirms daily stability, weekly ledger safety, channel targets, and duplicate-block behavior.
+Package 28 weekly live readiness audit:
+
+```text
+docs/zodiac-weekly-live-readiness-audit.md
+```
+
+Do not enable weekly live schedule from this runbook. Enabling weekly publishing requires a separate plan that confirms daily stability, a completed real-phone Telegram WebView pass, weekly ledger safety, channel targets, and duplicate-block behavior.
+
+Minimum gates before weekly live:
+
+- several stable daily runs after the daily scheduler timing shift;
+- two consecutive weekly dry-runs with `Would Publish 13`, `Content Errors 0`, `Telegram API Calls 0`, and `Ledger Writes 0`;
+- confirmed weekly duplicate-block behavior;
+- explicit user approval;
+- first weekly live run must be controlled/manual, not cron.
 
 ## Telegram CTA And Mini App Start Params
 

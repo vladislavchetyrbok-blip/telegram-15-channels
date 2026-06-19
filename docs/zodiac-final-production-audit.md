@@ -173,7 +173,15 @@ Result:
 - Live publish calls: `0`.
 - Ledger writes: `0`.
 
-Weekly live schedule is still off. Weekly publishing should stay dry-run only until a separate live-readiness and explicit approval package.
+Package 28 weekly live readiness audit:
+
+```text
+docs/zodiac-weekly-live-readiness-audit.md
+```
+
+Result: weekly dry-runs for `2026-W25` and `2026-W26` are ready, assets are `91/91`, weekly ledger protection is present, and weekly live remains OFF.
+
+Recommendation: do not enable weekly live yet. Weekly publishing should stay dry-run only until daily publishing is stable for several consecutive post-cron days, the real-phone Telegram WebView pass is complete, duplicate-block behavior is confirmed, and the user gives explicit live approval.
 
 ## Analytics Status
 
@@ -282,7 +290,7 @@ Backup freshness is no longer an active warning after Package 19. Keep running b
 1. Watch the next daily runs after the cron-minute shift and confirm they arrive closer to the intended Kyiv morning window.
 2. Configure Redis REST env for Mini App analytics and verify dashboard counters.
 3. Repeat a real phone Telegram WebView pass after the latest select/share/CTA/chart fixes using `docs/zodiac-real-phone-webview-checklist.md`.
-4. Prepare a separate weekly live-readiness package before enabling weekly publishing.
+4. Keep weekly live OFF until the Package 28 gates are satisfied: several stable daily runs, real-phone Telegram WebView pass, two consecutive weekly dry-run passes, duplicate-block confirmation, and explicit approval.
 5. Keep backups fresh or automate backup creation before release checkpoints.
 6. Add GitHub API token support for local workflow monitor runs if local Actions visibility is needed.
 7. Keep payments/Telegram Stars behind a future monetization package; do not enable during free VIP period without a product decision.
@@ -292,5 +300,5 @@ Backup freshness is no longer an active warning after Package 19. Keep running b
 1. Daily scheduler post-window verification after 11:05 Kyiv, then alerting automation.
 2. Redis analytics activation and dashboard verification in production.
 3. Real phone Telegram WebView pass after the latest interaction fixes using `docs/zodiac-real-phone-webview-checklist.md`.
-4. Weekly live readiness package: dedupe, runbook, explicit approval gates, then schedule decision.
+4. Weekly controlled-live package: first manual approved weekly publish, post-live ledger duplicate-block verification, then a later schedule decision.
 5. Monetization planning package for post-free VIP access: product rules, legal copy, feature flags, and only then Stars/payments implementation.

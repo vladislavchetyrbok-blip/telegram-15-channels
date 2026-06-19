@@ -36,7 +36,13 @@ npm run zodiac:weekly:dry -- --week YYYY-Www
 
 Weekly dry-run must show `Weekly Range Lines 13/13`, `Telegram API Calls 0`, `Live Publish Calls 0`, and `Ledger Writes 0`. The first line of every weekly post includes the explicit week range, for example `15.06–21.06.2026`, calculated from `--week` rather than system time.
 
-Weekly live publishing can be enabled only by a separate decision after daily scheduler stability is confirmed.
+Package 28 weekly live readiness audit is documented in:
+
+```text
+docs/zodiac-weekly-live-readiness-audit.md
+```
+
+Current decision: weekly live remains OFF. Weekly live publishing can be enabled only by a separate decision after daily scheduler stability is confirmed, the real-phone Telegram WebView pass is complete, two consecutive weekly dry-runs pass, duplicate-block behavior is confirmed, and explicit approval is given.
 
 ## Retention CTA Checks
 

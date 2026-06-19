@@ -125,7 +125,15 @@ npm run zodiac:weekly:dry -- --week YYYY-Www
 npm run zodiac:weekly:ledger:check
 ```
 
-Weekly live publishing should be enabled only after several stable daily publishing days and a separate GO decision.
+Package 28 weekly live readiness audit:
+
+```text
+docs/zodiac-weekly-live-readiness-audit.md
+```
+
+Result: weekly dry-run is ready, weekly live remains OFF, and enabling weekly live now is `NO`.
+
+Weekly live publishing should be enabled only after several stable daily publishing days, a completed real-phone Telegram WebView pass, two consecutive weekly dry-run passes, confirmed weekly duplicate-block behavior, and a separate explicit GO decision. The first weekly live run should be controlled/manual, not cron.
 
 ## Mini App UX
 
