@@ -46,6 +46,17 @@ export default function AphroditeStudioPage() {
           </a>
         </div>
 
+        {/* Briefs Link */}
+        <div className="rounded-xl border border-indigo-500/20 bg-indigo-500/5 p-5 flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-lg font-semibold text-indigo-400">Брифы Студии</h2>
+            <p className="text-sm text-slate-400 mt-1">Конструктор контент-брифов: структура, хук, промпты, CTA.</p>
+          </div>
+          <a href="/dashboard/networks/aphrodite/studio/briefs" className="rounded bg-indigo-500/20 px-4 py-2 text-sm font-medium text-indigo-300 hover:bg-indigo-500/30 transition">
+            Открыть брифы
+          </a>
+        </div>
+
         {/* Templates Link */}
         <div className="rounded-xl border border-blue-500/20 bg-blue-500/5 p-5 flex items-center justify-between">
           <div>

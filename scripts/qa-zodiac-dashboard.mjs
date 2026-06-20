@@ -32,6 +32,7 @@ const ROUTES = {
   aphroditeStudio: "/dashboard/networks/aphrodite/studio",
   aphroditeTemplates: "/dashboard/networks/aphrodite/studio/templates",
   aphroditeQueue: "/dashboard/networks/aphrodite/studio/queue",
+  aphroditeBriefs: "/dashboard/networks/aphrodite/studio/briefs",
 };
 
 async function main() {
@@ -411,6 +412,18 @@ async function main() {
     assertIncludes(pages.aphroditeQueue, "Чеклист перед публикацией", "aphrodite queue checklist");
     assertIncludes(pages.aphroditeQueue, "Публикация в Telegram отключена", "aphrodite queue safety message");
     assertNotIncludes(pages.aphroditeQueue, "/api/aphrodite", "no server write API required on aphrodite queue");
+
+    assertIncludes(pages.aphroditeBriefs, "Брифы Студии Афродиты", "aphrodite briefs heading");
+    assertIncludes(pages.aphroditeBriefs, "Reels Brief Template", "aphrodite briefs reels template");
+    assertIncludes(pages.aphroditeBriefs, "Зодиак", "aphrodite briefs zodiac module");
+    assertIncludes(pages.aphroditeBriefs, "Валюты", "aphrodite briefs currency module");
+    assertIncludes(pages.aphroditeBriefs, "Крипта", "aphrodite briefs crypto module");
+    assertIncludes(pages.aphroditeBriefs, "Металлы", "aphrodite briefs metals module");
+    assertIncludes(pages.aphroditeBriefs, "Недвижимость", "aphrodite briefs real estate module");
+    assertIncludes(pages.aphroditeBriefs, "Бриф", "aphrodite briefs flow step 1");
+    assertIncludes(pages.aphroditeBriefs, "Сценарий", "aphrodite briefs flow step 2");
+    assertIncludes(pages.aphroditeBriefs, "Публикация в Telegram отключена", "aphrodite briefs safety message");
+    assertNotIncludes(pages.aphroditeBriefs, "/api/aphrodite", "no server write API required on aphrodite briefs");
 
     const combined = Object.values(pages).join("\n");
     assertNoForbiddenLinks(combined);
