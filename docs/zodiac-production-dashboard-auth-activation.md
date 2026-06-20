@@ -64,3 +64,9 @@ If you need to disable authentication:
 1. Go to Vercel **Environment Variables**.
 2. Change `ZODIAC_DASHBOARD_AUTH_ENABLED` to `false`.
 3. **Redeploy** the application to apply the changes.
+
+## Zodiac OS Naming System (Package 66)
+
+* **Full platform** = Zodiac OS
+* **Dashboard/admin** = Zodiac Control
+* **Mini App** = Zodiac Mini

@@ -59,7 +59,7 @@ Redis analytics: active in production / values hidden
 
 The current product is ready for a small trusted tester loop, not for broad public launch.
 
-Package 59 adds the owner-facing Telegram Platform Management Console. Start at
+Package 59 adds the owner-facing Zodiac OS Management Console. Start at
 `/dashboard/networks/zodiac`; channel management is at
 `/dashboard/networks/zodiac/channels`. The new-channel builder is localStorage
 draft-only and does not add a server-side write API.
@@ -170,7 +170,7 @@ b467e51 docs: add zodiac first users analytics baseline
 Current latest package:
 
 ```text
-Package 57: Full Telegram Platform Audit and UX Improvement Plan
+Package 57: Full Zodiac OS Audit and UX Improvement Plan
 Status: in progress
 Previous: Package 56 (analytics baseline), Package 55 (Redis verification),
           Package 54 (dashboard navigation), Package 53 (full audit),
@@ -349,3 +349,9 @@ Manual real-phone Telegram WebView sanity pass, then first 5 testers.
 ```
 
 - [Production Dashboard Auth Activation Runbook](zodiac-production-dashboard-auth-activation.md)
+
+## Zodiac OS Naming System (Package 66)
+
+* **Full platform** = Zodiac OS
+* **Dashboard/admin** = Zodiac Control
+* **Mini App** = Zodiac Mini

@@ -1,4 +1,4 @@
-# Zodiac Telegram Platform Map
+# Zodiac Zodiac OS Map
 
 Last updated: 2026-06-20 | Package 64
 
@@ -144,3 +144,9 @@ Telegram Mini App public routes unprotected.
 | `zodiac:telegram-auth:check` | Telegram auth check |
 | `zodiac:profile-sync:check` | Profile sync safety check |
 | `production:safety:check` | Production safety center |
+
+## Zodiac OS Naming System (Package 66)
+
+* **Full platform** = Zodiac OS
+* **Dashboard/admin** = Zodiac Control
+* **Mini App** = Zodiac Mini

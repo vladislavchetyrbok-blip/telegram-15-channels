@@ -24,7 +24,7 @@ export default function ZodiacPlatformDocsPage() {
             </p>
             <div className="mt-5 grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
               <div>
-                <h1 className="break-words text-2xl font-semibold tracking-tight text-slate-950 sm:text-4xl">Документы Telegram Platform</h1>
+                <h1 className="break-words text-2xl font-semibold tracking-tight text-slate-950 sm:text-4xl">Документы Zodiac OS</h1>
                 <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-600">
                   Список актуальных runbooks и карт проекта. Это пути к файлам в репозитории, не внешние dashboard-ссылки.
                 </p>

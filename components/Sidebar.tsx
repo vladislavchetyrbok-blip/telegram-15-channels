@@ -8,12 +8,10 @@ import { cn } from "@/lib/utils";
 const navItems = [
   { id: "overview", href: "/dashboard/networks/zodiac", label: "Обзор", icon: Sparkles },
   { id: "channels", href: "/dashboard/networks/zodiac/channels", label: "Каналы", icon: RadioTower },
-  { id: "mini-app", href: "/compatibility", label: "Mini App", icon: Smartphone },
   { id: "content", href: "/dashboard/networks/zodiac/content", label: "Контент", icon: FileText },
   { id: "publishing", href: "/dashboard/networks/zodiac/publishing", label: "Публикации", icon: Rocket },
   { id: "analytics", href: "/dashboard/networks/zodiac/analytics", label: "Аналитика", icon: BarChart3 },
   { id: "feedback", href: "/dashboard/networks/zodiac/feedback", label: "Отзывы", icon: MessageSquareText },
-  { id: "soft-launch", href: "/dashboard/networks/zodiac/operations", label: "Soft Launch", icon: HeartHandshake },
   { id: "security", href: "/dashboard/networks/zodiac/security", label: "Безопасность", icon: LockKeyhole },
   { id: "docs", href: "/dashboard/networks/zodiac/docs", label: "Документы", icon: BookOpen },
 ];
@@ -29,8 +27,8 @@ export function Sidebar() {
             <RadioTower className="h-5 w-5" />
           </div>
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-cyan-100">TG Platform</p>
-            <p className="text-xs text-slate-500">Zodiac management console</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-cyan-100">Zodiac OS</p>
+            <p className="text-xs text-slate-500 leading-tight pr-2">Центр управления Telegram-сетью, Mini App, публикациями, аналитикой и безопасностью.</p>
           </div>
         </Link>
 

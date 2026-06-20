@@ -1,4 +1,4 @@
-# Zodiac Telegram Platform Admin Safety Center
+# Zodiac Zodiac OS Admin Safety Center
 
 Package 62-64 | 2026-06-20
 
@@ -9,7 +9,7 @@ Route:
 ```
 
 The Admin Safety Center is the owner-facing safety and approval page for the
-Zodiac Telegram Platform. It is intentionally read-only for live systems and
+Zodiac Zodiac OS. It is intentionally read-only for live systems and
 does not add any server-side write API.
 
 ## Safety Status
@@ -151,3 +151,9 @@ Do not enable dashboard write actions until all of these exist:
 - safety check proving live Telegram actions cannot run accidentally.
 
 - [Production Dashboard Auth Activation Runbook](zodiac-production-dashboard-auth-activation.md)
+
+## Zodiac OS Naming System (Package 66)
+
+* **Full platform** = Zodiac OS
+* **Dashboard/admin** = Zodiac Control
+* **Mini App** = Zodiac Mini

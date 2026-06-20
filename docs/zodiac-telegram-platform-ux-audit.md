@@ -1,4 +1,4 @@
-# Zodiac Telegram Platform UX Audit
+# Zodiac Zodiac OS UX Audit
 
 Package 57-64 | 2026-06-20 | latest update: Package 64
 
@@ -79,7 +79,7 @@ None.
 
 ## Package 59 Addendum
 
-Package 59 turns the Zodiac dashboard into a clearer Telegram Platform Management Console:
+Package 59 turns the Zodiac dashboard into a clearer Zodiac OS Management Console:
 
 - sidebar navigation now exposes `Обзор`, `Каналы`, `Mini App`, `Публикации`, `Аналитика`, `Soft Launch`, `Безопасность`, `Документы`;
 - `/dashboard/networks/zodiac/channels` shows the 13-channel table with Telegram links, Mini App `startapp`, navigation, description, publishing, analytics, and risk status;
@@ -160,7 +160,7 @@ launch enablement was added.
 
 ## Package 64 Addendum
 
-Package 64 adds `/dashboard/login` as the owner dashboard auth gate:
+Package 64 adds `/dashboard/login` as the Zodiac Control auth gate:
 
 - route-level guard for `/dashboard` and `/dashboard/networks/zodiac/*`;
 - env-controlled auth contract with SHA-256 passcode hash and session secret;
@@ -274,3 +274,9 @@ Bad signs after first 5 users:
 * no save/share intent appears;
 * feedback opens spike after low result completion;
 * any raw personal input or Redis secret value appears.
+
+## Zodiac OS Naming System (Package 66)
+
+* **Full platform** = Zodiac OS
+* **Dashboard/admin** = Zodiac Control
+* **Mini App** = Zodiac Mini

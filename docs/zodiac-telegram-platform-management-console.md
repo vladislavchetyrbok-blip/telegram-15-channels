@@ -1,8 +1,8 @@
-# Zodiac Telegram Platform Management Console
+# Zodiac Zodiac OS Management Console
 
 Package 59-64 | 2026-06-20
 
-This document describes the owner-facing Telegram Platform dashboard for the Zodiac network. It is an admin console and runbook index, not a live publisher.
+This document describes the owner-facing Zodiac OS dashboard for the Zodiac network. It is an admin console and runbook index, not a live publisher.
 
 Package 64 adds a dashboard auth gate. Local/dev can run with auth disabled, but
 production should set the `ZODIAC_DASHBOARD_*` env contract before wider access.
@@ -253,3 +253,9 @@ Next safe steps:
 3. Collect feedback.
 4. Fix P0/P1.
 5. Only then consider 20 users.
+
+## Zodiac OS Naming System (Package 66)
+
+* **Full platform** = Zodiac OS
+* **Dashboard/admin** = Zodiac Control
+* **Mini App** = Zodiac Mini

@@ -64,7 +64,7 @@ Package 53 adds the full project audit and improvement roadmap:
 as the only approved launch stage and keeps mass launch, weekly live,
 payments/Stars, profile sync, and exact astro claims OFF.
 
-Package 59 adds the Telegram Platform Management Console UX. The owner dashboard
+Package 59 adds the Zodiac OS Management Console UX. The Zodiac Control
 now has Russian navigation for overview, channels, Mini App, publishing,
 analytics, soft launch, safety, and docs. The new channel route
 `/dashboard/networks/zodiac/channels` is read-only for live Telegram state and
@@ -73,7 +73,7 @@ config/checklist output. No server-side write API, live publish, manual ledger
 change, weekly live, payments/Stars, profile sync, or exact astro claims were
 enabled.
 
-Package 60 adds the safe Telegram Platform Publishing Center at
+Package 60 adds the safe Zodiac OS Publishing Center at
 `/dashboard/networks/zodiac/publishing`. It shows daily/weekly/dry-run/ledger
 status cards, today/tomorrow/week calendar preview, channel coverage, dry-run
 command hints, a localStorage-only manual post draft builder, and publishing
@@ -81,27 +81,27 @@ safety rules. It does not add a live publish button, server write API, Telegram
 API call, manual ledger edit, weekly live, payments/Stars, profile sync, or
 exact astro claims.
 
-Package 61 adds the Telegram Platform Feedback Center at
+Package 61 adds the Zodiac OS Feedback Center at
 `/dashboard/networks/zodiac/feedback`. It is an owner-facing localStorage-only
 center for sanitized first-user feedback, P0/P1/P2 triage, real-phone QA
 checkboxes, analytics correlation, and the 5 -> 20 users decision matrix. It
 does not create a server write API and does not store raw tester data.
 
-Package 62 adds the Telegram Platform Admin Safety Center at
+Package 62 adds the Zodiac OS Admin Safety Center at
 `/dashboard/networks/zodiac/security`. It shows safety status cards, an Approval
 Matrix, browser-local audit log, `Перед 20 пользователями` checklist, and future
 role readiness. It does not create a server write API, live publish button,
 ledger write action, weekly live enablement, payments/Stars enablement, profile
 sync writes, exact astro provider, or mass launch enablement.
 
-Package 63 adds the Telegram Platform Content Engine at
+Package 63 adds the Zodiac OS Content Engine at
 `/dashboard/networks/zodiac/content`. It is a localStorage-only preparation
 surface for template catalog, Template Studio, Telegram preview, generated
 text/config/checklist, RU/UA quality checklist, and rubric planning. It does not
 create a server write API, publish to Telegram, write the ledger, enable weekly
 live, or add exact astrology claims.
 
-Package 64 adds the Telegram Platform Dashboard Auth Gate at `/dashboard/login`.
+Package 64 adds the Zodiac OS Dashboard Auth Gate at `/dashboard/login`.
 It protects `/dashboard` and `/dashboard/networks/zodiac/*` when
 `ZODIAC_DASHBOARD_AUTH_ENABLED=true`, uses a SHA-256 passcode hash and signed
 httpOnly 12-hour session cookie, and fails closed if hash/secret are missing.
@@ -114,12 +114,12 @@ payments/Stars, profile sync, or exact astro.
 The Zodiac product is ready for controlled live operation of the daily publishing lane and user-facing Mini App checks, with the following boundaries:
 
 - Daily Zodiac publishing is active and ledger-protected.
-- Telegram Platform console route `/dashboard/networks/zodiac/channels` is available for channel management, dry-run command hints, and local draft preparation.
-- Telegram Platform publishing route `/dashboard/networks/zodiac/publishing` is available for safe calendar preview, dry-run hints, and local manual post drafts.
-- Telegram Platform feedback route `/dashboard/networks/zodiac/feedback` is available for local-only sanitized first-user triage and real-phone QA evidence.
-- Telegram Platform safety route `/dashboard/networks/zodiac/security` is available for approvals, local sanitized audit log, pre-20-user checklist, and role/auth readiness.
-- Telegram Platform content route `/dashboard/networks/zodiac/content` is available for local-only template drafts, CTA/startapp preview, RU/UA quality checks, and rubric planning.
-- Telegram Platform auth route `/dashboard/login` is available for env-controlled owner access gating; enable it in production before wider access.
+- Zodiac OS console route `/dashboard/networks/zodiac/channels` is available for channel management, dry-run command hints, and local draft preparation.
+- Zodiac OS publishing route `/dashboard/networks/zodiac/publishing` is available for safe calendar preview, dry-run hints, and local manual post drafts.
+- Zodiac OS feedback route `/dashboard/networks/zodiac/feedback` is available for local-only sanitized first-user triage and real-phone QA evidence.
+- Zodiac OS safety route `/dashboard/networks/zodiac/security` is available for approvals, local sanitized audit log, pre-20-user checklist, and role/auth readiness.
+- Zodiac OS content route `/dashboard/networks/zodiac/content` is available for local-only template drafts, CTA/startapp preview, RU/UA quality checks, and rubric planning.
+- Zodiac OS auth route `/dashboard/login` is available for env-controlled owner access gating; enable it in production before wider access.
 - Weekly Zodiac posts are prepared and dry-run ready, but weekly live scheduling remains OFF.
 - Mini App core UX is implemented: 10-category home, Angel Numbers top-level, Compatibility pair core, Horoscopes, Mystic, premium Birth Matrix, VIP, Profile, History, Favorites, and Share.
 - Sonnik/Dream Dictionary is hidden/backlog for the current soft launch; Mystic continues through Card of the Day, Tarot/Rune, Lunar/Ritual, talismans, aura, karma, and Birth Matrix.
@@ -896,3 +896,9 @@ Status:
   broken flows, or any sensitive/raw value shown in the dashboard.
 
 - [Production Dashboard Auth Activation Runbook](zodiac-production-dashboard-auth-activation.md)
+
+## Zodiac OS Naming System (Package 66)
+
+* **Full platform** = Zodiac OS
+* **Dashboard/admin** = Zodiac Control
+* **Mini App** = Zodiac Mini

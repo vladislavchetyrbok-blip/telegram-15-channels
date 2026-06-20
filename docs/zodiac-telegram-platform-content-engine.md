@@ -1,4 +1,4 @@
-# Zodiac Telegram Platform Content Engine
+# Zodiac Zodiac OS Content Engine
 
 Package 63 | 2026-06-20
 
@@ -152,3 +152,9 @@ Before any server-backed content CMS is enabled, the project needs:
 - tests proving no raw sensitive data is stored;
 - no unauthenticated write routes;
 - explicit owner approval for live publish paths.
+
+## Zodiac OS Naming System (Package 66)
+
+* **Full platform** = Zodiac OS
+* **Dashboard/admin** = Zodiac Control
+* **Mini App** = Zodiac Mini

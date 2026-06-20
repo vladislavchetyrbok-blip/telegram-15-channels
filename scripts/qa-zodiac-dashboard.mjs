@@ -37,24 +37,35 @@ async function main() {
       assertNoSecretValues(pages[name], `${name} page`);
     }
 
-    assertIncludes(pages.login, "Вход в Telegram Platform Dashboard", "dashboard login page heading");
+    assertIncludes(pages.login, "Вход в Zodiac OS", "dashboard login page heading");
     assertIncludes(pages.login, "Auth отключён для local/dev режима", "dashboard login disabled local mode");
     assertIncludes(pages.dashboardAuthStatus, '"authEnabled":false', "dashboard auth disabled status");
     assertIncludes(pages.dashboardAuthStatus, '"sessionCookie":"local browser only"', "dashboard auth session cookie status");
 
-    assertIncludes(pages.overview, "Обзор управления Zodiac", "overview page heading");
+    assertIncludes(pages.overview, "Zodiac OS", "Zodiac OS visible on dashboard shell or overview");
+    assertIncludes(pages.overview, "Zodiac Control", "overview page heading");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/channels"', "overview channels route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/publishing"', "overview publishing route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/analytics"', "overview analytics route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/feedback"', "overview feedback route link");
-    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/operations"', "overview operations route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/security"', "overview security route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/content"', "overview content route link");
+    assertIncludes(pages.overview, "Обзор", "sidebar/platform nav Overview label");
     assertIncludes(pages.overview, "Каналы", "sidebar/platform nav Channels label");
+    assertIncludes(pages.overview, "Контент", "sidebar/platform nav Content label");
+    assertIncludes(pages.overview, "Публикации", "sidebar/platform nav Publishing label");
     assertIncludes(pages.overview, "Аналитика", "sidebar/platform nav Analytics label");
     assertIncludes(pages.overview, "Отзывы", "sidebar/platform nav Feedback label");
     assertIncludes(pages.overview, "Безопасность", "sidebar/platform nav Security label");
-    assertIncludes(pages.overview, "Контент", "sidebar/platform nav Content label");
+
+    // Module cards visibility checks
+    assertIncludes(pages.overview, "Zodiac Network — Каналы", "Zodiac Network module card visible");
+    assertIncludes(pages.overview, "Zodiac Studio — Контент", "Zodiac Studio module card visible");
+    assertIncludes(pages.overview, "Zodiac Publisher — Публикации", "Zodiac Publisher module card visible");
+    assertIncludes(pages.overview, "Zodiac Pulse — Аналитика", "Zodiac Pulse module card visible");
+    assertIncludes(pages.overview, "Zodiac Voice — Отзывы", "Zodiac Voice module card visible");
+    assertIncludes(pages.overview, "Zodiac Shield — Безопасность", "Zodiac Shield module card visible");
+    assertIncludes(pages.overview, "Zodiac Mini — Mini App", "Zodiac Mini module card visible");
 
     assertIncludes(pages.analytics, "Аналитика Mini App", "analytics page heading");
     assertIncludes(pages.analytics, "First-users funnel", "first-users funnel block");
@@ -275,7 +286,7 @@ async function main() {
     assertNotIncludes(pages.security, "/api/zodiac/admin-safety", "admin safety server write API route");
     assertNotIncludes(pages.security, "/api/zodiac/security", "security server write API route");
 
-    assertIncludes(pages.docs, "Документы Telegram Platform", "docs page heading");
+    assertIncludes(pages.docs, "Документы Zodiac OS", "docs page heading");
     assertIncludes(pages.docs, "docs/zodiac-telegram-platform-admin-safety.md", "admin safety doc path");
     assertIncludes(pages.docs, "docs/zodiac-telegram-platform-dashboard-auth.md", "dashboard auth doc path");
     assertIncludes(pages.docs, "docs/zodiac-telegram-platform-content-engine.md", "content engine doc path");

@@ -1,10 +1,10 @@
-# Zodiac Telegram Platform Dashboard Auth
+# Zodiac Zodiac OS Dashboard Auth
 
 Date: 2026-06-20
 Package: 64
 Route: `/dashboard/login`
 
-This document describes the owner dashboard auth gate. It does not enable live
+This document describes the Zodiac Control auth gate. It does not enable live
 publish, weekly live, payments/Stars, profile sync, exact astrology claims,
 server-side platform writes, or manual ledger edits.
 
@@ -122,3 +122,9 @@ The auth check uses a test-only passcode generated inside the script. It must no
 print real env values or mutate env files.
 
 - [Production Dashboard Auth Activation Runbook](zodiac-production-dashboard-auth-activation.md)
+
+## Zodiac OS Naming System (Package 66)
+
+* **Full platform** = Zodiac OS
+* **Dashboard/admin** = Zodiac Control
+* **Mini App** = Zodiac Mini

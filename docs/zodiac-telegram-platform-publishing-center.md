@@ -1,8 +1,8 @@
-# Zodiac Telegram Platform Publishing Center
+# Zodiac Zodiac OS Publishing Center
 
 Package 60, updated Package 63 | 2026-06-20
 
-This document describes the safe owner-facing publishing center for the Zodiac Telegram Platform. It is a preparation and dry-run console, not a live publishing surface.
+This document describes the safe owner-facing publishing center for the Zodiac Zodiac OS. It is a preparation and dry-run console, not a live publishing surface.
 
 ## Route
 
@@ -132,3 +132,9 @@ Package 63 adds the related Content Engine at:
 Use it to prepare local-only template drafts, preview CTA/startapp text, and run
 the RU/UA quality checklist before copying approved text into the manual post
 draft flow. There is no automatic server-backed draft import yet.
+
+## Zodiac OS Naming System (Package 66)
+
+* **Full platform** = Zodiac OS
+* **Dashboard/admin** = Zodiac Control
+* **Mini App** = Zodiac Mini

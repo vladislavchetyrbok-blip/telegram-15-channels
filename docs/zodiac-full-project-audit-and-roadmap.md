@@ -649,7 +649,7 @@ Prerequisites:
 What stays OFF:
 - production writes and user-visible sync toggle.
 
-### Package 59: Telegram Platform Management Console
+### Package 59: Zodiac OS Management Console
 
 Goal:
 - Add an owner-facing management console for channels, Mini App, bot/startapp,
@@ -673,7 +673,7 @@ What stays OFF:
 - live publish, manual ledger edits, weekly live, payments/Stars, profile sync,
   exact astro claims.
 
-### Package 61: Telegram Platform Feedback and QA Evidence Center
+### Package 61: Zodiac OS Feedback and QA Evidence Center
 
 Goal:
 - Add an owner-facing center for first-user feedback, P0/P1/P2 triage,
@@ -698,7 +698,7 @@ What stays OFF:
   manual ledger edits, weekly live, payments/Stars, profile sync, exact astro
   claims, mass launch.
 
-### Package 62: Telegram Platform Admin Safety Center
+### Package 62: Zodiac OS Admin Safety Center
 
 Goal:
 - Add a dedicated owner-facing safety center for live-action guardrails,
@@ -723,7 +723,7 @@ What stays OFF:
 - server write API, live publish, manual ledger edits, weekly live,
   payments/Stars, profile sync, exact astro provider/claims, and mass launch.
 
-### Package 63: Telegram Platform Content Engine and Template Studio
+### Package 63: Zodiac OS Content Engine and Template Studio
 
 Goal:
 - Add owner-facing content engine for templates, rubrics, CTA/startapp previews,
@@ -746,7 +746,7 @@ What stays OFF:
 - server write API, live publish, ledger writes, weekly live, payments/Stars,
   profile sync, exact astro provider/claims, and mass launch.
 
-### Package 64: Telegram Platform Dashboard Admin Auth Gate
+### Package 64: Zodiac OS Dashboard Admin Auth Gate
 
 Goal:
 - Add a safe owner-dashboard auth gate with login, logout, env-controlled
@@ -888,7 +888,7 @@ until the relevant package proves it.
 
 ## Package 59 Management Console Update
 
-Package 59 adds a dedicated owner-facing Telegram Platform Management Console:
+Package 59 adds a dedicated owner-facing Zodiac OS Management Console:
 
 * **Login route**: `/dashboard/login`
 * **Overview**: `/dashboard/networks/zodiac`
@@ -1076,3 +1076,9 @@ First 5 users: GO
 ```
 
 - [Production Dashboard Auth Activation Runbook](zodiac-production-dashboard-auth-activation.md)
+
+## Zodiac OS Naming System (Package 66)
+
+* **Full platform** = Zodiac OS
+* **Dashboard/admin** = Zodiac Control
+* **Mini App** = Zodiac Mini
