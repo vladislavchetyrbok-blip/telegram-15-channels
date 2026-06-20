@@ -1,6 +1,6 @@
 # Zodiac Telegram Platform Publishing Center
 
-Package 60, updated Package 62 | 2026-06-20
+Package 60, updated Package 63 | 2026-06-20
 
 This document describes the safe owner-facing publishing center for the Zodiac Telegram Platform. It is a preparation and dry-run console, not a live publishing surface.
 
@@ -10,8 +10,8 @@ This document describes the safe owner-facing publishing center for the Zodiac T
 /dashboard/networks/zodiac/publishing
 ```
 
-The page is linked from the platform sidebar, overview, channels, operations,
-and Admin Safety Center pages.
+The page is linked from the platform sidebar, overview, channels, Content
+Engine, operations, and Admin Safety Center pages.
 
 ## Daily / Weekly / Live Status
 
@@ -122,3 +122,13 @@ Package 62 adds the related Admin Safety Center at:
 Before any live publish process, check the Approval Matrix there. Daily live
 publish remains blocked in UI and requires explicit owner approval outside the
 dashboard.
+
+Package 63 adds the related Content Engine at:
+
+```text
+/dashboard/networks/zodiac/content
+```
+
+Use it to prepare local-only template drafts, preview CTA/startapp text, and run
+the RU/UA quality checklist before copying approved text into the manual post
+draft flow. There is no automatic server-backed draft import yet.

@@ -154,7 +154,7 @@ function normalizeLastSection(value: unknown) {
 }
 
 function normalizeItem(value: ZodiacRetentionDraft | Partial<ZodiacRetentionItem>): ZodiacRetentionItem {
-  const label = sanitizeLabel(value.label) || "Астрологический центр";
+  const label = sanitizeStoredText(sanitizeLabel(value.label)) || "Астрологический центр";
   const section = sanitizeToken(value.section) || "mini_app";
   const featureKey = sanitizeToken(value.featureKey);
   const sign = sanitizeToken(value.sign);
@@ -174,9 +174,9 @@ function normalizeItem(value: ZodiacRetentionDraft | Partial<ZodiacRetentionItem
   const selectedDateKey = sanitizeDateKey(value.selectedDateKey);
   const energyTier = sanitizeToken(value.energyTier);
   const ritualKey = sanitizeToken(value.ritualKey);
-  const detail = sanitizeLabel(value.detail);
+  const detail = sanitizeStoredText(sanitizeLabel(value.detail));
   const id = sanitizeToken(value.id) || [section, featureKey, sign, firstSign, secondSign, relationshipMode, mode, topic, spreadType, cardKeys?.join("_"), runeKeys?.join("_"), matrixType, archetype, mainNumber, dateBucket, selectedDateKey, energyTier, ritualKey, label].filter(Boolean).join(":").slice(0, 140);
-  const createdAt = typeof value.createdAt === "string" && !Number.isNaN(Date.parse(value.createdAt)) ? value.createdAt : new Date().toISOString();
+  const createdAt = normalizeCreatedAtBucket(value.createdAt) ?? normalizeCreatedAtBucket(new Date().toISOString()) ?? "local";
   return {
     id,
     label,
@@ -211,6 +211,19 @@ function upsertItem(items: ZodiacRetentionItem[], item: ZodiacRetentionItem) {
 function sanitizeLabel(value: unknown) {
   if (typeof value !== "string") return undefined;
   return value.replace(/\s+/g, " ").trim().slice(0, 120) || undefined;
+}
+
+function sanitizeStoredText(value: string | undefined) {
+  if (!value) return undefined;
+  const sanitized = value
+    .replace(/\b(?:[01]?\d|2[0-3]):[0-5]\d\b/g, "[time-pattern]")
+    .replace(/\b(?:\d{1,2}[./-]\d{1,2}[./-]\d{2,4}|\d{4}[./-]\d{1,2}[./-]\d{1,2})\b/g, "[date-pattern]");
+  return sanitized.trim().slice(0, 120) || undefined;
+}
+
+function normalizeCreatedAtBucket(value: unknown) {
+  if (typeof value !== "string" || Number.isNaN(Date.parse(value))) return undefined;
+  return new Date(value).toISOString().slice(0, 10);
 }
 
 function sanitizeToken(value: unknown) {

@@ -32,6 +32,7 @@ docs/zodiac-telegram-platform-map.md
 docs/zodiac-telegram-platform-ux-audit.md
 docs/zodiac-telegram-platform-management-console.md
 docs/zodiac-telegram-platform-admin-safety.md
+docs/zodiac-telegram-platform-content-engine.md
 docs/zodiac-telegram-platform-publishing-center.md
 docs/zodiac-telegram-platform-feedback-center.md
 docs/zodiac-controlled-launch-freeze.md
@@ -78,6 +79,12 @@ Package 62 adds the admin safety center at
 local sanitized audit log, `Перед 20 пользователями` checklist, and future
 Owner/Admin/Editor/Viewer role readiness. It does not add server-side write
 APIs or live Telegram actions.
+
+Package 63 adds the content engine at
+`/dashboard/networks/zodiac/content`. It is for local-only template catalog,
+Template Studio, Telegram preview, generated text/config/checklist, RU/UA
+quality checklist, and rubric planning. It does not add server-side writes,
+Telegram API calls, live publish, ledger writes, or exact astro claims.
 
 ## 3. Product Readiness
 

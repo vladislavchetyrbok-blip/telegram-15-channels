@@ -59,12 +59,13 @@ export default function ZodiacChannelsManagementPage() {
           <MetricCard title="Проблемы" value={zodiacPlatformSummary.problems} caption="красных статусов нет" icon={CheckCircle2} tone="slate" />
         </section>
 
-        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-7">
+        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-8">
           <CommandHint title="Проверить навигацию" command="npm run zodiac:navigation:all:dry" icon={PlayCircle} />
           <CommandHint title="Проверить описания" command="npm run zodiac:descriptions:dry" icon={FileText} />
           <ActionLink href="/dashboard/networks/zodiac/publishing" title="Открыть публикации" icon={Rocket} />
           <ActionLink href="/dashboard/networks/zodiac/analytics" title="Открыть аналитику" icon={Activity} />
           <ActionLink href="/compatibility" title="Открыть Mini App" icon={Smartphone} />
+          <ActionLink href="/dashboard/networks/zodiac/content" title="Контент" icon={ClipboardList} />
           <ActionLink href="/dashboard/networks/zodiac/security" title="Безопасность" icon={LockKeyhole} />
           <ActionLink href="/dashboard/networks/zodiac/docs" title="Документация по каналам" icon={FileText} />
         </section>

@@ -70,6 +70,24 @@ Current local dashboard actions recorded:
 The page supports clearing the local log and copying/exporting a sanitized
 audit log summary.
 
+## Package 63 Content Drafts
+
+The Content Engine route is:
+
+```text
+/dashboard/networks/zodiac/content
+```
+
+Content drafts are localStorage-only and remain covered by this safety model:
+
+- no server write API;
+- no Telegram API calls;
+- no live publish button;
+- no ledger writes;
+- no weekly live scheduling;
+- no raw personal data;
+- exact astrology remains `symbolic only / exact_unavailable`.
+
 ## Checklist Before 20 Users
 
 The `Перед 20 пользователями` checklist is also localStorage-only and does not

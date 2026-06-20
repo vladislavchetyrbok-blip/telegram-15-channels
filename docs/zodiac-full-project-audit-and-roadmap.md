@@ -1,7 +1,7 @@
 # Zodiac Full Project Audit And Roadmap
 
 Date: 2026-06-20
-Package: 53, updated through Package 62
+Package: 53, updated through Package 63
 Audit base HEAD: `98b28a322b16d8bb3e91f4422cfea9f7caeb8d54`
 Branch: `main`
 Scope: full-product audit, analytics review, quality review, and improvement roadmap.
@@ -723,7 +723,30 @@ What stays OFF:
 - server write API, live publish, manual ledger edits, weekly live,
   payments/Stars, profile sync, exact astro provider/claims, and mass launch.
 
-### Package 63: Real Astro Engine Provider Research
+### Package 63: Telegram Platform Content Engine and Template Studio
+
+Goal:
+- Add owner-facing content engine for templates, rubrics, CTA/startapp previews,
+  RU/UA/EN quality checks, Telegram preview, and local-only draft prep.
+
+Why:
+- Publishing Center prepares manual posts, but the owner needs a dedicated safe
+  place to shape content before dry-run/manual approval.
+
+Risk:
+- Accidentally creating a server-backed CMS, storing raw sensitive inputs, or
+  implying exact astrology.
+
+Result:
+- Implemented with `/dashboard/networks/zodiac/content`, template catalog,
+  Template Studio, Telegram preview, generated text/config/checklist, RU/UA
+  quality checklist, and rubric planner.
+
+What stays OFF:
+- server write API, live publish, ledger writes, weekly live, payments/Stars,
+  profile sync, exact astro provider/claims, and mass launch.
+
+### Package 64: Real Astro Engine Provider Research
 
 Goal:
 - Choose a provider strategy and fixture design for exact astrology.
@@ -740,7 +763,7 @@ Prerequisites:
 What stays OFF:
 - exact astro claims and UI labels implying exact planets/houses/ascendant.
 
-### Package 64: Weekly Live Controlled First Run Plan
+### Package 65: Weekly Live Controlled First Run Plan
 
 Goal:
 - Prepare a weekly live plan without enabling it yet.
@@ -757,7 +780,7 @@ Prerequisites:
 What stays OFF:
 - weekly live until explicit approval after plan/checks.
 
-### Package 65: VIP Monetization Test Mode
+### Package 66: VIP Monetization Test Mode
 
 Goal:
 - Build payment/Stars/entitlement test-mode readiness only.
@@ -774,7 +797,7 @@ Prerequisites:
 What stays OFF:
 - real payments, real Stars, paid entitlement enforcement.
 
-### Package 66: Performance / Mobile Polish
+### Package 67: Performance / Mobile Polish
 
 Goal:
 - Reduce visual density, stale fallback share copy, and long-scroll friction.
@@ -791,7 +814,7 @@ Prerequisites:
 What stays OFF:
 - new product features, payments, sync, exact astro claims.
 
-### Package 67: Mass Launch Readiness Audit
+### Package 68: Mass Launch Readiness Audit
 
 Goal:
 - Re-audit after analytics, phone evidence, first users, and daily stability.
@@ -849,6 +872,7 @@ Package 59 adds a dedicated owner-facing Telegram Platform Management Console:
 * **Feedback route**: `/dashboard/networks/zodiac/feedback`
 * **Operations route**: `/dashboard/networks/zodiac/operations`
 * **Safety route**: `/dashboard/networks/zodiac/security`
+* **Content route**: `/dashboard/networks/zodiac/content`
 * **Docs route**: `/dashboard/networks/zodiac/docs`
 
 The channel console shows the 13-channel Zodiac network, Telegram handles,
@@ -917,6 +941,42 @@ Weekly live: NO
 Payments/Stars: NO
 Profile sync: NO
 Exact astro claims: NO
+Mass launch: NO
+First 5 users: GO
+20 users: CONDITIONAL
+```
+
+## Package 63 Content Engine Update
+
+Package 63 adds `/dashboard/networks/zodiac/content` as the owner-facing
+Content Engine and Template Studio:
+
+* overview cards for templates, rubrics, RU/UA quality, CTA/startapp, drafts,
+  and publication readiness;
+* template catalog for daily horoscope, weekly forecast, compatibility,
+  Mini App invite, VIP teaser, birth matrix, natal chart, tarot/runes, moon
+  ritual, angel numbers, navigation post, soft launch invite, and custom/manual;
+* localStorage-only Template Studio with language, channel/topic, tone, title,
+  body, CTA, startapp parameter, emoji intensity, status, and notes;
+* validation for title, body, language, startapp, tokens, raw personal data,
+  exact astrology claims, long posts, mixed RU/UA/EN, and missing CTA;
+* Telegram post preview, compact channel-card preview, generated text,
+  generated config/snippet, copy controls, and manual approval checklist;
+* localStorage-only RU/UA quality checklist and rubric planner;
+* links from overview, sidebar, Publishing Center, Channels, Operations, and
+  Safety Center without adding live actions.
+
+Safety verdict remains unchanged:
+
+```text
+Server write API: NO
+Raw sensitive data stored: NO
+Live publish from dashboard: NO
+Manual ledger changes: NO
+Weekly live: NO
+Payments/Stars: NO
+Profile sync: NO
+Exact astro provider: NO
 Mass launch: NO
 First 5 users: GO
 20 users: CONDITIONAL

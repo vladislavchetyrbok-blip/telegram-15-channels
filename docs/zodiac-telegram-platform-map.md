@@ -1,6 +1,6 @@
 # Zodiac Telegram Platform Map
 
-Last updated: 2026-06-20 | Package 62
+Last updated: 2026-06-20 | Package 63
 
 ## Architecture Overview
 
@@ -12,6 +12,8 @@ Telegram Channels (13) ──► Bot / Mini App ──► User Flows ──► A
          │
 Dashboard ──► Overview ──► Analytics Dashboard
          │           │
+         │    Content Engine ──► Template Studio ──► Local Drafts
+         │
          │    Publishing Center ──► Ledger ──► Safety Checks
          │
          └────► Feedback Center ──► Real Phone QA ──► 20 Users Decision
@@ -46,6 +48,7 @@ Soft Launch ──► First 5 Users ──► Feedback ──► Triage
 | Main dashboard | `/dashboard` | YES | 15-channel command center |
 | Zodiac network overview | `/dashboard/networks/zodiac` | YES | Zodiac control panel |
 | Zodiac channel console | `/dashboard/networks/zodiac/channels` | YES | 13-channel table and local new-channel draft builder |
+| Content engine | `/dashboard/networks/zodiac/content` | YES | Template catalog, Template Studio, RU/UA quality checklist, rubric planner |
 | Zodiac publishing center | `/dashboard/networks/zodiac/publishing` | YES | Safe publishing calendar, dry-run helpers, manual post drafts |
 | Analytics dashboard | `/dashboard/networks/zodiac/analytics` | YES | Privacy-safe analytics |
 | Feedback center | `/dashboard/networks/zodiac/feedback` | YES | Local sanitized feedback, real-phone QA, P0/P1 triage |
@@ -86,6 +89,7 @@ Package 59 adds a clearer owner-facing management console layer:
 ```text
 /dashboard/networks/zodiac
   -> /dashboard/networks/zodiac/channels
+  -> /dashboard/networks/zodiac/content
   -> /dashboard/networks/zodiac/publishing
   -> /dashboard/networks/zodiac/analytics
   -> /dashboard/networks/zodiac/feedback
@@ -101,6 +105,8 @@ Package 60 adds the publishing center. Its manual post builder is also `localSto
 Package 61 adds the feedback center. Its intake board and real-phone QA checklist are `localStorage` only, store sanitized summaries, and do not create a server write API.
 
 Package 62 adds the admin safety center at `/dashboard/networks/zodiac/security`. It contains safety status cards, the Approval Matrix, a browser-local audit log, the `Перед 20 пользователями` checklist, and future role readiness. It does not create a server write API or expose live publish controls.
+
+Package 63 adds the content engine at `/dashboard/networks/zodiac/content`. It contains the template catalog, local-only Template Studio, Telegram preview, RU/UA quality checklist, and rubric planner. It does not create a server write API, publish to Telegram, or change live scheduling.
 
 ---
 

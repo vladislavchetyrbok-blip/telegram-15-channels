@@ -1,4 +1,4 @@
-import { Activity, AlertTriangle, CalendarClock, CheckCircle2, ChevronLeft, HeartHandshake, LockKeyhole, MessageSquareText, Rocket, ShieldCheck, UsersRound, XCircle } from "lucide-react";
+import { Activity, AlertTriangle, CalendarClock, CheckCircle2, ChevronLeft, ClipboardList, HeartHandshake, LockKeyhole, MessageSquareText, Rocket, ShieldCheck, UsersRound, XCircle } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { ZodiacPlatformNav } from "@/components/zodiac-platform/ZodiacPlatformNav";
@@ -93,6 +93,10 @@ export default function ZodiacOperationsPage() {
               <Link href="/dashboard/networks/zodiac/publishing" className="inline-flex items-center gap-2 rounded-md border border-violet-200 bg-violet-50 px-4 py-2 text-sm font-semibold text-violet-700 transition hover:border-violet-300 hover:bg-violet-100">
                 <Rocket className="h-4 w-4" />
                 Открыть центр публикаций
+              </Link>
+              <Link href="/dashboard/networks/zodiac/content" className="inline-flex items-center gap-2 rounded-md border border-cyan-200 bg-cyan-50 px-4 py-2 text-sm font-semibold text-cyan-700 transition hover:border-cyan-300 hover:bg-cyan-100">
+                <ClipboardList className="h-4 w-4" />
+                Открыть контент
               </Link>
               <Link href="/dashboard/networks/zodiac/security" className="inline-flex items-center gap-2 rounded-md border border-amber-200 bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-700 transition hover:border-amber-300 hover:bg-amber-100">
                 <LockKeyhole className="h-4 w-4" />

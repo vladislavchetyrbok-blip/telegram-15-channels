@@ -9,6 +9,7 @@ const ROUTES = {
   overview: "/dashboard/networks/zodiac",
   analytics: "/dashboard/networks/zodiac/analytics",
   channels: "/dashboard/networks/zodiac/channels",
+  content: "/dashboard/networks/zodiac/content",
   publishing: "/dashboard/networks/zodiac/publishing",
   feedback: "/dashboard/networks/zodiac/feedback",
   operations: "/dashboard/networks/zodiac/operations",
@@ -41,10 +42,12 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/feedback"', "overview feedback route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/operations"', "overview operations route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/security"', "overview security route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/content"', "overview content route link");
     assertIncludes(pages.overview, "Каналы", "sidebar/platform nav Channels label");
     assertIncludes(pages.overview, "Аналитика", "sidebar/platform nav Analytics label");
     assertIncludes(pages.overview, "Отзывы", "sidebar/platform nav Feedback label");
     assertIncludes(pages.overview, "Безопасность", "sidebar/platform nav Security label");
+    assertIncludes(pages.overview, "Контент", "sidebar/platform nav Content label");
 
     assertIncludes(pages.analytics, "Аналитика Mini App", "analytics page heading");
     assertIncludes(pages.analytics, "First-users funnel", "first-users funnel block");
@@ -75,9 +78,69 @@ async function main() {
     assertIncludes(pages.channels, "npm run zodiac:navigation:all:dry", "navigation dry-run command hint");
     assertIncludes(pages.channels, "npm run zodiac:descriptions:dry", "descriptions dry-run command hint");
     assertIncludes(pages.channels, 'href="/dashboard/networks/zodiac/publishing"', "channels publishing route link");
+    assertIncludes(pages.channels, 'href="/dashboard/networks/zodiac/content"', "channels content route link");
     assertIncludes(pages.channels, 'href="/dashboard/networks/zodiac/security"', "channels security route link");
     assertIncludes(pages.channels, "compat_aries", "sign startapp link");
     assertIncludes(pages.channels, "https://t.me/aries_horoscope_daily", "Telegram channel URL");
+
+    assertIncludes(pages.content, "Контент-движок", "content page heading");
+    assertIncludes(pages.content, "Шаблоны, рубрики, CTA, превью и контроль качества постов для Telegram-сети.", "content page subtitle");
+    assertIncludes(pages.content, "Dashboard / Zodiac / Контент", "content breadcrumb");
+    assertIncludes(pages.content, 'data-qa="content-engine-overview-cards"', "content overview cards");
+    assertIncludes(pages.content, "Шаблоны", "content overview templates card");
+    assertIncludes(pages.content, "Рубрики", "content overview rubrics card");
+    assertIncludes(pages.content, "RU/UA качество", "content overview RU/UA card");
+    assertIncludes(pages.content, "CTA/startapp", "content overview CTA card");
+    assertIncludes(pages.content, "Черновики", "content overview drafts card");
+    assertIncludes(pages.content, "Готовность к публикациям", "content publishing readiness card");
+    assertIncludes(pages.content, "Шаблоны работают как локальные черновики и preview", "content honest local preview state");
+    assertIncludes(pages.content, 'data-qa="template-catalog"', "template catalog");
+    assertIncludes(pages.content, "Ежедневный гороскоп", "daily horoscope template card");
+    assertIncludes(pages.content, "Прогноз недели", "weekly forecast template card");
+    assertIncludes(pages.content, "Совместимость", "compatibility template card");
+    assertIncludes(pages.content, "Mini App invite", "Mini App invite template card");
+    assertIncludes(pages.content, "VIP teaser", "VIP teaser template card");
+    assertIncludes(pages.content, "Матрица судьбы", "Birth Matrix template card");
+    assertIncludes(pages.content, "Натальная карта", "Natal chart template card");
+    assertIncludes(pages.content, "Таро/Руны", "Tarot/Rune template card");
+    assertIncludes(pages.content, "Лунный ритуал", "Lunar ritual template card");
+    assertIncludes(pages.content, "Ангельские числа", "Angel Numbers template card");
+    assertIncludes(pages.content, "Навигационный пост", "navigation post template card");
+    assertIncludes(pages.content, "Soft Launch invite", "soft launch invite template card");
+    assertIncludes(pages.content, "Custom/manual", "custom manual template card");
+    assertIncludes(pages.content, "symbolic only / exact_unavailable", "exact astro restriction label");
+    assertIncludes(pages.content, 'data-qa="template-studio"', "Template Studio section");
+    assertIncludes(pages.content, "Template Studio", "Template Studio heading");
+    assertIncludes(pages.content, "Template type", "template type field");
+    assertIncludes(pages.content, "Language", "language field");
+    assertIncludes(pages.content, "Channel/topic", "channel topic field");
+    assertIncludes(pages.content, "Tone", "tone field");
+    assertIncludes(pages.content, "Emoji intensity", "emoji intensity field");
+    assertIncludes(pages.content, "Mini App startapp parameter", "startapp field");
+    assertIncludes(pages.content, 'data-qa="telegram-post-preview"', "Telegram preview");
+    assertIncludes(pages.content, 'data-qa="compact-channel-card-preview"', "compact channel card preview");
+    assertIncludes(pages.content, 'data-qa="generated-content-text"', "generated content text block");
+    assertIncludes(pages.content, 'data-qa="generated-content-config"', "generated config block");
+    assertIncludes(pages.content, 'data-qa="generated-content-checklist"', "generated checklist block");
+    assertIncludes(pages.content, "review language", "generated checklist language item");
+    assertIncludes(pages.content, "publish only through approved process", "generated checklist approved process item");
+    assertIncludes(pages.content, 'data-qa="content-quality-checklist"', "RU/UA quality checklist");
+    assertIncludes(pages.content, "Проверка качества текста", "quality checklist heading");
+    assertIncludes(pages.content, "понятный заголовок", "quality clear title item");
+    assertIncludes(pages.content, "нет смешения RU/UA", "quality no mixed RU/UA item");
+    assertIncludes(pages.content, "нет ложных точных астрологических claims", "quality exact claims item");
+    assertIncludes(pages.content, "есть переход в Mini App", "quality Mini App transition item");
+    assertIncludes(pages.content, 'data-qa="rubric-planner"', "rubric planner");
+    assertIncludes(pages.content, "ежедневный прогноз", "rubric daily forecast");
+    assertIncludes(pages.content, "soft launch feedback", "rubric soft launch feedback");
+    assertIncludes(pages.content, "live scheduling changes: NO", "no live scheduling changes label");
+    assertIncludes(pages.content, 'href="/dashboard/networks/zodiac/publishing"', "content publishing link");
+    assertIncludes(pages.content, 'href="/dashboard/networks/zodiac/security"', "content security link");
+    assertIncludes(pages.content, 'href="/dashboard/networks/zodiac/channels"', "content channels link");
+    assertNotIncludes(pages.content, "zodiac:publish-date:live", "live publish command on content page");
+    assertNotIncludes(pages.content, "zodiac:weekly:publish", "weekly live command on content page");
+    assertNotIncludes(pages.content, "/api/zodiac/content", "content server write API route");
+    assertNotIncludes(pages.content, "/api/zodiac/templates", "template server write API route");
 
     assertIncludes(pages.publishing, "Публикации", "publishing page title");
     assertIncludes(pages.publishing, "Ежедневные публикации", "publishing daily status card");
@@ -94,6 +157,7 @@ async function main() {
     assertIncludes(pages.publishing, 'id="generated-manual-post-checklist"', "generated manual post checklist block");
     assertIncludes(pages.publishing, 'data-qa="publishing-ledger-safety"', "ledger/safety section");
     assertIncludes(pages.publishing, 'href="/dashboard/networks/zodiac/feedback"', "publishing feedback route link");
+    assertIncludes(pages.publishing, 'href="/dashboard/networks/zodiac/content"', "publishing content route link");
     assertIncludes(pages.publishing, 'href="/dashboard/networks/zodiac/security"', "publishing security route link");
     assertNotIncludes(pages.publishing, "zodiac:publish-date:live", "live publish command on publishing page");
     assertNotIncludes(pages.publishing, "zodiac:weekly:publish", "weekly live command on publishing page");
@@ -139,6 +203,7 @@ async function main() {
     assertIncludes(pages.operations, "Mass launch", "mass launch status");
     assertIncludes(pages.operations, 'href="/dashboard/networks/zodiac/feedback"', "operations feedback route link");
     assertIncludes(pages.operations, 'href="/dashboard/networks/zodiac/publishing"', "operations publishing route link");
+    assertIncludes(pages.operations, 'href="/dashboard/networks/zodiac/content"', "operations content route link");
     assertIncludes(pages.operations, 'href="/dashboard/networks/zodiac/security"', "operations security route link");
 
     assertIncludes(pages.security, "Безопасность платформы", "security page heading");
@@ -188,6 +253,7 @@ async function main() {
     assertIncludes(pages.security, "Viewer", "viewer role");
     assertIncludes(pages.security, "Сейчас server write API intentionally disabled. Перед включением write-действий нужен authenticated admin backend, audit log and role checks.", "server write API disabled warning");
     assertIncludes(pages.security, 'data-qa="admin-safety-no-server-write-api"', "no server write API readiness block");
+    assertIncludes(pages.security, 'href="/dashboard/networks/zodiac/content"', "security content route link");
     assertNotIncludes(pages.security, "zodiac:publish-date:live", "live publish command on security page");
     assertNotIncludes(pages.security, "zodiac:weekly:publish", "weekly live command on security page");
     assertNotIncludes(pages.security, "/api/zodiac/admin-safety", "admin safety server write API route");
@@ -195,6 +261,7 @@ async function main() {
 
     assertIncludes(pages.docs, "Документы Telegram Platform", "docs page heading");
     assertIncludes(pages.docs, "docs/zodiac-telegram-platform-admin-safety.md", "admin safety doc path");
+    assertIncludes(pages.docs, "docs/zodiac-telegram-platform-content-engine.md", "content engine doc path");
     assertIncludes(pages.docs, "docs/zodiac-telegram-platform-management-console.md", "management console doc path");
     assertIncludes(pages.docs, "docs/zodiac-telegram-platform-publishing-center.md", "publishing center doc path");
     assertIncludes(pages.docs, "docs/zodiac-telegram-platform-feedback-center.md", "feedback center doc path");

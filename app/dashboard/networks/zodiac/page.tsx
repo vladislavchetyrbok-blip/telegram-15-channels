@@ -48,6 +48,13 @@ const platformSections = [
     tone: "emerald",
   },
   {
+    title: "Контент",
+    href: "/dashboard/networks/zodiac/content",
+    icon: FileText,
+    caption: "Шаблоны, рубрики, CTA/startapp preview и local-only Template Studio.",
+    tone: "violet",
+  },
+  {
     title: "Публикации",
     href: "/dashboard/networks/zodiac/publishing",
     icon: Rocket,

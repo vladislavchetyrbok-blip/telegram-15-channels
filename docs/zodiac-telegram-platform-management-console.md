@@ -1,6 +1,6 @@
 # Zodiac Telegram Platform Management Console
 
-Package 59-62 | 2026-06-20
+Package 59-63 | 2026-06-20
 
 This document describes the owner-facing Telegram Platform dashboard for the Zodiac network. It is an admin console and runbook index, not a live publisher.
 
@@ -13,6 +13,7 @@ Main routes:
 | Обзор | `/dashboard/networks/zodiac` | Owner overview for platform status and next actions |
 | Каналы | `/dashboard/networks/zodiac/channels` | 13-channel management table and safe new-channel draft builder |
 | Mini App | `/compatibility` | User-facing Mini App route |
+| Контент | `/dashboard/networks/zodiac/content` | Content Engine, template catalog, Template Studio, RU/UA checklist, rubric planner |
 | Публикации | `/dashboard/networks/zodiac/publishing` | Safe publishing center, calendar preview, dry-run helpers, manual draft prep |
 | Аналитика | `/dashboard/networks/zodiac/analytics` | Privacy-safe Mini App analytics and first-users funnel |
 | Отзывы | `/dashboard/networks/zodiac/feedback` | Local-only sanitized feedback intake, P0/P1 triage, and real-phone QA evidence |
@@ -110,6 +111,27 @@ Package 62 adds a dedicated safety route for:
 
 The route has no live publish button, no Telegram write action, no ledger write
 action, and no server-side write API.
+
+## Content Engine
+
+Route:
+
+```text
+/dashboard/networks/zodiac/content
+```
+
+Package 63 adds a local-only Content Engine for:
+
+- content template catalog;
+- Template Studio with Telegram preview;
+- generated text/config/checklist;
+- RU/UA/EN quality checks;
+- CTA/startapp preview;
+- rubric planner;
+- localStorage-only draft state.
+
+It does not create a server-side write API, does not publish to Telegram, does
+not write the ledger, and does not enable weekly live scheduling.
 
 ## New Channel Draft Builder
 

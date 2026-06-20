@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Activity, BarChart3, BookOpen, HeartHandshake, LockKeyhole, MessageSquareText, RadioTower, Rocket, ShieldCheck, Smartphone, Sparkles } from "lucide-react";
+import { Activity, BarChart3, BookOpen, FileText, HeartHandshake, LockKeyhole, MessageSquareText, RadioTower, Rocket, ShieldCheck, Smartphone, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { id: "overview", href: "/dashboard/networks/zodiac", label: "Обзор", icon: Sparkles },
   { id: "channels", href: "/dashboard/networks/zodiac/channels", label: "Каналы", icon: RadioTower },
   { id: "mini-app", href: "/compatibility", label: "Mini App", icon: Smartphone },
+  { id: "content", href: "/dashboard/networks/zodiac/content", label: "Контент", icon: FileText },
   { id: "publishing", href: "/dashboard/networks/zodiac/publishing", label: "Публикации", icon: Rocket },
   { id: "analytics", href: "/dashboard/networks/zodiac/analytics", label: "Аналитика", icon: BarChart3 },
   { id: "feedback", href: "/dashboard/networks/zodiac/feedback", label: "Отзывы", icon: MessageSquareText },
