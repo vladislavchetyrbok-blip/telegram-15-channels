@@ -44,3 +44,35 @@ After the initial test, perform a comparison:
 * Document the new counters.
 * Calculate the deltas against this baseline.
 * Triage any P0/P1/P2 issues before expanding the rollout.
+
+## 7. Package 58 Dashboard Reading
+
+Use `/dashboard/networks/zodiac/analytics` after the first 5 users and record:
+
+* `Mini App opens`
+* `Feature opens`
+* `Results calculated`
+* `Save actions`
+* `Share actions`
+* `Feedback opened`
+* Top sections for first users:
+  `Compatibility`, `Premium Natal`, `Birth Matrix`, `Tarot/Rune`,
+  `Lunar/Ritual`, `Angel Numbers`, `VIP`, `Profile`
+
+The funnel to read is:
+
+```text
+Open Mini App -> Open Feature -> Get Result -> Save/Share -> Feedback
+```
+
+Bad signs:
+
+* Opens grow but feature usage does not.
+* Feature usage grows but result events do not.
+* Results happen but save/share remains zero.
+* Feedback opens only after visible product blockers.
+* Any raw birth data, city, question, intention, feedback text, result text,
+  Telegram initData, Redis URL value, or Redis token value appears.
+
+After the review, keep mass launch, weekly live, payments/Stars, profile sync,
+and exact astro claims OFF until separate packages approve them.

@@ -79,6 +79,10 @@ After Redis activation, confirm:
 - Storage configured is `YES`.
 - Today/7-day counters can move after safe actions.
 - Required env names are shown without values.
+- The analytics page shows `Production analytics: Redis active`.
+- The first-users funnel shows `Mini App opens`, `Feature opens`,
+  `Results calculated`, `Save actions`, `Share actions`, and `Feedback opened`.
+- The page does not render Redis REST URL/token values.
 
 ## Safe Mini App Action Check
 
@@ -91,6 +95,24 @@ Trigger a safe event, for example:
 5. Refresh the dashboard.
 
 Only aggregate counters should change.
+
+## First Users Funnel Reading
+
+For the first trusted `5` users, read the dashboard in this order:
+
+1. `Mini App opens`: confirms people reached the Mini App.
+2. `Feature opens`: confirms they moved beyond the home screen.
+3. `Results calculated`: confirms a flow produced value.
+4. `Save actions` and `Share actions`: confirm retention/sharing intent.
+5. `Feedback opened`: confirms the feedback entry point is discoverable.
+
+Bad signs:
+
+- opens increase but feature opens stay flat;
+- feature opens increase but result events stay flat;
+- result events exist but no save/share happens;
+- feedback opens spike alongside low result completion;
+- any raw sensitive data appears anywhere.
 
 ## Privacy Rules
 

@@ -5,14 +5,19 @@ import {
   ChevronLeft,
   Crown,
   Database,
+  FileText,
   Gift,
   HeartHandshake,
   ListChecks,
   LockKeyhole,
   MessageSquareText,
+  MousePointerClick,
+  Save,
   ShieldCheck,
+  Share2,
   Sparkles,
   Star,
+  Target,
   UsersRound,
   XCircle,
 } from "lucide-react";
@@ -25,6 +30,7 @@ export const dynamic = "force-dynamic";
 export default async function ZodiacMiniAppAnalyticsPage() {
   const analytics = await getZodiacMiniAppAnalyticsDashboard();
   const analyticsMode = analytics.storageMode === "redis" ? "active" : "noop";
+  const productionAnalyticsLabel = analytics.storageMode === "redis" ? "Production analytics: Redis active" : "Production analytics: noop";
 
   return (
     <div className="-mx-4 -my-6 min-h-screen overflow-x-hidden bg-[#f8fafc] px-4 py-6 text-slate-950 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
@@ -77,11 +83,43 @@ export default async function ZodiacMiniAppAnalyticsPage() {
           </section>
         ) : null}
 
+        <section className={`rounded-lg border p-5 shadow-sm ${analytics.storageMode === "redis" ? "border-emerald-200 bg-emerald-50 text-emerald-950" : "border-amber-200 bg-amber-50 text-amber-950"}`}>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="text-lg font-semibold">{productionAnalyticsLabel}</h2>
+              <p className="mt-1 text-sm leading-6">Shows aggregate counters only. Redis URL and token values are not rendered.</p>
+            </div>
+            <span className="inline-flex w-fit items-center gap-2 rounded-md border border-white/60 bg-white/70 px-3 py-2 text-sm font-semibold">
+              {analytics.storageMode === "redis" ? <CheckCircle2 className="h-4 w-4" /> : <XCircle className="h-4 w-4" />}
+              {analytics.storageMode}
+            </span>
+          </div>
+        </section>
+
         <section className="grid gap-4 lg:grid-cols-2 xl:grid-cols-4">
           <ReadinessStatusCard analyticsMode={analyticsMode} storageConfigured={analytics.configured} />
           <SetupChecklistCard requiredEnv={analytics.requiredEnv} configured={analytics.configured} />
           <ReadinessListCard title="What we track" items={trackedAnalyticsItems} icon={ListChecks} tone="cyan" />
           <ReadinessListCard title="What we do NOT track" items={privateAnalyticsItems} icon={LockKeyhole} tone="emerald" />
+        </section>
+
+        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-6">
+          <MetricCard title="Mini App opens" value={analytics.firstUsers.miniAppOpens} caption="app_open" icon={Sparkles} tone="violet" />
+          <MetricCard title="Feature opens" value={analytics.firstUsers.featureOpens} caption="section/category/feature opens" icon={MousePointerClick} tone="cyan" />
+          <MetricCard title="Results calculated" value={analytics.firstUsers.resultsCalculated} caption="calculated/result_viewed" icon={Target} tone="emerald" />
+          <MetricCard title="Save actions" value={analytics.firstUsers.saveActions} caption="saved/favorite/pair saved" icon={Save} tone="amber" />
+          <MetricCard title="Share actions" value={analytics.firstUsers.shareActions} caption="share started/completed" icon={Share2} tone="rose" />
+          <MetricCard title="Feedback opened" value={analytics.firstUsers.feedbackOpened} caption="feedback_opened" icon={MessageSquareText} tone="slate" />
+        </section>
+
+        <section className="grid gap-4 lg:grid-cols-2">
+          <SoftLaunchFunnelCard items={analytics.softLaunchFunnel} />
+          <FirstUsersObservationCard />
+        </section>
+
+        <section className="grid gap-4 lg:grid-cols-2">
+          <RankPanel title="Top sections for first users" items={analytics.topLaunchSections} emptyText="No first-user section activity yet." />
+          <DocsPathCard />
         </section>
 
         <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -108,6 +146,84 @@ export default async function ZodiacMiniAppAnalyticsPage() {
           <RankPanel title="Funnel" items={analytics.funnel} emptyText="Воронка пока пустая." />
           <RankPanel title="Daily app opens" items={analytics.dailyAppOpens} emptyText="Открытий пока нет." />
         </section>
+      </div>
+    </div>
+  );
+}
+
+function SoftLaunchFunnelCard({ items }: { items: AnalyticsRankItem[] }) {
+  const max = Math.max(...items.map((item) => item.value), 1);
+
+  return (
+    <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h2 className="text-lg font-semibold text-slate-950">First-users funnel</h2>
+          <p className="mt-2 text-sm leading-6 text-slate-500">Open Mini App -&gt; Open Feature -&gt; Get Result -&gt; Save/Share -&gt; Feedback.</p>
+        </div>
+        <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border ${toneClasses.violet}`}>
+          <Target className="h-5 w-5" />
+        </span>
+      </div>
+      <div className="mt-5 space-y-3">
+        {items.map((item, index) => (
+          <div key={item.label} className="grid gap-2 rounded-md border border-slate-100 bg-slate-50 p-3">
+            <div className="flex items-center justify-between gap-3 text-sm">
+              <span className="min-w-0 break-words font-semibold text-slate-700">{index + 1}. {item.label}</span>
+              <span className="font-semibold text-violet-700">{item.value}</span>
+            </div>
+            <div className="h-2 rounded-full bg-white">
+              <div className="h-2 rounded-full bg-violet-500" style={{ width: `${Math.max(6, Math.round((item.value / max) * 100))}%` }} />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function FirstUsersObservationCard() {
+  return (
+    <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h2 className="text-lg font-semibold text-slate-950">First users observation</h2>
+          <p className="mt-2 text-sm leading-6 text-slate-500">What to review after the first 5 trusted users.</p>
+        </div>
+        <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border ${toneClasses.emerald}`}>
+          <ListChecks className="h-5 w-5" />
+        </span>
+      </div>
+      <ul className="mt-5 space-y-2">
+        {firstUsersObservationItems.map((item) => (
+          <li key={item} className="flex items-start gap-2 text-sm font-semibold leading-5 text-slate-600">
+            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+            <span className="min-w-0 break-words">{item}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function DocsPathCard() {
+  return (
+    <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h2 className="text-lg font-semibold text-slate-950">Soft launch docs</h2>
+          <p className="mt-2 text-sm leading-6 text-slate-500">Document paths only; no dead dashboard buttons.</p>
+        </div>
+        <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border ${toneClasses.cyan}`}>
+          <FileText className="h-5 w-5" />
+        </span>
+      </div>
+      <div className="mt-5 space-y-2">
+        {softLaunchDocPaths.map((docPath) => (
+          <code key={docPath} className="block rounded-md border border-slate-100 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700 sm:text-sm">
+            {docPath}
+          </code>
+        ))}
       </div>
     </div>
   );
@@ -300,4 +416,19 @@ const privateAnalyticsItems = [
   "raw custom angel number input",
   "bot token",
   "raw sensitive Telegram initData",
+];
+
+const firstUsersObservationItems = [
+  "app_open increased from the baseline",
+  "feature usage exists beyond the home screen",
+  "result events exist",
+  "save or share actions exist",
+  "feedback opened at least once",
+  "no raw sensitive data is visible",
+];
+
+const softLaunchDocPaths = [
+  "docs/zodiac-first-users-analytics-baseline.md",
+  "docs/zodiac-controlled-soft-launch-execution.md",
+  "docs/zodiac-soft-launch-batch-template.md",
 ];

@@ -142,3 +142,31 @@ None.
 | Payments / Stars | **STOP** | Not activated |
 | Profile sync | **STOP** | Foundation only, disabled |
 | Exact astro | **STOP** | No real provider connected |
+
+---
+
+## Package 58 Analytics Funnel Dashboard
+
+Package 58 improves `/dashboard/networks/zodiac/analytics` for first-user
+observation without changing Mini App product flows.
+
+Added dashboard checks:
+
+* overview cards for `Mini App opens`, `Feature opens`, `Results calculated`,
+  `Save actions`, `Share actions`, and `Feedback opened`;
+* top first-user sections: `Compatibility`, `Premium Natal`, `Birth Matrix`,
+  `Tarot/Rune`, `Lunar/Ritual`, `Angel Numbers`, `VIP`, `Profile`;
+* first-users funnel: `Open Mini App -> Open Feature -> Get Result ->
+  Save/Share -> Feedback`;
+* visible Redis/noop state as `Production analytics: Redis active` or
+  `Production analytics: noop`;
+* doc path references for baseline, execution, and batch template docs;
+* QA assertion that configured Redis URL/token values are not rendered.
+
+Bad signs after first 5 users:
+
+* opens grow but feature opens do not;
+* feature opens grow but result events do not;
+* no save/share intent appears;
+* feedback opens spike after low result completion;
+* any raw personal input or Redis secret value appears.

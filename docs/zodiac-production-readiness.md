@@ -78,7 +78,8 @@ The Zodiac product is ready for controlled live operation of the daily publishin
 - Channel packaging live was applied and post-live verified for `13/13` channels.
 - Daily and weekly content quality was upgraded while keeping date/range headers and CTA buttons.
 - Lunar/Ritual now has a richer symbolic flow with modes, 14-day visual calendar, ritual result sections, safe Save/Share, and localStorage privacy checks.
-- Analytics is privacy-safe but storage mode is currently `noop` unless Redis REST env vars are configured.
+- Analytics is privacy-safe. Production analytics mode is `redis`; local/dev
+  remains `noop` whenever Redis REST env vars are absent.
 - Production backup freshness is currently OK after backup `2026-06-19-01-06-53` and restore dry-run PASS.
 - Soft-launch pack is ready for `5-20` first users through `docs/zodiac-soft-launch-runbook.md`.
 - Soft-launch release candidate snapshot is available at `docs/zodiac-soft-launch-release-candidate.md`.
@@ -282,7 +283,8 @@ Soft-launch state:
 - Public/mass launch: NOT READY until real phone Telegram WebView pass is completed and P0/P1 issues are `0`.
 - Batch 1 should start with `5` Telegram-only users; expand toward `20` only if P0 = `0`, P1 = `0` or fixed, average rating is `>= 7`, share/save work, and no privacy leaks are reported.
 - Real phone screenshots/videos should be collected through the evidence intake templates and must not be committed if they include personal data.
-- Analytics: Redis env is still missing, so metrics remain `noop` unless hosting env is configured.
+- Analytics: production Redis is active; local/dev remains `noop` if env is not
+  configured.
 - In-app feedback CTA: READY in `Мой профиль` with `Оставить отзыв` / `Сообщить о баге`; comments stay transient and analytics uses only safe categorical payload.
 - Weekly live: OFF and not ready to enable.
 - Payments/Stars: OFF.
@@ -491,7 +493,8 @@ npm run zodiac:analytics:storage:check
 Current storage mode:
 
 ```text
-noop unless Redis REST env vars are configured
+production: redis
+local/dev: noop unless Redis REST env vars are configured
 ```
 
 Required env names for real analytics storage:
@@ -826,3 +829,12 @@ Status:
 * Do not reset counters before first users unless explicitly approved.
 * Package 55 test events are baseline noise.
 * First 5 users must be observed through analytics + feedback.
+* Package 58 adds the first-users funnel dashboard on
+  `/dashboard/networks/zodiac/analytics`.
+* Read the funnel as `Open Mini App -> Open Feature -> Get Result -> Save/Share
+  -> Feedback`.
+* The key counters are `Mini App opens`, `Feature opens`, `Results calculated`,
+  `Save actions`, `Share actions`, and `Feedback opened`.
+* Bad signs after the first 5 users: opens with no feature usage, feature usage
+  with no result events, results with no save/share, feedback spikes around
+  broken flows, or any sensitive/raw value shown in the dashboard.

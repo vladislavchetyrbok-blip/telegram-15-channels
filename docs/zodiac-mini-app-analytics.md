@@ -249,6 +249,29 @@ Disallowed events are rejected and not stored:
 
 The dashboard shows analytics mode, storage status, setup checklist, tracked/not-tracked data, today opens, last 7 days opens, top sections, top signs, compatibility mode split, VIP activity, Final AstroMap / relationship-map aggregate opens, giveaways, Mystic-related counters through aggregate events, and funnel metrics.
 
+Package 58 adds a first-users observation layer for the first trusted `5` users:
+
+- `Mini App opens`: total safe `app_open` activity.
+- `Feature opens`: aggregate feature/category/section opens.
+- `Results calculated`: result/calculation/view events across Compatibility,
+  Premium Natal, Birth Matrix, Tarot/Rune, Lunar/Ritual, Angel Numbers, VIP,
+  and related symbolic sections.
+- `Save actions`: favorites, pair saves, chart saves, matrix saves, ritual saves,
+  and VIP safe saves.
+- `Share actions`: share started/completed and feature share events.
+- `Feedback opened`: `feedback_opened` only, without raw comment text.
+
+The first-users funnel is:
+
+```text
+Open Mini App -> Open Feature -> Get Result -> Save/Share -> Feedback
+```
+
+Use it to spot drop-off. A bad sign after the first 5 users is many opens with
+no feature usage, feature usage with no result events, result events with no
+save/share attempts, or feedback opening only after broken flows. Do not use the
+dashboard to inspect individual users or raw input text.
+
 When storage is missing, panels stay visible with zero values so the activation state is obvious without hiding the dashboard structure.
 
 In `noop`, the dashboard must explicitly show:
@@ -280,3 +303,11 @@ After setting Redis REST env vars and redeploying:
 4. Trigger a safe event by opening `/compatibility` and selecting a sign.
 5. Refresh the dashboard and confirm aggregate counters move.
 6. Confirm no names, birth dates, birth times, birth cities, raw personal inputs, tokens, or raw Telegram initData appear in logs, responses, or stored analytics.
+
+After the first 5 testers:
+
+1. Compare dashboard counters against `docs/zodiac-first-users-analytics-baseline.md`.
+2. Record deltas for app opens, feature opens, results, save/share, and feedback.
+3. Triage drop-off before inviting 20 users.
+4. Keep mass launch, weekly live, payments/Stars, profile sync, and exact astro
+   claims OFF until separate packages approve them.

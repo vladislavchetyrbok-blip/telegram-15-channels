@@ -36,6 +36,16 @@ export interface ZodiacMiniAppAnalyticsDashboard {
     giveawayClicks: number;
     messageHelperUse: number;
   };
+  firstUsers: {
+    miniAppOpens: number;
+    featureOpens: number;
+    resultsCalculated: number;
+    saveActions: number;
+    shareActions: number;
+    feedbackOpened: number;
+  };
+  topLaunchSections: AnalyticsRankItem[];
+  softLaunchFunnel: AnalyticsRankItem[];
   funnel: AnalyticsRankItem[];
 }
 
@@ -143,6 +153,16 @@ function parseDashboardResults(results: unknown[], dateKeys: string[], todayDate
   for (const _dateKey of dateKeys) mergeRankMap(pairs, results[cursor++]);
   for (const _dateKey of dateKeys) mergeRankMap(events, results[cursor++]);
 
+  const miniAppOpens = events.get("app_open") ?? dailyAppOpens.reduce((sum, item) => sum + item.value, 0);
+  const firstUsers = {
+    miniAppOpens,
+    featureOpens: featureOpenCount(events),
+    resultsCalculated: resultCount(events),
+    saveActions: saveActionCount(events),
+    shareActions: shareActionCount(events),
+    feedbackOpened: events.get("feedback_opened") ?? 0,
+  };
+
   return {
     configured: true,
     storageMode: "redis",
@@ -176,6 +196,9 @@ function parseDashboardResults(results: unknown[], dateKeys: string[], todayDate
       giveawayClicks: countEvents(events, ["giveaway_clicked"]),
       messageHelperUse: countEvents(events, ["message_helper_used"]),
     },
+    firstUsers,
+    topLaunchSections: buildTopLaunchSections(events),
+    softLaunchFunnel: buildSoftLaunchFunnel(firstUsers),
     funnel: [
       { label: "app_open", value: events.get("app_open") ?? 0 },
       { label: "sign_selected", value: events.get("sign_selected") ?? 0 },
@@ -238,6 +261,23 @@ function emptyDashboard({
       giveawayClicks: 0,
       messageHelperUse: 0,
     },
+    firstUsers: {
+      miniAppOpens: 0,
+      featureOpens: 0,
+      resultsCalculated: 0,
+      saveActions: 0,
+      shareActions: 0,
+      feedbackOpened: 0,
+    },
+    topLaunchSections: buildTopLaunchSections(new Map()),
+    softLaunchFunnel: buildSoftLaunchFunnel({
+      miniAppOpens: 0,
+      featureOpens: 0,
+      resultsCalculated: 0,
+      saveActions: 0,
+      shareActions: 0,
+      feedbackOpened: 0,
+    }),
     funnel: [
       { label: "app_open", value: 0 },
       { label: "sign_selected", value: 0 },
@@ -285,6 +325,127 @@ function rankItems(map: Map<string, number>) {
 
 function countEvents(events: Map<string, number>, names: string[]) {
   return names.reduce((sum, name) => sum + (events.get(name) ?? 0), 0);
+}
+
+function featureOpenCount(events: Map<string, number>) {
+  return sectionOpenCount(events) + countEvents(events, [
+    "main_menu_category_opened",
+    "compatibility_category_selected",
+    "horoscope_category_opened",
+    "angel_numbers_category_opened",
+    "profile_preview_opened",
+    "profile_opened",
+    "history_opened",
+    "hub_category_opened",
+    "mystic_category_opened",
+    "daily_card_opened",
+    "tarot_card_opened",
+    "rune_day_opened",
+    "intuitive_sign_opened",
+    "talismans_opened",
+    "aura_color_opened",
+    "lunar_ritual_opened",
+    "karmic_lessons_opened",
+    "birth_matrix_opened",
+    "natal_chart_opened",
+    "chinese_horoscope_opened",
+    "zodiac_stones_opened",
+    "name_profile_opened",
+    "numerology_opened",
+    "angel_numbers_opened",
+    "name_compatibility_opened",
+    "archetype_opened",
+    "vip_natal_opened",
+    "vip_compatibility_opened",
+    "vip_mental_map_opened",
+    "vip_calendar_opened",
+    "vip_month_forecast_opened",
+    "vip_message_helper_opened",
+    "vip_name_profile_opened",
+    "vip_numerology_opened",
+    "vip_angel_numbers_opened",
+    "vip_talismans_opened",
+    "vip_mystic_day_opened",
+  ]);
+}
+
+function resultCount(events: Map<string, number>) {
+  return countEvents(events, [
+    "compatibility_calculated",
+    "natal_chart_calculated",
+    "natal_chart_completed",
+    "natal_chart_result_viewed",
+    "chinese_horoscope_result_viewed",
+    "zodiac_stones_sign_viewed",
+    "name_profile_result_viewed",
+    "couple_horoscope_viewed",
+    "relationship_map_viewed",
+    "mental_map_viewed",
+    "final_map_opened",
+    "numerology_result_viewed",
+    "angel_number_viewed",
+    "name_compatibility_result_viewed",
+    "archetype_result_viewed",
+    "tarot_spread_calculated",
+    "rune_spread_calculated",
+    "lunar_day_calculated",
+    "lunar_ritual_calculated",
+    "birth_matrix_calculated",
+    "vip_tool_calculated",
+  ]);
+}
+
+function saveActionCount(events: Map<string, number>) {
+  return countEvents(events, [
+    "favorite_saved",
+    "compatibility_pair_saved",
+    "final_map_saved",
+    "natal_chart_saved",
+    "tarot_spread_saved",
+    "rune_spread_saved",
+    "lunar_ritual_saved",
+    "birth_matrix_saved",
+    "vip_tool_saved",
+  ]);
+}
+
+function shareActionCount(events: Map<string, number>) {
+  return countEvents(events, [
+    "share_clicked",
+    "share_started",
+    "share_completed_or_fallback",
+    "final_map_shared",
+    "natal_chart_shared",
+    "tarot_spread_shared",
+    "rune_spread_shared",
+    "lunar_ritual_shared",
+    "birth_matrix_shared",
+    "vip_tool_shared",
+    "feedback_share_started",
+  ]);
+}
+
+function buildTopLaunchSections(events: Map<string, number>): AnalyticsRankItem[] {
+  return [
+    { label: "Compatibility", value: countEvents(events, ["section_open_compatibility", "compatibility_category_selected", "compatibility_wizard_started", "compatibility_mode_selected", "compatibility_calculated", "compatibility_pair_saved", "compatibility_pair_reopened"]) },
+    { label: "Premium Natal", value: countEvents(events, ["section_open_natal_chart", "natal_chart_started", "natal_chart_calculated", "natal_chart_saved", "natal_chart_shared", "natal_chart_completed", "natal_chart_opened", "natal_chart_result_viewed", "natal_chart_section_opened", "natal_chart_vip_free_opened", "vip_natal_opened"]) },
+    { label: "Birth Matrix", value: countEvents(events, ["birth_matrix_opened", "birth_matrix_started", "birth_matrix_calculated", "birth_matrix_saved", "birth_matrix_shared"]) },
+    { label: "Tarot/Rune", value: countEvents(events, ["tarot_card_opened", "tarot_started", "tarot_spread_calculated", "tarot_spread_saved", "tarot_spread_shared", "rune_day_opened", "rune_started", "rune_spread_calculated", "rune_spread_saved", "rune_spread_shared"]) },
+    { label: "Lunar/Ritual", value: countEvents(events, ["lunar_calendar_opened", "lunar_ritual_opened", "lunar_started", "lunar_day_calculated", "lunar_ritual_calculated", "lunar_ritual_saved", "lunar_ritual_shared"]) },
+    { label: "Angel Numbers", value: countEvents(events, ["angel_numbers_category_opened", "angel_numbers_opened", "angel_number_viewed", "vip_angel_numbers_opened"]) },
+    { label: "VIP", value: countEvents(events, ["section_open_vip", "vip_clicked", "vip_opened", "vip_free_access_viewed", "vip_feature_opened", "vip_tool_started", "vip_tool_calculated", "vip_tool_saved", "vip_tool_shared", "vip_input_reused", "vip_message_copied"]) },
+    { label: "Profile", value: countEvents(events, ["profile_preview_opened", "profile_opened", "history_opened", "favorite_saved", "favorite_opened", "local_data_cleared"]) },
+  ];
+}
+
+function buildSoftLaunchFunnel(firstUsers: ZodiacMiniAppAnalyticsDashboard["firstUsers"]): AnalyticsRankItem[] {
+  return [
+    { label: "Open Mini App", value: firstUsers.miniAppOpens },
+    { label: "Open Feature", value: firstUsers.featureOpens },
+    { label: "Get Result", value: firstUsers.resultsCalculated },
+    { label: "Save/Share", value: firstUsers.saveActions + firstUsers.shareActions },
+    { label: "Feedback", value: firstUsers.feedbackOpened },
+  ];
 }
 
 function sectionOpenCount(events: Map<string, number>) {
