@@ -1,4 +1,4 @@
-import { Activity, AlertTriangle, CalendarClock, CheckCircle2, ChevronLeft, HeartHandshake, LockKeyhole, Rocket, ShieldCheck, UsersRound, XCircle } from "lucide-react";
+import { Activity, AlertTriangle, CalendarClock, CheckCircle2, ChevronLeft, HeartHandshake, LockKeyhole, MessageSquareText, Rocket, ShieldCheck, UsersRound, XCircle } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { ZodiacPlatformNav } from "@/components/zodiac-platform/ZodiacPlatformNav";
@@ -85,10 +85,16 @@ export default function ZodiacOperationsPage() {
                 </li>
               ))}
             </ol>
-            <Link href="/dashboard/networks/zodiac/publishing" className="mt-5 inline-flex items-center gap-2 rounded-md border border-violet-200 bg-violet-50 px-4 py-2 text-sm font-semibold text-violet-700 transition hover:border-violet-300 hover:bg-violet-100">
-              <Rocket className="h-4 w-4" />
-              Открыть центр публикаций
-            </Link>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Link href="/dashboard/networks/zodiac/feedback" className="inline-flex items-center gap-2 rounded-md border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700 transition hover:border-emerald-300 hover:bg-emerald-100">
+                <MessageSquareText className="h-4 w-4" />
+                Открыть центр отзывов
+              </Link>
+              <Link href="/dashboard/networks/zodiac/publishing" className="inline-flex items-center gap-2 rounded-md border border-violet-200 bg-violet-50 px-4 py-2 text-sm font-semibold text-violet-700 transition hover:border-violet-300 hover:bg-violet-100">
+                <Rocket className="h-4 w-4" />
+                Открыть центр публикаций
+              </Link>
+            </div>
           </div>
         </section>
       </div>

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Activity, BarChart3, BookOpen, HeartHandshake, LockKeyhole, RadioTower, Rocket, ShieldCheck, Smartphone, Sparkles } from "lucide-react";
+import { Activity, BarChart3, BookOpen, HeartHandshake, LockKeyhole, MessageSquareText, RadioTower, Rocket, ShieldCheck, Smartphone, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -11,6 +11,7 @@ const navItems = [
   { id: "mini-app", href: "/compatibility", label: "Mini App", icon: Smartphone },
   { id: "publishing", href: "/dashboard/networks/zodiac/publishing", label: "Публикации", icon: Rocket },
   { id: "analytics", href: "/dashboard/networks/zodiac/analytics", label: "Аналитика", icon: BarChart3 },
+  { id: "feedback", href: "/dashboard/networks/zodiac/feedback", label: "Отзывы", icon: MessageSquareText },
   { id: "soft-launch", href: "/dashboard/networks/zodiac/operations", label: "Soft Launch", icon: HeartHandshake },
   { id: "safety", href: "/dashboard/networks/zodiac/operations#safety", label: "Безопасность", icon: LockKeyhole },
   { id: "docs", href: "/dashboard/networks/zodiac/docs", label: "Документы", icon: BookOpen },

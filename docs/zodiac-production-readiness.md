@@ -81,6 +81,12 @@ safety rules. It does not add a live publish button, server write API, Telegram
 API call, manual ledger edit, weekly live, payments/Stars, profile sync, or
 exact astro claims.
 
+Package 61 adds the Telegram Platform Feedback Center at
+`/dashboard/networks/zodiac/feedback`. It is an owner-facing localStorage-only
+center for sanitized first-user feedback, P0/P1/P2 triage, real-phone QA
+checkboxes, analytics correlation, and the 5 -> 20 users decision matrix. It
+does not create a server write API and does not store raw tester data.
+
 ## Current Status
 
 The Zodiac product is ready for controlled live operation of the daily publishing lane and user-facing Mini App checks, with the following boundaries:
@@ -88,6 +94,7 @@ The Zodiac product is ready for controlled live operation of the daily publishin
 - Daily Zodiac publishing is active and ledger-protected.
 - Telegram Platform console route `/dashboard/networks/zodiac/channels` is available for channel management, dry-run command hints, and local draft preparation.
 - Telegram Platform publishing route `/dashboard/networks/zodiac/publishing` is available for safe calendar preview, dry-run hints, and local manual post drafts.
+- Telegram Platform feedback route `/dashboard/networks/zodiac/feedback` is available for local-only sanitized first-user triage and real-phone QA evidence.
 - Weekly Zodiac posts are prepared and dry-run ready, but weekly live scheduling remains OFF.
 - Mini App core UX is implemented: 10-category home, Angel Numbers top-level, Compatibility pair core, Horoscopes, Mystic, premium Birth Matrix, VIP, Profile, History, Favorites, and Share.
 - Sonnik/Dream Dictionary is hidden/backlog for the current soft launch; Mystic continues through Card of the Day, Tarot/Rune, Lunar/Ritual, talismans, aura, karma, and Birth Matrix.
@@ -294,6 +301,7 @@ Feedback intake and triage:
 ```text
 docs/zodiac-soft-launch-feedback.md
 docs/zodiac-bug-triage.md
+docs/zodiac-telegram-platform-feedback-center.md
 ```
 
 Soft-launch state:
@@ -305,6 +313,7 @@ Soft-launch state:
 - Analytics: production Redis is active; local/dev remains `noop` if env is not
   configured.
 - In-app feedback CTA: READY in `Мой профиль` with `Оставить отзыв` / `Сообщить о баге`; comments stay transient and analytics uses only safe categorical payload.
+- Owner feedback dashboard: READY at `/dashboard/networks/zodiac/feedback`; localStorage-only, sanitized summaries, no server write API.
 - Weekly live: OFF and not ready to enable.
 - Payments/Stars: OFF.
 

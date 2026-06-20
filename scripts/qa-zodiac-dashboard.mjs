@@ -10,6 +10,7 @@ const ROUTES = {
   analytics: "/dashboard/networks/zodiac/analytics",
   channels: "/dashboard/networks/zodiac/channels",
   publishing: "/dashboard/networks/zodiac/publishing",
+  feedback: "/dashboard/networks/zodiac/feedback",
   operations: "/dashboard/networks/zodiac/operations",
   docs: "/dashboard/networks/zodiac/docs",
   legacyPublishing: "/publishing-center",
@@ -36,9 +37,11 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/channels"', "overview channels route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/publishing"', "overview publishing route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/analytics"', "overview analytics route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/feedback"', "overview feedback route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/operations"', "overview operations route link");
     assertIncludes(pages.overview, "Каналы", "sidebar/platform nav Channels label");
     assertIncludes(pages.overview, "Аналитика", "sidebar/platform nav Analytics label");
+    assertIncludes(pages.overview, "Отзывы", "sidebar/platform nav Feedback label");
 
     assertIncludes(pages.analytics, "Аналитика Mini App", "analytics page heading");
     assertIncludes(pages.analytics, "First-users funnel", "first-users funnel block");
@@ -54,6 +57,7 @@ async function main() {
     assertIncludes(pages.analytics, "docs/zodiac-first-users-analytics-baseline.md", "baseline doc path");
     assertIncludes(pages.analytics, "docs/zodiac-controlled-soft-launch-execution.md", "soft launch execution doc path");
     assertIncludes(pages.analytics, "docs/zodiac-soft-launch-batch-template.md", "batch template doc path");
+    assertIncludes(pages.analytics, 'href="/dashboard/networks/zodiac/feedback"', "analytics feedback center route link");
 
     const hasRedisValues = Boolean(process.env.ZODIAC_ANALYTICS_REDIS_URL && process.env.ZODIAC_ANALYTICS_REDIS_TOKEN);
     if (hasRedisValues) assertIncludes(pages.analytics, "Аналитика: Redis активен в production", "Redis active state");
@@ -85,19 +89,55 @@ async function main() {
     assertIncludes(pages.publishing, 'id="generated-manual-post-text"', "generated manual post text block");
     assertIncludes(pages.publishing, 'id="generated-manual-post-checklist"', "generated manual post checklist block");
     assertIncludes(pages.publishing, 'data-qa="publishing-ledger-safety"', "ledger/safety section");
+    assertIncludes(pages.publishing, 'href="/dashboard/networks/zodiac/feedback"', "publishing feedback route link");
     assertNotIncludes(pages.publishing, "zodiac:publish-date:live", "live publish command on publishing page");
     assertNotIncludes(pages.publishing, "zodiac:weekly:publish", "weekly live command on publishing page");
+
+    assertIncludes(pages.feedback, "Feedback Center", "feedback page heading");
+    assertIncludes(pages.feedback, "Dashboard / Zodiac / Feedback", "feedback breadcrumb");
+    assertIncludes(pages.feedback, "Центр отзывов, багов и evidence по первым пользователям.", "feedback subtitle");
+    assertIncludes(pages.feedback, "Отзывы", "feedback Russian nav label");
+    assertIncludes(pages.feedback, 'data-qa="feedback-overview-cards"', "feedback overview cards");
+    assertIncludes(pages.feedback, "Первые 5 пользователей", "first 5 overview card");
+    assertIncludes(pages.feedback, "Средняя оценка", "average rating overview card");
+    assertIncludes(pages.feedback, "P0 bugs", "P0 overview card");
+    assertIncludes(pages.feedback, "P1 issues", "P1 overview card");
+    assertIncludes(pages.feedback, "P2 backlog", "P2 overview card");
+    assertIncludes(pages.feedback, "Готовность к 20 пользователям", "20 users readiness card");
+    assertIncludes(pages.feedback, "Реальных отзывов ещё нет. Сначала пригласи 5 тестеров и внеси короткую sanitized-сводку.", "feedback empty state");
+    assertIncludes(pages.feedback, 'data-qa="local-feedback-intake"', "local feedback intake form");
+    assertIncludes(pages.feedback, "Локальный черновик, не серверная база", "local-only feedback label");
+    assertIncludes(pages.feedback, "без server write API", "no server write API label");
+    assertIncludes(pages.feedback, "Tester label", "tester label field");
+    assertIncludes(pages.feedback, "Rating 1-10", "rating field");
+    assertIncludes(pages.feedback, "Severity", "severity field");
+    assertIncludes(pages.feedback, "Sanitized note", "sanitized note field");
+    assertIncludes(pages.feedback, 'data-qa="real-phone-qa-checklist"', "real phone QA checklist");
+    assertIncludes(pages.feedback, "Real Phone QA", "real phone QA heading");
+    assertIncludes(pages.feedback, "iPhone Telegram opens Mini App", "iPhone real phone check");
+    assertIncludes(pages.feedback, "Android Telegram opens Mini App", "Android real phone check");
+    assertIncludes(pages.feedback, "no white screen", "no white screen check");
+    assertIncludes(pages.feedback, 'data-qa="feedback-analytics-correlation"', "analytics correlation block");
+    assertIncludes(pages.feedback, 'href="/dashboard/networks/zodiac/analytics"', "feedback analytics route link");
+    assertIncludes(pages.feedback, 'data-qa="feedback-decision-matrix"', "decision matrix block");
+    assertIncludes(pages.feedback, "5 users", "5 users decision");
+    assertIncludes(pages.feedback, "20 users", "20 users decision");
+    assertIncludes(pages.feedback, "Mass launch", "mass launch decision");
+    assertIncludes(pages.feedback, 'data-qa="feedback-sanitized-export"', "sanitized export block");
+    assertNotIncludes(pages.feedback, "/api/zodiac/feedback", "feedback server write API route");
 
     assertIncludes(pages.operations, "Операции и безопасность Zodiac", "operations page heading");
     assertIncludes(pages.operations, "Daily autopublish", "daily autopublish status");
     assertIncludes(pages.operations, "Weekly live", "weekly live status");
     assertIncludes(pages.operations, "first 5 users GO", "first users GO status");
     assertIncludes(pages.operations, "Mass launch", "mass launch status");
+    assertIncludes(pages.operations, 'href="/dashboard/networks/zodiac/feedback"', "operations feedback route link");
     assertIncludes(pages.operations, 'href="/dashboard/networks/zodiac/publishing"', "operations publishing route link");
 
     assertIncludes(pages.docs, "Документы Telegram Platform", "docs page heading");
     assertIncludes(pages.docs, "docs/zodiac-telegram-platform-management-console.md", "management console doc path");
     assertIncludes(pages.docs, "docs/zodiac-telegram-platform-publishing-center.md", "publishing center doc path");
+    assertIncludes(pages.docs, "docs/zodiac-telegram-platform-feedback-center.md", "feedback center doc path");
 
     const combined = Object.values(pages).join("\n");
     assertNoForbiddenLinks(combined);

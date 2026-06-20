@@ -1,6 +1,6 @@
 # Zodiac Telegram Platform UX Audit
 
-Package 57-60 | 2026-06-20 | latest update: Package 60
+Package 57-61 | 2026-06-20 | latest update: Package 61
 
 ---
 
@@ -9,11 +9,11 @@ Package 57-60 | 2026-06-20 | latest update: Package 60
 | Area | Score | Notes |
 |---|---|---|
 | Platform clarity | **9/10** | Clean architecture, clear safety controls, dedicated channel console |
-| Admin dashboard clarity | **9/10** | Russian IA, sidebar entries, breadcrumbs, dedicated channels and publishing centers |
+| Admin dashboard clarity | **9/10** | Russian IA, sidebar entries, breadcrumbs, dedicated channels, publishing, and feedback centers |
 | User entry clarity | **8/10** | Multiple startapp params, clear CTA buttons |
 | Analytics clarity | **9/10** | Rich counters, funnels, privacy-safe labeling |
 | Publishing safety clarity | **9/10** | Fail-closed ledger, dry-run safe, 0 API calls |
-| Soft-launch readiness | **8/10** | Baseline captured, docs ready, feedback flow exists |
+| Soft-launch readiness | **9/10** | Baseline captured, docs ready, feedback center and real-phone checklist exist |
 
 ---
 
@@ -101,12 +101,30 @@ No live publish button, server write API, manual ledger edit, weekly live, payme
 
 ---
 
+## Package 61 Addendum
+
+Package 61 adds `/dashboard/networks/zodiac/feedback` as the owner-facing
+Feedback and QA Evidence Center:
+
+- overview cards for first 5 users, average rating, P0/P1/P2, and 20-user readiness;
+- localStorage-only sanitized feedback intake board;
+- validation warnings for phone/email/token/date-like sensitive patterns;
+- real-phone QA checklist for iPhone, Android, BackButton, layout, keyboard,
+  share, save/history, feedback, themes, and white screen;
+- analytics correlation link to `/dashboard/networks/zodiac/analytics`;
+- decision matrix: first 5 users GO, 20 users CONDITIONAL, mass launch STOP.
+
+No server write API, raw tester data storage, screenshots, live publish, ledger
+mutation, weekly live, payments/Stars, profile sync, or exact astro claims were added.
+
+---
+
 ## Remaining Recommended Platform Improvements
 
 | # | Improvement | Package |
 |---|---|---|
-| 1 | Real phone evidence pass | Next |
-| 2 | First 5 users feedback collection | Next |
+| 1 | Run real phone evidence pass using Feedback Center | Next manual step |
+| 2 | Collect first 5 users feedback in sanitized local summaries | Next manual step |
 | 3 | Redis analytics report after 5 users | After feedback |
 | 4 | Dashboard analytics cards/funnels improvement | Future |
 | 5 | Publishing calendar view | Future |
@@ -138,6 +156,7 @@ No live publish button, server write API, manual ledger edit, weekly live, payme
 | Назад к пульту | `/dashboard` | YES | None |
 | Открыть Mini App | `/channels/zodiac` | YES | None |
 | Открыть аналитику | `/dashboard/networks/zodiac/analytics` | YES | None |
+| Открыть центр отзывов | `/dashboard/networks/zodiac/feedback` | YES | None |
 | Проверить публикации | `/publishing-center` | YES | None |
 
 ### Sidebar (global)
@@ -154,6 +173,7 @@ No live publish button, server write API, manual ledger edit, weekly live, payme
 | Календарь | `/content-calendar` | YES | None |
 | Визуалы | `/visuals` | YES | None |
 | Аналитика | `/dashboard/networks/zodiac/analytics` | YES | None |
+| Отзывы | `/dashboard/networks/zodiac/feedback` | YES | None |
 | Настройки | `/settings` | YES | None |
 
 ---

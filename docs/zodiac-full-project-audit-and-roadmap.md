@@ -1,7 +1,7 @@
 # Zodiac Full Project Audit And Roadmap
 
 Date: 2026-06-20
-Package: 53, updated through Package 60
+Package: 53, updated through Package 61
 Audit base HEAD: `98b28a322b16d8bb3e91f4422cfea9f7caeb8d54`
 Branch: `main`
 Scope: full-product audit, analytics review, quality review, and improvement roadmap.
@@ -673,7 +673,32 @@ What stays OFF:
 - live publish, manual ledger edits, weekly live, payments/Stars, profile sync,
   exact astro claims.
 
-### Package 61: Real Astro Engine Provider Research
+### Package 61: Telegram Platform Feedback and QA Evidence Center
+
+Goal:
+- Add an owner-facing center for first-user feedback, P0/P1/P2 triage,
+  real-phone QA evidence, analytics correlation, and the 5 -> 20 users decision.
+
+Why:
+- After the first 5 users, the owner needs one clear place to see who tested
+  on iPhone/Android/Desktop, what worked, what confused users, what broke, and
+  whether expanding to 20 users is safe.
+
+Risk:
+- Accidentally storing raw tester data or creating an unauthenticated feedback
+  write API.
+
+Result:
+- Implemented with `/dashboard/networks/zodiac/feedback`, localStorage-only
+  sanitized feedback intake, real-phone QA checklist, overview cards, triage
+  summary, analytics correlation, and decision matrix.
+
+What stays OFF:
+- server write API, raw tester data storage, screenshots in repo, live publish,
+  manual ledger edits, weekly live, payments/Stars, profile sync, exact astro
+  claims, mass launch.
+
+### Package 62: Real Astro Engine Provider Research
 
 Goal:
 - Choose a provider strategy and fixture design for exact astrology.
@@ -690,7 +715,7 @@ Prerequisites:
 What stays OFF:
 - exact astro claims and UI labels implying exact planets/houses/ascendant.
 
-### Package 62: Weekly Live Controlled First Run Plan
+### Package 63: Weekly Live Controlled First Run Plan
 
 Goal:
 - Prepare a weekly live plan without enabling it yet.
@@ -707,7 +732,7 @@ Prerequisites:
 What stays OFF:
 - weekly live until explicit approval after plan/checks.
 
-### Package 63: VIP Monetization Test Mode
+### Package 64: VIP Monetization Test Mode
 
 Goal:
 - Build payment/Stars/entitlement test-mode readiness only.
@@ -724,7 +749,7 @@ Prerequisites:
 What stays OFF:
 - real payments, real Stars, paid entitlement enforcement.
 
-### Package 64: Performance / Mobile Polish
+### Package 65: Performance / Mobile Polish
 
 Goal:
 - Reduce visual density, stale fallback share copy, and long-scroll friction.
@@ -741,7 +766,7 @@ Prerequisites:
 What stays OFF:
 - new product features, payments, sync, exact astro claims.
 
-### Package 65: Mass Launch Readiness Audit
+### Package 66: Mass Launch Readiness Audit
 
 Goal:
 - Re-audit after analytics, phone evidence, first users, and daily stability.
@@ -794,7 +819,9 @@ Package 59 adds a dedicated owner-facing Telegram Platform Management Console:
 
 * **Overview**: `/dashboard/networks/zodiac`
 * **Channels route**: `/dashboard/networks/zodiac/channels`
+* **Publishing route**: `/dashboard/networks/zodiac/publishing`
 * **Analytics route**: `/dashboard/networks/zodiac/analytics`
+* **Feedback route**: `/dashboard/networks/zodiac/feedback`
 * **Operations / safety route**: `/dashboard/networks/zodiac/operations`
 * **Docs route**: `/dashboard/networks/zodiac/docs`
 
@@ -838,4 +865,33 @@ Payments/Stars: NO
 Profile sync: NO
 Exact astro claims: NO
 Mass launch: NO
+```
+
+## Package 61 Feedback Center Update
+
+Package 61 adds `/dashboard/networks/zodiac/feedback` as the owner-facing
+Feedback and QA Evidence Center:
+
+* first 5 users overview cards;
+* average rating, P0 bugs, P1 issues, P2 backlog, and 20-user readiness;
+* localStorage-only sanitized feedback intake;
+* real-phone QA checklist;
+* analytics correlation link to `/dashboard/networks/zodiac/analytics`;
+* decision matrix for first 5 users, 20 users, and mass launch;
+* sanitized local owner summary export.
+
+Safety verdict remains unchanged:
+
+```text
+Server write API: NO
+Raw sensitive data stored: NO
+Live publish from dashboard: NO
+Manual ledger changes: NO
+Weekly live: NO
+Payments/Stars: NO
+Profile sync: NO
+Exact astro claims: NO
+Mass launch: NO
+First 5 users: GO
+20 users: CONDITIONAL
 ```

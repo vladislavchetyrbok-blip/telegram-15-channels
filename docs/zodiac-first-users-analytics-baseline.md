@@ -5,6 +5,7 @@
 * **Current HEAD**: `fddabe55213365b31078c7cdde899facf2057e3a`
 * **Production Analytics Mode**: `redis`
 * **Analytics Dashboard**: `/dashboard/networks/zodiac/analytics` (sidebar link: Аналитика; overview CTA: Открыть аналитику)
+* **Feedback Center**: `/dashboard/networks/zodiac/feedback` (sidebar link: Отзывы; local-only sanitized first-user triage)
 
 ## 2. Verification / Test Events Note
 * **Note**: Package 55 created safe test events (app opens, compatibility, tarot, lunar, feedback, share clicks) to verify the production Redis analytics pipeline.
@@ -76,3 +77,20 @@ Bad signs:
 
 After the review, keep mass launch, weekly live, payments/Stars, profile sync,
 and exact astro claims OFF until separate packages approve them.
+
+## 8. Package 61 Feedback Center
+
+Use `/dashboard/networks/zodiac/feedback` after the first users reply.
+
+Record only sanitized summaries:
+
+* Tester label (`Tester 1`, `Tester 2`, etc.), not real names.
+* Device and Telegram app category.
+* Rating 1-10 if provided.
+* Strongest feature, confusion, broken flow, and sanitized note.
+* Severity: P0 / P1 / P2 / Backlog / Positive.
+* Status: New / Accepted / Fixed / Deferred.
+
+The page stores entries in browser `localStorage` only. It does not create a
+server write API, does not store raw birth data/questions/intentions/results,
+and does not show Redis or Telegram token values.

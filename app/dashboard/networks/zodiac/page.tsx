@@ -10,6 +10,7 @@ import {
   HeartHandshake,
   ListPlus,
   LockKeyhole,
+  MessageSquareText,
   RadioTower,
   Rocket,
   ShieldCheck,
@@ -59,6 +60,13 @@ const platformSections = [
     icon: BarChart3,
     caption: "Privacy-safe counters, funnel первых пользователей и Redis production status.",
     tone: "violet",
+  },
+  {
+    title: "Отзывы",
+    href: "/dashboard/networks/zodiac/feedback",
+    icon: MessageSquareText,
+    caption: "Local-only sanitized feedback, P0/P1 triage и real phone QA evidence.",
+    tone: "emerald",
   },
   {
     title: "Soft Launch",

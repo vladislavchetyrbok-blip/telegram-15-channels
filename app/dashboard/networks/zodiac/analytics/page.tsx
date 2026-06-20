@@ -204,6 +204,10 @@ function FirstUsersObservationCard() {
           </li>
         ))}
       </ul>
+      <Link href="/dashboard/networks/zodiac/feedback" className="mt-5 inline-flex items-center gap-2 rounded-md border border-violet-200 bg-violet-50 px-4 py-2 text-sm font-semibold text-violet-700 transition hover:border-violet-300 hover:bg-violet-100">
+        <MessageSquareText className="h-4 w-4" />
+        Открыть центр отзывов
+      </Link>
     </div>
   );
 }

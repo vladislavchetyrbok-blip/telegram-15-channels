@@ -1,6 +1,6 @@
 # Zodiac Telegram Platform Map
 
-Last updated: 2026-06-20 | Package 59
+Last updated: 2026-06-20 | Package 61
 
 ## Architecture Overview
 
@@ -13,6 +13,8 @@ Telegram Channels (13) ──► Bot / Mini App ──► User Flows ──► A
 Dashboard ──► Overview ──► Analytics Dashboard
          │           │
          │    Publishing Center ──► Ledger ──► Safety Checks
+         │
+         └────► Feedback Center ──► Real Phone QA ──► 20 Users Decision
          │
 Soft Launch ──► First 5 Users ──► Feedback ──► Triage
 ```
@@ -44,6 +46,7 @@ Soft Launch ──► First 5 Users ──► Feedback ──► Triage
 | Zodiac channel console | `/dashboard/networks/zodiac/channels` | YES | 13-channel table and local new-channel draft builder |
 | Zodiac publishing center | `/dashboard/networks/zodiac/publishing` | YES | Safe publishing calendar, dry-run helpers, manual post drafts |
 | Analytics dashboard | `/dashboard/networks/zodiac/analytics` | YES | Privacy-safe analytics |
+| Feedback center | `/dashboard/networks/zodiac/feedback` | YES | Local sanitized feedback, real-phone QA, P0/P1 triage |
 | Operations / safety | `/dashboard/networks/zodiac/operations` | YES | Soft launch, safety, ledger and launch limits |
 | Docs / runbooks | `/dashboard/networks/zodiac/docs` | YES | Document path index |
 | Compatibility preview | `/dashboard/networks/zodiac/compatibility-preview` | YES | Compat widget preview |
@@ -82,6 +85,7 @@ Package 59 adds a clearer owner-facing management console layer:
   -> /dashboard/networks/zodiac/channels
   -> /dashboard/networks/zodiac/publishing
   -> /dashboard/networks/zodiac/analytics
+  -> /dashboard/networks/zodiac/feedback
   -> /dashboard/networks/zodiac/operations
   -> /dashboard/networks/zodiac/docs
 ```
@@ -89,6 +93,8 @@ Package 59 adds a clearer owner-facing management console layer:
 The channel console is read-only for live Telegram state. Its "new channel" builder stores drafts in browser `localStorage` and only generates a JSON/config snippet plus a manual checklist.
 
 Package 60 adds the publishing center. Its manual post builder is also `localStorage` only and the page only shows dry-run command hints. It does not publish to Telegram.
+
+Package 61 adds the feedback center. Its intake board and real-phone QA checklist are `localStorage` only, store sanitized summaries, and do not create a server write API.
 
 ---
 

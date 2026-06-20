@@ -32,6 +32,7 @@ docs/zodiac-telegram-platform-map.md
 docs/zodiac-telegram-platform-ux-audit.md
 docs/zodiac-telegram-platform-management-console.md
 docs/zodiac-telegram-platform-publishing-center.md
+docs/zodiac-telegram-platform-feedback-center.md
 docs/zodiac-controlled-launch-freeze.md
 docs/zodiac-soft-launch-release-candidate.md
 docs/zodiac-production-readiness.md
@@ -64,6 +65,12 @@ Package 60 adds the safe publishing center at
 `/dashboard/networks/zodiac/publishing`. It is for calendar preview, dry-run
 command hints, ledger/safety visibility, and local manual post drafts only. It
 does not publish to Telegram.
+
+Package 61 adds the feedback and QA evidence center at
+`/dashboard/networks/zodiac/feedback`. It is for local-only sanitized first-user
+feedback, P0/P1/P2 triage, real-phone QA checklist state, analytics
+correlation, and the 5 -> 20 users decision matrix. It does not add a server
+write API or store raw tester data.
 
 ## 3. Product Readiness
 

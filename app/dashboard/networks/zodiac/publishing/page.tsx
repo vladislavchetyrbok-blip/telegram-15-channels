@@ -6,6 +6,7 @@ import {
   ClipboardList,
   CopyCheck,
   LockKeyhole,
+  MessageSquareText,
   PlayCircle,
   RadioTower,
   ShieldCheck,
@@ -158,6 +159,10 @@ export default function ZodiacPublishingCenterPage() {
             <SafetyBadge label="Weekly live" value="OFF" tone="rose" />
             <SafetyBadge label="Mass launch" value="STOP" tone="rose" />
           </div>
+          <Link href="/dashboard/networks/zodiac/feedback" className="mt-5 inline-flex items-center gap-2 rounded-md border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700 transition hover:border-emerald-300 hover:bg-emerald-100">
+            <MessageSquareText className="h-4 w-4" />
+            Открыть центр отзывов
+          </Link>
         </section>
       </div>
     </div>

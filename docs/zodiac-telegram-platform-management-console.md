@@ -1,6 +1,6 @@
 # Zodiac Telegram Platform Management Console
 
-Package 59 | 2026-06-20
+Package 59-61 | 2026-06-20
 
 This document describes the owner-facing Telegram Platform dashboard for the Zodiac network. It is an admin console and runbook index, not a live publisher.
 
@@ -15,6 +15,7 @@ Main routes:
 | Mini App | `/compatibility` | User-facing Mini App route |
 | Публикации | `/dashboard/networks/zodiac/publishing` | Safe publishing center, calendar preview, dry-run helpers, manual draft prep |
 | Аналитика | `/dashboard/networks/zodiac/analytics` | Privacy-safe Mini App analytics and first-users funnel |
+| Отзывы | `/dashboard/networks/zodiac/feedback` | Local-only sanitized feedback intake, P0/P1 triage, and real-phone QA evidence |
 | Soft Launch | `/dashboard/networks/zodiac/operations` | First 5 users GO / mass launch STOP status |
 | Безопасность | `/dashboard/networks/zodiac/operations#safety` | Ledger, weekly live, payments, profile sync, exact astro guardrails |
 | Документы | `/dashboard/networks/zodiac/docs` | Runbook and project doc paths |
@@ -68,6 +69,26 @@ Package 60 adds a dedicated safe publishing center for:
 - ledger/safety explanation.
 
 It does not render a live publish button and does not execute commands from the UI.
+
+## Feedback Center
+
+Route:
+
+```text
+/dashboard/networks/zodiac/feedback
+```
+
+Package 61 adds an owner-facing feedback and QA evidence center for:
+
+- first 5 users overview cards;
+- average rating and P0/P1/P2 triage;
+- localStorage-only sanitized feedback intake;
+- real-phone QA checklist;
+- analytics correlation link;
+- decision matrix for first 5 users, 20 users, and mass launch.
+
+It does not create a server-side write API, does not store raw tester data, and
+does not expose token/env values.
 
 ## New Channel Draft Builder
 

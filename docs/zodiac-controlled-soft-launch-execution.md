@@ -76,6 +76,16 @@ Use anonymous tester labels only. Do not store real names, phone numbers,
 Telegram handles, screenshots, raw birth dates, raw questions, raw intentions,
 or raw result text in the repository.
 
+Package 61 adds the owner-facing Feedback Center:
+
+```text
+/dashboard/networks/zodiac/feedback
+```
+
+Use it for local-only sanitized summaries, P0/P1/P2 triage, and real-phone QA
+checkboxes. The page stores local browser state only and does not create a
+server write API.
+
 ```text
 Tester ID:
 Device:
@@ -221,6 +231,9 @@ Create a private/anonymized summary outside the repository or use
 generic conclusions, never real tester feedback, screenshots, handles, raw
 personal inputs, or identifying details.
 
+The Feedback Center can generate a local sanitized owner summary. Copy only the
+generic conclusions from that summary into project docs or task packages.
+
 Recommended decision format:
 
 ```text
@@ -242,3 +255,4 @@ Decision: STOP / FIX / EXPAND
 * Do not reset counters before first users unless explicitly approved.
 * Package 55 test events are baseline noise.
 * First 5 users must be observed through analytics + feedback.
+* Package 61 Feedback Center route: `/dashboard/networks/zodiac/feedback`.
