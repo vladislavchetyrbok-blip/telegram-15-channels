@@ -22,6 +22,7 @@ const ROUTES = {
   miniApp: "/compatibility",
   dashboardAuthStatus: "/api/dashboard/auth/status",
   unifiedStatus: "/api/system/unified-status",
+  aphroditeChannels: "/dashboard/networks/aphrodite/channels",
 };
 
 async function main() {
@@ -323,6 +324,15 @@ async function main() {
     assertIncludes(pages.docs, "docs/zodiac-telegram-platform-management-console.md", "management console doc path");
     assertIncludes(pages.docs, "docs/zodiac-telegram-platform-publishing-center.md", "publishing center doc path");
     assertIncludes(pages.docs, "docs/zodiac-telegram-platform-feedback-center.md", "feedback center doc path");
+
+    assertIncludes(pages.aphroditeChannels, "Aphrodite Channel Registry", "aphrodite registry heading");
+    assertIncludes(pages.aphroditeChannels, "Total Channels", "aphrodite registry total channels");
+    assertIncludes(pages.aphroditeChannels, "Paused Legacy", "aphrodite registry paused legacy");
+    assertIncludes(pages.aphroditeChannels, "Draft New", "aphrodite registry draft new");
+    assertIncludes(pages.aphroditeChannels, "Currency", "aphrodite module Currency");
+    assertIncludes(pages.aphroditeChannels, "Crypto", "aphrodite module Crypto");
+    assertIncludes(pages.aphroditeChannels, "Metals", "aphrodite module Metals");
+    assertNotIncludes(pages.aphroditeChannels, "/api/aphrodite/settings", "no server write API required on aphrodite registry");
 
     const combined = Object.values(pages).join("\n");
     assertNoForbiddenLinks(combined);
