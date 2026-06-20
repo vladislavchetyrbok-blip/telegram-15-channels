@@ -1,39 +1,27 @@
-# Aphrodite Package 77 Plan (UI Polish)
+# Aphrodite Package 78 Plan (Studio)
 
 ## User Review Required
 No review required; autopilot mandate granted.
 
 ## Goal
-Perform UI Polish on the Aphrodite OS dashboard. This involves creating a unified `AphroditePageHeader` component to standardize the premium "iPhone-like" UI across all 7 Aphrodite module pages, eliminating code duplication and ensuring consistent margins, typography, and safety badges.
+Implement Package 78: Studio Module. This entails creating a read-only conceptual placeholder for a "Windows Studio" or "Content Studio" inside the Aphrodite Platform, completing the set of required module cards outlined in the initial platform roadmap.
 
 ## Proposed Changes
 
-### [NEW] `components/AphroditePageHeader.tsx`
-Create a reusable header component that accepts `title`, `description`, `icon`, `badgeText`, and `safetyLocked` props.
+### [NEW] `app/dashboard/networks/aphrodite/studio/page.tsx`
+Create a clean, dark-mode read-only dashboard for the future Content Studio module. It will utilize the `AphroditePageHeader` and include placeholder UI for multimedia tools, video rendering, or graphical generation pipelines.
 
-### [MODIFY] `app/dashboard/networks/aphrodite/page.tsx`
-Refactor to use `AphroditePageHeader`.
+### [NEW] `docs/aphrodite-studio.md`
+Documentation for the Studio module.
 
-### [MODIFY] `app/dashboard/networks/aphrodite/channels/page.tsx`
-Refactor to use `AphroditePageHeader`.
+### [NEW] `docs/aphrodite-package-reports/package-78.md`
+Report file for Package 78.
 
-### [MODIFY] `app/dashboard/networks/aphrodite/calendar/page.tsx`
-Refactor to use `AphroditePageHeader`.
+### [MODIFY] `components/Sidebar.tsx`
+Ensure "Студия" (Studio) is added to the sidebar under the Aphrodite section if missing.
 
-### [MODIFY] `app/dashboard/networks/aphrodite/data-sources/page.tsx`
-Refactor to use `AphroditePageHeader`.
-
-### [MODIFY] `app/dashboard/networks/aphrodite/currency/page.tsx`
-Refactor to use `AphroditePageHeader`.
-
-### [MODIFY] `app/dashboard/networks/aphrodite/crypto/page.tsx`
-Refactor to use `AphroditePageHeader`.
-
-### [MODIFY] `app/dashboard/networks/aphrodite/metals/page.tsx`
-Refactor to use `AphroditePageHeader`.
-
-### [NEW] `docs/aphrodite-package-reports/package-77.md`
-Report file for Package 77.
+### [MODIFY] `scripts/qa-zodiac-dashboard.mjs`
+Add assertions to ensure `/dashboard/networks/aphrodite/studio` renders correctly.
 
 ## Verification
 - `npm run lint`

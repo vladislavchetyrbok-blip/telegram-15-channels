@@ -133,9 +133,10 @@ const modules: ModuleCard[] = [
     title: "Future Windows Studio",
     icon: TerminalSquare,
     purpose: "Advanced visual content generator",
-    status: "Future",
+    status: "Planning",
     safetyLevel: "Concept",
     nextStep: "Not yet scheduled",
+    href: "/dashboard/networks/aphrodite/studio",
   },
 ];
 

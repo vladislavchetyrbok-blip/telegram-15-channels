@@ -29,6 +29,7 @@ const ROUTES = {
   aphroditeCurrency: "/dashboard/networks/aphrodite/currency",
   aphroditeCrypto: "/dashboard/networks/aphrodite/crypto",
   aphroditeMetals: "/dashboard/networks/aphrodite/metals",
+  aphroditeStudio: "/dashboard/networks/aphrodite/studio",
 };
 
 async function main() {
@@ -376,6 +377,11 @@ async function main() {
     assertIncludes(pages.aphroditeMetals, "XAU/USD", "aphrodite metals mock data");
     assertIncludes(pages.aphroditeMetals, "API calls mocked", "aphrodite metals safety");
     assertNotIncludes(pages.aphroditeMetals, "/api/aphrodite", "no server write API required on aphrodite metals");
+
+    assertIncludes(pages.aphroditeStudio, "Content Studio", "aphrodite studio heading");
+    assertIncludes(pages.aphroditeStudio, "Zodiac Daily Reels", "aphrodite studio mock project");
+    assertIncludes(pages.aphroditeStudio, "Rendering backend offline", "aphrodite studio safety");
+    assertNotIncludes(pages.aphroditeStudio, "/api/aphrodite", "no server write API required on aphrodite studio");
 
     const combined = Object.values(pages).join("\n");
     assertNoForbiddenLinks(combined);
