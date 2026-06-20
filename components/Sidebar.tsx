@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Activity, BarChart3, BookOpen, FileText, HeartHandshake, LockKeyhole, MessageSquareText, RadioTower, Rocket, Server, Settings, ShieldCheck, Smartphone, Sparkles } from "lucide-react";
+import { Activity, BarChart3, BookOpen, CalendarDays, Database, FileText, HeartHandshake, LayoutDashboard, LockKeyhole, MessageSquareText, RadioTower, Rocket, Server, Settings, ShieldCheck, Smartphone, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const zodiacNavItems = [
@@ -19,8 +19,9 @@ const zodiacNavItems = [
 ];
 
 const aphroditeNavItems = [
-  { id: "aphrodite-overview", href: "/dashboard/networks/aphrodite", label: "Overview", icon: Server },
-  { id: "aphrodite-channels", href: "/dashboard/networks/aphrodite/channels", label: "Channel Registry", icon: Server },
+  { id: "aphrodite-overview", href: "/dashboard/networks/aphrodite", label: "Overview", icon: LayoutDashboard },
+  { id: "aphrodite-channels", href: "/dashboard/networks/aphrodite/channels", label: "Channel Registry", icon: Database },
+  { id: "aphrodite-calendar", href: "/dashboard/networks/aphrodite/calendar", label: "Publishing Calendar", icon: CalendarDays },
 ];
 
 export function Sidebar() {

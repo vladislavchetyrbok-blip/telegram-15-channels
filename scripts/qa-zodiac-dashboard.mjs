@@ -24,6 +24,7 @@ const ROUTES = {
   unifiedStatus: "/api/system/unified-status",
   aphroditeOverview: "/dashboard/networks/aphrodite",
   aphroditeChannels: "/dashboard/networks/aphrodite/channels",
+  aphroditeCalendar: "/dashboard/networks/aphrodite/calendar",
 };
 
 async function main() {
@@ -342,6 +343,14 @@ async function main() {
     assertIncludes(pages.aphroditeOverview, "Metals", "aphrodite overview Metals card");
     assertIncludes(pages.aphroditeOverview, "Locked", "aphrodite overview live publish locked");
     assertNotIncludes(pages.aphroditeOverview, "/api/aphrodite", "no server write API required on aphrodite overview");
+
+    assertIncludes(pages.aphroditeCalendar, "Aphrodite Publishing Calendar", "aphrodite calendar heading");
+    assertIncludes(pages.aphroditeCalendar, "Zodiac Daily", "aphrodite calendar zodiac daily");
+    assertIncludes(pages.aphroditeCalendar, "Currency Daily Rates", "aphrodite calendar currency daily");
+    assertIncludes(pages.aphroditeCalendar, "Crypto Top 10 Snapshot", "aphrodite calendar crypto daily");
+    assertIncludes(pages.aphroditeCalendar, "Metals Daily Watch", "aphrodite calendar metals daily");
+    assertIncludes(pages.aphroditeCalendar, "Live publishing locked", "aphrodite calendar safety locked");
+    assertNotIncludes(pages.aphroditeCalendar, "/api/aphrodite", "no server write API required on aphrodite calendar");
 
 
     const combined = Object.values(pages).join("\n");
