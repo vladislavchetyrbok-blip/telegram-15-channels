@@ -235,3 +235,10 @@ Save/history worked:
 Privacy issues:
 Decision: STOP / FIX / EXPAND
 ```
+
+## Analytics Baseline & First Users Observation
+
+* Redis analytics is active in production.
+* Do not reset counters before first users unless explicitly approved.
+* Package 55 test events are baseline noise.
+* First 5 users must be observed through analytics + feedback.

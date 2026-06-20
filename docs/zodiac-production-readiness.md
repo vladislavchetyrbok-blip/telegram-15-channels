@@ -817,3 +817,10 @@ Status:
 * **Where to check analytics**: Navigate to the Overview page and use the 'Открыть аналитику' CTA, or use the sidebar link.
 * **Current Redis / noop state**: Displayed as a status badge on the Overview page. If Redis is missing env variables, a warning is prominently displayed.
 * **Soft launch dashboard checklist**: Review the 'Рекомендованные шаги' card on the Overview page for instructions.
+
+## Analytics Baseline & First Users Observation
+
+* Redis analytics is active in production.
+* Do not reset counters before first users unless explicitly approved.
+* Package 55 test events are baseline noise.
+* First 5 users must be observed through analytics + feedback.
