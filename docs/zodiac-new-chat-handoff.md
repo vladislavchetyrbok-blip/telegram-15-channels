@@ -20,7 +20,7 @@ Local path: G:/telegram-15-channels
 Main Mini App route: /compatibility
 Bot/startapp link: https://t.me/zodiac_love_check_bot?startapp=compat
 Current branch: main
-Current HEAD at handoff creation: 90eda298d4b39de029ab841ec8363485f844cff7
+Current HEAD at handoff creation: b467e510f3fe6e81b23b6d4f2fbb2d5c8564c059
 ```
 
 Important docs to read first in a new chat:
@@ -28,10 +28,13 @@ Important docs to read first in a new chat:
 ```text
 docs/zodiac-new-chat-handoff.md
 docs/zodiac-full-project-audit-and-roadmap.md
+docs/zodiac-telegram-platform-map.md
+docs/zodiac-telegram-platform-ux-audit.md
 docs/zodiac-controlled-launch-freeze.md
 docs/zodiac-soft-launch-release-candidate.md
 docs/zodiac-production-readiness.md
 docs/zodiac-real-phone-webview-checklist.md
+docs/zodiac-first-users-analytics-baseline.md
 ```
 
 ## 2. Current Verdict
@@ -115,13 +118,21 @@ c0b4975 docs: add zodiac controlled soft launch execution pack
 aca6dc5 fix: clarify zodiac analytics noop dashboard state
 5cfc4ac docs: add zodiac daily autopilot stability report
 90eda29 docs: add zodiac controlled launch freeze
+841738e fix: hide weak sonnik and improve mobile date input
+98b28a3 fix: reset stale mystic mini app launch state
+56414f2 docs: add full zodiac project audit and roadmap
+fddabe5 fix: polish zodiac dashboard analytics navigation
+b467e51 docs: add zodiac first users analytics baseline
 ```
 
 Current latest package:
 
 ```text
-Package 51: New Chat Handoff Snapshot
-Status: this document
+Package 57: Full Telegram Platform Audit and UX Improvement Plan
+Status: in progress
+Previous: Package 56 (analytics baseline), Package 55 (Redis verification),
+          Package 54 (dashboard navigation), Package 53 (full audit),
+          Package 52 (Sonnik hidden / date input / stale Mystic fix)
 ```
 
 ## 5. Current Safety Rules
@@ -159,8 +170,8 @@ Ledger safety: fail-closed check exists
 Desktop QA harness: exists, npm run zodiac:desktop:qa
 Astro exact engine: exact_unavailable, symbolic active
 Profile sync: disabled, no backend writes
-Analytics storage: noop
-Redis analytics env: missing
+Analytics storage: redis (active in production, noop locally without env)
+Redis analytics env: configured in Vercel production
 Payments/Stars: OFF
 VIP free/promo until: 2026-09-17
 Giveaways: locked/preview intentional

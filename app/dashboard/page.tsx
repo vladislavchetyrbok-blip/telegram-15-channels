@@ -85,24 +85,24 @@ const nextActions = [
   },
   {
     title: "Еженедельный гороскоп",
-    href: "/dashboard/networks/zodiac#weekly",
+    href: "/dashboard/networks/zodiac",
     icon: ClipboardList,
     tone: "violet" as const,
     caption: "Dry-run формат готов для ревью без live-публикации.",
   },
   {
     title: "Комментарии",
-    href: "/dashboard/networks/zodiac#settings",
+    href: "/dashboard/networks/zodiac",
     icon: MessageCircle,
     tone: "coral" as const,
     caption: "Настройки общения вынесены из ежедневного маршрута.",
   },
   {
     title: "Аналитика",
-    href: "/dashboard/networks/zodiac#reports",
+    href: "/dashboard/networks/zodiac/analytics",
     icon: BarChart3,
     tone: "amber" as const,
-    caption: "Daily/history отчеты и будущие витрины метрик.",
+    caption: "Counters, funnels и privacy-safe метрики Mini App.",
   },
   {
     title: "SENATE / недвижимость позже",

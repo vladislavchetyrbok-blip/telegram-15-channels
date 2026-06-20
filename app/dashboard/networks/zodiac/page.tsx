@@ -1,15 +1,12 @@
 import {
   Activity,
   AlertTriangle,
-  BarChart3,
   CalendarClock,
   CheckCircle2,
   ChevronLeft,
   Compass,
-  FileText,
   HeartHandshake,
   Rocket,
-  Settings,
   ShieldCheck,
   Sparkles,
   SunMedium,
@@ -99,10 +96,11 @@ export default function ZodiacNetworkWorkspacePage() {
           <div className="rounded-lg border border-violet-200 bg-violet-50 p-6 shadow-sm">
             <ol className="list-inside list-decimal space-y-2 text-sm font-medium text-violet-900">
               <li>Проверить Mini App на телефоне</li>
-              <li>Дать первым 5 пользователям</li>
-              <li>Подключить Redis analytics</li>
-              <li>Собрать feedback</li>
-              <li>Не включать weekly/payments пока</li>
+              <li>Пригласить первых 5 доверенных пользователей</li>
+              <li>Следить за аналитикой (counters, share, feedback)</li>
+              <li>Собрать feedback и провести triage</li>
+              <li>Не включать weekly/payments/profile sync пока</li>
+              <li>Не запускать массовый запуск</li>
             </ol>
           </div>
         </section>

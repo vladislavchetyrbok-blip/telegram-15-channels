@@ -4,6 +4,7 @@
 * **Baseline Timestamp**: 2026-06-20T04:39:00+03:00
 * **Current HEAD**: `fddabe55213365b31078c7cdde899facf2057e3a`
 * **Production Analytics Mode**: `redis`
+* **Analytics Dashboard**: `/dashboard/networks/zodiac/analytics` (sidebar link: Аналитика; overview CTA: Открыть аналитику)
 
 ## 2. Verification / Test Events Note
 * **Note**: Package 55 created safe test events (app opens, compatibility, tarot, lunar, feedback, share clicks) to verify the production Redis analytics pipeline.

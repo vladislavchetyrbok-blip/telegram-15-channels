@@ -350,3 +350,5 @@ Clean baseline was run after removing `.next`.
 * **Where to check analytics**: Navigate to the Overview page and use the 'Открыть аналитику' CTA, or use the sidebar link.
 * **Current Redis / noop state**: Displayed as a status badge on the Overview page. If Redis is missing env variables, a warning is prominently displayed.
 * **Soft launch dashboard checklist**: Review the 'Рекомендованные шаги' card on the Overview page for instructions.
+* **Platform Map**: `docs/zodiac-telegram-platform-map.md`
+* **UX Audit**: `docs/zodiac-telegram-platform-ux-audit.md`
