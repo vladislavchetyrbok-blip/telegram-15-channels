@@ -280,3 +280,5 @@ Bad signs after first 5 users:
 * **Full platform** = Zodiac OS
 * **Dashboard/admin** = Zodiac Control
 * **Mini App** = Zodiac Mini
+
+- [Zodiac Real Phone QA Evidence Center](zodiac-real-phone-qa-evidence-center.md)

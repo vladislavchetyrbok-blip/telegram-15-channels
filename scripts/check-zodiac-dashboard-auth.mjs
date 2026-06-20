@@ -76,7 +76,7 @@ async function runEnabledMode() {
     async () => {
       const login = await request("GET", `${LOGIN_ROUTE}?next=${encodeURIComponent(PROTECTED_ROUTE)}`);
       assertStatus(login, 200, "enabled login page should render");
-      assertIncludes(login.body, "Вход в Telegram Platform Dashboard", "enabled login page heading");
+      assertIncludes(login.body, "Вход в Zodiac OS", "enabled login page heading");
       assertIncludes(login.body, "Passcode владельца", "enabled login passcode field");
       assertNoSecrets(login.body, "enabled login page");
 
@@ -100,7 +100,7 @@ async function runEnabledMode() {
 
       const authorized = await request("GET", PROTECTED_ROUTE, { cookie: sessionCookie });
       assertStatus(authorized, 200, "session should allow dashboard access");
-      assertIncludes(authorized.body, "Обзор управления Zodiac", "authorized dashboard content");
+      assertIncludes(authorized.body, "Zodiac Control", "authorized dashboard content");
       assertNoSecrets(authorized.body, "authorized dashboard");
       report.sessionAllowed = true;
 

@@ -157,3 +157,5 @@ The Admin Safety Center route is:
 Use it to keep local approval notes, review the Approval Matrix, and complete
 the `Перед 20 пользователями` checklist. The audit log there is browser-local
 only and stores sanitized action metadata, not raw feedback.
+
+- [Zodiac Real Phone QA Evidence Center](zodiac-real-phone-qa-evidence-center.md)

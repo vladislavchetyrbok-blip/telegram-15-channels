@@ -61,18 +61,42 @@ const defaultForm: FeedbackFormState = {
   sanitizedNote: "",
 };
 
-const qaItems = [
-  { id: "iphone-open", label: "iPhone Telegram opens Mini App" },
-  { id: "android-open", label: "Android Telegram opens Mini App" },
-  { id: "back-button", label: "BackButton works" },
-  { id: "bottom-buttons", label: "bottom buttons not overlapped" },
-  { id: "keyboard", label: "keyboard does not cover form" },
-  { id: "share", label: "share works" },
-  { id: "save-history", label: "save/history works" },
-  { id: "feedback-opens", label: "feedback opens" },
-  { id: "theme-readable", label: "dark/light theme readable" },
-  { id: "no-white-screen", label: "no white screen" },
+const iphoneQaItems = [
+  { id: "iphone-open", label: "Mini App opens from Telegram link" },
+  { id: "iphone-startapp-compat", label: "startapp=compat opens home/main correctly" },
+  { id: "iphone-startapp-mystic", label: "startapp=mystic opens Mystic correctly" },
+  { id: "iphone-back-button", label: "BackButton works" },
+  { id: "iphone-bottom-buttons", label: "bottom buttons not covered" },
+  { id: "iphone-keyboard", label: "keyboard does not cover date/input fields" },
+  { id: "iphone-share", label: "share works" },
+  { id: "iphone-save-history", label: "save/history works" },
+  { id: "iphone-feedback-opens", label: "feedback opens" },
+  { id: "iphone-theme-dark", label: "dark theme readable" },
+  { id: "iphone-theme-light", label: "light theme readable" },
 ];
+
+const androidQaItems = [
+  { id: "android-open", label: "Mini App opens from Telegram link" },
+  { id: "android-startapp-compat", label: "startapp=compat opens home/main correctly" },
+  { id: "android-startapp-mystic", label: "startapp=mystic opens Mystic correctly" },
+  { id: "android-back-button", label: "BackButton works" },
+  { id: "android-bottom-buttons", label: "bottom buttons not covered" },
+  { id: "android-keyboard", label: "keyboard does not cover date/input fields" },
+  { id: "android-share", label: "share works" },
+  { id: "android-save-history", label: "save/history works" },
+  { id: "android-feedback-opens", label: "feedback opens" },
+  { id: "android-theme-dark", label: "dark theme readable" },
+  { id: "android-theme-light", label: "light theme readable" },
+];
+
+const desktopQaItems = [
+  { id: "desktop-open", label: "Mini App opens" },
+  { id: "desktop-layout", label: "layout usable" },
+  { id: "desktop-no-fatal", label: "no fatal UI issue" },
+  { id: "desktop-analytics", label: "analytics events fire" },
+];
+
+const allQaItems = [...iphoneQaItems, ...androidQaItems, ...desktopQaItems];
 
 export function FeedbackCenterWorkspace() {
   const [entries, setEntries] = useState<FeedbackEntry[]>([]);
@@ -113,9 +137,9 @@ export function FeedbackCenterWorkspace() {
   }, [qaState, loaded]);
 
   const validation = useMemo(() => validateFeedbackForm(form), [form]);
-  const summary = useMemo(() => buildFeedbackSummary(entries), [entries]);
+  const summary = useMemo(() => buildFeedbackSummary(entries, qaState), [entries, qaState]);
   const triage = useMemo(() => buildTriageSummary(entries), [entries]);
-  const qaDoneCount = qaItems.filter((item) => qaState[item.id]).length;
+  const qaDoneCount = allQaItems.filter((item) => qaState[item.id]).length;
   const exportText = useMemo(() => buildSanitizedExport(entries, qaState, summary.recommendedNextAction), [entries, qaState, summary.recommendedNextAction]);
 
   function updateForm<K extends keyof FeedbackFormState>(field: K, value: FeedbackFormState[K]) {
@@ -330,35 +354,59 @@ export function FeedbackCenterWorkspace() {
         ) : null}
       </section>
 
-      <section data-qa="real-phone-qa-checklist" className="space-y-4 rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+      <section data-qa="real-phone-qa-checklist" className="space-y-6 rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
         <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-start">
           <div>
             <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-violet-700">
               <Phone className="h-3.5 w-3.5" />
-              Real Phone QA
+              Real Phone QA Evidence
             </p>
-            <h2 className="mt-2 text-xl font-semibold text-slate-950">Real Phone QA</h2>
+            <h2 className="mt-2 text-xl font-semibold text-slate-950">Real Phone QA Evidence</h2>
             <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
               Локальные чекбоксы для ручного Telegram WebView pass. Скриншоты и raw feedback не коммитятся.
             </p>
           </div>
           <span className="inline-flex w-fit rounded-md border border-cyan-200 bg-cyan-50 px-3 py-2 text-sm font-semibold text-cyan-800">
-            {qaDoneCount}/{qaItems.length} checked
+            {qaDoneCount}/{allQaItems.length} checked
           </span>
         </div>
-        <div className="grid gap-3 md:grid-cols-2">
-          {qaItems.map((item) => (
-            <label key={item.id} className="flex min-h-12 items-center gap-3 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-700">
-              <input
-                type="checkbox"
-                checked={Boolean(qaState[item.id])}
-                onChange={(event) => updateQaItem(item.id, event.target.checked)}
-                className="h-4 w-4 rounded border-slate-300 text-violet-600"
-              />
-              <span>{item.label}</span>
-            </label>
-          ))}
+
+        <div className="space-y-5">
+          <div>
+            <h3 className="mb-3 text-sm font-semibold text-slate-950">iPhone Telegram</h3>
+            <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+              {iphoneQaItems.map((item) => (
+                <label key={item.id} className="flex min-h-12 items-center gap-3 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700">
+                  <input type="checkbox" checked={Boolean(qaState[item.id])} onChange={(event) => updateQaItem(item.id, event.target.checked)} className="h-4 w-4 rounded border-slate-300 text-violet-600" />
+                  <span>{item.label}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+          <div>
+            <h3 className="mb-3 text-sm font-semibold text-slate-950">Android Telegram</h3>
+            <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+              {androidQaItems.map((item) => (
+                <label key={item.id} className="flex min-h-12 items-center gap-3 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700">
+                  <input type="checkbox" checked={Boolean(qaState[item.id])} onChange={(event) => updateQaItem(item.id, event.target.checked)} className="h-4 w-4 rounded border-slate-300 text-violet-600" />
+                  <span>{item.label}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+          <div>
+            <h3 className="mb-3 text-sm font-semibold text-slate-950">Telegram Desktop sanity</h3>
+            <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+              {desktopQaItems.map((item) => (
+                <label key={item.id} className="flex min-h-12 items-center gap-3 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700">
+                  <input type="checkbox" checked={Boolean(qaState[item.id])} onChange={(event) => updateQaItem(item.id, event.target.checked)} className="h-4 w-4 rounded border-slate-300 text-violet-600" />
+                  <span>{item.label}</span>
+                </label>
+              ))}
+            </div>
+          </div>
         </div>
+
         <p className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm font-semibold leading-6 text-amber-950">
           No screenshots committed. Evidence here is a local owner checklist only; real screenshots stay outside the repository unless explicitly sanitized and approved.
         </p>
@@ -393,7 +441,7 @@ export function FeedbackCenterWorkspace() {
       <section data-qa="feedback-decision-matrix" className="space-y-4 rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
         <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-start">
           <div>
-            <h2 className="text-xl font-semibold text-slate-950">Решение после первых 5 пользователей</h2>
+            <h2 className="text-xl font-semibold text-slate-950">Readiness Decision Card</h2>
             <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
               Расширение возможно только после sanitized feedback review, real-phone pass и отсутствия открытых P0/P1.
             </p>
@@ -403,16 +451,16 @@ export function FeedbackCenterWorkspace() {
             Mass launch: STOP
           </span>
         </div>
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-          <DecisionRule title="Can invite 20" text="0 P0 and 0 unresolved P1 + average rating >= 7 + at least some feature usage." tone="emerald" />
-          <DecisionRule title="Any P0" text="Stop and fix before any expansion." tone="rose" />
-          <DecisionRule title="Same confusion repeats" text="Fix copy/navigation before more testers." tone="amber" />
-          <DecisionRule title="No share/save" text="Improve CTA/value before widening." tone="amber" />
-          <DecisionRule title="Sensitive data visible" text="Stop immediately and remove the unsafe surface." tone="rose" />
-        </div>
+
+        {qaDoneCount === 0 && entries.length === 0 ? (
+          <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm font-semibold leading-6 text-amber-950">
+            Manual phone evidence pending
+          </div>
+        ) : null}
+
         <div className="grid gap-3 md:grid-cols-3">
-          <DecisionBadge label="5 users" value="GO" tone="emerald" />
-          <DecisionBadge label="20 users" value="CONDITIONAL" tone="amber" />
+          <DecisionBadge label="First 5 users" value={summary.readinessTo5} tone={summary.readinessTo5Tone} />
+          <DecisionBadge label="20 users" value={summary.readinessTo20} tone={summary.readinessTo20Tone} />
           <DecisionBadge label="Mass launch" value="STOP" tone="rose" />
         </div>
       </section>
@@ -609,7 +657,7 @@ function normalizeEnum<T extends string>(value: unknown, allowed: readonly T[], 
   return typeof value === "string" && allowed.includes(value as T) ? (value as T) : fallback;
 }
 
-function buildFeedbackSummary(entries: FeedbackEntry[]) {
+function buildFeedbackSummary(entries: FeedbackEntry[], qaState: QaState) {
   const ratings = entries.map((entry) => entry.rating).filter((rating): rating is number => typeof rating === "number");
   const averageRating = ratings.length > 0 ? Math.round((ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length) * 10) / 10 : 0;
   const unresolved = entries.filter((entry) => entry.status !== "Fixed" && entry.status !== "Deferred");
@@ -620,34 +668,50 @@ function buildFeedbackSummary(entries: FeedbackEntry[]) {
   const noShareSignal = entries.length > 0 && entries.every((entry) => entry.wouldShare !== "yes");
   const testedUsers = Math.min(entries.length, 5);
 
+  const iphonePass = iphoneQaItems.every((item) => qaState[item.id]);
+  const androidPass = androidQaItems.every((item) => qaState[item.id]);
+
+  let readinessTo5 = "WAIT";
+  let readinessTo5Tone: Tone = "amber";
+  if (iphonePass || androidPass) {
+    readinessTo5 = "GO";
+    readinessTo5Tone = "emerald";
+  }
+
   let readinessTo20 = "WAIT";
-  let readinessTone: Tone = "amber";
+  let readinessTo20Tone: Tone = "amber";
   let recommendedNextAction = "Пригласить первых 5 тестеров и внести sanitized-сводки.";
 
   if (p0 > 0) {
     readinessTo20 = "STOP";
-    readinessTone = "rose";
+    readinessTo20Tone = "rose";
     recommendedNextAction = "Остановить расширение и исправить P0.";
   } else if (p1 > 0) {
     readinessTo20 = "FIX P1";
-    readinessTone = "amber";
+    readinessTo20Tone = "amber";
     recommendedNextAction = "Закрыть P1 перед приглашением 20 пользователей.";
+  } else if (!iphonePass || !androidPass) {
+    readinessTo20 = "QA PENDING";
+    readinessTo20Tone = "amber";
+    recommendedNextAction = "Complete both iPhone and Android Real Phone QA evidence.";
   } else if (entries.length < 5) {
     readinessTo20 = "WAIT";
-    readinessTone = "amber";
+    readinessTo20Tone = "amber";
   } else if (averageRating < 7 || !hasFeatureUsage) {
     readinessTo20 = "CONDITIONAL";
-    readinessTone = "amber";
+    readinessTo20Tone = "amber";
     recommendedNextAction = "Улучшить понятность/value и повторить проверку.";
   } else if (noShareSignal) {
     readinessTo20 = "CTA FIX";
-    readinessTone = "amber";
+    readinessTo20Tone = "amber";
     recommendedNextAction = "Усилить share/save CTA перед расширением.";
   } else {
     readinessTo20 = "CAN INVITE 20";
-    readinessTone = "emerald";
+    readinessTo20Tone = "emerald";
     recommendedNextAction = "Можно рассмотреть 20 пользователей при чистом real-phone pass.";
   }
+
+  let readinessTone: Tone = readinessTo20Tone;
 
   return {
     testedUsers,
@@ -657,7 +721,10 @@ function buildFeedbackSummary(entries: FeedbackEntry[]) {
     p1,
     p2,
     noShareSignal,
+    readinessTo5,
+    readinessTo5Tone,
     readinessTo20,
+    readinessTo20Tone,
     readinessTone,
     recommendedNextAction,
   };
@@ -680,17 +747,18 @@ function buildTriageSummary(entries: FeedbackEntry[]) {
 }
 
 function buildSanitizedExport(entries: FeedbackEntry[], qaState: QaState, nextAction: string) {
+  const qaCount = allQaItems.filter((item) => qaState[item.id]).length;
   const lines = [
-    "Package 61 local feedback summary",
+    "Package 67 local feedback summary",
     `Entries: ${entries.length}`,
-    `Real Phone QA: ${qaItems.filter((item) => qaState[item.id]).length}/${qaItems.length}`,
+    `Real Phone QA: ${qaCount}/${allQaItems.length}`,
     `Recommended next action: ${nextAction}`,
     "",
     "Feedback:",
     entries.length === 0 ? "- No real feedback yet." : entries.map((entry) => `- ${entry.testerLabel}: ${entry.severity}/${entry.status}, device=${entry.device}, telegram=${entry.telegramApp}, rating=${entry.rating ?? "none"}, share=${entry.wouldShare}, feature=${entry.strongestFeature || "n/a"}`).join("\n"),
     "",
     "Real Phone QA checked:",
-    qaItems.filter((item) => qaState[item.id]).map((item) => `- ${item.label}`).join("\n") || "- none",
+    allQaItems.filter((item) => qaState[item.id]).map((item) => `- ${item.label}`).join("\n") || "- none",
   ];
 
   return lines.join("\n");

@@ -355,3 +355,5 @@ Manual real-phone Telegram WebView sanity pass, then first 5 testers.
 * **Full platform** = Zodiac OS
 * **Dashboard/admin** = Zodiac Control
 * **Mini App** = Zodiac Mini
+
+- [Zodiac Real Phone QA Evidence Center](zodiac-real-phone-qa-evidence-center.md)
