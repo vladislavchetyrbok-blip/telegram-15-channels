@@ -1,27 +1,39 @@
-# Aphrodite Package 76 Plan (Metals Module)
+# Aphrodite Package 77 Plan (UI Polish)
 
 ## User Review Required
 No review required; autopilot mandate granted.
 
 ## Goal
-Create a read-only Metals module dashboard for Aphrodite OS to monitor precious metals market data.
+Perform UI Polish on the Aphrodite OS dashboard. This involves creating a unified `AphroditePageHeader` component to standardize the premium "iPhone-like" UI across all 7 Aphrodite module pages, eliminating code duplication and ensuring consistent margins, typography, and safety badges.
 
 ## Proposed Changes
 
-### [NEW] `app/dashboard/networks/aphrodite/metals/page.tsx`
-Create a dashboard for Metals displaying mock data (XAU/USD, XAG/USD, XPT/USD), recent trends, and a safety status noting that it is currently disconnected from any live publishing or DB.
+### [NEW] `components/AphroditePageHeader.tsx`
+Create a reusable header component that accepts `title`, `description`, `icon`, `badgeText`, and `safetyLocked` props.
 
-### [NEW] `docs/aphrodite-metals.md`
-Documentation for the Metals module design.
+### [MODIFY] `app/dashboard/networks/aphrodite/page.tsx`
+Refactor to use `AphroditePageHeader`.
 
-### [NEW] `docs/aphrodite-package-reports/package-76.md`
-Report file for Package 76.
+### [MODIFY] `app/dashboard/networks/aphrodite/channels/page.tsx`
+Refactor to use `AphroditePageHeader`.
 
-### [MODIFY] `components/Sidebar.tsx`
-Update the `href` for the "Металлы" sidebar item to point to `/dashboard/networks/aphrodite/metals`. Currently it might be pointing to a placeholder or missing. Wait, there is no "Металлы" in `components/Sidebar.tsx` yet, so I will add it under the Aphrodite section.
+### [MODIFY] `app/dashboard/networks/aphrodite/calendar/page.tsx`
+Refactor to use `AphroditePageHeader`.
 
-### [MODIFY] `scripts/qa-zodiac-dashboard.mjs`
-Add routes and assertions for `/dashboard/networks/aphrodite/metals`.
+### [MODIFY] `app/dashboard/networks/aphrodite/data-sources/page.tsx`
+Refactor to use `AphroditePageHeader`.
+
+### [MODIFY] `app/dashboard/networks/aphrodite/currency/page.tsx`
+Refactor to use `AphroditePageHeader`.
+
+### [MODIFY] `app/dashboard/networks/aphrodite/crypto/page.tsx`
+Refactor to use `AphroditePageHeader`.
+
+### [MODIFY] `app/dashboard/networks/aphrodite/metals/page.tsx`
+Refactor to use `AphroditePageHeader`.
+
+### [NEW] `docs/aphrodite-package-reports/package-77.md`
+Report file for Package 77.
 
 ## Verification
 - `npm run lint`

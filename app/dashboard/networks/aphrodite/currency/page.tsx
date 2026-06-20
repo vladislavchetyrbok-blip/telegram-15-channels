@@ -30,31 +30,21 @@ const MOCK_RATES: CurrencyRate[] = [
   { pair: "AUD/USD", rate: 0.6541, change: 0.0012, trend: "up" },
 ];
 
+import { AphroditePageHeader } from "@/components/AphroditePageHeader";
+
 export default function AphroditeCurrencyPage() {
   requireDashboardPageAccess("/dashboard/networks/aphrodite/currency");
 
   return (
-    <main className="min-h-screen bg-[#060b14] p-6 lg:p-8">
-      <div className="mx-auto max-w-5xl space-y-8">
-        <header className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between border-b border-slate-800/80 pb-6">
-          <div className="space-y-1.5">
-            <h1 className="text-2xl font-semibold tracking-tight text-white flex items-center gap-2">
-              <Banknote className="h-6 w-6 text-emerald-400" />
-              Currency Exchange Module
-            </h1>
-            <p className="text-sm text-slate-400">
-              Fiat exchange rates, central bank updates, and currency publishing pipelines.
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <Link 
-              href="/dashboard/networks/aphrodite"
-              className="px-4 py-2 text-sm font-medium text-slate-300 bg-slate-800/50 hover:bg-slate-800 border border-slate-700/50 rounded-lg transition-colors"
-            >
-              Overview
-            </Link>
-          </div>
-        </header>
+    <div className="-mx-4 -my-6 min-h-screen overflow-x-hidden bg-[#070b14] px-4 py-6 text-slate-100 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+      <div className="mx-auto max-w-6xl space-y-8">
+        <AphroditePageHeader
+          title="Currency Exchange Module"
+          description="Fiat exchange rates, central bank updates, and currency publishing pipelines."
+          badgeText="Currency"
+          icon={Banknote}
+          safetyLocked={false}
+        />
 
         <div className="grid lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
@@ -131,6 +121,6 @@ export default function AphroditeCurrencyPage() {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

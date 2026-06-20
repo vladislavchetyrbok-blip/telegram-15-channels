@@ -4,12 +4,13 @@ import {
   BarChart3,
   Calendar,
   CheckCircle2,
+  CalendarDays,
   ChevronRight,
   Database,
-  EyeOff,
   LayoutDashboard,
   Lock,
   LockKeyhole,
+  Network,
   RadioTower,
   Server,
   ShieldCheck,
@@ -19,6 +20,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { requireDashboardPageAccess } from "@/lib/zodiac-dashboard-auth";
+import { AphroditePageHeader } from "@/components/AphroditePageHeader";
 
 export const dynamic = "force-dynamic";
 
@@ -143,21 +145,16 @@ export default function AphroditePlatformOverview() {
   return (
     <main className="flex-1 bg-[#0a1428] text-slate-200">
       <div className="mx-auto max-w-6xl px-4 py-8 lg:px-8 lg:py-12">
-        <div className="mb-10">
-          <div className="flex items-center gap-2 text-sm text-slate-400 mb-4">
-            <span>Платформа</span>
-            <span>/</span>
-            <span className="text-slate-200">Афродита</span>
-          </div>
-          <h1 className="text-3xl font-bold text-white tracking-tight flex items-center gap-3">
-            <Server className="h-8 w-8 text-blue-400" />
-            Афродита (Aphrodite Platform)
-          </h1>
-          <p className="mt-3 text-slate-400 max-w-2xl text-base leading-relaxed">
-            The overarching operator platform for all Telegram publishing networks.
-            Зодиак (Zodiac) and other vertical content engines operate as modules within this control plane.
-          </p>
-        </div>
+        <AphroditePageHeader
+          title="Афродита (Aphrodite Platform)"
+          description="The overarching operator platform for all Telegram publishing networks. Зодиак (Zodiac) and other vertical content engines operate as modules within this control plane."
+          badgeText="Operator Platform"
+          icon={LayoutDashboard}
+          safetyLocked={true}
+          safetyMessage="Live publish locked"
+          backLink="/dashboard"
+          backLabel="Dashboard Home"
+        />
 
         {/* Top Summary Cards */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-10">

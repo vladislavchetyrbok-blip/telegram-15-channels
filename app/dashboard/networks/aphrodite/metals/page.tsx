@@ -11,6 +11,8 @@ const mockMetalsData = [
   { pair: "XPD/USD", name: "Palladium", price: "$980.20", change: "-1.5%", trend: "down" },
 ];
 
+import { AphroditePageHeader } from "@/components/AphroditePageHeader";
+
 export default function AphroditeMetalsPage() {
   requireDashboardPageAccess("/dashboard/networks/aphrodite/metals");
 
@@ -18,33 +20,13 @@ export default function AphroditeMetalsPage() {
     <div className="-mx-4 -my-6 min-h-screen overflow-x-hidden bg-[#070b14] px-4 py-6 text-slate-100 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
       <div className="mx-auto max-w-6xl space-y-8">
         
-        <header className="space-y-4 border-b border-slate-800/80 pb-6">
-          <Link href="/dashboard/networks/aphrodite" className="inline-flex items-center gap-2 text-sm font-semibold text-blue-400 transition hover:text-blue-300">
-            <ChevronLeft className="h-4 w-4" />
-            Dashboard / Афродита
-          </Link>
-          
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div>
-              <p className="inline-flex items-center gap-2 rounded-full border border-blue-400/20 bg-blue-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-blue-300 mb-4">
-                <Gem className="h-3.5 w-3.5" />
-                Metals Module
-              </p>
-              <h1 className="text-3xl font-bold tracking-tight text-white">Precious Metals</h1>
-              <p className="mt-2 text-sm text-slate-400 max-w-2xl">
-                Read-only snapshot of precious metals market data. Live API connections are mocked for development safety.
-              </p>
-            </div>
-            
-            <div className="flex items-center gap-2 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-4 py-2">
-              <ShieldCheck className="h-5 w-5 text-emerald-400" />
-              <div className="text-sm">
-                <p className="font-semibold text-emerald-300">Safety Locked</p>
-                <p className="text-emerald-400/70 text-xs">API calls mocked</p>
-              </div>
-            </div>
-          </div>
-        </header>
+        <AphroditePageHeader
+          title="Precious Metals"
+          description="Read-only snapshot of precious metals market data. Live API connections are mocked for development safety."
+          badgeText="Metals Module"
+          icon={Gem}
+          safetyLocked={true}
+        />
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           {mockMetalsData.map((item) => (

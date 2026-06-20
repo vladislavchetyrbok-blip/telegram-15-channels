@@ -13,6 +13,8 @@ const mockCryptoData = [
   { pair: "XRP/USD", name: "Ripple", price: "$0.58", change: "-1.2%", trend: "down" },
 ];
 
+import { AphroditePageHeader } from "@/components/AphroditePageHeader";
+
 export default function AphroditeCryptoPage() {
   requireDashboardPageAccess("/dashboard/networks/aphrodite/crypto");
 
@@ -20,33 +22,13 @@ export default function AphroditeCryptoPage() {
     <div className="-mx-4 -my-6 min-h-screen overflow-x-hidden bg-[#070b14] px-4 py-6 text-slate-100 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
       <div className="mx-auto max-w-6xl space-y-8">
         
-        <header className="space-y-4 border-b border-slate-800/80 pb-6">
-          <Link href="/dashboard/networks/aphrodite" className="inline-flex items-center gap-2 text-sm font-semibold text-blue-400 transition hover:text-blue-300">
-            <ChevronLeft className="h-4 w-4" />
-            Dashboard / Афродита
-          </Link>
-          
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div>
-              <p className="inline-flex items-center gap-2 rounded-full border border-blue-400/20 bg-blue-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-blue-300 mb-4">
-                <Database className="h-3.5 w-3.5" />
-                Crypto Module
-              </p>
-              <h1 className="text-3xl font-bold tracking-tight text-white">Cryptocurrency Markets</h1>
-              <p className="mt-2 text-sm text-slate-400 max-w-2xl">
-                Read-only snapshot of cryptocurrency market data. Live API connections are mocked for development safety.
-              </p>
-            </div>
-            
-            <div className="flex items-center gap-2 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-4 py-2">
-              <ShieldCheck className="h-5 w-5 text-emerald-400" />
-              <div className="text-sm">
-                <p className="font-semibold text-emerald-300">Safety Locked</p>
-                <p className="text-emerald-400/70 text-xs">API calls mocked</p>
-              </div>
-            </div>
-          </div>
-        </header>
+        <AphroditePageHeader
+          title="Cryptocurrency Markets"
+          description="Read-only snapshot of cryptocurrency market data. Live API connections are mocked for development safety."
+          badgeText="Crypto Module"
+          icon={Database}
+          safetyLocked={true}
+        />
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {mockCryptoData.map((item) => (
