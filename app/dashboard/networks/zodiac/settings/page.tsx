@@ -83,7 +83,7 @@ export default function ZodiacSettingsPage() {
           <nav className="flex text-sm font-medium text-slate-500">
             <Link href="/dashboard" className="hover:text-slate-900">Dashboard</Link>
             <span className="mx-2">/</span>
-            <Link href="/dashboard/networks/zodiac" className="hover:text-slate-900">Zodiac OS</Link>
+            <Link href="/dashboard/networks/zodiac" className="hover:text-slate-900">Зодиак</Link>
             <span className="mx-2">/</span>
             <span className="text-slate-900">Настройки</span>
           </nav>
@@ -96,7 +96,7 @@ export default function ZodiacSettingsPage() {
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-800 text-white">
               <Settings className="h-5 w-5" />
             </div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-950">Настройки Zodiac OS</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-slate-950">Настройки Зодиака</h1>
           </div>
           <p className="mt-2 text-sm leading-6 text-slate-600 max-w-3xl">
             Read-only центр окружения, режимов, ссылок и ручных действий. Секреты не отображаются.

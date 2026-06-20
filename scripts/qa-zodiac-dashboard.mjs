@@ -314,7 +314,7 @@ async function main() {
     assertNotIncludes(pages.security, "/api/zodiac/admin-safety", "admin safety server write API route");
     assertNotIncludes(pages.security, "/api/zodiac/security", "security server write API route");
 
-    assertIncludes(pages.settings, "Настройки Zodiac OS", "settings page heading");
+    assertIncludes(pages.settings, "Настройки Зодиака", "settings page heading");
     assertIncludes(pages.settings, "Настройки", "sidebar has Настройки");
     assertIncludes(pages.settings, 'data-qa="settings-env-cards"', "env status cards visible");
     assertIncludes(pages.settings, 'data-qa="settings-entry-points"', "production entry points visible");
@@ -324,7 +324,7 @@ async function main() {
     assertNotIncludes(pages.settings, "zodiac:publish-date:live", "no live publish button on settings");
     assertNotIncludes(pages.settings, "/api/zodiac/settings", "no server write API required on settings");
 
-    assertIncludes(pages.docs, "Документы Zodiac OS", "docs page heading");
+    assertIncludes(pages.docs, "Документы Зодиака", "docs page heading");
     assertIncludes(pages.docs, "docs/zodiac-telegram-platform-admin-safety.md", "admin safety doc path");
     assertIncludes(pages.docs, "docs/zodiac-telegram-platform-dashboard-auth.md", "dashboard auth doc path");
     assertIncludes(pages.docs, "docs/zodiac-telegram-platform-content-engine.md", "content engine doc path");
@@ -378,9 +378,9 @@ async function main() {
     assertIncludes(pages.aphroditeMetals, "API calls mocked", "aphrodite metals safety");
     assertNotIncludes(pages.aphroditeMetals, "/api/aphrodite", "no server write API required on aphrodite metals");
 
-    assertIncludes(pages.aphroditeStudio, "Content Studio", "aphrodite studio heading");
-    assertIncludes(pages.aphroditeStudio, "Zodiac Daily Reels", "aphrodite studio mock project");
-    assertIncludes(pages.aphroditeStudio, "Rendering backend offline", "aphrodite studio safety");
+    assertIncludes(pages.aphroditeStudio, "Windows Studio", "aphrodite studio heading");
+    assertIncludes(pages.aphroditeStudio, "Windows Architecture Plan", "aphrodite studio architecture");
+    assertIncludes(pages.aphroditeStudio, "No desktop app created yet", "aphrodite studio safety");
     assertNotIncludes(pages.aphroditeStudio, "/api/aphrodite", "no server write API required on aphrodite studio");
 
     const combined = Object.values(pages).join("\n");
