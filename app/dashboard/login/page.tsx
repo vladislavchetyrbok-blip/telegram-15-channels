@@ -30,7 +30,7 @@ export default function DashboardLoginPage({
               Owner dashboard
             </p>
             <div>
-              <h1 className="break-words text-3xl font-semibold tracking-tight text-white sm:text-5xl">Вход в Zodiac OS Dashboard</h1>
+              <h1 className="break-words text-3xl font-semibold tracking-tight text-white sm:text-5xl">Вход в панель Афродиты</h1>
               <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-300">
                 Защитный passcode-слой для owner dashboard. Он не включает live publish, weekly live, платежи, profile sync, exact astro или server write API для платформенных данных.
               </p>

@@ -5,10 +5,18 @@ import { usePathname } from "next/navigation";
 import { Activity, Banknote, BarChart3, BookOpen, CalendarDays, Database, FileText, HeartHandshake, LayoutDashboard, LockKeyhole, MessageSquareText, Network, RadioTower, Rocket, Server, Settings, ShieldCheck, Smartphone, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+const aphroditeNavItems = [
+  { id: "aphrodite-overview", href: "/dashboard/networks/aphrodite", label: "Обзор", icon: LayoutDashboard },
+  { id: "aphrodite-channels", href: "/dashboard/networks/aphrodite/channels", label: "Сеть Каналов", icon: Database },
+  { id: "aphrodite-calendar", href: "/dashboard/networks/aphrodite/calendar", label: "Календарь", icon: CalendarDays },
+  { id: "aphrodite-data-sources", href: "/dashboard/networks/aphrodite/data-sources", label: "Источники Данных", icon: Network },
+  { id: "aphrodite-currency", href: "/dashboard/networks/aphrodite/currency", label: "Валюты", icon: Banknote },
+];
+
 const zodiacNavItems = [
-  { id: "overview", href: "/dashboard/networks/zodiac", label: "Обзор", icon: Sparkles },
+  { id: "overview", href: "/dashboard/networks/zodiac", label: "Каналы Зодиака", icon: Sparkles },
   { id: "launch", href: "/dashboard/networks/zodiac/launch", label: "Запуск", icon: Rocket },
-  { id: "channels", href: "/dashboard/networks/zodiac/channels", label: "Каналы", icon: RadioTower },
+  { id: "channels", href: "/dashboard/networks/zodiac/channels", label: "Мониторинг", icon: RadioTower },
   { id: "content", href: "/dashboard/networks/zodiac/content", label: "Контент", icon: FileText },
   { id: "publishing", href: "/dashboard/networks/zodiac/publishing", label: "Публикации", icon: Rocket },
   { id: "analytics", href: "/dashboard/networks/zodiac/analytics", label: "Аналитика", icon: BarChart3 },
@@ -18,14 +26,6 @@ const zodiacNavItems = [
   { id: "docs", href: "/dashboard/networks/zodiac/docs", label: "Документы", icon: BookOpen },
 ];
 
-const aphroditeNavItems = [
-  { id: "aphrodite-overview", href: "/dashboard/networks/aphrodite", label: "Overview", icon: LayoutDashboard },
-  { id: "aphrodite-channels", href: "/dashboard/networks/aphrodite/channels", label: "Channel Registry", icon: Database },
-  { id: "aphrodite-calendar", href: "/dashboard/networks/aphrodite/calendar", label: "Publishing Calendar", icon: CalendarDays },
-  { id: "aphrodite-data-sources", href: "/dashboard/networks/aphrodite/data-sources", label: "Data Sources", icon: Network },
-  { id: "aphrodite-currency", href: "/dashboard/networks/aphrodite/currency", label: "Currency", icon: Banknote },
-];
-
 export function Sidebar() {
   const pathname = usePathname();
 
@@ -33,25 +33,22 @@ export function Sidebar() {
     <aside className="border-b border-line bg-[#08101f]/95 backdrop-blur lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:w-72 lg:overflow-y-auto lg:border-b-0 lg:border-r">
       <div className="flex min-h-full flex-col px-4 py-4 lg:px-5 lg:py-6">
 
-        {/* Zodiac Platform Group */}
-        <Link href="/dashboard/networks/zodiac" className="flex items-center gap-3 mt-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-cyan-300/30 bg-cyan-300/10 text-cyan-200">
-            <RadioTower className="h-5 w-5" />
+        {/* Aphrodite Platform Group (Main) */}
+        <Link href="/dashboard/networks/aphrodite" className="flex items-center gap-3 mt-2 mb-6">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-blue-400/30 bg-blue-400/10 text-blue-300">
+            <Server className="h-5 w-5" />
           </div>
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-cyan-100">Zodiac OS</p>
-            <p className="text-xs text-slate-500 leading-tight pr-2">Центр управления Telegram-сетью, Mini App.</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-blue-200">АФРОДИТА</p>
+            <p className="text-[11px] text-slate-500 leading-tight pr-2 uppercase tracking-wider">Operator Platform</p>
           </div>
         </Link>
 
-        <nav className="mt-5 grid grid-cols-2 gap-2 lg:mt-6 lg:grid-cols-1">
-          {zodiacNavItems.map((item) => {
+        <nav className="grid grid-cols-2 gap-2 lg:grid-cols-1">
+          {aphroditeNavItems.map((item) => {
             const Icon = item.icon;
             const baseHref = item.href.split("#")[0];
-            const active =
-              pathname === baseHref ||
-              (baseHref !== "/dashboard/networks/zodiac" && pathname.startsWith(baseHref)) ||
-              (item.id === "overview" && pathname === "/dashboard");
+            const active = pathname === baseHref || (baseHref !== "/dashboard/networks/aphrodite" && pathname.startsWith(baseHref));
 
             return (
               <Link
@@ -60,7 +57,7 @@ export function Sidebar() {
                 prefetch={false}
                 className={cn(
                   "flex h-11 items-center gap-3 rounded-md px-3 text-sm font-medium text-slate-400 transition hover:bg-slate-800/60 hover:text-white",
-                  active && "border border-cyan-300/30 bg-cyan-300/10 text-cyan-100",
+                  active && "border border-blue-400/30 bg-blue-400/10 text-blue-200",
                 )}
               >
                 <Icon className="h-4 w-4 shrink-0" />
@@ -70,21 +67,21 @@ export function Sidebar() {
           })}
         </nav>
 
-        {/* Aphrodite Platform Group */}
+        {/* Zodiac Module Group */}
         <div className="mt-8 border-t border-slate-800/60 pt-6">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-blue-400/30 bg-blue-400/10 text-blue-300">
-              <Server className="h-4 w-4" />
-            </div>
+          <div className="flex items-center gap-3 mb-4 px-1">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.22em] text-blue-200">Aphrodite</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-200">Модуль Зодиак</p>
             </div>
           </div>
           <nav className="grid grid-cols-2 gap-2 lg:grid-cols-1">
-            {aphroditeNavItems.map((item) => {
+            {zodiacNavItems.map((item) => {
               const Icon = item.icon;
               const baseHref = item.href.split("#")[0];
-              const active = pathname.startsWith(baseHref);
+              const active =
+                pathname === baseHref ||
+                (baseHref !== "/dashboard/networks/zodiac" && pathname.startsWith(baseHref)) ||
+                (item.id === "overview" && pathname === "/dashboard");
 
               return (
                 <Link
@@ -93,7 +90,7 @@ export function Sidebar() {
                   prefetch={false}
                   className={cn(
                     "flex h-11 items-center gap-3 rounded-md px-3 text-sm font-medium text-slate-400 transition hover:bg-slate-800/60 hover:text-white",
-                    active && "border border-blue-400/30 bg-blue-400/10 text-blue-200",
+                    active && "border border-cyan-300/30 bg-cyan-300/10 text-cyan-100",
                   )}
                 >
                   <Icon className="h-4 w-4 shrink-0" />
@@ -108,20 +105,28 @@ export function Sidebar() {
           <section className="rounded-lg border border-cyan-300/20 bg-cyan-300/5 p-4">
             <p className="text-xs uppercase tracking-[0.18em] text-cyan-200">Политика безопасности</p>
             <p className="mt-3 text-xs leading-5 text-slate-400">
-              Dashboard показывает состояние и dry-run подсказки. Live-публикация, weekly live, payments, profile sync и ledger writes не запускаются из UI.
+              <span className="font-semibold text-emerald-400">Offline Mocking Active</span>.
+              Все живые API-запросы в Telegram отключены в <code className="text-slate-300">local/dev</code> режиме для предотвращения дублирования.
             </p>
-            <div className="mt-3 flex flex-wrap gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded-md border border-emerald-300/20 bg-emerald-300/10 px-2 py-1 text-xs font-semibold text-emerald-200">
-                <ShieldCheck className="h-3.5 w-3.5" />
-                safe
-              </span>
-              <span className="inline-flex items-center gap-1.5 rounded-md border border-cyan-300/20 bg-cyan-300/10 px-2 py-1 text-xs font-semibold text-cyan-200">
-                <Activity className="h-3.5 w-3.5" />
-                analytics
-              </span>
+            <div className="mt-4 flex items-center gap-2">
+              <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-[10px] font-medium uppercase tracking-wider text-emerald-400">Safe Mode</span>
+            </div>
+          </section>
+
+          <section className="rounded-lg border border-slate-800 bg-slate-800/30 p-4">
+            <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Статус сети</p>
+            <div className="mt-3 flex items-center justify-between text-xs text-slate-500">
+              <span>Каналы</span>
+              <span className="font-medium text-slate-300">15</span>
+            </div>
+            <div className="mt-2 flex items-center justify-between text-xs text-slate-500">
+              <span>Среда</span>
+              <span className="font-medium text-slate-300">Development</span>
             </div>
           </section>
         </div>
+
       </div>
     </aside>
   );

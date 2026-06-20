@@ -1,6 +1,6 @@
 # Aphrodite Platform Overview
 
-Aphrodite OS is the overarching operator platform designed to manage and control the entire Telegram publishing network. While initial development heavily focused on the Zodiac module, the architecture has evolved to separate the central control plane (Aphrodite) from the individual domain modules.
+Aphrodite is the overarching operator platform designed to manage and control the entire Telegram publishing network. While initial development heavily focused on the Zodiac module, the architecture has evolved to separate the central control plane (Aphrodite) from the individual domain modules.
 
 ## Architecture
 
@@ -14,8 +14,8 @@ Aphrodite OS manages several key pillars:
 
 ### Zodiac vs. Aphrodite
 
-- **Zodiac OS** is **one module** inside Aphrodite. It handles the specific logic for horoscopes, astrological data generation, and sign-specific content.
-- **Aphrodite OS** is the **parent platform**. It manages the Telegram bots, schedules, rate limiting, and the registry of what channels actually exist.
+- **Zodiac** is **one module** inside Aphrodite. It handles the specific logic for horoscopes, astrological data generation, and sign-specific content.
+- **Aphrodite** is the **master operator platform**. It manages the Telegram bots, schedules, rate limiting, and the registry of what channels actually exist.
 
 ## Modules & Status
 

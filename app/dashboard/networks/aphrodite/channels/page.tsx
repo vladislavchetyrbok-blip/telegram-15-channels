@@ -209,13 +209,13 @@ export default function AphroditeChannelRegistryPage() {
         <header className="space-y-5">
           <Link href="/dashboard" className="inline-flex items-center gap-2 text-sm font-semibold text-blue-700 transition hover:text-blue-900">
             <ChevronLeft className="h-4 w-4" />
-            Dashboard / Aphrodite
+            Dashboard / Афродита
           </Link>
           <div className="relative overflow-hidden rounded-lg border border-blue-100 bg-white p-6 shadow-sm sm:p-8">
             <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-400 via-indigo-300 to-sky-300" />
             <p className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-blue-700">
               <Server className="h-3.5 w-3.5" />
-              Aphrodite Platform
+              Платформа Афродита
             </p>
             <div className="mt-5">
               <h1 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-4xl">Aphrodite Channel Registry</h1>
@@ -225,12 +225,12 @@ export default function AphroditeChannelRegistryPage() {
             </div>
 
             <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-6" data-qa="visual-summary">
-              <SummaryMetric label="Total Channels" value={totalChannels} tone="blue" />
-              <SummaryMetric label="Paused Legacy" value={pausedLegacy} tone="slate" />
-              <SummaryMetric label="Draft New" value={draftNew} tone="amber" />
-              <SummaryMetric label="Active" value={active} tone="emerald" />
-              <SummaryMetric label="Ready" value={ready} tone="emerald" />
-              <SummaryMetric label="Errors" value={errors} tone="rose" />
+              <SummaryMetric label="Всего каналов" value={totalChannels} tone="blue" />
+              <SummaryMetric label="Пауза / Старая сеть Афродиты" value={pausedLegacy} tone="slate" />
+              <SummaryMetric label="Новые черновики" value={draftNew} tone="amber" />
+              <SummaryMetric label="Каналы Зодиака (Готовы)" value={active} tone="emerald" />
+              <SummaryMetric label="Готовы к запуску" value={ready} tone="emerald" />
+              <SummaryMetric label="Ошибки" value={errors} tone="rose" />
             </div>
           </div>
         </header>

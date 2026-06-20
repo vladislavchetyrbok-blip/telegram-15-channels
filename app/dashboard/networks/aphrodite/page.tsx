@@ -145,17 +145,17 @@ export default function AphroditePlatformOverview() {
       <div className="mx-auto max-w-6xl px-4 py-8 lg:px-8 lg:py-12">
         <div className="mb-10">
           <div className="flex items-center gap-2 text-sm text-slate-400 mb-4">
-            <span>Platform</span>
+            <span>Платформа</span>
             <span>/</span>
-            <span className="text-slate-200">Aphrodite OS</span>
+            <span className="text-slate-200">Афродита</span>
           </div>
           <h1 className="text-3xl font-bold text-white tracking-tight flex items-center gap-3">
             <Server className="h-8 w-8 text-blue-400" />
-            Aphrodite Platform Overview
+            Афродита (Aphrodite Platform)
           </h1>
           <p className="mt-3 text-slate-400 max-w-2xl text-base leading-relaxed">
-            The overarching operator platform for the entire Telegram publishing network. 
-            All modules, including Zodiac OS, run under this unified control plane.
+            The overarching operator platform for all Telegram publishing networks.
+            Зодиак (Zodiac) and other vertical content engines operate as modules within this control plane.
           </p>
         </div>
 

@@ -44,12 +44,12 @@ async function main() {
       assertNoSecretValues(pages[name], `${name} page`);
     }
 
-    assertIncludes(pages.login, "Вход в Zodiac OS", "dashboard login page heading");
+    assertIncludes(pages.login, "Вход в панель Афродиты", "dashboard login page heading");
     assertIncludes(pages.login, "Auth отключён для local/dev режима", "dashboard login disabled local mode");
     assertIncludes(pages.dashboardAuthStatus, '"authEnabled":false', "dashboard auth disabled status");
     assertIncludes(pages.dashboardAuthStatus, '"sessionCookie":"local browser only"', "dashboard auth session cookie status");
 
-    assertIncludes(pages.overview, "Zodiac OS", "Zodiac OS visible on dashboard shell or overview");
+    assertIncludes(pages.overview, "АФРОДИТА", "Aphrodite visible on dashboard shell or overview");
     assertIncludes(pages.overview, "Zodiac Control", "overview page heading");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/channels"', "overview channels route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/publishing"', "overview publishing route link");
@@ -330,15 +330,15 @@ async function main() {
     assertIncludes(pages.docs, "docs/zodiac-telegram-platform-feedback-center.md", "feedback center doc path");
 
     assertIncludes(pages.aphroditeChannels, "Aphrodite Channel Registry", "aphrodite registry heading");
-    assertIncludes(pages.aphroditeChannels, "Total Channels", "aphrodite registry total channels");
-    assertIncludes(pages.aphroditeChannels, "Paused Legacy", "aphrodite registry paused legacy");
-    assertIncludes(pages.aphroditeChannels, "Draft New", "aphrodite registry draft new");
+    assertIncludes(pages.aphroditeChannels, "Всего каналов", "aphrodite registry total channels");
+    assertIncludes(pages.aphroditeChannels, "Пауза / Старая сеть Афродиты", "aphrodite registry paused legacy");
+    assertIncludes(pages.aphroditeChannels, "Новые черновики", "aphrodite registry draft new");
     assertIncludes(pages.aphroditeChannels, "Currency", "aphrodite module Currency");
     assertIncludes(pages.aphroditeChannels, "Crypto", "aphrodite module Crypto");
     assertIncludes(pages.aphroditeChannels, "Metals", "aphrodite module Metals");
     assertNotIncludes(pages.aphroditeChannels, "/api/aphrodite/settings", "no server write API required on aphrodite registry");
 
-    assertIncludes(pages.aphroditeOverview, "Aphrodite Platform Overview", "aphrodite overview heading");
+    assertIncludes(pages.aphroditeOverview, "Афродита (Aphrodite Platform)", "aphrodite overview heading");
     assertIncludes(pages.aphroditeOverview, "/dashboard/networks/aphrodite/channels", "aphrodite overview registry link");
     assertIncludes(pages.aphroditeOverview, "Currency", "aphrodite overview Currency card");
     assertIncludes(pages.aphroditeOverview, "Crypto", "aphrodite overview Crypto card");
