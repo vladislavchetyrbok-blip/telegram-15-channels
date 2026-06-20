@@ -32,7 +32,7 @@ const platformSections = [
     title: "Launch Control — Запуск",
     href: "/dashboard/networks/zodiac/launch",
     icon: Rocket,
-    caption: "Контроль готовности Zodiac OS к первым пользователям, 20 пользователям и массовому запуску.",
+    caption: "Контроль готовности модуля Зодиак к первым пользователям, 20 пользователям и массовому запуску.",
     tone: "emerald",
   },
   {
@@ -85,7 +85,7 @@ const platformSections = [
     tone: "cyan",
   },
   {
-    title: "Настройки Zodiac OS",
+    title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
     caption: "Read-only центр окружения, режимов, ссылок и ручных действий.",
@@ -110,7 +110,7 @@ export default async function ZodiacNetworkWorkspacePage() {
             <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-violet-400 via-cyan-300 to-amber-300" />
             <p className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-violet-700">
               <Sparkles className="h-3.5 w-3.5" />
-              Zodiac OS
+              Каналы Зодиака
             </p>
             <div className="mt-5 grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
               <div>
@@ -147,7 +147,7 @@ export default async function ZodiacNetworkWorkspacePage() {
         <section className="space-y-4">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <h2 className="text-xl font-semibold text-slate-950">Разделы Zodiac OS</h2>
+              <h2 className="text-xl font-semibold text-slate-950">Разделы модуля Зодиак</h2>
               <p className="mt-1 text-sm text-slate-600">Единый доступ ко всем модулям платформы.</p>
             </div>
           </div>

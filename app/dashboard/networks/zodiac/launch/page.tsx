@@ -60,7 +60,7 @@ export default function ZodiacLaunchControlPage() {
           <nav className="flex text-sm font-medium text-slate-500">
             <Link href="/dashboard" className="hover:text-slate-900">Dashboard</Link>
             <span className="mx-2">/</span>
-            <Link href="/dashboard/networks/zodiac" className="hover:text-slate-900">Zodiac OS</Link>
+            <Link href="/dashboard/networks/zodiac" className="hover:text-slate-900">Каналы Зодиака</Link>
             <span className="mx-2">/</span>
             <span className="text-slate-900">Запуск</span>
           </nav>
@@ -76,7 +76,7 @@ export default function ZodiacLaunchControlPage() {
             <h1 className="text-2xl font-bold tracking-tight text-slate-950">Launch Control</h1>
           </div>
           <p className="mt-2 text-sm leading-6 text-slate-600">
-            Контроль готовности Zodiac OS к первым пользователям, 20 пользователям и публичному запуску.
+            Контроль готовности модуля Зодиак к первым пользователям, 20 пользователям и публичному запуску.
           </p>
         </div>
 

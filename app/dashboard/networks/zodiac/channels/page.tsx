@@ -35,7 +35,7 @@ export default function ZodiacChannelsManagementPage() {
             <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-violet-400 via-cyan-300 to-amber-300" />
             <p className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-violet-700">
               <RadioTower className="h-3.5 w-3.5" />
-              Zodiac OS
+              Каналы Зодиака
             </p>
             <div className="mt-5 grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
               <div>

@@ -48,7 +48,7 @@ const modules: ModuleCard[] = [
   },
   {
     id: "zodiac-os",
-    title: "Zodiac OS",
+    title: "Каналы Зодиака",
     icon: Sparkles,
     purpose: "Astrology content publishing module",
     status: "Active",
