@@ -28,6 +28,13 @@ export const dynamic = "force-dynamic";
 
 const platformSections = [
   {
+    title: "Launch Control — Запуск",
+    href: "/dashboard/networks/zodiac/launch",
+    icon: Rocket,
+    caption: "Контроль готовности Zodiac OS к первым пользователям, 20 пользователям и массовому запуску.",
+    tone: "emerald",
+  },
+  {
     title: "Zodiac Network — Каналы",
     href: "/dashboard/networks/zodiac/channels",
     icon: RadioTower,

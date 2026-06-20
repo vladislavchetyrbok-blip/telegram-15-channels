@@ -259,3 +259,5 @@ Next safe steps:
 * **Full platform** = Zodiac OS
 * **Dashboard/admin** = Zodiac Control
 * **Mini App** = Zodiac Mini
+
+- [Zodiac OS Launch Control Room](zodiac-os-launch-control-room.md)

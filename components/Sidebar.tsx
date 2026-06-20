@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 
 const navItems = [
   { id: "overview", href: "/dashboard/networks/zodiac", label: "Обзор", icon: Sparkles },
+  { id: "launch", href: "/dashboard/networks/zodiac/launch", label: "Запуск", icon: Rocket },
   { id: "channels", href: "/dashboard/networks/zodiac/channels", label: "Каналы", icon: RadioTower },
   { id: "content", href: "/dashboard/networks/zodiac/content", label: "Контент", icon: FileText },
   { id: "publishing", href: "/dashboard/networks/zodiac/publishing", label: "Публикации", icon: Rocket },

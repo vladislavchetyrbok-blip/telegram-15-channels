@@ -159,3 +159,5 @@ the `Перед 20 пользователями` checklist. The audit log there 
 only and stores sanitized action metadata, not raw feedback.
 
 - [Zodiac Real Phone QA Evidence Center](zodiac-real-phone-qa-evidence-center.md)
+
+- [Zodiac OS Launch Control Room](zodiac-os-launch-control-room.md)

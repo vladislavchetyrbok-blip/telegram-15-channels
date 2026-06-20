@@ -24,3 +24,5 @@ This document outlines the standard naming conventions for the platform to ensur
 *   Use **Zodiac Control** instead of "owner dashboard" when referring to the tool as a product.
 *   Use **Zodiac Mini** instead of "Zodiac Telegram App" or just "App".
 *   Avoid mixing English and Russian unnecessarily. UI labels should generally be in Russian unless they are proper product names (e.g., `Zodiac Pulse — Аналитика`).
+
+- [Zodiac OS Launch Control Room](zodiac-os-launch-control-room.md)

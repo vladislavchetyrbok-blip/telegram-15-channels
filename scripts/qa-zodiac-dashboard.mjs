@@ -13,6 +13,7 @@ const ROUTES = {
   content: "/dashboard/networks/zodiac/content",
   publishing: "/dashboard/networks/zodiac/publishing",
   feedback: "/dashboard/networks/zodiac/feedback",
+  launch: "/dashboard/networks/zodiac/launch",
   operations: "/dashboard/networks/zodiac/operations",
   security: "/dashboard/networks/zodiac/security",
   docs: "/dashboard/networks/zodiac/docs",
@@ -213,6 +214,24 @@ async function main() {
     assertIncludes(pages.feedback, "Mass launch", "mass launch decision");
     assertIncludes(pages.feedback, 'data-qa="feedback-sanitized-export"', "sanitized export block");
     assertNotIncludes(pages.feedback, "/api/zodiac/feedback", "feedback server write API route");
+
+    assertIncludes(pages.launch, "Launch Control", "launch page heading");
+    assertIncludes(pages.launch, "Запуск", "sidebar has Запуск");
+    assertIncludes(pages.launch, 'data-qa="launch-status-cards"', "launch status cards visible");
+    assertIncludes(pages.launch, "First 5 users", "first 5 users card visible");
+    assertIncludes(pages.launch, "20 users", "20 users card visible");
+    assertIncludes(pages.launch, "Mass launch", "mass launch card visible");
+    assertIncludes(pages.launch, "STOP", "mass launch STOP visible");
+    assertIncludes(pages.launch, "Production auth", "production auth card visible");
+    assertIncludes(pages.launch, "PENDING ENV", "production auth pending visible");
+    assertIncludes(pages.launch, 'data-qa="launch-checklist"', "checklist visible");
+    assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
+    assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");
+    assertIncludes(pages.launch, 'href="/dashboard/networks/zodiac/analytics"', "analytics link visible on launch");
+    assertIncludes(pages.launch, 'href="/dashboard/networks/zodiac/feedback"', "feedback link visible on launch");
+    assertIncludes(pages.launch, 'href="/dashboard/networks/zodiac/security"', "security link visible on launch");
+    assertIncludes(pages.launch, 'href="/dashboard/networks/zodiac/publishing"', "publishing link visible on launch");
+    assertNotIncludes(pages.launch, "zodiac:publish-date:live", "no live publish button on launch");
 
     assertIncludes(pages.operations, "Операции и безопасность Zodiac", "operations page heading");
     assertIncludes(pages.operations, "Daily autopublish", "daily autopublish status");
