@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Activity, BarChart3, BookOpen, FileText, HeartHandshake, LockKeyhole, MessageSquareText, RadioTower, Rocket, ShieldCheck, Smartphone, Sparkles } from "lucide-react";
+import { Activity, BarChart3, BookOpen, FileText, HeartHandshake, LockKeyhole, MessageSquareText, RadioTower, Rocket, Settings, ShieldCheck, Smartphone, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -14,6 +14,7 @@ const navItems = [
   { id: "analytics", href: "/dashboard/networks/zodiac/analytics", label: "Аналитика", icon: BarChart3 },
   { id: "feedback", href: "/dashboard/networks/zodiac/feedback", label: "Отзывы", icon: MessageSquareText },
   { id: "security", href: "/dashboard/networks/zodiac/security", label: "Безопасность", icon: LockKeyhole },
+  { id: "settings", href: "/dashboard/networks/zodiac/settings", label: "Настройки", icon: Settings },
   { id: "docs", href: "/dashboard/networks/zodiac/docs", label: "Документы", icon: BookOpen },
 ];
 

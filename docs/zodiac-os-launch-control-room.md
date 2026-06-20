@@ -40,3 +40,4 @@ From the Launch Control Room, the owner can navigate to all essential subsystems
 * **Zodiac Voice** (`/dashboard/networks/zodiac/feedback`) for local real-phone QA and sanitized feedback.
 * **Zodiac Shield** (`/dashboard/networks/zodiac/security`) for auth and safety checks.
 * **Zodiac Publisher** (`/dashboard/networks/zodiac/publishing`) for safe dry-runs.
+- [Zodiac OS Environment Settings Center](zodiac-os-environment-settings-center.md)

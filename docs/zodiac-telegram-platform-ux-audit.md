@@ -284,3 +284,4 @@ Bad signs after first 5 users:
 - [Zodiac Real Phone QA Evidence Center](zodiac-real-phone-qa-evidence-center.md)
 
 - [Zodiac OS Launch Control Room](zodiac-os-launch-control-room.md)
+- [Zodiac OS Environment Settings Center](zodiac-os-environment-settings-center.md)

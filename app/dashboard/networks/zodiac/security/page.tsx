@@ -183,6 +183,7 @@ export default function ZodiacSecurityPage() {
           <SafetyLink href="/dashboard/networks/zodiac/content" title="Контент" caption="Local-only шаблоны, рубрики и Template Studio без server writes." icon={ClipboardList} />
           <SafetyLink href="/dashboard/networks/zodiac/publishing" title="Публикации" caption="Dry-run подсказки, ledger protection и no live button." icon={ClipboardList} />
           <SafetyLink href="/dashboard/networks/zodiac/feedback" title="Отзывы" caption="Sanitized feedback и P0/P1 triage перед расширением." icon={ShieldCheck} />
+          <SafetyLink href="/dashboard/networks/zodiac/settings" title="Настройки" caption="Контроль окружения и readiness без write-доступа." icon={ShieldCheck} />
         </section>
       </div>
     </div>

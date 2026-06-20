@@ -13,6 +13,7 @@ import {
   MessageSquareText,
   RadioTower,
   Rocket,
+  Settings,
   ShieldCheck,
   Smartphone,
   Sparkles,
@@ -82,6 +83,13 @@ const platformSections = [
     icon: Smartphone,
     caption: "Тестирование Mini App UI, startapp parameters, visual QA.",
     tone: "cyan",
+  },
+  {
+    title: "Настройки Zodiac OS",
+    href: "/dashboard/networks/zodiac/settings",
+    icon: Settings,
+    caption: "Read-only центр окружения, режимов, ссылок и ручных действий.",
+    tone: "slate",
   },
 ] as const;
 

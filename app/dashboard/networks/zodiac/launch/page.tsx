@@ -226,15 +226,15 @@ export default function ZodiacLaunchControlPage() {
             </div>
             <p className="mt-2 text-sm text-slate-600">Publishing center</p>
           </Link>
-          <div className="group rounded-lg border border-slate-200 bg-slate-50 p-5 shadow-sm">
+          <Link href="/dashboard/networks/zodiac/settings" className="group rounded-lg border border-slate-200 bg-white p-5 shadow-sm transition-all hover:border-violet-300 hover:shadow-md">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-200 text-slate-600">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-violet-100 text-violet-700 transition-colors group-hover:bg-violet-600 group-hover:text-white">
                 <Settings className="h-5 w-5" />
               </div>
-              <div className="font-medium text-slate-900">Dashboard Auth Doc</div>
+              <div className="font-medium text-slate-900">Zodiac Settings</div>
             </div>
-            <p className="mt-2 text-xs text-slate-600 font-mono">docs/zodiac-production-dashboard-auth-activation.md</p>
-          </div>
+            <p className="mt-2 text-sm text-slate-600">Environment and manual actions</p>
+          </Link>
           <div className="group rounded-lg border border-slate-200 bg-slate-50 p-5 shadow-sm">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-200 text-slate-600">

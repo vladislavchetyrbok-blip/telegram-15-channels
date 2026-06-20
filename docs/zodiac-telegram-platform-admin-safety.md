@@ -157,3 +157,4 @@ Do not enable dashboard write actions until all of these exist:
 * **Full platform** = Zodiac OS
 * **Dashboard/admin** = Zodiac Control
 * **Mini App** = Zodiac Mini
+- [Zodiac OS Environment Settings Center](zodiac-os-environment-settings-center.md)

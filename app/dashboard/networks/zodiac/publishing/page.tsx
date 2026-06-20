@@ -9,8 +9,11 @@ import {
   MessageSquareText,
   PlayCircle,
   RadioTower,
+  Rocket,
+  Settings,
   ShieldCheck,
   StopCircle,
+  Terminal,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
@@ -173,6 +176,10 @@ export default function ZodiacPublishingCenterPage() {
             <Link href="/dashboard/networks/zodiac/security" className="inline-flex items-center gap-2 rounded-md border border-amber-200 bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-700 transition hover:border-amber-300 hover:bg-amber-100">
               <LockKeyhole className="h-4 w-4" />
               Открыть безопасность
+            </Link>
+            <Link href="/dashboard/networks/zodiac/settings" className="inline-flex items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-100">
+              <Settings className="h-4 w-4" />
+              Настройки окружения
             </Link>
           </div>
         </section>

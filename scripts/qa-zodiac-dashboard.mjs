@@ -16,6 +16,7 @@ const ROUTES = {
   launch: "/dashboard/networks/zodiac/launch",
   operations: "/dashboard/networks/zodiac/operations",
   security: "/dashboard/networks/zodiac/security",
+  settings: "/dashboard/networks/zodiac/settings",
   docs: "/dashboard/networks/zodiac/docs",
   legacyPublishing: "/publishing-center",
   miniApp: "/compatibility",
@@ -304,6 +305,16 @@ async function main() {
     assertNotIncludes(pages.security, "zodiac:weekly:publish", "weekly live command on security page");
     assertNotIncludes(pages.security, "/api/zodiac/admin-safety", "admin safety server write API route");
     assertNotIncludes(pages.security, "/api/zodiac/security", "security server write API route");
+
+    assertIncludes(pages.settings, "Настройки Zodiac OS", "settings page heading");
+    assertIncludes(pages.settings, "Настройки", "sidebar has Настройки");
+    assertIncludes(pages.settings, 'data-qa="settings-env-cards"', "env status cards visible");
+    assertIncludes(pages.settings, 'data-qa="settings-entry-points"', "production entry points visible");
+    assertIncludes(pages.settings, 'data-qa="settings-vercel-env"', "vercel env checklist visible");
+    assertIncludes(pages.settings, 'data-qa="settings-mode-matrix"', "mode matrix visible");
+    assertIncludes(pages.settings, 'data-qa="settings-manual-actions"', "manual actions panel visible");
+    assertNotIncludes(pages.settings, "zodiac:publish-date:live", "no live publish button on settings");
+    assertNotIncludes(pages.settings, "/api/zodiac/settings", "no server write API required on settings");
 
     assertIncludes(pages.docs, "Документы Zodiac OS", "docs page heading");
     assertIncludes(pages.docs, "docs/zodiac-telegram-platform-admin-safety.md", "admin safety doc path");
