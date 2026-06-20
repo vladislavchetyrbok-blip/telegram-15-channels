@@ -1,7 +1,7 @@
 # Zodiac Full Project Audit And Roadmap
 
 Date: 2026-06-20
-Package: 53, updated through Package 63
+Package: 53, updated through Package 64
 Audit base HEAD: `98b28a322b16d8bb3e91f4422cfea9f7caeb8d54`
 Branch: `main`
 Scope: full-product audit, analytics review, quality review, and improvement roadmap.
@@ -746,7 +746,32 @@ What stays OFF:
 - server write API, live publish, ledger writes, weekly live, payments/Stars,
   profile sync, exact astro provider/claims, and mass launch.
 
-### Package 64: Real Astro Engine Provider Research
+### Package 64: Telegram Platform Dashboard Admin Auth Gate
+
+Goal:
+- Add a safe owner-dashboard auth gate with login, logout, env-controlled
+  passcode hash, signed httpOnly session cookie, route protection, status cards,
+  and QA for enabled/disabled/fail-closed modes.
+
+Why:
+- The management console is now useful enough to need an access layer before
+  wider production exposure, while still avoiding server-side platform writes.
+
+Risk:
+- Accidentally storing raw passwords, printing secrets, breaking Telegram Mini
+  App public routes, or implying full RBAC/write authorization.
+
+Result:
+- Implemented with `/dashboard/login`, `/api/dashboard/auth/login`,
+  `/api/dashboard/auth/logout`, `/api/dashboard/auth/status`,
+  `lib/zodiac-dashboard-auth.ts`, route-level dashboard guards, Security page
+  auth cards, conditional logout, and `zodiac:dashboard:auth:check`.
+
+What stays OFF:
+- full RBAC, server write API, live publish, ledger writes, weekly live,
+  payments/Stars, profile sync, exact astro provider/claims, and mass launch.
+
+### Package 65: Real Astro Engine Provider Research
 
 Goal:
 - Choose a provider strategy and fixture design for exact astrology.
@@ -763,7 +788,7 @@ Prerequisites:
 What stays OFF:
 - exact astro claims and UI labels implying exact planets/houses/ascendant.
 
-### Package 65: Weekly Live Controlled First Run Plan
+### Package 66: Weekly Live Controlled First Run Plan
 
 Goal:
 - Prepare a weekly live plan without enabling it yet.
@@ -780,7 +805,7 @@ Prerequisites:
 What stays OFF:
 - weekly live until explicit approval after plan/checks.
 
-### Package 66: VIP Monetization Test Mode
+### Package 67: VIP Monetization Test Mode
 
 Goal:
 - Build payment/Stars/entitlement test-mode readiness only.
@@ -797,7 +822,7 @@ Prerequisites:
 What stays OFF:
 - real payments, real Stars, paid entitlement enforcement.
 
-### Package 67: Performance / Mobile Polish
+### Package 68: Performance / Mobile Polish
 
 Goal:
 - Reduce visual density, stale fallback share copy, and long-scroll friction.
@@ -814,7 +839,7 @@ Prerequisites:
 What stays OFF:
 - new product features, payments, sync, exact astro claims.
 
-### Package 68: Mass Launch Readiness Audit
+### Package 69: Mass Launch Readiness Audit
 
 Goal:
 - Re-audit after analytics, phone evidence, first users, and daily stability.
@@ -865,6 +890,7 @@ until the relevant package proves it.
 
 Package 59 adds a dedicated owner-facing Telegram Platform Management Console:
 
+* **Login route**: `/dashboard/login`
 * **Overview**: `/dashboard/networks/zodiac`
 * **Channels route**: `/dashboard/networks/zodiac/channels`
 * **Publishing route**: `/dashboard/networks/zodiac/publishing`
@@ -977,6 +1003,40 @@ Weekly live: NO
 Payments/Stars: NO
 Profile sync: NO
 Exact astro provider: NO
+Mass launch: NO
+First 5 users: GO
+20 users: CONDITIONAL
+```
+
+## Package 64 Dashboard Auth Gate Update
+
+Package 64 adds `/dashboard/login` as the owner-facing Dashboard Auth Gate:
+
+* env contract for `ZODIAC_DASHBOARD_AUTH_ENABLED`,
+  `ZODIAC_DASHBOARD_ADMIN_PASSWORD_SHA256`, and
+  `ZODIAC_DASHBOARD_SESSION_SECRET`;
+* route-level guard for `/dashboard` and `/dashboard/networks/zodiac/*`;
+* login, logout, and read-only auth status APIs under `/api/dashboard/auth/*`;
+* signed httpOnly, sameSite=lax session cookie with 12-hour expiry;
+* fail-closed missing-config path when auth is enabled without hash/secret;
+* Security page auth cards for Dashboard auth, Auth configured, Session cookie,
+  Server write API, and Roles;
+* conditional logout action only when auth is enabled and the browser has a
+  valid session;
+* `zodiac:dashboard:auth:check` for disabled, enabled, and fail-closed modes.
+
+Safety verdict remains unchanged:
+
+```text
+Server write API: NO
+Raw sensitive data stored: NO
+Live publish from dashboard: NO
+Manual ledger changes: NO
+Weekly live: NO
+Payments/Stars: NO
+Profile sync: NO
+Exact astro provider: NO
+Full RBAC: NO
 Mass launch: NO
 First 5 users: GO
 20 users: CONDITIONAL

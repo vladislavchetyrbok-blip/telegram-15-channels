@@ -101,6 +101,14 @@ text/config/checklist, RU/UA quality checklist, and rubric planning. It does not
 create a server write API, publish to Telegram, write the ledger, enable weekly
 live, or add exact astrology claims.
 
+Package 64 adds the Telegram Platform Dashboard Auth Gate at `/dashboard/login`.
+It protects `/dashboard` and `/dashboard/networks/zodiac/*` when
+`ZODIAC_DASHBOARD_AUTH_ENABLED=true`, uses a SHA-256 passcode hash and signed
+httpOnly 12-hour session cookie, and fails closed if hash/secret are missing.
+Local/dev can remain disabled, but production should enable it before wider
+access. It does not add RBAC, server writes, live publish, weekly live,
+payments/Stars, profile sync, or exact astro.
+
 ## Current Status
 
 The Zodiac product is ready for controlled live operation of the daily publishing lane and user-facing Mini App checks, with the following boundaries:
@@ -111,6 +119,7 @@ The Zodiac product is ready for controlled live operation of the daily publishin
 - Telegram Platform feedback route `/dashboard/networks/zodiac/feedback` is available for local-only sanitized first-user triage and real-phone QA evidence.
 - Telegram Platform safety route `/dashboard/networks/zodiac/security` is available for approvals, local sanitized audit log, pre-20-user checklist, and role/auth readiness.
 - Telegram Platform content route `/dashboard/networks/zodiac/content` is available for local-only template drafts, CTA/startapp preview, RU/UA quality checks, and rubric planning.
+- Telegram Platform auth route `/dashboard/login` is available for env-controlled owner access gating; enable it in production before wider access.
 - Weekly Zodiac posts are prepared and dry-run ready, but weekly live scheduling remains OFF.
 - Mini App core UX is implemented: 10-category home, Angel Numbers top-level, Compatibility pair core, Horoscopes, Mystic, premium Birth Matrix, VIP, Profile, History, Favorites, and Share.
 - Sonnik/Dream Dictionary is hidden/backlog for the current soft launch; Mystic continues through Card of the Day, Tarot/Rune, Lunar/Ritual, talismans, aura, karma, and Birth Matrix.

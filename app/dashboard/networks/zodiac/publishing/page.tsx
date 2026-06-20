@@ -16,12 +16,14 @@ import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { ManualPostDraftBuilder } from "@/components/zodiac-platform/ManualPostDraftBuilder";
 import { ZodiacPlatformNav } from "@/components/zodiac-platform/ZodiacPlatformNav";
+import { requireDashboardPageAccess } from "@/lib/zodiac-dashboard-auth";
 import { getZodiacPublishingDashboard, zodiacPublishingCommandHints } from "@/lib/zodiac-platform-publishing";
 import { zodiacPlatformChannels } from "@/lib/zodiac-platform-management";
 
 export const dynamic = "force-dynamic";
 
 export default function ZodiacPublishingCenterPage() {
+  requireDashboardPageAccess("/dashboard/networks/zodiac/publishing");
   const dashboard = getZodiacPublishingDashboard();
 
   return (

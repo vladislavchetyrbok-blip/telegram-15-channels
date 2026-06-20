@@ -6,6 +6,7 @@ import http from "node:http";
 const DEFAULT_TIMEOUT_MS = 120_000;
 const URL_BASE = "http://localhost:3000";
 const ROUTES = {
+  login: "/dashboard/login",
   overview: "/dashboard/networks/zodiac",
   analytics: "/dashboard/networks/zodiac/analytics",
   channels: "/dashboard/networks/zodiac/channels",
@@ -17,6 +18,7 @@ const ROUTES = {
   docs: "/dashboard/networks/zodiac/docs",
   legacyPublishing: "/publishing-center",
   miniApp: "/compatibility",
+  dashboardAuthStatus: "/api/dashboard/auth/status",
   unifiedStatus: "/api/system/unified-status",
 };
 
@@ -34,6 +36,11 @@ async function main() {
       assertNoRuntimeErrorText(pages[name], `${name} page`);
       assertNoSecretValues(pages[name], `${name} page`);
     }
+
+    assertIncludes(pages.login, "Вход в Telegram Platform Dashboard", "dashboard login page heading");
+    assertIncludes(pages.login, "Auth отключён для local/dev режима", "dashboard login disabled local mode");
+    assertIncludes(pages.dashboardAuthStatus, '"authEnabled":false', "dashboard auth disabled status");
+    assertIncludes(pages.dashboardAuthStatus, '"sessionCookie":"local browser only"', "dashboard auth session cookie status");
 
     assertIncludes(pages.overview, "Обзор управления Zodiac", "overview page heading");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/channels"', "overview channels route link");
@@ -223,6 +230,15 @@ async function main() {
     assertIncludes(pages.security, "active in production", "Redis analytics active value");
     assertIncludes(pages.security, "Mass launch", "mass launch card");
     assertIncludes(pages.security, "STOP", "mass launch stop value");
+    assertIncludes(pages.security, 'data-qa="dashboard-auth-status-cards"', "dashboard auth status cards");
+    assertIncludes(pages.security, "Dashboard Auth", "dashboard auth section heading");
+    assertIncludes(pages.security, "Dashboard auth", "dashboard auth status card");
+    assertIncludes(pages.security, "Auth configured", "dashboard auth configured card");
+    assertIncludes(pages.security, "Session cookie", "dashboard auth session cookie card");
+    assertIncludes(pages.security, "local browser only", "dashboard auth local browser cookie label");
+    assertIncludes(pages.security, "Server write API", "dashboard auth server write API card");
+    assertIncludes(pages.security, "Roles", "dashboard auth roles card");
+    assertIncludes(pages.security, "Auth disabled: acceptable for local development, not recommended before wider production access.", "dashboard auth disabled warning");
     assertIncludes(pages.security, 'data-qa="approval-matrix"', "approval matrix");
     assertIncludes(pages.security, "Daily dry-run", "approval daily dry-run row");
     assertIncludes(pages.security, "Daily live publish", "approval daily live row");
@@ -261,6 +277,7 @@ async function main() {
 
     assertIncludes(pages.docs, "Документы Telegram Platform", "docs page heading");
     assertIncludes(pages.docs, "docs/zodiac-telegram-platform-admin-safety.md", "admin safety doc path");
+    assertIncludes(pages.docs, "docs/zodiac-telegram-platform-dashboard-auth.md", "dashboard auth doc path");
     assertIncludes(pages.docs, "docs/zodiac-telegram-platform-content-engine.md", "content engine doc path");
     assertIncludes(pages.docs, "docs/zodiac-telegram-platform-management-console.md", "management console doc path");
     assertIncludes(pages.docs, "docs/zodiac-telegram-platform-publishing-center.md", "publishing center doc path");
@@ -309,6 +326,8 @@ function assertNoSecretValues(html, label) {
     "ZODIAC_PROFILE_SYNC_REDIS_URL",
     "ZODIAC_PROFILE_SYNC_REDIS_TOKEN",
     "ZODIAC_PROFILE_SYNC_SUPABASE_SERVICE_ROLE_KEY",
+    "ZODIAC_DASHBOARD_ADMIN_PASSWORD_SHA256",
+    "ZODIAC_DASHBOARD_SESSION_SECRET",
   ];
 
   const candidates = secretKeys.map((key) => process.env[key]).filter((value) => typeof value === "string" && value.length >= 8);
@@ -341,7 +360,16 @@ async function ensureServer(url, timeoutMs) {
   if (isUp) return { started: false };
 
   console.log("Starting local production server...");
-  const devProcess = spawn(process.execPath, ["node_modules/next/dist/bin/next", "start", "-p", "3000"], { stdio: "ignore", windowsHide: true });
+  const devProcess = spawn(process.execPath, ["node_modules/next/dist/bin/next", "start", "-p", "3000"], {
+    env: {
+      ...process.env,
+      ZODIAC_DASHBOARD_AUTH_ENABLED: "false",
+      ZODIAC_DASHBOARD_ADMIN_PASSWORD_SHA256: "",
+      ZODIAC_DASHBOARD_SESSION_SECRET: "",
+    },
+    stdio: "ignore",
+    windowsHide: true,
+  });
 
   const start = Date.now();
   while (Date.now() - start < timeoutMs) {

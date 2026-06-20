@@ -1,8 +1,13 @@
 # Zodiac Telegram Platform Management Console
 
-Package 59-63 | 2026-06-20
+Package 59-64 | 2026-06-20
 
 This document describes the owner-facing Telegram Platform dashboard for the Zodiac network. It is an admin console and runbook index, not a live publisher.
+
+Package 64 adds a dashboard auth gate. Local/dev can run with auth disabled, but
+production should set the `ZODIAC_DASHBOARD_*` env contract before wider access.
+The auth gate uses an httpOnly session cookie and does not store user personal
+data or create platform write APIs.
 
 ## Dashboard Navigation
 
@@ -10,6 +15,7 @@ Main routes:
 
 | Label | Route | Purpose |
 |---|---|---|
+| Login | `/dashboard/login` | Env-controlled owner passcode gate for dashboard access |
 | Обзор | `/dashboard/networks/zodiac` | Owner overview for platform status and next actions |
 | Каналы | `/dashboard/networks/zodiac/channels` | 13-channel management table and safe new-channel draft builder |
 | Mini App | `/compatibility` | User-facing Mini App route |
@@ -111,6 +117,27 @@ Package 62 adds a dedicated safety route for:
 
 The route has no live publish button, no Telegram write action, no ledger write
 action, and no server-side write API.
+
+## Dashboard Auth Gate
+
+Route:
+
+```text
+/dashboard/login
+```
+
+Package 64 adds:
+
+- `POST /api/dashboard/auth/login`;
+- `POST /api/dashboard/auth/logout`;
+- `GET /api/dashboard/auth/status`;
+- route-level protection for `/dashboard` and `/dashboard/networks/zodiac/*`;
+- httpOnly, sameSite=lax session cookie with 12-hour expiry;
+- fail-closed missing-config state if auth is enabled without hash/secret.
+
+Auth disabled local mode keeps the dashboard accessible but shows a warning on
+the Security page. Auth enabled mode protects the dashboard with a passcode
+session. No env values are displayed.
 
 ## Content Engine
 

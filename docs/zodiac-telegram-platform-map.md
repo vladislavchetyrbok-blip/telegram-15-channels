@@ -1,6 +1,6 @@
 # Zodiac Telegram Platform Map
 
-Last updated: 2026-06-20 | Package 63
+Last updated: 2026-06-20 | Package 64
 
 ## Architecture Overview
 
@@ -45,6 +45,7 @@ Soft Launch ──► First 5 Users ──► Feedback ──► Triage
 
 | Entry Point | Route | Exists | Purpose |
 |---|---|---|---|
+| Dashboard login | `/dashboard/login` | YES | Env-controlled owner passcode gate |
 | Main dashboard | `/dashboard` | YES | 15-channel command center |
 | Zodiac network overview | `/dashboard/networks/zodiac` | YES | Zodiac control panel |
 | Zodiac channel console | `/dashboard/networks/zodiac/channels` | YES | 13-channel table and local new-channel draft builder |
@@ -76,6 +77,7 @@ Soft Launch ──► First 5 Users ──► Feedback ──► Triage
 | Profile sync | **OFF** | Foundation only, disabled |
 | Exact astro | **UNAVAILABLE** | No real provider connected |
 | Analytics | **REDIS** (production) | Privacy-safe, counters active |
+| Dashboard auth | **GATED FOUNDATION** | Env-controlled passcode, local/dev can be disabled |
 | Ledger safety | **PASS** | Fail-closed on corruption |
 | Backup | **ACTIVE** | < 24h freshness |
 | Telegram initData auth | **FOUNDATION** | Validation code ready, not enforced |
@@ -108,6 +110,11 @@ Package 62 adds the admin safety center at `/dashboard/networks/zodiac/security`
 
 Package 63 adds the content engine at `/dashboard/networks/zodiac/content`. It contains the template catalog, local-only Template Studio, Telegram preview, RU/UA quality checklist, and rubric planner. It does not create a server write API, publish to Telegram, or change live scheduling.
 
+Package 64 adds the dashboard auth gate at `/dashboard/login`. It protects
+`/dashboard` and `/dashboard/networks/zodiac/*` with an env-controlled passcode
+session when enabled, fails closed if hash/secret are missing, and keeps
+Telegram Mini App public routes unprotected.
+
 ---
 
 ## NPM Scripts Map
@@ -128,6 +135,7 @@ Package 63 adds the content engine at `/dashboard/networks/zodiac/content`. It c
 | `zodiac:miniapp:smoke` | Mini App smoke tests |
 | `zodiac:desktop:qa` | Desktop visual QA screenshots |
 | `zodiac:dashboard:qa` | Dashboard route QA |
+| `zodiac:dashboard:auth:check` | Dashboard auth enabled/disabled/fail-closed QA |
 | `zodiac:analytics:check` | Analytics privacy & event check |
 | `zodiac:analytics:storage:check` | Analytics storage readiness |
 | `zodiac:ledger:safety:check` | Ledger corruption/safety check |

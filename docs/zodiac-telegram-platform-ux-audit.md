@@ -1,6 +1,6 @@
 # Zodiac Telegram Platform UX Audit
 
-Package 57-63 | 2026-06-20 | latest update: Package 63
+Package 57-64 | 2026-06-20 | latest update: Package 64
 
 ---
 
@@ -15,6 +15,7 @@ Package 57-63 | 2026-06-20 | latest update: Package 63
 | Publishing safety clarity | **9/10** | Fail-closed ledger, dry-run safe, 0 API calls |
 | Admin safety clarity | **9/10** | Dedicated safety route, Approval Matrix, local audit log, no server write API |
 | Content management clarity | **9/10** | Dedicated Content Engine, Template Studio, RU/UA checklist, rubric planner |
+| Dashboard access clarity | **9/10** | Env-controlled login, status cards, fail-closed missing config, conditional logout |
 | Soft-launch readiness | **9/10** | Baseline captured, docs ready, feedback center and real-phone checklist exist |
 
 ---
@@ -154,6 +155,24 @@ Engine and Template Studio:
 No server write API, live publish button, Telegram API call, ledger mutation,
 weekly live scheduling, payments/Stars, profile sync, exact astro claim, or mass
 launch enablement was added.
+
+---
+
+## Package 64 Addendum
+
+Package 64 adds `/dashboard/login` as the owner dashboard auth gate:
+
+- route-level guard for `/dashboard` and `/dashboard/networks/zodiac/*`;
+- env-controlled auth contract with SHA-256 passcode hash and session secret;
+- httpOnly 12-hour session cookie;
+- fail-closed state when auth is enabled but hash/secret are missing;
+- conditional logout action only when auth is enabled and a session exists;
+- Security page cards for Dashboard auth, Auth configured, Session cookie,
+  Server write API, and Roles.
+
+No Telegram Mini App public route, analytics event route, live publish flow,
+ledger write, weekly live, payment, profile sync, exact astro claim, or platform
+server write API was added.
 
 ---
 

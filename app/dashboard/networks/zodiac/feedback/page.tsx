@@ -2,10 +2,12 @@ import { ChevronLeft, LockKeyhole, MessageSquareText, ShieldCheck } from "lucide
 import Link from "next/link";
 import { FeedbackCenterWorkspace } from "@/components/zodiac-platform/FeedbackCenterWorkspace";
 import { ZodiacPlatformNav } from "@/components/zodiac-platform/ZodiacPlatformNav";
+import { requireDashboardPageAccess } from "@/lib/zodiac-dashboard-auth";
 
 export const dynamic = "force-dynamic";
 
 export default function ZodiacFeedbackCenterPage() {
+  requireDashboardPageAccess("/dashboard/networks/zodiac/feedback");
   return (
     <div className="-mx-4 -my-6 min-h-screen overflow-x-hidden bg-[#f8fafc] px-4 py-6 text-slate-950 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
       <div className="mx-auto max-w-7xl space-y-6">

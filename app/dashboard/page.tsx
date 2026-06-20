@@ -22,6 +22,7 @@ import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
 import channelNetworksData from "@/data/config/channel-networks.json";
 import { ScheduledAutopublishPanel } from "@/components/ScheduledAutopublishPanel";
+import { requireDashboardPageAccess } from "@/lib/zodiac-dashboard-auth";
 import { getUnifiedSystemStatus } from "@/lib/unified-system-status";
 
 export const dynamic = "force-dynamic";
@@ -123,6 +124,7 @@ const toneClasses: Record<SoftTone, string> = {
 };
 
 export default async function DashboardPage() {
+  requireDashboardPageAccess("/dashboard");
   const status = await getUnifiedSystemStatus();
   const attentionCount = status.autopublish.failedToday + status.autopublish.blockedToday + status.content.blocked;
   const zodiacNetwork = channelNetworks.find((item) => item.id === "zodiac");

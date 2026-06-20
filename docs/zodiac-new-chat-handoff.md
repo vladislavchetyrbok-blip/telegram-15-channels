@@ -32,6 +32,7 @@ docs/zodiac-telegram-platform-map.md
 docs/zodiac-telegram-platform-ux-audit.md
 docs/zodiac-telegram-platform-management-console.md
 docs/zodiac-telegram-platform-admin-safety.md
+docs/zodiac-telegram-platform-dashboard-auth.md
 docs/zodiac-telegram-platform-content-engine.md
 docs/zodiac-telegram-platform-publishing-center.md
 docs/zodiac-telegram-platform-feedback-center.md
@@ -85,6 +86,14 @@ Package 63 adds the content engine at
 Template Studio, Telegram preview, generated text/config/checklist, RU/UA
 quality checklist, and rubric planning. It does not add server-side writes,
 Telegram API calls, live publish, ledger writes, or exact astro claims.
+
+Package 64 adds the dashboard auth gate at `/dashboard/login`. It protects
+`/dashboard` and `/dashboard/networks/zodiac/*` when
+`ZODIAC_DASHBOARD_AUTH_ENABLED=true`, uses a SHA-256 passcode hash and signed
+httpOnly 12-hour session cookie, and fails closed if hash/secret are missing.
+Local/dev auth can stay disabled, but production should enable it before wider
+access. It does not add RBAC, server writes, live publish, weekly live,
+payments/Stars, profile sync, or exact astro claims.
 
 ## 3. Product Readiness
 

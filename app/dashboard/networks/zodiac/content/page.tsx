@@ -10,6 +10,7 @@ import {
   type ZodiacContentRisk,
   type ZodiacContentTemplateStatus,
 } from "@/lib/zodiac-platform-content";
+import { requireDashboardPageAccess } from "@/lib/zodiac-dashboard-auth";
 import { zodiacPlatformChannels } from "@/lib/zodiac-platform-management";
 
 export const dynamic = "force-dynamic";
@@ -17,6 +18,7 @@ export const dynamic = "force-dynamic";
 const overviewIcons = [FileText, CalendarClock, Languages, MessageSquareText, ClipboardList, Rocket] as const;
 
 export default function ZodiacContentEnginePage() {
+  requireDashboardPageAccess("/dashboard/networks/zodiac/content");
   const channels = zodiacPlatformChannels.map((channel) => ({ slug: channel.slug, title: channel.title, icon: channel.icon }));
 
   return (

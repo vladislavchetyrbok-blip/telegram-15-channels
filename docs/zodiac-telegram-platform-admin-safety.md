@@ -1,6 +1,6 @@
 # Zodiac Telegram Platform Admin Safety Center
 
-Package 62 | 2026-06-20
+Package 62-64 | 2026-06-20
 
 Route:
 
@@ -16,6 +16,9 @@ does not add any server-side write API.
 
 The page shows the current operating guardrails:
 
+- Dashboard auth: env-controlled passcode gate, disabled by default for local/dev.
+- Auth configured: shown without env values.
+- Session cookie: local browser only, httpOnly, 12h when auth is enabled.
 - Live publish: forbidden from dashboard UI.
 - Weekly live: OFF.
 - Payments/Stars: OFF.
@@ -87,6 +90,29 @@ Content drafts are localStorage-only and remain covered by this safety model:
 - no weekly live scheduling;
 - no raw personal data;
 - exact astrology remains `symbolic only / exact_unavailable`.
+
+## Package 64 Dashboard Auth Gate
+
+The dashboard auth route is:
+
+```text
+/dashboard/login
+```
+
+Package 64 adds an owner-dashboard passcode gate:
+
+- env contract: `ZODIAC_DASHBOARD_AUTH_ENABLED`,
+  `ZODIAC_DASHBOARD_ADMIN_PASSWORD_SHA256`,
+  `ZODIAC_DASHBOARD_SESSION_SECRET`;
+- route-level guard for `/dashboard` and `/dashboard/networks/zodiac/*`;
+- login/logout/status APIs under `/api/dashboard/auth/*`;
+- signed httpOnly session cookie with 12-hour expiry;
+- fail-closed behavior when auth is enabled but hash/secret are missing;
+- conditional logout button when auth is enabled and the browser has a session.
+
+This is not full RBAC and does not create server-side platform writes. The
+Security page must not display env values, passcodes, session secrets, Telegram
+tokens, Redis tokens, or raw Telegram `initData`.
 
 ## Checklist Before 20 Users
 

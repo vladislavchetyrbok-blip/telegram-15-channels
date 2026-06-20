@@ -21,6 +21,7 @@ import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { ZodiacPlatformNav } from "@/components/zodiac-platform/ZodiacPlatformNav";
 import { getUnifiedSystemStatus } from "@/lib/unified-system-status";
+import { requireDashboardPageAccess } from "@/lib/zodiac-dashboard-auth";
 import { zodiacPlatformSummary } from "@/lib/zodiac-platform-management";
 
 export const dynamic = "force-dynamic";
@@ -106,6 +107,7 @@ const platformSections = [
 ] as const;
 
 export default async function ZodiacNetworkWorkspacePage() {
+  requireDashboardPageAccess("/dashboard/networks/zodiac");
   const status = await getUnifiedSystemStatus();
   const analyticsStorage = process.env.ZODIAC_ANALYTICS_REDIS_URL && process.env.ZODIAC_ANALYTICS_REDIS_TOKEN ? "Redis активен" : "локальный noop-режим";
   const attentionCount = status.autopublish.failedToday + status.autopublish.blockedToday + status.content.blocked + zodiacPlatformSummary.problems;

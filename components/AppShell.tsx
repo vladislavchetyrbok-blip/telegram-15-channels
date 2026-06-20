@@ -9,8 +9,13 @@ import { UnifiedStatusStrip } from "@/components/UnifiedStatusStrip";
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const isPublicCompatibilityRoute = pathname === "/compatibility" || pathname.startsWith("/compatibility/");
+  const isDashboardLoginRoute = pathname === "/dashboard/login";
 
   if (isPublicCompatibilityRoute) {
+    return <div className="min-h-screen overflow-x-hidden bg-[#070b14] text-slate-100">{children}</div>;
+  }
+
+  if (isDashboardLoginRoute) {
     return <div className="min-h-screen overflow-x-hidden bg-[#070b14] text-slate-100">{children}</div>;
   }
 

@@ -1,11 +1,13 @@
 import { ChevronLeft, FileText, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { ZodiacPlatformNav } from "@/components/zodiac-platform/ZodiacPlatformNav";
+import { requireDashboardPageAccess } from "@/lib/zodiac-dashboard-auth";
 import { zodiacPlatformDocPaths } from "@/lib/zodiac-platform-management";
 
 export const dynamic = "force-dynamic";
 
 export default function ZodiacPlatformDocsPage() {
+  requireDashboardPageAccess("/dashboard/networks/zodiac/docs");
   return (
     <div className="-mx-4 -my-6 min-h-screen overflow-x-hidden bg-[#f8fafc] px-4 py-6 text-slate-950 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
       <div className="mx-auto max-w-7xl space-y-6">

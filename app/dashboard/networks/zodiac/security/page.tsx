@@ -3,6 +3,7 @@ import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { AdminSafetyWorkspace } from "@/components/zodiac-platform/AdminSafetyWorkspace";
 import { ZodiacPlatformNav } from "@/components/zodiac-platform/ZodiacPlatformNav";
+import { requireDashboardPageAccess } from "@/lib/zodiac-dashboard-auth";
 
 export const dynamic = "force-dynamic";
 
@@ -37,6 +38,15 @@ const roleRows = [
 ] as const;
 
 export default function ZodiacSecurityPage() {
+  const authStatus = requireDashboardPageAccess("/dashboard/networks/zodiac/security");
+  const authStatusCards = [
+    { label: "Dashboard auth", value: authStatus.authEnabled ? "enabled" : "disabled", icon: LockKeyhole, tone: authStatus.authEnabled ? "emerald" : "amber" },
+    { label: "Auth configured", value: authStatus.configured ? "yes" : "no", icon: ShieldCheck, tone: authStatus.configured ? "emerald" : authStatus.authEnabled ? "rose" : "amber" },
+    { label: "Session cookie", value: authStatus.sessionCookie, icon: LockKeyhole, tone: "cyan" },
+    { label: "Server write API", value: "disabled", icon: XCircle, tone: "slate" },
+    { label: "Roles", value: "planned", icon: UsersRound, tone: "slate" },
+  ] as const;
+
   return (
     <div className="-mx-4 -my-6 min-h-screen overflow-x-hidden bg-[#f8fafc] px-4 py-6 text-slate-950 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
       <div className="mx-auto max-w-7xl space-y-6">
@@ -71,6 +81,33 @@ export default function ZodiacSecurityPage() {
           {safetyStatuses.map((status) => (
             <StatusCard key={status.label} {...status} />
           ))}
+        </section>
+
+        <section data-qa="dashboard-auth-status-cards" className="space-y-4 rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-start">
+            <div>
+              <h2 className="text-xl font-semibold text-slate-950">Dashboard Auth</h2>
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+                Env-controlled passcode gate РґР»СЏ owner dashboard. Р­С‚Рѕ РЅРµ role system Рё РЅРµ server write API РґР»СЏ РїР»Р°С‚С„РѕСЂРјРµРЅРЅС‹С… РґР°РЅРЅС‹С….
+              </p>
+            </div>
+            <span className="inline-flex w-fit items-center gap-2 rounded-md border border-cyan-200 bg-cyan-50 px-3 py-2 text-sm font-semibold text-cyan-800">
+              <LockKeyhole className="h-4 w-4" />
+              httpOnly session, 12h
+            </span>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+            {authStatusCards.map((status) => (
+              <StatusCard key={status.label} {...status} />
+            ))}
+          </div>
+
+          <div className={`rounded-lg border p-4 text-sm font-semibold leading-6 ${authStatus.authEnabled ? "border-emerald-200 bg-emerald-50 text-emerald-900" : "border-amber-200 bg-amber-50 text-amber-950"}`}>
+            {authStatus.authEnabled
+              ? "Dashboard protected by passcode session."
+              : "Auth disabled: acceptable for local development, not recommended before wider production access."}
+          </div>
         </section>
 
         <section data-qa="approval-matrix" className="space-y-4 rounded-lg border border-slate-200 bg-white p-5 shadow-sm">

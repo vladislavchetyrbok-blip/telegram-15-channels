@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Bot, CalendarPlus, PenSquare, Rocket, ShieldCheck } from "lucide-react";
 import { useEffect, useState } from "react";
+import { DashboardLogoutButton } from "@/components/DashboardLogoutButton";
 
 interface HeaderStatus {
   channelsTotal: number;
@@ -67,6 +68,7 @@ export function Header() {
           <span className="inline-flex h-10 shrink-0 items-center rounded-md border border-line bg-black/20 px-3 text-sm text-slate-400">
             Ready: <span className="ml-2 text-cyan-200">{status.readyToPublish}</span>
           </span>
+          <DashboardLogoutButton />
         </div>
       </div>
     </header>

@@ -24,11 +24,13 @@ import {
 import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { ZodiacPlatformNav } from "@/components/zodiac-platform/ZodiacPlatformNav";
+import { requireDashboardPageAccess } from "@/lib/zodiac-dashboard-auth";
 import { getZodiacMiniAppAnalyticsDashboard, type AnalyticsRankItem } from "@/lib/zodiac-mini-app-analytics-store";
 
 export const dynamic = "force-dynamic";
 
 export default async function ZodiacMiniAppAnalyticsPage() {
+  requireDashboardPageAccess("/dashboard/networks/zodiac/analytics");
   const analytics = await getZodiacMiniAppAnalyticsDashboard();
   const analyticsMode = analytics.storageMode === "redis" ? "active" : "noop";
   const productionAnalyticsLabel = analytics.storageMode === "redis" ? "Аналитика: Redis активен в production" : "Аналитика: локальный noop-режим";

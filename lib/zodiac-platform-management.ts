@@ -92,6 +92,7 @@ export const zodiacPlatformSummary = {
 
 export const zodiacPlatformDocPaths = [
   "docs/zodiac-telegram-platform-admin-safety.md",
+  "docs/zodiac-telegram-platform-dashboard-auth.md",
   "docs/zodiac-telegram-platform-content-engine.md",
   "docs/zodiac-telegram-platform-management-console.md",
   "docs/zodiac-telegram-platform-publishing-center.md",
