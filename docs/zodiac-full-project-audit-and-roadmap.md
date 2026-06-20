@@ -1,7 +1,7 @@
 # Zodiac Full Project Audit And Roadmap
 
 Date: 2026-06-20
-Package: 53, updated through Package 59
+Package: 53, updated through Package 60
 Audit base HEAD: `98b28a322b16d8bb3e91f4422cfea9f7caeb8d54`
 Branch: `main`
 Scope: full-product audit, analytics review, quality review, and improvement roadmap.
@@ -673,7 +673,7 @@ What stays OFF:
 - live publish, manual ledger edits, weekly live, payments/Stars, profile sync,
   exact astro claims.
 
-### Package 60: Real Astro Engine Provider Research
+### Package 61: Real Astro Engine Provider Research
 
 Goal:
 - Choose a provider strategy and fixture design for exact astrology.
@@ -690,7 +690,7 @@ Prerequisites:
 What stays OFF:
 - exact astro claims and UI labels implying exact planets/houses/ascendant.
 
-### Package 61: Weekly Live Controlled First Run Plan
+### Package 62: Weekly Live Controlled First Run Plan
 
 Goal:
 - Prepare a weekly live plan without enabling it yet.
@@ -707,7 +707,7 @@ Prerequisites:
 What stays OFF:
 - weekly live until explicit approval after plan/checks.
 
-### Package 62: VIP Monetization Test Mode
+### Package 63: VIP Monetization Test Mode
 
 Goal:
 - Build payment/Stars/entitlement test-mode readiness only.
@@ -724,7 +724,7 @@ Prerequisites:
 What stays OFF:
 - real payments, real Stars, paid entitlement enforcement.
 
-### Package 63: Performance / Mobile Polish
+### Package 64: Performance / Mobile Polish
 
 Goal:
 - Reduce visual density, stale fallback share copy, and long-scroll friction.
@@ -741,7 +741,7 @@ Prerequisites:
 What stays OFF:
 - new product features, payments, sync, exact astro claims.
 
-### Package 64: Mass Launch Readiness Audit
+### Package 65: Mass Launch Readiness Audit
 
 Goal:
 - Re-audit after analytics, phone evidence, first users, and daily stability.
@@ -814,4 +814,28 @@ Profile sync: NO
 Exact astro claims: NO
 Mass launch: NO
 First 5 users: GO
+```
+
+## Package 60 Publishing Center Update
+
+Package 60 adds `/dashboard/networks/zodiac/publishing` as the owner-facing
+publishing center:
+
+* daily/weekly/dry-run/ledger status cards;
+* today/tomorrow/week calendar preview;
+* channel coverage from the Package 59 central registry;
+* dry-run command helper;
+* localStorage-only manual post draft builder;
+* publishing ledger/safety explanation.
+
+Safety verdict remains unchanged:
+
+```text
+Live publish from dashboard: NO
+Manual ledger changes: NO
+Weekly live: NO
+Payments/Stars: NO
+Profile sync: NO
+Exact astro claims: NO
+Mass launch: NO
 ```

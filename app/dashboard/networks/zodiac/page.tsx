@@ -48,7 +48,7 @@ const platformSections = [
   },
   {
     title: "Публикации",
-    href: "/publishing-center",
+    href: "/dashboard/networks/zodiac/publishing",
     icon: Rocket,
     caption: "Ежедневный маршрут, dry-run и безопасная проверка расписания.",
     tone: "amber",

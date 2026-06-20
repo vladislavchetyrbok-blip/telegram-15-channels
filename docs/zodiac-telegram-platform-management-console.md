@@ -13,7 +13,7 @@ Main routes:
 | Обзор | `/dashboard/networks/zodiac` | Owner overview for platform status and next actions |
 | Каналы | `/dashboard/networks/zodiac/channels` | 13-channel management table and safe new-channel draft builder |
 | Mini App | `/compatibility` | User-facing Mini App route |
-| Публикации | `/publishing-center` | Publishing center and schedule review |
+| Публикации | `/dashboard/networks/zodiac/publishing` | Safe publishing center, calendar preview, dry-run helpers, manual draft prep |
 | Аналитика | `/dashboard/networks/zodiac/analytics` | Privacy-safe Mini App analytics and first-users funnel |
 | Soft Launch | `/dashboard/networks/zodiac/operations` | First 5 users GO / mass launch STOP status |
 | Безопасность | `/dashboard/networks/zodiac/operations#safety` | Ledger, weekly live, payments, profile sync, exact astro guardrails |
@@ -48,6 +48,26 @@ npm run zodiac:descriptions:dry
 ```
 
 The UI does not call Telegram live APIs and does not write to the ledger.
+
+## Publishing Center
+
+Route:
+
+```text
+/dashboard/networks/zodiac/publishing
+```
+
+Package 60 adds a dedicated safe publishing center for:
+
+- daily publishing status;
+- weekly live OFF status;
+- today/tomorrow/week calendar preview;
+- channel coverage;
+- dry-run command hints;
+- localStorage-only manual post draft builder;
+- ledger/safety explanation.
+
+It does not render a live publish button and does not execute commands from the UI.
 
 ## New Channel Draft Builder
 

@@ -1,6 +1,6 @@
 # Zodiac Telegram Platform UX Audit
 
-Package 57-59 | 2026-06-20 | latest update: Package 59
+Package 57-60 | 2026-06-20 | latest update: Package 60
 
 ---
 
@@ -9,7 +9,7 @@ Package 57-59 | 2026-06-20 | latest update: Package 59
 | Area | Score | Notes |
 |---|---|---|
 | Platform clarity | **9/10** | Clean architecture, clear safety controls, dedicated channel console |
-| Admin dashboard clarity | **9/10** | Russian IA, sidebar entries, breadcrumbs, no dead `/reports`/`/settings`/`/readiness` links |
+| Admin dashboard clarity | **9/10** | Russian IA, sidebar entries, breadcrumbs, dedicated channels and publishing centers |
 | User entry clarity | **8/10** | Multiple startapp params, clear CTA buttons |
 | Analytics clarity | **9/10** | Rich counters, funnels, privacy-safe labeling |
 | Publishing safety clarity | **9/10** | Fail-closed ledger, dry-run safe, 0 API calls |
@@ -85,6 +85,19 @@ Package 59 turns the Zodiac dashboard into a clearer Telegram Platform Managemen
 - `/dashboard/networks/zodiac/docs` indexes the main runbooks without dead external dashboard links.
 
 Safety remained unchanged: no live publish, no manual ledger change, no weekly live, no payments/Stars, no profile sync, no exact astro claims.
+
+## Package 60 Addendum
+
+Package 60 adds `/dashboard/networks/zodiac/publishing` as the safe owner-facing publishing center:
+
+- status cards for daily ON/safe, weekly live OFF, dry-run safe, ledger protected, dry-run API calls `0`, mass launch STOP;
+- today/tomorrow/week calendar preview from safe config/ledger reads;
+- channel coverage from the central Package 59 registry;
+- dry-run command helper for workflow, daily dry-run, navigation dry-run, descriptions dry-run, ledger safety, and production safety;
+- localStorage-only manual post draft builder with generated Telegram text and checklist;
+- ledger/safety explanation and explicit live-publish guardrails.
+
+No live publish button, server write API, manual ledger edit, weekly live, payments/Stars, profile sync, or exact astro claims were added.
 
 ---
 

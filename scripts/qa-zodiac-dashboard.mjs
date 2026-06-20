@@ -9,9 +9,10 @@ const ROUTES = {
   overview: "/dashboard/networks/zodiac",
   analytics: "/dashboard/networks/zodiac/analytics",
   channels: "/dashboard/networks/zodiac/channels",
+  publishing: "/dashboard/networks/zodiac/publishing",
   operations: "/dashboard/networks/zodiac/operations",
   docs: "/dashboard/networks/zodiac/docs",
-  publishing: "/publishing-center",
+  legacyPublishing: "/publishing-center",
   miniApp: "/compatibility",
   unifiedStatus: "/api/system/unified-status",
 };
@@ -33,6 +34,7 @@ async function main() {
 
     assertIncludes(pages.overview, "Обзор управления Zodiac", "overview page heading");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/channels"', "overview channels route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/publishing"', "overview publishing route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/analytics"', "overview analytics route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/operations"', "overview operations route link");
     assertIncludes(pages.overview, "Каналы", "sidebar/platform nav Channels label");
@@ -65,17 +67,37 @@ async function main() {
     assertIncludes(pages.channels, 'id="generated-channel-checklist"', "generated checklist block");
     assertIncludes(pages.channels, "npm run zodiac:navigation:all:dry", "navigation dry-run command hint");
     assertIncludes(pages.channels, "npm run zodiac:descriptions:dry", "descriptions dry-run command hint");
+    assertIncludes(pages.channels, 'href="/dashboard/networks/zodiac/publishing"', "channels publishing route link");
     assertIncludes(pages.channels, "compat_aries", "sign startapp link");
     assertIncludes(pages.channels, "https://t.me/aries_horoscope_daily", "Telegram channel URL");
+
+    assertIncludes(pages.publishing, "Публикации", "publishing page title");
+    assertIncludes(pages.publishing, "Ежедневные публикации", "publishing daily status card");
+    assertIncludes(pages.publishing, "Weekly live", "publishing weekly off card");
+    assertIncludes(pages.publishing, "Telegram API calls in dry-run", "dry-run API calls card");
+    assertIncludes(pages.publishing, 'data-qa="publishing-calendar-preview"', "calendar preview block");
+    assertIncludes(pages.publishing, 'data-qa="publishing-channel-coverage"', "channel coverage block");
+    assertIncludes(pages.publishing, 'data-qa="publishing-dry-run-helper"', "dry-run command helper");
+    assertIncludes(pages.publishing, "npm run zodiac:workflow:check -- --date YYYY-MM-DD", "workflow command hint");
+    assertIncludes(pages.publishing, "npm run zodiac:publish-date:dry -- --date YYYY-MM-DD", "daily dry-run command hint");
+    assertIncludes(pages.publishing, "npm run zodiac:ledger:safety:check", "ledger safety command hint");
+    assertIncludes(pages.publishing, 'data-qa="manual-post-draft-builder"', "manual post draft builder");
+    assertIncludes(pages.publishing, 'id="generated-manual-post-text"', "generated manual post text block");
+    assertIncludes(pages.publishing, 'id="generated-manual-post-checklist"', "generated manual post checklist block");
+    assertIncludes(pages.publishing, 'data-qa="publishing-ledger-safety"', "ledger/safety section");
+    assertNotIncludes(pages.publishing, "zodiac:publish-date:live", "live publish command on publishing page");
+    assertNotIncludes(pages.publishing, "zodiac:weekly:publish", "weekly live command on publishing page");
 
     assertIncludes(pages.operations, "Операции и безопасность Zodiac", "operations page heading");
     assertIncludes(pages.operations, "Daily autopublish", "daily autopublish status");
     assertIncludes(pages.operations, "Weekly live", "weekly live status");
     assertIncludes(pages.operations, "first 5 users GO", "first users GO status");
     assertIncludes(pages.operations, "Mass launch", "mass launch status");
+    assertIncludes(pages.operations, 'href="/dashboard/networks/zodiac/publishing"', "operations publishing route link");
 
     assertIncludes(pages.docs, "Документы Telegram Platform", "docs page heading");
     assertIncludes(pages.docs, "docs/zodiac-telegram-platform-management-console.md", "management console doc path");
+    assertIncludes(pages.docs, "docs/zodiac-telegram-platform-publishing-center.md", "publishing center doc path");
 
     const combined = Object.values(pages).join("\n");
     assertNoForbiddenLinks(combined);

@@ -31,6 +31,7 @@ docs/zodiac-full-project-audit-and-roadmap.md
 docs/zodiac-telegram-platform-map.md
 docs/zodiac-telegram-platform-ux-audit.md
 docs/zodiac-telegram-platform-management-console.md
+docs/zodiac-telegram-platform-publishing-center.md
 docs/zodiac-controlled-launch-freeze.md
 docs/zodiac-soft-launch-release-candidate.md
 docs/zodiac-production-readiness.md
@@ -58,6 +59,11 @@ Package 59 adds the owner-facing Telegram Platform Management Console. Start at
 `/dashboard/networks/zodiac`; channel management is at
 `/dashboard/networks/zodiac/channels`. The new-channel builder is localStorage
 draft-only and does not add a server-side write API.
+
+Package 60 adds the safe publishing center at
+`/dashboard/networks/zodiac/publishing`. It is for calendar preview, dry-run
+command hints, ledger/safety visibility, and local manual post drafts only. It
+does not publish to Telegram.
 
 ## 3. Product Readiness
 

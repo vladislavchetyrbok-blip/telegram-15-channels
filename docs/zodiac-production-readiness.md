@@ -73,12 +73,21 @@ config/checklist output. No server-side write API, live publish, manual ledger
 change, weekly live, payments/Stars, profile sync, or exact astro claims were
 enabled.
 
+Package 60 adds the safe Telegram Platform Publishing Center at
+`/dashboard/networks/zodiac/publishing`. It shows daily/weekly/dry-run/ledger
+status cards, today/tomorrow/week calendar preview, channel coverage, dry-run
+command hints, a localStorage-only manual post draft builder, and publishing
+safety rules. It does not add a live publish button, server write API, Telegram
+API call, manual ledger edit, weekly live, payments/Stars, profile sync, or
+exact astro claims.
+
 ## Current Status
 
 The Zodiac product is ready for controlled live operation of the daily publishing lane and user-facing Mini App checks, with the following boundaries:
 
 - Daily Zodiac publishing is active and ledger-protected.
 - Telegram Platform console route `/dashboard/networks/zodiac/channels` is available for channel management, dry-run command hints, and local draft preparation.
+- Telegram Platform publishing route `/dashboard/networks/zodiac/publishing` is available for safe calendar preview, dry-run hints, and local manual post drafts.
 - Weekly Zodiac posts are prepared and dry-run ready, but weekly live scheduling remains OFF.
 - Mini App core UX is implemented: 10-category home, Angel Numbers top-level, Compatibility pair core, Horoscopes, Mystic, premium Birth Matrix, VIP, Profile, History, Favorites, and Share.
 - Sonnik/Dream Dictionary is hidden/backlog for the current soft launch; Mystic continues through Card of the Day, Tarot/Rune, Lunar/Ritual, talismans, aura, karma, and Birth Matrix.

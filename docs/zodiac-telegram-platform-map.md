@@ -42,6 +42,7 @@ Soft Launch ──► First 5 Users ──► Feedback ──► Triage
 | Main dashboard | `/dashboard` | YES | 15-channel command center |
 | Zodiac network overview | `/dashboard/networks/zodiac` | YES | Zodiac control panel |
 | Zodiac channel console | `/dashboard/networks/zodiac/channels` | YES | 13-channel table and local new-channel draft builder |
+| Zodiac publishing center | `/dashboard/networks/zodiac/publishing` | YES | Safe publishing calendar, dry-run helpers, manual post drafts |
 | Analytics dashboard | `/dashboard/networks/zodiac/analytics` | YES | Privacy-safe analytics |
 | Operations / safety | `/dashboard/networks/zodiac/operations` | YES | Soft launch, safety, ledger and launch limits |
 | Docs / runbooks | `/dashboard/networks/zodiac/docs` | YES | Document path index |
@@ -79,12 +80,15 @@ Package 59 adds a clearer owner-facing management console layer:
 ```text
 /dashboard/networks/zodiac
   -> /dashboard/networks/zodiac/channels
+  -> /dashboard/networks/zodiac/publishing
   -> /dashboard/networks/zodiac/analytics
   -> /dashboard/networks/zodiac/operations
   -> /dashboard/networks/zodiac/docs
 ```
 
 The channel console is read-only for live Telegram state. Its "new channel" builder stores drafts in browser `localStorage` and only generates a JSON/config snippet plus a manual checklist.
+
+Package 60 adds the publishing center. Its manual post builder is also `localStorage` only and the page only shows dry-run command hints. It does not publish to Telegram.
 
 ---
 

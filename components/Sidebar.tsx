@@ -9,7 +9,7 @@ const navItems = [
   { id: "overview", href: "/dashboard/networks/zodiac", label: "Обзор", icon: Sparkles },
   { id: "channels", href: "/dashboard/networks/zodiac/channels", label: "Каналы", icon: RadioTower },
   { id: "mini-app", href: "/compatibility", label: "Mini App", icon: Smartphone },
-  { id: "publishing", href: "/publishing-center", label: "Публикации", icon: Rocket },
+  { id: "publishing", href: "/dashboard/networks/zodiac/publishing", label: "Публикации", icon: Rocket },
   { id: "analytics", href: "/dashboard/networks/zodiac/analytics", label: "Аналитика", icon: BarChart3 },
   { id: "soft-launch", href: "/dashboard/networks/zodiac/operations", label: "Soft Launch", icon: HeartHandshake },
   { id: "safety", href: "/dashboard/networks/zodiac/operations#safety", label: "Безопасность", icon: LockKeyhole },
