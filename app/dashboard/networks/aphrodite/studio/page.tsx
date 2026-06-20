@@ -35,6 +35,17 @@ export default function AphroditeStudioPage() {
           </ul>
         </div>
 
+        {/* Queue Link */}
+        <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-5 flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-lg font-semibold text-emerald-400">Очередь Студии</h2>
+            <p className="text-sm text-slate-400 mt-1">Производственная доска: от идеи до проверки и готового контента.</p>
+          </div>
+          <a href="/dashboard/networks/aphrodite/studio/queue" className="rounded bg-emerald-500/20 px-4 py-2 text-sm font-medium text-emerald-300 hover:bg-emerald-500/30 transition">
+            Открыть очередь
+          </a>
+        </div>
+
         {/* Templates Link */}
         <div className="rounded-xl border border-blue-500/20 bg-blue-500/5 p-5 flex items-center justify-between">
           <div>

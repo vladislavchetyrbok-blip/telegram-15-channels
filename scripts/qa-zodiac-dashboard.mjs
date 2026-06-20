@@ -31,6 +31,7 @@ const ROUTES = {
   aphroditeMetals: "/dashboard/networks/aphrodite/metals",
   aphroditeStudio: "/dashboard/networks/aphrodite/studio",
   aphroditeTemplates: "/dashboard/networks/aphrodite/studio/templates",
+  aphroditeQueue: "/dashboard/networks/aphrodite/studio/queue",
 };
 
 async function main() {
@@ -399,6 +400,17 @@ async function main() {
     assertIncludes(pages.aphroditeTemplates, "Telegram Caption Templates", "aphrodite templates caption");
     assertIncludes(pages.aphroditeTemplates, "Prompt Pack", "aphrodite templates prompt pack");
     assertNotIncludes(pages.aphroditeTemplates, "/api/aphrodite", "no server write API required on aphrodite templates");
+
+    assertIncludes(pages.aphroditeQueue, "Очередь Студии Афродиты", "aphrodite queue heading");
+    assertIncludes(pages.aphroditeQueue, "Pipeline", "aphrodite queue pipeline");
+    assertIncludes(pages.aphroditeQueue, "Зодиак", "aphrodite queue zodiac filter");
+    assertIncludes(pages.aphroditeQueue, "Валюты", "aphrodite queue currency filter");
+    assertIncludes(pages.aphroditeQueue, "Крипта", "aphrodite queue crypto filter");
+    assertIncludes(pages.aphroditeQueue, "Металлы", "aphrodite queue metals filter");
+    assertIncludes(pages.aphroditeQueue, "Недвижимость", "aphrodite queue real estate filter");
+    assertIncludes(pages.aphroditeQueue, "Чеклист перед публикацией", "aphrodite queue checklist");
+    assertIncludes(pages.aphroditeQueue, "Публикация в Telegram отключена", "aphrodite queue safety message");
+    assertNotIncludes(pages.aphroditeQueue, "/api/aphrodite", "no server write API required on aphrodite queue");
 
     const combined = Object.values(pages).join("\n");
     assertNoForbiddenLinks(combined);
