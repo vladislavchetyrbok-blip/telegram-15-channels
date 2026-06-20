@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
+import { ZodiacPlatformNav } from "@/components/zodiac-platform/ZodiacPlatformNav";
 import { getZodiacMiniAppAnalyticsDashboard, type AnalyticsRankItem } from "@/lib/zodiac-mini-app-analytics-store";
 
 export const dynamic = "force-dynamic";
@@ -30,7 +31,7 @@ export const dynamic = "force-dynamic";
 export default async function ZodiacMiniAppAnalyticsPage() {
   const analytics = await getZodiacMiniAppAnalyticsDashboard();
   const analyticsMode = analytics.storageMode === "redis" ? "active" : "noop";
-  const productionAnalyticsLabel = analytics.storageMode === "redis" ? "Production analytics: Redis active" : "Production analytics: noop";
+  const productionAnalyticsLabel = analytics.storageMode === "redis" ? "Аналитика: Redis активен в production" : "Аналитика: локальный noop-режим";
 
   return (
     <div className="-mx-4 -my-6 min-h-screen overflow-x-hidden bg-[#f8fafc] px-4 py-6 text-slate-950 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
@@ -44,21 +45,22 @@ export default async function ZodiacMiniAppAnalyticsPage() {
             <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-violet-400 via-cyan-300 to-amber-300" />
             <p className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-violet-700">
               <BarChart3 className="h-3.5 w-3.5" />
-              internal analytics
+              внутренняя аналитика
             </p>
             <div className="mt-5 grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
               <div>
-                <h1 className="break-words text-2xl font-semibold tracking-tight text-slate-950 sm:text-4xl">Zodiac Mini App Analytics</h1>
+                <h1 className="break-words text-2xl font-semibold tracking-tight text-slate-950 sm:text-4xl">Аналитика Mini App</h1>
                 <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-600">
                   Сводка по разделам, знакам, режимам совместимости и воронке Mini App без хранения имён, дат рождения, времени, городов или Telegram initData.
                 </p>
               </div>
               <span className="inline-flex w-fit items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-800">
                 <ShieldCheck className="h-4 w-4" />
-                privacy-safe
+                без персональных данных
               </span>
             </div>
           </div>
+          <ZodiacPlatformNav current="analytics" />
         </header>
 
         {analytics.warning ? (

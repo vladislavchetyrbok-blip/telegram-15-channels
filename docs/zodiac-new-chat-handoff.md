@@ -30,6 +30,7 @@ docs/zodiac-new-chat-handoff.md
 docs/zodiac-full-project-audit-and-roadmap.md
 docs/zodiac-telegram-platform-map.md
 docs/zodiac-telegram-platform-ux-audit.md
+docs/zodiac-telegram-platform-management-console.md
 docs/zodiac-controlled-launch-freeze.md
 docs/zodiac-soft-launch-release-candidate.md
 docs/zodiac-production-readiness.md
@@ -48,10 +49,15 @@ Weekly live: STOP
 Payments/Stars: STOP
 Profile sync: STOP / disabled
 Exact astro claims: STOP / exact_unavailable
-Redis analytics: CONDITIONAL / env missing
+Redis analytics: active in production / values hidden
 ```
 
 The current product is ready for a small trusted tester loop, not for broad public launch.
+
+Package 59 adds the owner-facing Telegram Platform Management Console. Start at
+`/dashboard/networks/zodiac`; channel management is at
+`/dashboard/networks/zodiac/channels`. The new-channel builder is localStorage
+draft-only and does not add a server-side write API.
 
 ## 3. Product Readiness
 
@@ -191,11 +197,13 @@ Daily target date policy: Europe/Kyiv calendar date. Duplicate protection is led
 
 Weekly lane: content and dry-run are prepared, but weekly live schedule remains OFF until a separate explicit package and approval.
 
-## 7. Required Env Still Missing
+## 7. Env Names To Keep Hidden
 
-Do not print or commit values. These are names only.
+Do not print or commit values. These are names only. Redis analytics is active
+in production; local/dev may still run as `noop` without these env vars.
 
 ```text
+Production analytics env names:
 ZODIAC_ANALYTICS_REDIS_URL
 ZODIAC_ANALYTICS_REDIS_TOKEN
 
@@ -208,7 +216,7 @@ ZODIAC_PROFILE_SYNC_REDIS_URL
 ZODIAC_PROFILE_SYNC_REDIS_TOKEN
 ```
 
-Redis analytics currently remains `noop` until both Redis REST env vars are configured in hosting and the app is redeployed.
+Redis URL/token values must never be printed in terminal output, docs, dashboard HTML, or commits.
 
 ## 8. Canonical Check Commands
 
@@ -295,7 +303,7 @@ Critical rules:
 - Do not enable profile sync.
 - Do not claim exact astrology; exact provider is unavailable.
 - Do not store raw birth date/time/city/question/intention/feedback/result text.
-- Analytics storage is noop until Redis env is added.
+- Analytics storage is Redis-backed in production; local/dev may be noop without env.
 
 Current product PASS:
 10 categories, Compatibility, Premium Natal, Birth Matrix, Tarot/Rune, Lunar/Ritual, Angel Numbers, VIP 11/11, Profile/History/Favorites, Feedback, Safe Share, Desktop QA, Ledger safety, Telegram initData auth foundation, Profile sync foundations disabled.

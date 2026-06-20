@@ -64,11 +64,21 @@ Package 53 adds the full project audit and improvement roadmap:
 as the only approved launch stage and keeps mass launch, weekly live,
 payments/Stars, profile sync, and exact astro claims OFF.
 
+Package 59 adds the Telegram Platform Management Console UX. The owner dashboard
+now has Russian navigation for overview, channels, Mini App, publishing,
+analytics, soft launch, safety, and docs. The new channel route
+`/dashboard/networks/zodiac/channels` is read-only for live Telegram state and
+contains a localStorage-only new-channel draft builder with generated
+config/checklist output. No server-side write API, live publish, manual ledger
+change, weekly live, payments/Stars, profile sync, or exact astro claims were
+enabled.
+
 ## Current Status
 
 The Zodiac product is ready for controlled live operation of the daily publishing lane and user-facing Mini App checks, with the following boundaries:
 
 - Daily Zodiac publishing is active and ledger-protected.
+- Telegram Platform console route `/dashboard/networks/zodiac/channels` is available for channel management, dry-run command hints, and local draft preparation.
 - Weekly Zodiac posts are prepared and dry-run ready, but weekly live scheduling remains OFF.
 - Mini App core UX is implemented: 10-category home, Angel Numbers top-level, Compatibility pair core, Horoscopes, Mystic, premium Birth Matrix, VIP, Profile, History, Favorites, and Share.
 - Sonnik/Dream Dictionary is hidden/backlog for the current soft launch; Mystic continues through Card of the Day, Tarot/Rune, Lunar/Ritual, talismans, aura, karma, and Birth Matrix.
@@ -806,7 +816,7 @@ Status:
 - localStorage fallback: preserved.
 - Exact astro mode: `exact_unavailable`.
 - Fake planets/houses/ascendant: NO.
-- Redis analytics: `noop`; Redis env missing.
+- Redis analytics at Package 45 checkpoint: local `noop`; current production state is Redis active with values hidden.
 - Daily dry-run for `2026-06-20`: Would Publish `13/13`, CTA rows `13/13 OK`,
   Telegram API calls `0`, ledger writes `0`.
 - Weekly live: OFF.
@@ -831,6 +841,9 @@ Status:
 * First 5 users must be observed through analytics + feedback.
 * Package 58 adds the first-users funnel dashboard on
   `/dashboard/networks/zodiac/analytics`.
+* Package 59 adds the channel management console on
+  `/dashboard/networks/zodiac/channels` and operations/safety on
+  `/dashboard/networks/zodiac/operations`.
 * Read the funnel as `Open Mini App -> Open Feature -> Get Result -> Save/Share
   -> Feedback`.
 * The key counters are `Mini App opens`, `Feature opens`, `Results calculated`,

@@ -1,6 +1,6 @@
 # Zodiac Telegram Platform UX Audit
 
-Package 57 | 2026-06-20 | HEAD: `b467e51`
+Package 57-59 | 2026-06-20 | latest update: Package 59
 
 ---
 
@@ -8,8 +8,8 @@ Package 57 | 2026-06-20 | HEAD: `b467e51`
 
 | Area | Score | Notes |
 |---|---|---|
-| Platform clarity | **8/10** | Clean architecture, clear safety controls |
-| Admin dashboard clarity | **8/10** | Improved: dead anchors fixed, steps updated |
+| Platform clarity | **9/10** | Clean architecture, clear safety controls, dedicated channel console |
+| Admin dashboard clarity | **9/10** | Russian IA, sidebar entries, breadcrumbs, no dead `/reports`/`/settings`/`/readiness` links |
 | User entry clarity | **8/10** | Multiple startapp params, clear CTA buttons |
 | Analytics clarity | **9/10** | Rich counters, funnels, privacy-safe labeling |
 | Publishing safety clarity | **9/10** | Fail-closed ledger, dry-run safe, 0 API calls |
@@ -43,10 +43,10 @@ None.
 
 | # | Item | Priority | Status |
 |---|---|---|---|
-| 1 | Sidebar has no entry for Zodiac overview page | P2 | Backlog |
-| 2 | Sidebar is flat (no grouping) | P2 | Backlog |
+| 1 | Sidebar has no entry for Zodiac overview page | P2 | Fixed in Package 59 |
+| 2 | Sidebar is flat (no grouping) | P2 | Improved in Package 59 |
 | 3 | Recommended steps are static, not interactive | P2 | Backlog |
-| 4 | No individual channel drill-down from zodiac overview | P2 | Backlog |
+| 4 | No individual channel drill-down from zodiac overview | P2 | Fixed with `/dashboard/networks/zodiac/channels` |
 | 5 | Compatibility preview page not linked from overview | P2 | Backlog |
 
 ---
@@ -71,6 +71,20 @@ None.
    - Architecture diagram.
 
 5. **Created this UX audit document.**
+
+---
+
+## Package 59 Addendum
+
+Package 59 turns the Zodiac dashboard into a clearer Telegram Platform Management Console:
+
+- sidebar navigation now exposes `Обзор`, `Каналы`, `Mini App`, `Публикации`, `Аналитика`, `Soft Launch`, `Безопасность`, `Документы`;
+- `/dashboard/networks/zodiac/channels` shows the 13-channel table with Telegram links, Mini App `startapp`, navigation, description, publishing, analytics, and risk status;
+- the new-channel builder is local/draft-only, stored in `localStorage`, and generates config/checklist output without server writes;
+- `/dashboard/networks/zodiac/operations` shows daily autopublish ON/safe, weekly live OFF, ledger protected, Redis production analytics, profile sync OFF, payments/Stars OFF, exact astro unavailable, first 5 users GO, mass launch STOP;
+- `/dashboard/networks/zodiac/docs` indexes the main runbooks without dead external dashboard links.
+
+Safety remained unchanged: no live publish, no manual ledger change, no weekly live, no payments/Stars, no profile sync, no exact astro claims.
 
 ---
 

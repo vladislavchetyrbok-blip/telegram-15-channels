@@ -1,7 +1,7 @@
 # Zodiac Full Project Audit And Roadmap
 
 Date: 2026-06-20
-Package: 53
+Package: 53, updated through Package 59
 Audit base HEAD: `98b28a322b16d8bb3e91f4422cfea9f7caeb8d54`
 Branch: `main`
 Scope: full-product audit, analytics review, quality review, and improvement roadmap.
@@ -19,7 +19,7 @@ Commercial readiness: NO, about 55/100
 P0 count: 0
 P1 count: 0
 P2 count: 11
-Main blockers: real Telegram phone evidence, Redis analytics activation,
+Main blockers: real Telegram phone evidence,
 first-user feedback loop, profile sync still disabled, exact astro provider
 unavailable, weekly live still gated, payments/Stars still gated.
 ```
@@ -33,7 +33,7 @@ keeps Sonnik hidden/backlog, and preserves explicit deep links such as
 
 The product is not ready for mass public launch or monetization. The remaining
 work is mostly operational and evidence-driven: real Telegram phone checks,
-persistent privacy-safe analytics, daily stability observation, first-user
+persistent privacy-safe analytics review, daily stability observation, first-user
 feedback, and then carefully staged profile sync, weekly publishing, exact astro,
 and payments packages.
 
@@ -100,7 +100,7 @@ Manual limitation: real phone keyboard overlay still required
 | Profile / History / Favorites | PASS local-only | 84 | Cross-device state absent | Profile sync read-only test mode later |
 | Feedback | PASS local draft | 78 | No backend feedback loop yet | Add privacy-safe intake after first testers |
 | Safe share | PASS | 88 | Fallback copy state can feel stale after navigation | Consider reset/polish package |
-| Analytics | READY but `noop` | 74 | Dashboard counters empty until Redis env | Activate Redis analytics package |
+| Analytics | Redis active in production | 88 | Local/dev may remain `noop` without env | Watch first-users funnel |
 | Profile sync | OFF by design | 70 | Remote state not proven in production | Read-only test mode after storage/auth gates |
 | Telegram auth | READY foundation | 90 | Needs production identity policy before sync | Keep validating `initData`, never store raw value |
 | Real Astro Engine | Symbolic only | 62 | Exact provider unavailable | Provider research and fixture package |
@@ -649,7 +649,31 @@ Prerequisites:
 What stays OFF:
 - production writes and user-visible sync toggle.
 
-### Package 59: Real Astro Engine Provider Research
+### Package 59: Telegram Platform Management Console
+
+Goal:
+- Add an owner-facing management console for channels, Mini App, bot/startapp,
+  publishing, analytics, soft launch, safety, docs, and new-channel drafts.
+
+Why:
+- The project owner needs one clear place to understand and operate the
+  Telegram platform without hunting through scripts.
+
+Risk:
+- Accidentally creating live Telegram write controls or unauthenticated admin
+  writes.
+
+Result:
+- Implemented with `/dashboard/networks/zodiac/channels`,
+  `/dashboard/networks/zodiac/operations`, and
+  `/dashboard/networks/zodiac/docs`. The new-channel builder is localStorage
+  draft-only.
+
+What stays OFF:
+- live publish, manual ledger edits, weekly live, payments/Stars, profile sync,
+  exact astro claims.
+
+### Package 60: Real Astro Engine Provider Research
 
 Goal:
 - Choose a provider strategy and fixture design for exact astrology.
@@ -666,7 +690,7 @@ Prerequisites:
 What stays OFF:
 - exact astro claims and UI labels implying exact planets/houses/ascendant.
 
-### Package 60: Weekly Live Controlled First Run Plan
+### Package 61: Weekly Live Controlled First Run Plan
 
 Goal:
 - Prepare a weekly live plan without enabling it yet.
@@ -683,7 +707,7 @@ Prerequisites:
 What stays OFF:
 - weekly live until explicit approval after plan/checks.
 
-### Package 61: VIP Monetization Test Mode
+### Package 62: VIP Monetization Test Mode
 
 Goal:
 - Build payment/Stars/entitlement test-mode readiness only.
@@ -700,7 +724,7 @@ Prerequisites:
 What stays OFF:
 - real payments, real Stars, paid entitlement enforcement.
 
-### Package 62: Performance / Mobile Polish
+### Package 63: Performance / Mobile Polish
 
 Goal:
 - Reduce visual density, stale fallback share copy, and long-scroll friction.
@@ -717,7 +741,7 @@ Prerequisites:
 What stays OFF:
 - new product features, payments, sync, exact astro claims.
 
-### Package 63: Mass Launch Readiness Audit
+### Package 64: Mass Launch Readiness Audit
 
 Goal:
 - Re-audit after analytics, phone evidence, first users, and daily stability.
@@ -763,3 +787,31 @@ until the relevant package proves it.
 * **Soft launch dashboard checklist**: Review the 'Рекомендованные шаги' card on the Overview page for instructions.
 * **Platform Map**: `docs/zodiac-telegram-platform-map.md`
 * **UX Audit**: `docs/zodiac-telegram-platform-ux-audit.md`
+
+## Package 59 Management Console Update
+
+Package 59 adds a dedicated owner-facing Telegram Platform Management Console:
+
+* **Overview**: `/dashboard/networks/zodiac`
+* **Channels route**: `/dashboard/networks/zodiac/channels`
+* **Analytics route**: `/dashboard/networks/zodiac/analytics`
+* **Operations / safety route**: `/dashboard/networks/zodiac/operations`
+* **Docs route**: `/dashboard/networks/zodiac/docs`
+
+The channel console shows the 13-channel Zodiac network, Telegram handles,
+Mini App `startapp` links, navigation status, description status, daily
+publishing status, analytics status, and risk badges. The new-channel builder is
+localStorage-only and generates config/checklist output for later manual commit.
+
+Safety verdict remains unchanged:
+
+```text
+Live publish from dashboard: NO
+Manual ledger changes: NO
+Weekly live: NO
+Payments/Stars: NO
+Profile sync: NO
+Exact astro claims: NO
+Mass launch: NO
+First 5 users: GO
+```
