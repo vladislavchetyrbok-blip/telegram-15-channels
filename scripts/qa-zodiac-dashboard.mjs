@@ -22,6 +22,7 @@ const ROUTES = {
   miniApp: "/compatibility",
   dashboardAuthStatus: "/api/dashboard/auth/status",
   unifiedStatus: "/api/system/unified-status",
+  aphroditeOverview: "/dashboard/networks/aphrodite",
   aphroditeChannels: "/dashboard/networks/aphrodite/channels",
 };
 
@@ -333,6 +334,15 @@ async function main() {
     assertIncludes(pages.aphroditeChannels, "Crypto", "aphrodite module Crypto");
     assertIncludes(pages.aphroditeChannels, "Metals", "aphrodite module Metals");
     assertNotIncludes(pages.aphroditeChannels, "/api/aphrodite/settings", "no server write API required on aphrodite registry");
+
+    assertIncludes(pages.aphroditeOverview, "Aphrodite Platform Overview", "aphrodite overview heading");
+    assertIncludes(pages.aphroditeOverview, "/dashboard/networks/aphrodite/channels", "aphrodite overview registry link");
+    assertIncludes(pages.aphroditeOverview, "Currency", "aphrodite overview Currency card");
+    assertIncludes(pages.aphroditeOverview, "Crypto", "aphrodite overview Crypto card");
+    assertIncludes(pages.aphroditeOverview, "Metals", "aphrodite overview Metals card");
+    assertIncludes(pages.aphroditeOverview, "Locked", "aphrodite overview live publish locked");
+    assertNotIncludes(pages.aphroditeOverview, "/api/aphrodite", "no server write API required on aphrodite overview");
+
 
     const combined = Object.values(pages).join("\n");
     assertNoForbiddenLinks(combined);

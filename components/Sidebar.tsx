@@ -19,6 +19,7 @@ const zodiacNavItems = [
 ];
 
 const aphroditeNavItems = [
+  { id: "aphrodite-overview", href: "/dashboard/networks/aphrodite", label: "Overview", icon: Server },
   { id: "aphrodite-channels", href: "/dashboard/networks/aphrodite/channels", label: "Channel Registry", icon: Server },
 ];
 
