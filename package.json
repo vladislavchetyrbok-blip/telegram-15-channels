@@ -139,7 +139,8 @@
     "start": "next start",
     "lint": "next lint",
     "db:reconciliation:plan:dry": "node scripts/apply-supabase-reconciliation-plan.mjs --dry-run",
-    "db:reconciliation:plan:apply": "node scripts/apply-supabase-reconciliation-plan.mjs --apply"
+    "db:reconciliation:plan:apply": "node scripts/apply-supabase-reconciliation-plan.mjs --apply",
+    "zodiac:dashboard:qa": "node scripts/qa-zodiac-dashboard.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",

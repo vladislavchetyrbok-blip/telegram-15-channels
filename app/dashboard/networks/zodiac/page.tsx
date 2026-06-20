@@ -1,15 +1,14 @@
 import {
+  Activity,
+  AlertTriangle,
   BarChart3,
   CalendarClock,
   CheckCircle2,
   ChevronLeft,
-  ClipboardList,
   Compass,
   FileText,
   HeartHandshake,
-  ImageIcon,
-  MessageCircle,
-  Navigation,
+  Rocket,
   Settings,
   ShieldCheck,
   Sparkles,
@@ -29,30 +28,9 @@ const toneClasses: Record<Tone, string> = {
   slate: "border-slate-200 bg-slate-50 text-slate-700",
 };
 
-const statusCards = [
-  { label: "Каналов", value: "13", caption: "1 общий + 12 знаков", icon: Compass, tone: "violet" },
-  { label: "Постов в день", value: "13", caption: "каждый знак получает прогноз", icon: SunMedium, tone: "cyan" },
-  { label: "Постов в год", value: "4 745", caption: "365 дней автопилота", icon: CalendarClock, tone: "emerald" },
-  { label: "Визуалов", value: "91/91", caption: "полный weekly-набор", icon: ImageIcon, tone: "amber" },
-  { label: "Ledger", value: "OK", caption: "дубликаты блокируются", icon: ShieldCheck, tone: "emerald" },
-  { label: "Backup cron", value: "active", caption: "09:30 резерв", icon: CheckCircle2, tone: "cyan" },
-  { label: "Совместимость", value: "78", caption: "готовых пар", icon: HeartHandshake, tone: "coral" },
-  { label: "Daily buttons", value: "active", caption: "кнопки под постами", icon: Navigation, tone: "violet" },
-] as const;
-
-const workspaceSections = [
-  { title: "Обзор", icon: Compass, status: "готово", description: "Короткая сводка по сети, каналам, автопостингу и безопасным режимам.", href: "/channels/zodiac" },
-  { title: "Сегодня", icon: SunMedium, status: "операторский режим", description: "Проверка дневного запуска, 13 постов, медиа, кнопки и отчет.", href: "/publishing-center" },
-  { title: "Контент", icon: FileText, status: "ежедневный", description: "Ежедневные тексты гороскопов и будущие контентные форматы.", href: "/content-plan" },
-  { title: "Навигация", icon: Navigation, status: "13/13", description: "Inline-кнопки и закрепленные cross-navigation посты во всех каналах.", href: "/channels/zodiac" },
-  { title: "Визуалы", icon: ImageIcon, status: "91/91", description: "Готовые weekly JPG-изображения для всех знаков и дней недели.", href: "/visuals" },
-  { title: "Совместимость", icon: HeartHandshake, status: "interactive", description: "Bot/Mini App preview для fast, personal и precise расчетов без публикации в каналы.", href: "/dashboard/networks/zodiac/compatibility-preview" },
-  { title: "Еженедельный", icon: ClipboardList, status: "dry-run", description: "Пайплайн еженедельных гороскопов готов для ревью без live-публикации.", href: "/dashboard/networks/zodiac#weekly" },
-  { title: "Отчеты", icon: BarChart3, status: "daily/history", description: "Ежедневные отчеты, историческая аналитика и будущие витрины метрик.", href: "/dashboard/networks/zodiac#reports" },
-  { title: "Настройки", icon: Settings, status: "безопасно", description: "Описания каналов, комментарии, dev-инструменты и операционный runbook.", href: "/dashboard/networks/zodiac#settings" },
-] as const;
-
 export default function ZodiacNetworkWorkspacePage() {
+  const analyticsStorage = process.env.ZODIAC_ANALYTICS_REDIS_URL && process.env.ZODIAC_ANALYTICS_REDIS_TOKEN ? "redis" : "noop";
+
   return (
     <div className="-mx-4 -my-6 min-h-screen overflow-x-hidden bg-[#f8fafc] px-4 py-6 text-slate-950 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
       <div className="mx-auto max-w-7xl space-y-8">
@@ -69,166 +47,101 @@ export default function ZodiacNetworkWorkspacePage() {
             </p>
             <h1 className="mt-5 break-words text-2xl font-semibold tracking-tight text-slate-950 sm:text-4xl">🔮 Знаки зодиака</h1>
             <p className="mt-3 max-w-3xl break-words text-base leading-7 text-slate-600">
-              Рабочая панель сети гороскопов: ежедневные публикации, визуалы, навигация и совместимость.
+              Рабочая панель сети гороскопов: 13 каналов.
             </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <StatusBadge label="Daily autopilot" value="ON" tone="emerald" />
+              <StatusBadge label="Weekly live" value="OFF" tone="slate" />
+              <StatusBadge label="Payments/Stars" value="OFF" tone="slate" />
+              <StatusBadge label="Analytics" value={analyticsStorage} tone={analyticsStorage === "redis" ? "emerald" : "amber"} />
+              <StatusBadge label="Profile sync" value="OFF" tone="slate" />
+              <StatusBadge label="Exact astro" value="exact_unavailable" tone="amber" />
+              <StatusBadge label="Controlled soft launch" value="GO" tone="emerald" />
+            </div>
+
+            {analyticsStorage === "noop" && (
+              <div className="mt-6 rounded-lg border border-amber-200 bg-amber-50 p-4">
+                <div className="flex items-start gap-3">
+                  <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
+                  <p className="text-sm font-medium leading-5 text-amber-800">
+                    Аналитика подключена к интерфейсу, но Redis storage пока не активен.<br />
+                    Добавьте ZODIAC_ANALYTICS_REDIS_URL и ZODIAC_ANALYTICS_REDIS_TOKEN, затем redeploy.
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         </header>
 
-        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {statusCards.map((card) => (
-            <StatusCard key={card.label} {...card} />
-          ))}
+        <section className="space-y-4">
+          <h2 className="text-xl font-semibold text-slate-950">Быстрые действия</h2>
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
+            <QuickActionButton href="/channels/zodiac" icon={Compass} label="Открыть Mini App" />
+            <QuickActionButton href="/dashboard/networks/zodiac/analytics" icon={Activity} label="Открыть аналитику" highlight={true} />
+            <QuickActionButton href="/publishing-center" icon={Rocket} label="Проверить публикации" />
+          </div>
         </section>
 
         <section className="space-y-4">
-          <div>
-            <h2 className="text-xl font-semibold text-slate-950">Рабочие разделы</h2>
-            <p className="mt-1 text-sm text-slate-600">
-              Сейчас это навигационная карта. Новая backend-логика здесь не добавляется.
-            </p>
-          </div>
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {workspaceSections.map((section) => (
-              <WorkspaceCard key={section.title} {...section} />
-            ))}
+          <h2 className="text-xl font-semibold text-slate-950">Операционная безопасность</h2>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <SafetyCard label="Daily autopublish" value="ON" icon={SunMedium} tone="emerald" />
+            <SafetyCard label="Weekly live" value="OFF" icon={CalendarClock} tone="slate" />
+            <SafetyCard label="Manual live" value="requires approval" icon={ShieldCheck} tone="amber" />
+            <SafetyCard label="Ledger safety" value="PASS" icon={CheckCircle2} tone="emerald" />
+            <SafetyCard label="Redis analytics" value={analyticsStorage} icon={Activity} tone={analyticsStorage === "redis" ? "emerald" : "amber"} />
+            <SafetyCard label="Soft launch" value="first 5 users allowed" icon={HeartHandshake} tone="cyan" />
           </div>
         </section>
 
-        <section className="grid gap-6 lg:grid-cols-3">
-          <InfoPanel
-            id="compatibility"
-            title="Совместимость"
-            icon={HeartHandshake}
-            tone="coral"
-          >
-            Совместимость теперь готовится как интерактивный bot/Mini App сервис: fast, personal и precise режимы без публикации результатов в каналы.
-          </InfoPanel>
-          <InfoPanel
-            id="weekly"
-            title="Еженедельный гороскоп"
-            icon={ClipboardList}
-            tone="violet"
-          >
-            Еженедельный pipeline отделен от ежедневного ledger и пока используется только для dry-run проверки формата.
-          </InfoPanel>
-          <InfoPanel
-            id="reports"
-            title="Отчеты"
-            icon={BarChart3}
-            tone="cyan"
-          >
-            Daily и history отчеты остаются безопасными read-only инструментами для контроля публикаций и дублей.
-          </InfoPanel>
-          <InfoPanel
-            id="settings"
-            title="Настройки"
-            icon={Settings}
-            tone="slate"
-          >
-            Технические, dev и будущие настройки комментариев вынесены сюда, чтобы первый экран оставался понятным оператору.
-          </InfoPanel>
-          <InfoPanel
-            title="Комментарии"
-            icon={MessageCircle}
-            tone="emerald"
-          >
-            Комментарии подготовлены как отдельный этап и не смешиваются с ежедневной публикацией.
-          </InfoPanel>
-          <InfoPanel
-            title="Описания каналов"
-            icon={FileText}
-            tone="amber"
-          >
-            Описания каналов вынесены в безопасный dry-run/apply поток и не требуют действий на главном экране.
-          </InfoPanel>
+        <section className="space-y-4">
+          <h2 className="text-xl font-semibold text-slate-950">Рекомендованные шаги</h2>
+          <div className="rounded-lg border border-violet-200 bg-violet-50 p-6 shadow-sm">
+            <ol className="list-inside list-decimal space-y-2 text-sm font-medium text-violet-900">
+              <li>Проверить Mini App на телефоне</li>
+              <li>Дать первым 5 пользователям</li>
+              <li>Подключить Redis analytics</li>
+              <li>Собрать feedback</li>
+              <li>Не включать weekly/payments пока</li>
+            </ol>
+          </div>
         </section>
       </div>
     </div>
   );
 }
 
-function StatusCard({
-  label,
-  value,
-  caption,
-  icon: Icon,
-  tone,
-}: {
-  label: string;
-  value: string;
-  caption: string;
-  icon: LucideIcon;
-  tone: Tone;
-}) {
+function StatusBadge({ label, value, tone }: { label: string; value: string; tone: Tone }) {
+  const bg = tone === "emerald" ? "bg-emerald-100 text-emerald-800" : tone === "amber" ? "bg-amber-100 text-amber-800" : "bg-slate-100 text-slate-800";
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">{label}</p>
-          <p className="mt-3 text-3xl font-semibold text-slate-950">{value}</p>
-        </div>
-        <span className={`flex h-10 w-10 items-center justify-center rounded-lg border ${toneClasses[tone]}`}>
-          <Icon className="h-5 w-5" />
-        </span>
-      </div>
-      <p className="mt-3 text-sm text-slate-600">{caption}</p>
-    </div>
+    <span className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium ${bg}`}>
+      <span className="opacity-75">{label}:</span>
+      <span className="font-bold uppercase">{value}</span>
+    </span>
   );
 }
 
-function WorkspaceCard({
-  title,
-  icon: Icon,
-  status,
-  description,
-  href,
-}: {
-  title: string;
-  icon: LucideIcon;
-  status: string;
-  description: string;
-  href: string;
-}) {
+function QuickActionButton({ href, icon: Icon, label, highlight }: { href: string; icon: LucideIcon; label: string; highlight?: boolean }) {
   return (
-    <Link href={href} className="group flex min-h-48 flex-col rounded-lg border border-slate-200 bg-white p-5 shadow-sm transition hover:border-violet-200 hover:shadow-md">
-      <div className="flex items-start justify-between gap-4">
-        <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-cyan-200 bg-cyan-50 text-cyan-700">
-          <Icon className="h-5 w-5" />
-        </span>
-        <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-semibold text-slate-600">{status}</span>
-      </div>
-      <h3 className="mt-4 font-semibold text-slate-950 group-hover:text-violet-900">{title}</h3>
-      <p className="mt-2 flex-1 text-sm leading-6 text-slate-600">{description}</p>
-      <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-violet-700">
-        Открыть
-        <ChevronLeft className="h-4 w-4 rotate-180" />
+    <Link href={href} className={`group flex flex-col items-center justify-center gap-3 rounded-lg border p-4 text-center shadow-sm transition hover:shadow-md ${highlight ? "border-violet-300 bg-violet-50 hover:border-violet-400" : "border-slate-200 bg-white hover:border-violet-200"}`}>
+      <span className={`flex h-10 w-10 items-center justify-center rounded-lg border transition ${highlight ? "border-violet-200 bg-violet-100 text-violet-700 group-hover:bg-violet-200" : "border-cyan-100 bg-cyan-50 text-cyan-600 group-hover:bg-cyan-100 group-hover:text-cyan-700"}`}>
+        <Icon className="h-5 w-5" />
       </span>
+      <span className="text-sm font-semibold text-slate-950 group-hover:text-violet-900">{label}</span>
     </Link>
   );
 }
 
-function InfoPanel({
-  id,
-  title,
-  icon: Icon,
-  tone,
-  children,
-}: {
-  id?: string;
-  title: string;
-  icon: LucideIcon;
-  tone: Tone;
-  children: React.ReactNode;
-}) {
+function SafetyCard({ label, value, icon: Icon, tone }: { label: string; value: string; icon: LucideIcon; tone: Tone }) {
   return (
-    <div id={id} className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-      <div className="flex items-center gap-3">
-        <span className={`flex h-9 w-9 items-center justify-center rounded-lg border ${toneClasses[tone]}`}>
-          <Icon className="h-4 w-4" />
-        </span>
-        <h2 className="text-lg font-semibold text-slate-950">{title}</h2>
+    <div className={`flex items-center gap-4 rounded-lg border p-4 shadow-sm ${toneClasses[tone]}`}>
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/60">
+        <Icon className="h-5 w-5" />
       </div>
-      <p className="mt-3 text-sm leading-6 text-slate-600">{children}</p>
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-wider opacity-75">{label}</p>
+        <p className="mt-0.5 font-bold uppercase">{value}</p>
+      </div>
     </div>
   );
 }

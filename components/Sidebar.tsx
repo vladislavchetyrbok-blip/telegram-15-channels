@@ -49,6 +49,7 @@ const navItems = [
   { href: "/content-plan", label: "Контент-план", icon: Lightbulb },
   { href: "/content-calendar", label: "Календарь", icon: CalendarDays },
   { href: "/visuals", label: "Визуалы", icon: Palette },
+  { href: "/dashboard/networks/zodiac/analytics", label: "Аналитика", icon: Activity },
   { href: "/settings", label: "Настройки", icon: Settings },
 ];
 

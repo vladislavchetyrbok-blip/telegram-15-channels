@@ -145,3 +145,12 @@ Stop analytics activation if:
 - dashboard exposes personal data;
 - Redis endpoint requires unsupported TCP-only access;
 - checks report ledger writes or live publish calls.
+
+
+## Analytics Navigation & Dashboard QA Update
+
+* **Direct Analytics Route**: `/dashboard/networks/zodiac/analytics`
+* **Dashboard Navigation Behavior**: The overview page provides clear status indicators, quick action buttons, and operational safety cards. A prominent CTA links directly to the Analytics page. The sidebar also contains an `Аналитика` link pointing to the analytics route.
+* **Where to check analytics**: Navigate to the Overview page and use the 'Открыть аналитику' CTA, or use the sidebar link.
+* **Current Redis / noop state**: Displayed as a status badge on the Overview page. If Redis is missing env variables, a warning is prominently displayed.
+* **Soft launch dashboard checklist**: Review the 'Рекомендованные шаги' card on the Overview page for instructions.
