@@ -347,3 +347,5 @@ Current product PASS:
 Current next step:
 Manual real-phone Telegram WebView sanity pass, then first 5 testers.
 ```
+
+- [Production Dashboard Auth Activation Runbook](zodiac-production-dashboard-auth-activation.md)

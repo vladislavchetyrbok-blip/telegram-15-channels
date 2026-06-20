@@ -894,3 +894,5 @@ Status:
 * Bad signs after the first 5 users: opens with no feature usage, feature usage
   with no result events, results with no save/share, feedback spikes around
   broken flows, or any sensitive/raw value shown in the dashboard.
+
+- [Production Dashboard Auth Activation Runbook](zodiac-production-dashboard-auth-activation.md)

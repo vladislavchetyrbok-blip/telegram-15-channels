@@ -149,3 +149,5 @@ Do not enable dashboard write actions until all of these exist:
 - privacy review;
 - tests proving no raw sensitive data is stored;
 - safety check proving live Telegram actions cannot run accidentally.
+
+- [Production Dashboard Auth Activation Runbook](zodiac-production-dashboard-auth-activation.md)

@@ -120,3 +120,5 @@ npm run zodiac:dashboard:qa
 
 The auth check uses a test-only passcode generated inside the script. It must not
 print real env values or mutate env files.
+
+- [Production Dashboard Auth Activation Runbook](zodiac-production-dashboard-auth-activation.md)

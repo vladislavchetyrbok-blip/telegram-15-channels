@@ -1074,3 +1074,5 @@ Mass launch: NO
 First 5 users: GO
 20 users: CONDITIONAL
 ```
+
+- [Production Dashboard Auth Activation Runbook](zodiac-production-dashboard-auth-activation.md)
