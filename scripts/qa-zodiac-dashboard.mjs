@@ -378,9 +378,15 @@ async function main() {
     assertIncludes(pages.aphroditeMetals, "API calls mocked", "aphrodite metals safety");
     assertNotIncludes(pages.aphroditeMetals, "/api/aphrodite", "no server write API required on aphrodite metals");
 
-    assertIncludes(pages.aphroditeStudio, "Windows Studio", "aphrodite studio heading");
-    assertIncludes(pages.aphroditeStudio, "Windows Architecture Plan", "aphrodite studio architecture");
-    assertIncludes(pages.aphroditeStudio, "No desktop app created yet", "aphrodite studio safety");
+    assertIncludes(pages.aphroditeStudio, "Афродита Студия", "aphrodite studio heading");
+    assertIncludes(pages.aphroditeStudio, "Reels / Shorts", "aphrodite studio reels");
+    assertIncludes(pages.aphroditeStudio, "Content Pipeline", "aphrodite studio pipeline");
+    assertIncludes(pages.aphroditeStudio, "Каналы Зодиака", "aphrodite studio zodiac preset");
+    assertIncludes(pages.aphroditeStudio, "Валюты", "aphrodite studio currency preset");
+    assertIncludes(pages.aphroditeStudio, "Крипта", "aphrodite studio crypto preset");
+    assertIncludes(pages.aphroditeStudio, "Металлы", "aphrodite studio metals preset");
+    assertIncludes(pages.aphroditeStudio, "Mock Generation Queue", "aphrodite studio mock queue");
+    assertIncludes(pages.aphroditeStudio, "API отключены", "aphrodite studio safety");
     assertNotIncludes(pages.aphroditeStudio, "/api/aphrodite", "no server write API required on aphrodite studio");
 
     const combined = Object.values(pages).join("\n");
