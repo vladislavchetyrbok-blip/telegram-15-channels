@@ -35,6 +35,17 @@ export default function AphroditeStudioPage() {
           </ul>
         </div>
 
+        {/* Templates Link */}
+        <div className="rounded-xl border border-blue-500/20 bg-blue-500/5 p-5 flex items-center justify-between">
+          <div>
+            <h2 className="text-lg font-semibold text-blue-400">Библиотека Шаблонов</h2>
+            <p className="text-sm text-slate-400 mt-1">Доступ к статичным шаблонам сценариев, промптов, обложек и CTA.</p>
+          </div>
+          <a href="/dashboard/networks/aphrodite/studio/templates" className="rounded bg-blue-500/20 px-4 py-2 text-sm font-medium text-blue-300 hover:bg-blue-500/30 transition">
+            Открыть шаблоны
+          </a>
+        </div>
+
         {/* 1. Studio Overview & 2. Content Pipeline */}
         <div className="grid gap-6 lg:grid-cols-2">
           <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-6">

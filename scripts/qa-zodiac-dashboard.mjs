@@ -30,6 +30,7 @@ const ROUTES = {
   aphroditeCrypto: "/dashboard/networks/aphrodite/crypto",
   aphroditeMetals: "/dashboard/networks/aphrodite/metals",
   aphroditeStudio: "/dashboard/networks/aphrodite/studio",
+  aphroditeTemplates: "/dashboard/networks/aphrodite/studio/templates",
 };
 
 async function main() {
@@ -388,6 +389,16 @@ async function main() {
     assertIncludes(pages.aphroditeStudio, "Mock Generation Queue", "aphrodite studio mock queue");
     assertIncludes(pages.aphroditeStudio, "API отключены", "aphrodite studio safety");
     assertNotIncludes(pages.aphroditeStudio, "/api/aphrodite", "no server write API required on aphrodite studio");
+
+    assertIncludes(pages.aphroditeTemplates, "Шаблоны Студии Афродиты", "aphrodite templates heading");
+    assertIncludes(pages.aphroditeTemplates, "Reels / Shorts", "aphrodite templates library");
+    assertIncludes(pages.aphroditeTemplates, "Каналы Зодиака", "aphrodite templates zodiac");
+    assertIncludes(pages.aphroditeTemplates, "Валюты", "aphrodite templates currency");
+    assertIncludes(pages.aphroditeTemplates, "Крипта", "aphrodite templates crypto");
+    assertIncludes(pages.aphroditeTemplates, "Металлы", "aphrodite templates metals");
+    assertIncludes(pages.aphroditeTemplates, "Telegram Caption Templates", "aphrodite templates caption");
+    assertIncludes(pages.aphroditeTemplates, "Prompt Pack", "aphrodite templates prompt pack");
+    assertNotIncludes(pages.aphroditeTemplates, "/api/aphrodite", "no server write API required on aphrodite templates");
 
     const combined = Object.values(pages).join("\n");
     assertNoForbiddenLinks(combined);
