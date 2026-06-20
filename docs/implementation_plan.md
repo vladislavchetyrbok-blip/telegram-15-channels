@@ -1,47 +1,30 @@
-# Aphrodite Platform Implementation Plan
+# Aphrodite Package 75 Plan (Crypto Module)
 
 ## User Review Required
-
 No review required; autopilot mandate granted.
 
-## Package 71.1: Aphrodite Naming Alignment
+## Goal
+Create a read-only Crypto module dashboard for Aphrodite OS to monitor cryptocurrency market data and provide structured snapshots.
 
-### Goal
-Rename and reorganize visible labels so the product architecture is clear:
-- Афродита = whole platform
-- Зодиак / Каналы Зодиака = one module inside Афродита
-- Валюты, Крипта, Металлы = future modules inside Афродита
+## Proposed Changes
 
-### Proposed Changes
+### [NEW] `app/dashboard/networks/aphrodite/crypto/page.tsx`
+Create a dashboard for Crypto displaying mock data (BTC, ETH, SOL, TON, etc.), recent trends, and a safety status noting that it is currently disconnected from any live publishing or DB.
 
-#### [MODIFY] `components/Sidebar.tsx`
-Change the navigation structure so Aphrodite is the main visible platform.
-Use labels:
-AФРОДИТА
-* Обзор
-* Каналы
-* Календарь публикаций
-* Источники данных
-* Каналы Зодиака (formerly Zodiac OS)
-* Валюты
-* Крипта (future)
-* Металлы (future)
-* Студия Windows (future)
-Move the technical routes `/dashboard/networks/zodiac/...` under "Каналы Зодиака" in a collapsible or grouped format, or rename the group. Currently there are two groups: "Zodiac OS" and "Aphrodite OS". I will merge them into one "АФРОДИТА" structure.
+### [NEW] `docs/aphrodite-crypto.md`
+Documentation for the Crypto module design.
 
-#### [MODIFY] `app/dashboard/networks/aphrodite/page.tsx`
-Update to clearly say Aphrodite is the operator platform for all Telegram channels. Zodiac is one module inside Aphrodite.
+### [NEW] `docs/aphrodite-package-reports/package-75.md`
+Report file for Package 75.
 
-#### [MODIFY] `app/dashboard/networks/aphrodite/channels/page.tsx`
-Update text:
-- 15 paused channels = "Пауза / Старая сеть Афродиты"
-- 13 Zodiac channels = "Каналы Зодиака"
+### [MODIFY] `components/Sidebar.tsx`
+Update the `href` for the "Крипта" sidebar item to point to `/dashboard/networks/aphrodite/crypto`. Currently it might be pointing to a placeholder.
 
-#### [MODIFY] `docs/aphrodite-channel-registry.md` & `docs/aphrodite-platform-overview.md`
-Update wording to clarify Aphrodite is the main platform, Zodiac is a module.
+### [MODIFY] `scripts/qa-zodiac-dashboard.mjs`
+Add routes and assertions for `/dashboard/networks/aphrodite/crypto`.
 
-#### [MODIFY] `scripts/qa-zodiac-dashboard.mjs`
-Check for new Russian labels.
-
-#### [NEW] `docs/aphrodite-package-reports/package-71-1.md`
-Report file for Package 71.1.
+## Verification
+- `npm run lint`
+- `npx tsc --noEmit`
+- `npm run build`
+- `npm run zodiac:dashboard:qa`

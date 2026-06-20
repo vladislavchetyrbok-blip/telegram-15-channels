@@ -11,6 +11,7 @@ const aphroditeNavItems = [
   { id: "aphrodite-calendar", href: "/dashboard/networks/aphrodite/calendar", label: "Календарь", icon: CalendarDays },
   { id: "aphrodite-data-sources", href: "/dashboard/networks/aphrodite/data-sources", label: "Источники Данных", icon: Network },
   { id: "aphrodite-currency", href: "/dashboard/networks/aphrodite/currency", label: "Валюты", icon: Banknote },
+  { id: "aphrodite-crypto", href: "/dashboard/networks/aphrodite/crypto", label: "Крипта", icon: Activity },
 ];
 
 const zodiacNavItems = [
