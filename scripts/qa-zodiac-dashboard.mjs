@@ -56,7 +56,7 @@ async function main() {
     assertIncludes(pages.dashboardAuthStatus, '"sessionCookie":"local browser only"', "dashboard auth session cookie status");
 
     assertIncludes(pages.overview, "АФРОДИТА", "Aphrodite visible on dashboard shell or overview");
-    assertIncludes(pages.overview, "Zodiac Control", "overview page heading");
+    assertIncludes(pages.overview, "Каналы Зодиака", "overview page heading");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/channels"', "overview channels route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/publishing"', "overview publishing route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/analytics"', "overview analytics route link");
@@ -100,7 +100,7 @@ async function main() {
     if (hasRedisValues) assertIncludes(pages.analytics, "Аналитика: Redis активен в production", "Redis active state");
     else assertIncludes(pages.analytics, "Аналитика: локальный noop-режим", "noop state");
 
-    assertIncludes(pages.channels, "Управление каналами Zodiac", "channels page heading");
+    assertIncludes(pages.channels, "Управление модулем Зодиак внутри Афродиты.", "channels page heading");
     assertIncludes(pages.channels, "Текущая сеть 13 каналов", "channel manager table section");
     assertIncludes(pages.channels, 'data-qa="zodiac-channel-table"', "channel manager table");
     assertIncludes(pages.channels, 'data-qa="new-channel-draft-builder"', "new channel draft builder");
@@ -114,9 +114,9 @@ async function main() {
     assertIncludes(pages.channels, "compat_aries", "sign startapp link");
     assertIncludes(pages.channels, "https://t.me/aries_horoscope_daily", "Telegram channel URL");
 
-    assertIncludes(pages.content, "Контент-движок", "content page heading");
-    assertIncludes(pages.content, "Шаблоны, рубрики, CTA, превью и контроль качества постов для Telegram-сети.", "content page subtitle");
-    assertIncludes(pages.content, "Dashboard / Zodiac / Контент", "content breadcrumb");
+    assertIncludes(pages.content, "Контент Зодиака", "content page heading");
+    assertIncludes(pages.content, "Управление модулем Зодиак внутри Афродиты.", "content page subtitle");
+    assertIncludes(pages.content, "Dashboard / Афродита", "content breadcrumb");
     assertIncludes(pages.content, 'data-qa="content-engine-overview-cards"', "content overview cards");
     assertIncludes(pages.content, "Шаблоны", "content overview templates card");
     assertIncludes(pages.content, "Рубрики", "content overview rubrics card");
@@ -193,9 +193,9 @@ async function main() {
     assertNotIncludes(pages.publishing, "zodiac:publish-date:live", "live publish command on publishing page");
     assertNotIncludes(pages.publishing, "zodiac:weekly:publish", "weekly live command on publishing page");
 
-    assertIncludes(pages.feedback, "Feedback Center", "feedback page heading");
-    assertIncludes(pages.feedback, "Dashboard / Zodiac / Feedback", "feedback breadcrumb");
-    assertIncludes(pages.feedback, "Центр отзывов, багов и evidence по первым пользователям.", "feedback subtitle");
+    assertIncludes(pages.feedback, "Отзывы", "feedback page heading");
+    assertIncludes(pages.feedback, "Dashboard / Афродита", "feedback breadcrumb");
+    assertIncludes(pages.feedback, "Управление модулем Зодиак внутри Афродиты.", "feedback subtitle");
     assertIncludes(pages.feedback, "Отзывы", "feedback Russian nav label");
     assertIncludes(pages.feedback, 'data-qa="feedback-overview-cards"', "feedback overview cards");
     assertIncludes(pages.feedback, "Первые 5 пользователей", "first 5 overview card");
@@ -227,7 +227,7 @@ async function main() {
     assertIncludes(pages.feedback, 'data-qa="feedback-sanitized-export"', "sanitized export block");
     assertNotIncludes(pages.feedback, "/api/zodiac/feedback", "feedback server write API route");
 
-    assertIncludes(pages.launch, "Launch Control", "launch page heading");
+    assertIncludes(pages.launch, "Запуск Зодиака", "launch page heading");
     assertIncludes(pages.launch, "Запуск", "sidebar has Запуск");
     assertIncludes(pages.launch, 'data-qa="launch-status-cards"', "launch status cards visible");
     assertIncludes(pages.launch, "First 5 users", "first 5 users card visible");
@@ -256,8 +256,8 @@ async function main() {
     assertIncludes(pages.operations, 'href="/dashboard/networks/zodiac/security"', "operations security route link");
 
     assertIncludes(pages.security, "Безопасность платформы", "security page heading");
-    assertIncludes(pages.security, "Контроль live-действий, approvals, журнал действий и защита от случайных публикаций.", "security subtitle");
-    assertIncludes(pages.security, "Dashboard / Zodiac / Безопасность", "security breadcrumb");
+    assertIncludes(pages.security, "Управление модулем Зодиак внутри Афродиты.", "security subtitle");
+    assertIncludes(pages.security, "Dashboard / Афродита", "security breadcrumb");
     assertIncludes(pages.security, 'data-qa="admin-safety-status-cards"', "security status cards");
     assertIncludes(pages.security, "Live publish", "live publish status label");
     assertIncludes(pages.security, "запрещён", "live publish blocked value");

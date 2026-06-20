@@ -72,36 +72,66 @@ export function Sidebar() {
 
         {/* Zodiac Module Group */}
         <div className="mt-8 border-t border-slate-800/60 pt-6">
-          <div className="flex items-center gap-3 mb-4 px-1">
+          <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">Модули</p>
+          
+          <div className="space-y-4">
+            {/* Zodiac */}
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-200">Модуль Зодиак</p>
+              <div className="flex items-center gap-2 mb-2 px-1">
+                <span className="text-xs text-slate-500">▾</span>
+                <p className="text-xs font-semibold uppercase tracking-wider text-cyan-200">Зодиак</p>
+              </div>
+              <nav className="grid grid-cols-2 gap-1 lg:grid-cols-1 pl-4 border-l border-slate-800/60 ml-2">
+                {zodiacNavItems.map((item) => {
+                  const Icon = item.icon;
+                  const baseHref = item.href.split("#")[0];
+                  const active =
+                    pathname === baseHref ||
+                    (baseHref !== "/dashboard/networks/zodiac" && pathname.startsWith(baseHref)) ||
+                    (item.id === "overview" && pathname === "/dashboard");
+
+                  return (
+                    <Link
+                      key={item.id}
+                      href={item.href}
+                      prefetch={false}
+                      className={cn(
+                        "flex h-9 items-center gap-3 rounded-md px-3 text-sm font-medium text-slate-400 transition hover:bg-slate-800/60 hover:text-white",
+                        active && "text-cyan-200 bg-cyan-900/10",
+                      )}
+                    >
+                      <Icon className="h-3.5 w-3.5 shrink-0" />
+                      <span className="truncate">{item.label}</span>
+                    </Link>
+                  );
+                })}
+              </nav>
+            </div>
+
+            {/* Currency */}
+            <div>
+              <div className="flex items-center gap-2 px-1">
+                <span className="text-xs text-slate-500">▸</span>
+                <Link href="/dashboard/networks/aphrodite/currency" className={cn("text-xs font-semibold uppercase tracking-wider transition hover:text-white", pathname.includes("/currency") ? "text-green-300" : "text-green-200/60")}>Валюты</Link>
+              </div>
+            </div>
+
+            {/* Crypto */}
+            <div>
+              <div className="flex items-center gap-2 px-1">
+                <span className="text-xs text-slate-500">▸</span>
+                <Link href="/dashboard/networks/aphrodite/crypto" className={cn("text-xs font-semibold uppercase tracking-wider transition hover:text-white", pathname.includes("/crypto") ? "text-purple-300" : "text-purple-200/60")}>Крипта</Link>
+              </div>
+            </div>
+
+            {/* Metals */}
+            <div>
+              <div className="flex items-center gap-2 px-1">
+                <span className="text-xs text-slate-500">▸</span>
+                <Link href="/dashboard/networks/aphrodite/metals" className={cn("text-xs font-semibold uppercase tracking-wider transition hover:text-white", pathname.includes("/metals") ? "text-amber-300" : "text-amber-200/60")}>Металлы</Link>
+              </div>
             </div>
           </div>
-          <nav className="grid grid-cols-2 gap-2 lg:grid-cols-1">
-            {zodiacNavItems.map((item) => {
-              const Icon = item.icon;
-              const baseHref = item.href.split("#")[0];
-              const active =
-                pathname === baseHref ||
-                (baseHref !== "/dashboard/networks/zodiac" && pathname.startsWith(baseHref)) ||
-                (item.id === "overview" && pathname === "/dashboard");
-
-              return (
-                <Link
-                  key={item.id}
-                  href={item.href}
-                  prefetch={false}
-                  className={cn(
-                    "flex h-11 items-center gap-3 rounded-md px-3 text-sm font-medium text-slate-400 transition hover:bg-slate-800/60 hover:text-white",
-                    active && "border border-cyan-300/30 bg-cyan-300/10 text-cyan-100",
-                  )}
-                >
-                  <Icon className="h-4 w-4 shrink-0" />
-                  <span className="truncate">{item.label}</span>
-                </Link>
-              );
-            })}
-          </nav>
         </div>
 
         <div className="mt-8 hidden space-y-4 lg:block">

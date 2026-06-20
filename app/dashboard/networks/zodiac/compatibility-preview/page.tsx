@@ -1,3 +1,5 @@
+import { Sparkles } from "lucide-react";
+import { AphroditePageHeader } from "@/components/AphroditePageHeader";
 import { ZodiacCompatibilityMiniApp } from "@/components/ZodiacCompatibilityMiniApp";
 import { requireDashboardPageAccess } from "@/lib/zodiac-dashboard-auth";
 

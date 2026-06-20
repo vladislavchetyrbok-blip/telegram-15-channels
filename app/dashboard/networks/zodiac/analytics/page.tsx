@@ -1,3 +1,4 @@
+import { AphroditePageHeader } from "@/components/AphroditePageHeader";
 import {
   BarChart3,
   CalendarDays,
@@ -23,7 +24,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
-import { ZodiacPlatformNav } from "@/components/zodiac-platform/ZodiacPlatformNav";
+
 import { requireDashboardPageAccess } from "@/lib/zodiac-dashboard-auth";
 import { getZodiacMiniAppAnalyticsDashboard, type AnalyticsRankItem } from "@/lib/zodiac-mini-app-analytics-store";
 
@@ -36,34 +37,16 @@ export default async function ZodiacMiniAppAnalyticsPage() {
   const productionAnalyticsLabel = analytics.storageMode === "redis" ? "Аналитика: Redis активен в production" : "Аналитика: локальный noop-режим";
 
   return (
-    <div className="-mx-4 -my-6 min-h-screen overflow-x-hidden bg-[#f8fafc] px-4 py-6 text-slate-950 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+    <div className="-mx-4 -my-6 min-h-screen overflow-x-hidden bg-[#070b14] px-4 py-6 text-slate-100 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
       <div className="mx-auto max-w-7xl space-y-6">
-        <header className="space-y-5">
-          <Link href="/dashboard/networks/zodiac" className="inline-flex items-center gap-2 text-sm font-semibold text-violet-700 transition hover:text-violet-900">
-            <ChevronLeft className="h-4 w-4" />
-            Назад к Zodiac
-          </Link>
-          <div className="relative overflow-hidden rounded-lg border border-violet-100 bg-white p-6 shadow-sm sm:p-8">
-            <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-violet-400 via-cyan-300 to-amber-300" />
-            <p className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-violet-700">
-              <BarChart3 className="h-3.5 w-3.5" />
-              внутренняя аналитика
-            </p>
-            <div className="mt-5 grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
-              <div>
-                <h1 className="break-words text-2xl font-semibold tracking-tight text-slate-950 sm:text-4xl">Аналитика Mini App</h1>
-                <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-600">
-                  Сводка по разделам, знакам, режимам совместимости и воронке Mini App без хранения имён, дат рождения, времени, городов или Telegram initData.
-                </p>
-              </div>
-              <span className="inline-flex w-fit items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-800">
-                <ShieldCheck className="h-4 w-4" />
-                без персональных данных
-              </span>
-            </div>
-          </div>
-          <ZodiacPlatformNav current="analytics" />
-        </header>
+                <AphroditePageHeader
+          title="Аналитика Mini App"
+          description="Управление модулем Зодиак внутри Афродиты."
+          badgeText="Зодиак"
+          icon={Sparkles}
+          safetyLocked={true}
+          safetyMessage="Read-only mode"
+        />
 
         {analytics.warning ? (
           <section className="rounded-lg border border-amber-200 bg-amber-50 p-5 text-amber-950 shadow-sm">
@@ -71,7 +54,7 @@ export default async function ZodiacMiniAppAnalyticsPage() {
             <p className="mt-2 text-sm leading-6">
               Добавьте переменные окружения для Upstash Redis REST. До этого API работает в noop-режиме, а Mini App не ломается.
             </p>
-            <div className="mt-4 rounded-md border border-amber-200 bg-white p-4 text-sm leading-6 text-amber-950">
+            <div className="mt-4 rounded-md border border-amber-200 bg-slate-900/50 p-4 text-sm leading-6 text-amber-950">
               <p className="font-semibold">Analytics storage: noop</p>
               <p>Redis env not configured</p>
               <p>Events are sanitized but not persisted</p>
@@ -79,7 +62,7 @@ export default async function ZodiacMiniAppAnalyticsPage() {
             </div>
             <div className="mt-4 grid gap-2 sm:grid-cols-2">
               {analytics.requiredEnv.map((envName) => (
-                <code key={envName} className="rounded-md border border-amber-200 bg-white px-3 py-2 text-sm font-semibold text-amber-900">
+                <code key={envName} className="rounded-md border border-amber-200 bg-slate-900/50 px-3 py-2 text-sm font-semibold text-amber-900">
                   {envName}
                 </code>
               ))}
@@ -87,13 +70,13 @@ export default async function ZodiacMiniAppAnalyticsPage() {
           </section>
         ) : null}
 
-        <section className={`rounded-lg border p-5 shadow-sm ${analytics.storageMode === "redis" ? "border-emerald-200 bg-emerald-50 text-emerald-950" : "border-amber-200 bg-amber-50 text-amber-950"}`}>
+        <section className={`rounded-lg border p-5 shadow-sm ${analytics.storageMode === "redis" ? "border-emerald-900/30 bg-emerald-900/10 text-emerald-400" : "border-amber-200 bg-amber-50 text-amber-950"}`}>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h2 className="text-lg font-semibold">{productionAnalyticsLabel}</h2>
               <p className="mt-1 text-sm leading-6">Shows aggregate counters only. Redis URL and token values are not rendered.</p>
             </div>
-            <span className="inline-flex w-fit items-center gap-2 rounded-md border border-white/60 bg-white/70 px-3 py-2 text-sm font-semibold">
+            <span className="inline-flex w-fit items-center gap-2 rounded-md border border-white/60 bg-slate-900/50/70 px-3 py-2 text-sm font-semibold">
               {analytics.storageMode === "redis" ? <CheckCircle2 className="h-4 w-4" /> : <XCircle className="h-4 w-4" />}
               {analytics.storageMode}
             </span>
@@ -159,11 +142,11 @@ function SoftLaunchFunnelCard({ items }: { items: AnalyticsRankItem[] }) {
   const max = Math.max(...items.map((item) => item.value), 1);
 
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-5 shadow-sm">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h2 className="text-lg font-semibold text-slate-950">First-users funnel</h2>
-          <p className="mt-2 text-sm leading-6 text-slate-500">Open Mini App -&gt; Open Feature -&gt; Get Result -&gt; Save/Share -&gt; Feedback.</p>
+          <h2 className="text-lg font-semibold text-slate-100">First-users funnel</h2>
+          <p className="mt-2 text-sm leading-6 text-slate-400">Open Mini App -&gt; Open Feature -&gt; Get Result -&gt; Save/Share -&gt; Feedback.</p>
         </div>
         <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border ${toneClasses.violet}`}>
           <Target className="h-5 w-5" />
@@ -176,7 +159,7 @@ function SoftLaunchFunnelCard({ items }: { items: AnalyticsRankItem[] }) {
               <span className="min-w-0 break-words font-semibold text-slate-700">{index + 1}. {item.label}</span>
               <span className="font-semibold text-violet-700">{item.value}</span>
             </div>
-            <div className="h-2 rounded-full bg-white">
+            <div className="h-2 rounded-full bg-slate-900/50">
               <div className="h-2 rounded-full bg-violet-500" style={{ width: `${Math.max(6, Math.round((item.value / max) * 100))}%` }} />
             </div>
           </div>
@@ -188,11 +171,11 @@ function SoftLaunchFunnelCard({ items }: { items: AnalyticsRankItem[] }) {
 
 function FirstUsersObservationCard() {
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-5 shadow-sm">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h2 className="text-lg font-semibold text-slate-950">First users observation</h2>
-          <p className="mt-2 text-sm leading-6 text-slate-500">What to review after the first 5 trusted users.</p>
+          <h2 className="text-lg font-semibold text-slate-100">First users observation</h2>
+          <p className="mt-2 text-sm leading-6 text-slate-400">What to review after the first 5 trusted users.</p>
         </div>
         <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border ${toneClasses.emerald}`}>
           <ListChecks className="h-5 w-5" />
@@ -200,7 +183,7 @@ function FirstUsersObservationCard() {
       </div>
       <ul className="mt-5 space-y-2">
         {firstUsersObservationItems.map((item) => (
-          <li key={item} className="flex items-start gap-2 text-sm font-semibold leading-5 text-slate-600">
+          <li key={item} className="flex items-start gap-2 text-sm font-semibold leading-5 text-slate-400">
             <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
             <span className="min-w-0 break-words">{item}</span>
           </li>
@@ -216,11 +199,11 @@ function FirstUsersObservationCard() {
 
 function DocsPathCard() {
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-5 shadow-sm">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h2 className="text-lg font-semibold text-slate-950">Soft launch docs</h2>
-          <p className="mt-2 text-sm leading-6 text-slate-500">Document paths only; no dead dashboard buttons.</p>
+          <h2 className="text-lg font-semibold text-slate-100">Soft launch docs</h2>
+          <p className="mt-2 text-sm leading-6 text-slate-400">Document paths only; no dead dashboard buttons.</p>
         </div>
         <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border ${toneClasses.cyan}`}>
           <FileText className="h-5 w-5" />
@@ -246,11 +229,11 @@ function ReadinessStatusCard({ analyticsMode, storageConfigured }: { analyticsMo
   ];
 
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-5 shadow-sm">
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <h2 className="text-lg font-semibold text-slate-950">Analytics readiness</h2>
-          <p className="mt-2 text-sm leading-6 text-slate-500">Production activation status without exposing secrets.</p>
+          <h2 className="text-lg font-semibold text-slate-100">Analytics readiness</h2>
+          <p className="mt-2 text-sm leading-6 text-slate-400">Production activation status without exposing secrets.</p>
         </div>
         <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-violet-200 bg-violet-50 text-violet-700">
           <Database className="h-5 w-5" />
@@ -259,7 +242,7 @@ function ReadinessStatusCard({ analyticsMode, storageConfigured }: { analyticsMo
       <div className="mt-5 space-y-3">
         {rows.map((row) => (
           <div key={row.label} className="flex items-center justify-between gap-3 rounded-md border border-slate-100 bg-slate-50 px-3 py-2">
-            <span className="min-w-0 break-words text-sm font-semibold text-slate-600">{row.label}</span>
+            <span className="min-w-0 break-words text-sm font-semibold text-slate-400">{row.label}</span>
             <span className={`inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold ${row.ok ? "text-emerald-700" : "text-amber-700"}`}>
               {row.ok ? <CheckCircle2 className="h-4 w-4" /> : <XCircle className="h-4 w-4" />}
               {row.value}
@@ -273,11 +256,11 @@ function ReadinessStatusCard({ analyticsMode, storageConfigured }: { analyticsMo
 
 function SetupChecklistCard({ requiredEnv, configured }: { requiredEnv: string[]; configured: boolean }) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-5 shadow-sm">
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <h2 className="text-lg font-semibold text-slate-950">Setup checklist</h2>
-          <p className="mt-2 text-sm leading-6 text-slate-500">{configured ? "Redis REST storage is configured." : "Add both env vars to activate storage."}</p>
+          <h2 className="text-lg font-semibold text-slate-100">Setup checklist</h2>
+          <p className="mt-2 text-sm leading-6 text-slate-400">{configured ? "Redis REST storage is configured." : "Add both env vars to activate storage."}</p>
         </div>
         <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-amber-200 bg-amber-50 text-amber-700">
           <ListChecks className="h-5 w-5" />
@@ -299,16 +282,16 @@ function SetupChecklistCard({ requiredEnv, configured }: { requiredEnv: string[]
 
 function ReadinessListCard({ title, items, icon: Icon, tone }: { title: string; items: string[]; icon: LucideIcon; tone: Tone }) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-5 shadow-sm">
       <div className="flex items-start justify-between gap-4">
-        <h2 className="text-lg font-semibold text-slate-950">{title}</h2>
+        <h2 className="text-lg font-semibold text-slate-100">{title}</h2>
         <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border ${toneClasses[tone]}`}>
           <Icon className="h-5 w-5" />
         </span>
       </div>
       <ul className="mt-5 space-y-2">
         {items.map((item) => (
-          <li key={item} className="flex items-start gap-2 text-sm font-semibold leading-5 text-slate-600">
+          <li key={item} className="flex items-start gap-2 text-sm font-semibold leading-5 text-slate-400">
             <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
             <span className="min-w-0 break-words">{item}</span>
           </li>
@@ -332,11 +315,11 @@ function MetricCard({
   tone: Tone;
 }) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-5 shadow-sm">
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <p className="text-sm font-semibold text-slate-600">{title}</p>
-          <p className="mt-3 text-3xl font-semibold text-slate-950">{value}</p>
+          <p className="text-sm font-semibold text-slate-400">{title}</p>
+          <p className="mt-3 text-3xl font-semibold text-slate-100">{value}</p>
         </div>
         <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border ${toneClasses[tone]}`}>
           <Icon className="h-5 w-5" />
@@ -351,10 +334,10 @@ function RankPanel({ title, items, emptyText }: { title: string; items: Analytic
   const max = Math.max(...items.map((item) => item.value), 1);
 
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-      <h2 className="text-lg font-semibold text-slate-950">{title}</h2>
+    <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-5 shadow-sm">
+      <h2 className="text-lg font-semibold text-slate-100">{title}</h2>
       <div className="mt-4 space-y-3">
-        {items.length === 0 ? <p className="text-sm text-slate-500">{emptyText}</p> : null}
+        {items.length === 0 ? <p className="text-sm text-slate-400">{emptyText}</p> : null}
         {items.map((item) => (
           <div key={item.label} className="space-y-1.5">
             <div className="flex items-center justify-between gap-3 text-sm">
@@ -376,10 +359,10 @@ type Tone = "violet" | "cyan" | "emerald" | "amber" | "rose" | "slate";
 const toneClasses: Record<Tone, string> = {
   violet: "border-violet-200 bg-violet-50 text-violet-700",
   cyan: "border-cyan-200 bg-cyan-50 text-cyan-700",
-  emerald: "border-emerald-200 bg-emerald-50 text-emerald-700",
+  emerald: "border-emerald-900/30 bg-emerald-900/10 text-emerald-700",
   amber: "border-amber-200 bg-amber-50 text-amber-700",
-  rose: "border-rose-200 bg-rose-50 text-rose-700",
-  slate: "border-slate-200 bg-slate-50 text-slate-700",
+  rose: "border-rose-900/30 bg-rose-900/10 text-rose-700",
+  slate: "border-slate-800 bg-slate-50 text-slate-700",
 };
 
 const trackedAnalyticsItems = [

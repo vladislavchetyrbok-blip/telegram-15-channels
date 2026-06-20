@@ -1,8 +1,9 @@
-import { AlertTriangle, CheckCircle2, ChevronLeft, ClipboardList, DatabaseZap, LockKeyhole, RadioTower, ShieldCheck, StopCircle, UsersRound, XCircle } from "lucide-react";
+import { AphroditePageHeader } from "@/components/AphroditePageHeader";
+import { AlertTriangle, CheckCircle2, ChevronLeft, ClipboardList, DatabaseZap, LockKeyhole, RadioTower, ShieldCheck, StopCircle, UsersRound, XCircle , Sparkles } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { AdminSafetyWorkspace } from "@/components/zodiac-platform/AdminSafetyWorkspace";
-import { ZodiacPlatformNav } from "@/components/zodiac-platform/ZodiacPlatformNav";
+
 import { requireDashboardPageAccess } from "@/lib/zodiac-dashboard-auth";
 
 export const dynamic = "force-dynamic";
@@ -48,34 +49,16 @@ export default function ZodiacSecurityPage() {
   ] as const;
 
   return (
-    <div className="-mx-4 -my-6 min-h-screen overflow-x-hidden bg-[#f8fafc] px-4 py-6 text-slate-950 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+    <div className="-mx-4 -my-6 min-h-screen overflow-x-hidden bg-[#070b14] px-4 py-6 text-slate-100 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
       <div className="mx-auto max-w-7xl space-y-6">
-        <header className="space-y-5">
-          <Link href="/dashboard/networks/zodiac" className="inline-flex items-center gap-2 text-sm font-semibold text-violet-700 transition hover:text-violet-900">
-            <ChevronLeft className="h-4 w-4" />
-            Dashboard / Zodiac / Безопасность
-          </Link>
-          <div className="relative overflow-hidden rounded-lg border border-violet-100 bg-white p-6 shadow-sm sm:p-8">
-            <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-violet-400 via-cyan-300 to-amber-300" />
-            <p className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-violet-700">
-              <LockKeyhole className="h-3.5 w-3.5" />
-              Безопасность
-            </p>
-            <div className="mt-5 grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
-              <div>
-                <h1 className="break-words text-2xl font-semibold tracking-tight text-slate-950 sm:text-4xl">Безопасность платформы</h1>
-                <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-600">
-                  Контроль live-действий, approvals, журнал действий и защита от случайных публикаций.
-                </p>
-              </div>
-              <span className="inline-flex w-fit items-center gap-2 rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-sm font-semibold text-rose-800">
-                <AlertTriangle className="h-4 w-4" />
-                accidental live action risk: low
-              </span>
-            </div>
-          </div>
-          <ZodiacPlatformNav current="security" />
-        </header>
+                <AphroditePageHeader
+          title="Безопасность платформы"
+          description="Управление модулем Зодиак внутри Афродиты."
+          badgeText="Зодиак"
+          icon={Sparkles}
+          safetyLocked={true}
+          safetyMessage="Read-only mode"
+        />
 
         <section data-qa="admin-safety-status-cards" className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {safetyStatuses.map((status) => (
@@ -83,11 +66,11 @@ export default function ZodiacSecurityPage() {
           ))}
         </section>
 
-        <section data-qa="dashboard-auth-status-cards" className="space-y-4 rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+        <section data-qa="dashboard-auth-status-cards" className="space-y-4 rounded-lg border border-slate-800 bg-slate-900/50 p-5 shadow-sm">
           <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-start">
             <div>
-              <h2 className="text-xl font-semibold text-slate-950">Dashboard Auth</h2>
-              <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+              <h2 className="text-xl font-semibold text-slate-100">Dashboard Auth</h2>
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-400">
                 Env-controlled passcode gate РґР»СЏ owner dashboard. Р­С‚Рѕ РЅРµ role system Рё РЅРµ server write API РґР»СЏ РїР»Р°С‚С„РѕСЂРјРµРЅРЅС‹С… РґР°РЅРЅС‹С….
               </p>
             </div>
@@ -103,22 +86,22 @@ export default function ZodiacSecurityPage() {
             ))}
           </div>
 
-          <div className={`rounded-lg border p-4 text-sm font-semibold leading-6 ${authStatus.authEnabled ? "border-emerald-200 bg-emerald-50 text-emerald-900" : "border-amber-200 bg-amber-50 text-amber-950"}`}>
+          <div className={`rounded-lg border p-4 text-sm font-semibold leading-6 ${authStatus.authEnabled ? "border-emerald-900/30 bg-emerald-900/10 text-emerald-900" : "border-amber-200 bg-amber-50 text-amber-950"}`}>
             {authStatus.authEnabled
               ? "Dashboard protected by passcode session."
               : "Auth disabled: acceptable for local development, not recommended before wider production access."}
           </div>
         </section>
 
-        <section data-qa="approval-matrix" className="space-y-4 rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+        <section data-qa="approval-matrix" className="space-y-4 rounded-lg border border-slate-800 bg-slate-900/50 p-5 shadow-sm">
           <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-start">
             <div>
-              <h2 className="text-xl font-semibold text-slate-950">Approval Matrix</h2>
-              <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+              <h2 className="text-xl font-semibold text-slate-100">Approval Matrix</h2>
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-400">
                 Матрица показывает, какие действия допустимы в dashboard. Live-действия остаются без кнопок и требуют отдельного owner approval.
               </p>
             </div>
-            <span className="inline-flex w-fit items-center gap-2 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-800">
+            <span className="inline-flex w-fit items-center gap-2 rounded-md border border-emerald-900/30 bg-emerald-900/10 px-3 py-2 text-sm font-semibold text-emerald-800">
               <ShieldCheck className="h-4 w-4" />
               no server write API
             </span>
@@ -127,7 +110,7 @@ export default function ZodiacSecurityPage() {
           <div className="overflow-x-auto">
             <table className="min-w-[860px] w-full border-collapse text-left text-sm">
               <thead>
-                <tr className="border-b border-slate-200 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+                <tr className="border-b border-slate-800 text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">
                   <th className="px-3 py-3">Action</th>
                   <th className="px-3 py-3">Status</th>
                   <th className="px-3 py-3">Approval</th>
@@ -137,7 +120,7 @@ export default function ZodiacSecurityPage() {
               <tbody>
                 {approvalRows.map((row) => (
                   <tr key={row.action} className="border-b border-slate-100 last:border-0">
-                    <td className="px-3 py-4 font-semibold text-slate-950">{row.action}</td>
+                    <td className="px-3 py-4 font-semibold text-slate-100">{row.action}</td>
                     <td className="px-3 py-4 text-slate-700">{row.status}</td>
                     <td className="px-3 py-4 text-slate-700">{row.approval}</td>
                     <td className="px-3 py-4 text-slate-700">{row.ui}</td>
@@ -150,11 +133,11 @@ export default function ZodiacSecurityPage() {
 
         <AdminSafetyWorkspace />
 
-        <section data-qa="roles-auth-readiness" className="space-y-4 rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+        <section data-qa="roles-auth-readiness" className="space-y-4 rounded-lg border border-slate-800 bg-slate-900/50 p-5 shadow-sm">
           <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-start">
             <div>
-              <h2 className="text-xl font-semibold text-slate-950">Будущие роли</h2>
-              <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+              <h2 className="text-xl font-semibold text-slate-100">Будущие роли</h2>
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-400">
                 Роли описывают будущую authenticated admin backend модель. Сейчас они только readiness-контракт, без write-действий.
               </p>
             </div>
@@ -166,9 +149,9 @@ export default function ZodiacSecurityPage() {
 
           <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
             {roleRows.map((row) => (
-              <div key={row.role} className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-                <p className="text-lg font-semibold text-slate-950">{row.role}</p>
-                <p className="mt-2 text-sm leading-6 text-slate-600">{row.scope}</p>
+              <div key={row.role} className="rounded-lg border border-slate-800 bg-slate-50 p-4">
+                <p className="text-lg font-semibold text-slate-100">{row.role}</p>
+                <p className="mt-2 text-sm leading-6 text-slate-400">{row.scope}</p>
               </div>
             ))}
           </div>
@@ -192,12 +175,12 @@ export default function ZodiacSecurityPage() {
 
 function StatusCard({ label, value, icon: Icon, tone }: { label: string; value: string; icon: LucideIcon; tone: Tone }) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+    <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-4 shadow-sm">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">{label}</p>
-          <p className="mt-3 text-xl font-semibold text-slate-950">{value}</p>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">{label}</p>
+          <p className="mt-3 text-xl font-semibold text-slate-100">{value}</p>
+          <p className="mt-1 text-sm text-slate-400">
             {label}: {value}
           </p>
         </div>
@@ -211,12 +194,12 @@ function StatusCard({ label, value, icon: Icon, tone }: { label: string; value: 
 
 function SafetyLink({ href, title, caption, icon: Icon }: { href: string; title: string; caption: string; icon: LucideIcon }) {
   return (
-    <Link href={href} prefetch={false} className="group rounded-lg border border-slate-200 bg-white p-4 shadow-sm transition hover:border-violet-200 hover:shadow-md">
+    <Link href={href} prefetch={false} className="group rounded-lg border border-slate-800 bg-slate-900/50 p-4 shadow-sm transition hover:border-violet-200 hover:shadow-md">
       <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-violet-200 bg-violet-50 text-violet-700">
         <Icon className="h-5 w-5" />
       </span>
-      <h3 className="mt-3 font-semibold text-slate-950 group-hover:text-violet-900">{title}</h3>
-      <p className="mt-1 text-sm leading-5 text-slate-500">{caption}</p>
+      <h3 className="mt-3 font-semibold text-slate-100 group-hover:text-violet-900">{title}</h3>
+      <p className="mt-1 text-sm leading-5 text-slate-400">{caption}</p>
     </Link>
   );
 }
@@ -224,9 +207,9 @@ function SafetyLink({ href, title, caption, icon: Icon }: { href: string; title:
 type Tone = "emerald" | "cyan" | "amber" | "rose" | "slate";
 
 const toneClasses: Record<Tone, string> = {
-  emerald: "border-emerald-200 bg-emerald-50 text-emerald-700",
+  emerald: "border-emerald-900/30 bg-emerald-900/10 text-emerald-700",
   cyan: "border-cyan-200 bg-cyan-50 text-cyan-700",
   amber: "border-amber-200 bg-amber-50 text-amber-700",
-  rose: "border-rose-200 bg-rose-50 text-rose-700",
-  slate: "border-slate-200 bg-slate-50 text-slate-700",
+  rose: "border-rose-900/30 bg-rose-900/10 text-rose-700",
+  slate: "border-slate-800 bg-slate-50 text-slate-700",
 };

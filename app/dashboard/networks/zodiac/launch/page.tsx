@@ -1,17 +1,18 @@
 "use client";
 
+import { AphroditePageHeader } from "@/components/AphroditePageHeader";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Play, Activity, Shield, Users, Target, Phone, BarChart2, MessageSquare, Edit3, Settings } from "lucide-react";
+import { Play, Activity, Shield, Users, Target, Phone, BarChart2, MessageSquare, Edit3, Settings , Sparkles } from "lucide-react";
 
 type Tone = "emerald" | "amber" | "rose" | "slate";
 
 function StatusBadge({ label, value, tone }: { label: string; value: string; tone: Tone }) {
   const bg = {
-    emerald: "bg-emerald-50 border-emerald-200 text-emerald-800",
+    emerald: "bg-emerald-900/10 border-emerald-900/30 text-emerald-800",
     amber: "bg-amber-50 border-amber-200 text-amber-800",
-    rose: "bg-rose-50 border-rose-200 text-rose-800",
-    slate: "bg-slate-50 border-slate-200 text-slate-800",
+    rose: "bg-rose-900/10 border-rose-900/30 text-rose-800",
+    slate: "bg-slate-50 border-slate-800 text-slate-800",
   }[tone];
 
   return (
@@ -25,10 +26,10 @@ function StatusBadge({ label, value, tone }: { label: string; value: string; ton
 function LaunchChecklistGroup({ title, items }: { title: string; items: { label: string; checked: boolean }[] }) {
   return (
     <div className="space-y-3">
-      <h3 className="text-sm font-semibold text-slate-950">{title}</h3>
+      <h3 className="text-sm font-semibold text-slate-100">{title}</h3>
       <div className="space-y-2">
         {items.map((item, i) => (
-          <label key={i} className="flex items-center gap-3 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700">
+          <label key={i} className="flex items-center gap-3 rounded-md border border-slate-800 bg-slate-50 px-3 py-2 text-sm text-slate-700">
             <input type="checkbox" readOnly checked={item.checked} className="h-4 w-4 rounded border-slate-300 text-violet-600" />
             <span>{item.label}</span>
           </label>
@@ -55,17 +56,14 @@ export default function ZodiacLaunchControlPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 pb-20">
-      <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-          <nav className="flex text-sm font-medium text-slate-500">
-            <Link href="/dashboard" className="hover:text-slate-900">Dashboard</Link>
-            <span className="mx-2">/</span>
-            <Link href="/dashboard/networks/zodiac" className="hover:text-slate-900">Каналы Зодиака</Link>
-            <span className="mx-2">/</span>
-            <span className="text-slate-900">Запуск</span>
-          </nav>
-        </div>
-      </header>
+              <AphroditePageHeader
+          title="Запуск Зодиака"
+          description="Управление модулем Зодиак внутри Афродиты."
+          badgeText="Зодиак"
+          icon={Sparkles}
+          safetyLocked={true}
+          safetyMessage="Read-only mode"
+        />
 
       <main className="mx-auto mt-8 max-w-7xl space-y-8 px-4 sm:px-6 lg:px-8">
         <div>
@@ -73,9 +71,9 @@ export default function ZodiacLaunchControlPage() {
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-violet-100 text-violet-700">
               <Play className="h-5 w-5" />
             </div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-950">Launch Control</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-slate-100">Launch Control</h1>
           </div>
-          <p className="mt-2 text-sm leading-6 text-slate-600">
+          <p className="mt-2 text-sm leading-6 text-slate-400">
             Контроль готовности модуля Зодиак к первым пользователям, 20 пользователям и публичному запуску.
           </p>
         </div>
@@ -97,8 +95,8 @@ export default function ZodiacLaunchControlPage() {
           <StatusBadge label="Exact astro" value="exact_unavailable" tone="slate" />
         </section>
 
-        <section data-qa="launch-checklist" className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-          <h2 className="mb-4 text-xl font-semibold text-slate-950">Launch Checklist (LocalStorage)</h2>
+        <section data-qa="launch-checklist" className="rounded-lg border border-slate-800 bg-slate-900/50 p-5 shadow-sm">
+          <h2 className="mb-4 text-xl font-semibold text-slate-100">Launch Checklist (LocalStorage)</h2>
           <div className="grid gap-6 md:grid-cols-3">
             <LaunchChecklistGroup title="Before first 5" items={[
               { label: "dashboard opens", checked: true },
@@ -137,10 +135,10 @@ export default function ZodiacLaunchControlPage() {
           </div>
         </section>
 
-        <section data-qa="launch-decision-matrix" className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm overflow-x-auto">
-          <h2 className="mb-4 text-xl font-semibold text-slate-950">Decision Matrix</h2>
-          <table className="w-full text-left text-sm text-slate-600">
-            <thead className="bg-slate-50 text-xs uppercase text-slate-500">
+        <section data-qa="launch-decision-matrix" className="rounded-lg border border-slate-800 bg-slate-900/50 p-5 shadow-sm overflow-x-auto">
+          <h2 className="mb-4 text-xl font-semibold text-slate-100">Decision Matrix</h2>
+          <table className="w-full text-left text-sm text-slate-400">
+            <thead className="bg-slate-50 text-xs uppercase text-slate-400">
               <tr>
                 <th className="px-4 py-3 font-medium">Stage</th>
                 <th className="px-4 py-3 font-medium">Status</th>
@@ -148,7 +146,7 @@ export default function ZodiacLaunchControlPage() {
                 <th className="px-4 py-3 font-medium">Next action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-200 bg-white">
+            <tbody className="divide-y divide-slate-200 bg-slate-900/50">
               <tr>
                 <td className="px-4 py-3 font-medium text-slate-900">Internal QA</td>
                 <td className="px-4 py-3"><span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-800">DONE</span></td>
@@ -190,59 +188,59 @@ export default function ZodiacLaunchControlPage() {
         </section>
 
         <section data-qa="launch-cross-links" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <Link href="/dashboard/networks/zodiac/analytics" className="group rounded-lg border border-slate-200 bg-white p-5 shadow-sm transition-all hover:border-violet-300 hover:shadow-md">
+          <Link href="/dashboard/networks/zodiac/analytics" className="group rounded-lg border border-slate-800 bg-slate-900/50 p-5 shadow-sm transition-all hover:border-violet-300 hover:shadow-md">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-violet-100 text-violet-700 transition-colors group-hover:bg-violet-600 group-hover:text-white">
                 <BarChart2 className="h-5 w-5" />
               </div>
               <div className="font-medium text-slate-900">Zodiac Pulse</div>
             </div>
-            <p className="mt-2 text-sm text-slate-600">Analytics funnel and user journey</p>
+            <p className="mt-2 text-sm text-slate-400">Analytics funnel and user journey</p>
           </Link>
-          <Link href="/dashboard/networks/zodiac/feedback" className="group rounded-lg border border-slate-200 bg-white p-5 shadow-sm transition-all hover:border-violet-300 hover:shadow-md">
+          <Link href="/dashboard/networks/zodiac/feedback" className="group rounded-lg border border-slate-800 bg-slate-900/50 p-5 shadow-sm transition-all hover:border-violet-300 hover:shadow-md">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-violet-100 text-violet-700 transition-colors group-hover:bg-violet-600 group-hover:text-white">
                 <MessageSquare className="h-5 w-5" />
               </div>
               <div className="font-medium text-slate-900">Zodiac Voice</div>
             </div>
-            <p className="mt-2 text-sm text-slate-600">Feedback and Real Phone QA section</p>
+            <p className="mt-2 text-sm text-slate-400">Feedback and Real Phone QA section</p>
           </Link>
-          <Link href="/dashboard/networks/zodiac/security" className="group rounded-lg border border-slate-200 bg-white p-5 shadow-sm transition-all hover:border-violet-300 hover:shadow-md">
+          <Link href="/dashboard/networks/zodiac/security" className="group rounded-lg border border-slate-800 bg-slate-900/50 p-5 shadow-sm transition-all hover:border-violet-300 hover:shadow-md">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-violet-100 text-violet-700 transition-colors group-hover:bg-violet-600 group-hover:text-white">
                 <Shield className="h-5 w-5" />
               </div>
               <div className="font-medium text-slate-900">Zodiac Shield</div>
             </div>
-            <p className="mt-2 text-sm text-slate-600">Admin safety and auth status</p>
+            <p className="mt-2 text-sm text-slate-400">Admin safety and auth status</p>
           </Link>
-          <Link href="/dashboard/networks/zodiac/publishing" className="group rounded-lg border border-slate-200 bg-white p-5 shadow-sm transition-all hover:border-violet-300 hover:shadow-md">
+          <Link href="/dashboard/networks/zodiac/publishing" className="group rounded-lg border border-slate-800 bg-slate-900/50 p-5 shadow-sm transition-all hover:border-violet-300 hover:shadow-md">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-violet-100 text-violet-700 transition-colors group-hover:bg-violet-600 group-hover:text-white">
                 <Edit3 className="h-5 w-5" />
               </div>
               <div className="font-medium text-slate-900">Zodiac Publisher</div>
             </div>
-            <p className="mt-2 text-sm text-slate-600">Publishing center</p>
+            <p className="mt-2 text-sm text-slate-400">Publishing center</p>
           </Link>
-          <Link href="/dashboard/networks/zodiac/settings" className="group rounded-lg border border-slate-200 bg-white p-5 shadow-sm transition-all hover:border-violet-300 hover:shadow-md">
+          <Link href="/dashboard/networks/zodiac/settings" className="group rounded-lg border border-slate-800 bg-slate-900/50 p-5 shadow-sm transition-all hover:border-violet-300 hover:shadow-md">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-violet-100 text-violet-700 transition-colors group-hover:bg-violet-600 group-hover:text-white">
                 <Settings className="h-5 w-5" />
               </div>
               <div className="font-medium text-slate-900">Zodiac Settings</div>
             </div>
-            <p className="mt-2 text-sm text-slate-600">Environment and manual actions</p>
+            <p className="mt-2 text-sm text-slate-400">Environment and manual actions</p>
           </Link>
-          <div className="group rounded-lg border border-slate-200 bg-slate-50 p-5 shadow-sm">
+          <div className="group rounded-lg border border-slate-800 bg-slate-50 p-5 shadow-sm">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-200 text-slate-600">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-200 text-slate-400">
                 <Users className="h-5 w-5" />
               </div>
               <div className="font-medium text-slate-900">First Users Baseline Doc</div>
             </div>
-            <p className="mt-2 text-xs text-slate-600 font-mono">docs/zodiac-first-users-analytics-baseline.md</p>
+            <p className="mt-2 text-xs text-slate-400 font-mono">docs/zodiac-first-users-analytics-baseline.md</p>
           </div>
         </section>
 

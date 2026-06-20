@@ -1,3 +1,4 @@
+import { AphroditePageHeader } from "@/components/AphroditePageHeader";
 import {
   Activity,
   BarChart3,
@@ -20,7 +21,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
-import { ZodiacPlatformNav } from "@/components/zodiac-platform/ZodiacPlatformNav";
+
 import { getUnifiedSystemStatus } from "@/lib/unified-system-status";
 import { requireDashboardPageAccess } from "@/lib/zodiac-dashboard-auth";
 import { zodiacPlatformSummary } from "@/lib/zodiac-platform-management";
@@ -99,43 +100,16 @@ export default async function ZodiacNetworkWorkspacePage() {
   const attentionCount = status.autopublish.failedToday + status.autopublish.blockedToday + status.content.blocked + zodiacPlatformSummary.problems;
 
   return (
-    <div className="-mx-4 -my-6 min-h-screen overflow-x-hidden bg-[#f8fafc] px-4 py-6 text-slate-950 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+    <div className="-mx-4 -my-6 min-h-screen overflow-x-hidden bg-[#070b14] px-4 py-6 text-slate-100 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
       <div className="mx-auto max-w-7xl space-y-6">
-        <header className="space-y-5">
-          <Link href="/dashboard" className="inline-flex items-center gap-2 text-sm font-semibold text-violet-700 transition hover:text-violet-900">
-            <ChevronLeft className="h-4 w-4" />
-            Dashboard / Zodiac / Обзор
-          </Link>
-          <div className="relative overflow-hidden rounded-lg border border-violet-100 bg-white p-6 shadow-sm sm:p-8">
-            <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-violet-400 via-cyan-300 to-amber-300" />
-            <p className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-violet-700">
-              <Sparkles className="h-3.5 w-3.5" />
-              Каналы Зодиака
-            </p>
-            <div className="mt-5 grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
-              <div>
-                <h1 className="break-words text-2xl font-semibold tracking-tight text-slate-950 sm:text-4xl">Zodiac Control</h1>
-                <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-600">
-                  Центр управления Telegram-сетью, Mini App, публикациями, аналитикой и безопасностью.
-                </p>
-              </div>
-              <div className="grid gap-2 sm:grid-cols-2 lg:w-96">
-                <StatusPill label="First 5 users" value="GO" tone="emerald" />
-                <StatusPill label="20 users" value="CONDITIONAL" tone="amber" />
-                <StatusPill label="Mass launch" value="STOP" tone="rose" />
-              </div>
-            </div>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <StatusBadge label="Weekly live" value="OFF" tone="slate" />
-              <StatusBadge label="Payments" value="OFF" tone="slate" />
-              <StatusBadge label="Profile sync" value="OFF" tone="slate" />
-              <StatusBadge label="Exact astro" value="exact_unavailable" tone="amber" />
-              <StatusBadge label="Analytics" value="Redis active in production" tone="emerald" />
-              <StatusBadge label="Dashboard auth" value="code-ready, production env pending" tone="amber" />
-            </div>
-          </div>
-          <ZodiacPlatformNav current="overview" />
-        </header>
+                <AphroditePageHeader
+          title="Запуск Зодиака"
+          description="Управление модулем Зодиак внутри Афродиты."
+          badgeText="Обзор модуля"
+          icon={Sparkles}
+          safetyLocked={true}
+          safetyMessage="Read-only mode"
+        />
 
         <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <OperatorCard title="Zodiac Network" value={zodiacPlatformSummary.totalChannels} caption="активная сеть" details={["general + 12 знаков", "handles доступны", "startapp links готовы"]} icon={RadioTower} tone="violet" />
@@ -147,8 +121,8 @@ export default async function ZodiacNetworkWorkspacePage() {
         <section className="space-y-4">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <h2 className="text-xl font-semibold text-slate-950">Разделы модуля Зодиак</h2>
-              <p className="mt-1 text-sm text-slate-600">Единый доступ ко всем модулям платформы.</p>
+              <h2 className="text-xl font-semibold text-slate-100">Разделы модуля Зодиак</h2>
+              <p className="mt-1 text-sm text-slate-400">Единый доступ ко всем модулям платформы.</p>
             </div>
           </div>
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -159,7 +133,7 @@ export default async function ZodiacNetworkWorkspacePage() {
         </section>
 
         <section className="grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
-          <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-5 text-emerald-950 shadow-sm">
+          <div className="rounded-lg border border-emerald-900/30 bg-emerald-900/10 p-5 text-emerald-400 shadow-sm">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <h2 className="text-lg font-semibold">Zodiac Control автономен</h2>
@@ -171,8 +145,8 @@ export default async function ZodiacNetworkWorkspacePage() {
             </div>
           </div>
 
-          <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-            <h2 className="text-lg font-semibold text-slate-950">Что делать дальше</h2>
+          <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-5 shadow-sm">
+            <h2 className="text-lg font-semibold text-slate-100">Что делать дальше</h2>
             <ol className="mt-4 space-y-3 text-sm font-semibold text-slate-700">
               <li>1. Включить защиту dashboard в Vercel</li>
               <li>2. Пригласить первых 5 пользователей</li>
@@ -190,13 +164,13 @@ export default async function ZodiacNetworkWorkspacePage() {
 
 function PlatformSectionCard({ title, href, icon: Icon, caption, tone }: { title: string; href: string; icon: LucideIcon; caption: string; tone: Tone }) {
   return (
-    <Link href={href} prefetch={false} className="group flex min-h-40 items-start gap-4 rounded-lg border border-slate-200 bg-white p-5 shadow-sm transition hover:border-violet-200 hover:shadow-md">
+    <Link href={href} prefetch={false} className="group flex min-h-40 items-start gap-4 rounded-lg border border-slate-800 bg-slate-900/50 p-5 shadow-sm transition hover:border-violet-200 hover:shadow-md">
       <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border ${toneClasses[tone]}`}>
         <Icon className="h-5 w-5" />
       </span>
       <span className="min-w-0">
-        <span className="block font-semibold text-slate-950 group-hover:text-violet-900">{title}</span>
-        <span className="mt-2 block text-sm leading-6 text-slate-600">{caption}</span>
+        <span className="block font-semibold text-slate-100 group-hover:text-violet-900">{title}</span>
+        <span className="mt-2 block text-sm leading-6 text-slate-400">{caption}</span>
       </span>
     </Link>
   );
@@ -218,12 +192,12 @@ function OperatorCard({
   tone: Tone;
 }) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+    <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-4 shadow-sm">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">{title}</p>
-          <p className="mt-3 text-3xl font-semibold text-slate-950">{value}</p>
-          <p className="mt-1 text-sm font-medium text-slate-600">{caption}</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">{title}</p>
+          <p className="mt-3 text-3xl font-semibold text-slate-100">{value}</p>
+          <p className="mt-1 text-sm font-medium text-slate-400">{caption}</p>
         </div>
         <span className={`rounded-lg border p-2 ${toneClasses[tone]}`}>
           <Icon className="h-5 w-5" />
@@ -231,7 +205,7 @@ function OperatorCard({
       </div>
       <div className="mt-4 flex flex-wrap gap-2">
         {details.map((detail) => (
-          <span key={detail} className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs text-slate-600">
+          <span key={detail} className="rounded-full border border-slate-800 bg-slate-50 px-2.5 py-1 text-xs text-slate-400">
             {detail}
           </span>
         ))}
@@ -263,8 +237,8 @@ type Tone = "violet" | "cyan" | "emerald" | "amber" | "rose" | "slate";
 const toneClasses: Record<Tone, string> = {
   violet: "border-violet-200 bg-violet-50 text-violet-700",
   cyan: "border-cyan-200 bg-cyan-50 text-cyan-700",
-  emerald: "border-emerald-200 bg-emerald-50 text-emerald-700",
+  emerald: "border-emerald-900/30 bg-emerald-900/10 text-emerald-700",
   amber: "border-amber-200 bg-amber-50 text-amber-700",
-  rose: "border-rose-200 bg-rose-50 text-rose-700",
-  slate: "border-slate-200 bg-slate-50 text-slate-700",
+  rose: "border-rose-900/30 bg-rose-900/10 text-rose-700",
+  slate: "border-slate-800 bg-slate-50 text-slate-700",
 };
