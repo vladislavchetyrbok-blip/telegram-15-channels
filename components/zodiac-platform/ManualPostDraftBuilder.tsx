@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import { CheckCircle2, Clipboard, Copy, MessageSquareText, ShieldCheck, XCircle } from "lucide-react";
+import { appendZodiacDashboardAuditEvent } from "@/lib/zodiac-dashboard-audit";
 
 type Language = "RU" | "UA" | "EN";
 type PostType = "daily_horoscope" | "weekly_preview" | "announcement" | "soft_launch_invite" | "custom_manual";
@@ -70,7 +71,15 @@ export function ManualPostDraftBuilder({ channels, todayDateKey }: { channels: D
 
   function updateDraft<K extends keyof ManualPostDraft>(field: K, value: ManualPostDraft[K]) {
     setCopied(null);
-    setDraft((current) => ({ ...current, [field]: value }));
+    const nextDraft = { ...draft, [field]: value };
+    setDraft(nextDraft);
+    appendZodiacDashboardAuditEvent({
+      action: "manual_post_draft_updated",
+      route: "/dashboard/networks/zodiac/publishing",
+      label: `${nextDraft.channelSlug} ${nextDraft.postType}`,
+      status: "draft-only",
+      risk: "approval",
+    });
   }
 
   async function copyText(kind: "text" | "checklist" | "all", text: string) {

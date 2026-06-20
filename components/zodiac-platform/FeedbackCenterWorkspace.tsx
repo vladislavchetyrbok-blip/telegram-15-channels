@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { AlertTriangle, CheckCircle2, ClipboardList, Copy, Database, HeartHandshake, ListChecks, MessageSquareText, Phone, ShieldCheck, Target, UsersRound, XCircle } from "lucide-react";
+import { appendZodiacDashboardAuditEvent } from "@/lib/zodiac-dashboard-audit";
 
 type Device = "iphone" | "android" | "desktop" | "unknown";
 type TelegramApp = "ios" | "android" | "desktop" | "unknown";
@@ -127,15 +128,49 @@ export function FeedbackCenterWorkspace() {
 
     const nextEntry = buildFeedbackEntry(form, entries.length + 1);
     setEntries((current) => [nextEntry, ...current]);
+    appendZodiacDashboardAuditEvent({
+      action: "feedback_entry_created",
+      route: "/dashboard/networks/zodiac/feedback",
+      label: nextEntry.testerLabel,
+      status: nextEntry.severity,
+      risk: auditRiskForSeverity(nextEntry.severity),
+    });
     setForm({ ...defaultForm, testerLabel: `Tester ${entries.length + 2}` });
   }
 
   function updateEntryStatus(id: string, status: FeedbackStatus) {
+    const entry = entries.find((item) => item.id === id);
     setEntries((current) => current.map((entry) => (entry.id === id ? { ...entry, status } : entry)));
+    appendZodiacDashboardAuditEvent({
+      action: "feedback_entry_updated",
+      route: "/dashboard/networks/zodiac/feedback",
+      label: entry?.testerLabel ?? id,
+      status,
+      risk: entry ? auditRiskForSeverity(entry.severity) : "approval",
+    });
   }
 
   function removeEntry(id: string) {
+    const entry = entries.find((item) => item.id === id);
     setEntries((current) => current.filter((entry) => entry.id !== id));
+    appendZodiacDashboardAuditEvent({
+      action: "feedback_entry_updated",
+      route: "/dashboard/networks/zodiac/feedback",
+      label: entry?.testerLabel ?? id,
+      status: "removed-local",
+      risk: "approval",
+    });
+  }
+
+  function updateQaItem(id: string, checked: boolean) {
+    setQaState((current) => ({ ...current, [id]: checked }));
+    appendZodiacDashboardAuditEvent({
+      action: "safety_checklist_changed",
+      route: "/dashboard/networks/zodiac/feedback",
+      label: id,
+      status: checked ? "checked" : "unchecked",
+      risk: checked ? "safe" : "approval",
+    });
   }
 
   async function copyExport() {
@@ -317,7 +352,7 @@ export function FeedbackCenterWorkspace() {
               <input
                 type="checkbox"
                 checked={Boolean(qaState[item.id])}
-                onChange={(event) => setQaState((current) => ({ ...current, [item.id]: event.target.checked }))}
+                onChange={(event) => updateQaItem(item.id, event.target.checked)}
                 className="h-4 w-4 rounded border-slate-300 text-violet-600"
               />
               <span>{item.label}</span>
@@ -562,6 +597,12 @@ function sanitizeLoadedEntry(entry: Partial<FeedbackEntry>): FeedbackEntry | nul
 
 function isFeedbackEntry(entry: FeedbackEntry | null): entry is FeedbackEntry {
   return entry !== null;
+}
+
+function auditRiskForSeverity(severity: FeedbackEntry["severity"]): "safe" | "approval" | "blocked" {
+  if (severity === "P0") return "blocked";
+  if (severity === "P1") return "approval";
+  return "safe";
 }
 
 function normalizeEnum<T extends string>(value: unknown, allowed: readonly T[], fallback: T): T {

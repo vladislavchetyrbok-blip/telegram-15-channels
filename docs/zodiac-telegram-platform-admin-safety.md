@@ -1,0 +1,107 @@
+# Zodiac Telegram Platform Admin Safety Center
+
+Package 62 | 2026-06-20
+
+Route:
+
+```text
+/dashboard/networks/zodiac/security
+```
+
+The Admin Safety Center is the owner-facing safety and approval page for the
+Zodiac Telegram Platform. It is intentionally read-only for live systems and
+does not add any server-side write API.
+
+## Safety Status
+
+The page shows the current operating guardrails:
+
+- Live publish: forbidden from dashboard UI.
+- Weekly live: OFF.
+- Payments/Stars: OFF.
+- Profile sync: OFF.
+- Exact astro: symbolic only / `exact_unavailable`.
+- Ledger: protected.
+- Dry-run API calls: 0 expected.
+- Redis analytics: active in production.
+- Mass launch: STOP.
+
+## Approval Matrix
+
+| Action | Status | Approval | UI |
+|---|---|---|---|
+| Daily dry-run | allowed | no | command hint only |
+| Daily live publish | blocked | explicit owner approval | no UI button |
+| Weekly live | OFF | explicit owner approval | no UI button |
+| Payments/Stars | OFF | product + legal + technical approval | no UI button |
+| Profile sync writes | OFF | privacy approval | no UI button |
+| Exact astro provider | unavailable | provider + accuracy approval | no UI button |
+| Add new channel | draft-only | manual config review | local draft only |
+| Manual post | draft-only | manual publish process | local draft only |
+
+## Local Audit Log
+
+The audit log is browser-local only:
+
+- storage: `localStorage`;
+- label: `Локальный журнал, не серверная база`;
+- no server write API;
+- no raw Telegram `initData`;
+- no raw feedback;
+- no raw birth date/time/city/question/intention/result text;
+- no tokens, Redis values, env values, or result text.
+
+Allowed event fields:
+
+- action type;
+- timestamp;
+- route;
+- sanitized short label;
+- status/risk.
+
+Current local dashboard actions recorded:
+
+- channel draft created/updated;
+- manual post draft created/updated;
+- feedback entry created/updated;
+- safety checklist item changed;
+- approval note created.
+
+The page supports clearing the local log and copying/exporting a sanitized
+audit log summary.
+
+## Checklist Before 20 Users
+
+The `Перед 20 пользователями` checklist is also localStorage-only and does not
+write to backend systems. It covers first 5 users, P0/P1 status, iPhone/Android
+real-phone checks, analytics funnel evidence, feedback review, sensitive-data
+visibility, dry-run API calls, dry-run ledger writes, weekly live, payments, and
+profile sync.
+
+## Future Roles
+
+Future authenticated admin backend roles are documented but not enforced by a
+server write API yet:
+
+- Viewer: read analytics/docs/status.
+- Editor: prepare drafts only.
+- Admin: approve config changes after auth exists.
+- Owner: live approval only.
+
+Warning:
+
+```text
+Сейчас server write API intentionally disabled. Перед включением write-действий нужен authenticated admin backend, audit log and role checks.
+```
+
+## Before Enabling Writes
+
+Do not enable dashboard write actions until all of these exist:
+
+- authenticated admin backend;
+- role checks for Owner/Admin/Editor/Viewer;
+- server-side audit log;
+- approval workflow;
+- privacy review;
+- tests proving no raw sensitive data is stored;
+- safety check proving live Telegram actions cannot run accidentally.

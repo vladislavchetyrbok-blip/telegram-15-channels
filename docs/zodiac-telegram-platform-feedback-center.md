@@ -1,6 +1,6 @@
 # Zodiac Telegram Platform Feedback Center
 
-Package 61 | 2026-06-20
+Package 61, updated Package 62 | 2026-06-20
 
 Route:
 
@@ -22,6 +22,7 @@ not enable weekly live, payments/Stars, profile sync, or exact astrology claims.
   keyboard, share, save/history, feedback, theme readability, and white-screen
   checks.
 - Links feedback decisions to `/dashboard/networks/zodiac/analytics`.
+- Links safety and approval decisions to `/dashboard/networks/zodiac/security`.
 - Shows a decision matrix for first 5 users, 20 users, and mass launch.
 
 ## How To Enter Sanitized Feedback
@@ -144,3 +145,15 @@ admin auth exists, the Feedback Center is intentionally local-only:
 
 Use the copied sanitized summary for private owner review, then convert only
 generic conclusions into docs or task packages.
+
+## Package 62 Safety Handoff
+
+The Admin Safety Center route is:
+
+```text
+/dashboard/networks/zodiac/security
+```
+
+Use it to keep local approval notes, review the Approval Matrix, and complete
+the `Перед 20 пользователями` checklist. The audit log there is browser-local
+only and stores sanitized action metadata, not raw feedback.

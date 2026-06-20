@@ -1,7 +1,7 @@
 # Zodiac Full Project Audit And Roadmap
 
 Date: 2026-06-20
-Package: 53, updated through Package 61
+Package: 53, updated through Package 62
 Audit base HEAD: `98b28a322b16d8bb3e91f4422cfea9f7caeb8d54`
 Branch: `main`
 Scope: full-product audit, analytics review, quality review, and improvement roadmap.
@@ -698,7 +698,32 @@ What stays OFF:
   manual ledger edits, weekly live, payments/Stars, profile sync, exact astro
   claims, mass launch.
 
-### Package 62: Real Astro Engine Provider Research
+### Package 62: Telegram Platform Admin Safety Center
+
+Goal:
+- Add a dedicated owner-facing safety center for live-action guardrails,
+  approvals, local audit log, pre-20-user checklist, and future roles/auth
+  readiness.
+
+Why:
+- Safety was visible across operations/publishing/feedback, but the owner needs
+  one clear route that prevents accidental live action and explains approvals.
+
+Risk:
+- Accidentally creating live publish controls, unauthenticated server writes, or
+  audit storage containing sensitive raw user data.
+
+Result:
+- Implemented with `/dashboard/networks/zodiac/security`, status cards,
+  Approval Matrix, localStorage-only audit log, sanitized export/copy, clear
+  local log, `Перед 20 пользователями` checklist, and future
+  Owner/Admin/Editor/Viewer role readiness.
+
+What stays OFF:
+- server write API, live publish, manual ledger edits, weekly live,
+  payments/Stars, profile sync, exact astro provider/claims, and mass launch.
+
+### Package 63: Real Astro Engine Provider Research
 
 Goal:
 - Choose a provider strategy and fixture design for exact astrology.
@@ -715,7 +740,7 @@ Prerequisites:
 What stays OFF:
 - exact astro claims and UI labels implying exact planets/houses/ascendant.
 
-### Package 63: Weekly Live Controlled First Run Plan
+### Package 64: Weekly Live Controlled First Run Plan
 
 Goal:
 - Prepare a weekly live plan without enabling it yet.
@@ -732,7 +757,7 @@ Prerequisites:
 What stays OFF:
 - weekly live until explicit approval after plan/checks.
 
-### Package 64: VIP Monetization Test Mode
+### Package 65: VIP Monetization Test Mode
 
 Goal:
 - Build payment/Stars/entitlement test-mode readiness only.
@@ -749,7 +774,7 @@ Prerequisites:
 What stays OFF:
 - real payments, real Stars, paid entitlement enforcement.
 
-### Package 65: Performance / Mobile Polish
+### Package 66: Performance / Mobile Polish
 
 Goal:
 - Reduce visual density, stale fallback share copy, and long-scroll friction.
@@ -766,7 +791,7 @@ Prerequisites:
 What stays OFF:
 - new product features, payments, sync, exact astro claims.
 
-### Package 66: Mass Launch Readiness Audit
+### Package 67: Mass Launch Readiness Audit
 
 Goal:
 - Re-audit after analytics, phone evidence, first users, and daily stability.
@@ -822,7 +847,8 @@ Package 59 adds a dedicated owner-facing Telegram Platform Management Console:
 * **Publishing route**: `/dashboard/networks/zodiac/publishing`
 * **Analytics route**: `/dashboard/networks/zodiac/analytics`
 * **Feedback route**: `/dashboard/networks/zodiac/feedback`
-* **Operations / safety route**: `/dashboard/networks/zodiac/operations`
+* **Operations route**: `/dashboard/networks/zodiac/operations`
+* **Safety route**: `/dashboard/networks/zodiac/security`
 * **Docs route**: `/dashboard/networks/zodiac/docs`
 
 The channel console shows the 13-channel Zodiac network, Telegram handles,
@@ -891,6 +917,39 @@ Weekly live: NO
 Payments/Stars: NO
 Profile sync: NO
 Exact astro claims: NO
+Mass launch: NO
+First 5 users: GO
+20 users: CONDITIONAL
+```
+
+## Package 62 Admin Safety Center Update
+
+Package 62 adds `/dashboard/networks/zodiac/security` as the owner-facing
+Admin Safety Center:
+
+* safety status cards for live publish, weekly live, payments/Stars, profile
+  sync, exact astro, ledger, dry-run API calls, Redis analytics, and mass launch;
+* Approval Matrix for daily dry-run, daily live publish, weekly live,
+  payments/Stars, profile sync writes, exact astro provider, adding channels,
+  and manual posts;
+* localStorage-only audit log labeled `Локальный журнал, не серверная база`;
+* sanitized audit log export/copy and local clear control;
+* `Перед 20 пользователями` checklist;
+* future roles/auth readiness for Owner, Admin, Editor, and Viewer;
+* explicit warning that server write API is disabled until authenticated admin
+  backend, audit log, and role checks exist.
+
+Safety verdict remains unchanged:
+
+```text
+Server write API: NO
+Raw sensitive data stored: NO
+Live publish from dashboard: NO
+Manual ledger changes: NO
+Weekly live: NO
+Payments/Stars: NO
+Profile sync: NO
+Exact astro provider: NO
 Mass launch: NO
 First 5 users: GO
 20 users: CONDITIONAL

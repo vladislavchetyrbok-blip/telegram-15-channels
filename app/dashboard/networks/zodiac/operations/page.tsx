@@ -94,6 +94,10 @@ export default function ZodiacOperationsPage() {
                 <Rocket className="h-4 w-4" />
                 Открыть центр публикаций
               </Link>
+              <Link href="/dashboard/networks/zodiac/security" className="inline-flex items-center gap-2 rounded-md border border-amber-200 bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-700 transition hover:border-amber-300 hover:bg-amber-100">
+                <LockKeyhole className="h-4 w-4" />
+                Открыть безопасность
+              </Link>
             </div>
           </div>
         </section>

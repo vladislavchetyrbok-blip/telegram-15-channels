@@ -159,10 +159,16 @@ export default function ZodiacPublishingCenterPage() {
             <SafetyBadge label="Weekly live" value="OFF" tone="rose" />
             <SafetyBadge label="Mass launch" value="STOP" tone="rose" />
           </div>
-          <Link href="/dashboard/networks/zodiac/feedback" className="mt-5 inline-flex items-center gap-2 rounded-md border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700 transition hover:border-emerald-300 hover:bg-emerald-100">
-            <MessageSquareText className="h-4 w-4" />
-            Открыть центр отзывов
-          </Link>
+          <div className="mt-5 flex flex-wrap gap-3">
+            <Link href="/dashboard/networks/zodiac/feedback" className="inline-flex items-center gap-2 rounded-md border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700 transition hover:border-emerald-300 hover:bg-emerald-100">
+              <MessageSquareText className="h-4 w-4" />
+              Открыть центр отзывов
+            </Link>
+            <Link href="/dashboard/networks/zodiac/security" className="inline-flex items-center gap-2 rounded-md border border-amber-200 bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-700 transition hover:border-amber-300 hover:bg-amber-100">
+              <LockKeyhole className="h-4 w-4" />
+              Открыть безопасность
+            </Link>
+          </div>
         </section>
       </div>
     </div>

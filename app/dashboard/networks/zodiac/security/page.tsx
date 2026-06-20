@@ -1,0 +1,193 @@
+import { AlertTriangle, CheckCircle2, ChevronLeft, ClipboardList, DatabaseZap, LockKeyhole, RadioTower, ShieldCheck, StopCircle, UsersRound, XCircle } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import Link from "next/link";
+import { AdminSafetyWorkspace } from "@/components/zodiac-platform/AdminSafetyWorkspace";
+import { ZodiacPlatformNav } from "@/components/zodiac-platform/ZodiacPlatformNav";
+
+export const dynamic = "force-dynamic";
+
+const safetyStatuses = [
+  { label: "Live publish", value: "запрещён", icon: StopCircle, tone: "rose" },
+  { label: "Weekly live", value: "OFF", icon: XCircle, tone: "slate" },
+  { label: "Payments/Stars", value: "OFF", icon: XCircle, tone: "slate" },
+  { label: "Profile sync", value: "OFF", icon: XCircle, tone: "slate" },
+  { label: "Exact astro", value: "symbolic only / exact_unavailable", icon: ShieldCheck, tone: "amber" },
+  { label: "Ledger", value: "protected", icon: LockKeyhole, tone: "emerald" },
+  { label: "Dry-run API calls", value: "0 expected", icon: CheckCircle2, tone: "emerald" },
+  { label: "Redis analytics", value: "active in production", icon: DatabaseZap, tone: "cyan" },
+  { label: "Mass launch", value: "STOP", icon: AlertTriangle, tone: "rose" },
+] as const;
+
+const approvalRows = [
+  { action: "Daily dry-run", status: "allowed", approval: "no", ui: "command hint only" },
+  { action: "Daily live publish", status: "blocked", approval: "explicit owner approval", ui: "no UI button" },
+  { action: "Weekly live", status: "OFF", approval: "explicit owner approval", ui: "no UI button" },
+  { action: "Payments/Stars", status: "OFF", approval: "product + legal + technical approval", ui: "no UI button" },
+  { action: "Profile sync writes", status: "OFF", approval: "privacy approval", ui: "no UI button" },
+  { action: "Exact astro provider", status: "unavailable", approval: "provider + accuracy approval", ui: "no UI button" },
+  { action: "Add new channel", status: "draft-only", approval: "manual config review", ui: "local draft only" },
+  { action: "Manual post", status: "draft-only", approval: "manual publish process", ui: "local draft only" },
+] as const;
+
+const roleRows = [
+  { role: "Owner", scope: "live approval only" },
+  { role: "Admin", scope: "approve config changes after auth exists" },
+  { role: "Editor", scope: "prepare drafts only" },
+  { role: "Viewer", scope: "read analytics/docs/status" },
+] as const;
+
+export default function ZodiacSecurityPage() {
+  return (
+    <div className="-mx-4 -my-6 min-h-screen overflow-x-hidden bg-[#f8fafc] px-4 py-6 text-slate-950 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+      <div className="mx-auto max-w-7xl space-y-6">
+        <header className="space-y-5">
+          <Link href="/dashboard/networks/zodiac" className="inline-flex items-center gap-2 text-sm font-semibold text-violet-700 transition hover:text-violet-900">
+            <ChevronLeft className="h-4 w-4" />
+            Dashboard / Zodiac / Безопасность
+          </Link>
+          <div className="relative overflow-hidden rounded-lg border border-violet-100 bg-white p-6 shadow-sm sm:p-8">
+            <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-violet-400 via-cyan-300 to-amber-300" />
+            <p className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-violet-700">
+              <LockKeyhole className="h-3.5 w-3.5" />
+              Безопасность
+            </p>
+            <div className="mt-5 grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
+              <div>
+                <h1 className="break-words text-2xl font-semibold tracking-tight text-slate-950 sm:text-4xl">Безопасность платформы</h1>
+                <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-600">
+                  Контроль live-действий, approvals, журнал действий и защита от случайных публикаций.
+                </p>
+              </div>
+              <span className="inline-flex w-fit items-center gap-2 rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-sm font-semibold text-rose-800">
+                <AlertTriangle className="h-4 w-4" />
+                accidental live action risk: low
+              </span>
+            </div>
+          </div>
+          <ZodiacPlatformNav current="security" />
+        </header>
+
+        <section data-qa="admin-safety-status-cards" className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {safetyStatuses.map((status) => (
+            <StatusCard key={status.label} {...status} />
+          ))}
+        </section>
+
+        <section data-qa="approval-matrix" className="space-y-4 rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-start">
+            <div>
+              <h2 className="text-xl font-semibold text-slate-950">Approval Matrix</h2>
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+                Матрица показывает, какие действия допустимы в dashboard. Live-действия остаются без кнопок и требуют отдельного owner approval.
+              </p>
+            </div>
+            <span className="inline-flex w-fit items-center gap-2 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-800">
+              <ShieldCheck className="h-4 w-4" />
+              no server write API
+            </span>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="min-w-[860px] w-full border-collapse text-left text-sm">
+              <thead>
+                <tr className="border-b border-slate-200 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+                  <th className="px-3 py-3">Action</th>
+                  <th className="px-3 py-3">Status</th>
+                  <th className="px-3 py-3">Approval</th>
+                  <th className="px-3 py-3">UI</th>
+                </tr>
+              </thead>
+              <tbody>
+                {approvalRows.map((row) => (
+                  <tr key={row.action} className="border-b border-slate-100 last:border-0">
+                    <td className="px-3 py-4 font-semibold text-slate-950">{row.action}</td>
+                    <td className="px-3 py-4 text-slate-700">{row.status}</td>
+                    <td className="px-3 py-4 text-slate-700">{row.approval}</td>
+                    <td className="px-3 py-4 text-slate-700">{row.ui}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <AdminSafetyWorkspace />
+
+        <section data-qa="roles-auth-readiness" className="space-y-4 rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-start">
+            <div>
+              <h2 className="text-xl font-semibold text-slate-950">Будущие роли</h2>
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+                Роли описывают будущую authenticated admin backend модель. Сейчас они только readiness-контракт, без write-действий.
+              </p>
+            </div>
+            <span className="inline-flex w-fit items-center gap-2 rounded-md border border-cyan-200 bg-cyan-50 px-3 py-2 text-sm font-semibold text-cyan-800">
+              <UsersRound className="h-4 w-4" />
+              role checks required before writes
+            </span>
+          </div>
+
+          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+            {roleRows.map((row) => (
+              <div key={row.role} className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+                <p className="text-lg font-semibold text-slate-950">{row.role}</p>
+                <p className="mt-2 text-sm leading-6 text-slate-600">{row.scope}</p>
+              </div>
+            ))}
+          </div>
+
+          <div data-qa="admin-safety-no-server-write-api" className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm font-semibold leading-6 text-amber-950">
+            Сейчас server write API intentionally disabled. Перед включением write-действий нужен authenticated admin backend, audit log and role checks.
+          </div>
+        </section>
+
+        <section className="grid gap-4 lg:grid-cols-3">
+          <SafetyLink href="/dashboard/networks/zodiac/channels" title="Каналы" caption="Draft-only добавление канала и ручная проверка config." icon={RadioTower} />
+          <SafetyLink href="/dashboard/networks/zodiac/publishing" title="Публикации" caption="Dry-run подсказки, ledger protection и no live button." icon={ClipboardList} />
+          <SafetyLink href="/dashboard/networks/zodiac/feedback" title="Отзывы" caption="Sanitized feedback и P0/P1 triage перед расширением." icon={ShieldCheck} />
+        </section>
+      </div>
+    </div>
+  );
+}
+
+function StatusCard({ label, value, icon: Icon, tone }: { label: string; value: string; icon: LucideIcon; tone: Tone }) {
+  return (
+    <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">{label}</p>
+          <p className="mt-3 text-xl font-semibold text-slate-950">{value}</p>
+          <p className="mt-1 text-sm text-slate-500">
+            {label}: {value}
+          </p>
+        </div>
+        <span className={`rounded-lg border p-2 ${toneClasses[tone]}`}>
+          <Icon className="h-5 w-5" />
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function SafetyLink({ href, title, caption, icon: Icon }: { href: string; title: string; caption: string; icon: LucideIcon }) {
+  return (
+    <Link href={href} prefetch={false} className="group rounded-lg border border-slate-200 bg-white p-4 shadow-sm transition hover:border-violet-200 hover:shadow-md">
+      <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-violet-200 bg-violet-50 text-violet-700">
+        <Icon className="h-5 w-5" />
+      </span>
+      <h3 className="mt-3 font-semibold text-slate-950 group-hover:text-violet-900">{title}</h3>
+      <p className="mt-1 text-sm leading-5 text-slate-500">{caption}</p>
+    </Link>
+  );
+}
+
+type Tone = "emerald" | "cyan" | "amber" | "rose" | "slate";
+
+const toneClasses: Record<Tone, string> = {
+  emerald: "border-emerald-200 bg-emerald-50 text-emerald-700",
+  cyan: "border-cyan-200 bg-cyan-50 text-cyan-700",
+  amber: "border-amber-200 bg-amber-50 text-amber-700",
+  rose: "border-rose-200 bg-rose-50 text-rose-700",
+  slate: "border-slate-200 bg-slate-50 text-slate-700",
+};

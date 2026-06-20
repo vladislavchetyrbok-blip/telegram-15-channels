@@ -1,6 +1,6 @@
 # Zodiac Telegram Platform Map
 
-Last updated: 2026-06-20 | Package 61
+Last updated: 2026-06-20 | Package 62
 
 ## Architecture Overview
 
@@ -15,6 +15,8 @@ Dashboard ──► Overview ──► Analytics Dashboard
          │    Publishing Center ──► Ledger ──► Safety Checks
          │
          └────► Feedback Center ──► Real Phone QA ──► 20 Users Decision
+         │
+         └────► Admin Safety Center ──► Approvals ──► Local Audit Log
          │
 Soft Launch ──► First 5 Users ──► Feedback ──► Triage
 ```
@@ -47,7 +49,8 @@ Soft Launch ──► First 5 Users ──► Feedback ──► Triage
 | Zodiac publishing center | `/dashboard/networks/zodiac/publishing` | YES | Safe publishing calendar, dry-run helpers, manual post drafts |
 | Analytics dashboard | `/dashboard/networks/zodiac/analytics` | YES | Privacy-safe analytics |
 | Feedback center | `/dashboard/networks/zodiac/feedback` | YES | Local sanitized feedback, real-phone QA, P0/P1 triage |
-| Operations / safety | `/dashboard/networks/zodiac/operations` | YES | Soft launch, safety, ledger and launch limits |
+| Operations | `/dashboard/networks/zodiac/operations` | YES | Soft launch, first 5 users GO, mass launch STOP |
+| Admin safety center | `/dashboard/networks/zodiac/security` | YES | Safety status, approval matrix, local audit log, readiness roles |
 | Docs / runbooks | `/dashboard/networks/zodiac/docs` | YES | Document path index |
 | Compatibility preview | `/dashboard/networks/zodiac/compatibility-preview` | YES | Compat widget preview |
 | Publishing center | `/publishing-center` | YES | Post scheduling & publishing |
@@ -87,6 +90,7 @@ Package 59 adds a clearer owner-facing management console layer:
   -> /dashboard/networks/zodiac/analytics
   -> /dashboard/networks/zodiac/feedback
   -> /dashboard/networks/zodiac/operations
+  -> /dashboard/networks/zodiac/security
   -> /dashboard/networks/zodiac/docs
 ```
 
@@ -95,6 +99,8 @@ The channel console is read-only for live Telegram state. Its "new channel" buil
 Package 60 adds the publishing center. Its manual post builder is also `localStorage` only and the page only shows dry-run command hints. It does not publish to Telegram.
 
 Package 61 adds the feedback center. Its intake board and real-phone QA checklist are `localStorage` only, store sanitized summaries, and do not create a server write API.
+
+Package 62 adds the admin safety center at `/dashboard/networks/zodiac/security`. It contains safety status cards, the Approval Matrix, a browser-local audit log, the `Перед 20 пользователями` checklist, and future role readiness. It does not create a server write API or expose live publish controls.
 
 ---
 

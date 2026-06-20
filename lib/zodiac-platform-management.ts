@@ -54,7 +54,7 @@ export const zodiacPlatformNavItems: ZodiacPlatformNavItem[] = [
   { id: "analytics", label: "Аналитика", href: "/dashboard/networks/zodiac/analytics" },
   { id: "feedback", label: "Отзывы", href: "/dashboard/networks/zodiac/feedback" },
   { id: "soft-launch", label: "Soft Launch", href: "/dashboard/networks/zodiac/operations" },
-  { id: "safety", label: "Безопасность", href: "/dashboard/networks/zodiac/operations#safety" },
+  { id: "security", label: "Безопасность", href: "/dashboard/networks/zodiac/security" },
   { id: "docs", label: "Документы", href: "/dashboard/networks/zodiac/docs" },
 ];
 
@@ -90,6 +90,7 @@ export const zodiacPlatformSummary = {
 };
 
 export const zodiacPlatformDocPaths = [
+  "docs/zodiac-telegram-platform-admin-safety.md",
   "docs/zodiac-telegram-platform-management-console.md",
   "docs/zodiac-telegram-platform-publishing-center.md",
   "docs/zodiac-telegram-platform-feedback-center.md",

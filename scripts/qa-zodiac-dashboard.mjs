@@ -12,6 +12,7 @@ const ROUTES = {
   publishing: "/dashboard/networks/zodiac/publishing",
   feedback: "/dashboard/networks/zodiac/feedback",
   operations: "/dashboard/networks/zodiac/operations",
+  security: "/dashboard/networks/zodiac/security",
   docs: "/dashboard/networks/zodiac/docs",
   legacyPublishing: "/publishing-center",
   miniApp: "/compatibility",
@@ -39,9 +40,11 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/analytics"', "overview analytics route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/feedback"', "overview feedback route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/operations"', "overview operations route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/security"', "overview security route link");
     assertIncludes(pages.overview, "Каналы", "sidebar/platform nav Channels label");
     assertIncludes(pages.overview, "Аналитика", "sidebar/platform nav Analytics label");
     assertIncludes(pages.overview, "Отзывы", "sidebar/platform nav Feedback label");
+    assertIncludes(pages.overview, "Безопасность", "sidebar/platform nav Security label");
 
     assertIncludes(pages.analytics, "Аналитика Mini App", "analytics page heading");
     assertIncludes(pages.analytics, "First-users funnel", "first-users funnel block");
@@ -72,6 +75,7 @@ async function main() {
     assertIncludes(pages.channels, "npm run zodiac:navigation:all:dry", "navigation dry-run command hint");
     assertIncludes(pages.channels, "npm run zodiac:descriptions:dry", "descriptions dry-run command hint");
     assertIncludes(pages.channels, 'href="/dashboard/networks/zodiac/publishing"', "channels publishing route link");
+    assertIncludes(pages.channels, 'href="/dashboard/networks/zodiac/security"', "channels security route link");
     assertIncludes(pages.channels, "compat_aries", "sign startapp link");
     assertIncludes(pages.channels, "https://t.me/aries_horoscope_daily", "Telegram channel URL");
 
@@ -90,6 +94,7 @@ async function main() {
     assertIncludes(pages.publishing, 'id="generated-manual-post-checklist"', "generated manual post checklist block");
     assertIncludes(pages.publishing, 'data-qa="publishing-ledger-safety"', "ledger/safety section");
     assertIncludes(pages.publishing, 'href="/dashboard/networks/zodiac/feedback"', "publishing feedback route link");
+    assertIncludes(pages.publishing, 'href="/dashboard/networks/zodiac/security"', "publishing security route link");
     assertNotIncludes(pages.publishing, "zodiac:publish-date:live", "live publish command on publishing page");
     assertNotIncludes(pages.publishing, "zodiac:weekly:publish", "weekly live command on publishing page");
 
@@ -119,6 +124,7 @@ async function main() {
     assertIncludes(pages.feedback, "no white screen", "no white screen check");
     assertIncludes(pages.feedback, 'data-qa="feedback-analytics-correlation"', "analytics correlation block");
     assertIncludes(pages.feedback, 'href="/dashboard/networks/zodiac/analytics"', "feedback analytics route link");
+    assertIncludes(pages.feedback, 'href="/dashboard/networks/zodiac/security"', "feedback security route link");
     assertIncludes(pages.feedback, 'data-qa="feedback-decision-matrix"', "decision matrix block");
     assertIncludes(pages.feedback, "5 users", "5 users decision");
     assertIncludes(pages.feedback, "20 users", "20 users decision");
@@ -133,8 +139,62 @@ async function main() {
     assertIncludes(pages.operations, "Mass launch", "mass launch status");
     assertIncludes(pages.operations, 'href="/dashboard/networks/zodiac/feedback"', "operations feedback route link");
     assertIncludes(pages.operations, 'href="/dashboard/networks/zodiac/publishing"', "operations publishing route link");
+    assertIncludes(pages.operations, 'href="/dashboard/networks/zodiac/security"', "operations security route link");
+
+    assertIncludes(pages.security, "Безопасность платформы", "security page heading");
+    assertIncludes(pages.security, "Контроль live-действий, approvals, журнал действий и защита от случайных публикаций.", "security subtitle");
+    assertIncludes(pages.security, "Dashboard / Zodiac / Безопасность", "security breadcrumb");
+    assertIncludes(pages.security, 'data-qa="admin-safety-status-cards"', "security status cards");
+    assertIncludes(pages.security, "Live publish", "live publish status label");
+    assertIncludes(pages.security, "запрещён", "live publish blocked value");
+    assertIncludes(pages.security, "Weekly live", "weekly live off card");
+    assertIncludes(pages.security, "Payments/Stars", "payments off card");
+    assertIncludes(pages.security, "Profile sync", "profile sync off card");
+    assertIncludes(pages.security, "symbolic only / exact_unavailable", "exact astro unavailable card");
+    assertIncludes(pages.security, "Ledger", "ledger protected card");
+    assertIncludes(pages.security, "Dry-run API calls", "dry-run API calls card");
+    assertIncludes(pages.security, "0 expected", "dry-run API calls expected value");
+    assertIncludes(pages.security, "Redis analytics", "Redis analytics card");
+    assertIncludes(pages.security, "active in production", "Redis analytics active value");
+    assertIncludes(pages.security, "Mass launch", "mass launch card");
+    assertIncludes(pages.security, "STOP", "mass launch stop value");
+    assertIncludes(pages.security, 'data-qa="approval-matrix"', "approval matrix");
+    assertIncludes(pages.security, "Daily dry-run", "approval daily dry-run row");
+    assertIncludes(pages.security, "Daily live publish", "approval daily live row");
+    assertIncludes(pages.security, "explicit owner approval", "owner approval requirement");
+    assertIncludes(pages.security, "product + legal + technical approval", "payments approval requirement");
+    assertIncludes(pages.security, "privacy approval", "profile sync approval requirement");
+    assertIncludes(pages.security, "provider + accuracy approval", "exact astro approval requirement");
+    assertIncludes(pages.security, "local draft only", "draft-only UI policy");
+    assertIncludes(pages.security, "no UI button", "no live UI button policy");
+    assertIncludes(pages.security, 'data-qa="local-admin-audit-log"', "local admin audit log");
+    assertIncludes(pages.security, "Локальный журнал, не серверная база", "local audit log label");
+    assertIncludes(pages.security, "Export/copy sanitized audit log", "audit log export/copy button");
+    assertIncludes(pages.security, "Clear local audit log", "audit log clear button");
+    assertIncludes(pages.security, 'data-qa="audit-empty-state"', "audit log empty state");
+    assertIncludes(pages.security, 'data-qa="admin-safety-checklist"', "admin safety checklist");
+    assertIncludes(pages.security, "Перед 20 пользователями", "before 20 checklist heading");
+    assertIncludes(pages.security, "first 5 users tested", "first 5 checklist item");
+    assertIncludes(pages.security, "dry-run API calls 0", "dry-run API calls checklist item");
+    assertIncludes(pages.security, "ledger writes 0 in dry-run", "dry-run ledger checklist item");
+    assertIncludes(pages.security, "weekly live OFF", "weekly live checklist item");
+    assertIncludes(pages.security, "payments OFF", "payments checklist item");
+    assertIncludes(pages.security, "profile sync OFF", "profile sync checklist item");
+    assertIncludes(pages.security, 'data-qa="roles-auth-readiness"', "roles/auth readiness section");
+    assertIncludes(pages.security, "Будущие роли", "future roles heading");
+    assertIncludes(pages.security, "Owner", "owner role");
+    assertIncludes(pages.security, "Admin", "admin role");
+    assertIncludes(pages.security, "Editor", "editor role");
+    assertIncludes(pages.security, "Viewer", "viewer role");
+    assertIncludes(pages.security, "Сейчас server write API intentionally disabled. Перед включением write-действий нужен authenticated admin backend, audit log and role checks.", "server write API disabled warning");
+    assertIncludes(pages.security, 'data-qa="admin-safety-no-server-write-api"', "no server write API readiness block");
+    assertNotIncludes(pages.security, "zodiac:publish-date:live", "live publish command on security page");
+    assertNotIncludes(pages.security, "zodiac:weekly:publish", "weekly live command on security page");
+    assertNotIncludes(pages.security, "/api/zodiac/admin-safety", "admin safety server write API route");
+    assertNotIncludes(pages.security, "/api/zodiac/security", "security server write API route");
 
     assertIncludes(pages.docs, "Документы Telegram Platform", "docs page heading");
+    assertIncludes(pages.docs, "docs/zodiac-telegram-platform-admin-safety.md", "admin safety doc path");
     assertIncludes(pages.docs, "docs/zodiac-telegram-platform-management-console.md", "management console doc path");
     assertIncludes(pages.docs, "docs/zodiac-telegram-platform-publishing-center.md", "publishing center doc path");
     assertIncludes(pages.docs, "docs/zodiac-telegram-platform-feedback-center.md", "feedback center doc path");

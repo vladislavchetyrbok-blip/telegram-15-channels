@@ -1,6 +1,6 @@
 # Zodiac Telegram Platform UX Audit
 
-Package 57-61 | 2026-06-20 | latest update: Package 61
+Package 57-62 | 2026-06-20 | latest update: Package 62
 
 ---
 
@@ -13,6 +13,7 @@ Package 57-61 | 2026-06-20 | latest update: Package 61
 | User entry clarity | **8/10** | Multiple startapp params, clear CTA buttons |
 | Analytics clarity | **9/10** | Rich counters, funnels, privacy-safe labeling |
 | Publishing safety clarity | **9/10** | Fail-closed ledger, dry-run safe, 0 API calls |
+| Admin safety clarity | **9/10** | Dedicated safety route, Approval Matrix, local audit log, no server write API |
 | Soft-launch readiness | **9/10** | Baseline captured, docs ready, feedback center and real-phone checklist exist |
 
 ---
@@ -116,6 +117,24 @@ Feedback and QA Evidence Center:
 
 No server write API, raw tester data storage, screenshots, live publish, ledger
 mutation, weekly live, payments/Stars, profile sync, or exact astro claims were added.
+
+---
+
+## Package 62 Addendum
+
+Package 62 adds `/dashboard/networks/zodiac/security` as the owner-facing Admin
+Safety Center:
+
+- safety status cards for live publish, weekly live, payments/Stars, profile sync, exact astro, ledger, dry-run API calls, Redis analytics, and mass launch;
+- Approval Matrix that keeps live publish, weekly live, payments, profile sync, and exact astro provider behind explicit approvals with no UI button;
+- localStorage-only audit log labeled `Локальный журнал, не серверная база`;
+- export/copy sanitized audit log and clear local log controls;
+- `Перед 20 пользователями` safety checklist;
+- future roles/auth readiness for Owner, Admin, Editor, Viewer;
+- warning that server write API is intentionally disabled until authenticated admin backend, audit log, and role checks exist.
+
+No server write API, live publish control, manual ledger mutation, weekly live,
+payments/Stars, profile sync, exact astro provider, or mass launch enablement was added.
 
 ---
 

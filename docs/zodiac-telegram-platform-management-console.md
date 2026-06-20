@@ -1,6 +1,6 @@
 # Zodiac Telegram Platform Management Console
 
-Package 59-61 | 2026-06-20
+Package 59-62 | 2026-06-20
 
 This document describes the owner-facing Telegram Platform dashboard for the Zodiac network. It is an admin console and runbook index, not a live publisher.
 
@@ -17,7 +17,7 @@ Main routes:
 | Аналитика | `/dashboard/networks/zodiac/analytics` | Privacy-safe Mini App analytics and first-users funnel |
 | Отзывы | `/dashboard/networks/zodiac/feedback` | Local-only sanitized feedback intake, P0/P1 triage, and real-phone QA evidence |
 | Soft Launch | `/dashboard/networks/zodiac/operations` | First 5 users GO / mass launch STOP status |
-| Безопасность | `/dashboard/networks/zodiac/operations#safety` | Ledger, weekly live, payments, profile sync, exact astro guardrails |
+| Безопасность | `/dashboard/networks/zodiac/security` | Admin safety center, approvals, local audit log, checklist, and role readiness |
 | Документы | `/dashboard/networks/zodiac/docs` | Runbook and project doc paths |
 
 ## Channel Management Page
@@ -90,6 +90,27 @@ Package 61 adds an owner-facing feedback and QA evidence center for:
 It does not create a server-side write API, does not store raw tester data, and
 does not expose token/env values.
 
+## Admin Safety Center
+
+Route:
+
+```text
+/dashboard/networks/zodiac/security
+```
+
+Package 62 adds a dedicated safety route for:
+
+- current guardrail status cards;
+- Approval Matrix for dry-run, live publish, weekly live, payments, profile sync, exact astro, new channels, and manual posts;
+- localStorage-only audit log labeled `Локальный журнал, не серверная база`;
+- export/copy sanitized audit log;
+- `Перед 20 пользователями` checklist;
+- future roles: Owner, Admin, Editor, Viewer;
+- explicit warning that server write API is intentionally disabled until authenticated admin backend, audit log, and role checks exist.
+
+The route has no live publish button, no Telegram write action, no ledger write
+action, and no server-side write API.
+
 ## New Channel Draft Builder
 
 The builder on `/dashboard/networks/zodiac/channels` is local-only because there is no authenticated admin write backend for channel registry changes.
@@ -112,7 +133,7 @@ Fields:
 - Description;
 - Mini App `startapp` parameter;
 - Publishing cadence: `daily` / `weekly` / `manual`;
-- Status: `draft` / `ready` / `active`;
+- Status: `draft` / `ready`;
 - Notes.
 
 Validation:

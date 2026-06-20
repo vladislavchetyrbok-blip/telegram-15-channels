@@ -31,6 +31,7 @@ docs/zodiac-full-project-audit-and-roadmap.md
 docs/zodiac-telegram-platform-map.md
 docs/zodiac-telegram-platform-ux-audit.md
 docs/zodiac-telegram-platform-management-console.md
+docs/zodiac-telegram-platform-admin-safety.md
 docs/zodiac-telegram-platform-publishing-center.md
 docs/zodiac-telegram-platform-feedback-center.md
 docs/zodiac-controlled-launch-freeze.md
@@ -71,6 +72,12 @@ Package 61 adds the feedback and QA evidence center at
 feedback, P0/P1/P2 triage, real-phone QA checklist state, analytics
 correlation, and the 5 -> 20 users decision matrix. It does not add a server
 write API or store raw tester data.
+
+Package 62 adds the admin safety center at
+`/dashboard/networks/zodiac/security`. It is for safety status, Approval Matrix,
+local sanitized audit log, `Перед 20 пользователями` checklist, and future
+Owner/Admin/Editor/Viewer role readiness. It does not add server-side write
+APIs or live Telegram actions.
 
 ## 3. Product Readiness
 

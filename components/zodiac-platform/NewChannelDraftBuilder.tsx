@@ -3,10 +3,11 @@
 import { useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import { CheckCircle2, Clipboard, Copy, ShieldCheck, XCircle } from "lucide-react";
+import { appendZodiacDashboardAuditEvent } from "@/lib/zodiac-dashboard-audit";
 
 type Language = "RU" | "UA" | "EN";
 type Cadence = "daily" | "weekly" | "manual";
-type DraftStatus = "draft" | "ready" | "active";
+type DraftStatus = "draft" | "ready";
 
 interface ChannelDraft {
   title: string;
@@ -48,7 +49,7 @@ export function NewChannelDraftBuilder({ existingSlugs }: { existingSlugs: strin
       const stored = window.localStorage.getItem(storageKey);
       if (stored) {
         const parsed = JSON.parse(stored) as Partial<ChannelDraft>;
-        setDraft({ ...defaultDraft, ...parsed });
+        setDraft({ ...defaultDraft, ...parsed, status: parsed.status === "ready" ? "ready" : "draft" });
       }
     } catch {
       setDraft(defaultDraft);
@@ -69,7 +70,15 @@ export function NewChannelDraftBuilder({ existingSlugs }: { existingSlugs: strin
 
   function updateDraft<K extends keyof ChannelDraft>(field: K, value: ChannelDraft[K]) {
     setCopied(null);
-    setDraft((current) => ({ ...current, [field]: value }));
+    const nextDraft = { ...draft, [field]: value };
+    setDraft(nextDraft);
+    appendZodiacDashboardAuditEvent({
+      action: "channel_draft_updated",
+      route: "/dashboard/networks/zodiac/channels",
+      label: nextDraft.slug || nextDraft.title || "new channel draft",
+      status: nextDraft.status,
+      risk: "approval",
+    });
   }
 
   async function copyText(kind: "config" | "checklist" | "all", text: string) {
@@ -135,7 +144,6 @@ export function NewChannelDraftBuilder({ existingSlugs }: { existingSlugs: strin
             <select value={draft.status} onChange={(event) => updateDraft("status", event.target.value as DraftStatus)} className={inputClassName}>
               <option value="draft">draft</option>
               <option value="ready">ready</option>
-              <option value="active">active</option>
             </select>
           </Field>
           <Field label="Описание" wide>

@@ -6,7 +6,7 @@ export function ZodiacPlatformNav({ current }: { current: string }) {
     <nav aria-label="Навигация Telegram Platform" className="overflow-x-auto rounded-lg border border-slate-200 bg-white p-2 shadow-sm">
       <div className="flex min-w-max gap-2">
         {zodiacPlatformNavItems.map((item) => {
-          const active = item.id === current || (current === "operations" && (item.id === "soft-launch" || item.id === "safety"));
+          const active = item.id === current || (current === "operations" && item.id === "soft-launch");
 
           return (
             <Link

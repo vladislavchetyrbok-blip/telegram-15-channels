@@ -76,8 +76,8 @@ const platformSections = [
     tone: "cyan",
   },
   {
-    title: "Безопасность / ledger",
-    href: "/dashboard/networks/zodiac/operations#safety",
+    title: "Безопасность",
+    href: "/dashboard/networks/zodiac/security",
     icon: LockKeyhole,
     caption: "Ledger protected, weekly live OFF, payments OFF, profile sync OFF.",
     tone: "emerald",

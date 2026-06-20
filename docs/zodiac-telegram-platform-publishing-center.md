@@ -1,6 +1,6 @@
 # Zodiac Telegram Platform Publishing Center
 
-Package 60 | 2026-06-20
+Package 60, updated Package 62 | 2026-06-20
 
 This document describes the safe owner-facing publishing center for the Zodiac Telegram Platform. It is a preparation and dry-run console, not a live publishing surface.
 
@@ -10,7 +10,8 @@ This document describes the safe owner-facing publishing center for the Zodiac T
 /dashboard/networks/zodiac/publishing
 ```
 
-The page is linked from the platform sidebar, overview, channels, and operations pages.
+The page is linked from the platform sidebar, overview, channels, operations,
+and Admin Safety Center pages.
 
 ## Daily / Weekly / Live Status
 
@@ -111,3 +112,13 @@ Checklist:
 The publishing center intentionally does not render a live publish button.
 
 Live commands, if documented elsewhere, are manual approval only and are not dashboard actions. Weekly live remains OFF. Payments/Stars, profile sync, exact astro claims, and mass launch remain OFF/STOP.
+
+Package 62 adds the related Admin Safety Center at:
+
+```text
+/dashboard/networks/zodiac/security
+```
+
+Before any live publish process, check the Approval Matrix there. Daily live
+publish remains blocked in UI and requires explicit owner approval outside the
+dashboard.
