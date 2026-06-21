@@ -35,6 +35,7 @@ const ROUTES = {
   mysticNumbers: "/mystic-numbers",
   affirmations: "/affirmations",
   miniappHub: "/miniapp",
+  miniappRouteSafety: "/dashboard/networks/zodiac/miniapp-route-safety",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
   softLaunch: "/dashboard/networks/zodiac/soft-launch",
@@ -315,10 +316,42 @@ async function main() {
     assertIncludes(pages.miniappHub, "Mini App Hub", "miniapp hub page title");
     assertIncludes(pages.miniappHub, "Static Hub (Package 106)", "miniapp hub mock notice");
     assertIncludes(pages.miniappHub, "Zodiac Universe", "miniapp hub subtitle");
+    assertIncludes(pages.miniappHub, "No payment", "miniapp hub safety: no payment");
+    assertIncludes(pages.miniappHub, "No database", "miniapp hub safety: no database");
+    assertIncludes(pages.miniappHub, "No Telegram API", "miniapp hub safety: no telegram API");
+    assertIncludes(pages.miniappHub, "birth-matrix", "miniapp hub contains birth matrix link");
+    assertIncludes(pages.miniappHub, "mystic-numbers", "miniapp hub contains mystic numbers link");
+    assertIncludes(pages.miniappHub, "affirmations", "miniapp hub contains affirmations link");
+    assertIncludes(pages.miniappHub, "vip-preview", "miniapp hub contains vip preview link");
+
+    assertIncludes(pages.birthMatrix, "No payment", "birth matrix safety: no payment");
+    assertIncludes(pages.birthMatrix, "No database", "birth matrix safety: no database");
+    assertIncludes(pages.birthMatrix, "No Telegram API", "birth matrix safety: no telegram API");
+
+    assertIncludes(pages.mysticNumbers, "No payment", "mystic numbers safety: no payment");
+    assertIncludes(pages.mysticNumbers, "No database", "mystic numbers safety: no database");
+    assertIncludes(pages.mysticNumbers, "No Telegram API", "mystic numbers safety: no telegram API");
+
+    assertIncludes(pages.affirmations, "No payment", "affirmations safety: no payment");
+    assertIncludes(pages.affirmations, "No database", "affirmations safety: no database");
+    assertIncludes(pages.affirmations, "No Telegram API", "affirmations safety: no telegram API");
 
     assertIncludes(pages.vipPreview, "VIP Preview", "vip preview page title");
     assertIncludes(pages.vipPreview, "Preview Only (Package 107)", "vip preview mock notice");
     assertIncludes(pages.vipPreview, "Future VIP Access", "vip preview subtitle");
+    assertIncludes(pages.vipPreview, "No payment", "vip preview safety: no payment");
+    assertIncludes(pages.vipPreview, "No unlock", "vip preview safety: no unlock");
+    assertIncludes(pages.vipPreview, "No database", "vip preview safety: no database");
+    assertIncludes(pages.vipPreview, "No Telegram API", "vip preview safety: no telegram API");
+    assertIncludes(pages.vipPreview, "No subscription logic", "vip preview safety: no subscription logic");
+
+    assertIncludes(pages.miniappRouteSafety, "Mini App Route Safety Baseline", "miniapp route safety page title");
+    assertIncludes(pages.miniappRouteSafety, "/miniapp", "miniapp route safety: miniapp route listed");
+    assertIncludes(pages.miniappRouteSafety, "/compatibility", "miniapp route safety: compatibility route listed");
+    assertIncludes(pages.miniappRouteSafety, "/birth-matrix", "miniapp route safety: birth-matrix route listed");
+    assertIncludes(pages.miniappRouteSafety, "/mystic-numbers", "miniapp route safety: mystic-numbers route listed");
+    assertIncludes(pages.miniappRouteSafety, "/affirmations", "miniapp route safety: affirmations route listed");
+    assertIncludes(pages.miniappRouteSafety, "/vip-preview", "miniapp route safety: vip-preview route listed");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");

@@ -72,11 +72,11 @@ export const MOCK_VIP_PREVIEW_FEATURES: VipPreviewFeature[] = [
 ];
 
 export const MOCK_VIP_BOUNDARY_RULES: VipBoundaryRule[] = [
-  { label: "No Real Payment", description: "Transactions are simulated or disabled entirely.", protectedArea: "Payments" },
-  { label: "No Real Unlock", description: "Premium features cannot be accessed.", protectedArea: "Entitlement" },
-  { label: "No Subscription State", description: "User subscription tier is not tracked.", protectedArea: "Database" },
-  { label: "No Database Write", description: "No profile or transaction records are saved.", protectedArea: "Database" },
-  { label: "No Telegram API Call", description: "No bot interactions occur from this route.", protectedArea: "Telegram API" },
+  { label: "No payment", description: "Transactions are simulated or disabled entirely.", protectedArea: "Payments" },
+  { label: "No unlock", description: "Premium features cannot be accessed.", protectedArea: "Entitlement" },
+  { label: "No subscription logic", description: "User subscription tier is not tracked.", protectedArea: "Database" },
+  { label: "No database", description: "No profile or transaction records are saved.", protectedArea: "Database" },
+  { label: "No Telegram API", description: "No bot interactions occur from this route.", protectedArea: "Telegram API" },
   { label: "No Production Telegram Delivery Change", description: "Live channel posts are untouched.", protectedArea: "Publishing" },
   { label: "No Workflow/Cron/Publish Script Changes", description: "Automation scripts remain locked.", protectedArea: "Infrastructure" },
 ];

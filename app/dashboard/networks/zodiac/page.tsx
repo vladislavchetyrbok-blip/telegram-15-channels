@@ -107,6 +107,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Mini App Route Safety",
+    href: "/dashboard/networks/zodiac/miniapp-route-safety",
+    icon: ShieldCheck,
+    caption: "Package 108 - Route safety baseline and QA assertions for all Mini App mock routes.",
+    tone: "emerald",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

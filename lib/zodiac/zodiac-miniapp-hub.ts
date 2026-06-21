@@ -72,9 +72,9 @@ export const MOCK_MINI_APP_HUB_ITEMS: MiniAppHubItem[] = [
 ];
 
 export const MOCK_MINI_APP_SAFETY_RULES: MiniAppHubSafetyRule[] = [
-  { label: "No Payment", description: "This hub does not process transactions." },
-  { label: "No Database Write", description: "User actions here are not persisted." },
-  { label: "No Telegram API Call", description: "This hub operates entirely independent of the Telegram bot context." },
+  { label: "No payment", description: "This hub does not process transactions." },
+  { label: "No database", description: "User actions here are not persisted." },
+  { label: "No Telegram API", description: "This hub operates entirely independent of the Telegram bot context." },
   { label: "No Active Publishing Changes", description: "Daily CTAs remain unaffected." },
   { label: "Mock Modules Only", description: "Features labeled 'active-mock' are static visual placeholders." }
 ];
