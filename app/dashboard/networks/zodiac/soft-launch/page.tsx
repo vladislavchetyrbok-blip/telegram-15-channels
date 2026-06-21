@@ -118,6 +118,18 @@ export default function ZodiacSoftLaunchPage() {
               <svg className="w-5 h-5 text-fuchsia-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
             </div>
           </Link>
+          <Link href="/dashboard/networks/zodiac/quality-scoring" className="rounded-xl border border-sky-500/30 bg-sky-500/10 p-5 shadow-sm hover:bg-sky-500/20 transition flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <CheckCircle2 className="h-5 w-5 text-sky-400" />
+                <h3 className="text-lg font-semibold text-white">Оценка качества</h3>
+              </div>
+              <div className="text-sm text-sky-300">Scoring перед soft launch: структура, CTA, безопасность, повторяемость и различимость знаков.</div>
+            </div>
+            <div className="flex items-center justify-center p-2 rounded-full bg-slate-800/50">
+              <svg className="w-5 h-5 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+            </div>
+          </Link>
         </section>
 
         {/* 2. Soft launch phases */}

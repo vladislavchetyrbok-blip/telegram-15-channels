@@ -93,6 +93,18 @@ export default function ZodiacDailySystemPage() {
                   Структура постов, уникальность знаков, CTA, Mini App-связка и контроль повторяемости.
                 </div>
               </Link>
+              <Link
+                href="/dashboard/networks/zodiac/quality-scoring"
+                className="flex flex-col items-end gap-1 rounded-lg border border-sky-500/30 bg-sky-500/10 px-4 py-3 text-right transition-colors hover:bg-sky-500/20"
+              >
+                <div className="flex items-center gap-2 text-sm font-bold text-sky-400">
+                  <CheckCircle2 className="h-4 w-4" />
+                  Оценка качества
+                </div>
+                <div className="text-xs text-sky-500 max-w-[250px]">
+                  Scoring перед soft launch: структура, CTA, безопасность, повторяемость и различимость знаков.
+                </div>
+              </Link>
             </div>
           </div>
         </div>

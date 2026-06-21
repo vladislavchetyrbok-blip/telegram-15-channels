@@ -123,7 +123,7 @@ export default function ZodiacLedgerPage() {
         </section>
 
         {/* Action Links */}
-        <section className="grid gap-4 md:grid-cols-2">
+        <section className="grid gap-4 md:grid-cols-3">
           <Link href="/dashboard/networks/zodiac/content-quality" className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-5 shadow-sm hover:bg-amber-500/20 transition flex items-center justify-between">
             <div>
               <div className="flex items-center gap-2 mb-1">
@@ -143,6 +143,16 @@ export default function ZodiacLedgerPage() {
               <div className="text-sm text-fuchsia-300">Структура постов, уникальность знаков, CTA, Mini App-связка и контроль повторяемости.</div>
             </div>
             <ChevronRight className="h-5 w-5 text-fuchsia-400" />
+          </Link>
+          <Link href="/dashboard/networks/zodiac/quality-scoring" className="rounded-xl border border-sky-500/30 bg-sky-500/10 p-5 shadow-sm hover:bg-sky-500/20 transition flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <CheckCircle2 className="h-5 w-5 text-sky-400" />
+                <h3 className="text-lg font-semibold text-white">Оценка качества</h3>
+              </div>
+              <div className="text-sm text-sky-300">Scoring перед soft launch: структура, CTA, безопасность, повторяемость и различимость знаков.</div>
+            </div>
+            <ChevronRight className="h-5 w-5 text-sky-400" />
           </Link>
         </section>
 
