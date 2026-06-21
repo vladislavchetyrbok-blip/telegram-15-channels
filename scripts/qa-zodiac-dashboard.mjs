@@ -31,6 +31,7 @@ const ROUTES = {
   miniApp: "/compatibility",
   miniappAudit: "/dashboard/networks/zodiac/miniapp-audit",
   miniappArchitecture: "/dashboard/networks/zodiac/miniapp-architecture",
+  birthMatrix: "/birth-matrix",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
   softLaunch: "/dashboard/networks/zodiac/soft-launch",
   dashboardAuthStatus: "/api/dashboard/auth/status",
@@ -294,6 +295,10 @@ async function main() {
     assertIncludes(pages.miniappArchitecture, "Package 102", "miniapp architecture package number");
     assertIncludes(pages.miniappArchitecture, "VIP Entry Points", "miniapp architecture module name");
     assertIncludes(pages.miniappArchitecture, "Implementation Phases", "miniapp architecture phases section");
+
+    assertIncludes(pages.birthMatrix, "Birth Matrix", "birth matrix page title");
+    assertIncludes(pages.birthMatrix, "Static Mock (Package 103)", "birth matrix mock notice");
+    assertIncludes(pages.birthMatrix, "Discover Your Matrix", "birth matrix subtitle");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");

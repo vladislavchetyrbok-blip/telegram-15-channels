@@ -126,6 +126,23 @@ export default async function MiniAppArchitecturePage() {
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-6 shadow-sm">
+            <div className="flex justify-between items-start mb-4">
+              <h2 className="text-lg font-semibold text-slate-100">Implementation Mocks</h2>
+            </div>
+            <div className="space-y-4 mb-6">
+              <div className="rounded-md border border-slate-800 bg-slate-800/20 p-4">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h3 className="font-medium text-slate-200">Birth Matrix UI Mock</h3>
+                    <p className="mt-1 text-xs text-slate-400">Package 103 static implementation without database.</p>
+                  </div>
+                  <a href="/birth-matrix" className="rounded-md bg-violet-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-violet-700 transition">
+                    View Mock
+                  </a>
+                </div>
+              </div>
+            </div>
+
             <h2 className="mb-4 text-lg font-semibold text-slate-100">Route Boundaries</h2>
             <div className="space-y-4">
               {miniAppRouteBoundaries.map((boundary, i) => (
