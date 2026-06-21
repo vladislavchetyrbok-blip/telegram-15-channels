@@ -135,6 +135,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Compatibility Flow Safety",
+    href: "/dashboard/networks/zodiac/compatibility-flow-safety",
+    icon: ShieldCheck,
+    caption: "Package 114 - Audit of compatibility flow safety boundaries.",
+    tone: "cyan",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

@@ -38,6 +38,7 @@ const ROUTES = {
   miniappRouteSafety: "/dashboard/networks/zodiac/miniapp-route-safety",
   miniappReadiness: "/dashboard/networks/zodiac/miniapp-readiness",
   miniappLinkSmoke: "/dashboard/networks/zodiac/miniapp-link-smoke",
+  compatibilityFlowSafety: "/dashboard/networks/zodiac/compatibility-flow-safety",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
   softLaunch: "/dashboard/networks/zodiac/soft-launch",
@@ -368,6 +369,12 @@ async function main() {
     assertIncludes(pages.miniappLinkSmoke, "/affirmations", "miniapp link smoke affirmations route listed");
     assertIncludes(pages.miniappLinkSmoke, "/vip-preview", "miniapp link smoke vip preview route listed");
     assertIncludes(pages.miniappLinkSmoke, "No live CTA changes", "miniapp link smoke live cta protection");
+
+    assertIncludes(pages.compatibilityFlowSafety, "Compatibility Flow Safety Audit", "compatibility flow safety page title");
+    assertIncludes(pages.compatibilityFlowSafety, "Compatibility flow audit only", "compatibility flow audit classification");
+    assertIncludes(pages.compatibilityFlowSafety, "/compatibility", "compatibility route listed");
+    assertIncludes(pages.compatibilityFlowSafety, "No scoring engine changes", "compatibility scoring boundary");
+    assertIncludes(pages.compatibilityFlowSafety, "No live CTA changes", "compatibility live cta protection");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");
