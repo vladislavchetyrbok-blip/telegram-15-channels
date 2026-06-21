@@ -1597,6 +1597,18 @@
       "updatedAt": "2026-06-21T10:03:25.759Z",
       "messageId": "23,",
       "sentAt": "2026-06-21T10:03:25.759Z"
+    },
+    "2026-06-21:pisces": {
+      "key": "2026-06-21:pisces",
+      "date": "2026-06-21",
+      "slug": "pisces",
+      "createdAt": "2026-06-21T10:03:26.661Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-06-21T10:03:26.661Z"
     }
   }
 }
