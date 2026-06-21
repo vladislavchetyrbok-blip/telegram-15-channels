@@ -44,6 +44,7 @@ const ROUTES = {
   miniappProductionWiring: "/dashboard/networks/zodiac/miniapp-production-wiring",
   miniappPaymentMatrix: "/dashboard/networks/zodiac/miniapp-payment-matrix",
   miniappRiskRegister: "/dashboard/networks/zodiac/miniapp-risk-register",
+  miniappMasterIndex: "/dashboard/networks/zodiac/miniapp-master-index",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
   softLaunch: "/dashboard/networks/zodiac/soft-launch",
@@ -401,6 +402,10 @@ async function main() {
     assertIncludes(pages.miniappRiskRegister, "Production Risk Register", "risk register page title");
     assertIncludes(pages.miniappRiskRegister, "Documentation Only", "risk register mock boundary");
     assertIncludes(pages.miniappRiskRegister, "No live launch has occurred", "risk register live boundary");
+
+    assertIncludes(pages.miniappMasterIndex, "Mini App Master Control Index", "master index page title");
+    assertIncludes(pages.miniappMasterIndex, "Mock Mode Active", "master index mock boundary");
+    assertIncludes(pages.miniappMasterIndex, "No live Telegram API calls are made", "master index telegram boundary");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");

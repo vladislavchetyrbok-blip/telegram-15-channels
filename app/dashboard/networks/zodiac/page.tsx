@@ -177,6 +177,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Master Control Index",
+    href: "/dashboard/networks/zodiac/miniapp-master-index",
+    icon: ShieldCheck,
+    caption: "Package 120 - Mini App master control index.",
+    tone: "cyan",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
