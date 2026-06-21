@@ -54,8 +54,8 @@ export function AffirmationsClient() {
         {!result ? (
           <div className="space-y-6">
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-slate-100">Your Daily Power</h2>
-              <p className="mt-2 text-sm text-slate-400">Align your zodiac energy with your current mood to manifest the perfect outcome today.</p>
+              <h2 className="text-2xl font-bold text-slate-100">Your Daily Affirmation</h2>
+              <p className="mt-2 text-sm text-slate-400">Align your zodiac energy with your current focus for the day.</p>
             </div>
 
             <form onSubmit={handleCalculate} className="space-y-4">

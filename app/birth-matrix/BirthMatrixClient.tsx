@@ -44,8 +44,8 @@ export function BirthMatrixClient() {
         {!result ? (
           <div className="space-y-6">
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-slate-100">Discover Your Matrix</h2>
-              <p className="mt-2 text-sm text-slate-400">Enter your details to calculate your numerological destiny.</p>
+              <h2 className="text-2xl font-bold text-slate-100">Calculate Your Matrix</h2>
+              <p className="mt-2 text-sm text-slate-400">Enter your details to reveal the core numerology patterns that shape your path.</p>
             </div>
 
             <form onSubmit={handleCalculate} className="space-y-4">

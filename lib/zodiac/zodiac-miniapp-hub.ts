@@ -15,7 +15,7 @@ export type MiniAppHubSafetyRule = {
 export const MOCK_MINI_APP_HUB_ITEMS: MiniAppHubItem[] = [
   {
     title: "Compatibility",
-    description: "Check zodiac compatibility with potential partners.",
+    description: "Explore how your zodiac energy aligns with a partner.",
     href: "/compatibility",
     status: "existing",
     safetyLabel: "Production Ready (Free Version)",
@@ -23,7 +23,7 @@ export const MOCK_MINI_APP_HUB_ITEMS: MiniAppHubItem[] = [
   },
   {
     title: "Birth Matrix",
-    description: "Calculate your unique numerological birth matrix.",
+    description: "Discover the core numerology patterns of your birth date.",
     href: "/birth-matrix",
     status: "active-mock",
     safetyLabel: "Package 103 Static Mock",
@@ -31,7 +31,7 @@ export const MOCK_MINI_APP_HUB_ITEMS: MiniAppHubItem[] = [
   },
   {
     title: "Mystic Numbers",
-    description: "Decode the angel numbers you see.",
+    description: "Understand the meaning behind repeating numbers you encounter.",
     href: "/mystic-numbers",
     status: "active-mock",
     safetyLabel: "Package 104 Static Mock",
@@ -39,7 +39,7 @@ export const MOCK_MINI_APP_HUB_ITEMS: MiniAppHubItem[] = [
   },
   {
     title: "Affirmations",
-    description: "Daily power affirmations based on your mood.",
+    description: "Align your energy with daily mood-based affirmations.",
     href: "/affirmations",
     status: "active-mock",
     safetyLabel: "Package 105 Static Mock",
@@ -47,7 +47,7 @@ export const MOCK_MINI_APP_HUB_ITEMS: MiniAppHubItem[] = [
   },
   {
     title: "VIP Preview",
-    description: "Unlock premium numerology and compatibility features.",
+    description: "Explore the roadmap for our future advanced modules.",
     href: "/vip-preview",
     status: "active-mock",
     safetyLabel: "Package 107 Static Mock",
@@ -55,19 +55,19 @@ export const MOCK_MINI_APP_HUB_ITEMS: MiniAppHubItem[] = [
   },
   {
     title: "Lunar Calendar",
-    description: "Track moon phases and their impact on your sign.",
+    description: "View upcoming moon phases and astrological shifts.",
     href: "#",
     status: "future",
     safetyLabel: "Placeholder",
-    recommendedNextAction: "Design mock UI",
+    recommendedNextAction: "Define data structure",
   },
   {
     title: "Relationship Map",
-    description: "Visualize compatibility across your entire friend group.",
+    description: "Map the astrological connections in your social circle.",
     href: "#",
-    status: "future",
+    status: "placeholder",
     safetyLabel: "Placeholder",
-    recommendedNextAction: "Design mock UI",
+    recommendedNextAction: "Define graph UX",
   },
 ];
 

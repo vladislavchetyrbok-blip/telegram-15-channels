@@ -50,7 +50,7 @@ export default function VipPreviewPage() {
           <div className="text-center">
             <Sparkles className="mx-auto h-8 w-8 text-fuchsia-400 mb-3" />
             <h2 className="text-2xl font-bold text-slate-100">Future VIP Access</h2>
-            <p className="mt-2 text-sm text-slate-400">Discover the premium features planned for the ultimate cosmic experience.</p>
+            <p className="mt-2 text-sm text-slate-400">Preview the advanced features planned for future updates.</p>
           </div>
 
           <div className="grid grid-cols-1 gap-3">

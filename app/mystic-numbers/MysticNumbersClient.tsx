@@ -51,8 +51,8 @@ export function MysticNumbersClient() {
         {!result ? (
           <div className="space-y-6">
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-slate-100">Decode The Signs</h2>
-              <p className="mt-2 text-sm text-slate-400">Did you see repeating numbers on the clock, a license plate, or a receipt? Find out what the universe is telling you.</p>
+              <h2 className="text-2xl font-bold text-slate-100">Decode Repeating Numbers</h2>
+              <p className="mt-2 text-sm text-slate-400">Did you spot a repeating number pattern? Check its traditional numerological association.</p>
             </div>
 
             <form onSubmit={handleCalculate} className="space-y-4">

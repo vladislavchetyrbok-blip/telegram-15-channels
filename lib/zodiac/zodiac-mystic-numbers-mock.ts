@@ -17,7 +17,7 @@ export type MysticNumberResult = {
 const patternMeanings: Record<string, { headline: string; meaning: string; action: string; affirmation: string }> = {
   "111": {
     headline: "Intuition & Manifestation",
-    meaning: "Your thoughts are rapidly becoming your reality. The universe is taking a snapshot of your intentions.",
+    meaning: "Your thoughts are aligning with your goals. It's a good time to focus on clear intentions.",
     action: "Keep your thoughts positive and focused on your desires.",
     affirmation: "I am a powerful creator of my reality.",
   },
@@ -29,13 +29,13 @@ const patternMeanings: Record<string, { headline: string; meaning: string; actio
   },
   "333": {
     headline: "Support & Expansion",
-    meaning: "The ascended masters are near, offering you love, support, and guidance.",
+    meaning: "You are supported by your community and inner wisdom. Tap into your creative flow.",
     action: "Express your truth creatively and joyfully.",
     affirmation: "I am supported by the universe in all that I do.",
   },
   "444": {
     headline: "Protection & Stability",
-    meaning: "You are surrounded by angels who are protecting and guiding you. You have a solid foundation.",
+    meaning: "You have a solid foundation. Focus on building and maintaining stability.",
     action: "Focus on your goals with discipline and determination.",
     affirmation: "I am safe, protected, and grounded.",
   },
@@ -53,7 +53,7 @@ const patternMeanings: Record<string, { headline: string; meaning: string; actio
   },
   "777": {
     headline: "Luck & Spiritual Awakening",
-    meaning: "You are on the right path and in alignment with your soul's purpose. Miracles are occurring.",
+    meaning: "You are on the right path. Keep trusting your intuition and acknowledging your progress.",
     action: "Continue your spiritual growth and trust your inner wisdom.",
     affirmation: "I am open to receiving divine blessings.",
   },
@@ -83,7 +83,7 @@ const patternMeanings: Record<string, { headline: string; meaning: string; actio
   },
   "mirror": {
     headline: "Reflection of the Soul",
-    meaning: "The universe is reflecting your inner state back to you. What you see outside is what you hold inside.",
+    meaning: "Your environment often reflects your inner state. Observe what this moment shows you about yourself.",
     action: "Take a moment to center yourself and observe your emotions.",
     affirmation: "I embrace the mirror of life to understand myself better.",
   },
@@ -95,7 +95,7 @@ const patternMeanings: Record<string, { headline: string; meaning: string; actio
   },
   "mixed": {
     headline: "Hidden Messages",
-    meaning: "The universe is whispering to you in subtle ways. There is a unique message hidden in this specific combination.",
+    meaning: "There are subtle patterns to observe in your daily life. This specific combination suggests paying attention to the details.",
     action: "Meditate on this number and see what feelings arise.",
     affirmation: "I am open to the subtle guidance of the universe.",
   },
@@ -119,7 +119,7 @@ export function calculateMockMysticNumber(input: MysticNumberInput): MysticNumbe
       meaning: "Please enter a valid number to receive your mystic interpretation.",
       actionHint: "Look around you for recurring numbers.",
       affirmation: "I am open to divine guidance.",
-      vipPreview: "Unlock premium numerology to decode any number in the universe."
+      vipPreview: "Preview premium numerology to decode any number in the universe."
     };
   }
 
@@ -169,6 +169,6 @@ export function calculateMockMysticNumber(input: MysticNumberInput): MysticNumbe
     meaning: interpretation.meaning,
     actionHint: interpretation.action,
     affirmation: interpretation.affirmation,
-    vipPreview: `Unlock deep insights into the karmic significance of ${normalizedNumber} in your personal chart.`,
+    vipPreview: `Preview deep insights into the karmic significance of ${normalizedNumber} in your personal chart.`,
   };
 }

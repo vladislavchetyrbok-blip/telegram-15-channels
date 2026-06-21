@@ -63,7 +63,7 @@ export function calculateMockBirthMatrix(input: BirthMatrixInput): BirthMatrixRe
     characterProfile: interpretation.profile,
     energyMatrix: [
       {
-        label: "Destiny Path",
+        label: "Life Path",
         value: coreNumber,
         meaning: interpretation.energy,
       },
@@ -79,6 +79,6 @@ export function calculateMockBirthMatrix(input: BirthMatrixInput): BirthMatrixRe
       }
     ],
     compatibilityHint: "Your energy resonates deeply with numbers " + ((coreNumber % 9) + 1) + " and " + ((coreNumber % 7) + 2) + ".",
-    vipPreview: "Unlock your full Birth Matrix to see your karmic lessons, life cycles, and deep compatibility connections.",
+    vipPreview: "Preview your full Birth Matrix to explore personal growth areas, life cycles, and compatibility dynamics.",
   };
 }
