@@ -93,6 +93,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Mini App Architecture",
+    href: "/dashboard/networks/zodiac/miniapp-architecture",
+    icon: ListPlus,
+    caption: "Package 102 - Read-only architecture spec for upcoming Mini App modules.",
+    tone: "cyan",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

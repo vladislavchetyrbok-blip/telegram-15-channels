@@ -30,6 +30,7 @@ const ROUTES = {
   legacyPublishing: "/publishing-center",
   miniApp: "/compatibility",
   miniappAudit: "/dashboard/networks/zodiac/miniapp-audit",
+  miniappArchitecture: "/dashboard/networks/zodiac/miniapp-architecture",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
   softLaunch: "/dashboard/networks/zodiac/soft-launch",
   dashboardAuthStatus: "/api/dashboard/auth/status",
@@ -288,6 +289,11 @@ async function main() {
     assertIncludes(pages.miniappAudit, "Package 101", "miniapp audit package number");
     assertIncludes(pages.miniappAudit, "Проверить совместимость", "miniapp audit cta link");
     assertIncludes(pages.miniappAudit, "VIP Entry Points", "miniapp audit vip entry points");
+
+    assertIncludes(pages.miniappArchitecture, "Mini App Architecture Spec", "miniapp architecture page title");
+    assertIncludes(pages.miniappArchitecture, "Package 102", "miniapp architecture package number");
+    assertIncludes(pages.miniappArchitecture, "VIP Entry Points", "miniapp architecture module name");
+    assertIncludes(pages.miniappArchitecture, "Implementation Phases", "miniapp architecture phases section");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");
