@@ -428,7 +428,39 @@ async function main() {
     const combined = Object.values(pages).join("\n");
     assertNoForbiddenLinks(combined);
 
-    console.log("Dashboard QA: PASS");
+    
+  console.log("Checking for old English terminology globally...");
+  const oldEnglishTerms = [
+    "TELEGRAM NETWORK DASHBOARD",
+    "Aphrodite Platform",
+    "Operator Platform",
+    "Total Channels",
+    "Legacy Paused",
+    "Draft Modules",
+    "Live Publish",
+    "Platform Modules",
+    "Channel Registry",
+    "Safety Level",
+    "Next Step",
+    "Next Safe Actions",
+    "Platform Architecture",
+    "Aphrodite OS",
+    "Create Post",
+    "Generate AI"
+  ];
+  
+  Object.entries(pages).forEach(([pageName, html]) => {
+    if (html) {
+      oldEnglishTerms.forEach(term => {
+        // we skip "Live Publish" check in docs/rules if we accidentally load it, but these are HTML pages
+        // let's do a strict check
+        assertNotIncludes(html, term, `Old English term "${term}" found in ${pageName}`);
+      });
+    }
+  });
+
+
+  console.log("Dashboard QA: PASS");
   } finally {
     if (server.started) {
       server.process.kill();

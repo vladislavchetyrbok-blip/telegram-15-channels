@@ -38,35 +38,35 @@ export function Header() {
     <header className="sticky top-0 z-30 border-b border-line bg-[#070b14]/86 px-4 py-4 backdrop-blur sm:px-6 lg:px-8">
       <div className="flex min-w-0 flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
         <div className="min-w-0">
-          <p className="text-xs font-medium uppercase tracking-[0.2em] text-cyan-300">Telegram network dashboard</p>
+          <p className="text-xs font-medium uppercase tracking-[0.2em] text-cyan-300">Панель Афродиты</p>
           <p className="mt-2 flex max-w-full items-start gap-2 rounded-lg border border-slate-600 bg-slate-900/80 px-3 py-2 text-xs font-medium leading-5 text-slate-300 sm:inline-flex sm:items-center sm:rounded-full sm:py-1">
             <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-slate-400 sm:mt-0" />
-            <span className="min-w-0 break-words [overflow-wrap:anywhere]">Реальная массовая публикация не запускается автоматически. Автопубликация включается только после preflight.</span>
+            <span className="min-w-0 break-words [overflow-wrap:anywhere]">Центр управления платформой. Никаких прямых публикаций в режиме preflight.</span>
           </p>
-          <h1 className="mt-1 break-words text-xl font-semibold text-white [overflow-wrap:anywhere] sm:text-2xl">Управление сетью из {status.channelsTotal} каналов</h1>
+          <h1 className="mt-1 break-words text-xl font-semibold text-white [overflow-wrap:anywhere] sm:text-2xl">Афродита — {status.channelsTotal} каналов</h1>
         </div>
         <div className="flex min-w-0 max-w-full flex-wrap gap-2 xl:w-auto xl:justify-end">
           <Link
-            href="/posts/new"
-            className="inline-flex h-10 shrink-0 items-center gap-2 rounded-md bg-cyan-300 px-4 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200"
+            href="#"
+            className="inline-flex h-10 shrink-0 items-center gap-2 rounded-md bg-cyan-300 px-4 text-sm font-semibold text-slate-950 transition opacity-50 cursor-not-allowed pointer-events-none"
           >
             <PenSquare className="h-4 w-4" />
-            Создать пост
+            Черновик поста
           </Link>
-          <Link href="/generation" className="inline-flex h-10 shrink-0 items-center gap-2 rounded-md border border-line bg-panel px-4 text-sm font-semibold text-slate-200 transition hover:border-cyan-300/40 hover:text-cyan-100">
+          <Link href="#" className="inline-flex h-10 shrink-0 items-center gap-2 rounded-md border border-line bg-panel px-4 text-sm font-semibold text-slate-200 transition opacity-50 cursor-not-allowed pointer-events-none">
             <Bot className="h-4 w-4" />
-            Сгенерировать AI
+            AI не подключена
           </Link>
-          <Link href="/calendar" className="inline-flex h-10 shrink-0 items-center gap-2 rounded-md border border-line bg-panel px-4 text-sm font-semibold text-slate-200 transition hover:border-blue-300/40 hover:text-blue-100">
+          <Link href="#" className="inline-flex h-10 shrink-0 items-center gap-2 rounded-md border border-line bg-panel px-4 text-sm font-semibold text-slate-200 transition opacity-50 cursor-not-allowed pointer-events-none">
             <CalendarPlus className="h-4 w-4" />
-            Запланировать
+            Планирование отключено
           </Link>
-          <Link href="/publishing-center" className="inline-flex h-10 shrink-0 items-center gap-2 rounded-md border border-emerald-300/30 bg-emerald-300/10 px-4 text-sm font-semibold text-emerald-100 transition hover:bg-emerald-300/15">
+          <Link href="#" className="inline-flex h-10 shrink-0 items-center gap-2 rounded-md border border-emerald-300/30 bg-emerald-300/10 px-4 text-sm font-semibold text-emerald-100 transition opacity-50 cursor-not-allowed pointer-events-none">
             <Rocket className="h-4 w-4" />
-            Центр публикаций
+            Только просмотр
           </Link>
           <span className="inline-flex h-10 shrink-0 items-center rounded-md border border-line bg-black/20 px-3 text-sm text-slate-400">
-            Ready: <span className="ml-2 text-cyan-200">{status.readyToPublish}</span>
+            Готово: <span className="ml-2 text-cyan-200">{status.readyToPublish}</span>
           </span>
           <DashboardLogoutButton />
         </div>

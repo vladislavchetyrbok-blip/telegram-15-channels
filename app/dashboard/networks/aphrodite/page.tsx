@@ -148,8 +148,8 @@ export default function AphroditePlatformOverview() {
       <div className="mx-auto max-w-6xl px-4 py-8 lg:px-8 lg:py-12">
         <AphroditePageHeader
           title="Афродита"
-          description="The overarching operator platform for all Telegram publishing networks. Зодиак (Zodiac) and other vertical content engines operate as modules within this control plane."
-          badgeText="Operator Platform"
+          description="Платформа управления Telegram-сеткой каналов, модулями, публикациями, источниками данных и Студией."
+          badgeText="Платформа управления"
           icon={LayoutDashboard}
           safetyLocked={true}
           safetyMessage="Live publish locked"
@@ -274,11 +274,11 @@ export default function AphroditePlatformOverview() {
           </div>
 
           <div className="space-y-8">
-            {/* Next Safe Actions */}
+            {/* Следующие безопасные шаги */}
             <section className="rounded-2xl border border-slate-800/80 bg-[#0f1b33] p-6 shadow-sm">
               <h2 className="text-base font-semibold text-white mb-5 flex items-center gap-2">
                 <CheckCircle2 className="h-5 w-5 text-emerald-400" />
-                Next Safe Actions
+                Следующие безопасные шаги
               </h2>
               <ul className="space-y-4">
                 {[
@@ -298,11 +298,11 @@ export default function AphroditePlatformOverview() {
               </ul>
             </section>
 
-            {/* Platform Architecture */}
+            {/* Архитектура платформы */}
             <section className="rounded-2xl border border-slate-800/80 bg-[#0f1b33] p-6 shadow-sm">
               <h2 className="text-base font-semibold text-white mb-5 flex items-center gap-2">
                 <TerminalSquare className="h-5 w-5 text-slate-400" />
-                Platform Architecture
+                Архитектура платформы
               </h2>
               <div className="rounded-xl border border-slate-800 bg-[#080d1a] p-4 overflow-x-auto font-mono text-sm leading-relaxed text-slate-300">
 <pre><code>{`Афродита

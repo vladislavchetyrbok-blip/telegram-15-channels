@@ -138,12 +138,12 @@ export function Sidebar() {
           <section className="rounded-lg border border-cyan-300/20 bg-cyan-300/5 p-4">
             <p className="text-xs uppercase tracking-[0.18em] text-cyan-200">Политика безопасности</p>
             <p className="mt-3 text-xs leading-5 text-slate-400">
-              <span className="font-semibold text-emerald-400">Offline Mocking Active</span>.
+              <span className="font-semibold text-emerald-400">Автономный режим активен</span>.
               Все живые API-запросы в Telegram отключены в <code className="text-slate-300">local/dev</code> режиме для предотвращения дублирования.
             </p>
             <div className="mt-4 flex items-center gap-2">
               <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-[10px] font-medium uppercase tracking-wider text-emerald-400">Safe Mode</span>
+              <span className="text-[10px] font-medium uppercase tracking-wider text-emerald-400">Безопасный режим</span>
             </div>
           </section>
 
