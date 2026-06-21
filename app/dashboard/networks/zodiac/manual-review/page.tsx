@@ -40,6 +40,10 @@ export default function ZodiacManualReviewPage() {
         <p className="text-slate-400 mt-2">
           Очередь ручного review перед soft launch: dry-run, ledger, качество, риски, CTA и разрешение владельца.
         </p>
+        <div className="mt-4 p-4 bg-blue-900/20 border border-blue-900/50 rounded-lg text-sm text-blue-200 space-y-2">
+          <p>Ручная проверка не останавливает уже настроенную ежедневную автоматику Зодиака. Она относится только к новым live-действиям, изменениям конфигурации и ручному допуску к расширению запуска.</p>
+          <p>Существующий ежедневный контур продолжает работать как настроено. Эта страница только показывает статус review и риски.</p>
+        </div>
       </div>
 
       {/* KPI Cards */}
