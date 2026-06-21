@@ -92,14 +92,14 @@ export default function ZodiacPriorityPage() {
         </section>
 
         {/* Action Links */}
-        <section className="grid gap-4 md:grid-cols-2">
+        <section className="grid gap-4 md:grid-cols-3">
           <Link href="/dashboard/networks/zodiac/profiles" className="rounded-xl border border-indigo-500/30 bg-indigo-500/10 p-5 shadow-sm hover:bg-indigo-500/20 transition flex items-center justify-between">
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <LayoutGrid className="h-5 w-5 text-indigo-400" />
-                <h3 className="text-lg font-semibold text-white">Контентные профили 13 каналов</h3>
+                <h3 className="text-lg font-semibold text-white">Конфиг 13 каналов</h3>
               </div>
-              <div className="text-sm text-indigo-300">Позиционирование, рубрики, тон, форматы</div>
+              <div className="text-sm text-indigo-300">Позиционирование</div>
             </div>
             <ChevronRight className="h-5 w-5 text-indigo-400" />
           </Link>
@@ -109,9 +109,19 @@ export default function ZodiacPriorityPage() {
                 <Activity className="h-5 w-5 text-emerald-400" />
                 <h3 className="text-lg font-semibold text-white">Ежедневная система</h3>
               </div>
-              <div className="text-sm text-emerald-300">Уже настроенный ежедневный контур Зодиака: 13 каналов, расписание, dry-run, ledger и проверка безопасности.</div>
+              <div className="text-sm text-emerald-300">Настроенный ежедневный контур</div>
             </div>
             <ChevronRight className="h-5 w-5 text-emerald-400" />
+          </Link>
+          <Link href="/dashboard/networks/zodiac/soft-launch" className="rounded-xl border border-cyan-500/30 bg-cyan-500/10 p-5 shadow-sm hover:bg-cyan-500/20 transition flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <Calendar className="h-5 w-5 text-cyan-400" />
+                <h3 className="text-lg font-semibold text-white">Soft Launch</h3>
+              </div>
+              <div className="text-sm text-cyan-300">Следующий этап: Soft Launch Preview и календарь проверок</div>
+            </div>
+            <ChevronRight className="h-5 w-5 text-cyan-400" />
           </Link>
         </section>
 

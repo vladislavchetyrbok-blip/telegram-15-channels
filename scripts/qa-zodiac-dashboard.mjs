@@ -23,6 +23,7 @@ const ROUTES = {
   legacyPublishing: "/publishing-center",
   miniApp: "/compatibility",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
+  softLaunch: "/dashboard/networks/zodiac/soft-launch",
   dashboardAuthStatus: "/api/dashboard/auth/status",
   unifiedStatus: "/api/system/unified-status",
   aphroditeOverview: "/dashboard/networks/aphrodite",
@@ -177,10 +178,10 @@ async function main() {
     assertIncludes(pages.content, "нет смешения RU/UA", "quality no mixed RU/UA item");
     assertIncludes(pages.content, "нет ложных точных астрологических claims", "quality exact claims item");
     assertIncludes(pages.content, "есть переход в Mini App", "quality Mini App transition item");
+    assertIncludes(pages.content, "live scheduling changes: NO", "no live scheduling changes label");
     assertIncludes(pages.content, 'data-qa="rubric-planner"', "rubric planner");
     assertIncludes(pages.content, "ежедневный прогноз", "rubric daily forecast");
     assertIncludes(pages.content, "soft launch feedback", "rubric soft launch feedback");
-    assertIncludes(pages.content, "live scheduling changes: NO", "no live scheduling changes label");
     assertIncludes(pages.content, 'href="/dashboard/networks/zodiac/publishing"', "content publishing link");
     assertIncludes(pages.content, 'href="/dashboard/networks/zodiac/security"', "content security link");
     assertIncludes(pages.content, 'href="/dashboard/networks/zodiac/channels"', "content channels link");
@@ -261,6 +262,16 @@ async function main() {
     assertIncludes(pages.launch, 'href="/dashboard/networks/zodiac/publishing"', "publishing link visible on launch");
     assertNotIncludes(pages.launch, "zodiac:publish-date:live", "no live publish button on launch");
 
+    assertIncludes(pages.softLaunch, "Soft Launch Зодиака", "soft launch heading");
+    assertIncludes(pages.softLaunch, "13", "soft launch 13 channels");
+    assertIncludes(pages.softLaunch, "День 7", "soft launch day 7 preview");
+    assertIncludes(pages.softLaunch, "npm run zodiac:publish:date:dry", "soft launch dry-run command");
+    assertIncludes(pages.softLaunch, "Live-публикация отключена", "soft launch safety 1");
+    assertIncludes(pages.softLaunch, "Telegram API не вызывается из этой страницы", "soft launch safety 2");
+    assertIncludes(pages.softLaunch, "Общий гороскоп", "soft launch channel check 1");
+    assertIncludes(pages.softLaunch, "Овен", "soft launch channel check 2");
+    assertNotIncludes(pages.softLaunch, "/api/zodiac/publish", "no live publish api");
+
     assertIncludes(pages.operations, "Операции и безопасность Zodiac", "operations page heading");
     assertIncludes(pages.operations, "Daily autopublish", "daily autopublish status");
     assertIncludes(pages.operations, "Weekly live", "weekly live status");
@@ -277,7 +288,7 @@ async function main() {
     assertIncludes(pages.priority, "Ежедневная система уже настроена", "priority page next step caption");
     assertIncludes(pages.priority, "Live-публикация отключена", "priority page safety live publishing");
     assertIncludes(pages.priority, "Telegram API не вызывается", "priority page safety api");
-    assertIncludes(pages.priority, "Контентные профили 13 каналов", "priority page profiles link");
+    assertIncludes(pages.priority, "Конфиг 13 каналов", "priority page profiles link");
     assertIncludes(pages.priority, "Ежедневная система", "priority page daily system link");
     assertNotIncludes(pages.priority, "/api/zodiac/priority", "priority page no server write API route");
 
