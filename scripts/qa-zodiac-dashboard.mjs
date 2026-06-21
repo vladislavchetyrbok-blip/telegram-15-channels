@@ -42,6 +42,7 @@ const ROUTES = {
   miniappMonetizationArchitecture: "/dashboard/networks/zodiac/miniapp-monetization-architecture",
   miniappEntitlements: "/dashboard/networks/zodiac/miniapp-entitlements",
   miniappProductionWiring: "/dashboard/networks/zodiac/miniapp-production-wiring",
+  miniappPaymentMatrix: "/dashboard/networks/zodiac/miniapp-payment-matrix",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
   softLaunch: "/dashboard/networks/zodiac/soft-launch",
@@ -391,6 +392,10 @@ async function main() {
     assertIncludes(pages.miniappProductionWiring, "Production Wiring Spec", "wiring page title");
     assertIncludes(pages.miniappProductionWiring, "Mock Mode Active", "wiring mock boundary");
     assertIncludes(pages.miniappProductionWiring, "No Telegram API connections", "wiring telegram boundary");
+
+    assertIncludes(pages.miniappPaymentMatrix, "Payment Provider Decision Matrix", "payment matrix page title");
+    assertIncludes(pages.miniappPaymentMatrix, "Decision Matrix Only", "payment matrix mock boundary");
+    assertIncludes(pages.miniappPaymentMatrix, "No payment SDKs loaded", "payment matrix sdk boundary");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");

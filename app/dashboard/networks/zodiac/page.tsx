@@ -163,6 +163,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Payment Provider Matrix",
+    href: "/dashboard/networks/zodiac/miniapp-payment-matrix",
+    icon: ShieldCheck,
+    caption: "Package 118 - Payment provider decision matrix.",
+    tone: "cyan",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

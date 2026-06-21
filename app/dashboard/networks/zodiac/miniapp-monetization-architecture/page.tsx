@@ -103,6 +103,7 @@ export default function MiniAppMonetizationArchitecturePage() {
           <li><Link href="/dashboard/networks/zodiac/miniapp-architecture" className="text-indigo-400 hover:text-indigo-300 transition underline underline-offset-4">Architecture Spec</Link></li>
           <li><Link href="/dashboard/networks/zodiac/stability" className="text-purple-400 hover:text-purple-300 transition underline underline-offset-4">Stability Matrix</Link></li>
           <li><Link href="/dashboard/networks/zodiac/miniapp-entitlements" className="text-sky-400 hover:text-sky-300 transition underline underline-offset-4">Entitlement Model</Link></li>
+          <li><Link href="/dashboard/networks/zodiac/miniapp-payment-matrix" className="text-rose-400 hover:text-rose-300 transition underline underline-offset-4">Payment Matrix</Link></li>
         </ul>
       </section>
     </div>
