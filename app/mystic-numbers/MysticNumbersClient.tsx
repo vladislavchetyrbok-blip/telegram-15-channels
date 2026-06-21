@@ -30,7 +30,7 @@ export function MysticNumbersClient() {
       {/* Header */}
       <header className="sticky top-0 z-10 border-b border-slate-800 bg-[#070b14]/80 px-4 py-3 backdrop-blur-md">
         <div className="mx-auto flex max-w-md items-center gap-3">
-          <Link href="/compatibility" className="rounded-full p-1 transition hover:bg-slate-800">
+          <Link href="/miniapp" className="rounded-full p-1 transition hover:bg-slate-800">
             <ChevronLeft className="h-6 w-6 text-slate-300" />
           </Link>
           <h1 className="text-lg font-semibold text-slate-100">Mystic Numbers</h1>
@@ -167,7 +167,10 @@ export function MysticNumbersClient() {
               Analyze Another Number
             </button>
             
-            <div className="flex justify-center pt-4">
+            <div className="flex justify-center pt-4 flex-col items-center gap-3">
+               <Link href="/miniapp" className="text-sm font-bold text-violet-400 hover:text-violet-300 transition flex items-center gap-1">
+                 ← Back to Mini App Hub
+               </Link>
                <Link href="/birth-matrix" className="text-sm font-medium text-slate-500 hover:text-slate-300 transition flex items-center gap-1">
                  Calculate your Birth Matrix <ArrowRight className="h-3 w-3" />
                </Link>

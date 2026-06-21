@@ -93,6 +93,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Mini App Hub",
+    href: "/miniapp",
+    icon: Smartphone,
+    caption: "Package 106 - Safe static Mini App hub connecting mock modules.",
+    tone: "violet",
+  },
+  {
     title: "Mini App Architecture",
     href: "/dashboard/networks/zodiac/miniapp-architecture",
     icon: ListPlus,
