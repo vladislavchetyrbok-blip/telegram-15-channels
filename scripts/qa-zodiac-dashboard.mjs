@@ -33,6 +33,7 @@ const ROUTES = {
   miniappArchitecture: "/dashboard/networks/zodiac/miniapp-architecture",
   birthMatrix: "/birth-matrix",
   mysticNumbers: "/mystic-numbers",
+  affirmations: "/affirmations",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
   softLaunch: "/dashboard/networks/zodiac/soft-launch",
   dashboardAuthStatus: "/api/dashboard/auth/status",
@@ -304,6 +305,10 @@ async function main() {
     assertIncludes(pages.mysticNumbers, "Mystic Numbers", "mystic numbers page title");
     assertIncludes(pages.mysticNumbers, "Static Mock (Package 104)", "mystic numbers mock notice");
     assertIncludes(pages.mysticNumbers, "Decode The Signs", "mystic numbers subtitle");
+
+    assertIncludes(pages.affirmations, "Zodiac Affirmations", "affirmations page title");
+    assertIncludes(pages.affirmations, "Static Mock (Package 105)", "affirmations mock notice");
+    assertIncludes(pages.affirmations, "Your Daily Power", "affirmations subtitle");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");
