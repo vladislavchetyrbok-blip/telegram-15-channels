@@ -1555,6 +1555,18 @@
       "updatedAt": "2026-06-21T10:03:13.990Z",
       "messageId": "24,",
       "sentAt": "2026-06-21T10:03:13.990Z"
+    },
+    "2026-06-21:sagittarius": {
+      "key": "2026-06-21:sagittarius",
+      "date": "2026-06-21",
+      "slug": "sagittarius",
+      "createdAt": "2026-06-21T10:03:14.889Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-06-21T10:03:14.889Z"
     }
   }
 }
