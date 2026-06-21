@@ -141,6 +141,17 @@ export default async function MiniAppArchitecturePage() {
                   </a>
                 </div>
               </div>
+              <div className="rounded-md border border-slate-800 bg-slate-800/20 p-4">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h3 className="font-medium text-slate-200">Mystic Numbers UI Mock</h3>
+                    <p className="mt-1 text-xs text-slate-400">Package 104 static implementation without database.</p>
+                  </div>
+                  <a href="/mystic-numbers" className="rounded-md bg-violet-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-violet-700 transition">
+                    View Mock
+                  </a>
+                </div>
+              </div>
             </div>
 
             <h2 className="mb-4 text-lg font-semibold text-slate-100">Route Boundaries</h2>
