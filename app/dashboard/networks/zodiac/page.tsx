@@ -128,6 +128,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Mini App Link Smoke",
+    href: "/dashboard/networks/zodiac/miniapp-link-smoke",
+    icon: ShieldCheck,
+    caption: "Package 113 - Internal link smoke matrix.",
+    tone: "cyan",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

@@ -37,6 +37,7 @@ const ROUTES = {
   miniappHub: "/miniapp",
   miniappRouteSafety: "/dashboard/networks/zodiac/miniapp-route-safety",
   miniappReadiness: "/dashboard/networks/zodiac/miniapp-readiness",
+  miniappLinkSmoke: "/dashboard/networks/zodiac/miniapp-link-smoke",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
   softLaunch: "/dashboard/networks/zodiac/soft-launch",
@@ -358,6 +359,15 @@ async function main() {
     assertIncludes(pages.miniappReadiness, "Mock-ready / QA-protected / Not production-monetized", "miniapp readiness: system classification");
     assertIncludes(pages.miniappReadiness, "Package 111", "miniapp readiness: package 111 listed");
     assertIncludes(pages.miniappReadiness, "Package 103", "miniapp readiness: package 103 listed");
+
+    assertIncludes(pages.miniappLinkSmoke, "Mini App Internal Link Smoke Matrix", "miniapp link smoke page title");
+    assertIncludes(pages.miniappLinkSmoke, "Internal-link smoke only", "miniapp link smoke safety classification");
+    assertIncludes(pages.miniappLinkSmoke, "/miniapp", "miniapp link smoke hub route listed");
+    assertIncludes(pages.miniappLinkSmoke, "/birth-matrix", "miniapp link smoke birth matrix route listed");
+    assertIncludes(pages.miniappLinkSmoke, "/mystic-numbers", "miniapp link smoke mystic numbers route listed");
+    assertIncludes(pages.miniappLinkSmoke, "/affirmations", "miniapp link smoke affirmations route listed");
+    assertIncludes(pages.miniappLinkSmoke, "/vip-preview", "miniapp link smoke vip preview route listed");
+    assertIncludes(pages.miniappLinkSmoke, "No live CTA changes", "miniapp link smoke live cta protection");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");

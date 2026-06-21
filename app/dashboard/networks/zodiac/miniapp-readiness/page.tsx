@@ -172,6 +172,18 @@ export default function MiniAppReadinessPage() {
           </div>
         </section>
 
+        {/* Related Dashboard Links */}
+        <section className="rounded-lg border border-slate-800 bg-slate-900/30 p-6">
+          <h3 className="text-lg font-medium text-slate-300 mb-3">Related Dashboards</h3>
+          <ul className="flex flex-wrap gap-4 text-sm">
+            <li><Link href="/dashboard/networks/zodiac/miniapp-route-safety" className="text-emerald-400 hover:text-emerald-300 transition underline underline-offset-4">View Route Safety</Link></li>
+            <li><Link href="/dashboard/networks/zodiac/miniapp-cta-audit" className="text-emerald-400 hover:text-emerald-300 transition underline underline-offset-4">View CTA Audit</Link></li>
+            <li><Link href="/dashboard/networks/zodiac/miniapp-architecture" className="text-indigo-400 hover:text-indigo-300 transition underline underline-offset-4">Architecture Spec</Link></li>
+            <li><Link href="/dashboard/networks/zodiac/stability" className="text-indigo-400 hover:text-indigo-300 transition underline underline-offset-4">Stability Matrix</Link></li>
+            <li><Link href="/dashboard/networks/zodiac/miniapp-link-smoke" className="text-purple-400 hover:text-purple-300 transition underline underline-offset-4">Link Smoke Matrix</Link></li>
+          </ul>
+        </section>
+
         {/* Recommended Next Packages */}
         <section className="rounded-lg border border-slate-800 bg-slate-900/30 p-6">
           <h3 className="text-lg font-medium text-slate-300 mb-3">Recommended Next Packages</h3>
