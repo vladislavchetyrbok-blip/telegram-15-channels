@@ -1,5 +1,6 @@
 import { AlertTriangle, CheckCircle2, ChevronRight, Rocket, Shield, Activity, Calendar, LayoutGrid, Zap } from "lucide-react"
 import { cn } from "@/lib/utils"
+import Link from "next/link"
 
 function MetricCard({ title, value, caption, icon: Icon, tone = "blue" }: { title: string, value: string, caption: string, icon: any, tone?: "blue" | "slate" | "amber" | "cyan" | "rose" }) {
   const tones = {
@@ -87,7 +88,21 @@ export default function ZodiacPriorityPage() {
           <MetricCard title="Каналов" value="13" caption="Целевая сетка" icon={Rocket} tone="cyan" />
           <MetricCard title="Публикация" value="Заблокирована" caption="Live-публикация отключена" icon={Shield} tone="rose" />
           <MetricCard title="Режим" value="Dry-run / подготовка" caption="Безопасное тестирование" icon={CheckCircle2} tone="slate" />
-          <MetricCard title="Следующий этап" value="7 дней контента" caption="Подготовка базы постов" icon={Calendar} tone="blue" />
+          <MetricCard title="Следующий этап" value="Package 91" caption="первые 7 дней постов Зодиака" icon={Calendar} tone="blue" />
+        </section>
+
+        {/* Action Links */}
+        <section className="grid gap-4 md:grid-cols-2">
+          <Link href="/dashboard/networks/zodiac/profiles" className="rounded-xl border border-indigo-500/30 bg-indigo-500/10 p-5 shadow-sm hover:bg-indigo-500/20 transition flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <LayoutGrid className="h-5 w-5 text-indigo-400" />
+                <h3 className="text-lg font-semibold text-white">Контентные профили 13 каналов</h3>
+              </div>
+              <div className="text-sm text-indigo-300">Позиционирование, рубрики, тон, форматы</div>
+            </div>
+            <ChevronRight className="h-5 w-5 text-indigo-400" />
+          </Link>
         </section>
 
         {/* Safety block */}

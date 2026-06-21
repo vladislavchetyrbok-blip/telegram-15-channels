@@ -39,6 +39,7 @@ const legacyNavItems = [
 
 const zodiacNavItems = [
   { id: "priority", href: "/dashboard/networks/zodiac/priority", label: "Приоритет запуска", icon: Rocket },
+  { id: "profiles", href: "/dashboard/networks/zodiac/profiles", label: "Контентные профили", icon: FileText },
   { id: "channels", href: "/dashboard/networks/zodiac/channels", label: "Каналы Зодиака", icon: RadioTower },
   { id: "launch", href: "/dashboard/networks/zodiac/launch", label: "Запуск", icon: Rocket },
   { id: "operations", href: "/dashboard/networks/zodiac/operations", label: "Мониторинг", icon: LayoutDashboard },

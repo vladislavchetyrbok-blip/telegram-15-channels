@@ -16,6 +16,7 @@ const ROUTES = {
   launch: "/dashboard/networks/zodiac/launch",
   operations: "/dashboard/networks/zodiac/operations",
   priority: "/dashboard/networks/zodiac/priority",
+  profiles: "/dashboard/networks/zodiac/profiles",
   security: "/dashboard/networks/zodiac/security",
   settings: "/dashboard/networks/zodiac/settings",
   docs: "/dashboard/networks/zodiac/docs",
@@ -260,10 +261,23 @@ async function main() {
 
     assertIncludes(pages.priority, "Зодиак — приоритет запуска", "priority page heading");
     assertIncludes(pages.priority, "13", "priority page channels target");
-    assertIncludes(pages.priority, "7 дней контента", "priority page next step");
+    assertIncludes(pages.priority, "Package 91", "priority page next step");
     assertIncludes(pages.priority, "Live-публикация отключена", "priority page safety live publishing");
     assertIncludes(pages.priority, "Telegram API не вызывается", "priority page safety api");
+    assertIncludes(pages.priority, "Контентные профили 13 каналов", "priority page profiles link");
     assertNotIncludes(pages.priority, "/api/zodiac/priority", "priority page no server write API route");
+
+    // Profile checks
+    assertIncludes(pages.profiles, "Контентные профили Зодиака", "profiles page heading");
+    assertIncludes(pages.profiles, "Каналов", "profiles channels KPI label");
+    assertIncludes(pages.profiles, "13", "profiles channels KPI value");
+    assertIncludes(pages.profiles, "Общий гороскоп", "general sign profile");
+    assertIncludes(pages.profiles, "Овен", "aries profile");
+    assertIncludes(pages.profiles, "Рыбы", "pisces profile");
+    assertIncludes(pages.profiles, "Live-публикация отключена", "safety: live publish");
+    assertIncludes(pages.profiles, "Telegram API не вызывается", "safety: API");
+    assertIncludes(pages.profiles, "Контент готовится только для dry-run", "safety: dry-run");
+    assertNotIncludes(pages.profiles, "/api/zodiac/profiles", "no server write on profiles");
 
     assertIncludes(pages.security, "Безопасность платформы", "security page heading");
     assertIncludes(pages.security, "Управление модулем Зодиак внутри Афродиты.", "security subtitle");
