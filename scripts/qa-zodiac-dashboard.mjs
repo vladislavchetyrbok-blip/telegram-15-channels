@@ -26,6 +26,7 @@ const ROUTES = {
   qualityScoring: "/dashboard/networks/zodiac/quality-scoring",
   previewReview: "/dashboard/networks/zodiac/preview-review",
   manualReview: "/dashboard/networks/zodiac/manual-review",
+  stability: "/dashboard/networks/zodiac/stability",
   legacyPublishing: "/publishing-center",
   miniApp: "/compatibility",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
@@ -275,6 +276,12 @@ async function main() {
     assertIncludes(pages.manualReview, "Общий гороскоп", "manual review general channel");
     assertIncludes(pages.manualReview, "Овен", "manual review aries");
     assertNotIncludes(pages.manualReview, "https://api.telegram.org", "no direct telegram api call in manual review");
+
+    assertIncludes(pages.stability, "Zodiac Stability Matrix", "stability page title");
+    assertIncludes(pages.stability, "&quot;Do Not Touch&quot; Protection Area", "stability protection area");
+    assertIncludes(pages.stability, "Diagnostic read-only control page", "stability subtitle");
+    assertIncludes(pages.stability, "Daily Zodiac Automation", "stability daily automation tracking");
+    assertNotIncludes(pages.stability, "https://api.telegram.org", "no direct telegram api call in stability matrix");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");

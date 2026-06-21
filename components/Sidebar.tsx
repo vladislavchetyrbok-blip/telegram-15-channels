@@ -54,6 +54,7 @@ const zodiacNavItems = [
   { id: "quality-scoring", href: "/dashboard/networks/zodiac/quality-scoring", label: "Оценка качества", icon: CheckCircle2 },
   { id: "preview-review", href: "/dashboard/networks/zodiac/preview-review", label: "Preview Review", icon: Eye },
   { id: "manual-review", href: "/dashboard/networks/zodiac/manual-review", label: "Ручная проверка", icon: ListChecks },
+  { id: "stability", href: "/dashboard/networks/zodiac/stability", label: "Stability Matrix", icon: Activity },
   { id: "channels", href: "/dashboard/networks/zodiac/channels", label: "Каналы Зодиака", icon: RadioTower },
   { id: "launch", href: "/dashboard/networks/zodiac/launch", label: "Запуск", icon: Rocket },
   { id: "operations", href: "/dashboard/networks/zodiac/operations", label: "Мониторинг", icon: LayoutDashboard },
