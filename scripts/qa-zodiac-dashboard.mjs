@@ -20,6 +20,7 @@ const ROUTES = {
   security: "/dashboard/networks/zodiac/security",
   settings: "/dashboard/networks/zodiac/settings",
   docs: "/dashboard/networks/zodiac/docs",
+  ledger: "/dashboard/networks/zodiac/ledger",
   legacyPublishing: "/publishing-center",
   miniApp: "/compatibility",
   dailySystem: "/dashboard/networks/zodiac/daily-system",

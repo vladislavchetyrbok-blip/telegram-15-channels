@@ -44,18 +44,32 @@ export default function ZodiacDailySystemPage() {
                 Аудит уже настроенной ежедневной системы: 13 каналов, расписание, шаблоны, ledger, dry-run и безопасность публикаций.
               </p>
             </div>
-            <Link
-              href="/dashboard/networks/zodiac/soft-launch"
-              className="hidden sm:flex flex-col items-end gap-1 rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-4 py-3 text-right transition-colors hover:bg-cyan-500/20"
-            >
-              <div className="flex items-center gap-2 text-sm font-bold text-cyan-400">
-                <Play className="h-4 w-4" />
-                Soft Launch Preview
-              </div>
-              <div className="text-xs text-cyan-500 max-w-[250px]">
-                Проверка ближайших дней, 13 каналов, dry-run, ledger и ручной контроль перед live.
-              </div>
-            </Link>
+            <div className="hidden sm:flex flex-col gap-3">
+              <Link
+                href="/dashboard/networks/zodiac/soft-launch"
+                className="flex flex-col items-end gap-1 rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-4 py-3 text-right transition-colors hover:bg-cyan-500/20"
+              >
+                <div className="flex items-center gap-2 text-sm font-bold text-cyan-400">
+                  <Play className="h-4 w-4" />
+                  Soft Launch Preview
+                </div>
+                <div className="text-xs text-cyan-500 max-w-[250px]">
+                  Проверка ближайших дней, 13 каналов, dry-run, ledger и ручной контроль перед live.
+                </div>
+              </Link>
+              <Link
+                href="/dashboard/networks/zodiac/ledger"
+                className="flex flex-col items-end gap-1 rounded-lg border border-indigo-500/30 bg-indigo-500/10 px-4 py-3 text-right transition-colors hover:bg-indigo-500/20"
+              >
+                <div className="flex items-center gap-2 text-sm font-bold text-indigo-400">
+                  <Activity className="h-4 w-4" />
+                  Ledger и dry-run
+                </div>
+                <div className="text-xs text-indigo-500 max-w-[250px]">
+                  Проверка сухих прогонов и учетных записей публикации
+                </div>
+              </Link>
+            </div>
           </div>
         </div>
 

@@ -80,6 +80,22 @@ export default function ZodiacSoftLaunchPage() {
           </ul>
         </section>
 
+        {/* 7. Action Links */}
+        <section className="grid gap-4 md:grid-cols-1">
+          <Link href="/dashboard/networks/zodiac/ledger" className="rounded-xl border border-indigo-500/30 bg-indigo-500/10 p-5 shadow-sm hover:bg-indigo-500/20 transition flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <FileText className="h-5 w-5 text-indigo-400" />
+                <h3 className="text-lg font-semibold text-white">Ledger и dry-run</h3>
+              </div>
+              <div className="text-sm text-indigo-300">Проверка dry-run, ledger, дублей, пропусков и блокеров перед soft launch.</div>
+            </div>
+            <div className="flex items-center justify-center p-2 rounded-full bg-slate-800/50">
+              <svg className="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+            </div>
+          </Link>
+        </section>
+
         {/* 2. Soft launch phases */}
         <section className="rounded-lg border border-slate-800 bg-slate-900/50 overflow-hidden">
           <div className="border-b border-slate-800 px-5 py-4">

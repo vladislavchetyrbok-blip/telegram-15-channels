@@ -44,6 +44,7 @@ const zodiacNavItems = [
   { id: "profiles", href: "/dashboard/networks/zodiac/profiles", label: "Контентные профили", icon: FileText },
   { id: "daily-system", href: "/dashboard/networks/zodiac/daily-system", label: "Ежедневная система", icon: Activity },
   { id: "soft-launch", href: "/dashboard/networks/zodiac/soft-launch", label: "Soft Launch", icon: Calendar },
+  { id: "ledger", href: "/dashboard/networks/zodiac/ledger", label: "Ledger / dry-run", icon: FileText },
   { id: "channels", href: "/dashboard/networks/zodiac/channels", label: "Каналы Зодиака", icon: RadioTower },
   { id: "launch", href: "/dashboard/networks/zodiac/launch", label: "Запуск", icon: Rocket },
   { id: "operations", href: "/dashboard/networks/zodiac/operations", label: "Мониторинг", icon: LayoutDashboard },
