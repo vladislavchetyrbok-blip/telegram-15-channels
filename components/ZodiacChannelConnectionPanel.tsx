@@ -16,7 +16,7 @@ export function ZodiacChannelConnectionPanel() {
         </p>
         
         <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-5 text-xs">
-          <Metric label="Total Channels" value={progress.total} />
+          <Metric label="Всего каналов" value={progress.total} />
           <Metric label="Created" value={progress.created} />
           <Metric label="Bot Admin Added" value={progress.botAdminAdded} />
           <Metric label="Channel ID Added" value={progress.channelIdConnected} />

@@ -23,7 +23,7 @@ export function ZodiacVisualAssetsDashboard() {
       <div className="rounded border border-blue-500/20 bg-slate-900 p-4">
         <h2 className="text-lg font-semibold text-blue-300">Visual Assets Dashboard (Read-Only)</h2>
         <p className="mt-1 text-sm text-slate-400">
-          Total Channels: {trackerTemplate.totalChannels} <br/>
+          Всего каналов: {trackerTemplate.totalChannels} <br/>
           Expected Avatars: {trackerTemplate.totalChannels} <br/>
           Expected Placeholders: {trackerTemplate.totalChannels} <br/>
           Daily Images: Planned for later phases (optional for MVP)

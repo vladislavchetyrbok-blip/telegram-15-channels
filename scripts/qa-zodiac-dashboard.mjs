@@ -335,21 +335,21 @@ async function main() {
     assertIncludes(pages.docs, "docs/zodiac-telegram-platform-publishing-center.md", "publishing center doc path");
     assertIncludes(pages.docs, "docs/zodiac-telegram-platform-feedback-center.md", "feedback center doc path");
 
-    assertIncludes(pages.aphroditeChannels, "Aphrodite Channel Registry", "aphrodite registry heading");
-    assertIncludes(pages.aphroditeChannels, "Всего каналов", "aphrodite registry total channels");
-    assertIncludes(pages.aphroditeChannels, "Пауза / Старая сеть Афродиты", "aphrodite registry paused legacy");
-    assertIncludes(pages.aphroditeChannels, "Новые черновики", "aphrodite registry draft new");
-    assertIncludes(pages.aphroditeChannels, "Currency", "aphrodite module Currency");
-    assertIncludes(pages.aphroditeChannels, "Crypto", "aphrodite module Crypto");
-    assertIncludes(pages.aphroditeChannels, "Metals", "aphrodite module Metals");
+    assertIncludes(pages.aphroditeChannels, "Реестр Каналов Афродиты", "aphrodite registry heading");
+    assertIncludes(pages.aphroditeChannels, "Всего каналов в реестре", "aphrodite registry total channels");
+    assertIncludes(pages.aphroditeChannels, "Старая сеть 15 каналов", "aphrodite registry paused legacy");
+    assertIncludes(pages.aphroditeChannels, "Каналы новых модулей (Draft)", "aphrodite registry draft new");
+    assertIncludes(pages.aphroditeChannels, "Валюты", "aphrodite module Валюты");
+    assertIncludes(pages.aphroditeChannels, "Крипта", "aphrodite module Крипта");
+    assertIncludes(pages.aphroditeChannels, "Металлы", "aphrodite module Металлы");
     assertNotIncludes(pages.aphroditeChannels, "/api/aphrodite/settings", "no server write API required on aphrodite registry");
 
-    assertIncludes(pages.aphroditeOverview, "Афродита (Aphrodite Platform)", "aphrodite overview heading");
+    assertIncludes(pages.aphroditeOverview, "Афродита", "aphrodite overview heading");
     assertIncludes(pages.aphroditeOverview, "/dashboard/networks/aphrodite/channels", "aphrodite overview registry link");
-    assertIncludes(pages.aphroditeOverview, "Currency", "aphrodite overview Currency card");
-    assertIncludes(pages.aphroditeOverview, "Crypto", "aphrodite overview Crypto card");
-    assertIncludes(pages.aphroditeOverview, "Metals", "aphrodite overview Metals card");
-    assertIncludes(pages.aphroditeOverview, "Locked", "aphrodite overview live publish locked");
+    assertIncludes(pages.aphroditeOverview, "Валюты", "aphrodite overview Currency card");
+    assertIncludes(pages.aphroditeOverview, "Крипта", "aphrodite overview Crypto card");
+    assertIncludes(pages.aphroditeOverview, "Металлы", "aphrodite overview Metals card");
+    assertIncludes(pages.aphroditeOverview, "Заблокировано", "aphrodite overview live publish locked");
     assertNotIncludes(pages.aphroditeOverview, "/api/aphrodite", "no server write API required on aphrodite overview");
 
     assertIncludes(pages.aphroditeCalendar, "Aphrodite Publishing Calendar", "aphrodite calendar heading");

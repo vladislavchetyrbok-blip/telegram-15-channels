@@ -1,288 +1,221 @@
-import {
-  Activity,
-  AlertCircle,
-  CheckCircle2,
-  ChevronLeft,
-  FileText,
-  PauseCircle,
-  RadioTower,
-  Server,
-} from "lucide-react";
-import Link from "next/link";
+﻿import React from 'react';
 import { requireDashboardPageAccess } from "@/lib/zodiac-dashboard-auth";
+import { Server, Activity, PauseCircle, FileText, CheckCircle2, AlertCircle, RadioTower } from "lucide-react";
+import { AphroditePageHeader } from "@/components/AphroditePageHeader";
 
-export const dynamic = "force-dynamic";
+type ChannelStatus = 'пауза' | 'черновик' | 'активен' | 'требует уточнения';
+type Language = 'RU' | 'UA' | 'mixed' | 'unknown';
 
-type ChannelStatus = "paused/inactive" | "draft" | "active" | "ready" | "error";
-type PublishMode = "disabled" | "dry-run" | "live";
-
-interface ChannelRecord {
+interface ChannelRegistryItem {
   id: string;
   name: string;
+  network: string;
   module: string;
+  category: string;
+  language: Language;
   status: ChannelStatus;
-  publishingMode: PublishMode;
-  nextContentType: string;
+  contentFormat: string;
+  publishFrequency: string;
+  nextStep: string;
   safetyNote: string;
 }
 
-const channels: ChannelRecord[] = [
-  // New Draft Channels
-  {
-    id: "aphrodite-currency",
-    name: "Aphrodite Currency",
-    module: "Currency",
-    status: "draft",
-    publishingMode: "dry-run",
-    nextContentType: "Daily Rates",
-    safetyNote: "Draft only - no live token",
-  },
-  {
-    id: "aphrodite-crypto",
-    name: "Aphrodite Crypto",
-    module: "Crypto",
-    status: "draft",
-    publishingMode: "dry-run",
-    nextContentType: "Market Update",
-    safetyNote: "Draft only - no live token",
-  },
-  {
-    id: "aphrodite-metals",
-    name: "Aphrodite Metals",
-    module: "Metals",
-    status: "draft",
-    publishingMode: "dry-run",
-    nextContentType: "Commodity Watch",
-    safetyNote: "Draft only - no live token",
-  },
-  // Legacy Telegram Network (15 channels)
-  {
-    id: "legacy-zodiac-general",
-    name: "Zodiac General",
-    module: "Zodiac",
-    status: "paused/inactive",
-    publishingMode: "disabled",
-    nextContentType: "None",
-    safetyNote: "Paused legacy channel — no publishing from Aphrodite yet",
-  },
-  {
-    id: "legacy-zodiac-aries",
-    name: "Zodiac Aries",
-    module: "Zodiac",
-    status: "paused/inactive",
-    publishingMode: "disabled",
-    nextContentType: "None",
-    safetyNote: "Paused legacy channel — no publishing from Aphrodite yet",
-  },
-  {
-    id: "legacy-zodiac-taurus",
-    name: "Zodiac Taurus",
-    module: "Zodiac",
-    status: "paused/inactive",
-    publishingMode: "disabled",
-    nextContentType: "None",
-    safetyNote: "Paused legacy channel — no publishing from Aphrodite yet",
-  },
-  {
-    id: "legacy-zodiac-gemini",
-    name: "Zodiac Gemini",
-    module: "Zodiac",
-    status: "paused/inactive",
-    publishingMode: "disabled",
-    nextContentType: "None",
-    safetyNote: "Paused legacy channel — no publishing from Aphrodite yet",
-  },
-  {
-    id: "legacy-zodiac-cancer",
-    name: "Zodiac Cancer",
-    module: "Zodiac",
-    status: "paused/inactive",
-    publishingMode: "disabled",
-    nextContentType: "None",
-    safetyNote: "Paused legacy channel — no publishing from Aphrodite yet",
-  },
-  {
-    id: "legacy-zodiac-leo",
-    name: "Zodiac Leo",
-    module: "Zodiac",
-    status: "paused/inactive",
-    publishingMode: "disabled",
-    nextContentType: "None",
-    safetyNote: "Paused legacy channel — no publishing from Aphrodite yet",
-  },
-  {
-    id: "legacy-zodiac-virgo",
-    name: "Zodiac Virgo",
-    module: "Zodiac",
-    status: "paused/inactive",
-    publishingMode: "disabled",
-    nextContentType: "None",
-    safetyNote: "Paused legacy channel — no publishing from Aphrodite yet",
-  },
-  {
-    id: "legacy-zodiac-libra",
-    name: "Zodiac Libra",
-    module: "Zodiac",
-    status: "paused/inactive",
-    publishingMode: "disabled",
-    nextContentType: "None",
-    safetyNote: "Paused legacy channel — no publishing from Aphrodite yet",
-  },
-  {
-    id: "legacy-zodiac-scorpio",
-    name: "Zodiac Scorpio",
-    module: "Zodiac",
-    status: "paused/inactive",
-    publishingMode: "disabled",
-    nextContentType: "None",
-    safetyNote: "Paused legacy channel — no publishing from Aphrodite yet",
-  },
-  {
-    id: "legacy-zodiac-sagittarius",
-    name: "Zodiac Sagittarius",
-    module: "Zodiac",
-    status: "paused/inactive",
-    publishingMode: "disabled",
-    nextContentType: "None",
-    safetyNote: "Paused legacy channel — no publishing from Aphrodite yet",
-  },
-  {
-    id: "legacy-zodiac-capricorn",
-    name: "Zodiac Capricorn",
-    module: "Zodiac",
-    status: "paused/inactive",
-    publishingMode: "disabled",
-    nextContentType: "None",
-    safetyNote: "Paused legacy channel — no publishing from Aphrodite yet",
-  },
-  {
-    id: "legacy-zodiac-aquarius",
-    name: "Zodiac Aquarius",
-    module: "Zodiac",
-    status: "paused/inactive",
-    publishingMode: "disabled",
-    nextContentType: "None",
-    safetyNote: "Paused legacy channel — no publishing from Aphrodite yet",
-  },
-  {
-    id: "legacy-zodiac-pisces",
-    name: "Zodiac Pisces",
-    module: "Zodiac",
-    status: "paused/inactive",
-    publishingMode: "disabled",
-    nextContentType: "None",
-    safetyNote: "Paused legacy channel — no publishing from Aphrodite yet",
-  },
-  {
-    id: "legacy-real-estate",
-    name: "Legacy Real Estate",
-    module: "Real Estate",
-    status: "paused/inactive",
-    publishingMode: "disabled",
-    nextContentType: "None",
-    safetyNote: "Paused legacy channel — no publishing from Aphrodite yet",
-  },
-  {
-    id: "legacy-unknown",
-    name: "Legacy General",
-    module: "Unknown",
-    status: "paused/inactive",
-    publishingMode: "disabled",
-    nextContentType: "None",
-    safetyNote: "Paused legacy channel — no publishing from Aphrodite yet",
-  },
-];
+const registry: ChannelRegistryItem[] = [
+  ...Array.from({ length: 10 }).map((_, i) => ({
+    id: `legacy-general-${i + 1}`,
+    name: `Общая тема ${String(i + 1).padStart(2, '0')} (требует уточнения)`,
+    network: 'Старая сеть 15 каналов',
+    module: 'Legacy',
+    category: 'Общие темы',
+    language: 'unknown' as Language,
+    status: 'требует уточнения' as ChannelStatus,
+    contentFormat: 'Требует уточнения',
+    publishFrequency: 'Пауза',
+    nextStep: 'Найти точное название в истории',
+    safetyNote: 'No live publish from registry',
+  })),
+  ...['Днепр 01', 'Днепр 02', 'Украина 01', 'Украина 02', 'зарубежная 01'].map((loc, i) => ({
+    id: `legacy-realestate-${i + 1}`,
+    name: `Недвижимость ${loc} (требует уточнения)`,
+    network: 'Старая сеть 15 каналов',
+    module: 'Legacy',
+    category: 'Недвижимость',
+    language: 'unknown' as Language,
+    status: 'требует уточнения' as ChannelStatus,
+    contentFormat: 'Требует уточнения',
+    publishFrequency: 'Пауза',
+    nextStep: 'Найти точное название в истории',
+    safetyNote: 'No live publish from registry',
+  })),
 
-import { AphroditePageHeader } from "@/components/AphroditePageHeader";
+  ...['Овен', 'Телец', 'Близнецы', 'Рак', 'Лев', 'Дева', 'Весы', 'Скорпион', 'Стрелец', 'Козерог', 'Водолей', 'Рыбы', 'Общий канал Зодиака'].map((sign, i) => ({
+    id: `zodiac-${i + 1}`,
+    name: sign,
+    network: 'Каналы Зодиака',
+    module: 'Зодиак',
+    category: sign === 'Общий канал Зодиака' ? 'Общий' : 'Знак зодиака',
+    language: 'mixed' as Language,
+    status: 'черновик' as ChannelStatus,
+    contentFormat: 'Текст / Гороскоп',
+    publishFrequency: 'Ежедневно (draft)',
+    nextStep: 'Интеграция контент-движка',
+    safetyNote: 'No live publish from registry',
+  })),
+
+  ...['daily rates', 'intraday', 'digest'].map((cat, i) => ({
+    id: `currency-${i + 1}`,
+    name: `Валюты - ${cat}`,
+    network: 'Валюты',
+    module: 'Валюты',
+    category: cat,
+    language: 'RU' as Language,
+    status: 'черновик' as ChannelStatus,
+    contentFormat: 'Сводка / График',
+    publishFrequency: 'TBD',
+    nextStep: 'Разработка MVP',
+    safetyNote: 'Draft network',
+  })),
+
+  ...['top-10', 'market snapshot', 'risk disclaimer'].map((cat, i) => ({
+    id: `crypto-${i + 1}`,
+    name: `Крипта - ${cat}`,
+    network: 'Крипта',
+    module: 'Крипта',
+    category: cat,
+    language: 'RU' as Language,
+    status: 'черновик' as ChannelStatus,
+    contentFormat: 'Аналитика / Дашборд',
+    publishFrequency: 'TBD',
+    nextStep: 'Разработка MVP',
+    safetyNote: 'Draft network',
+  })),
+
+  ...['precious metals', 'industrial metals', 'daily watch'].map((cat, i) => ({
+    id: `metals-${i + 1}`,
+    name: `Металлы - ${cat}`,
+    network: 'Металлы',
+    module: 'Металлы',
+    category: cat,
+    language: 'RU' as Language,
+    status: 'черновик' as ChannelStatus,
+    contentFormat: 'Сводка цен',
+    publishFrequency: 'TBD',
+    nextStep: 'Разработка MVP',
+    safetyNote: 'Draft network',
+  })),
+];
 
 export default function AphroditeChannelRegistryPage() {
   requireDashboardPageAccess("/dashboard/networks/aphrodite/channels");
 
-  const totalChannels = channels.length;
-  const pausedLegacy = channels.filter((c) => c.status === "paused/inactive").length;
-  const draftNew = channels.filter((c) => c.status === "draft").length;
-  const active = channels.filter((c) => c.status === "active").length;
-  const ready = channels.filter((c) => c.status === "ready").length;
-  const errors = channels.filter((c) => c.status === "error").length;
+  const networks = [
+    { name: 'Старая сеть 15 каналов', channels: registry.filter(c => c.network === 'Старая сеть 15 каналов') },
+    { name: 'Каналы Зодиака', channels: registry.filter(c => c.network === 'Каналы Зодиака') },
+    { name: 'Валюты', channels: registry.filter(c => c.network === 'Валюты') },
+    { name: 'Крипта', channels: registry.filter(c => c.network === 'Крипта') },
+    { name: 'Металлы', channels: registry.filter(c => c.network === 'Металлы') },
+  ];
+
+  const totalChannels = registry.length;
+  const legacyCount = registry.filter(c => c.network === 'Старая сеть 15 каналов').length;
+  const zodiacCount = registry.filter(c => c.network === 'Каналы Зодиака').length;
+  const draftNetworksCount = registry.filter(c => ['Валюты', 'Крипта', 'Металлы'].includes(c.network)).length;
 
   return (
     <div className="-mx-4 -my-6 min-h-screen overflow-x-hidden bg-[#070b14] px-4 py-6 text-slate-100 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-      <div className="mx-auto max-w-6xl space-y-8">
+      <div className="mx-auto max-w-7xl space-y-8">
         <AphroditePageHeader
-          title="Aphrodite Channel Registry"
-          description="Unified view of all channels managed across the overarching Telegram publishing network. Zodiac remains one module inside Aphrodite."
-          badgeText="Registry"
+          title="Реестр Каналов Афродиты"
+          description="Единый реестр всех сетей и каналов, управляемых платформой Афродита."
+          badgeText="Реестр сетей"
           icon={Server}
-          safetyLocked={false}
+          safetyLocked={true}
         />
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-6" data-qa="visual-summary">
-          <SummaryMetric label="Всего каналов" value={totalChannels} tone="blue" />
-          <SummaryMetric label="Пауза / Старая сеть Афродиты" value={pausedLegacy} tone="slate" />
-          <SummaryMetric label="Новые черновики" value={draftNew} tone="amber" />
-          <SummaryMetric label="Каналы Зодиака (Готовы)" value={active} tone="emerald" />
-          <SummaryMetric label="Готовы к запуску" value={ready} tone="emerald" />
-          <SummaryMetric label="Ошибки" value={errors} tone="rose" />
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" data-qa="visual-summary">
+          <SummaryMetric label="Всего каналов в реестре" value={totalChannels} tone="blue" />
+          <SummaryMetric label="Старая сеть 15 каналов" value={legacyCount} tone="slate" />
+          <SummaryMetric label="Каналы Зодиака" value={zodiacCount} tone="amber" />
+          <SummaryMetric label="Каналы новых модулей (Draft)" value={draftNetworksCount} tone="emerald" />
         </div>
 
-        <section>
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-white">Channel Details</h2>
-            <span className="inline-flex items-center gap-2 rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-xs font-medium text-blue-400 shadow-sm">
-              <Activity className="h-3.5 w-3.5" />
-              Read-Only View
-            </span>
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {channels.map((channel) => (
-              <div key={channel.id} className="group relative flex flex-col justify-between rounded-xl border border-slate-800 bg-slate-900/50 p-5 shadow-sm transition hover:border-blue-500/30 hover:bg-slate-800/50">
-                <div>
-                  <div className="flex items-start justify-between gap-4">
-                    <h3 className="font-semibold text-white group-hover:text-blue-300 transition-colors">{channel.name}</h3>
-                    {channel.status === "paused/inactive" ? (
-                      <PauseCircle className="h-5 w-5 text-slate-500" />
-                    ) : channel.status === "draft" ? (
-                      <FileText className="h-5 w-5 text-amber-500" />
-                    ) : (
-                      <RadioTower className="h-5 w-5 text-blue-400" />
-                    )}
-                  </div>
-                  <div className="mt-4 space-y-2 text-sm text-slate-400">
-                    <p className="flex justify-between items-center">
-                      <span className="font-medium text-slate-500">Module:</span>
-                      <span className="font-medium text-slate-300">{channel.module}</span>
-                    </p>
-                    <p className="flex justify-between items-center">
-                      <span className="font-medium text-slate-500">Status:</span>
-                      <StatusBadge status={channel.status} />
-                    </p>
-                    <p className="flex justify-between items-center">
-                      <span className="font-medium text-slate-500">Publishing Mode:</span>
-                      <span className="rounded-md bg-slate-800 px-2 py-1 font-mono text-xs text-slate-300 border border-slate-700/50">{channel.publishingMode}</span>
-                    </p>
-                    <p className="flex justify-between items-center">
-                      <span className="font-medium text-slate-500">Next Content:</span>
-                      <span className="text-slate-300">{channel.nextContentType}</span>
-                    </p>
-                  </div>
-                </div>
-                <div className="mt-5 border-t border-slate-800/80 pt-4">
-                  <div className="flex items-start gap-2 text-xs">
-                    {channel.status === "paused/inactive" ? (
-                      <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-slate-500" />
-                    ) : (
-                      <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-400" />
-                    )}
-                    <span className={channel.status === "paused/inactive" ? "text-slate-500" : "text-amber-400/80"}>
-                      {channel.safetyNote}
-                    </span>
-                  </div>
-                </div>
+        <div className="space-y-12">
+          {networks.map((net) => (
+            <section key={net.name}>
+              <div className="mb-6 flex items-center justify-between border-b border-slate-800 pb-2">
+                <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+                  <RadioTower className="h-6 w-6 text-blue-500" />
+                  {net.name} — {net.channels.length} {net.channels.length === 15 ? 'каналов' : net.channels.length === 13 ? 'каналов' : 'каналов/рубрик'}
+                </h2>
+                {net.name === 'Старая сеть 15 каналов' && (
+                  <span className="rounded bg-slate-800 px-2 py-1 text-xs font-medium text-slate-400">
+                    Общие темы — 10 | Недвижимость — 5
+                  </span>
+                )}
+                {net.name === 'Каналы Зодиака' && (
+                  <span className="rounded bg-slate-800 px-2 py-1 text-xs font-medium text-slate-400">
+                    Зодиак модуль
+                  </span>
+                )}
               </div>
-            ))}
-          </div>
-        </section>
+
+              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                {net.channels.map((channel) => (
+                  <div key={channel.id} className="group flex flex-col justify-between rounded-xl border border-slate-800 bg-slate-900/50 p-5 shadow-sm transition hover:border-blue-500/30 hover:bg-slate-800/50">
+                    <div>
+                      <div className="flex items-start justify-between gap-4 mb-4">
+                        <h3 className="font-semibold text-white group-hover:text-blue-300 transition-colors line-clamp-2">
+                          {channel.name}
+                        </h3>
+                        <StatusBadge status={channel.status} />
+                      </div>
+                      
+                      <div className="space-y-3 text-sm text-slate-400">
+                        <div className="grid grid-cols-[1fr_1.5fr] gap-2 items-center">
+                          <span className="text-slate-500 text-xs uppercase tracking-wider">Модуль</span>
+                          <span className="text-slate-300">{channel.module}</span>
+                        </div>
+                        <div className="grid grid-cols-[1fr_1.5fr] gap-2 items-center">
+                          <span className="text-slate-500 text-xs uppercase tracking-wider">Категория</span>
+                          <span className="text-slate-300">{channel.category}</span>
+                        </div>
+                        <div className="grid grid-cols-[1fr_1.5fr] gap-2 items-center">
+                          <span className="text-slate-500 text-xs uppercase tracking-wider">Язык</span>
+                          <span className="text-slate-300">{channel.language}</span>
+                        </div>
+                        <div className="grid grid-cols-[1fr_1.5fr] gap-2 items-center">
+                          <span className="text-slate-500 text-xs uppercase tracking-wider">Формат</span>
+                          <span className="text-slate-300">{channel.contentFormat}</span>
+                        </div>
+                        <div className="grid grid-cols-[1fr_1.5fr] gap-2 items-center">
+                          <span className="text-slate-500 text-xs uppercase tracking-wider">Частота</span>
+                          <span className="text-slate-300">{channel.publishFrequency}</span>
+                        </div>
+                        <div className="grid grid-cols-[1fr_1.5fr] gap-2 items-center">
+                          <span className="text-slate-500 text-xs uppercase tracking-wider">След. шаг</span>
+                          <span className="text-amber-400/80">{channel.nextStep}</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-5 border-t border-slate-800/80 pt-4">
+                      <div className="flex items-start gap-2 text-xs">
+                        {channel.status === 'требует уточнения' || channel.status === 'пауза' ? (
+                          <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-rose-400/80" />
+                        ) : (
+                          <Activity className="mt-0.5 h-3.5 w-3.5 shrink-0 text-blue-400/80" />
+                        )}
+                        <span className={channel.status === 'требует уточнения' || channel.status === 'пауза' ? 'text-rose-400/80' : 'text-blue-400/80'}>
+                          {channel.safetyNote}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -307,15 +240,14 @@ function SummaryMetric({ label, value, tone }: { label: string; value: number | 
 
 function StatusBadge({ status }: { status: ChannelStatus }) {
   const colors = {
-    "paused/inactive": "bg-slate-500/10 text-slate-400 border-slate-500/30",
-    "draft": "bg-amber-500/10 text-amber-400 border-amber-500/30",
-    "active": "bg-emerald-500/10 text-emerald-400 border-emerald-500/30",
-    "ready": "bg-blue-500/10 text-blue-400 border-blue-500/30",
-    "error": "bg-rose-500/10 text-rose-400 border-rose-500/30",
+    "пауза": "bg-slate-500/10 text-slate-400 border-slate-500/30",
+    "черновик": "bg-amber-500/10 text-amber-400 border-amber-500/30",
+    "активен": "bg-emerald-500/10 text-emerald-400 border-emerald-500/30",
+    "требует уточнения": "bg-rose-500/10 text-rose-400 border-rose-500/30",
   };
 
   return (
-    <span className={`inline-flex rounded-full border px-2 py-0.5 text-xs font-semibold tracking-wide ${colors[status]}`}>
+    <span className={`inline-flex rounded-full border px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase ${colors[status]}`}>
       {status}
     </span>
   );

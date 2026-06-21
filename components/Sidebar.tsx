@@ -36,14 +36,14 @@ export function Sidebar() {
     <aside className="border-b border-line bg-[#08101f]/95 backdrop-blur lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:w-72 lg:overflow-y-auto lg:border-b-0 lg:border-r">
       <div className="flex min-h-full flex-col px-4 py-4 lg:px-5 lg:py-6">
 
-        {/* Aphrodite Platform Group (Main) */}
+        {/* Aphrodite Group (Main) */}
         <Link href="/dashboard/networks/aphrodite" className="flex items-center gap-3 mt-2 mb-6">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-blue-400/30 bg-blue-400/10 text-blue-300">
             <Server className="h-5 w-5" />
           </div>
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.22em] text-blue-200">АФРОДИТА</p>
-            <p className="text-[11px] text-slate-500 leading-tight pr-2 uppercase tracking-wider">Operator Platform</p>
+            <p className="text-[11px] text-slate-500 leading-tight pr-2 uppercase tracking-wider">Афродита</p>
           </div>
         </Link>
 

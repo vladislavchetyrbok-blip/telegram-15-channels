@@ -29,8 +29,8 @@ interface ModuleCard {
   title: string;
   icon: React.ElementType;
   purpose: string;
-  status: "Active" | "Draft" | "Planning" | "Locked" | "Future";
-  safetyLevel: "Production" | "Dry-run Only" | "Read-only" | "Concept";
+  status: "Активные" | "Черновик" | "Заблокировано" | "Planning" | "Future";
+  safetyLevel: "Production" | "Dry-run Only" | "Только просмотр" | "Будущий модуль";
   nextStep: string;
   href?: string;
 }
@@ -38,11 +38,11 @@ interface ModuleCard {
 const modules: ModuleCard[] = [
   {
     id: "channel-registry",
-    title: "Channel Registry",
+    title: "Реестр каналов",
     icon: Server,
     purpose: "Unified view of all channels across modules",
-    status: "Active",
-    safetyLevel: "Read-only",
+    status: "Активные",
+    safetyLevel: "Только просмотр",
     nextStep: "Verify channel states before publishing",
     href: "/dashboard/networks/aphrodite/channels",
   },
@@ -51,90 +51,90 @@ const modules: ModuleCard[] = [
     title: "Каналы Зодиака",
     icon: Sparkles,
     purpose: "Astrology content publishing module",
-    status: "Active",
+    status: "Активные",
     safetyLevel: "Production",
     nextStep: "Review daily/weekly pipelines",
     href: "/dashboard/networks/zodiac",
   },
   {
     id: "currency-module",
-    title: "Currency",
+    title: "Валюты",
     icon: Activity,
     purpose: "Daily exchange rates & economic updates",
-    status: "Draft",
+    status: "Черновик",
     safetyLevel: "Dry-run Only",
     nextStep: "Define reliable data sources",
   },
   {
     id: "crypto-module",
-    title: "Crypto",
+    title: "Крипта",
     icon: Database,
     purpose: "Crypto market summaries & technicals",
-    status: "Draft",
+    status: "Черновик",
     safetyLevel: "Dry-run Only",
     nextStep: "Draft content template guidelines",
   },
   {
     id: "metals-module",
-    title: "Metals",
+    title: "Металлы",
     icon: LayoutDashboard,
     purpose: "Precious metals and commodity watch",
-    status: "Draft",
+    status: "Черновик",
     safetyLevel: "Dry-run Only",
     nextStep: "Configure initial channels",
   },
   {
     id: "publishing-engine",
-    title: "Publishing",
+    title: "Публикации",
     icon: RadioTower,
     purpose: "Core dispatcher for Telegram API",
-    status: "Locked",
-    safetyLevel: "Read-only",
+    status: "Заблокировано",
+    safetyLevel: "Только просмотр",
     nextStep: "Keep locked until architecture sync",
   },
   {
     id: "data-sources",
-    title: "Data Sources",
+    title: "Источники данных",
     icon: Workflow,
     purpose: "Centralized feed aggregators",
     status: "Planning",
-    safetyLevel: "Concept",
+    safetyLevel: "Будущий модуль",
     nextStep: "Design source normalization pipeline",
   },
   {
     id: "safety-guard",
-    title: "Safety",
+    title: "Безопасность",
     icon: ShieldCheck,
     purpose: "Global rate limits & duplicate prevention",
     status: "Planning",
-    safetyLevel: "Concept",
+    safetyLevel: "Будущий модуль",
     nextStep: "Implement pre-flight checks",
   },
   {
     id: "schedule-calendar",
-    title: "Schedule / Calendar",
+    title: "Расписание",
     icon: Calendar,
     purpose: "Cross-module content scheduling view",
     status: "Planning",
-    safetyLevel: "Concept",
+    safetyLevel: "Будущий модуль",
     nextStep: "Integrate Zodiac ledger data",
   },
   {
     id: "analytics",
-    title: "Analytics",
+    title: "Аналитика",
     icon: BarChart3,
     purpose: "Aggregated performance and user metrics",
     status: "Planning",
-    safetyLevel: "Concept",
+    safetyLevel: "Будущий модуль",
     nextStep: "Define base engagement KPIs",
   },
   {
     id: "future-studio",
-    title: "Future Windows Studio",
+    title: "Студия",
     icon: TerminalSquare,
     purpose: "Advanced visual content generator",
     status: "Planning",
-    safetyLevel: "Concept",
+    safetyLevel: "Будущий модуль",
     nextStep: "Not yet scheduled",
     href: "/dashboard/networks/aphrodite/studio",
   },
@@ -147,7 +147,7 @@ export default function AphroditePlatformOverview() {
     <main className="flex-1 bg-[#0a1428] text-slate-200">
       <div className="mx-auto max-w-6xl px-4 py-8 lg:px-8 lg:py-12">
         <AphroditePageHeader
-          title="Афродита (Aphrodite Platform)"
+          title="Афродита"
           description="The overarching operator platform for all Telegram publishing networks. Зодиак (Zodiac) and other vertical content engines operate as modules within this control plane."
           badgeText="Operator Platform"
           icon={LayoutDashboard}
@@ -161,28 +161,28 @@ export default function AphroditePlatformOverview() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-10">
           <div className="rounded-2xl border border-slate-800/80 bg-[#0f1b33] p-4 flex flex-col items-center justify-center text-center shadow-sm">
             <span className="text-3xl font-semibold text-white mb-1 tracking-tight">18</span>
-            <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Total Channels</span>
+            <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Всего каналов</span>
           </div>
           <div className="rounded-2xl border border-slate-800/80 bg-[#0f1b33] p-4 flex flex-col items-center justify-center text-center shadow-sm">
             <span className="text-3xl font-semibold text-slate-500 mb-1 tracking-tight">15</span>
-            <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Legacy Paused</span>
+            <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Каналов на паузе</span>
           </div>
           <div className="rounded-2xl border border-blue-500/20 bg-blue-500/10 p-4 flex flex-col items-center justify-center text-center shadow-sm">
             <span className="text-3xl font-semibold text-blue-400 mb-1 tracking-tight">3</span>
-            <span className="text-[11px] font-medium text-blue-300 uppercase tracking-wider">Draft Modules</span>
+            <span className="text-[11px] font-medium text-blue-300 uppercase tracking-wider">Модулей в черновике</span>
           </div>
           <div className="rounded-2xl border border-slate-800/80 bg-[#0f1b33] p-4 flex flex-col items-center justify-center text-center shadow-sm">
             <span className="text-3xl font-semibold text-slate-500 mb-1 tracking-tight">0</span>
-            <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Active</span>
+            <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Активные</span>
           </div>
           <div className="rounded-2xl border border-slate-800/80 bg-[#0f1b33] p-4 flex flex-col items-center justify-center text-center shadow-sm">
             <span className="text-3xl font-semibold text-slate-500 mb-1 tracking-tight">0</span>
-            <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Errors</span>
+            <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Ошибки</span>
           </div>
           <div className="rounded-2xl border border-rose-500/20 bg-[#0f1b33] p-4 flex flex-col items-center justify-center text-center shadow-sm">
             <Lock className="h-6 w-6 text-rose-400 mb-1.5" />
-            <span className="text-sm font-semibold text-rose-300 tracking-tight">Locked</span>
-            <span className="text-[10px] font-medium text-rose-400/80 uppercase tracking-wider mt-0.5">Live Publish</span>
+            <span className="text-sm font-semibold text-rose-300 tracking-tight">Заблокирована</span>
+            <span className="text-[10px] font-medium text-rose-400/80 uppercase tracking-wider mt-0.5">Публикация</span>
           </div>
         </div>
 
@@ -191,7 +191,7 @@ export default function AphroditePlatformOverview() {
             {/* Modules Grid */}
             <section>
               <div className="flex items-center justify-between mb-5">
-                <h2 className="text-xl font-semibold text-white tracking-tight">Platform Modules</h2>
+                <h2 className="text-xl font-semibold text-white tracking-tight">Модули платформы</h2>
                 <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-700/60 bg-slate-800/50 px-2.5 py-1 text-[10px] font-medium text-slate-300 uppercase tracking-wider">
                   <LockKeyhole className="h-3 w-3" />
                   Read-only view
@@ -208,9 +208,9 @@ export default function AphroditePlatformOverview() {
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex items-center gap-3">
                           <div className={`flex h-10 w-10 items-center justify-center rounded-xl border ${
-                            m.status === "Active" ? "border-blue-500/30 bg-blue-500/10 text-blue-400" :
-                            m.status === "Draft" ? "border-amber-500/30 bg-amber-500/10 text-amber-400" :
-                            m.status === "Locked" ? "border-rose-500/30 bg-rose-500/10 text-rose-400" :
+                            m.status === "Активные" ? "border-blue-500/30 bg-blue-500/10 text-blue-400" :
+                            m.status === "Черновик" ? "border-amber-500/30 bg-amber-500/10 text-amber-400" :
+                            m.status === "Заблокировано" ? "border-rose-500/30 bg-rose-500/10 text-rose-400" :
                             "border-slate-700 bg-slate-800 text-slate-400"
                           }`}>
                             <Icon className="h-5 w-5" />
@@ -219,9 +219,9 @@ export default function AphroditePlatformOverview() {
                             <h3 className="font-semibold text-white tracking-tight">{m.title}</h3>
                             <div className="flex items-center gap-2 mt-0.5">
                               <span className={`text-[10px] font-medium uppercase tracking-wider ${
-                                m.status === "Active" ? "text-blue-400" :
-                                m.status === "Draft" ? "text-amber-400" :
-                                m.status === "Locked" ? "text-rose-400" :
+                                m.status === "Активные" ? "text-blue-400" :
+                                m.status === "Черновик" ? "text-amber-400" :
+                                m.status === "Заблокировано" ? "text-rose-400" :
                                 "text-slate-500"
                               }`}>{m.status}</span>
                             </div>
@@ -238,11 +238,11 @@ export default function AphroditePlatformOverview() {
                       
                       <div className="mt-auto space-y-3 pt-4 border-t border-slate-800/50">
                         <div className="flex justify-between items-center text-xs">
-                          <span className="text-slate-500">Safety Level</span>
+                          <span className="text-slate-500">Безопасность</span>
                           <span className="font-medium text-slate-300">{m.safetyLevel}</span>
                         </div>
                         <div className="flex justify-between items-center text-xs">
-                          <span className="text-slate-500">Next Step</span>
+                          <span className="text-slate-500">Следующий шаг</span>
                           <span className="font-medium text-slate-300 truncate max-w-[160px]">{m.nextStep}</span>
                         </div>
                       </div>
@@ -305,7 +305,7 @@ export default function AphroditePlatformOverview() {
                 Platform Architecture
               </h2>
               <div className="rounded-xl border border-slate-800 bg-[#080d1a] p-4 overflow-x-auto font-mono text-sm leading-relaxed text-slate-300">
-<pre><code>{`Aphrodite OS
+<pre><code>{`Афродита
 ├─ Channels
 ├─ Modules
 ├─ Publishing
