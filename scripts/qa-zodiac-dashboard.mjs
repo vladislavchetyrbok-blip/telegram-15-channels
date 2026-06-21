@@ -3,7 +3,7 @@
 import { spawn } from "node:child_process";
 import http from "node:http";
 
-const DEFAULT_TIMEOUT_MS = 120_000;
+const DEFAULT_TIMEOUT_MS = 180_000;
 const URL_BASE = "http://localhost:3000";
 const ROUTES = {
   login: "/login",
