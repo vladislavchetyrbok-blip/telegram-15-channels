@@ -41,7 +41,7 @@ export default function ZodiacPriorityPage() {
 
   const phases = [
     { step: "Фаза 1", title: "проверить 13 каналов", status: "Ожидание" },
-    { step: "Фаза 2", title: "подготовить 7 дней постов", status: "Ожидание" },
+    { step: "Фаза 2", title: "аудит ежедневной системы", status: "Ожидание" },
     { step: "Фаза 3", title: "проверить Mini App", status: "Ожидание" },
     { step: "Фаза 4", title: "подготовить CTA", status: "Ожидание" },
     { step: "Фаза 5", title: "dry-run публикаций", status: "Ожидание" },
@@ -50,7 +50,7 @@ export default function ZodiacPriorityPage() {
 
   const packages = [
     { name: "Package 90", desc: "контентные профили 13 каналов" },
-    { name: "Package 91", desc: "первые 7 дней постов" },
+    { name: "Package 91", desc: "аудит, предпросмотр и улучшение качества" },
     { name: "Package 92", desc: "Studio Reels/Shorts для Зодиака" },
     { name: "Package 93", desc: "dry-run preview и календарь Зодиака" }
   ]
@@ -88,7 +88,7 @@ export default function ZodiacPriorityPage() {
           <MetricCard title="Каналов" value="13" caption="Целевая сетка" icon={Rocket} tone="cyan" />
           <MetricCard title="Публикация" value="Заблокирована" caption="Live-публикация отключена" icon={Shield} tone="rose" />
           <MetricCard title="Режим" value="Dry-run / подготовка" caption="Безопасное тестирование" icon={CheckCircle2} tone="slate" />
-          <MetricCard title="Следующий этап" value="Package 91" caption="первые 7 дней постов Зодиака" icon={Calendar} tone="blue" />
+          <MetricCard title="Следующий этап" value="Package 91" caption="Ежедневная система уже настроена" icon={Calendar} tone="blue" />
         </section>
 
         {/* Action Links */}
@@ -102,6 +102,16 @@ export default function ZodiacPriorityPage() {
               <div className="text-sm text-indigo-300">Позиционирование, рубрики, тон, форматы</div>
             </div>
             <ChevronRight className="h-5 w-5 text-indigo-400" />
+          </Link>
+          <Link href="/dashboard/networks/zodiac/daily-system" className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-5 shadow-sm hover:bg-emerald-500/20 transition flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <Activity className="h-5 w-5 text-emerald-400" />
+                <h3 className="text-lg font-semibold text-white">Ежедневная система</h3>
+              </div>
+              <div className="text-sm text-emerald-300">Уже настроенный ежедневный контур Зодиака: 13 каналов, расписание, dry-run, ledger и проверка безопасности.</div>
+            </div>
+            <ChevronRight className="h-5 w-5 text-emerald-400" />
           </Link>
         </section>
 

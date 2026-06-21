@@ -22,6 +22,7 @@ const ROUTES = {
   docs: "/dashboard/networks/zodiac/docs",
   legacyPublishing: "/publishing-center",
   miniApp: "/compatibility",
+  dailySystem: "/dashboard/networks/zodiac/daily-system",
   dashboardAuthStatus: "/api/dashboard/auth/status",
   unifiedStatus: "/api/system/unified-status",
   aphroditeOverview: "/dashboard/networks/aphrodite",
@@ -262,10 +263,18 @@ async function main() {
     assertIncludes(pages.priority, "Зодиак — приоритет запуска", "priority page heading");
     assertIncludes(pages.priority, "13", "priority page channels target");
     assertIncludes(pages.priority, "Package 91", "priority page next step");
+    assertIncludes(pages.priority, "Ежедневная система уже настроена", "priority page next step caption");
     assertIncludes(pages.priority, "Live-публикация отключена", "priority page safety live publishing");
     assertIncludes(pages.priority, "Telegram API не вызывается", "priority page safety api");
     assertIncludes(pages.priority, "Контентные профили 13 каналов", "priority page profiles link");
+    assertIncludes(pages.priority, "Ежедневная система", "priority page daily system link");
     assertNotIncludes(pages.priority, "/api/zodiac/priority", "priority page no server write API route");
+
+    assertIncludes(pages.dailySystem, "Ежедневная система Зодиака", "daily system page heading");
+    assertIncludes(pages.dailySystem, "Ежедневная логика", "daily system logic KPI");
+    assertIncludes(pages.dailySystem, "Dry-run", "daily system dry-run KPI");
+    assertIncludes(pages.dailySystem, "Не пересоздавать посты с нуля", "daily system safety rule");
+    assertIncludes(pages.dailySystem, "Карта существующей системы", "daily system map section");
 
     // Profile checks
     assertIncludes(pages.profiles, "Контентные профили Зодиака", "profiles page heading");

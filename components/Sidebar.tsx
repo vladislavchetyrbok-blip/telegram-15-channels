@@ -17,7 +17,8 @@ import {
   Database,
   Clapperboard,
   ChevronDown,
-  ChevronRight
+  ChevronRight,
+  Activity
 } from "lucide-react";
 
 const aphroditeNavItems = [
@@ -40,6 +41,7 @@ const legacyNavItems = [
 const zodiacNavItems = [
   { id: "priority", href: "/dashboard/networks/zodiac/priority", label: "Приоритет запуска", icon: Rocket },
   { id: "profiles", href: "/dashboard/networks/zodiac/profiles", label: "Контентные профили", icon: FileText },
+  { id: "daily-system", href: "/dashboard/networks/zodiac/daily-system", label: "Ежедневная система", icon: Activity },
   { id: "channels", href: "/dashboard/networks/zodiac/channels", label: "Каналы Зодиака", icon: RadioTower },
   { id: "launch", href: "/dashboard/networks/zodiac/launch", label: "Запуск", icon: Rocket },
   { id: "operations", href: "/dashboard/networks/zodiac/operations", label: "Мониторинг", icon: LayoutDashboard },
