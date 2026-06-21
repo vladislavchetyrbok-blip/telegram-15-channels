@@ -149,12 +149,12 @@ export function MysticNumbersClient() {
               <LockKeyhole className="mx-auto mb-3 h-8 w-8 text-violet-400" />
               <h3 className="text-lg font-bold text-slate-100">Personalized Reading</h3>
               <p className="mt-2 text-sm text-slate-300">{result.vipPreview}</p>
-              <button
-                type="button"
-                className="mt-4 w-full flex items-center justify-center gap-2 rounded-xl bg-slate-800 py-3 font-semibold text-slate-300 transition hover:bg-slate-700 active:scale-[0.98]"
+              <Link 
+                href="/vip-preview"
+                className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-slate-800 py-3 font-semibold text-slate-300 transition active:scale-[0.98] active:bg-slate-700"
               >
-                Unlock Premium Insights <ArrowRight className="h-4 w-4" />
-              </button>
+                Preview VIP Insights <ArrowRight className="h-4 w-4" />
+              </Link>
             </div>
 
             <button

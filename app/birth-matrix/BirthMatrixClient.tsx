@@ -134,12 +134,12 @@ export function BirthMatrixClient() {
               <LockKeyhole className="mx-auto mb-3 h-8 w-8 text-violet-400" />
               <h3 className="text-lg font-bold text-slate-100">Deep Matrix Analysis</h3>
               <p className="mt-2 text-sm text-slate-300">{result.vipPreview}</p>
-              <button
-                type="button"
-                className="mt-4 w-full rounded-xl bg-slate-800 py-3 font-semibold text-slate-300 transition active:scale-[0.98] active:bg-slate-700"
+              <Link
+                href="/vip-preview"
+                className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-slate-800 py-3 font-semibold text-slate-300 transition active:scale-[0.98] active:bg-slate-700"
               >
-                Unlock VIP (Mock)
-              </button>
+                Preview VIP (Mock)
+              </Link>
             </div>
 
             <button

@@ -106,36 +106,36 @@ export default function VipPreviewPage() {
           </div>
 
           <div className="pt-6 border-t border-slate-800">
-            <h3 className="text-sm font-medium text-slate-400 mb-3 flex items-center gap-2">
-              <LayoutGrid className="h-4 w-4" />
-              Explore Free Modules
-            </h3>
-            <div className="grid grid-cols-2 gap-2">
-              <Link href="/compatibility" className="flex items-center justify-center rounded-lg border border-slate-700 bg-slate-800/50 py-2.5 text-sm font-medium text-slate-300 hover:bg-slate-700 transition">
-                Compatibility
+            <h3 className="text-sm font-medium text-slate-400 mb-3">Quick Launch</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <Link href="/compatibility" className="flex items-center justify-center rounded-lg border border-slate-700 bg-slate-800/50 py-3 text-sm font-medium text-slate-300 hover:bg-slate-700 transition">
+                Check compatibility
               </Link>
-              <Link href="/birth-matrix" className="flex items-center justify-center rounded-lg border border-slate-700 bg-slate-800/50 py-2.5 text-sm font-medium text-slate-300 hover:bg-slate-700 transition">
-                Birth Matrix
+              <Link href="/birth-matrix" className="flex items-center justify-center rounded-lg border border-slate-700 bg-slate-800/50 py-3 text-sm font-medium text-slate-300 hover:bg-slate-700 transition">
+                Try mock Birth Matrix
               </Link>
-              <Link href="/mystic-numbers" className="flex items-center justify-center rounded-lg border border-slate-700 bg-slate-800/50 py-2.5 text-sm font-medium text-slate-300 hover:bg-slate-700 transition">
-                Mystic Numbers
+              <Link href="/mystic-numbers" className="flex items-center justify-center rounded-lg border border-slate-700 bg-slate-800/50 py-3 text-sm font-medium text-slate-300 hover:bg-slate-700 transition">
+                Preview Mystic Numbers
               </Link>
-              <Link href="/affirmations" className="flex items-center justify-center rounded-lg border border-slate-700 bg-slate-800/50 py-2.5 text-sm font-medium text-slate-300 hover:bg-slate-700 transition">
-                Affirmations
+              <Link href="/affirmations" className="flex items-center justify-center rounded-lg border border-slate-700 bg-slate-800/50 py-3 text-sm font-medium text-slate-300 hover:bg-slate-700 transition">
+                Open Affirmations
               </Link>
             </div>
           </div>
           
           <div className="pt-6 border-t border-slate-800 pb-8">
-            <h3 className="text-sm font-medium text-slate-400 mb-3">Dashboard Links</h3>
-            <div className="flex flex-col gap-2">
-              <Link href="/miniapp" className="text-xs text-slate-500 hover:text-slate-300 transition">
+            <h3 className="text-sm font-medium text-slate-400 mb-3">Navigation</h3>
+            <div className="flex flex-col gap-3">
+              <Link href="/miniapp" className="text-sm font-bold text-violet-400 hover:text-violet-300 transition flex items-center gap-1">
                 ← Back to Mini App Hub
               </Link>
-              <Link href="/dashboard/networks/zodiac/miniapp-architecture" className="text-xs text-slate-500 hover:text-slate-300 transition">
+              <Link href="/dashboard/networks/zodiac/miniapp-route-safety" className="text-xs text-emerald-500/80 hover:text-emerald-400 transition flex items-center gap-1 mt-2">
+                <ShieldCheck className="h-3.5 w-3.5" /> View safety baseline
+              </Link>
+              <Link href="/dashboard/networks/zodiac/miniapp-architecture" className="text-xs text-slate-500 hover:text-slate-300 transition flex items-center gap-1">
                 → Mini App Architecture
               </Link>
-              <Link href="/dashboard/networks/zodiac/stability" className="text-xs text-slate-500 hover:text-slate-300 transition">
+              <Link href="/dashboard/networks/zodiac/stability" className="text-xs text-slate-500 hover:text-slate-300 transition flex items-center gap-1">
                 → Stability Matrix
               </Link>
             </div>
