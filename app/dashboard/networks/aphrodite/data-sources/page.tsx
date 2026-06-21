@@ -28,11 +28,11 @@ interface DataSource {
 }
 
 const DATA_SOURCES: DataSource[] = [
-  { id: "rss", name: "RSS Feeds", icon: Rss, status: "active", description: "Standard news and blog syndication feeds (mock data)." },
-  { id: "currency", name: "Currency Exchange API", icon: Coins, status: "draft", description: "Live fiat currency exchange rates." },
-  { id: "crypto", name: "Crypto API", icon: Bitcoin, status: "draft", description: "Cryptocurrency prices and market data." },
-  { id: "metals", name: "Metals API", icon: Gem, status: "future", description: "Precious metals spot prices." },
-  { id: "realestate", name: "Real Estate Scraper", icon: Building2, status: "future", description: "Property listings and market trends." },
+  { id: "rss", name: "Ленты RSS", icon: Rss, status: "active", description: "Стандартные новостные ленты и блоги (мок-данные)." },
+  { id: "currency", name: "API обмена валют", icon: Coins, status: "draft", description: "Курсы фиатных валют в реальном времени." },
+  { id: "crypto", name: "Крипто API", icon: Bitcoin, status: "draft", description: "Цены на криптовалюты и рыночные данные." },
+  { id: "metals", name: "API металлов", icon: Gem, status: "future", description: "Спотовые цены на драгоценные металлы." },
+  { id: "realestate", name: "Парсер недвижимости", icon: Building2, status: "future", description: "Объявления о недвижимости и рыночные тренды." },
 ];
 
 function StatusBadge({ status }: { status: DataSource["status"] }) {
@@ -58,9 +58,9 @@ export default function AphroditeDataSourcesPage() {
     <div className="-mx-4 -my-6 min-h-screen overflow-x-hidden bg-[#070b14] px-4 py-6 text-slate-100 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
       <div className="mx-auto max-w-6xl space-y-8">
         <AphroditePageHeader
-          title="Aphrodite Data Sources"
-          description="Read-only view of integrated APIs, feeds, and scrapers for platform modules."
-          badgeText="Data Sources"
+          title="Источники данных Афродиты"
+          description="Режим только просмотра интеграций API, лент и парсеров для модулей платформы."
+          badgeText="Источники данных"
           icon={Network}
           safetyLocked={false}
         />
@@ -70,12 +70,8 @@ export default function AphroditeDataSourcesPage() {
             <section className="rounded-2xl border border-slate-800/80 bg-[#0f1b33] overflow-hidden shadow-sm">
               <div className="p-5 border-b border-slate-800/80 bg-slate-900/20 flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-white tracking-tight flex items-center gap-2">
-                  <Database className="h-5 w-5 text-slate-400" />
-                  Integration Registry
-                </h2>
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-700/60 bg-slate-800/50 px-2.5 py-1 text-[10px] font-medium text-slate-300 uppercase tracking-wider">
-                  Read-Only UI
-                </span>
+                  <Database className="h-5 w-5 text-slate-400" />Реестр интеграций</h2>
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-700/60 bg-slate-800/50 px-2.5 py-1 text-[10px] font-medium text-slate-300 uppercase tracking-wider">Только просмотр</span>
               </div>
               <div className="divide-y divide-slate-800/50">
                 {DATA_SOURCES.map((source) => {
@@ -111,37 +107,31 @@ export default function AphroditeDataSourcesPage() {
                 <Lock className="h-24 w-24" />
               </div>
               <h2 className="text-base font-semibold text-rose-300 mb-5 flex items-center gap-2">
-                <LockKeyhole className="h-5 w-5" />
-                Data Source Safety
-              </h2>
+                <LockKeyhole className="h-5 w-5" />Безопасность источников</h2>
               <ul className="space-y-4 relative z-10">
                 <li className="flex items-start gap-3">
                   <CheckCircle2 className="h-4 w-4 text-emerald-400 mt-0.5 shrink-0" />
-                  <span className="text-sm text-slate-300 leading-tight">No live API keys in frontend</span>
+                  <span className="text-sm text-slate-300 leading-tight">Нет активных ключей API на клиенте</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <CheckCircle2 className="h-4 w-4 text-emerald-400 mt-0.5 shrink-0" />
-                  <span className="text-sm text-slate-300 leading-tight">No external connections</span>
+                  <span className="text-sm text-slate-300 leading-tight">Нет внешних подключений</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <CheckCircle2 className="h-4 w-4 text-emerald-400 mt-0.5 shrink-0" />
-                  <span className="text-sm text-slate-300 leading-tight">Mock data isolation active</span>
+                  <span className="text-sm text-slate-300 leading-tight">Изоляция мок-данных активна</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <AlertCircle className="h-4 w-4 text-amber-400 mt-0.5 shrink-0" />
-                  <span className="text-sm text-slate-300 leading-tight">Sync actions disabled for operator</span>
+                  <span className="text-sm text-slate-300 leading-tight">Синхронизация отключена для оператора</span>
                 </li>
               </ul>
             </section>
 
             <section className="rounded-2xl border border-slate-800/80 bg-[#0f1b33] p-6 shadow-sm">
               <h2 className="text-base font-semibold text-white mb-4 flex items-center gap-2">
-                <Activity className="h-5 w-5 text-slate-400" />
-                Connection Status
-              </h2>
-              <p className="text-sm text-slate-400 mb-4 leading-relaxed">
-                All external data sources are currently operating in mocked offline mode for development safety.
-              </p>
+                <Activity className="h-5 w-5 text-slate-400" />Статус подключения</h2>
+              <p className="text-sm text-slate-400 mb-4 leading-relaxed">Все внешние источники данных работают в тестовом режиме.</p>
             </section>
           </div>
         </div>

@@ -248,7 +248,7 @@ export function FeedbackCenterWorkspace() {
                 <option value="iphone">iPhone</option>
                 <option value="android">Android</option>
                 <option value="desktop">Desktop</option>
-                <option value="unknown">Unknown</option>
+                <option value="unknown">Не указано</option>
               </select>
             </Field>
             <Field label="Telegram app">
@@ -256,7 +256,7 @@ export function FeedbackCenterWorkspace() {
                 <option value="ios">iOS</option>
                 <option value="android">Android</option>
                 <option value="desktop">Desktop</option>
-                <option value="unknown">Unknown</option>
+                <option value="unknown">Не указано</option>
               </select>
             </Field>
             <Field label="Rating 1-10">
@@ -266,7 +266,7 @@ export function FeedbackCenterWorkspace() {
               <select value={form.wouldShare} onChange={(event) => updateForm("wouldShare", event.target.value as WouldShare)} className={inputClassName}>
                 <option value="yes">yes</option>
                 <option value="no">no</option>
-                <option value="unknown">unknown</option>
+                <option value="unknown">не указан</option>
               </select>
             </Field>
             <Field label="Severity">
@@ -755,7 +755,7 @@ function buildSanitizedExport(entries: FeedbackEntry[], qaState: QaState, nextAc
     `Recommended next action: ${nextAction}`,
     "",
     "Feedback:",
-    entries.length === 0 ? "- No real feedback yet." : entries.map((entry) => `- ${entry.testerLabel}: ${entry.severity}/${entry.status}, device=${entry.device}, telegram=${entry.telegramApp}, rating=${entry.rating ?? "none"}, share=${entry.wouldShare}, feature=${entry.strongestFeature || "n/a"}`).join("\n"),
+    entries.length === 0 ? "- No real feedback yet." : entries.map((entry) => `- ${entry.testerLabel}: ${entry.severity}/${entry.status}, device=${entry.device}, telegram=${entry.telegramApp}, rating=${entry.rating ?? "нет"}, share=${entry.wouldShare}, feature=${entry.strongestFeature || "n/a"}`).join("\n"),
     "",
     "Real Phone QA checked:",
     allQaItems.filter((item) => qaState[item.id]).map((item) => `- ${item.label}`).join("\n") || "- none",

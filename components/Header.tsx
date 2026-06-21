@@ -6,12 +6,11 @@ import { useEffect, useState } from "react";
 import { DashboardLogoutButton } from "@/components/DashboardLogoutButton";
 
 interface HeaderStatus {
-  channelsTotal: number;
   readyToPublish: number;
 }
 
 export function Header() {
-  const [status, setStatus] = useState<HeaderStatus>({ channelsTotal: 15, readyToPublish: 0 });
+  const [status, setStatus] = useState<HeaderStatus>({ readyToPublish: 0 });
 
   useEffect(() => {
     let mounted = true;
@@ -21,12 +20,11 @@ export function Header() {
       .then((payload) => {
         if (!mounted || !payload) return;
         setStatus({
-          channelsTotal: typeof payload.channelsTotal === "number" ? payload.channelsTotal : 15,
           readyToPublish: typeof payload.content?.readyToPublish === "number" ? payload.content.readyToPublish : 0,
         });
       })
       .catch(() => {
-        if (mounted) setStatus({ channelsTotal: 15, readyToPublish: 0 });
+        if (mounted) setStatus({ readyToPublish: 0 });
       });
 
     return () => {
@@ -43,7 +41,7 @@ export function Header() {
             <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-slate-400 sm:mt-0" />
             <span className="min-w-0 break-words [overflow-wrap:anywhere]">Центр управления платформой. Никаких прямых публикаций в режиме preflight.</span>
           </p>
-          <h1 className="mt-1 break-words text-xl font-semibold text-white [overflow-wrap:anywhere] sm:text-2xl">Афродита — {status.channelsTotal} каналов</h1>
+          <h1 className="mt-1 break-words text-xl font-semibold text-white [overflow-wrap:anywhere] sm:text-2xl">Афродита</h1>
         </div>
         <div className="flex min-w-0 max-w-full flex-wrap gap-2 xl:w-auto xl:justify-end">
           <Link
@@ -66,7 +64,7 @@ export function Header() {
             Только просмотр
           </Link>
           <span className="inline-flex h-10 shrink-0 items-center rounded-md border border-line bg-black/20 px-3 text-sm text-slate-400">
-            Готово: <span className="ml-2 text-cyan-200">{status.readyToPublish}</span>
+            Готовые посты: <span className="ml-2 text-cyan-200">{status.readyToPublish}</span>
           </span>
           <DashboardLogoutButton />
         </div>

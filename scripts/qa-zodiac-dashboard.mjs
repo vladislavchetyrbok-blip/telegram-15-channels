@@ -55,7 +55,7 @@ async function main() {
     assertIncludes(pages.dashboardAuthStatus, '"authEnabled":false', "dashboard auth disabled status");
     assertIncludes(pages.dashboardAuthStatus, '"sessionCookie":"local browser only"', "dashboard auth session cookie status");
 
-    assertIncludes(pages.overview, "АФРОДИТА", "Aphrodite visible on dashboard shell or overview");
+    assertIncludes(pages.overview, "Афродита", "Aphrodite visible on dashboard shell or overview");
     assertIncludes(pages.overview, "Каналы Зодиака", "overview page heading");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/channels"', "overview channels route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/publishing"', "overview publishing route link");
@@ -116,7 +116,7 @@ async function main() {
 
     assertIncludes(pages.content, "Контент Зодиака", "content page heading");
     assertIncludes(pages.content, "Управление модулем Зодиак внутри Афродиты.", "content page subtitle");
-    assertIncludes(pages.content, "Dashboard / Афродита", "content breadcrumb");
+    assertIncludes(pages.content, "Платформа / Афродита", "content breadcrumb");
     assertIncludes(pages.content, 'data-qa="content-engine-overview-cards"', "content overview cards");
     assertIncludes(pages.content, "Шаблоны", "content overview templates card");
     assertIncludes(pages.content, "Рубрики", "content overview rubrics card");
@@ -194,7 +194,7 @@ async function main() {
     assertNotIncludes(pages.publishing, "zodiac:weekly:publish", "weekly live command on publishing page");
 
     assertIncludes(pages.feedback, "Отзывы", "feedback page heading");
-    assertIncludes(pages.feedback, "Dashboard / Афродита", "feedback breadcrumb");
+    assertIncludes(pages.feedback, "Платформа / Афродита", "feedback breadcrumb");
     assertIncludes(pages.feedback, "Управление модулем Зодиак внутри Афродиты.", "feedback subtitle");
     assertIncludes(pages.feedback, "Отзывы", "feedback Russian nav label");
     assertIncludes(pages.feedback, 'data-qa="feedback-overview-cards"', "feedback overview cards");
@@ -257,7 +257,7 @@ async function main() {
 
     assertIncludes(pages.security, "Безопасность платформы", "security page heading");
     assertIncludes(pages.security, "Управление модулем Зодиак внутри Афродиты.", "security subtitle");
-    assertIncludes(pages.security, "Dashboard / Афродита", "security breadcrumb");
+    assertIncludes(pages.security, "Платформа / Афродита", "security breadcrumb");
     assertIncludes(pages.security, 'data-qa="admin-safety-status-cards"', "security status cards");
     assertIncludes(pages.security, "Live publish", "live publish status label");
     assertIncludes(pages.security, "запрещён", "live publish blocked value");
@@ -338,7 +338,7 @@ async function main() {
     assertIncludes(pages.aphroditeChannels, "Реестр Каналов Афродиты", "aphrodite registry heading");
     assertIncludes(pages.aphroditeChannels, "Всего каналов в реестре", "aphrodite registry total channels");
     assertIncludes(pages.aphroditeChannels, "Старая сеть 15 каналов", "aphrodite registry paused legacy");
-    assertIncludes(pages.aphroditeChannels, "Каналы новых модулей (Draft)", "aphrodite registry draft new");
+    assertIncludes(pages.aphroditeChannels, "Каналов в черновиках", "aphrodite registry draft new");
     assertIncludes(pages.aphroditeChannels, "Валюты", "aphrodite module Валюты");
     assertIncludes(pages.aphroditeChannels, "Крипта", "aphrodite module Крипта");
     assertIncludes(pages.aphroditeChannels, "Металлы", "aphrodite module Металлы");
@@ -349,7 +349,7 @@ async function main() {
     assertIncludes(pages.aphroditeOverview, "Валюты", "aphrodite overview Currency card");
     assertIncludes(pages.aphroditeOverview, "Крипта", "aphrodite overview Crypto card");
     assertIncludes(pages.aphroditeOverview, "Металлы", "aphrodite overview Metals card");
-    assertIncludes(pages.aphroditeOverview, "Заблокировано", "aphrodite overview live publish locked");
+    assertIncludes(pages.aphroditeOverview, "заблокирована", "aphrodite overview live publish locked");
     assertNotIncludes(pages.aphroditeOverview, "/api/aphrodite", "no server write API required on aphrodite overview");
 
     assertIncludes(pages.aphroditeCalendar, "Aphrodite Publishing Calendar", "aphrodite calendar heading");
@@ -360,10 +360,10 @@ async function main() {
     assertIncludes(pages.aphroditeCalendar, "Live publishing locked", "aphrodite calendar safety locked");
     assertNotIncludes(pages.aphroditeCalendar, "/api/aphrodite", "no server write API required on aphrodite calendar");
 
-    assertIncludes(pages.aphroditeDataSources, "Aphrodite Data Sources", "aphrodite data sources heading");
-    assertIncludes(pages.aphroditeDataSources, "RSS Feeds", "aphrodite data sources rss");
-    assertIncludes(pages.aphroditeDataSources, "Currency Exchange API", "aphrodite data sources currency");
-    assertIncludes(pages.aphroditeDataSources, "No live API keys in frontend", "aphrodite data sources safety");
+    assertIncludes(pages.aphroditeDataSources, "Источники данных Афродиты", "aphrodite data sources heading");
+    assertIncludes(pages.aphroditeDataSources, "Ленты RSS", "aphrodite data sources rss");
+    assertIncludes(pages.aphroditeDataSources, "API обмена валют", "aphrodite data sources currency");
+    assertIncludes(pages.aphroditeDataSources, "Нет активных ключей API на клиенте", "aphrodite data sources safety");
     assertNotIncludes(pages.aphroditeDataSources, "/api/aphrodite", "no server write API required on aphrodite data sources");
 
     assertIncludes(pages.aphroditeCurrency, "Currency Exchange Module", "aphrodite currency heading");
@@ -373,12 +373,12 @@ async function main() {
 
     assertIncludes(pages.aphroditeCrypto, "Cryptocurrency Markets", "aphrodite crypto heading");
     assertIncludes(pages.aphroditeCrypto, "BTC/USD", "aphrodite crypto mock data");
-    assertIncludes(pages.aphroditeCrypto, "API calls mocked", "aphrodite crypto safety");
+    assertIncludes(pages.aphroditeCrypto, "Тестовый режим", "aphrodite crypto safety");
     assertNotIncludes(pages.aphroditeCrypto, "/api/aphrodite", "no server write API required on aphrodite crypto");
 
     assertIncludes(pages.aphroditeMetals, "Precious Metals", "aphrodite metals heading");
     assertIncludes(pages.aphroditeMetals, "XAU/USD", "aphrodite metals mock data");
-    assertIncludes(pages.aphroditeMetals, "API calls mocked", "aphrodite metals safety");
+    assertIncludes(pages.aphroditeMetals, "Тестовый режим", "aphrodite metals safety");
     assertNotIncludes(pages.aphroditeMetals, "/api/aphrodite", "no server write API required on aphrodite metals");
 
     assertIncludes(pages.aphroditeStudio, "Афродита Студия", "aphrodite studio heading");
@@ -432,6 +432,21 @@ async function main() {
   console.log("Checking for old English terminology globally...");
   const oldEnglishTerms = [
     "TELEGRAM NETWORK DASHBOARD",
+    "TELEGRAM TOKEN",
+    "GETME",
+    "BOT ACCESS",
+    "READY POSTS",
+    "WORKER",
+    "SCHEDULER",
+    "Dashboard Home",
+    "Safety Locked",
+    "Live publish locked",
+    "Read-only view",
+    "ACTIVE",
+    "DRAFT",
+    "PLANNING",
+    "Legacy",
+    "No live publish from registry",
     "Aphrodite Platform",
     "Operator Platform",
     "Total Channels",

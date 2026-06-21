@@ -19,9 +19,9 @@ export function AphroditePageHeader({
   badgeText,
   icon: Icon,
   safetyLocked = false,
-  safetyMessage = "API calls mocked",
+  safetyMessage = "Тестовый режим",
   backLink = "/dashboard/networks/aphrodite",
-  backLabel = "Dashboard / Афродита",
+  backLabel = "Платформа / Афродита",
 }: AphroditePageHeaderProps) {
   return (
     <header className="space-y-4 border-b border-slate-800/80 pb-6">
@@ -44,7 +44,7 @@ export function AphroditePageHeader({
           <div className="flex items-center gap-2 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-4 py-2">
             <ShieldCheck className="h-5 w-5 text-emerald-400" />
             <div className="text-sm">
-              <p className="font-semibold text-emerald-300">Safety Locked</p>
+              <p className="font-semibold text-emerald-300">Заблокировано</p>
               <p className="text-emerald-400/70 text-xs">{safetyMessage}</p>
             </div>
           </div>

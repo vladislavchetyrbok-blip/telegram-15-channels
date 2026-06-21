@@ -1,318 +1,265 @@
-import {
-  Activity,
-  AlertCircle,
-  BarChart3,
-  Calendar,
-  CheckCircle2,
-  CalendarDays,
-  ChevronRight,
+import { AphroditePageHeader } from "@/components/AphroditePageHeader";
+import { 
+  LayoutDashboard, 
+  TerminalSquare, 
+  CheckCircle2, 
+  Rocket, 
+  RadioTower, 
   Database,
-  LayoutDashboard,
-  Lock,
   LockKeyhole,
-  Network,
-  RadioTower,
   Server,
-  ShieldCheck,
-  Sparkles,
-  TerminalSquare,
-  Workflow,
+  Clapperboard,
+  Lock,
+  ChevronRight,
+  ShieldAlert,
+  Calendar
 } from "lucide-react";
 import Link from "next/link";
-import { requireDashboardPageAccess } from "@/lib/zodiac-dashboard-auth";
-import { AphroditePageHeader } from "@/components/AphroditePageHeader";
+import { UnifiedStatusStrip } from "@/components/UnifiedStatusStrip";
 
-export const dynamic = "force-dynamic";
-
-interface ModuleCard {
-  id: string;
-  title: string;
-  icon: React.ElementType;
-  purpose: string;
-  status: "Активные" | "Черновик" | "Заблокировано" | "Planning" | "Future";
-  safetyLevel: "Production" | "Dry-run Only" | "Только просмотр" | "Будущий модуль";
-  nextStep: string;
-  href?: string;
-}
-
-const modules: ModuleCard[] = [
+const moduleGroups = [
   {
-    id: "channel-registry",
-    title: "Реестр каналов",
-    icon: Server,
-    purpose: "Unified view of all channels across modules",
-    status: "Активные",
-    safetyLevel: "Только просмотр",
-    nextStep: "Verify channel states before publishing",
-    href: "/dashboard/networks/aphrodite/channels",
+    title: "Активные модули",
+    modules: [
+      {
+        id: "zodiac",
+        title: "Каналы Зодиака",
+        purpose: "Сеть из 13 каналов с гороскопами.",
+        safetyLevel: "Рабочий модуль",
+        nextStep: "Публикации",
+        href: "/dashboard/networks/zodiac",
+        icon: Rocket,
+        status: "Активно",
+        statusColor: "text-blue-400 bg-blue-500/10 border-blue-500/30"
+      },
+      {
+        id: "studio",
+        title: "Студия",
+        purpose: "Генерация контента.",
+        safetyLevel: "Рабочий модуль",
+        nextStep: "Создание креативов",
+        href: "/dashboard/networks/aphrodite/studio",
+        icon: Clapperboard,
+        status: "Активно",
+        statusColor: "text-blue-400 bg-blue-500/10 border-blue-500/30"
+      }
+    ]
   },
   {
-    id: "zodiac-os",
-    title: "Каналы Зодиака",
-    icon: Sparkles,
-    purpose: "Astrology content publishing module",
-    status: "Активные",
-    safetyLevel: "Production",
-    nextStep: "Review daily/weekly pipelines",
-    href: "/dashboard/networks/zodiac",
+    title: "Черновики",
+    modules: [
+      {
+        id: "currency",
+        title: "Валюты",
+        purpose: "Курсы валют.",
+        safetyLevel: "Только просмотр",
+        nextStep: "Шаблоны контента",
+        href: "/dashboard/networks/aphrodite/currency",
+        icon: RadioTower,
+        status: "Черновик",
+        statusColor: "text-amber-400 bg-amber-500/10 border-amber-500/30"
+      },
+      {
+        id: "crypto",
+        title: "Крипта",
+        purpose: "Криптовалюты.",
+        safetyLevel: "Только просмотр",
+        nextStep: "Шаблоны контента",
+        href: "/dashboard/networks/aphrodite/crypto",
+        icon: RadioTower,
+        status: "Черновик",
+        statusColor: "text-amber-400 bg-amber-500/10 border-amber-500/30"
+      },
+      {
+        id: "metals",
+        title: "Металлы",
+        purpose: "Драг. металлы.",
+        safetyLevel: "Только просмотр",
+        nextStep: "Шаблоны контента",
+        href: "/dashboard/networks/aphrodite/metals",
+        icon: RadioTower,
+        status: "Черновик",
+        statusColor: "text-amber-400 bg-amber-500/10 border-amber-500/30"
+      }
+    ]
   },
   {
-    id: "currency-module",
-    title: "Валюты",
-    icon: Activity,
-    purpose: "Daily exchange rates & economic updates",
-    status: "Черновик",
-    safetyLevel: "Dry-run Only",
-    nextStep: "Define reliable data sources",
-  },
-  {
-    id: "crypto-module",
-    title: "Крипта",
-    icon: Database,
-    purpose: "Crypto market summaries & technicals",
-    status: "Черновик",
-    safetyLevel: "Dry-run Only",
-    nextStep: "Draft content template guidelines",
-  },
-  {
-    id: "metals-module",
-    title: "Металлы",
-    icon: LayoutDashboard,
-    purpose: "Precious metals and commodity watch",
-    status: "Черновик",
-    safetyLevel: "Dry-run Only",
-    nextStep: "Configure initial channels",
-  },
-  {
-    id: "publishing-engine",
-    title: "Публикации",
-    icon: RadioTower,
-    purpose: "Core dispatcher for Telegram API",
-    status: "Заблокировано",
-    safetyLevel: "Только просмотр",
-    nextStep: "Keep locked until architecture sync",
-  },
-  {
-    id: "data-sources",
-    title: "Источники данных",
-    icon: Workflow,
-    purpose: "Centralized feed aggregators",
-    status: "Planning",
-    safetyLevel: "Будущий модуль",
-    nextStep: "Design source normalization pipeline",
-  },
-  {
-    id: "safety-guard",
-    title: "Безопасность",
-    icon: ShieldCheck,
-    purpose: "Global rate limits & duplicate prevention",
-    status: "Planning",
-    safetyLevel: "Будущий модуль",
-    nextStep: "Implement pre-flight checks",
-  },
-  {
-    id: "schedule-calendar",
-    title: "Расписание",
-    icon: Calendar,
-    purpose: "Cross-module content scheduling view",
-    status: "Planning",
-    safetyLevel: "Будущий модуль",
-    nextStep: "Integrate Zodiac ledger data",
-  },
-  {
-    id: "analytics",
-    title: "Аналитика",
-    icon: BarChart3,
-    purpose: "Aggregated performance and user metrics",
-    status: "Planning",
-    safetyLevel: "Будущий модуль",
-    nextStep: "Define base engagement KPIs",
-  },
-  {
-    id: "future-studio",
-    title: "Студия",
-    icon: TerminalSquare,
-    purpose: "Advanced visual content generator",
-    status: "Planning",
-    safetyLevel: "Будущий модуль",
-    nextStep: "Not yet scheduled",
-    href: "/dashboard/networks/aphrodite/studio",
-  },
+    title: "Системные разделы",
+    modules: [
+      {
+        id: "registry",
+        title: "Реестр каналов",
+        purpose: "Список всех каналов.",
+        safetyLevel: "Рабочий модуль",
+        nextStep: "Аудит",
+        href: "/dashboard/networks/aphrodite/channels",
+        icon: RadioTower,
+        status: "Активно",
+        statusColor: "text-slate-400 bg-slate-800 border-slate-700"
+      },
+      {
+        id: "calendar",
+        title: "Расписание",
+        purpose: "Глобальное расписание.",
+        safetyLevel: "Рабочий модуль",
+        nextStep: "Аудит",
+        href: "/dashboard/networks/aphrodite/calendar",
+        icon: Calendar,
+        status: "Активно",
+        statusColor: "text-slate-400 bg-slate-800 border-slate-700"
+      },
+      {
+        id: "data-sources",
+        title: "Источники данных",
+        purpose: "API ключи и интеграции.",
+        safetyLevel: "Рабочий модуль",
+        nextStep: "Аудит",
+        href: "/dashboard/networks/aphrodite/data-sources",
+        icon: Database,
+        status: "Активно",
+        statusColor: "text-slate-400 bg-slate-800 border-slate-700"
+      }
+    ]
+  }
 ];
 
 export default function AphroditePlatformOverview() {
-  requireDashboardPageAccess("/dashboard/networks/aphrodite");
-
   return (
-    <main className="flex-1 bg-[#0a1428] text-slate-200">
-      <div className="mx-auto max-w-6xl px-4 py-8 lg:px-8 lg:py-12">
+    <main className="min-h-screen bg-[#060b14]">
+      <UnifiedStatusStrip />
+      
+      <div className="mx-auto max-w-[1400px] px-4 py-6 lg:px-8">
         <AphroditePageHeader
           title="Афродита"
-          description="Платформа управления Telegram-сеткой каналов, модулями, публикациями, источниками данных и Студией."
+          description="Платформа управления сетями Telegram-каналов, модулями, публикациями, источниками данных и Студией."
           badgeText="Платформа управления"
           icon={LayoutDashboard}
           safetyLocked={true}
-          safetyMessage="Live publish locked"
-          backLink="/dashboard"
-          backLabel="Dashboard Home"
+          safetyMessage="Публикация заблокирована"
         />
 
-        {/* Top Summary Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-10">
-          <div className="rounded-2xl border border-slate-800/80 bg-[#0f1b33] p-4 flex flex-col items-center justify-center text-center shadow-sm">
-            <span className="text-3xl font-semibold text-white mb-1 tracking-tight">18</span>
-            <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Всего каналов</span>
+        {/* KPI Row (Compact) */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
+          <div className="rounded-xl border border-slate-800/80 bg-[#0f1b33] p-3 flex flex-col justify-center shadow-sm">
+            <span className="text-2xl font-semibold text-slate-500 tracking-tight leading-none">15</span>
+            <span className="text-[10px] font-medium text-slate-400 uppercase tracking-wider mt-1">Старая сеть на паузе</span>
           </div>
-          <div className="rounded-2xl border border-slate-800/80 bg-[#0f1b33] p-4 flex flex-col items-center justify-center text-center shadow-sm">
-            <span className="text-3xl font-semibold text-slate-500 mb-1 tracking-tight">15</span>
-            <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Каналов на паузе</span>
+          <div className="rounded-xl border border-slate-800/80 bg-[#0f1b33] p-3 flex flex-col justify-center shadow-sm">
+            <span className="text-2xl font-semibold text-cyan-400 tracking-tight leading-none">13</span>
+            <span className="text-[10px] font-medium text-cyan-300/80 uppercase tracking-wider mt-1">Каналы Зодиака</span>
           </div>
-          <div className="rounded-2xl border border-blue-500/20 bg-blue-500/10 p-4 flex flex-col items-center justify-center text-center shadow-sm">
-            <span className="text-3xl font-semibold text-blue-400 mb-1 tracking-tight">3</span>
-            <span className="text-[11px] font-medium text-blue-300 uppercase tracking-wider">Модулей в черновике</span>
+          <div className="rounded-xl border border-slate-800/80 bg-[#0f1b33] p-3 flex flex-col justify-center shadow-sm">
+            <span className="text-2xl font-semibold text-amber-400 tracking-tight leading-none">9</span>
+            <span className="text-[10px] font-medium text-amber-300/80 uppercase tracking-wider mt-1">Черновики</span>
           </div>
-          <div className="rounded-2xl border border-slate-800/80 bg-[#0f1b33] p-4 flex flex-col items-center justify-center text-center shadow-sm">
-            <span className="text-3xl font-semibold text-slate-500 mb-1 tracking-tight">0</span>
-            <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Активные</span>
+          <div className="rounded-xl border border-slate-800/80 bg-[#0f1b33] p-3 flex flex-col justify-center shadow-sm">
+            <span className="text-2xl font-semibold text-emerald-400 tracking-tight leading-none">37</span>
+            <span className="text-[10px] font-medium text-emerald-300/80 uppercase tracking-wider mt-1">Всего в реестре</span>
           </div>
-          <div className="rounded-2xl border border-slate-800/80 bg-[#0f1b33] p-4 flex flex-col items-center justify-center text-center shadow-sm">
-            <span className="text-3xl font-semibold text-slate-500 mb-1 tracking-tight">0</span>
-            <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Ошибки</span>
+          <div className="rounded-xl border border-rose-500/20 bg-rose-500/5 p-3 flex flex-col justify-center shadow-sm">
+            <span className="text-sm font-semibold text-rose-400 tracking-tight leading-none flex items-center gap-1.5 mb-1">
+              <Lock className="h-4 w-4" /> заблокирована
+            </span>
+            <span className="text-[10px] font-medium text-rose-400/80 uppercase tracking-wider mt-1">Публикация</span>
           </div>
-          <div className="rounded-2xl border border-rose-500/20 bg-[#0f1b33] p-4 flex flex-col items-center justify-center text-center shadow-sm">
-            <Lock className="h-6 w-6 text-rose-400 mb-1.5" />
-            <span className="text-sm font-semibold text-rose-300 tracking-tight">Заблокирована</span>
-            <span className="text-[10px] font-medium text-rose-400/80 uppercase tracking-wider mt-0.5">Публикация</span>
+          <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3 flex flex-col justify-center shadow-sm">
+            <span className="text-2xl font-semibold text-emerald-400 tracking-tight leading-none">0</span>
+            <span className="text-[10px] font-medium text-emerald-400/80 uppercase tracking-wider mt-1">Ошибки</span>
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-8">
+        <div className="grid lg:grid-cols-4 gap-6">
+          <div className="lg:col-span-3 space-y-6">
             {/* Modules Grid */}
-            <section>
-              <div className="flex items-center justify-between mb-5">
-                <h2 className="text-xl font-semibold text-white tracking-tight">Модули платформы</h2>
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-700/60 bg-slate-800/50 px-2.5 py-1 text-[10px] font-medium text-slate-300 uppercase tracking-wider">
-                  <LockKeyhole className="h-3 w-3" />
-                  Read-only view
-                </span>
-              </div>
-              
-              <div className="grid md:grid-cols-2 gap-4">
-                {modules.map((m) => {
-                  const Icon = m.icon;
-                  const isLinkable = !!m.href;
-                  
-                  const content = (
-                    <div className="flex flex-col h-full">
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="flex items-center gap-3">
-                          <div className={`flex h-10 w-10 items-center justify-center rounded-xl border ${
-                            m.status === "Активные" ? "border-blue-500/30 bg-blue-500/10 text-blue-400" :
-                            m.status === "Черновик" ? "border-amber-500/30 bg-amber-500/10 text-amber-400" :
-                            m.status === "Заблокировано" ? "border-rose-500/30 bg-rose-500/10 text-rose-400" :
-                            "border-slate-700 bg-slate-800 text-slate-400"
-                          }`}>
-                            <Icon className="h-5 w-5" />
-                          </div>
-                          <div>
-                            <h3 className="font-semibold text-white tracking-tight">{m.title}</h3>
-                            <div className="flex items-center gap-2 mt-0.5">
-                              <span className={`text-[10px] font-medium uppercase tracking-wider ${
-                                m.status === "Активные" ? "text-blue-400" :
-                                m.status === "Черновик" ? "text-amber-400" :
-                                m.status === "Заблокировано" ? "text-rose-400" :
-                                "text-slate-500"
-                              }`}>{m.status}</span>
+            <div className="grid md:grid-cols-3 gap-6">
+              {moduleGroups.map((group, gIdx) => (
+                <div key={gIdx} className="space-y-3">
+                  <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider pl-1">{group.title}</h3>
+                  <div className="space-y-3">
+                    {group.modules.map((m) => {
+                      const Icon = m.icon;
+                      return (
+                        <Link key={m.id} href={m.href} className="group block relative overflow-hidden rounded-xl border border-slate-800/80 bg-[#0f1b33] p-4 transition-all duration-200 shadow-sm hover:border-slate-700 hover:bg-[#132240]">
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-3">
+                              <div className={`flex h-8 w-8 items-center justify-center rounded-lg border ${m.statusColor}`}>
+                                <Icon className="h-4 w-4" />
+                              </div>
+                              <div>
+                                <h4 className="text-sm font-semibold text-white tracking-tight leading-none">{m.title}</h4>
+                                <span className="text-[10px] font-medium text-slate-500 uppercase tracking-wider mt-1 block">{m.status}</span>
+                              </div>
                             </div>
+                            <ChevronRight className="h-4 w-4 text-slate-600 transition-colors group-hover:text-slate-400" />
                           </div>
-                        </div>
-                        {isLinkable && (
-                          <ChevronRight className="h-5 w-5 text-slate-600 transition-colors group-hover:text-slate-400" />
-                        )}
-                      </div>
-                      
-                      <p className="text-sm text-slate-400 mb-6 leading-relaxed">
-                        {m.purpose}
-                      </p>
-                      
-                      <div className="mt-auto space-y-3 pt-4 border-t border-slate-800/50">
-                        <div className="flex justify-between items-center text-xs">
-                          <span className="text-slate-500">Безопасность</span>
-                          <span className="font-medium text-slate-300">{m.safetyLevel}</span>
-                        </div>
-                        <div className="flex justify-between items-center text-xs">
-                          <span className="text-slate-500">Следующий шаг</span>
-                          <span className="font-medium text-slate-300 truncate max-w-[160px]">{m.nextStep}</span>
-                        </div>
-                      </div>
-                    </div>
-                  );
-
-                  const cardClasses = `group block relative overflow-hidden rounded-2xl border p-5 transition-all duration-200 shadow-sm ${
-                    isLinkable 
-                      ? "border-slate-800/80 bg-[#0f1b33] hover:border-slate-700 hover:bg-[#132240] cursor-pointer" 
-                      : "border-slate-800/50 bg-[#0a1222] opacity-80"
-                  }`;
-
-                  if (isLinkable) {
-                    return (
-                      <Link key={m.id} href={m.href!} className={cardClasses}>
-                        {content}
-                      </Link>
-                    );
-                  }
-
-                  return (
-                    <div key={m.id} className={cardClasses}>
-                      {content}
-                    </div>
-                  );
-                })}
-              </div>
-            </section>
+                          <p className="text-xs text-slate-400 mb-3 truncate">{m.purpose}</p>
+                          <div className="flex items-center justify-between text-[10px]">
+                            <span className="text-slate-500 px-2 py-0.5 rounded bg-slate-800/50">{m.safetyLevel}</span>
+                            <span className="text-slate-400 truncate max-w-[100px]">{m.nextStep}</span>
+                          </div>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
-          <div className="space-y-8">
-            {/* Следующие безопасные шаги */}
-            <section className="rounded-2xl border border-slate-800/80 bg-[#0f1b33] p-6 shadow-sm">
-              <h2 className="text-base font-semibold text-white mb-5 flex items-center gap-2">
-                <CheckCircle2 className="h-5 w-5 text-emerald-400" />
+          <div className="space-y-4">
+            {/* Safe actions */}
+            <section className="rounded-xl border border-slate-800/80 bg-[#0f1b33] p-4 shadow-sm">
+              <h2 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-emerald-400" />
                 Следующие безопасные шаги
               </h2>
-              <ul className="space-y-4">
+              <ul className="space-y-2.5">
                 {[
-                  "Verify channel registry",
-                  "Prepare publishing calendar",
-                  "Define data sources for Currency/Crypto/Metals",
-                  "Keep live publish locked",
-                  "Do not connect payments yet"
+                  "Проверить реестр каналов",
+                  "Подготовить календарь публикаций",
+                  "Настроить источники данных",
+                  "Проверить лимиты безопасности"
                 ].map((action, idx) => (
-                  <li key={idx} className="flex items-start gap-3">
-                    <div className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-slate-700 bg-slate-800/50">
-                      <div className="h-1.5 w-1.5 rounded-full bg-slate-400" />
+                  <li key={idx} className="flex items-start gap-2.5">
+                    <div className="mt-1 flex h-3 w-3 shrink-0 items-center justify-center rounded-full border border-slate-700 bg-slate-800/50">
+                      <div className="h-1 w-1 rounded-full bg-slate-400" />
                     </div>
-                    <span className="text-sm text-slate-300 leading-tight">{action}</span>
+                    <span className="text-xs text-slate-300 leading-tight">{action}</span>
                   </li>
                 ))}
               </ul>
             </section>
 
-            {/* Архитектура платформы */}
-            <section className="rounded-2xl border border-slate-800/80 bg-[#0f1b33] p-6 shadow-sm">
-              <h2 className="text-base font-semibold text-white mb-5 flex items-center gap-2">
-                <TerminalSquare className="h-5 w-5 text-slate-400" />
+            {/* Architecture */}
+            <section className="rounded-xl border border-slate-800/80 bg-[#0f1b33] p-4 shadow-sm">
+              <h2 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+                <TerminalSquare className="h-4 w-4 text-slate-400" />
                 Архитектура платформы
               </h2>
-              <div className="rounded-xl border border-slate-800 bg-[#080d1a] p-4 overflow-x-auto font-mono text-sm leading-relaxed text-slate-300">
+              <div className="rounded-lg border border-slate-800 bg-[#080d1a] p-3 font-mono text-[11px] leading-relaxed text-slate-300">
 <pre><code>{`Афродита
-├─ Channels
-├─ Modules
-├─ Publishing
-├─ Sources
-├─ Safety
-├─ Analytics
-└─ Future Studio`}</code></pre>
+├ Каналы
+├ Модули
+├ Публикации
+├ Источники
+├ Безопасность
+└ Студия`}</code></pre>
+              </div>
+            </section>
+            
+            {/* Safety status */}
+            <section className="rounded-xl border border-slate-800/80 bg-[#0f1b33] p-4 shadow-sm">
+              <h2 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+                <ShieldAlert className="h-4 w-4 text-rose-400" />
+                Статус безопасности
+              </h2>
+              <div className="space-y-2 text-xs">
+                <div className="flex items-center gap-2 px-2 py-1.5 rounded bg-rose-500/10 text-rose-300 border border-rose-500/20">
+                  <Lock className="h-3.5 w-3.5" /> Публикация заблокирована
+                </div>
+                <div className="flex items-center gap-2 px-2 py-1.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20">
+                  <LockKeyhole className="h-3.5 w-3.5" /> Режим только просмотра
+                </div>
               </div>
             </section>
           </div>

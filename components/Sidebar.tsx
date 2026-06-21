@@ -1,33 +1,106 @@
-"use client";
-
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Activity, Banknote, BarChart3, BookOpen, CalendarDays, Clapperboard, Database, FileText, HeartHandshake, LayoutDashboard, LockKeyhole, MessageSquareText, Network, RadioTower, Rocket, Server, Settings, ShieldCheck, Smartphone, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  LayoutDashboard,
+  RadioTower,
+  FileText,
+  Rocket,
+  BarChart3,
+  Settings,
+  Shield,
+  MessageSquareText,
+  LockKeyhole,
+  Server,
+  BookOpen,
+  Calendar,
+  Database,
+  Clapperboard,
+  ChevronDown,
+  ChevronRight
+} from "lucide-react";
 
 const aphroditeNavItems = [
-  { id: "aphrodite-overview", href: "/dashboard/networks/aphrodite", label: "Обзор", icon: LayoutDashboard },
-  { id: "aphrodite-channels", href: "/dashboard/networks/aphrodite/channels", label: "Сеть Каналов", icon: Database },
-  { id: "aphrodite-calendar", href: "/dashboard/networks/aphrodite/calendar", label: "Календарь", icon: CalendarDays },
-  { id: "aphrodite-data-sources", href: "/dashboard/networks/aphrodite/data-sources", label: "Источники Данных", icon: Network },
-  { id: "aphrodite-currency", href: "/dashboard/networks/aphrodite/currency", label: "Валюты", icon: Banknote },
-  { id: "aphrodite-crypto", href: "/dashboard/networks/aphrodite/crypto", label: "Крипта", icon: Activity },
-  { id: "aphrodite-metals", href: "/dashboard/networks/aphrodite/metals", label: "Металлы", icon: Sparkles },
-  { id: "aphrodite-studio", href: "/dashboard/networks/aphrodite/studio", label: "Студия", icon: Clapperboard },
+  { id: "overview", href: "/dashboard/networks/aphrodite", label: "Обзор", icon: LayoutDashboard },
+  { id: "channels", href: "/dashboard/networks/aphrodite/channels", label: "Сеть каналов", icon: RadioTower },
+  { id: "calendar", href: "/dashboard/networks/aphrodite/calendar", label: "Календарь", icon: Calendar },
+  { id: "data-sources", href: "/dashboard/networks/aphrodite/data-sources", label: "Источники данных", icon: Database },
+  { id: "studio", href: "/dashboard/networks/aphrodite/studio", label: "Студия", icon: Clapperboard },
 ];
 
 const zodiacNavItems = [
-  { id: "overview", href: "/dashboard/networks/zodiac", label: "Каналы Зодиака", icon: Sparkles },
+  { id: "channels", href: "/dashboard/networks/zodiac/channels", label: "Каналы Зодиака", icon: RadioTower },
   { id: "launch", href: "/dashboard/networks/zodiac/launch", label: "Запуск", icon: Rocket },
-  { id: "channels", href: "/dashboard/networks/zodiac/channels", label: "Мониторинг", icon: RadioTower },
+  { id: "operations", href: "/dashboard/networks/zodiac/operations", label: "Мониторинг", icon: LayoutDashboard },
   { id: "content", href: "/dashboard/networks/zodiac/content", label: "Контент", icon: FileText },
   { id: "publishing", href: "/dashboard/networks/zodiac/publishing", label: "Публикации", icon: Rocket },
   { id: "analytics", href: "/dashboard/networks/zodiac/analytics", label: "Аналитика", icon: BarChart3 },
   { id: "feedback", href: "/dashboard/networks/zodiac/feedback", label: "Отзывы", icon: MessageSquareText },
-  { id: "security", href: "/dashboard/networks/zodiac/security", label: "Безопасность", icon: LockKeyhole },
+  { id: "security", href: "/dashboard/networks/zodiac/security", label: "Безопасность", icon: Shield },
   { id: "settings", href: "/dashboard/networks/zodiac/settings", label: "Настройки", icon: Settings },
   { id: "docs", href: "/dashboard/networks/zodiac/docs", label: "Документы", icon: BookOpen },
 ];
+
+const currencyNavItems = [
+  { id: "overview", href: "/dashboard/networks/aphrodite/currency", label: "Обзор", icon: LayoutDashboard },
+  { id: "channels", href: "#", label: "Каналы", icon: RadioTower },
+  { id: "sources", href: "#", label: "Источники", icon: Database },
+  { id: "publishing", href: "#", label: "Публикации", icon: Rocket },
+];
+
+const cryptoNavItems = [
+  { id: "overview", href: "/dashboard/networks/aphrodite/crypto", label: "Обзор", icon: LayoutDashboard },
+  { id: "channels", href: "#", label: "Каналы", icon: RadioTower },
+  { id: "sources", href: "#", label: "Источники", icon: Database },
+  { id: "publishing", href: "#", label: "Публикации", icon: Rocket },
+];
+
+const metalsNavItems = [
+  { id: "overview", href: "/dashboard/networks/aphrodite/metals", label: "Обзор", icon: LayoutDashboard },
+  { id: "channels", href: "#", label: "Каналы", icon: RadioTower },
+  { id: "sources", href: "#", label: "Источники", icon: Database },
+  { id: "publishing", href: "#", label: "Публикации", icon: Rocket },
+];
+
+function NavGroup({ title, items, defaultOpen, pathPrefix, colorClass }: { title: string, items: {id: string, href: string, label: string, icon: any}[], defaultOpen: boolean, pathPrefix: string, colorClass: string }) {
+  const pathname = usePathname();
+  const isOpen = pathname.includes(pathPrefix) || defaultOpen;
+  
+  return (
+    <details className="group" open={isOpen}>
+      <summary className="flex cursor-pointer items-center justify-between px-1 py-2 text-xs font-semibold uppercase tracking-wider text-slate-400 hover:text-slate-300 transition-colors list-none">
+        <span className={cn("flex items-center gap-2", colorClass)}>
+          <ChevronRight className="h-3.5 w-3.5 group-open:hidden" />
+          <ChevronDown className="h-3.5 w-3.5 hidden group-open:block" />
+          {title}
+        </span>
+      </summary>
+      <nav className="mt-1 grid grid-cols-1 gap-1 pl-4 border-l border-slate-800/60 ml-2.5">
+        {items.map((item: any) => {
+          const Icon = item.icon;
+          const baseHref = item.href.split("#")[0];
+          const active = item.href !== "#" && (pathname === baseHref || (baseHref !== pathPrefix && pathname.startsWith(baseHref)));
+
+          return (
+            <Link
+              key={item.id}
+              href={item.href}
+              prefetch={false}
+              className={cn(
+                "flex h-8 items-center gap-3 rounded-md px-3 text-sm font-medium transition",
+                item.href === "#" ? "text-slate-600 cursor-not-allowed pointer-events-none" : "text-slate-400 hover:bg-slate-800/60 hover:text-white",
+                active && `${colorClass.replace('text-', 'text-').replace('-200', '-300')} bg-slate-800/40`
+              )}
+            >
+              <Icon className="h-3.5 w-3.5 shrink-0" />
+              <span className="truncate">{item.label}</span>
+            </Link>
+          );
+        })}
+      </nav>
+    </details>
+  );
+}
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -42,12 +115,11 @@ export function Sidebar() {
             <Server className="h-5 w-5" />
           </div>
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-blue-200">АФРОДИТА</p>
-            <p className="text-[11px] text-slate-500 leading-tight pr-2 uppercase tracking-wider">Афродита</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-blue-200">Афродита</p>
           </div>
         </Link>
 
-        <nav className="grid grid-cols-2 gap-2 lg:grid-cols-1">
+        <nav className="grid grid-cols-2 gap-1 lg:grid-cols-1 mb-8">
           {aphroditeNavItems.map((item) => {
             const Icon = item.icon;
             const baseHref = item.href.split("#")[0];
@@ -59,7 +131,7 @@ export function Sidebar() {
                 href={item.href}
                 prefetch={false}
                 className={cn(
-                  "flex h-11 items-center gap-3 rounded-md px-3 text-sm font-medium text-slate-400 transition hover:bg-slate-800/60 hover:text-white",
+                  "flex h-9 items-center gap-3 rounded-md px-3 text-sm font-medium text-slate-400 transition hover:bg-slate-800/60 hover:text-white",
                   active && "border border-blue-400/30 bg-blue-400/10 text-blue-200",
                 )}
               >
@@ -70,93 +142,25 @@ export function Sidebar() {
           })}
         </nav>
 
-        {/* Zodiac Module Group */}
-        <div className="mt-8 border-t border-slate-800/60 pt-6">
-          <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">Модули</p>
+        {/* Modules Group */}
+        <div className="border-t border-slate-800/60 pt-6">
+          <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">Модули</p>
           
-          <div className="space-y-4">
-            {/* Zodiac */}
-            <div>
-              <div className="flex items-center gap-2 mb-2 px-1">
-                <span className="text-xs text-slate-500">▾</span>
-                <p className="text-xs font-semibold uppercase tracking-wider text-cyan-200">Зодиак</p>
-              </div>
-              <nav className="grid grid-cols-2 gap-1 lg:grid-cols-1 pl-4 border-l border-slate-800/60 ml-2">
-                {zodiacNavItems.map((item) => {
-                  const Icon = item.icon;
-                  const baseHref = item.href.split("#")[0];
-                  const active =
-                    pathname === baseHref ||
-                    (baseHref !== "/dashboard/networks/zodiac" && pathname.startsWith(baseHref)) ||
-                    (item.id === "overview" && pathname === "/dashboard");
-
-                  return (
-                    <Link
-                      key={item.id}
-                      href={item.href}
-                      prefetch={false}
-                      className={cn(
-                        "flex h-9 items-center gap-3 rounded-md px-3 text-sm font-medium text-slate-400 transition hover:bg-slate-800/60 hover:text-white",
-                        active && "text-cyan-200 bg-cyan-900/10",
-                      )}
-                    >
-                      <Icon className="h-3.5 w-3.5 shrink-0" />
-                      <span className="truncate">{item.label}</span>
-                    </Link>
-                  );
-                })}
-              </nav>
-            </div>
-
-            {/* Currency */}
-            <div>
-              <div className="flex items-center gap-2 px-1">
-                <span className="text-xs text-slate-500">▸</span>
-                <Link href="/dashboard/networks/aphrodite/currency" className={cn("text-xs font-semibold uppercase tracking-wider transition hover:text-white", pathname.includes("/currency") ? "text-green-300" : "text-green-200/60")}>Валюты</Link>
-              </div>
-            </div>
-
-            {/* Crypto */}
-            <div>
-              <div className="flex items-center gap-2 px-1">
-                <span className="text-xs text-slate-500">▸</span>
-                <Link href="/dashboard/networks/aphrodite/crypto" className={cn("text-xs font-semibold uppercase tracking-wider transition hover:text-white", pathname.includes("/crypto") ? "text-purple-300" : "text-purple-200/60")}>Крипта</Link>
-              </div>
-            </div>
-
-            {/* Metals */}
-            <div>
-              <div className="flex items-center gap-2 px-1">
-                <span className="text-xs text-slate-500">▸</span>
-                <Link href="/dashboard/networks/aphrodite/metals" className={cn("text-xs font-semibold uppercase tracking-wider transition hover:text-white", pathname.includes("/metals") ? "text-amber-300" : "text-amber-200/60")}>Металлы</Link>
-              </div>
-            </div>
+          <div className="space-y-2">
+            <NavGroup title="Зодиак" items={zodiacNavItems} defaultOpen={pathname.includes("/zodiac")} pathPrefix="/dashboard/networks/zodiac" colorClass="text-cyan-200" />
+            <NavGroup title="Валюты" items={currencyNavItems} defaultOpen={false} pathPrefix="/dashboard/networks/aphrodite/currency" colorClass="text-green-200" />
+            <NavGroup title="Крипта" items={cryptoNavItems} defaultOpen={false} pathPrefix="/dashboard/networks/aphrodite/crypto" colorClass="text-purple-200" />
+            <NavGroup title="Металлы" items={metalsNavItems} defaultOpen={false} pathPrefix="/dashboard/networks/aphrodite/metals" colorClass="text-amber-200" />
           </div>
         </div>
 
         <div className="mt-8 hidden space-y-4 lg:block">
           <section className="rounded-lg border border-cyan-300/20 bg-cyan-300/5 p-4">
-            <p className="text-xs uppercase tracking-[0.18em] text-cyan-200">Политика безопасности</p>
+            <p className="text-xs uppercase tracking-[0.18em] text-cyan-200">Безопасность</p>
             <p className="mt-3 text-xs leading-5 text-slate-400">
               <span className="font-semibold text-emerald-400">Автономный режим активен</span>.
-              Все живые API-запросы в Telegram отключены в <code className="text-slate-300">local/dev</code> режиме для предотвращения дублирования.
+              Все вызовы API отключены.
             </p>
-            <div className="mt-4 flex items-center gap-2">
-              <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-[10px] font-medium uppercase tracking-wider text-emerald-400">Безопасный режим</span>
-            </div>
-          </section>
-
-          <section className="rounded-lg border border-slate-800 bg-slate-800/30 p-4">
-            <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Статус сети</p>
-            <div className="mt-3 flex items-center justify-between text-xs text-slate-500">
-              <span>Каналы</span>
-              <span className="font-medium text-slate-300">15</span>
-            </div>
-            <div className="mt-2 flex items-center justify-between text-xs text-slate-500">
-              <span>Среда</span>
-              <span className="font-medium text-slate-300">Development</span>
-            </div>
           </section>
         </div>
 
