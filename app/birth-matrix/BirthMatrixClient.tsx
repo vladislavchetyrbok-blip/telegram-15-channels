@@ -138,7 +138,7 @@ export function BirthMatrixClient() {
                 href="/vip-preview"
                 className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-slate-800 py-3 font-semibold text-slate-300 transition active:scale-[0.98] active:bg-slate-700"
               >
-                Preview VIP (Mock)
+                View VIP Preview
               </Link>
             </div>
 

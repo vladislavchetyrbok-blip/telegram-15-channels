@@ -114,6 +114,13 @@ const platformSections = [
     tone: "emerald",
   },
   {
+    title: "Mini App CTA Audit",
+    href: "/dashboard/networks/zodiac/miniapp-cta-audit",
+    icon: ShieldCheck,
+    caption: "Package 111 - Audit of all Mini App CTAs.",
+    tone: "emerald",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

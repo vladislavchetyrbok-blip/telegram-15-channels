@@ -153,7 +153,7 @@ export function MysticNumbersClient() {
                 href="/vip-preview"
                 className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-slate-800 py-3 font-semibold text-slate-300 transition active:scale-[0.98] active:bg-slate-700"
               >
-                Preview VIP Insights <ArrowRight className="h-4 w-4" />
+                View VIP Preview <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
 
@@ -172,7 +172,7 @@ export function MysticNumbersClient() {
                  ← Back to Mini App Hub
                </Link>
                <Link href="/birth-matrix" className="text-sm font-medium text-slate-500 hover:text-slate-300 transition flex items-center gap-1">
-                 Calculate your Birth Matrix <ArrowRight className="h-3 w-3" />
+                 Try Birth Matrix Mock <ArrowRight className="h-3 w-3" />
                </Link>
             </div>
           </div>

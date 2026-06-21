@@ -129,6 +129,9 @@ export default function MiniAppHubPage() {
               <Link href="/dashboard/networks/zodiac/miniapp-route-safety" className="text-xs text-emerald-500/80 hover:text-emerald-400 transition flex items-center gap-1">
                 <ShieldCheck className="h-3.5 w-3.5" /> View safety baseline
               </Link>
+              <Link href="/dashboard/networks/zodiac/miniapp-cta-audit" className="text-xs text-emerald-500/80 hover:text-emerald-400 transition flex items-center gap-1">
+                <ShieldCheck className="h-3.5 w-3.5" /> View CTA audit
+              </Link>
               <Link href="/dashboard/networks/zodiac/miniapp-architecture" className="text-xs text-slate-500 hover:text-slate-300 transition flex items-center gap-1">
                 <ChevronRight className="h-3.5 w-3.5" /> Mini App Architecture
               </Link>
