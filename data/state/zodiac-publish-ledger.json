@@ -1523,8 +1523,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-06-21T10:03:03.030Z"
+      "status": "sent",
+      "updatedAt": "2026-06-21T10:03:06.062Z",
+      "messageId": "26,",
+      "sentAt": "2026-06-21T10:03:06.062Z"
     }
   }
 }
