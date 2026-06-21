@@ -38,6 +38,7 @@ const legacyNavItems = [
 ];
 
 const zodiacNavItems = [
+  { id: "priority", href: "/dashboard/networks/zodiac/priority", label: "Приоритет запуска", icon: Rocket },
   { id: "channels", href: "/dashboard/networks/zodiac/channels", label: "Каналы Зодиака", icon: RadioTower },
   { id: "launch", href: "/dashboard/networks/zodiac/launch", label: "Запуск", icon: Rocket },
   { id: "operations", href: "/dashboard/networks/zodiac/operations", label: "Мониторинг", icon: LayoutDashboard },
@@ -156,11 +157,11 @@ export function Sidebar() {
           <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">Модули</p>
           
           <div className="space-y-2">
-            <NavGroup title="15 каналов" items={legacyNavItems} defaultOpen={pathname.includes("/dashboard/networks/aphrodite/legacy")} pathPrefix="/dashboard/networks/aphrodite/legacy" colorClass="text-rose-300" />
             <NavGroup title="Зодиак" items={zodiacNavItems} defaultOpen={pathname.includes("/zodiac")} pathPrefix="/dashboard/networks/zodiac" colorClass="text-cyan-200" />
             <NavGroup title="Валюты" items={currencyNavItems} defaultOpen={false} pathPrefix="/dashboard/networks/aphrodite/currency" colorClass="text-green-200" />
             <NavGroup title="Крипта" items={cryptoNavItems} defaultOpen={false} pathPrefix="/dashboard/networks/aphrodite/crypto" colorClass="text-purple-200" />
             <NavGroup title="Металлы" items={metalsNavItems} defaultOpen={false} pathPrefix="/dashboard/networks/aphrodite/metals" colorClass="text-amber-200" />
+            <NavGroup title="15 каналов" items={legacyNavItems} defaultOpen={pathname.includes("/dashboard/networks/aphrodite/legacy")} pathPrefix="/dashboard/networks/aphrodite/legacy" colorClass="text-rose-300" />
           </div>
         </div>
 

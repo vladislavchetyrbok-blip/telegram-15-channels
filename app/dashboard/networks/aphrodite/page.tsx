@@ -18,23 +18,66 @@ import Link from "next/link";
 
 const moduleGroups = [
   {
-    title: "Активные модули",
+    title: "Приоритет запуска",
     modules: [
       {
         id: "zodiac",
         title: "Каналы Зодиака",
-        purpose: "Сеть из 13 каналов с гороскопами.",
-        safetyLevel: "Рабочий модуль",
-        nextStep: "Публикации",
-        href: "/dashboard/networks/zodiac",
+        purpose: "Первый модуль для запуска. 13 каналов.",
+        safetyLevel: "Приоритет запуска",
+        nextStep: "7 дней контента",
+        href: "/dashboard/networks/zodiac/priority",
         icon: Rocket,
         status: "Активно",
         statusColor: "text-blue-400 bg-blue-500/10 border-blue-500/30"
+      }
+    ]
+  },
+  {
+    title: "Следующий этап (Финансы)",
+    modules: [
+      {
+        id: "currency",
+        title: "Валюты",
+        purpose: "Валюты RU / Валюти UA.",
+        safetyLevel: "Только просмотр",
+        nextStep: "Шаблоны контента",
+        href: "/dashboard/networks/aphrodite/currency",
+        icon: RadioTower,
+        status: "Черновик",
+        statusColor: "text-amber-400 bg-amber-500/10 border-amber-500/30"
       },
+      {
+        id: "crypto",
+        title: "Крипта",
+        purpose: "Крипта RU / Крипта UA.",
+        safetyLevel: "Только просмотр",
+        nextStep: "Шаблоны контента",
+        href: "/dashboard/networks/aphrodite/crypto",
+        icon: RadioTower,
+        status: "Черновик",
+        statusColor: "text-amber-400 bg-amber-500/10 border-amber-500/30"
+      },
+      {
+        id: "metals",
+        title: "Металлы",
+        purpose: "Металлы RU / Метали UA.",
+        safetyLevel: "Только просмотр",
+        nextStep: "Шаблоны контента",
+        href: "/dashboard/networks/aphrodite/metals",
+        icon: RadioTower,
+        status: "Черновик",
+        statusColor: "text-amber-400 bg-amber-500/10 border-amber-500/30"
+      }
+    ]
+  },
+  {
+    title: "Студия контента",
+    modules: [
       {
         id: "studio",
         title: "Студия",
-        purpose: "Генерация контента.",
+        purpose: "Фабрика контента для сетей.",
         safetyLevel: "Рабочий модуль",
         nextStep: "Создание креативов",
         href: "/dashboard/networks/aphrodite/studio",
@@ -51,50 +94,12 @@ const moduleGroups = [
         id: "legacy15",
         title: "15 каналов",
         purpose: "Старая сеть Афродиты. 10 общих + 5 недвижимость.",
-        safetyLevel: "Публикации отключены",
-        nextStep: "Подготовить к перезапуску",
-        href: "/dashboard/networks/aphrodite/legacy",
+        safetyLevel: "На паузе",
+        nextStep: "Перезапуск позже",
+        href: "/dashboard/networks/aphrodite/legacy/restart",
         icon: RadioTower,
         status: "На паузе",
         statusColor: "text-rose-400 bg-rose-500/10 border-rose-500/30"
-      }
-    ]
-  },
-  {
-    title: "Черновики",
-    modules: [
-      {
-        id: "currency",
-        title: "Валюты",
-        purpose: "Курсы валют.",
-        safetyLevel: "Только просмотр",
-        nextStep: "Шаблоны контента",
-        href: "/dashboard/networks/aphrodite/currency",
-        icon: RadioTower,
-        status: "Черновик",
-        statusColor: "text-amber-400 bg-amber-500/10 border-amber-500/30"
-      },
-      {
-        id: "crypto",
-        title: "Крипта",
-        purpose: "Криптовалюты.",
-        safetyLevel: "Только просмотр",
-        nextStep: "Шаблоны контента",
-        href: "/dashboard/networks/aphrodite/crypto",
-        icon: RadioTower,
-        status: "Черновик",
-        statusColor: "text-amber-400 bg-amber-500/10 border-amber-500/30"
-      },
-      {
-        id: "metals",
-        title: "Металлы",
-        purpose: "Драг. металлы.",
-        safetyLevel: "Только просмотр",
-        nextStep: "Шаблоны контента",
-        href: "/dashboard/networks/aphrodite/metals",
-        icon: RadioTower,
-        status: "Черновик",
-        statusColor: "text-amber-400 bg-amber-500/10 border-amber-500/30"
       }
     ]
   },

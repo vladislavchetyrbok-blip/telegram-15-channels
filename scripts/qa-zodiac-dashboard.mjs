@@ -15,6 +15,7 @@ const ROUTES = {
   feedback: "/dashboard/networks/zodiac/feedback",
   launch: "/dashboard/networks/zodiac/launch",
   operations: "/dashboard/networks/zodiac/operations",
+  priority: "/dashboard/networks/zodiac/priority",
   security: "/dashboard/networks/zodiac/security",
   settings: "/dashboard/networks/zodiac/settings",
   docs: "/dashboard/networks/zodiac/docs",
@@ -257,6 +258,13 @@ async function main() {
     assertIncludes(pages.operations, 'href="/dashboard/networks/zodiac/content"', "operations content route link");
     assertIncludes(pages.operations, 'href="/dashboard/networks/zodiac/security"', "operations security route link");
 
+    assertIncludes(pages.priority, "Зодиак — приоритет запуска", "priority page heading");
+    assertIncludes(pages.priority, "13", "priority page channels target");
+    assertIncludes(pages.priority, "7 дней контента", "priority page next step");
+    assertIncludes(pages.priority, "Live-публикация отключена", "priority page safety live publishing");
+    assertIncludes(pages.priority, "Telegram API не вызывается", "priority page safety api");
+    assertNotIncludes(pages.priority, "/api/zodiac/priority", "priority page no server write API route");
+
     assertIncludes(pages.security, "Безопасность платформы", "security page heading");
     assertIncludes(pages.security, "Управление модулем Зодиак внутри Афродиты.", "security subtitle");
     assertIncludes(pages.security, "Платформа / Афродита", "security breadcrumb");
@@ -375,6 +383,10 @@ async function main() {
     assertIncludes(pages.aphroditeOverview, "Крипта", "aphrodite overview Crypto card");
     assertIncludes(pages.aphroditeOverview, "Металлы", "aphrodite overview Metals card");
     assertIncludes(pages.aphroditeOverview, "заблокирована", "aphrodite overview live publish locked");
+    assertIncludes(pages.aphroditeOverview, "Приоритет запуска", "overview priority status");
+    assertIncludes(pages.aphroditeOverview, "Валюты RU / Валюти UA", "currency RU/UA check");
+    assertIncludes(pages.aphroditeOverview, "Крипта RU / Крипта UA", "crypto RU/UA check");
+    assertIncludes(pages.aphroditeOverview, "Металлы RU / Метали UA", "metals RU/UA check");
     assertNotIncludes(pages.aphroditeOverview, "/api/aphrodite", "no server write API required on aphrodite overview");
 
     assertIncludes(pages.aphroditeCalendar, "Aphrodite Publishing Calendar", "aphrodite calendar heading");
