@@ -32,7 +32,7 @@ const legacyNavItems = [
   { id: "overview", href: "/dashboard/networks/aphrodite/legacy", label: "Обзор", icon: LayoutDashboard },
   { id: "general", href: "#", label: "Общие темы", icon: RadioTower },
   { id: "realestate", href: "#", label: "Недвижимость", icon: RadioTower },
-  { id: "restart", href: "#", label: "Перезапуск", icon: Rocket },
+  { id: "restart", href: "/dashboard/networks/aphrodite/legacy/restart", label: "Перезапуск", icon: Rocket },
   { id: "content", href: "#", label: "Контент", icon: FileText },
   { id: "qa", href: "#", label: "Проверка", icon: Shield },
 ];

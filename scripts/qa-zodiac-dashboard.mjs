@@ -33,6 +33,8 @@ const ROUTES = {
   aphroditeTemplates: "/dashboard/networks/aphrodite/studio/templates",
   aphroditeQueue: "/dashboard/networks/aphrodite/studio/queue",
   aphroditeBriefs: "/dashboard/networks/aphrodite/studio/briefs",
+  aphroditeLegacy: "/dashboard/networks/aphrodite/legacy",
+  aphroditeLegacyRestart: "/dashboard/networks/aphrodite/legacy/restart",
 };
 
 async function main() {
@@ -448,7 +450,27 @@ async function main() {
     assertIncludes(pages.aphroditeBriefs, "Публикация в Telegram отключена", "aphrodite briefs safety message");
     assertNotIncludes(pages.aphroditeBriefs, "/api/aphrodite", "no server write API required on aphrodite briefs");
 
+    assertIncludes(pages.aphroditeLegacy, "15 каналов", "aphrodite legacy heading");
+    assertIncludes(pages.aphroditeLegacy, "Старая сеть Афродиты", "aphrodite legacy old network text");
+    assertIncludes(pages.aphroditeLegacy, "Общие темы", "aphrodite legacy general topics");
+    assertIncludes(pages.aphroditeLegacy, "Недвижимость", "aphrodite legacy real estate");
+    assertIncludes(pages.aphroditeLegacy, "Ідеї для бізнесу", "aphrodite legacy channel name");
+    assertIncludes(pages.aphroditeLegacy, "Инвестиции в недвижимость", "aphrodite legacy channel name");
+    assertIncludes(pages.aphroditeLegacy, 'href="/dashboard/networks/aphrodite/legacy/restart"', "aphrodite legacy link to restart planner");
+    assertNotIncludes(pages.aphroditeLegacy, "/api/aphrodite", "no server write API required on aphrodite legacy");
+
+    assertIncludes(pages.aphroditeLegacyRestart, "Перезапуск 15 каналов", "aphrodite legacy restart heading");
+    assertIncludes(pages.aphroditeLegacyRestart, "Фаза 1 — Аудит каналов", "aphrodite legacy restart phase 1");
+    assertIncludes(pages.aphroditeLegacyRestart, "Подготовить 7 постов на канал", "aphrodite legacy restart phase 3");
+    assertIncludes(pages.aphroditeLegacyRestart, "Связь со Студией", "aphrodite legacy restart studio section");
+    assertIncludes(pages.aphroditeLegacyRestart, "Live-публикация отключена", "aphrodite legacy restart live publish locked");
+    assertIncludes(pages.aphroditeLegacyRestart, "Telegram API не вызывается", "aphrodite legacy restart telegram api locked");
+    assertIncludes(pages.aphroditeLegacyRestart, "Ідеї для бізнесу", "aphrodite legacy restart channel 1");
+    assertIncludes(pages.aphroditeLegacyRestart, "Недвижимость Днепра", "aphrodite legacy restart channel 15");
+    assertNotIncludes(pages.aphroditeLegacyRestart, "/api/aphrodite", "no server write API required on aphrodite legacy restart");
+
     const combined = Object.values(pages).join("\n");
+
     assertNoForbiddenLinks(combined);
 
     

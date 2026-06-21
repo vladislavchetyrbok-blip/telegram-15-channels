@@ -38,8 +38,18 @@ export default function AphroditeLegacyNetworkPage() {
           safetyMessage="Read-only mode"
         />
 
+        <div className="rounded-xl border border-blue-500/30 bg-blue-500/5 p-5 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="space-y-1">
+            <h3 className="text-lg font-medium text-blue-200">План перезапуска сети</h3>
+            <p className="text-sm text-blue-200/70">Подготовка контента, аудит каналов и расписание для всех 15 каналов старой сети.</p>
+          </div>
+          <a href="/dashboard/networks/aphrodite/legacy/restart" className="rounded-lg bg-blue-500/20 px-4 py-2 text-sm font-medium text-blue-300 transition-colors hover:bg-blue-500/30">
+            Перейти к плану
+          </a>
+        </div>
+
         <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-          <MetricCard title="Всего каналов" value="15" caption="Legacy network" icon={RadioTower} tone="slate" />
+          <MetricCard title="Всего каналов" value="15" caption="Архивная сеть" icon={RadioTower} tone="slate" />
           <MetricCard title="Общие темы" value="10" caption="Подготовка" icon={FileText} tone="amber" />
           <MetricCard title="Недвижимость" value="5" caption="Подготовка" icon={Activity} tone="cyan" />
           <MetricCard title="Статус" value="На паузе" caption="Ожидание перезапуска" icon={LockKeyhole} tone="rose" />
