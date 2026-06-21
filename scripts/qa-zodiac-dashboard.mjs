@@ -344,6 +344,29 @@ async function main() {
     assertIncludes(pages.aphroditeChannels, "Металлы", "aphrodite module Металлы");
     assertNotIncludes(pages.aphroditeChannels, "/api/aphrodite/settings", "no server write API required on aphrodite registry");
 
+    assertIncludes(pages.aphroditeChannels, "Ідеї для бізнесу", "real channel name 1");
+    assertIncludes(pages.aphroditeChannels, "Мужской стиль и вещи", "real channel name 2");
+    assertIncludes(pages.aphroditeChannels, "Техника для дома", "real channel name 3");
+    assertIncludes(pages.aphroditeChannels, "Україна: можливості та ринок", "real channel name 4");
+    assertIncludes(pages.aphroditeChannels, "Деньги и возможности", "real channel name 5");
+    assertIncludes(pages.aphroditeChannels, "AI и технологии", "real channel name 6");
+    assertIncludes(pages.aphroditeChannels, "Личный прогресс", "real channel name 7");
+    assertIncludes(pages.aphroditeChannels, "Авто и комфорт", "real channel name 8");
+    assertIncludes(pages.aphroditeChannels, "Дніпро / Город Днепр", "real channel name 9");
+    assertIncludes(pages.aphroditeChannels, "Рыбалка и отдых", "real channel name 10");
+    assertIncludes(pages.aphroditeChannels, "Инвестиции в недвижимость", "real channel name 11");
+    assertIncludes(pages.aphroditeChannels, "Земля и дома / Земля та будинки", "real channel name 12");
+    assertIncludes(pages.aphroditeChannels, "Коммерческая недвижимость", "real channel name 13");
+    assertIncludes(pages.aphroditeChannels, "Нерухомість Дніпра", "real channel name 14");
+    assertIncludes(pages.aphroditeChannels, "Недвижимость Днепра", "real channel name 15");
+    assertNotIncludes(pages.aphroditeChannels, "Общая тема 01", "no generic placeholders 1");
+    assertNotIncludes(pages.aphroditeChannels, "Недвижимость Днепр 01", "no generic placeholders 2");
+    assertNotIncludes(pages.aphroditeChannels, "требует уточнения", "no generic placeholders 3");
+    assertIncludes(pages.aphroditeChannels, "Общие темы — 10", "category general 10");
+    assertIncludes(pages.aphroditeChannels, "Недвижимость — 5", "category realestate 5");
+    assertIncludes(pages.aphroditeChannels, "Каналы Зодиака - 13", "zodiac module channels 13");
+
+
     assertIncludes(pages.aphroditeOverview, "Афродита", "aphrodite overview heading");
     assertIncludes(pages.aphroditeOverview, "/dashboard/networks/aphrodite/channels", "aphrodite overview registry link");
     assertIncludes(pages.aphroditeOverview, "Валюты", "aphrodite overview Currency card");

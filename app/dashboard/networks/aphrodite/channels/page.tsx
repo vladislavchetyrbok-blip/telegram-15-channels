@@ -3,24 +3,44 @@ import { Server, RadioTower, AlertCircle, Activity } from "lucide-react";
 
 type ChannelStatus = 'На паузе' | 'Черновик' | 'Активно' | 'Требует проверки';
 
+const legacyChannels = [
+  { name: "Ідеї для бізнесу", category: "Общие темы", language: "UA" },
+  { name: "Мужской стиль и вещи", category: "Общие темы", language: "RU" },
+  { name: "Техника для дома", category: "Общие темы", language: "RU" },
+  { name: "Україна: можливості та ринок", category: "Общие темы", language: "UA" },
+  { name: "Деньги и возможности", category: "Общие темы", language: "RU" },
+  { name: "AI и технологии", category: "Общие темы", language: "RU" },
+  { name: "Личный прогресс", category: "Общие темы", language: "RU" },
+  { name: "Авто и комфорт", category: "Общие темы", language: "RU" },
+  { name: "Дніпро / Город Днепр", category: "Общие темы", language: "RU/UA" },
+  { name: "Рыбалка и отдых", category: "Общие темы", language: "RU" },
+  { name: "Инвестиции в недвижимость", category: "Недвижимость", language: "RU" },
+  { name: "Земля и дома / Земля та будинки", category: "Недвижимость", language: "RU/UA" },
+  { name: "Коммерческая недвижимость", category: "Недвижимость", language: "RU" },
+  { name: "Нерухомість Дніпра", category: "Недвижимость", language: "UA" },
+  { name: "Недвижимость Днепра", category: "Недвижимость", language: "RU" }
+];
+
+const legacyArray = legacyChannels.map((c, i) => ({
+  id: `legacy-general-${i + 1}`,
+  name: c.name,
+  network: 'Старая сеть 15 каналов',
+  module: 'legacy_paused',
+  category: c.category,
+  status: 'Пауза' as ChannelStatus,
+  language: c.language,
+  contentFormat: 'Смешанный',
+  publishFrequency: 'На паузе',
+  nextStep: 'Проверить канал и подготовить к перезапуску',
+  safetyNote: 'Публикации из реестра отключены',
+}));
+
 const registry = [
-  ...Array.from({ length: 15 }).map((_, i) => ({
-    id: `legacy-general-${i + 1}`,
-    name: i < 10 ? `General Interest ${i + 1}` : `Real Estate ${i - 9}`,
-    network: 'Старая сеть 15 каналов',
-    module: 'legacy_paused',
-    category: i < 10 ? 'Общие темы' : 'Недвижимость',
-    status: 'На паузе' as ChannelStatus,
-    language: 'RU',
-    contentFormat: 'Смешанный',
-    publishFrequency: 'Нет',
-    nextStep: 'Аудит перед удалением/переносом',
-    safetyNote: 'Все действия отключены',
-  })),
+  ...legacyArray,
   ...Array.from({ length: 13 }).map((_, i) => ({
     id: `zodiac-${i + 1}`,
     name: `Zodiac Channel ${i + 1}`,
-    network: 'Сеть Зодиака',
+    network: 'Каналы Зодиака',
     module: 'zodiac',
     category: 'Астрология',
     status: 'Активно' as ChannelStatus,
@@ -74,7 +94,7 @@ const registry = [
 export default function AphroditeChannelRegistryPage() {
   const networks = [
     { name: 'Старая сеть 15 каналов', channels: registry.filter(c => c.network === 'Старая сеть 15 каналов') },
-    { name: 'Сеть Зодиака', channels: registry.filter(c => c.network === 'Сеть Зодиака') },
+    { name: 'Каналы Зодиака', channels: registry.filter(c => c.network === 'Каналы Зодиака') },
     { name: 'Валюты', channels: registry.filter(c => c.network === 'Валюты') },
     { name: 'Крипта', channels: registry.filter(c => c.network === 'Крипта') },
     { name: 'Металлы', channels: registry.filter(c => c.network === 'Металлы') },
@@ -82,7 +102,7 @@ export default function AphroditeChannelRegistryPage() {
 
   const totalChannels = registry.length;
   const legacyCount = registry.filter(c => c.network === 'Старая сеть 15 каналов').length;
-  const zodiacCount = registry.filter(c => c.network === 'Сеть Зодиака').length;
+  const zodiacCount = registry.filter(c => c.network === 'Каналы Зодиака').length;
   const draftNetworksCount = registry.filter(c => ['Валюты', 'Крипта', 'Металлы'].includes(c.network)).length;
 
   return (
@@ -99,7 +119,7 @@ export default function AphroditeChannelRegistryPage() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" data-qa="visual-summary">
           <SummaryMetric label="Всего каналов в реестре" value={totalChannels} tone="blue" />
           <SummaryMetric label="Старая сеть 15 каналов" value={legacyCount} tone="slate" />
-          <SummaryMetric label="Сеть Зодиака" value={zodiacCount} tone="amber" />
+          <SummaryMetric label="Каналы Зодиака" value={zodiacCount} tone="amber" />
           <SummaryMetric label="Каналов в черновиках" value={draftNetworksCount} tone="emerald" />
         </div>
 
@@ -109,14 +129,14 @@ export default function AphroditeChannelRegistryPage() {
               <div className="mb-6 flex items-center justify-between border-b border-slate-800 pb-2">
                 <h2 className="text-2xl font-bold text-white flex items-center gap-2">
                   <RadioTower className="h-6 w-6 text-blue-500" />
-                  {net.name} - {net.channels.length} {net.channels.length === 15 ? 'каналов' : net.channels.length === 13 ? 'каналов' : 'канала/модуль'}
+                  {`${net.name} - ${net.channels.length} ${net.channels.length === 15 ? 'каналов' : net.channels.length === 13 ? 'каналов' : 'каналов'}`}
                 </h2>
                 {net.name === 'Старая сеть 15 каналов' && (
                   <span className="rounded bg-slate-800 px-2 py-1 text-xs font-medium text-slate-400">
-                    Общие темы - 10 | Недвижимость - 5
+                    Общие темы — 10 | Недвижимость — 5
                   </span>
                 )}
-                {net.name === 'Сеть Зодиака' && (
+                {net.name === 'Каналы Зодиака' && (
                   <span className="rounded bg-slate-800 px-2 py-1 text-xs font-medium text-slate-400">
                     Активная сеть
                   </span>

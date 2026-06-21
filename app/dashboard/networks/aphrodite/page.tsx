@@ -15,7 +15,6 @@ import {
   Calendar
 } from "lucide-react";
 import Link from "next/link";
-import { UnifiedStatusStrip } from "@/components/UnifiedStatusStrip";
 
 const moduleGroups = [
   {
@@ -126,7 +125,6 @@ const moduleGroups = [
 export default function AphroditePlatformOverview() {
   return (
     <main className="min-h-screen bg-[#060b14]">
-      <UnifiedStatusStrip />
       
       <div className="mx-auto max-w-[1400px] px-4 py-6 lg:px-8">
         <AphroditePageHeader
