@@ -234,6 +234,7 @@ export default async function MiniAppArchitecturePage() {
               </h3>
               <ul className="flex flex-wrap gap-4 text-sm mt-2">
                 <li><Link href="/dashboard/networks/zodiac/miniapp-monetization-architecture" className="text-amber-400 hover:text-amber-300 transition underline underline-offset-4">Monetization Architecture</Link></li>
+                <li><Link href="/dashboard/networks/zodiac/miniapp-entitlements" className="text-sky-400 hover:text-sky-300 transition underline underline-offset-4">Entitlement Model</Link></li>
               </ul>
             </div>
           </div>

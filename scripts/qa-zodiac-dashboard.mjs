@@ -40,6 +40,7 @@ const ROUTES = {
   miniappLinkSmoke: "/dashboard/networks/zodiac/miniapp-link-smoke",
   compatibilityFlowSafety: "/dashboard/networks/zodiac/compatibility-flow-safety",
   miniappMonetizationArchitecture: "/dashboard/networks/zodiac/miniapp-monetization-architecture",
+  miniappEntitlements: "/dashboard/networks/zodiac/miniapp-entitlements",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
   softLaunch: "/dashboard/networks/zodiac/soft-launch",
@@ -381,6 +382,10 @@ async function main() {
     assertIncludes(pages.miniappMonetizationArchitecture, "Architecture only", "monetization architecture classification");
     assertIncludes(pages.miniappMonetizationArchitecture, "No payment implementation", "monetization payment boundary");
     assertIncludes(pages.miniappMonetizationArchitecture, "No VIP unlock", "monetization vip boundary");
+
+    assertIncludes(pages.miniappEntitlements, "Entitlement Data Model", "entitlements page title");
+    assertIncludes(pages.miniappEntitlements, "Data Model Spec Only", "entitlements boundary check");
+    assertIncludes(pages.miniappEntitlements, "No database writes", "entitlements db boundary check");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");

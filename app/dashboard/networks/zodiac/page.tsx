@@ -149,6 +149,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Entitlement Data Model",
+    href: "/dashboard/networks/zodiac/miniapp-entitlements",
+    icon: ShieldCheck,
+    caption: "Package 116 - Entitlement data model spec.",
+    tone: "cyan",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
