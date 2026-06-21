@@ -86,6 +86,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Mini App Audit",
+    href: "/dashboard/networks/zodiac/miniapp-audit",
+    icon: Smartphone,
+    caption: "Package 101 - Audit of all Mini App routing and entry points.",
+    tone: "cyan",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

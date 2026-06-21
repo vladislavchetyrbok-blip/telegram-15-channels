@@ -29,6 +29,7 @@ const ROUTES = {
   stability: "/dashboard/networks/zodiac/stability",
   legacyPublishing: "/publishing-center",
   miniApp: "/compatibility",
+  miniappAudit: "/dashboard/networks/zodiac/miniapp-audit",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
   softLaunch: "/dashboard/networks/zodiac/soft-launch",
   dashboardAuthStatus: "/api/dashboard/auth/status",
@@ -282,6 +283,11 @@ async function main() {
     assertIncludes(pages.stability, "Diagnostic read-only control page", "stability subtitle");
     assertIncludes(pages.stability, "Daily Zodiac Automation", "stability daily automation tracking");
     assertNotIncludes(pages.stability, "https://api.telegram.org", "no direct telegram api call in stability matrix");
+
+    assertIncludes(pages.miniappAudit, "Mini App Route &amp; Navigation Audit", "miniapp audit page title");
+    assertIncludes(pages.miniappAudit, "Package 101", "miniapp audit package number");
+    assertIncludes(pages.miniappAudit, "Проверить совместимость", "miniapp audit cta link");
+    assertIncludes(pages.miniappAudit, "VIP Entry Points", "miniapp audit vip entry points");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");
