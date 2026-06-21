@@ -6,7 +6,7 @@ import http from "node:http";
 const DEFAULT_TIMEOUT_MS = 120_000;
 const URL_BASE = "http://localhost:3000";
 const ROUTES = {
-  login: "/dashboard/login",
+  login: "/login",
   overview: "/dashboard/networks/zodiac",
   analytics: "/dashboard/networks/zodiac/analytics",
   channels: "/dashboard/networks/zodiac/channels",
@@ -48,18 +48,29 @@ async function main() {
 
   try {
     const pages = {};
+    
+    // Check that an unprotected route (like /login) works
+    pages.login = await fetchUrl(`${URL_BASE}${ROUTES.login}`);
+    assertIncludes(pages.login, "Вход в Афродиту", "dashboard login page heading");
+
+    // Check that a protected route redirects
+    console.log(`Checking unauthorized access to /dashboard/networks/aphrodite`);
+    await checkRedirect(`${URL_BASE}/dashboard/networks/aphrodite`);
+
+    // Login and get cookie
+    console.log(`Logging in via API...`);
+    const sessionCookie = await loginAndGetCookie(`${URL_BASE}/api/auth/login`);
+    console.log(`Successfully obtained session cookie`);
+
     for (const [name, route] of Object.entries(ROUTES)) {
+      if (name === "login") continue; // Already fetched
       console.log(`Checking ${route}`);
-      pages[name] = await fetchUrl(`${URL_BASE}${route}`);
+      pages[name] = await fetchUrl(`${URL_BASE}${route}`, sessionCookie);
       assertNoRuntimeErrorText(pages[name], `${name} page`);
       assertNoSecretValues(pages[name], `${name} page`);
     }
 
-    assertIncludes(pages.login, "Вход в панель Афродиты", "dashboard login page heading");
-    assertIncludes(pages.login, "Auth отключён для local/dev режима", "dashboard login disabled local mode");
-    assertIncludes(pages.dashboardAuthStatus, '"authEnabled":false', "dashboard auth disabled status");
-    assertIncludes(pages.dashboardAuthStatus, '"sessionCookie":"local browser only"', "dashboard auth session cookie status");
-
+    assertIncludes(pages.login, "Вход в Афродиту", "dashboard login page heading");
     assertIncludes(pages.overview, "Афродита", "Aphrodite visible on dashboard shell or overview");
     assertIncludes(pages.overview, "Каналы Зодиака", "overview page heading");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/channels"', "overview channels route link");
@@ -606,22 +617,50 @@ function assertNoSecretValues(html, label) {
   }
 }
 
-async function fetchUrl(url) {
-  return new Promise((resolve, reject) => {
-    http.get(url, (res) => {
-      let data = "";
-      res.on("data", (chunk) => {
-        data += chunk;
-      });
-      res.on("end", () => {
-        if (!res.statusCode || res.statusCode < 200 || res.statusCode >= 300) {
-          reject(new Error(`Failed to load ${url}, status code: ${res.statusCode}`));
-        } else {
-          resolve(data);
-        }
-      });
-    }).on("error", reject);
+async function fetchUrl(url, cookie = null) {
+  const headers = cookie ? { "Cookie": cookie } : {};
+  const res = await fetch(url, { headers, redirect: "follow" });
+  if (!res.ok) {
+    throw new Error(`Failed to load ${url}, status code: ${res.status}`);
+  }
+  return await res.text();
+}
+
+async function loginAndGetCookie(url) {
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      login: "qa-admin",
+      password: "qa-password-not-production",
+    }),
+    redirect: "manual",
   });
+  if (!res.ok) {
+    throw new Error(`Login failed with status: ${res.status}`);
+  }
+  const setCookieHeader = res.headers.get("set-cookie");
+  if (!setCookieHeader) {
+    throw new Error("No set-cookie header returned from login");
+  }
+  // Extract just the aphrodite_session=... part
+  const match = setCookieHeader.match(/(aphrodite_session=[^;]+)/);
+  if (!match) {
+    throw new Error("aphrodite_session cookie not found in set-cookie header");
+  }
+  return match[1];
+}
+
+async function checkRedirect(url) {
+  const res = await fetch(url, { redirect: "manual" });
+  if (res.status !== 307 && res.status !== 302 && res.status !== 308) {
+    throw new Error(`Expected redirect for ${url}, but got ${res.status}`);
+  }
+  const location = res.headers.get("location");
+  if (!location || !location.includes("/login")) {
+    throw new Error(`Expected redirect to /login for ${url}, but got ${location}`);
+  }
+  return true;
 }
 
 async function ensureServer(url, timeoutMs) {
@@ -632,6 +671,9 @@ async function ensureServer(url, timeoutMs) {
   const devProcess = spawn(process.execPath, ["node_modules/next/dist/bin/next", "start", "-p", "3000"], {
     env: {
       ...process.env,
+      APHRODITE_ADMIN_LOGIN: "qa-admin",
+      APHRODITE_ADMIN_PASSWORD: "qa-password-not-production",
+      APHRODITE_SESSION_SECRET: "qa-secret-not-production-1234567890",
       ZODIAC_DASHBOARD_AUTH_ENABLED: "false",
       ZODIAC_DASHBOARD_ADMIN_PASSWORD_SHA256: "",
       ZODIAC_DASHBOARD_SESSION_SECRET: "",
