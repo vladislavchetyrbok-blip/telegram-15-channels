@@ -1,4 +1,4 @@
-import { ShieldAlert, Presentation, Layers, Info, CheckCircle2, Activity, Rocket, Calendar, Code2, Database, Terminal, GitBranch, Play, LayoutTemplate } from "lucide-react"
+import { ShieldAlert, Presentation, Layers, Info, CheckCircle2, Activity, Rocket, Calendar, Code2, Database, Terminal, GitBranch, Play, LayoutTemplate, Eye } from "lucide-react"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 
@@ -103,6 +103,18 @@ export default function ZodiacDailySystemPage() {
                 </div>
                 <div className="text-xs text-sky-500 max-w-[250px]">
                   Scoring перед soft launch: структура, CTA, безопасность, повторяемость и различимость знаков.
+                </div>
+              </Link>
+              <Link
+                href="/dashboard/networks/zodiac/preview-review"
+                className="flex flex-col items-end gap-1 rounded-lg border border-teal-500/30 bg-teal-500/10 px-4 py-3 text-right transition-colors hover:bg-teal-500/20"
+              >
+                <div className="flex items-center gap-2 text-sm font-bold text-teal-400">
+                  <Eye className="h-4 w-4" />
+                  Preview Review
+                </div>
+                <div className="text-xs text-teal-500 max-w-[250px]">
+                  Ручной просмотр dry-run примеров: структура, CTA, риски, scoring и готовность к soft launch.
                 </div>
               </Link>
             </div>

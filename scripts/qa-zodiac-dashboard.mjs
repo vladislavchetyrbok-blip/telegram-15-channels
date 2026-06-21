@@ -24,6 +24,7 @@ const ROUTES = {
   contentQuality: "/dashboard/networks/zodiac/content-quality",
   templateRefinement: "/dashboard/networks/zodiac/template-refinement",
   qualityScoring: "/dashboard/networks/zodiac/quality-scoring",
+  previewReview: "/dashboard/networks/zodiac/preview-review",
   legacyPublishing: "/publishing-center",
   miniApp: "/compatibility",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
@@ -258,6 +259,12 @@ async function main() {
     assertIncludes(pages.launch, "Production auth", "production auth card visible");
     assertIncludes(pages.launch, "PENDING ENV", "production auth pending visible");
     assertIncludes(pages.launch, 'data-qa="launch-checklist"', "checklist visible");
+
+    assertIncludes(pages.previewReview, "Preview Review Зодиака", "preview review page heading");
+    assertIncludes(pages.previewReview, "Preview Review", "preview review sidebar visible");
+    assertIncludes(pages.previewReview, "Каналов", "preview review channels count visible");
+    assertIncludes(pages.previewReview, "Live", "preview review live status visible");
+    assertIncludes(pages.previewReview, "Ручной просмотр dry-run примеров", "preview review origin text visible");
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");
     assertIncludes(pages.launch, 'href="/dashboard/networks/zodiac/analytics"', "analytics link visible on launch");

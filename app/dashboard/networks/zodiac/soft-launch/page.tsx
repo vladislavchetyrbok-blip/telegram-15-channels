@@ -1,5 +1,5 @@
 import { AphroditePageHeader } from "@/components/AphroditePageHeader";
-import { AlertTriangle, Activity, Database, Terminal, ShieldAlert, Rocket, CheckCircle2, FileText, ShieldCheck, LayoutTemplate, Play, Calendar } from "lucide-react";
+import { AlertTriangle, Activity, Database, Terminal, ShieldAlert, Rocket, CheckCircle2, FileText, ShieldCheck, LayoutTemplate, Play, Calendar, Eye } from "lucide-react";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -128,6 +128,18 @@ export default function ZodiacSoftLaunchPage() {
             </div>
             <div className="flex items-center justify-center p-2 rounded-full bg-slate-800/50">
               <svg className="w-5 h-5 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+            </div>
+          </Link>
+          <Link href="/dashboard/networks/zodiac/preview-review" className="rounded-xl border border-teal-500/30 bg-teal-500/10 p-5 shadow-sm hover:bg-teal-500/20 transition flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <Eye className="h-5 w-5 text-teal-400" />
+                <h3 className="text-lg font-semibold text-white">Preview Review</h3>
+              </div>
+              <div className="text-sm text-teal-300">Ручной просмотр dry-run примеров: структура, CTA, риски, scoring и готовность к soft launch.</div>
+            </div>
+            <div className="flex items-center justify-center p-2 rounded-full bg-slate-800/50">
+              <svg className="w-5 h-5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
             </div>
           </Link>
         </section>

@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { AlertTriangle, CheckCircle, CheckCircle2, ShieldAlert, Zap, Info, Shield, ListChecks, Link as LinkIcon } from "lucide-react";
+import { AlertTriangle, CheckCircle, CheckCircle2, ShieldAlert, Zap, Info, Shield, ListChecks, Link as LinkIcon, Eye } from "lucide-react";
 
 export default function ZodiacContentQualityPage() {
   return (
@@ -48,6 +48,12 @@ export default function ZodiacContentQualityPage() {
             <CheckCircle className="h-4 w-4" /> Следующий этап
           </div>
           <div className="text-xl font-bold text-emerald-400">Улучшение шаблонов</div>
+        </Link>
+        <Link href="/dashboard/networks/zodiac/preview-review" className="rounded-xl border bg-card text-card-foreground shadow-sm p-4 border-slate-800 bg-slate-900 hover:bg-slate-800 transition block">
+          <div className="text-sm font-medium text-muted-foreground mb-1 flex items-center gap-2">
+            <Eye className="h-4 w-4" /> Анализ
+          </div>
+          <div className="text-xl font-bold text-teal-400">Preview Review</div>
         </Link>
       </div>
 
