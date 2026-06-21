@@ -1,4 +1,4 @@
-import { AlertTriangle, CheckCircle2, ChevronRight, Activity, Calendar, LayoutGrid, Zap, Shield, Search, Terminal, AlertOctagon, CheckSquare } from "lucide-react"
+import { AlertTriangle, CheckCircle2, ChevronRight, Activity, Calendar, LayoutGrid, Zap, Shield, Search, Terminal, AlertOctagon, CheckSquare, Database, FileText, ArrowRight, LayoutTemplate } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 
@@ -123,7 +123,7 @@ export default function ZodiacLedgerPage() {
         </section>
 
         {/* Action Links */}
-        <section className="grid gap-4 md:grid-cols-1">
+        <section className="grid gap-4 md:grid-cols-2">
           <Link href="/dashboard/networks/zodiac/content-quality" className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-5 shadow-sm hover:bg-amber-500/20 transition flex items-center justify-between">
             <div>
               <div className="flex items-center gap-2 mb-1">
@@ -133,6 +133,16 @@ export default function ZodiacLedgerPage() {
               <div className="text-sm text-amber-300">Проверка тона, повторяемости, CTA, структуры и безопасных формулировок действующих гороскопов.</div>
             </div>
             <ChevronRight className="h-5 w-5 text-amber-400" />
+          </Link>
+          <Link href="/dashboard/networks/zodiac/template-refinement" className="rounded-xl border border-fuchsia-500/30 bg-fuchsia-500/10 p-5 shadow-sm hover:bg-fuchsia-500/20 transition flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <LayoutTemplate className="h-5 w-5 text-fuchsia-400" />
+                <h3 className="text-lg font-semibold text-white">Шаблоны Зодиака</h3>
+              </div>
+              <div className="text-sm text-fuchsia-300">Структура постов, уникальность знаков, CTA, Mini App-связка и контроль повторяемости.</div>
+            </div>
+            <ChevronRight className="h-5 w-5 text-fuchsia-400" />
           </Link>
         </section>
 

@@ -19,7 +19,8 @@ import {
   ChevronDown,
   ChevronRight,
   Activity,
-  LogOut
+  LogOut,
+  LayoutTemplate
 } from "lucide-react";
 
 const aphroditeNavItems = [
@@ -46,6 +47,7 @@ const zodiacNavItems = [
   { id: "soft-launch", href: "/dashboard/networks/zodiac/soft-launch", label: "Soft Launch", icon: Calendar },
   { id: "ledger", href: "/dashboard/networks/zodiac/ledger", label: "Ledger / dry-run", icon: FileText },
   { id: "content-quality", href: "/dashboard/networks/zodiac/content-quality", label: "Качество контента", icon: Shield },
+  { id: "template-refinement", href: "/dashboard/networks/zodiac/template-refinement", label: "Шаблоны", icon: LayoutTemplate },
   { id: "channels", href: "/dashboard/networks/zodiac/channels", label: "Каналы Зодиака", icon: RadioTower },
   { id: "launch", href: "/dashboard/networks/zodiac/launch", label: "Запуск", icon: Rocket },
   { id: "operations", href: "/dashboard/networks/zodiac/operations", label: "Мониторинг", icon: LayoutDashboard },

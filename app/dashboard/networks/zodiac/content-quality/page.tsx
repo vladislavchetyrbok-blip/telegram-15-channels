@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import { AlertTriangle, CheckCircle, ShieldAlert, Zap, Info, Shield, ListChecks, Link as LinkIcon } from "lucide-react";
 
 export default function ZodiacContentQualityPage() {
@@ -42,12 +43,12 @@ export default function ZodiacContentQualityPage() {
           </div>
           <div className="text-xl font-bold">Только вручную</div>
         </div>
-        <div className="rounded-xl border bg-card text-card-foreground shadow-sm p-4 border-slate-800 bg-slate-900">
+        <Link href="/dashboard/networks/zodiac/template-refinement" className="rounded-xl border bg-card text-card-foreground shadow-sm p-4 border-slate-800 bg-slate-900 hover:bg-slate-800 transition block">
           <div className="text-sm font-medium text-muted-foreground mb-1 flex items-center gap-2">
             <CheckCircle className="h-4 w-4" /> Следующий этап
           </div>
           <div className="text-xl font-bold text-emerald-400">Улучшение шаблонов</div>
-        </div>
+        </Link>
       </div>
 
       <div className="rounded-xl border border-rose-900/50 bg-rose-950/20 p-4">
@@ -206,6 +207,21 @@ export default function ZodiacContentQualityPage() {
           </div>
         </div>
       </div>
+
+      <section className="grid gap-4 md:grid-cols-1 mt-6">
+        <Link href="/dashboard/networks/zodiac/template-refinement" className="rounded-xl border border-fuchsia-500/30 bg-fuchsia-500/10 p-5 shadow-sm hover:bg-fuchsia-500/20 transition flex items-center justify-between">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <LinkIcon className="h-5 w-5 text-fuchsia-400" />
+              <h3 className="text-lg font-semibold text-white">Шаблоны Зодиака</h3>
+            </div>
+            <div className="text-sm text-fuchsia-300">Структура постов, уникальность знаков, CTA, Mini App-связка и контроль повторяемости.</div>
+          </div>
+          <div className="flex items-center justify-center p-2 rounded-full bg-slate-800/50">
+            <svg className="w-5 h-5 text-fuchsia-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+          </div>
+        </Link>
+      </section>
     </div>
   );
 }

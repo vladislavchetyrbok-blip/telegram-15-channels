@@ -1,4 +1,4 @@
-import { ShieldAlert, Presentation, Layers, Info, CheckCircle2, Activity, Rocket, Calendar, Code2, Database, Terminal, GitBranch, Play } from "lucide-react"
+import { ShieldAlert, Presentation, Layers, Info, CheckCircle2, Activity, Rocket, Calendar, Code2, Database, Terminal, GitBranch, Play, LayoutTemplate } from "lucide-react"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 
@@ -79,6 +79,18 @@ export default function ZodiacDailySystemPage() {
                 </div>
                 <div className="text-xs text-amber-500 max-w-[250px]">
                   Проверка тона, повторяемости, CTA, структуры и безопасных формулировок действующих гороскопов.
+                </div>
+              </Link>
+              <Link
+                href="/dashboard/networks/zodiac/template-refinement"
+                className="flex flex-col items-end gap-1 rounded-lg border border-fuchsia-500/30 bg-fuchsia-500/10 px-4 py-3 text-right transition-colors hover:bg-fuchsia-500/20"
+              >
+                <div className="flex items-center gap-2 text-sm font-bold text-fuchsia-400">
+                  <LayoutTemplate className="h-4 w-4" />
+                  Шаблоны Зодиака
+                </div>
+                <div className="text-xs text-fuchsia-500 max-w-[250px]">
+                  Структура постов, уникальность знаков, CTA, Mini App-связка и контроль повторяемости.
                 </div>
               </Link>
             </div>
