@@ -35,6 +35,7 @@ const ROUTES = {
   mysticNumbers: "/mystic-numbers",
   affirmations: "/affirmations",
   miniappHub: "/miniapp",
+  vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
   softLaunch: "/dashboard/networks/zodiac/soft-launch",
   dashboardAuthStatus: "/api/dashboard/auth/status",
@@ -314,6 +315,10 @@ async function main() {
     assertIncludes(pages.miniappHub, "Mini App Hub", "miniapp hub page title");
     assertIncludes(pages.miniappHub, "Static Hub (Package 106)", "miniapp hub mock notice");
     assertIncludes(pages.miniappHub, "Zodiac Universe", "miniapp hub subtitle");
+
+    assertIncludes(pages.vipPreview, "VIP Preview", "vip preview page title");
+    assertIncludes(pages.vipPreview, "Preview Only (Package 107)", "vip preview mock notice");
+    assertIncludes(pages.vipPreview, "Future VIP Access", "vip preview subtitle");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");

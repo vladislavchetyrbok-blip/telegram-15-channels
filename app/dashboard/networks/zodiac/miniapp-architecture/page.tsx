@@ -174,6 +174,17 @@ export default async function MiniAppArchitecturePage() {
                   </a>
                 </div>
               </div>
+              <div className="rounded-md border border-slate-800 bg-slate-800/20 p-4">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h3 className="font-medium text-slate-200">VIP Preview Shell</h3>
+                    <p className="mt-1 text-xs text-slate-400">Package 107 static boundary for future premium features.</p>
+                  </div>
+                  <a href="/vip-preview" className="rounded-md bg-fuchsia-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-fuchsia-700 transition">
+                    View Preview
+                  </a>
+                </div>
+              </div>
             </div>
 
             <h2 className="mb-4 text-lg font-semibold text-slate-100">Route Boundaries</h2>

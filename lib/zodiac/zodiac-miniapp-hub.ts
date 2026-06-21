@@ -48,10 +48,10 @@ export const MOCK_MINI_APP_HUB_ITEMS: MiniAppHubItem[] = [
   {
     title: "VIP Preview",
     description: "Unlock premium numerology and compatibility features.",
-    href: "#",
-    status: "future",
-    safetyLabel: "Placeholder",
-    recommendedNextAction: "Create VIP boundary shell (Package 107)",
+    href: "/vip-preview",
+    status: "active-mock",
+    safetyLabel: "Package 107 Static Mock",
+    recommendedNextAction: "Design entitlement model",
   },
   {
     title: "Lunar Calendar",
