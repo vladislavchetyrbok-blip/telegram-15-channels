@@ -41,6 +41,7 @@ const ROUTES = {
   compatibilityFlowSafety: "/dashboard/networks/zodiac/compatibility-flow-safety",
   miniappMonetizationArchitecture: "/dashboard/networks/zodiac/miniapp-monetization-architecture",
   miniappEntitlements: "/dashboard/networks/zodiac/miniapp-entitlements",
+  miniappProductionWiring: "/dashboard/networks/zodiac/miniapp-production-wiring",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
   softLaunch: "/dashboard/networks/zodiac/soft-launch",
@@ -386,6 +387,10 @@ async function main() {
     assertIncludes(pages.miniappEntitlements, "Entitlement Data Model", "entitlements page title");
     assertIncludes(pages.miniappEntitlements, "Data Model Spec Only", "entitlements boundary check");
     assertIncludes(pages.miniappEntitlements, "No database writes", "entitlements db boundary check");
+
+    assertIncludes(pages.miniappProductionWiring, "Production Wiring Spec", "wiring page title");
+    assertIncludes(pages.miniappProductionWiring, "Mock Mode Active", "wiring mock boundary");
+    assertIncludes(pages.miniappProductionWiring, "No Telegram API connections", "wiring telegram boundary");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");

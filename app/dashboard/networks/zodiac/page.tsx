@@ -156,6 +156,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Production Wiring Spec",
+    href: "/dashboard/networks/zodiac/miniapp-production-wiring",
+    icon: ShieldCheck,
+    caption: "Package 117 - Telegram Mini App production wiring spec.",
+    tone: "cyan",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
