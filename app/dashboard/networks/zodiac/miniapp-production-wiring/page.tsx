@@ -110,6 +110,7 @@ export default function MiniAppProductionWiringPage() {
           <li><Link href="/dashboard/networks/zodiac/miniapp-monetization-architecture" className="text-amber-400 hover:text-amber-300 transition underline underline-offset-4">Monetization Architecture</Link></li>
           <li><Link href="/dashboard/networks/zodiac/miniapp-architecture" className="text-indigo-400 hover:text-indigo-300 transition underline underline-offset-4">Architecture Spec</Link></li>
           <li><Link href="/dashboard/networks/zodiac/miniapp-payment-matrix" className="text-rose-400 hover:text-rose-300 transition underline underline-offset-4">Payment Matrix</Link></li>
+          <li><Link href="/dashboard/networks/zodiac/miniapp-risk-register" className="text-red-400 hover:text-red-300 transition underline underline-offset-4">Risk Register</Link></li>
         </ul>
       </section>
     </div>

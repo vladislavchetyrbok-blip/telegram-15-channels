@@ -43,6 +43,7 @@ const ROUTES = {
   miniappEntitlements: "/dashboard/networks/zodiac/miniapp-entitlements",
   miniappProductionWiring: "/dashboard/networks/zodiac/miniapp-production-wiring",
   miniappPaymentMatrix: "/dashboard/networks/zodiac/miniapp-payment-matrix",
+  miniappRiskRegister: "/dashboard/networks/zodiac/miniapp-risk-register",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
   softLaunch: "/dashboard/networks/zodiac/soft-launch",
@@ -396,6 +397,10 @@ async function main() {
     assertIncludes(pages.miniappPaymentMatrix, "Payment Provider Decision Matrix", "payment matrix page title");
     assertIncludes(pages.miniappPaymentMatrix, "Decision Matrix Only", "payment matrix mock boundary");
     assertIncludes(pages.miniappPaymentMatrix, "No payment SDKs loaded", "payment matrix sdk boundary");
+
+    assertIncludes(pages.miniappRiskRegister, "Production Risk Register", "risk register page title");
+    assertIncludes(pages.miniappRiskRegister, "Documentation Only", "risk register mock boundary");
+    assertIncludes(pages.miniappRiskRegister, "No live launch has occurred", "risk register live boundary");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");

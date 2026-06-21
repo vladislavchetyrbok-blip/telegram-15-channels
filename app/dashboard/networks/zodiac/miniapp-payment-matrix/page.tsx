@@ -105,6 +105,7 @@ export default function MiniAppPaymentMatrixPage() {
           <li><Link href="/dashboard/networks/zodiac" className="text-blue-400 hover:text-blue-300 transition underline underline-offset-4">Zodiac Dashboard</Link></li>
           <li><Link href="/dashboard/networks/zodiac/miniapp-monetization-architecture" className="text-amber-400 hover:text-amber-300 transition underline underline-offset-4">Monetization Architecture</Link></li>
           <li><Link href="/dashboard/networks/zodiac/miniapp-production-wiring" className="text-fuchsia-400 hover:text-fuchsia-300 transition underline underline-offset-4">Production Wiring</Link></li>
+          <li><Link href="/dashboard/networks/zodiac/miniapp-risk-register" className="text-red-400 hover:text-red-300 transition underline underline-offset-4">Risk Register</Link></li>
         </ul>
       </section>
     </div>

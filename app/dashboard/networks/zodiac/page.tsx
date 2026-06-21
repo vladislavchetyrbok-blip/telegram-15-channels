@@ -170,6 +170,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Risk Register & Gates",
+    href: "/dashboard/networks/zodiac/miniapp-risk-register",
+    icon: ShieldCheck,
+    caption: "Package 119 - Production risk register and rollout gates.",
+    tone: "cyan",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
