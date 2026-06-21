@@ -36,6 +36,7 @@ const ROUTES = {
   affirmations: "/affirmations",
   miniappHub: "/miniapp",
   miniappRouteSafety: "/dashboard/networks/zodiac/miniapp-route-safety",
+  miniappReadiness: "/dashboard/networks/zodiac/miniapp-readiness",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
   softLaunch: "/dashboard/networks/zodiac/soft-launch",
@@ -303,15 +304,15 @@ async function main() {
 
     assertIncludes(pages.birthMatrix, "Birth Matrix", "birth matrix page title");
     assertIncludes(pages.birthMatrix, "Static Mock (Package 103)", "birth matrix mock notice");
-    assertIncludes(pages.birthMatrix, "Discover Your Matrix", "birth matrix subtitle");
+    assertIncludes(pages.birthMatrix, "Calculate Your Matrix", "birth matrix subtitle");
 
     assertIncludes(pages.mysticNumbers, "Mystic Numbers", "mystic numbers page title");
     assertIncludes(pages.mysticNumbers, "Static Mock (Package 104)", "mystic numbers mock notice");
-    assertIncludes(pages.mysticNumbers, "Decode The Signs", "mystic numbers subtitle");
+    assertIncludes(pages.mysticNumbers, "Decode Repeating Numbers", "mystic numbers subtitle");
 
     assertIncludes(pages.affirmations, "Zodiac Affirmations", "affirmations page title");
     assertIncludes(pages.affirmations, "Static Mock (Package 105)", "affirmations mock notice");
-    assertIncludes(pages.affirmations, "Your Daily Power", "affirmations subtitle");
+    assertIncludes(pages.affirmations, "Your Daily Affirmation", "affirmations subtitle");
 
     assertIncludes(pages.miniappHub, "Mini App Hub", "miniapp hub page title");
     assertIncludes(pages.miniappHub, "Static Hub (Package 106)", "miniapp hub mock notice");
@@ -352,6 +353,11 @@ async function main() {
     assertIncludes(pages.miniappRouteSafety, "/mystic-numbers", "miniapp route safety: mystic-numbers route listed");
     assertIncludes(pages.miniappRouteSafety, "/affirmations", "miniapp route safety: affirmations route listed");
     assertIncludes(pages.miniappRouteSafety, "/vip-preview", "miniapp route safety: vip-preview route listed");
+
+    assertIncludes(pages.miniappReadiness, "Mini App Readiness Summary", "miniapp readiness: page title");
+    assertIncludes(pages.miniappReadiness, "Mock-ready / QA-protected / Not production-monetized", "miniapp readiness: system classification");
+    assertIncludes(pages.miniappReadiness, "Package 111", "miniapp readiness: package 111 listed");
+    assertIncludes(pages.miniappReadiness, "Package 103", "miniapp readiness: package 103 listed");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");

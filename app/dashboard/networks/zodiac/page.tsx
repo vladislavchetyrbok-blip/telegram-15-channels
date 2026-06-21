@@ -121,6 +121,13 @@ const platformSections = [
     tone: "emerald",
   },
   {
+    title: "Mini App Readiness",
+    href: "/dashboard/networks/zodiac/miniapp-readiness",
+    icon: ShieldCheck,
+    caption: "Package 112 - Read-only readiness summary for Zodiac Mini App.",
+    tone: "cyan",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
