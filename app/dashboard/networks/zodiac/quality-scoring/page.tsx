@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { ShieldAlert, Target, ShieldCheck, CheckCircle2, AlertTriangle, AlertCircle, Ban, ArrowRight, LayoutTemplate, Zap, MessageCircle, Eye } from 'lucide-react';
+import { ShieldAlert, Target, ShieldCheck, CheckCircle2, AlertTriangle, AlertCircle, Ban, ArrowRight, LayoutTemplate, Zap, MessageCircle, Eye, ListChecks } from 'lucide-react';
 import { ZodiacQualityScoring } from '@/lib/zodiac/zodiac-quality-scoring';
 
 export default function QualityScoringPage() {
@@ -216,6 +216,10 @@ export default function QualityScoringPage() {
               <Link href="/dashboard/networks/zodiac/preview-review" className="p-3 bg-slate-900 border border-slate-800 rounded-lg hover:bg-slate-800 transition-colors flex items-center gap-3">
                 <Eye className="h-4 w-4 text-teal-400" />
                 <span className="text-sm font-medium">Preview Review</span>
+              </Link>
+              <Link href="/dashboard/networks/zodiac/manual-review" className="p-3 bg-slate-900 border border-slate-800 rounded-lg hover:bg-slate-800 transition-colors flex items-center gap-3">
+                <ListChecks className="h-4 w-4 text-rose-400" />
+                <span className="text-sm font-medium">Ручная проверка</span>
               </Link>
             </div>
           </div>

@@ -10,8 +10,10 @@ import {
   Activity,
   Zap,
   Lock,
-  Search
+  Search,
+  ListChecks
 } from "lucide-react";
+import Link from "next/link";
 import { ZodiacPreviewSamples } from "@/lib/zodiac/zodiac-preview-sample-review";
 
 export default function ZodiacPreviewReviewPage() {
@@ -242,6 +244,24 @@ export default function ZodiacPreviewReviewPage() {
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="space-y-4 mt-8 pt-8 border-t border-slate-800">
+        <h2 className="text-xl font-bold tracking-tight text-white">Связанные модули</h2>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <Link href="/dashboard/networks/zodiac/manual-review" className="rounded-lg border border-rose-500/30 bg-rose-500/10 p-4 hover:bg-rose-500/20 transition-colors">
+            <div className="flex items-center gap-2 text-white mb-1"><ListChecks className="h-4 w-4 text-rose-400" /> Ручная проверка</div>
+            <div className="text-xs text-rose-300">Очередь OK / REVIEW / BLOCKED перед soft launch и любым live-действием.</div>
+          </Link>
+          <Link href="/dashboard/networks/zodiac/quality-scoring" className="rounded-lg border border-slate-800 bg-slate-900/50 p-4 hover:bg-slate-800 transition-colors">
+            <div className="flex items-center gap-2 text-white mb-1"><CheckCircle2 className="h-4 w-4 text-emerald-400" /> Quality Scoring</div>
+            <div className="text-xs text-slate-400">Настройки оценки качества</div>
+          </Link>
+          <Link href="/dashboard/networks/zodiac/template-refinement" className="rounded-lg border border-slate-800 bg-slate-900/50 p-4 hover:bg-slate-800 transition-colors">
+            <div className="flex items-center gap-2 text-white mb-1"><AlertTriangle className="h-4 w-4 text-amber-400" /> Templates</div>
+            <div className="text-xs text-slate-400">Редактирование шаблонов</div>
+          </Link>
+        </div>
       </div>
     </div>
   );

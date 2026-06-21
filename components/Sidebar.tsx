@@ -22,7 +22,8 @@ import {
   LogOut,
   LayoutTemplate,
   CheckCircle2,
-  Eye
+  Eye,
+  ListChecks
 } from "lucide-react";
 
 const aphroditeNavItems = [
@@ -52,6 +53,7 @@ const zodiacNavItems = [
   { id: "template-refinement", href: "/dashboard/networks/zodiac/template-refinement", label: "Шаблоны", icon: LayoutTemplate },
   { id: "quality-scoring", href: "/dashboard/networks/zodiac/quality-scoring", label: "Оценка качества", icon: CheckCircle2 },
   { id: "preview-review", href: "/dashboard/networks/zodiac/preview-review", label: "Preview Review", icon: Eye },
+  { id: "manual-review", href: "/dashboard/networks/zodiac/manual-review", label: "Ручная проверка", icon: ListChecks },
   { id: "channels", href: "/dashboard/networks/zodiac/channels", label: "Каналы Зодиака", icon: RadioTower },
   { id: "launch", href: "/dashboard/networks/zodiac/launch", label: "Запуск", icon: Rocket },
   { id: "operations", href: "/dashboard/networks/zodiac/operations", label: "Мониторинг", icon: LayoutDashboard },

@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { AlertCircle, Lock, LayoutTemplate, Zap, MessageCircle, AlertTriangle, PlayCircle, Eye } from 'lucide-react';
+import { AlertCircle, Lock, LayoutTemplate, Zap, MessageCircle, AlertTriangle, PlayCircle, Eye, ListChecks } from 'lucide-react';
 import { ZodiacTemplateRules } from '@/lib/zodiac/zodiac-template-refinement';
 
 export default function TemplateRefinementPage() {
@@ -155,6 +155,18 @@ export default function TemplateRefinementPage() {
           </div>
           <div className="flex items-center justify-center p-2 rounded-full bg-slate-800/50">
             <svg className="w-5 h-5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+          </div>
+        </Link>
+        <Link href="/dashboard/networks/zodiac/manual-review" className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-5 shadow-sm hover:bg-rose-500/20 transition flex items-center justify-between">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <ListChecks className="w-5 h-5 text-rose-400" />
+              <h3 className="text-lg font-semibold text-white">Ручная проверка</h3>
+            </div>
+            <div className="text-sm text-rose-300">Очередь OK / REVIEW / BLOCKED перед soft launch и любым live-действием.</div>
+          </div>
+          <div className="flex items-center justify-center p-2 rounded-full bg-slate-800/50">
+            <svg className="w-5 h-5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
           </div>
         </Link>
       </div>

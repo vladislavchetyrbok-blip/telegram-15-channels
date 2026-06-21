@@ -1,4 +1,4 @@
-import { AlertTriangle, CheckCircle2, ChevronRight, Rocket, Shield, Activity, Calendar, LayoutGrid, Zap, Eye } from "lucide-react"
+import { AlertTriangle, CheckCircle2, ChevronRight, Rocket, Shield, Activity, Calendar, LayoutGrid, ListChecks, Eye, Zap } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 
@@ -162,6 +162,16 @@ export default function ZodiacPriorityPage() {
               <div className="text-sm text-teal-300">Ручной просмотр dry-run примеров: структура, CTA, риски, scoring и готовность к soft launch.</div>
             </div>
             <ChevronRight className="h-5 w-5 text-teal-400" />
+          </Link>
+          <Link href="/dashboard/networks/zodiac/manual-review" className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-5 shadow-sm hover:bg-rose-500/20 transition flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <ListChecks className="h-5 w-5 text-rose-400" />
+                <h3 className="text-lg font-semibold text-white">Ручная проверка</h3>
+              </div>
+              <div className="text-sm text-rose-300">Очередь OK / REVIEW / BLOCKED перед soft launch и любым live-действием.</div>
+            </div>
+            <ChevronRight className="h-5 w-5 text-rose-400" />
           </Link>
         </section>
 

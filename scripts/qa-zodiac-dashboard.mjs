@@ -25,6 +25,7 @@ const ROUTES = {
   templateRefinement: "/dashboard/networks/zodiac/template-refinement",
   qualityScoring: "/dashboard/networks/zodiac/quality-scoring",
   previewReview: "/dashboard/networks/zodiac/preview-review",
+  manualReview: "/dashboard/networks/zodiac/manual-review",
   legacyPublishing: "/publishing-center",
   miniApp: "/compatibility",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
@@ -265,6 +266,16 @@ async function main() {
     assertIncludes(pages.previewReview, "Каналов", "preview review channels count visible");
     assertIncludes(pages.previewReview, "Live", "preview review live status visible");
     assertIncludes(pages.previewReview, "Ручной просмотр dry-run примеров", "preview review origin text visible");
+    assertIncludes(pages.previewReview, "Live-публикация отключена", "preview review safety flag");
+    assertNotIncludes(pages.previewReview, "https://api.telegram.org", "no direct telegram api call in preview review");
+
+    assertIncludes(pages.manualReview, "Ручная проверка Зодиака", "manual review page title");
+    assertIncludes(pages.manualReview, "Очередь ручного review", "manual review subtitle");
+    assertIncludes(pages.manualReview, "Owner Approval Gate", "manual review safety gate");
+    assertIncludes(pages.manualReview, "Общий гороскоп", "manual review general channel");
+    assertIncludes(pages.manualReview, "Овен", "manual review aries");
+    assertNotIncludes(pages.manualReview, "https://api.telegram.org", "no direct telegram api call in manual review");
+
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");
     assertIncludes(pages.launch, 'href="/dashboard/networks/zodiac/analytics"', "analytics link visible on launch");
