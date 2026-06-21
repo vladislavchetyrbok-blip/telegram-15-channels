@@ -1527,6 +1527,18 @@
       "updatedAt": "2026-06-21T10:03:06.062Z",
       "messageId": "26,",
       "sentAt": "2026-06-21T10:03:06.062Z"
+    },
+    "2026-06-21:libra": {
+      "key": "2026-06-21:libra",
+      "date": "2026-06-21",
+      "slug": "libra",
+      "createdAt": "2026-06-21T10:03:06.992Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-06-21T10:03:06.992Z"
     }
   }
 }
