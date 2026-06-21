@@ -64,7 +64,7 @@ export default function MiniAppCtaAuditPage() {
                       </div>
                     </td>
                     <td className="px-4 py-3 font-medium text-slate-200">
-                      "{item.label}"
+                      &quot;{item.label}&quot;
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-1.5 text-slate-400">
