@@ -69,6 +69,18 @@ export default function ZodiacDailySystemPage() {
                   Проверка сухих прогонов и учетных записей публикации
                 </div>
               </Link>
+              <Link
+                href="/dashboard/networks/zodiac/content-quality"
+                className="flex flex-col items-end gap-1 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-right transition-colors hover:bg-amber-500/20"
+              >
+                <div className="flex items-center gap-2 text-sm font-bold text-amber-400">
+                  <CheckCircle2 className="h-4 w-4" />
+                  Качество контента
+                </div>
+                <div className="text-xs text-amber-500 max-w-[250px]">
+                  Проверка тона, повторяемости, CTA, структуры и безопасных формулировок действующих гороскопов.
+                </div>
+              </Link>
             </div>
           </div>
         </div>

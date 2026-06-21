@@ -92,7 +92,7 @@ export default function ZodiacPriorityPage() {
         </section>
 
         {/* Action Links */}
-        <section className="grid gap-4 md:grid-cols-3">
+        <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Link href="/dashboard/networks/zodiac/profiles" className="rounded-xl border border-indigo-500/30 bg-indigo-500/10 p-5 shadow-sm hover:bg-indigo-500/20 transition flex items-center justify-between">
             <div>
               <div className="flex items-center gap-2 mb-1">
@@ -109,7 +109,7 @@ export default function ZodiacPriorityPage() {
                 <Activity className="h-5 w-5 text-emerald-400" />
                 <h3 className="text-lg font-semibold text-white">Ежедневная система</h3>
               </div>
-              <div className="text-sm text-emerald-300">Настроенный ежедневный контур</div>
+              <div className="text-sm text-emerald-300">Настроенный контур</div>
             </div>
             <ChevronRight className="h-5 w-5 text-emerald-400" />
           </Link>
@@ -119,9 +119,19 @@ export default function ZodiacPriorityPage() {
                 <Calendar className="h-5 w-5 text-cyan-400" />
                 <h3 className="text-lg font-semibold text-white">Soft Launch</h3>
               </div>
-              <div className="text-sm text-cyan-300">Следующий этап: Soft Launch Preview и календарь проверок</div>
+              <div className="text-sm text-cyan-300">Календарь проверок</div>
             </div>
             <ChevronRight className="h-5 w-5 text-cyan-400" />
+          </Link>
+          <Link href="/dashboard/networks/zodiac/content-quality" className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-5 shadow-sm hover:bg-amber-500/20 transition flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <CheckCircle2 className="h-5 w-5 text-amber-400" />
+                <h3 className="text-lg font-semibold text-white">Качество контента</h3>
+              </div>
+              <div className="text-sm text-amber-300">Проверка тона, повторяемости, CTA, структуры и безопасных формулировок действующих гороскопов.</div>
+            </div>
+            <ChevronRight className="h-5 w-5 text-amber-400" />
           </Link>
         </section>
 

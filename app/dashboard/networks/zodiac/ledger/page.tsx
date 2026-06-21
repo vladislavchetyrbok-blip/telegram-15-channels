@@ -122,6 +122,20 @@ export default function ZodiacLedgerPage() {
           <MetricCard title="Статус" value="Только чтение" caption="UI без записи" icon={Search} tone="slate" />
         </section>
 
+        {/* Action Links */}
+        <section className="grid gap-4 md:grid-cols-1">
+          <Link href="/dashboard/networks/zodiac/content-quality" className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-5 shadow-sm hover:bg-amber-500/20 transition flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <CheckCircle2 className="h-5 w-5 text-amber-400" />
+                <h3 className="text-lg font-semibold text-white">Качество контента</h3>
+              </div>
+              <div className="text-sm text-amber-300">Проверка тона, повторяемости, CTA, структуры и безопасных формулировок действующих гороскопов.</div>
+            </div>
+            <ChevronRight className="h-5 w-5 text-amber-400" />
+          </Link>
+        </section>
+
         <div className="grid gap-6 md:grid-cols-2">
           {/* 3. Status taxonomy */}
           <section className="rounded-xl border border-slate-800 bg-[#0f1b33] p-6 shadow-sm">

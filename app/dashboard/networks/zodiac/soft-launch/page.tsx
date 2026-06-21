@@ -81,7 +81,7 @@ export default function ZodiacSoftLaunchPage() {
         </section>
 
         {/* 7. Action Links */}
-        <section className="grid gap-4 md:grid-cols-1">
+        <section className="grid gap-4 md:grid-cols-2">
           <Link href="/dashboard/networks/zodiac/ledger" className="rounded-xl border border-indigo-500/30 bg-indigo-500/10 p-5 shadow-sm hover:bg-indigo-500/20 transition flex items-center justify-between">
             <div>
               <div className="flex items-center gap-2 mb-1">
@@ -92,6 +92,18 @@ export default function ZodiacSoftLaunchPage() {
             </div>
             <div className="flex items-center justify-center p-2 rounded-full bg-slate-800/50">
               <svg className="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+            </div>
+          </Link>
+          <Link href="/dashboard/networks/zodiac/content-quality" className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-5 shadow-sm hover:bg-amber-500/20 transition flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <CheckCircle2 className="h-5 w-5 text-amber-400" />
+                <h3 className="text-lg font-semibold text-white">Качество контента</h3>
+              </div>
+              <div className="text-sm text-amber-300">Проверка тона, повторяемости, CTA, структуры и безопасных формулировок действующих гороскопов.</div>
+            </div>
+            <div className="flex items-center justify-center p-2 rounded-full bg-slate-800/50">
+              <svg className="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
             </div>
           </Link>
         </section>

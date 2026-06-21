@@ -21,6 +21,7 @@ const ROUTES = {
   settings: "/dashboard/networks/zodiac/settings",
   docs: "/dashboard/networks/zodiac/docs",
   ledger: "/dashboard/networks/zodiac/ledger",
+  contentQuality: "/dashboard/networks/zodiac/content-quality",
   legacyPublishing: "/publishing-center",
   miniApp: "/compatibility",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
