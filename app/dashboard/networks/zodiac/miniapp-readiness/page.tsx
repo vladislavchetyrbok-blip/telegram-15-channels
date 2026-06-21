@@ -182,6 +182,7 @@ export default function MiniAppReadinessPage() {
             <li><Link href="/dashboard/networks/zodiac/stability" className="text-indigo-400 hover:text-indigo-300 transition underline underline-offset-4">Stability Matrix</Link></li>
             <li><Link href="/dashboard/networks/zodiac/miniapp-link-smoke" className="text-purple-400 hover:text-purple-300 transition underline underline-offset-4">Link Smoke Matrix</Link></li>
             <li><Link href="/dashboard/networks/zodiac/compatibility-flow-safety" className="text-purple-400 hover:text-purple-300 transition underline underline-offset-4">Compatibility Flow Safety</Link></li>
+            <li><Link href="/dashboard/networks/zodiac/miniapp-monetization-architecture" className="text-amber-400 hover:text-amber-300 transition underline underline-offset-4">Monetization Architecture</Link></li>
           </ul>
         </section>
 

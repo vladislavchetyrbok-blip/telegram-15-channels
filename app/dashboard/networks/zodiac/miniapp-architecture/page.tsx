@@ -1,4 +1,5 @@
 import { AphroditePageHeader } from "@/components/AphroditePageHeader";
+import Link from "next/link";
 import { CheckCircle2, ShieldAlert, FileQuestion, Ban, AlertTriangle, ShieldCheck, Smartphone, Layers } from "lucide-react";
 import { requireDashboardPageAccess } from "@/lib/zodiac-dashboard-auth";
 import { 
@@ -224,6 +225,15 @@ export default async function MiniAppArchitecturePage() {
                 {miniAppRiskControls.map((control, i) => (
                   <li key={i}>{control}</li>
                 ))}
+              </ul>
+            </div>
+            
+            <div className="mt-6 rounded-md border border-slate-800 bg-slate-800/20 p-4">
+              <h3 className="mb-2 flex items-center gap-2 font-medium text-slate-300">
+                Related Dashboards
+              </h3>
+              <ul className="flex flex-wrap gap-4 text-sm mt-2">
+                <li><Link href="/dashboard/networks/zodiac/miniapp-monetization-architecture" className="text-amber-400 hover:text-amber-300 transition underline underline-offset-4">Monetization Architecture</Link></li>
               </ul>
             </div>
           </div>

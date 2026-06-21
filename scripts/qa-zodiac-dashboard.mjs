@@ -39,6 +39,7 @@ const ROUTES = {
   miniappReadiness: "/dashboard/networks/zodiac/miniapp-readiness",
   miniappLinkSmoke: "/dashboard/networks/zodiac/miniapp-link-smoke",
   compatibilityFlowSafety: "/dashboard/networks/zodiac/compatibility-flow-safety",
+  miniappMonetizationArchitecture: "/dashboard/networks/zodiac/miniapp-monetization-architecture",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
   softLaunch: "/dashboard/networks/zodiac/soft-launch",
@@ -375,6 +376,11 @@ async function main() {
     assertIncludes(pages.compatibilityFlowSafety, "/compatibility", "compatibility route listed");
     assertIncludes(pages.compatibilityFlowSafety, "No scoring engine changes", "compatibility scoring boundary");
     assertIncludes(pages.compatibilityFlowSafety, "No live CTA changes", "compatibility live cta protection");
+
+    assertIncludes(pages.miniappMonetizationArchitecture, "Mini App Monetization Architecture", "monetization architecture page title");
+    assertIncludes(pages.miniappMonetizationArchitecture, "Architecture only", "monetization architecture classification");
+    assertIncludes(pages.miniappMonetizationArchitecture, "No payment implementation", "monetization payment boundary");
+    assertIncludes(pages.miniappMonetizationArchitecture, "No VIP unlock", "monetization vip boundary");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");

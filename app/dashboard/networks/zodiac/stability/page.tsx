@@ -188,6 +188,12 @@ export default function ZodiacStabilityMatrixPage() {
             <div className="text-xs text-slate-400">Ежедневный движок</div>
           </Link>
         </div>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mt-3">
+          <Link href="/dashboard/networks/zodiac/miniapp-monetization-architecture" className="rounded-lg border border-slate-800 bg-slate-900/50 p-4 hover:bg-slate-800 transition-colors">
+            <div className="flex items-center gap-2 text-white mb-1"><Activity className="h-4 w-4 text-amber-400" /> Monetization</div>
+            <div className="text-xs text-slate-400">Architecture Spec</div>
+          </Link>
+        </div>
       </div>
     </div>
   );

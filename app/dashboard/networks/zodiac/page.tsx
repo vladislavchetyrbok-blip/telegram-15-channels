@@ -142,6 +142,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Monetization Architecture",
+    href: "/dashboard/networks/zodiac/miniapp-monetization-architecture",
+    icon: ShieldCheck,
+    caption: "Package 115 - Monetization architecture spec.",
+    tone: "cyan",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
