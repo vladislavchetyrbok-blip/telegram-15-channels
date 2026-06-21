@@ -1,38 +1,25 @@
-# Aphrodite Network Registry
+# Реестр сетей Афродиты
 
-## Overview
-Aphrodite is the main platform for managing multiple Telegram networks and modules. The channel registry provides a unified, read-only view of all channels across these networks.
+Афродита — главная платформа, управляющая множеством сетей и модулей.
+Реестр каналов агрегирует данные обо всех сетях в одном месте (`/dashboard/networks/aphrodite/channels`).
 
-## Legacy Paused Network
-The platform contains a dedicated module for the old 15-channel network, which is completely distinct from the Zodiac active network. This ensures no overlapping of publishing logic or unintended cross-pollination of content. 
+## Зарегистрированные модули и сети
 
-### Restored Legacy Channels (15 Total)
+### 1. 15 каналов / Старая сеть Афродиты
+- **Модуль**: `15 каналов` (`/dashboard/networks/aphrodite/legacy`)
+- **Статус**: На паузе
+- **Каналов**: 15 (10 общих + 5 недвижимость)
+- **Описание**: Первая (legacy) сеть платформы. Публикации отключены, готовится к перезапуску.
+- **Отношение к Зодиаку**: Полностью изолирована, не является частью Зодиака.
 
-**Общие темы — 10**
-1. Ідеї для бізнесу (UA)
-2. Мужской стиль и вещи (RU)
-3. Техника для дома (RU)
-4. Україна: можливості та ринок (UA)
-5. Деньги и возможности (RU)
-6. AI и технологии (RU)
-7. Личный прогресс (RU)
-8. Авто и комфорт (RU)
-9. Дніпро / Город Днепр (RU/UA)
-10. Рыбалка и отдых (RU)
+### 2. Каналы Зодиака
+- **Модуль**: `Зодиак` (`/dashboard/networks/zodiac`)
+- **Статус**: Активно
+- **Каналов**: 13
+- **Описание**: Основной рабочий модуль. Ежедневные гороскопы.
+- **Отношение к Старой сети**: Отдельная архитектура, live publishing, Mini App integration.
 
-**Недвижимость — 5**
-1. Инвестиции в недвижимость (RU)
-2. Земля и дома / Земля та будинки (RU/UA)
-3. Коммерческая недвижимость (RU)
-4. Нерухомість Дніпра (UA)
-5. Недвижимость Днепра (RU)
-
-## Safety Constraints
-* All old 15 channels are currently **paused** (`Пауза`).
-* The registry explicitly disables publishing and contains no live server write actions or Telegram API calls.
-* The "next step" for these channels is: `Проверить канал и подготовить к перезапуску`.
-* The "safety note" explicitly states: `Публикации из реестра отключены`.
-
-## Modular Networks
-* **Каналы Зодиака — 13**: A separate, actively developed module with 12 sign-specific channels and 1 general channel.
-* **Валюты / Крипта / Металлы**: Placeholder networks for future content modules.
+### 3. Драфты сетей (Валюты, Крипта, Металлы)
+- **Статус**: Черновики
+- **Каналов**: по 3 в каждой (MVP)
+- **Описание**: Находятся в стадии проектирования. Публикации отключены.

@@ -91,16 +91,16 @@ export function NewChannelDraftBuilder({ existingSlugs }: { existingSlugs: strin
   }
 
   return (
-    <section id="new-channel-draft-builder" data-qa="new-channel-draft-builder" className="space-y-5 rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <section id="new-channel-draft-builder" data-qa="new-channel-draft-builder" className="space-y-4 rounded-lg border border-slate-800 bg-[#0b101a] p-4 shadow-sm">
       <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-start">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-700">local draft only</p>
-          <h2 className="mt-2 text-xl font-semibold text-slate-950">Добавить новый канал</h2>
-          <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-400">Локальный черновик</p>
+          <h2 className="mt-2 text-xl font-semibold text-slate-100">Добавить новый канал</h2>
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-400">
             Черновик хранится в localStorage этого браузера. Здесь нет live API, записи в ledger и полей для секретов.
           </p>
         </div>
-        <span className="inline-flex w-fit items-center gap-2 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-800">
+        <span className="inline-flex w-fit items-center gap-2 rounded-md border border-emerald-500/20 bg-emerald-500/10 px-3 py-2 text-sm font-semibold text-emerald-400">
           <ShieldCheck className="h-4 w-4" />
           безопасный черновик
         </span>
@@ -111,7 +111,7 @@ export function NewChannelDraftBuilder({ existingSlugs }: { existingSlugs: strin
           <Field label="Название канала">
             <input value={draft.title} onChange={(event) => updateDraft("title", event.target.value)} className={inputClassName} />
           </Field>
-          <Field label="Slug">
+          <Field label="Слаг">
             <input value={draft.slug} onChange={(event) => updateDraft("slug", event.target.value)} className={inputClassName} />
           </Field>
           <Field label="Язык">
@@ -124,25 +124,25 @@ export function NewChannelDraftBuilder({ existingSlugs }: { existingSlugs: strin
           <Field label="Категория / тема">
             <input value={draft.category} onChange={(event) => updateDraft("category", event.target.value)} className={inputClassName} />
           </Field>
-          <Field label="Telegram handle или URL">
+          <Field label="Telegram handle или ссылка">
             <input value={draft.handleOrUrl} onChange={(event) => updateDraft("handleOrUrl", event.target.value)} placeholder="@channel_name или https://t.me/channel_name" className={inputClassName} />
           </Field>
-          <Field label="Emoji / icon">
+          <Field label="Emoji / иконка">
             <input value={draft.icon} onChange={(event) => updateDraft("icon", event.target.value)} className={inputClassName} />
           </Field>
-          <Field label="Mini App startapp">
+          <Field label="Mini App start">
             <input value={draft.startapp} onChange={(event) => updateDraft("startapp", event.target.value)} className={inputClassName} />
           </Field>
           <Field label="Каденс публикаций">
             <select value={draft.cadence} onChange={(event) => updateDraft("cadence", event.target.value as Cadence)} className={inputClassName}>
-              <option value="daily">daily</option>
-              <option value="weekly">weekly</option>
-              <option value="manual">manual</option>
+              <option value="daily">ежедневно</option>
+              <option value="weekly">еженедельно</option>
+              <option value="manual">вручную</option>
             </select>
           </Field>
           <Field label="Статус">
             <select value={draft.status} onChange={(event) => updateDraft("status", event.target.value as DraftStatus)} className={inputClassName}>
-              <option value="draft">draft</option>
+              <option value="draft">черновик</option>
               <option value="ready">ready</option>
             </select>
           </Field>
@@ -155,27 +155,27 @@ export function NewChannelDraftBuilder({ existingSlugs }: { existingSlugs: strin
         </div>
 
         <div className="space-y-4">
-          <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">preview</p>
-            <div className="mt-3 rounded-lg border border-slate-200 bg-white p-4">
+          <div className="rounded-lg border border-slate-800 bg-[#070b14] p-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Предпросмотр</p>
+            <div className="mt-3 rounded-lg border border-slate-800 bg-[#0b101a] p-4">
               <div className="flex items-start gap-3">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-violet-200 bg-violet-50 text-xl text-violet-700">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-violet-500/20 bg-violet-500/10 text-xl text-violet-400">
                   {draft.icon || "✦"}
                 </span>
                 <div className="min-w-0">
-                  <h3 className="break-words font-semibold text-slate-950">{draft.title || "Без названия"}</h3>
-                  <p className="mt-1 text-sm text-slate-500">{draft.slug || "slug-required"} · {draft.language} · {draft.cadence}</p>
-                  <p className="mt-2 break-words text-sm leading-6 text-slate-600">{draft.description}</p>
+                  <h3 className="break-words font-semibold text-slate-100">{draft.title || "Без названия"}</h3>
+                  <p className="mt-1 text-sm text-slate-400">{draft.slug || "slug-required"} · {draft.language} · {draft.cadence}</p>
+                  <p className="mt-2 break-words text-sm leading-6 text-slate-400">{draft.description}</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <div id="channel-draft-validation" data-qa="channel-draft-validation" className="rounded-lg border border-slate-200 bg-white p-4">
-            <p className="text-sm font-semibold text-slate-950">Валидация</p>
+          <div id="channel-draft-validation" data-qa="channel-draft-validation" className="rounded-lg border border-slate-800 bg-[#070b14] p-4">
+            <p className="text-sm font-semibold text-slate-100">Валидация</p>
             <ul className="mt-3 space-y-2">
               {validation.items.map((item) => (
-                <li key={item.label} className={`flex items-start gap-2 text-sm font-semibold ${item.ok ? "text-emerald-700" : "text-rose-700"}`}>
+                <li key={item.label} className={`flex items-start gap-2 text-sm font-semibold ${item.ok ? "text-emerald-500" : "text-rose-500"}`}>
                   {item.ok ? <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" /> : <XCircle className="mt-0.5 h-4 w-4 shrink-0" />}
                   <span>{item.label}</span>
                 </li>
@@ -189,7 +189,7 @@ export function NewChannelDraftBuilder({ existingSlugs }: { existingSlugs: strin
         <GeneratedBlock
           id="generated-channel-config"
           qa="generated-channel-config"
-          title="Generated config JSON"
+          title="Сгенерированный config JSON"
           text={generatedConfig}
           copied={copied === "config"}
           onCopy={() => copyText("config", generatedConfig)}
@@ -197,7 +197,7 @@ export function NewChannelDraftBuilder({ existingSlugs }: { existingSlugs: strin
         <GeneratedBlock
           id="generated-channel-checklist"
           qa="generated-channel-checklist"
-          title="Generated checklist"
+          title="Сгенерированный чеклист"
           text={generatedChecklist}
           copied={copied === "checklist"}
           onCopy={() => copyText("checklist", generatedChecklist)}
@@ -207,7 +207,7 @@ export function NewChannelDraftBuilder({ existingSlugs }: { existingSlugs: strin
       <button
         type="button"
         onClick={() => copyText("all", `${generatedConfig}\n\n${generatedChecklist}`)}
-        className="inline-flex items-center gap-2 rounded-md border border-violet-200 bg-violet-50 px-4 py-2 text-sm font-semibold text-violet-700 transition hover:border-violet-300 hover:bg-violet-100"
+        className="inline-flex items-center gap-2 rounded-md border border-violet-500/20 bg-violet-500/10 px-4 py-2 text-sm font-semibold text-violet-400 transition hover:bg-violet-500/20"
       >
         <Clipboard className="h-4 w-4" />
         {copied === "all" ? "Скопировано" : "Скопировать config и checklist"}
@@ -218,7 +218,7 @@ export function NewChannelDraftBuilder({ existingSlugs }: { existingSlugs: strin
 
 function Field({ label, wide, children }: { label: string; wide?: boolean; children: ReactNode }) {
   return (
-    <label className={`grid gap-2 text-sm font-semibold text-slate-700 ${wide ? "md:col-span-2" : ""}`}>
+    <label className={`grid gap-2 text-sm font-semibold text-slate-300 ${wide ? "md:col-span-2" : ""}`}>
       <span>{label}</span>
       {children}
     </label>
@@ -241,12 +241,12 @@ function GeneratedBlock({
   onCopy: () => void;
 }) {
   return (
-    <div id={id} data-qa={qa} className="rounded-lg border border-slate-200 bg-slate-950 p-4 text-white shadow-sm">
+    <div id={id} data-qa={qa} className="rounded-lg border border-slate-800 bg-[#070b14] p-4 text-white shadow-sm">
       <div className="flex items-center justify-between gap-3">
         <h3 className="text-sm font-semibold">{title}</h3>
         <button type="button" onClick={onCopy} className="inline-flex items-center gap-2 rounded-md border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-white/15">
           <Copy className="h-3.5 w-3.5" />
-          {copied ? "Скопировано" : "Copy"}
+          {copied ? "Скопировано" : "Скопировать"}
         </button>
       </div>
       <pre className="mt-4 max-h-96 overflow-auto whitespace-pre-wrap break-words rounded-md bg-black/30 p-3 text-xs leading-5 text-slate-100">
@@ -307,15 +307,15 @@ function buildGeneratedChecklist(draft: ChannelDraft) {
 
   return [
     `Checklist for ${title}`,
-    "1. Create Telegram channel",
-    "2. Add bot/admin",
-    "3. Add channel to registry",
-    "4. Dry-run navigation",
-    "5. Dry-run description",
-    "6. Dry-run publishing",
-    "7. Approve live manually",
+    "1. Создать Telegram-канал",
+    "2. Добавить бота / администратора",
+    "3. Добавить канал в реестр",
+    "4. Проверить навигацию через dry-run",
+    "5. Проверить описание через dry-run",
+    "6. Проверить публикацию через dry-run",
+    "7. Live запуск только вручную после отдельного разрешения",
   ].join("\n");
 }
 
 const inputClassName =
-  "w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-950 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-violet-400 focus:ring-2 focus:ring-violet-100";
+  "w-full rounded-md border border-slate-800 bg-slate-950 px-3 py-2 text-sm font-medium text-slate-100 shadow-sm outline-none transition placeholder:text-slate-500 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20";

@@ -3,35 +3,22 @@ import { Server, RadioTower, AlertCircle, Activity } from "lucide-react";
 
 type ChannelStatus = 'На паузе' | 'Черновик' | 'Активно' | 'Требует проверки';
 
-const legacyChannels = [
-  { name: "Ідеї для бізнесу", category: "Общие темы", language: "UA" },
-  { name: "Мужской стиль и вещи", category: "Общие темы", language: "RU" },
-  { name: "Техника для дома", category: "Общие темы", language: "RU" },
-  { name: "Україна: можливості та ринок", category: "Общие темы", language: "UA" },
-  { name: "Деньги и возможности", category: "Общие темы", language: "RU" },
-  { name: "AI и технологии", category: "Общие темы", language: "RU" },
-  { name: "Личный прогресс", category: "Общие темы", language: "RU" },
-  { name: "Авто и комфорт", category: "Общие темы", language: "RU" },
-  { name: "Дніпро / Город Днепр", category: "Общие темы", language: "RU/UA" },
-  { name: "Рыбалка и отдых", category: "Общие темы", language: "RU" },
-  { name: "Инвестиции в недвижимость", category: "Недвижимость", language: "RU" },
-  { name: "Земля и дома / Земля та будинки", category: "Недвижимость", language: "RU/UA" },
-  { name: "Коммерческая недвижимость", category: "Недвижимость", language: "RU" },
-  { name: "Нерухомість Дніпра", category: "Недвижимость", language: "UA" },
-  { name: "Недвижимость Днепра", category: "Недвижимость", language: "RU" }
-];
+import { legacyChannelsProfiles } from "@/lib/aphrodite/legacy-channel-profiles";
 
-const legacyArray = legacyChannels.map((c, i) => ({
+const legacyArray = legacyChannelsProfiles.map((c, i) => ({
   id: `legacy-general-${i + 1}`,
   name: c.name,
-  network: 'Старая сеть 15 каналов',
+  network: '15 каналов / Старая сеть Афродиты',
   module: 'legacy_paused',
   category: c.category,
-  status: 'Пауза' as ChannelStatus,
+  status: 'На паузе' as ChannelStatus,
   language: c.language,
-  contentFormat: 'Смешанный',
+  audience: c.audience,
+  contentProfile: c.contentProfile,
+  contentFormat: c.postFormat,
+  exampleTopics: c.exampleTopics,
   publishFrequency: 'На паузе',
-  nextStep: 'Проверить канал и подготовить к перезапуску',
+  nextStep: 'Подготовить к перезапуску',
   safetyNote: 'Публикации из реестра отключены',
 }));
 
@@ -93,7 +80,7 @@ const registry = [
 
 export default function AphroditeChannelRegistryPage() {
   const networks = [
-    { name: 'Старая сеть 15 каналов', channels: registry.filter(c => c.network === 'Старая сеть 15 каналов') },
+    { name: '15 каналов / Старая сеть Афродиты', channels: registry.filter(c => c.network === '15 каналов / Старая сеть Афродиты') },
     { name: 'Каналы Зодиака', channels: registry.filter(c => c.network === 'Каналы Зодиака') },
     { name: 'Валюты', channels: registry.filter(c => c.network === 'Валюты') },
     { name: 'Крипта', channels: registry.filter(c => c.network === 'Крипта') },
@@ -101,7 +88,7 @@ export default function AphroditeChannelRegistryPage() {
   ];
 
   const totalChannels = registry.length;
-  const legacyCount = registry.filter(c => c.network === 'Старая сеть 15 каналов').length;
+  const legacyCount = registry.filter(c => c.network === '15 каналов / Старая сеть Афродиты').length;
   const zodiacCount = registry.filter(c => c.network === 'Каналы Зодиака').length;
   const draftNetworksCount = registry.filter(c => ['Валюты', 'Крипта', 'Металлы'].includes(c.network)).length;
 
@@ -131,7 +118,7 @@ export default function AphroditeChannelRegistryPage() {
                   <RadioTower className="h-6 w-6 text-blue-500" />
                   {`${net.name} - ${net.channels.length} ${net.channels.length === 15 ? 'каналов' : net.channels.length === 13 ? 'каналов' : 'каналов'}`}
                 </h2>
-                {net.name === 'Старая сеть 15 каналов' && (
+                {net.name === '15 каналов / Старая сеть Афродиты' && (
                   <span className="rounded bg-slate-800 px-2 py-1 text-xs font-medium text-slate-400">
                     Общие темы — 10 | Недвижимость — 5
                   </span>
@@ -169,15 +156,31 @@ export default function AphroditeChannelRegistryPage() {
                         </div>
                         <div className="grid grid-cols-[1fr_1.5fr] gap-2 items-center">
                           <span className="text-slate-500 text-xs uppercase tracking-wider">Формат</span>
-                          <span className="text-slate-300">{channel.contentFormat}</span>
+                          <span className="text-slate-300 truncate">{channel.contentFormat}</span>
                         </div>
+                        {/* @ts-ignore - Some channels may not have contentProfile */}
+                        {channel.contentProfile && (
+                          <div className="grid grid-cols-[1fr_1.5fr] gap-2 items-start">
+                            <span className="text-slate-500 text-xs uppercase tracking-wider mt-0.5">Контент</span>
+                            {/* @ts-ignore */}
+                            <span className="text-slate-300 text-xs leading-relaxed line-clamp-2">{channel.contentProfile}</span>
+                          </div>
+                        )}
+                        {/* @ts-ignore - Some channels may not have exampleTopics */}
+                        {channel.exampleTopics && channel.exampleTopics.length > 0 && (
+                          <div className="grid grid-cols-[1fr_1.5fr] gap-2 items-start">
+                            <span className="text-slate-500 text-xs uppercase tracking-wider mt-0.5">Пример</span>
+                            {/* @ts-ignore */}
+                            <span className="text-slate-400/90 text-[11px] leading-relaxed italic line-clamp-1">&quot;{channel.exampleTopics[0]}&quot;</span>
+                          </div>
+                        )}
                         <div className="grid grid-cols-[1fr_1.5fr] gap-2 items-center">
                           <span className="text-slate-500 text-xs uppercase tracking-wider">Частота</span>
-                          <span className="text-slate-300">{channel.publishFrequency}</span>
+                          <span className="text-slate-300 truncate">{channel.publishFrequency}</span>
                         </div>
                         <div className="grid grid-cols-[1fr_1.5fr] gap-2 items-center">
                           <span className="text-slate-500 text-xs uppercase tracking-wider">Сл. Шаг</span>
-                          <span className="text-amber-400/80">{channel.nextStep}</span>
+                          <span className="text-amber-400/80 truncate">{channel.nextStep}</span>
                         </div>
                       </div>
                     </div>

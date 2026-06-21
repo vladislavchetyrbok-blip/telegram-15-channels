@@ -1,35 +1,17 @@
-# Package 87: Restore Real Names of 15 Aphrodite Legacy Channels
+# Package 87 Report: Legacy 15 Channels Module
 
-## Goal Achieved
-The placeholder legacy channel names in the Aphrodite Channel Registry (`/dashboard/networks/aphrodite/channels`) have been completely replaced with the real 15 old Telegram channel names.
+## Goal
+Add the old Aphrodite 15-channel network as its own visible module inside the platform, distinct from Zodiac.
 
-## Network Separation and Modularity
-The 15 old channels exist securely in the overarching Aphrodite platform, separated into an isolated legacy paused network (`Старая сеть 15 каналов`). They are explicitly segmented to never mix with the Zodiac 13-channel module, ensuring complete safety from automation crossovers.
+## Execution Summary
+1. **Sidebar Integration**: Added "15 каналов" module group under "МОДУЛИ" in `components/Sidebar.tsx`.
+2. **Overview Page**: Created `/dashboard/networks/aphrodite/legacy` to display the 15 legacy channels grouped into "Общие темы" (10) and "Недвижимость" (5) with their correct localized content profiles, formats, and disabled/paused statuses.
+3. **Aphrodite Dashboard**: Updated `/dashboard/networks/aphrodite` to list "15 каналов" under "Приостановленные модули", maintaining separation from Zodiac, Currency, Crypto, and Metals.
+4. **Channel Registry**: Updated `/dashboard/networks/aphrodite/channels` to correctly label the network as "15 каналов / Старая сеть Афродиты" instead of generic placeholders.
+5. **Documentation**: Added/Updated `aphrodite-legacy-15-channels.md` and `aphrodite-network-registry.md` to document the architectural relationship of the legacy module.
+6. **QA script**: Updated `scripts/qa-zodiac-dashboard.mjs` to test for new 15 channels layout strings and registry identifiers.
 
-## Restored Legacy Channels
-The exact 15 legacy channel names successfully restored:
-
-**Общие темы — 10**:
-1. Ідеї для бізнесу
-2. Мужской стиль и вещи
-3. Техника для дома
-4. Україна: можливості та ринок
-5. Деньги и возможности
-6. AI и технологии
-7. Личный прогресс
-8. Авто и комфорт
-9. Дніпро / Город Днепр
-10. Рыбалка и отдых
-
-**Недвижимость — 5**:
-1. Инвестиции в недвижимость
-2. Земля и дома / Земля та будинки
-3. Коммерческая недвижимость
-4. Нерухомість Дніпра
-5. Недвижимость Днепра
-
-## Safety Checks Passed
-* All 15 channels are currently paused.
-* No live publishing from the registry.
-* No external API calls are made, and no secrets or tokens are required for viewing the registry.
-* No server write actions are implemented.
+## Safety Check
+- No live publishing functions were triggered.
+- No DB dependencies or env variables were introduced.
+- Module correctly states "На паузе" and "Публикации отключены".

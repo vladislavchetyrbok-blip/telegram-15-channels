@@ -19,7 +19,11 @@ export function AppShell({ children }: { children: ReactNode }) {
     return <div className="min-h-screen overflow-x-hidden bg-[#070b14] text-slate-100">{children}</div>;
   }
 
-  const isAphroditeRoute = pathname === "/dashboard/networks/aphrodite" || pathname.startsWith("/dashboard/networks/aphrodite/");
+  const isAphroditeRoute = 
+    pathname === "/dashboard/networks/aphrodite" || 
+    pathname.startsWith("/dashboard/networks/aphrodite/") ||
+    pathname === "/dashboard/networks/zodiac" || 
+    pathname.startsWith("/dashboard/networks/zodiac/");
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#070b14] text-slate-100 grid-surface">

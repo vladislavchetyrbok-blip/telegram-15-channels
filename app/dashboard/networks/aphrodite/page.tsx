@@ -45,6 +45,22 @@ const moduleGroups = [
     ]
   },
   {
+    title: "Приостановленные модули",
+    modules: [
+      {
+        id: "legacy15",
+        title: "15 каналов",
+        purpose: "Старая сеть Афродиты. 10 общих + 5 недвижимость.",
+        safetyLevel: "Публикации отключены",
+        nextStep: "Подготовить к перезапуску",
+        href: "/dashboard/networks/aphrodite/legacy",
+        icon: RadioTower,
+        status: "На паузе",
+        statusColor: "text-rose-400 bg-rose-500/10 border-rose-500/30"
+      }
+    ]
+  },
+  {
     title: "Черновики",
     modules: [
       {
