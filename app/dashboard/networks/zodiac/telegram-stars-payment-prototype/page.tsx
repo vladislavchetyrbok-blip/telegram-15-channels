@@ -150,6 +150,7 @@ export default function TelegramStarsPaymentPrototypeDashboardPage() {
           <li><Link href="/dashboard/networks/zodiac/vip-compatibility-report-preview" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">VIP Compatibility Report Preview</Link></li>
           <li><Link href="/dashboard/networks/zodiac/vip-compatibility-report-foundation" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">VIP Compatibility Report Foundation</Link></li>
           <li><Link href="/dashboard/networks/zodiac/vip-access-boundary" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">VIP Access Boundary</Link></li>
+          <li><Link href="/dashboard/networks/zodiac/stars-payment-safety-review" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Stars Payment Safety Review</Link></li>
           <li><Link href="/dashboard/networks/zodiac/entitlement-foundation" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Future Entitlement Foundation</Link></li>
         </ul>
       </div>
