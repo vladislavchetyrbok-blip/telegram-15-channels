@@ -170,6 +170,7 @@ export default function RealImplementationPathPage() {
           <li><Link href="/dashboard/networks/zodiac/vip-compatibility-report-preview" className="text-emerald-400 hover:text-emerald-300 transition underline underline-offset-4">VIP Report Preview</Link></li>
           <li><Link href="/dashboard/networks/zodiac/telegram-stars-payment-prototype" className="text-emerald-400 hover:text-emerald-300 transition underline underline-offset-4">Stars Payment Prototype</Link></li>
           <li><Link href="/dashboard/networks/zodiac/stars-payment-safety-review" className="text-emerald-400 hover:text-emerald-300 transition underline underline-offset-4">Stars Payment Safety Review</Link></li>
+          <li><Link href="/dashboard/networks/zodiac/telegram-stars-invoice-draft" className="text-emerald-400 hover:text-emerald-300 transition underline underline-offset-4">Stars Invoice Draft</Link></li>
         </ul>
       </section>
     </div>

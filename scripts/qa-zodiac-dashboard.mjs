@@ -489,6 +489,12 @@ async function main() {
     assertIncludes(pages.starsPaymentSafetyReview, "No Telegram API call", "stars payment safety telegram boundary");
     assertIncludes(pages.starsPaymentSafetyReview, "No successful payment handler", "stars payment safety handler boundary");
 
+    assertIncludes(pages.telegramStarsInvoiceDraft, "Telegram Stars Invoice Draft Builder", "telegram stars invoice draft page title");
+    assertIncludes(pages.telegramStarsInvoiceDraft, "Invoice draft only", "telegram stars invoice draft classification");
+    assertIncludes(pages.telegramStarsInvoiceDraft, "No live send", "telegram stars invoice draft live send boundary");
+    assertIncludes(pages.telegramStarsInvoiceDraft, "No Telegram API call", "telegram stars invoice draft api boundary");
+    assertIncludes(pages.telegramStarsInvoiceDraft, "No successful payment handler", "telegram stars invoice draft handler boundary");
+
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");
     assertIncludes(pages.launch, 'href="/dashboard/networks/zodiac/analytics"', "analytics link visible on launch");

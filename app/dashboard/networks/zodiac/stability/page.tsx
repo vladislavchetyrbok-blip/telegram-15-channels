@@ -233,6 +233,10 @@ export default function ZodiacStabilityMatrixPage() {
             <h3 className="text-sm font-semibold text-slate-100 flex items-center gap-2">Stars Payment Safety Review</h3>
             <p className="text-xs text-slate-400 mt-2">Package 131 completion</p>
           </Link>
+          <Link href="/dashboard/networks/zodiac/telegram-stars-invoice-draft" className="rounded-lg border border-slate-800 bg-slate-900/50 p-4 hover:bg-slate-800 transition-colors">
+            <h3 className="text-sm font-semibold text-slate-100 flex items-center gap-2">Stars Invoice Draft</h3>
+            <p className="text-xs text-slate-400 mt-2">Package 132 completion</p>
+          </Link>
         </div>
       </div>
     </div>
