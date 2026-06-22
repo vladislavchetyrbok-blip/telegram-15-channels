@@ -13,6 +13,7 @@ import {
   LockKeyhole,
   MessageSquareText,
   RadioTower,
+  GitBranch,
   Rocket,
   Settings,
   ShieldCheck,
@@ -181,6 +182,13 @@ const platformSections = [
     href: "/dashboard/networks/zodiac/miniapp-master-index",
     icon: ShieldCheck,
     caption: "Package 120 - Mini App master control index.",
+    tone: "cyan",
+  },
+  {
+    title: "Real Implementation Path",
+    href: "/dashboard/networks/zodiac/real-implementation-path",
+    icon: GitBranch,
+    caption: "Package 122 - Next real implementation path.",
     tone: "cyan",
   },
   {

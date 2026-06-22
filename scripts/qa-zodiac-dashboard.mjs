@@ -46,6 +46,7 @@ const ROUTES = {
   miniappRiskRegister: "/dashboard/networks/zodiac/miniapp-risk-register",
   miniappMasterIndex: "/dashboard/networks/zodiac/miniapp-master-index",
   ownerReviewGate: "/dashboard/networks/zodiac/owner-review-gate",
+  realImplementationPath: "/dashboard/networks/zodiac/real-implementation-path",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
   softLaunch: "/dashboard/networks/zodiac/soft-launch",
@@ -414,6 +415,12 @@ async function main() {
     assertIncludes(pages.ownerReviewGate, "No production changes", "owner review gate production boundary");
     assertIncludes(pages.ownerReviewGate, "No payment", "owner review gate payment boundary");
     assertIncludes(pages.ownerReviewGate, "No Telegram API call", "owner review gate telegram boundary");
+
+    assertIncludes(pages.realImplementationPath, "Real Implementation Path", "real implementation path page title");
+    assertIncludes(pages.realImplementationPath, "Selected path", "real implementation selected path classification");
+    assertIncludes(pages.realImplementationPath, "Telegram identity first", "real implementation identity-first decision");
+    assertIncludes(pages.realImplementationPath, "No payments yet", "real implementation payment boundary");
+    assertIncludes(pages.realImplementationPath, "Package 123", "real implementation next package listed");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");

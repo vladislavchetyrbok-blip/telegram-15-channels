@@ -193,6 +193,10 @@ export default function ZodiacStabilityMatrixPage() {
             <div className="flex items-center gap-2 text-white mb-1"><Activity className="h-4 w-4 text-amber-400" /> Monetization</div>
             <div className="text-xs text-slate-400">Architecture Spec</div>
           </Link>
+          <Link href="/dashboard/networks/zodiac/real-implementation-path" className="rounded-lg border border-slate-800 bg-slate-900/50 p-4 hover:bg-slate-800 transition-colors">
+            <div className="flex items-center gap-2 text-white mb-1"><Activity className="h-4 w-4 text-amber-500" /> Real Implementation</div>
+            <div className="text-xs text-slate-400">Identity First Path</div>
+          </Link>
         </div>
       </div>
     </div>

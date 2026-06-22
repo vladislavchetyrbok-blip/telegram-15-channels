@@ -109,17 +109,13 @@ export default function MiniAppMasterIndexPage() {
       <section className="rounded-lg border border-slate-800 bg-slate-900/30 p-6 mt-8">
         <h3 className="text-lg font-medium text-slate-300 mb-3 flex items-center gap-2">
           <FileText className="h-5 w-5 text-slate-500" />
-          Zodiac Workspace
+          Safe Navigation
         </h3>
-        <p className="text-sm text-slate-400 mb-4">
-          Return to the primary Zodiac dashboard for global navigation.
-        </p>
-        <Link 
-          href="/dashboard/networks/zodiac" 
-          className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-slate-800 text-slate-100 hover:bg-slate-700 h-10 py-2 px-4"
-        >
-          Back to Zodiac Dashboard
-        </Link>
+        <ul className="flex flex-wrap gap-4 text-sm">
+          <li><Link href="/dashboard/networks/zodiac/real-implementation-path" className="text-amber-400 hover:text-amber-300 transition underline underline-offset-4">Real Implementation Path</Link></li>
+          <li><Link href="/dashboard/networks/zodiac" className="text-blue-400 hover:text-blue-300 transition underline underline-offset-4">Zodiac Dashboard</Link></li>
+          <li><Link href="/dashboard/networks/zodiac/owner-review-gate" className="text-rose-400 hover:text-rose-300 transition underline underline-offset-4">Owner Review Gate</Link></li>
+        </ul>
       </section>
     </div>
   );
