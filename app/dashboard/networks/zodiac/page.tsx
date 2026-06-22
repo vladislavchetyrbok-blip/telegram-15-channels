@@ -215,6 +215,13 @@ const platformSections = [
     tone: "violet",
   },
   {
+    title: "Entitlement Foundation",
+    href: "/dashboard/networks/zodiac/entitlement-foundation",
+    icon: ShieldCheck,
+    caption: "Package 126 - Entitlement model foundation.",
+    tone: "violet",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

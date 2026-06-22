@@ -50,6 +50,7 @@ const ROUTES = {
   telegramInitDataValidation: "/dashboard/networks/zodiac/telegram-initdata-validation",
   userProfileFoundation: "/dashboard/networks/zodiac/user-profile-foundation",
   productCatalogFoundation: "/dashboard/networks/zodiac/product-catalog-foundation",
+  entitlementFoundation: "/dashboard/networks/zodiac/entitlement-foundation",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
   softLaunch: "/dashboard/networks/zodiac/soft-launch",
@@ -441,6 +442,12 @@ async function main() {
     assertIncludes(pages.productCatalogFoundation, "Product catalog foundation only", "product catalog foundation classification");
     assertIncludes(pages.productCatalogFoundation, "No payment", "product catalog foundation payment boundary");
     assertIncludes(pages.productCatalogFoundation, "No VIP access", "product catalog foundation vip boundary");
+
+    assertIncludes(pages.entitlementFoundation, "Entitlement Model Foundation", "entitlement foundation page title");
+    assertIncludes(pages.entitlementFoundation, "Entitlement foundation only", "entitlement foundation classification");
+    assertIncludes(pages.entitlementFoundation, "No payment handler", "entitlement foundation payment boundary");
+    assertIncludes(pages.entitlementFoundation, "No VIP unlock", "entitlement foundation vip boundary");
+    assertIncludes(pages.entitlementFoundation, "No Telegram API call", "entitlement foundation telegram boundary");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");
