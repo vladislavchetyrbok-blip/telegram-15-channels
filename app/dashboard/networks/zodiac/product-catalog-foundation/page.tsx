@@ -1,5 +1,6 @@
 import { AphroditePageHeader } from "@/components/AphroditePageHeader";
 import { ShoppingCart, ShieldCheck, Database, CheckCircle2 } from "lucide-react";
+import Link from "next/link";
 import { ZODIAC_CATALOG } from "@/lib/zodiac/zodiac-product-catalog-foundation";
 
 import { requireDashboardPageAccess } from "@/lib/zodiac-dashboard-auth";
@@ -69,9 +70,9 @@ export default async function ProductCatalogFoundationPage() {
             <ol className="list-decimal list-inside space-y-2 text-sm text-slate-400">
               <li>Package 124: User Profile Foundation <span className="text-emerald-400 ml-2">(Done)</span></li>
               <li className="text-slate-200 font-medium">Package 125: Product Catalog Foundation <span className="text-emerald-400 ml-2">(Current)</span></li>
-              <li>Package 126: Entitlement Model Foundation</li>
-              <li>Package 127: VIP Access Boundary</li>
-              <li>Package 128: Telegram Stars Prototype</li>
+              <li>Package 126: Entitlement Model Foundation <span className="text-emerald-400 ml-2">(Done)</span></li>
+              <li>Package 127: VIP Access Boundary <span className="text-emerald-400 ml-2">(Done)</span></li>
+              <li>Package 128: VIP Compatibility Report <span className="text-emerald-400 ml-2">(Done)</span></li>
             </ol>
           </div>
         </div>
@@ -113,6 +114,12 @@ export default async function ProductCatalogFoundationPage() {
             </div>
           ))}
         </div>
+      </div>
+
+      <div className="mt-8">
+        <Link href="/dashboard/networks/zodiac/vip-compatibility-report-foundation" className="inline-block bg-purple-500/20 text-purple-300 px-4 py-2 rounded border border-purple-500/30 hover:bg-purple-500/30 transition-colors text-sm">
+          View VIP Compatibility Report Foundation
+        </Link>
       </div>
     </div>
   );

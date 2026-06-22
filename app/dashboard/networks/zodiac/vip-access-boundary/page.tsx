@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import { ShieldAlert, ShieldCheck, Lock, CheckCircle2, XCircle, PlayCircle } from "lucide-react";
 import { AphroditePageHeader } from "@/components/AphroditePageHeader";
 
@@ -132,7 +133,10 @@ export default function VipAccessBoundaryPage() {
             <div className="bg-slate-950/50 p-4 rounded-lg border border-slate-800/50">
               <span className="text-xs font-semibold uppercase tracking-wider text-emerald-500/80 mb-1 block">Safe Next Package</span>
               <p className="text-sm text-slate-300">Package 128 (TBD)</p>
-              <p className="text-xs text-slate-500 mt-1">Either Telegram Stars payment prototype or first VIP report content foundation.</p>
+              <p className="text-xs text-slate-500 mt-1 mb-2">Either Telegram Stars payment prototype or first VIP report content foundation.</p>
+              <Link href="/dashboard/networks/zodiac/vip-compatibility-report-foundation" className="inline-block bg-emerald-500/20 text-emerald-300 px-4 py-2 rounded border border-emerald-500/30 hover:bg-emerald-500/30 transition-colors text-xs">
+                View VIP Compatibility Report
+              </Link>
             </div>
           </div>
         </div>

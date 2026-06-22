@@ -229,6 +229,13 @@ const platformSections = [
     tone: "violet",
   },
   {
+    title: "VIP Compatibility Report",
+    href: "/dashboard/networks/zodiac/vip-compatibility-report-foundation",
+    icon: ShieldCheck,
+    caption: "Package 128 - Content foundation.",
+    tone: "violet",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

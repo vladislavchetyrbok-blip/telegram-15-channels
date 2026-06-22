@@ -10,7 +10,7 @@ export default function EntitlementFoundationPage() {
         title="Entitlement Model Foundation"
         description="Data model definition for linking users to products. Entitlement foundation only / No payment handler / No VIP unlock."
         badgeText="Package 126"
-        icon={<ShieldCheck className="h-6 w-6 text-violet-400" />}
+        icon={ShieldCheck}
       />
 
       <div className="rounded-xl border border-rose-500/30 bg-rose-500/5 p-6 backdrop-blur-sm">
@@ -81,9 +81,12 @@ export default function EntitlementFoundationPage() {
         <p className="text-sm text-emerald-200/70">
           Now that the <strong>Telegram Identity</strong>, <strong>User Profile</strong>, <strong>Product Catalog</strong>, and <strong>Entitlement Model</strong> foundations exist in a strongly-typed manner, the next safe package is to define the <strong>VIP Access Boundary</strong> (Package 127). This will allow the dashboard to check for mock entitlements before rendering VIP views.
         </p>
-        <div className="mt-4">
+        <div className="mt-4 flex gap-3">
           <Link href="/dashboard/networks/zodiac/vip-access-boundary" className="inline-block bg-emerald-500/20 text-emerald-300 px-4 py-2 rounded border border-emerald-500/30 hover:bg-emerald-500/30 transition-colors text-sm">
             View VIP Access Boundary
+          </Link>
+          <Link href="/dashboard/networks/zodiac/vip-compatibility-report-foundation" className="inline-block bg-emerald-500/20 text-emerald-300 px-4 py-2 rounded border border-emerald-500/30 hover:bg-emerald-500/30 transition-colors text-sm">
+            View VIP Compatibility Report
           </Link>
         </div>
       </div>
