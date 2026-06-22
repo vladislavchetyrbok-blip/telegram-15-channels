@@ -162,6 +162,7 @@ export default function RealImplementationPathPage() {
           <li><Link href="/dashboard/networks/zodiac/miniapp-readiness" className="text-sky-400 hover:text-sky-300 transition underline underline-offset-4">Readiness Summary</Link></li>
           <li><Link href="/dashboard/networks/zodiac/stability" className="text-emerald-400 hover:text-emerald-300 transition underline underline-offset-4">Stability</Link></li>
           <li><Link href="/dashboard/networks/zodiac/telegram-initdata-validation" className="text-emerald-400 hover:text-emerald-300 transition underline underline-offset-4">Telegram initData Validation</Link></li>
+          <li><Link href="/dashboard/networks/zodiac/user-profile-foundation" className="text-emerald-400 hover:text-emerald-300 transition underline underline-offset-4">User Profile Foundation</Link></li>
         </ul>
       </section>
     </div>

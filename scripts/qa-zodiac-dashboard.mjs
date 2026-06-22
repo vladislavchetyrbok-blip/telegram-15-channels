@@ -48,6 +48,7 @@ const ROUTES = {
   ownerReviewGate: "/dashboard/networks/zodiac/owner-review-gate",
   realImplementationPath: "/dashboard/networks/zodiac/real-implementation-path",
   telegramInitDataValidation: "/dashboard/networks/zodiac/telegram-initdata-validation",
+  userProfileFoundation: "/dashboard/networks/zodiac/user-profile-foundation",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
   softLaunch: "/dashboard/networks/zodiac/soft-launch",
@@ -428,6 +429,12 @@ async function main() {
     assertIncludes(pages.telegramInitDataValidation, "No Telegram API call", "telegram initData validation api boundary");
     assertIncludes(pages.telegramInitDataValidation, "No database write", "telegram initData validation database boundary");
     assertIncludes(pages.telegramInitDataValidation, "initDataUnsafe", "telegram initData unsafe warning");
+
+    assertIncludes(pages.userProfileFoundation, "User Profile Database Foundation", "user profile foundation page title");
+    assertIncludes(pages.userProfileFoundation, "Profile foundation only", "user profile foundation classification");
+    assertIncludes(pages.userProfileFoundation, "No payment", "user profile foundation payment boundary");
+    assertIncludes(pages.userProfileFoundation, "No VIP access", "user profile foundation vip boundary");
+    assertIncludes(pages.userProfileFoundation, "No Telegram API call", "user profile foundation telegram boundary");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");

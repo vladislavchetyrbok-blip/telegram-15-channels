@@ -9,6 +9,7 @@ import {
   ChevronRight,
   FileText,
   HeartHandshake,
+  Database,
   ListPlus,
   LockKeyhole,
   MessageSquareText,
@@ -196,6 +197,13 @@ const platformSections = [
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,
     caption: "Package 123 - initData validation foundation.",
+    tone: "cyan",
+  },
+  {
+    title: "User Profile Foundation",
+    href: "/dashboard/networks/zodiac/user-profile-foundation",
+    icon: Database,
+    caption: "Package 124 - User profile database foundation.",
     tone: "cyan",
   },
   {
