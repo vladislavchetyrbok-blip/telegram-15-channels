@@ -20,6 +20,7 @@ import {
   ShieldCheck,
   Smartphone,
   Sparkles,
+  ShoppingCart,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
@@ -205,6 +206,13 @@ const platformSections = [
     icon: Database,
     caption: "Package 124 - User profile database foundation.",
     tone: "cyan",
+  },
+  {
+    title: "Product Catalog Foundation",
+    href: "/dashboard/networks/zodiac/product-catalog-foundation",
+    icon: ShoppingCart,
+    caption: "Package 125 - Define purchasable items and metadata.",
+    tone: "violet",
   },
   {
     title: "Настройки модуля Зодиак",

@@ -113,6 +113,7 @@ export default function MiniAppProductionWiringPage() {
           <li><Link href="/dashboard/networks/zodiac/miniapp-risk-register" className="text-red-400 hover:text-red-300 transition underline underline-offset-4">Risk Register</Link></li>
           <li><Link href="/dashboard/networks/zodiac/telegram-initdata-validation" className="text-emerald-400 hover:text-emerald-300 transition underline underline-offset-4">Telegram initData Validation</Link></li>
           <li><Link href="/dashboard/networks/zodiac/user-profile-foundation" className="text-emerald-400 hover:text-emerald-300 transition underline underline-offset-4">User Profile Foundation</Link></li>
+          <li><Link href="/dashboard/networks/zodiac/product-catalog-foundation" className="text-emerald-400 hover:text-emerald-300 transition underline underline-offset-4">Product Catalog Foundation</Link></li>
         </ul>
       </section>
     </div>

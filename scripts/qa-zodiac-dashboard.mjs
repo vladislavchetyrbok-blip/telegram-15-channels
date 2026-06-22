@@ -49,6 +49,7 @@ const ROUTES = {
   realImplementationPath: "/dashboard/networks/zodiac/real-implementation-path",
   telegramInitDataValidation: "/dashboard/networks/zodiac/telegram-initdata-validation",
   userProfileFoundation: "/dashboard/networks/zodiac/user-profile-foundation",
+  productCatalogFoundation: "/dashboard/networks/zodiac/product-catalog-foundation",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
   softLaunch: "/dashboard/networks/zodiac/soft-launch",
@@ -435,6 +436,11 @@ async function main() {
     assertIncludes(pages.userProfileFoundation, "No payment", "user profile foundation payment boundary");
     assertIncludes(pages.userProfileFoundation, "No VIP access", "user profile foundation vip boundary");
     assertIncludes(pages.userProfileFoundation, "No Telegram API call", "user profile foundation telegram boundary");
+
+    assertIncludes(pages.productCatalogFoundation, "Product Catalog Foundation", "product catalog foundation page title");
+    assertIncludes(pages.productCatalogFoundation, "Product catalog foundation only", "product catalog foundation classification");
+    assertIncludes(pages.productCatalogFoundation, "No payment", "product catalog foundation payment boundary");
+    assertIncludes(pages.productCatalogFoundation, "No VIP access", "product catalog foundation vip boundary");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");

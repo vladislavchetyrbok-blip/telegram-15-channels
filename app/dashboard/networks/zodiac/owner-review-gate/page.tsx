@@ -154,6 +154,7 @@ export default function OwnerReviewGatePage() {
           <li><Link href="/dashboard/networks/zodiac/stability" className="text-emerald-400 hover:text-emerald-300 transition underline underline-offset-4">Stability</Link></li>
           <li><Link href="/dashboard/networks/zodiac/telegram-initdata-validation" className="text-emerald-400 hover:text-emerald-300 transition underline underline-offset-4">Telegram initData Validation</Link></li>
           <li><Link href="/dashboard/networks/zodiac/user-profile-foundation" className="text-emerald-400 hover:text-emerald-300 transition underline underline-offset-4">User Profile Foundation</Link></li>
+          <li><Link href="/dashboard/networks/zodiac/product-catalog-foundation" className="text-emerald-400 hover:text-emerald-300 transition underline underline-offset-4">Product Catalog Foundation</Link></li>
         </ul>
       </section>
     </div>

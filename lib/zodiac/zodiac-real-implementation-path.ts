@@ -2,7 +2,7 @@ export type RealImplementationPhase = {
   packageNumber: string;
   title: string;
   purpose: string;
-  status: "selected" | "next" | "future" | "blocked";
+  status: "selected" | "next" | "future" | "blocked" | "completed";
   allowedWork: string[];
   forbiddenWork: string[];
   requiredBeforeStart: string[];
@@ -36,7 +36,7 @@ export const REAL_IMPLEMENTATION_PHASES: RealImplementationPhase[] = [
     packageNumber: "124",
     title: "User profile database foundation",
     purpose: "Store verified Telegram users in Supabase.",
-    status: "next",
+    status: "completed",
     allowedWork: ["Supabase schema", "User profile API route", "Database reads/writes"],
     forbiddenWork: ["Payment logic", "Live production broadcast"],
     requiredBeforeStart: ["Package 123 completed"],
@@ -45,7 +45,7 @@ export const REAL_IMPLEMENTATION_PHASES: RealImplementationPhase[] = [
     packageNumber: "125",
     title: "Product catalog foundation",
     purpose: "Define purchasable items and their metadata in the database.",
-    status: "future",
+    status: "selected",
     allowedWork: ["Catalog schema", "Product API"],
     forbiddenWork: ["Payment logic", "Real VIP access"],
     requiredBeforeStart: ["Package 124 completed"],
@@ -54,7 +54,7 @@ export const REAL_IMPLEMENTATION_PHASES: RealImplementationPhase[] = [
     packageNumber: "126",
     title: "Entitlement model foundation",
     purpose: "Link users to products they own.",
-    status: "future",
+    status: "next",
     allowedWork: ["Entitlement schema", "Access control logic"],
     forbiddenWork: ["Payment processing"],
     requiredBeforeStart: ["Package 125 completed"],
