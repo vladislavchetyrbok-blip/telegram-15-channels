@@ -222,6 +222,13 @@ const platformSections = [
     tone: "violet",
   },
   {
+    title: "VIP Access Boundary",
+    href: "/dashboard/networks/zodiac/vip-access-boundary",
+    icon: ShieldCheck,
+    caption: "Package 127 - Local access boundary.",
+    tone: "violet",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

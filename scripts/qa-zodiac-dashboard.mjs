@@ -51,6 +51,7 @@ const ROUTES = {
   userProfileFoundation: "/dashboard/networks/zodiac/user-profile-foundation",
   productCatalogFoundation: "/dashboard/networks/zodiac/product-catalog-foundation",
   entitlementFoundation: "/dashboard/networks/zodiac/entitlement-foundation",
+  vipAccessBoundary: "/dashboard/networks/zodiac/vip-access-boundary",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
   softLaunch: "/dashboard/networks/zodiac/soft-launch",
@@ -448,6 +449,12 @@ async function main() {
     assertIncludes(pages.entitlementFoundation, "No payment handler", "entitlement foundation payment boundary");
     assertIncludes(pages.entitlementFoundation, "No VIP unlock", "entitlement foundation vip boundary");
     assertIncludes(pages.entitlementFoundation, "No Telegram API call", "entitlement foundation telegram boundary");
+
+    assertIncludes(pages.vipAccessBoundary, "VIP Access Boundary", "vip access boundary page title");
+    assertIncludes(pages.vipAccessBoundary, "Access boundary only", "vip access boundary classification");
+    assertIncludes(pages.vipAccessBoundary, "No real VIP unlock", "vip access boundary vip boundary");
+    assertIncludes(pages.vipAccessBoundary, "No payment handler", "vip access boundary payment boundary");
+    assertIncludes(pages.vipAccessBoundary, "No Telegram API call", "vip access boundary telegram boundary");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");

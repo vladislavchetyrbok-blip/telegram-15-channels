@@ -213,6 +213,10 @@ export default function ZodiacStabilityMatrixPage() {
             <h3 className="text-sm font-semibold text-slate-100 flex items-center gap-2">Entitlement Foundation</h3>
             <p className="text-xs text-slate-400 mt-2">Package 126 completion</p>
           </Link>
+          <Link href="/dashboard/networks/zodiac/vip-access-boundary" className="rounded-lg border border-slate-800 bg-slate-900/50 p-4 hover:bg-slate-800 transition-colors">
+            <h3 className="text-sm font-semibold text-slate-100 flex items-center gap-2">VIP Access Boundary</h3>
+            <p className="text-xs text-slate-400 mt-2">Package 127 completion</p>
+          </Link>
         </div>
       </div>
     </div>

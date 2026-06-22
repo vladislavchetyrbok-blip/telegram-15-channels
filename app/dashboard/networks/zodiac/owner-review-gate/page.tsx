@@ -156,6 +156,7 @@ export default function OwnerReviewGatePage() {
           <li><Link href="/dashboard/networks/zodiac/user-profile-foundation" className="text-emerald-400 hover:text-emerald-300 transition underline underline-offset-4">User Profile Foundation</Link></li>
           <li><Link href="/dashboard/networks/zodiac/product-catalog-foundation" className="text-emerald-400 hover:text-emerald-300 transition underline underline-offset-4">Product Catalog Foundation</Link></li>
           <li><Link href="/dashboard/networks/zodiac/entitlement-foundation" className="text-emerald-400 hover:text-emerald-300 transition underline underline-offset-4">Entitlement Foundation</Link></li>
+          <li><Link href="/dashboard/networks/zodiac/vip-access-boundary" className="text-emerald-400 hover:text-emerald-300 transition underline underline-offset-4">VIP Access Boundary</Link></li>
         </ul>
       </section>
     </div>

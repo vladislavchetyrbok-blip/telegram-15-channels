@@ -46,6 +46,16 @@ export default function VipPreviewPage() {
           </div>
         </div>
 
+        <div className="mb-6 rounded-lg border border-indigo-900/30 bg-indigo-900/10 p-4 text-sm flex items-start gap-3">
+          <ShieldCheck className="h-5 w-5 shrink-0 text-indigo-400 mt-0.5" />
+          <div>
+            <p className="font-medium text-indigo-300">VIP Access Boundary exists, but real VIP unlock is not active.</p>
+            <Link href="/dashboard/networks/zodiac/vip-access-boundary" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4 text-xs mt-2 inline-block">
+              View VIP Access Boundary
+            </Link>
+          </div>
+        </div>
+
         <div className="space-y-8">
           <div className="text-center">
             <Sparkles className="mx-auto h-8 w-8 text-fuchsia-400 mb-3" />
