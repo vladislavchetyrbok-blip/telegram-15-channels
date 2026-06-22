@@ -45,6 +45,7 @@ const ROUTES = {
   miniappPaymentMatrix: "/dashboard/networks/zodiac/miniapp-payment-matrix",
   miniappRiskRegister: "/dashboard/networks/zodiac/miniapp-risk-register",
   miniappMasterIndex: "/dashboard/networks/zodiac/miniapp-master-index",
+  ownerReviewGate: "/dashboard/networks/zodiac/owner-review-gate",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
   softLaunch: "/dashboard/networks/zodiac/soft-launch",
@@ -406,6 +407,13 @@ async function main() {
     assertIncludes(pages.miniappMasterIndex, "Mini App Master Control Index", "master index page title");
     assertIncludes(pages.miniappMasterIndex, "Mock Mode Active", "master index mock boundary");
     assertIncludes(pages.miniappMasterIndex, "No live Telegram API calls are made", "master index telegram boundary");
+
+    assertIncludes(pages.ownerReviewGate, "Owner Review Gate Before Real Implementation", "owner review gate page title");
+    assertIncludes(pages.ownerReviewGate, "Owner approval required", "owner review gate classification");
+    assertIncludes(pages.ownerReviewGate, "No real implementation", "owner review gate implementation boundary");
+    assertIncludes(pages.ownerReviewGate, "No production changes", "owner review gate production boundary");
+    assertIncludes(pages.ownerReviewGate, "No payment", "owner review gate payment boundary");
+    assertIncludes(pages.ownerReviewGate, "No Telegram API call", "owner review gate telegram boundary");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");
