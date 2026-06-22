@@ -47,6 +47,7 @@ const ROUTES = {
   miniappMasterIndex: "/dashboard/networks/zodiac/miniapp-master-index",
   ownerReviewGate: "/dashboard/networks/zodiac/owner-review-gate",
   realImplementationPath: "/dashboard/networks/zodiac/real-implementation-path",
+  telegramInitDataValidation: "/dashboard/networks/zodiac/telegram-initdata-validation",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
   softLaunch: "/dashboard/networks/zodiac/soft-launch",
@@ -421,6 +422,12 @@ async function main() {
     assertIncludes(pages.realImplementationPath, "Telegram identity first", "real implementation identity-first decision");
     assertIncludes(pages.realImplementationPath, "No payments yet", "real implementation payment boundary");
     assertIncludes(pages.realImplementationPath, "Package 123", "real implementation next package listed");
+
+    assertIncludes(pages.telegramInitDataValidation, "Telegram initData Validation Foundation", "telegram initData validation page title");
+    assertIncludes(pages.telegramInitDataValidation, "Validation foundation only", "telegram initData validation classification");
+    assertIncludes(pages.telegramInitDataValidation, "No Telegram API call", "telegram initData validation api boundary");
+    assertIncludes(pages.telegramInitDataValidation, "No database write", "telegram initData validation database boundary");
+    assertIncludes(pages.telegramInitDataValidation, "initDataUnsafe", "telegram initData unsafe warning");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");

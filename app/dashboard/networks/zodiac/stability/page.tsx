@@ -197,6 +197,10 @@ export default function ZodiacStabilityMatrixPage() {
             <div className="flex items-center gap-2 text-white mb-1"><Activity className="h-4 w-4 text-amber-500" /> Real Implementation</div>
             <div className="text-xs text-slate-400">Identity First Path</div>
           </Link>
+          <Link href="/dashboard/networks/zodiac/telegram-initdata-validation" className="rounded-lg border border-slate-800 bg-slate-900/50 p-4 hover:bg-slate-800 transition-colors">
+            <div className="flex items-center gap-2 text-white mb-1"><Activity className="h-4 w-4 text-emerald-400" /> Telegram initData</div>
+            <div className="text-xs text-slate-400">Validation Foundation</div>
+          </Link>
         </div>
       </div>
     </div>

@@ -192,6 +192,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Telegram initData Validation",
+    href: "/dashboard/networks/zodiac/telegram-initdata-validation",
+    icon: ShieldCheck,
+    caption: "Package 123 - initData validation foundation.",
+    tone: "cyan",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
