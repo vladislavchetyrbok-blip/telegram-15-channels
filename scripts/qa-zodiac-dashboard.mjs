@@ -55,6 +55,8 @@ const ROUTES = {
   vipCompatibilityReportFoundation: "/dashboard/networks/zodiac/vip-compatibility-report-foundation",
   vipCompatibilityReportPreview: "/dashboard/networks/zodiac/vip-compatibility-report-preview",
   telegramStarsPaymentPrototype: "/dashboard/networks/zodiac/telegram-stars-payment-prototype",
+  starsPaymentSafetyReview: "/dashboard/networks/zodiac/stars-payment-safety-review",
+  telegramStarsInvoiceDraft: "/dashboard/networks/zodiac/telegram-stars-invoice-draft",
   vipCompatibilityReport: "/vip-compatibility-report",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
