@@ -60,9 +60,14 @@ export default function VipPreviewPage() {
           <ShieldCheck className="h-5 w-5 shrink-0 text-violet-400 mt-0.5" />
           <div>
             <p className="font-medium text-violet-300">VIP Compatibility Deep Report content foundation exists, but payment and real VIP unlock are not active.</p>
-            <Link href="/dashboard/networks/zodiac/vip-compatibility-report-foundation" className="text-violet-400 hover:text-violet-300 underline underline-offset-4 text-xs mt-2 inline-block">
-              View VIP Compatibility Report Foundation
-            </Link>
+            <div className="flex gap-4 mt-2">
+              <Link href="/dashboard/networks/zodiac/vip-compatibility-report-foundation" className="text-violet-400 hover:text-violet-300 underline underline-offset-4 text-xs inline-block">
+                View VIP Compatibility Report Foundation
+              </Link>
+              <Link href="/vip-compatibility-report" className="text-violet-400 hover:text-violet-300 underline underline-offset-4 text-xs inline-block font-medium">
+                View report preview
+              </Link>
+            </div>
           </div>
         </div>
 

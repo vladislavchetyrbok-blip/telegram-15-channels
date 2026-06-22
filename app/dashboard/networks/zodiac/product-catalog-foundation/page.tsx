@@ -116,9 +116,12 @@ export default async function ProductCatalogFoundationPage() {
         </div>
       </div>
 
-      <div className="mt-8">
+      <div className="mt-8 flex gap-4">
         <Link href="/dashboard/networks/zodiac/vip-compatibility-report-foundation" className="inline-block bg-purple-500/20 text-purple-300 px-4 py-2 rounded border border-purple-500/30 hover:bg-purple-500/30 transition-colors text-sm">
           View VIP Compatibility Report Foundation
+        </Link>
+        <Link href="/dashboard/networks/zodiac/vip-compatibility-report-preview" className="inline-block bg-purple-500/20 text-purple-300 px-4 py-2 rounded border border-purple-500/30 hover:bg-purple-500/30 transition-colors text-sm">
+          VIP Report Preview
         </Link>
       </div>
     </div>

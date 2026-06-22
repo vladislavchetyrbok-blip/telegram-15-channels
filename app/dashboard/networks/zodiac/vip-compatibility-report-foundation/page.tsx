@@ -125,7 +125,7 @@ export default function VipCompatibilityReportFoundationPage() {
               <li><Link href="/dashboard/networks/zodiac/entitlement-foundation" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Future Entitlement</Link></li>
               <li><Link href="/dashboard/networks/zodiac/vip-access-boundary" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">VIP Access Boundary</Link></li>
               <li><Link href="/dashboard/networks/zodiac/product-catalog-foundation" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Product Catalog Foundation</Link></li>
-              <li><span className="text-slate-500 italic">Future payment link (Blocked until Package 128/129)</span></li>
+              <li><Link href="/dashboard/networks/zodiac/vip-compatibility-report-preview" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">VIP Report Preview</Link></li>
             </ul>
           </div>
         </div>

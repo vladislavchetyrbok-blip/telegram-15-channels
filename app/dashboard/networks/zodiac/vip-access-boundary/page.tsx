@@ -9,8 +9,9 @@ export default function VipAccessBoundaryPage() {
       <div className="max-w-4xl mx-auto px-4 py-12">
         <AphroditePageHeader
           title="VIP Access Boundary"
-          badge="Package 127"
+          badgeText="Package 127"
           description="Local foundation for entitlement-based access checking. Defines allow/deny boundaries."
+          icon={ShieldAlert}
         />
 
         <div className="bg-emerald-950/30 border border-emerald-900/50 rounded-xl p-6 mb-8 shadow-sm">
@@ -134,9 +135,14 @@ export default function VipAccessBoundaryPage() {
               <span className="text-xs font-semibold uppercase tracking-wider text-emerald-500/80 mb-1 block">Safe Next Package</span>
               <p className="text-sm text-slate-300">Package 128 (TBD)</p>
               <p className="text-xs text-slate-500 mt-1 mb-2">Either Telegram Stars payment prototype or first VIP report content foundation.</p>
-              <Link href="/dashboard/networks/zodiac/vip-compatibility-report-foundation" className="inline-block bg-emerald-500/20 text-emerald-300 px-4 py-2 rounded border border-emerald-500/30 hover:bg-emerald-500/30 transition-colors text-xs">
-                View VIP Compatibility Report
-              </Link>
+              <div className="flex gap-2 flex-wrap">
+                <Link href="/dashboard/networks/zodiac/vip-compatibility-report-foundation" className="inline-block bg-emerald-500/20 text-emerald-300 px-4 py-2 rounded border border-emerald-500/30 hover:bg-emerald-500/30 transition-colors text-xs">
+                  View VIP Compatibility Report
+                </Link>
+                <Link href="/dashboard/networks/zodiac/vip-compatibility-report-preview" className="inline-block bg-emerald-500/20 text-emerald-300 px-4 py-2 rounded border border-emerald-500/30 hover:bg-emerald-500/30 transition-colors text-xs">
+                  VIP Report Preview
+                </Link>
+              </div>
             </div>
           </div>
         </div>

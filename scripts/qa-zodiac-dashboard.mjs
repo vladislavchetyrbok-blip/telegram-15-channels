@@ -53,6 +53,8 @@ const ROUTES = {
   entitlementFoundation: "/dashboard/networks/zodiac/entitlement-foundation",
   vipAccessBoundary: "/dashboard/networks/zodiac/vip-access-boundary",
   vipCompatibilityReportFoundation: "/dashboard/networks/zodiac/vip-compatibility-report-foundation",
+  vipCompatibilityReportPreview: "/dashboard/networks/zodiac/vip-compatibility-report-preview",
+  vipCompatibilityReport: "/vip-compatibility-report",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
   softLaunch: "/dashboard/networks/zodiac/soft-launch",
@@ -462,6 +464,17 @@ async function main() {
     assertIncludes(pages.vipCompatibilityReportFoundation, "No payment", "vip compatibility report payment boundary");
     assertIncludes(pages.vipCompatibilityReportFoundation, "No real VIP unlock", "vip compatibility report vip boundary");
     assertIncludes(pages.vipCompatibilityReportFoundation, "No Telegram API call", "vip compatibility report telegram boundary");
+
+    assertIncludes(pages.vipCompatibilityReport, "VIP Compatibility Deep Report", "vip compatibility report page title");
+    assertIncludes(pages.vipCompatibilityReport, "UI preview only", "vip compatibility report preview classification");
+    assertIncludes(pages.vipCompatibilityReport, "No payment", "vip compatibility report payment boundary");
+    assertIncludes(pages.vipCompatibilityReport, "No real VIP unlock", "vip compatibility report vip boundary");
+    assertIncludes(pages.vipCompatibilityReport, "No Telegram API call", "vip compatibility report telegram boundary");
+
+    assertIncludes(pages.vipCompatibilityReportPreview, "VIP Compatibility Report UI Preview", "vip compatibility report preview dashboard title");
+    assertIncludes(pages.vipCompatibilityReportPreview, "Preview UI only", "vip compatibility report preview dashboard classification");
+    assertIncludes(pages.vipCompatibilityReportPreview, "No route gating", "vip compatibility report route gating boundary");
+    assertIncludes(pages.vipCompatibilityReportPreview, "No payment", "vip compatibility report preview payment boundary");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");

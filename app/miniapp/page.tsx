@@ -120,6 +120,9 @@ export default function MiniAppHubPage() {
               <Link href="/affirmations" className="flex items-center justify-center rounded-lg border border-slate-700 bg-slate-800/50 py-3 text-sm font-medium text-slate-300 hover:bg-slate-700 transition">
                 Open Affirmations
               </Link>
+              <Link href="/vip-compatibility-report" className="flex items-center justify-center rounded-lg border border-fuchsia-900/50 bg-fuchsia-900/20 py-3 text-sm font-medium text-fuchsia-300 hover:bg-fuchsia-900/40 transition sm:col-span-2">
+                VIP Compatibility Report Preview
+              </Link>
             </div>
           </div>
           
