@@ -54,6 +54,7 @@ const ROUTES = {
   vipAccessBoundary: "/dashboard/networks/zodiac/vip-access-boundary",
   vipCompatibilityReportFoundation: "/dashboard/networks/zodiac/vip-compatibility-report-foundation",
   vipCompatibilityReportPreview: "/dashboard/networks/zodiac/vip-compatibility-report-preview",
+  telegramStarsPaymentPrototype: "/dashboard/networks/zodiac/telegram-stars-payment-prototype",
   vipCompatibilityReport: "/vip-compatibility-report",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
@@ -475,6 +476,12 @@ async function main() {
     assertIncludes(pages.vipCompatibilityReportPreview, "Preview UI only", "vip compatibility report preview dashboard classification");
     assertIncludes(pages.vipCompatibilityReportPreview, "No route gating", "vip compatibility report route gating boundary");
     assertIncludes(pages.vipCompatibilityReportPreview, "No payment", "vip compatibility report preview payment boundary");
+
+    assertIncludes(pages.telegramStarsPaymentPrototype, "Telegram Stars Payment Prototype Gate", "telegram stars payment prototype page title");
+    assertIncludes(pages.telegramStarsPaymentPrototype, "Prototype gate only", "telegram stars payment prototype classification");
+    assertIncludes(pages.telegramStarsPaymentPrototype, "No live invoice", "telegram stars live invoice boundary");
+    assertIncludes(pages.telegramStarsPaymentPrototype, "No payment handler", "telegram stars payment handler boundary");
+    assertIncludes(pages.telegramStarsPaymentPrototype, "No Telegram API call", "telegram stars api boundary");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");

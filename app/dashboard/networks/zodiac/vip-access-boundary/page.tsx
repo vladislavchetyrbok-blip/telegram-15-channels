@@ -142,6 +142,9 @@ export default function VipAccessBoundaryPage() {
                 <Link href="/dashboard/networks/zodiac/vip-compatibility-report-preview" className="inline-block bg-emerald-500/20 text-emerald-300 px-4 py-2 rounded border border-emerald-500/30 hover:bg-emerald-500/30 transition-colors text-xs">
                   VIP Report Preview
                 </Link>
+                <Link href="/dashboard/networks/zodiac/telegram-stars-payment-prototype" className="inline-block bg-emerald-500/20 text-emerald-300 px-4 py-2 rounded border border-emerald-500/30 hover:bg-emerald-500/30 transition-colors text-xs">
+                  Stars Payment Prototype
+                </Link>
               </div>
             </div>
           </div>

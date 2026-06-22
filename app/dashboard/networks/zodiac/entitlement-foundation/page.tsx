@@ -88,6 +88,9 @@ export default function EntitlementFoundationPage() {
           <Link href="/dashboard/networks/zodiac/vip-compatibility-report-foundation" className="inline-block bg-emerald-500/20 text-emerald-300 px-4 py-2 rounded border border-emerald-500/30 hover:bg-emerald-500/30 transition-colors text-sm">
             View VIP Compatibility Report
           </Link>
+          <Link href="/dashboard/networks/zodiac/telegram-stars-payment-prototype" className="inline-block bg-emerald-500/20 text-emerald-300 px-4 py-2 rounded border border-emerald-500/30 hover:bg-emerald-500/30 transition-colors text-sm">
+            Stars Payment Prototype
+          </Link>
         </div>
       </div>
     </div>

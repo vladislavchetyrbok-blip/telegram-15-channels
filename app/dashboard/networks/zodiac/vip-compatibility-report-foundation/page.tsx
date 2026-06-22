@@ -126,6 +126,7 @@ export default function VipCompatibilityReportFoundationPage() {
               <li><Link href="/dashboard/networks/zodiac/vip-access-boundary" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">VIP Access Boundary</Link></li>
               <li><Link href="/dashboard/networks/zodiac/product-catalog-foundation" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Product Catalog Foundation</Link></li>
               <li><Link href="/dashboard/networks/zodiac/vip-compatibility-report-preview" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">VIP Report Preview</Link></li>
+              <li><Link href="/dashboard/networks/zodiac/telegram-stars-payment-prototype" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Stars Payment Prototype</Link></li>
             </ul>
           </div>
         </div>
