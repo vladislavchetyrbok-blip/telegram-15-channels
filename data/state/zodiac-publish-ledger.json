@@ -1971,8 +1971,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-06-23T10:00:36.385Z"
+      "status": "sent",
+      "updatedAt": "2026-06-23T10:00:39.937Z",
+      "messageId": "27,",
+      "sentAt": "2026-06-23T10:00:39.937Z"
     }
   }
 }
