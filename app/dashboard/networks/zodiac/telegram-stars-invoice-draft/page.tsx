@@ -167,6 +167,7 @@ export default function TelegramStarsInvoiceDraftDashboardPage() {
         <ul className="space-y-2 text-sm">
           <li><Link href="/dashboard/networks/zodiac" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Zodiac Dashboard</Link></li>
           <li><Link href="/dashboard/networks/zodiac/stars-payment-safety-review" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Stars Payment Safety Review</Link></li>
+          <li><Link href="/dashboard/networks/zodiac/aphrodite-product-remediation" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Aphrodite Product Remediation</Link></li>
           <li><Link href="/dashboard/networks/zodiac/telegram-stars-payment-prototype" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Telegram Stars Payment Prototype</Link></li>
           <li><Link href="/dashboard/networks/zodiac/vip-compatibility-report-preview" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">VIP Compatibility Report Preview</Link></li>
           <li><Link href="/dashboard/networks/zodiac/vip-access-boundary" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">VIP Access Boundary</Link></li>

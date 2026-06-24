@@ -194,6 +194,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Aphrodite Product Remediation",
+    href: "/dashboard/networks/zodiac/aphrodite-product-remediation",
+    icon: GitBranch,
+    caption: "Package 134 - Emotional product remediation plan.",
+    tone: "cyan",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,

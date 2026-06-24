@@ -58,6 +58,7 @@ const ROUTES = {
   starsPaymentSafetyReview: "/dashboard/networks/zodiac/stars-payment-safety-review",
   telegramStarsInvoiceDraft: "/dashboard/networks/zodiac/telegram-stars-invoice-draft",
   invoiceDraftSafetyHardening: "/dashboard/networks/zodiac/invoice-draft-safety-hardening",
+  aphroditeProductRemediation: "/dashboard/networks/zodiac/aphrodite-product-remediation",
   vipCompatibilityReport: "/vip-compatibility-report",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
@@ -503,6 +504,16 @@ async function main() {
     assertIncludes(pages.invoiceDraftSafetyHardening, "answerPreCheckoutQuery Mock API Gateway", "invoice draft safety hardening answerPreCheckoutQuery gateway");
     assertIncludes(pages.invoiceDraftSafetyHardening, "No live invoice", "invoice draft safety hardening live invoice boundary");
     assertIncludes(pages.invoiceDraftSafetyHardening, "No Telegram API call", "invoice draft safety hardening telegram boundary");
+
+    assertIncludes(pages.aphroditeProductRemediation, "Aphrodite Product Remediation Plan", "aphrodite remediation page title");
+    assertIncludes(pages.aphroditeProductRemediation, "Product remediation only", "aphrodite remediation classification");
+    assertIncludes(pages.aphroditeProductRemediation, "AI Love Reading", "AI Love Reading listed");
+    assertIncludes(pages.aphroditeProductRemediation, "Soulmate Scanner", "Soulmate Scanner listed");
+    assertIncludes(pages.aphroditeProductRemediation, "Red Flags Scanner", "Red Flags Scanner listed");
+    assertIncludes(pages.aphroditeProductRemediation, "Daily Message From Universe", "Daily Message listed");
+    assertIncludes(pages.aphroditeProductRemediation, "AI Future Timeline", "Future Timeline listed");
+    assertIncludes(pages.aphroditeProductRemediation, "No payment", "payment boundary");
+    assertIncludes(pages.aphroditeProductRemediation, "No real VIP unlock", "vip boundary");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");

@@ -91,7 +91,7 @@ export default async function InvoiceDraftSafetyHardeningPage() {
           </div>
         </section>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-slate-800/50">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-slate-800/50">
           <Link
             href="/dashboard/networks/zodiac/telegram-stars-invoice-draft"
             className="flex items-center space-x-3 p-4 rounded-xl border border-slate-800 hover:border-slate-700 hover:bg-slate-900/50 transition-colors group"
@@ -109,6 +109,17 @@ export default async function InvoiceDraftSafetyHardeningPage() {
             <div>
               <div className="text-sm text-slate-400 mb-1">Review Framework</div>
               <div className="font-medium text-slate-200 group-hover:text-white transition-colors">Real Implementation Path</div>
+            </div>
+            <ArrowRight className="w-5 h-5 text-slate-600 group-hover:text-white transition-colors" />
+          </Link>
+
+          <Link
+            href="/dashboard/networks/zodiac/aphrodite-product-remediation"
+            className="flex items-center justify-between p-4 rounded-xl border border-slate-800 hover:border-slate-700 hover:bg-slate-900/50 transition-colors group"
+          >
+            <div>
+              <div className="text-sm text-slate-400 mb-1">Product Plan</div>
+              <div className="font-medium text-slate-200 group-hover:text-white transition-colors">Aphrodite Product Remediation</div>
             </div>
             <ArrowRight className="w-5 h-5 text-slate-600 group-hover:text-white transition-colors" />
           </Link>
