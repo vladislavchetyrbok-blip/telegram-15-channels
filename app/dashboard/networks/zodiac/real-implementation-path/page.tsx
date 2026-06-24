@@ -107,7 +107,8 @@ export default function RealImplementationPathPage() {
                     </span>
                     <ul className="list-disc pl-4 text-sm text-slate-300 space-y-1">
                       {phase.allowedWork.map(w => <li key={w}>{w}</li>)}
-                    </ul>
+                              <li><Link href="/dashboard/networks/zodiac/invoice-draft-safety-hardening" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Invoice Draft Safety Hardening</Link></li>
+        </ul>
                   </div>
                 )}
                 {phase.forbiddenWork.length > 0 && (

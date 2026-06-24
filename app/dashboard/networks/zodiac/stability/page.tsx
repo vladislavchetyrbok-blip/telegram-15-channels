@@ -46,7 +46,8 @@ export default function ZodiacStabilityMatrixPage() {
               <li className="flex items-center gap-2"><Lock className="h-3 w-3 text-rose-500" /> live bot sending logic</li>
               <li className="flex items-center gap-2"><Lock className="h-3 w-3 text-rose-500" /> production env</li>
               <li className="flex items-center gap-2"><Lock className="h-3 w-3 text-rose-500" /> database schema</li>
-            </ul>
+                      <li><Link href="/dashboard/networks/zodiac/invoice-draft-safety-hardening" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Invoice Draft Safety Hardening</Link></li>
+        </ul>
           </div>
           <div className="space-y-3">
             <p className="text-sm font-semibold text-white">Current Baseline Summary (Package 99.1):</p>

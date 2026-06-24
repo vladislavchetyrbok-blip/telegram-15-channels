@@ -24,6 +24,7 @@ export default function VipCompatibilityReportPreviewDashboardPage() {
           <li><strong>No Telegram Stars:</strong> Telegram Bot API is not integrated for payments.</li>
           <li><strong>No database write:</strong> Profile or mock data is not stored.</li>
           <li><strong>No active Telegram CTA changes:</strong> Telegram scripts are unblocked.</li>
+                  <li><Link href="/dashboard/networks/zodiac/invoice-draft-safety-hardening" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Invoice Draft Safety Hardening</Link></li>
         </ul>
       </div>
 

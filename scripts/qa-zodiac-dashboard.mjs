@@ -57,6 +57,7 @@ const ROUTES = {
   telegramStarsPaymentPrototype: "/dashboard/networks/zodiac/telegram-stars-payment-prototype",
   starsPaymentSafetyReview: "/dashboard/networks/zodiac/stars-payment-safety-review",
   telegramStarsInvoiceDraft: "/dashboard/networks/zodiac/telegram-stars-invoice-draft",
+  invoiceDraftSafetyHardening: "/dashboard/networks/zodiac/invoice-draft-safety-hardening",
   vipCompatibilityReport: "/vip-compatibility-report",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
@@ -496,6 +497,12 @@ async function main() {
     assertIncludes(pages.telegramStarsInvoiceDraft, "No live send", "telegram stars invoice draft live send boundary");
     assertIncludes(pages.telegramStarsInvoiceDraft, "No Telegram API call", "telegram stars invoice draft api boundary");
     assertIncludes(pages.telegramStarsInvoiceDraft, "No successful payment handler", "telegram stars invoice draft handler boundary");
+
+    assertIncludes(pages.invoiceDraftSafetyHardening, "Invoice Draft Safety Hardening", "invoice draft safety hardening page title");
+    assertIncludes(pages.invoiceDraftSafetyHardening, "sendInvoice Mock API Gateway", "invoice draft safety hardening sendInvoice gateway");
+    assertIncludes(pages.invoiceDraftSafetyHardening, "answerPreCheckoutQuery Mock API Gateway", "invoice draft safety hardening answerPreCheckoutQuery gateway");
+    assertIncludes(pages.invoiceDraftSafetyHardening, "No live invoice", "invoice draft safety hardening live invoice boundary");
+    assertIncludes(pages.invoiceDraftSafetyHardening, "No Telegram API call", "invoice draft safety hardening telegram boundary");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");

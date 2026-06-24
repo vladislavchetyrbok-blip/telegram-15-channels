@@ -39,6 +39,7 @@ export default function TelegramStarsPaymentPrototypeDashboardPage() {
           <li><strong>No database write:</strong> No payment states or profiles are stored.</li>
           <li><strong>No active Telegram CTA logic changed:</strong> Daily/weekly bot messages remain unblocked.</li>
           <li><strong>No production launch:</strong> This remains a UI/read-only exploration.</li>
+                  <li><Link href="/dashboard/networks/zodiac/invoice-draft-safety-hardening" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Invoice Draft Safety Hardening</Link></li>
         </ul>
       </div>
 
