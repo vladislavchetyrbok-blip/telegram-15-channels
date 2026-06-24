@@ -178,6 +178,7 @@ export default function FirstResultExperiencePage() {
             <Link href="/dashboard/networks/zodiac" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Zodiac Network</Link>
             <Link href="/dashboard/networks/zodiac/aphrodite-product-remediation" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Aphrodite Product Remediation</Link>
             <Link href="/dashboard/networks/zodiac/ai-love-reading-foundation" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">AI Love Reading Foundation</Link>
+            <Link href="/dashboard/networks/zodiac/soulmate-scanner-foundation" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Soulmate Scanner Foundation</Link>
             <Link href="/vip-compatibility-report" className="inline-flex items-center gap-1 text-rose-300 hover:text-rose-200 underline underline-offset-4">AI Love Reading Preview <ArrowRight className="w-3.5 h-3.5" /></Link>
           </div>
           <p className="text-xs text-slate-600">

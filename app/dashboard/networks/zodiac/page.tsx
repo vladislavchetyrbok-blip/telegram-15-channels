@@ -215,6 +215,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Soulmate Scanner Foundation",
+    href: "/dashboard/networks/zodiac/soulmate-scanner-foundation",
+    icon: GitBranch,
+    caption: "Package 137 - Local Soulmate Scanner foundation.",
+    tone: "cyan",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,

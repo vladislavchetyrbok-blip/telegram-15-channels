@@ -61,6 +61,7 @@ const ROUTES = {
   aphroditeProductRemediation: "/dashboard/networks/zodiac/aphrodite-product-remediation",
   firstResultExperience: "/dashboard/networks/zodiac/first-result-experience",
   aiLoveReadingFoundation: "/dashboard/networks/zodiac/ai-love-reading-foundation",
+  soulmateScannerFoundation: "/dashboard/networks/zodiac/soulmate-scanner-foundation",
   vipCompatibilityReport: "/vip-compatibility-report",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
@@ -530,6 +531,14 @@ async function main() {
     assertIncludes(pages.aiLoveReadingFoundation, "No payment", "payment boundary");
     assertIncludes(pages.aiLoveReadingFoundation, "No real VIP unlock", "vip boundary");
     assertIncludes(pages.aiLoveReadingFoundation, "No Telegram API call", "telegram boundary");
+
+    assertIncludes(pages.soulmateScannerFoundation, "Soulmate Scanner Foundation", "Soulmate scanner page title");
+    assertIncludes(pages.soulmateScannerFoundation, "Local foundation only", "Soulmate scanner classification");
+    assertIncludes(pages.soulmateScannerFoundation, "No AI API call", "AI boundary");
+    assertIncludes(pages.soulmateScannerFoundation, "No payment", "payment boundary");
+    assertIncludes(pages.soulmateScannerFoundation, "No real VIP unlock", "vip boundary");
+    assertIncludes(pages.soulmateScannerFoundation, "No Telegram API call", "telegram boundary");
+    assertIncludes(pages.soulmateScannerFoundation, "No deterministic soulmate claim", "deterministic soulmate boundary");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");

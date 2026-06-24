@@ -162,6 +162,7 @@ export default function RealImplementationPathPage() {
           <li><Link href="/dashboard/networks/zodiac/aphrodite-product-remediation" className="text-rose-400 hover:text-rose-300 transition underline underline-offset-4">Aphrodite Product Remediation</Link></li>
           <li><Link href="/dashboard/networks/zodiac/first-result-experience" className="text-rose-400 hover:text-rose-300 transition underline underline-offset-4">First Result Experience</Link></li>
           <li><Link href="/dashboard/networks/zodiac/ai-love-reading-foundation" className="text-rose-400 hover:text-rose-300 transition underline underline-offset-4">AI Love Reading Foundation</Link></li>
+          <li><Link href="/dashboard/networks/zodiac/soulmate-scanner-foundation" className="text-rose-400 hover:text-rose-300 transition underline underline-offset-4">Soulmate Scanner Foundation</Link></li>
           <li><Link href="/dashboard/networks/zodiac/miniapp-master-index" className="text-indigo-400 hover:text-indigo-300 transition underline underline-offset-4">Master Index</Link></li>
           <li><Link href="/dashboard/networks/zodiac/miniapp-readiness" className="text-sky-400 hover:text-sky-300 transition underline underline-offset-4">Readiness Summary</Link></li>
           <li><Link href="/dashboard/networks/zodiac/stability" className="text-emerald-400 hover:text-emerald-300 transition underline underline-offset-4">Stability</Link></li>
