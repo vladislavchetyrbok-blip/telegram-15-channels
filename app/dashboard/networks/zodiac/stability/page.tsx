@@ -230,6 +230,10 @@ export default function ZodiacStabilityMatrixPage() {
             <div className="flex items-center gap-2 text-white mb-1"><Activity className="h-4 w-4 text-rose-300" /> Content Template Engine</div>
             <div className="text-xs text-slate-400">Drafts only</div>
           </Link>
+          <Link href="/dashboard/networks/zodiac/social-draft-review-queue" className="rounded-lg border border-slate-800 bg-slate-900/50 p-4 hover:bg-slate-800 transition-colors">
+            <div className="flex items-center gap-2 text-white mb-1"><Activity className="h-4 w-4 text-rose-300" /> Draft Review Queue</div>
+            <div className="text-xs text-slate-400">Manual export</div>
+          </Link>
           <Link href="/dashboard/networks/zodiac/telegram-initdata-validation" className="rounded-lg border border-slate-800 bg-slate-900/50 p-4 hover:bg-slate-800 transition-colors">
             <div className="flex items-center gap-2 text-white mb-1"><Activity className="h-4 w-4 text-emerald-400" /> Telegram initData</div>
             <div className="text-xs text-slate-400">Validation Foundation</div>

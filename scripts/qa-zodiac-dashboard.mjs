@@ -66,6 +66,7 @@ const ROUTES = {
   aiFutureTimelineFoundation: "/dashboard/networks/zodiac/ai-future-timeline-foundation",
   socialTrafficLayer: "/dashboard/networks/zodiac/social-traffic-layer",
   socialContentTemplateEngine: "/dashboard/networks/zodiac/social-content-template-engine",
+  socialDraftReviewQueue: "/dashboard/networks/zodiac/social-draft-review-queue",
   vipCompatibilityReport: "/vip-compatibility-report",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
@@ -588,6 +589,20 @@ async function main() {
     assertIncludes(pages.socialContentTemplateEngine, "No account credentials", "credentials boundary");
     assertIncludes(pages.socialContentTemplateEngine, "No copied competitor content", "copying boundary");
     assertIncludes(pages.socialContentTemplateEngine, "No active payment CTA", "payment CTA boundary");
+
+    assertIncludes(pages.socialDraftReviewQueue, "Social Draft Review Queue", "social draft review queue page title");
+    assertIncludes(pages.socialDraftReviewQueue, "Review queue only", "social draft review queue classification");
+    assertIncludes(pages.socialDraftReviewQueue, "Manual export", "manual export classification");
+    assertIncludes(pages.socialDraftReviewQueue, "No auto-posting", "social draft auto-posting boundary");
+    assertIncludes(pages.socialDraftReviewQueue, "No Instagram API call", "instagram boundary");
+    assertIncludes(pages.socialDraftReviewQueue, "No TikTok API call", "tiktok boundary");
+    assertIncludes(pages.socialDraftReviewQueue, "No YouTube API call", "youtube boundary");
+    assertIncludes(pages.socialDraftReviewQueue, "No Telegram API call", "telegram boundary");
+    assertIncludes(pages.socialDraftReviewQueue, "No scraping", "scraping boundary");
+    assertIncludes(pages.socialDraftReviewQueue, "No account credentials", "credentials boundary");
+    assertIncludes(pages.socialDraftReviewQueue, "No copied competitor content", "copying boundary");
+    assertIncludes(pages.socialDraftReviewQueue, "No active payment CTA", "payment CTA boundary");
+    assertIncludes(pages.socialDraftReviewQueue, "No database write", "database boundary");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");

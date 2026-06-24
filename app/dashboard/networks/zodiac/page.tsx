@@ -250,6 +250,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Social Draft Review Queue",
+    href: "/dashboard/networks/zodiac/social-draft-review-queue",
+    icon: GitBranch,
+    caption: "Package 143 - Social draft review queue.",
+    tone: "cyan",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,
