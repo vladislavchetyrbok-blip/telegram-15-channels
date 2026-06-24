@@ -2017,6 +2017,18 @@
       "updatedAt": "2026-06-24T09:48:23.365Z",
       "messageId": "32,",
       "sentAt": "2026-06-24T09:48:23.364Z"
+    },
+    "2026-06-24:gemini": {
+      "key": "2026-06-24:gemini",
+      "date": "2026-06-24",
+      "slug": "gemini",
+      "createdAt": "2026-06-24T09:48:24.378Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-06-24T09:48:24.378Z"
     }
   }
 }
