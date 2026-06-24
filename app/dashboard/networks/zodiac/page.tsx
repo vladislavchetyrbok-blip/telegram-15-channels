@@ -208,6 +208,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "AI Love Reading Foundation",
+    href: "/dashboard/networks/zodiac/ai-love-reading-foundation",
+    icon: GitBranch,
+    caption: "Package 136 - Local AI Love Reading foundation.",
+    tone: "cyan",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,
