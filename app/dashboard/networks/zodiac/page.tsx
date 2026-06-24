@@ -222,6 +222,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Red Flags Scanner Foundation",
+    href: "/dashboard/networks/zodiac/red-flags-scanner-foundation",
+    icon: GitBranch,
+    caption: "Package 138 - Local Red Flags Scanner foundation.",
+    tone: "cyan",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,

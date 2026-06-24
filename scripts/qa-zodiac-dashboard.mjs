@@ -62,6 +62,7 @@ const ROUTES = {
   firstResultExperience: "/dashboard/networks/zodiac/first-result-experience",
   aiLoveReadingFoundation: "/dashboard/networks/zodiac/ai-love-reading-foundation",
   soulmateScannerFoundation: "/dashboard/networks/zodiac/soulmate-scanner-foundation",
+  redFlagsScannerFoundation: "/dashboard/networks/zodiac/red-flags-scanner-foundation",
   vipCompatibilityReport: "/vip-compatibility-report",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
@@ -539,6 +540,16 @@ async function main() {
     assertIncludes(pages.soulmateScannerFoundation, "No real VIP unlock", "vip boundary");
     assertIncludes(pages.soulmateScannerFoundation, "No Telegram API call", "telegram boundary");
     assertIncludes(pages.soulmateScannerFoundation, "No deterministic soulmate claim", "deterministic soulmate boundary");
+
+    assertIncludes(pages.redFlagsScannerFoundation, "Red Flags Scanner Foundation", "Red flags scanner page title");
+    assertIncludes(pages.redFlagsScannerFoundation, "Local foundation only", "Red flags scanner classification");
+    assertIncludes(pages.redFlagsScannerFoundation, "No AI API call", "AI boundary");
+    assertIncludes(pages.redFlagsScannerFoundation, "No payment", "payment boundary");
+    assertIncludes(pages.redFlagsScannerFoundation, "No real VIP unlock", "vip boundary");
+    assertIncludes(pages.redFlagsScannerFoundation, "No Telegram API call", "telegram boundary");
+    assertIncludes(pages.redFlagsScannerFoundation, "No abuse accusation", "abuse accusation boundary");
+    assertIncludes(pages.redFlagsScannerFoundation, "No mental health diagnosis", "mental health boundary");
+    assertIncludes(pages.redFlagsScannerFoundation, "No deterministic red flag claim", "deterministic red flag boundary");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");
