@@ -236,6 +236,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Social Traffic Layer",
+    href: "/dashboard/networks/zodiac/social-traffic-layer",
+    icon: GitBranch,
+    caption: "Package 141 - Social traffic layer architecture.",
+    tone: "cyan",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,

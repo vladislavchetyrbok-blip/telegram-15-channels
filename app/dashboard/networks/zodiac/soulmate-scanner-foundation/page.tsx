@@ -148,6 +148,7 @@ export default function SoulmateScannerFoundationPage() {
             <Link href="/dashboard/networks/zodiac/ai-love-reading-foundation" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">AI Love Reading Foundation</Link>
             <Link href="/dashboard/networks/zodiac/red-flags-scanner-foundation" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Red Flags Scanner Foundation</Link>
             <Link href="/dashboard/networks/zodiac/ai-future-timeline-foundation" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">AI Future Timeline Foundation</Link>
+            <Link href="/dashboard/networks/zodiac/social-traffic-layer" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Social Traffic Layer</Link>
             <Link href="/dashboard/networks/zodiac/first-result-experience" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">First Result Experience</Link>
           </div>
         </div>

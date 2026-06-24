@@ -64,6 +64,7 @@ const ROUTES = {
   soulmateScannerFoundation: "/dashboard/networks/zodiac/soulmate-scanner-foundation",
   redFlagsScannerFoundation: "/dashboard/networks/zodiac/red-flags-scanner-foundation",
   aiFutureTimelineFoundation: "/dashboard/networks/zodiac/ai-future-timeline-foundation",
+  socialTrafficLayer: "/dashboard/networks/zodiac/social-traffic-layer",
   vipCompatibilityReport: "/vip-compatibility-report",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
@@ -562,6 +563,18 @@ async function main() {
     assertIncludes(pages.aiFutureTimelineFoundation, "No exact date prediction", "exact date boundary");
     assertIncludes(pages.aiFutureTimelineFoundation, "No financial advice", "financial advice boundary");
     assertIncludes(pages.aiFutureTimelineFoundation, "No medical/legal advice", "medical/legal boundary");
+
+    assertIncludes(pages.socialTrafficLayer, "Social Traffic Layer Architecture", "social traffic layer page title");
+    assertIncludes(pages.socialTrafficLayer, "Architecture only", "social traffic layer classification");
+    assertIncludes(pages.socialTrafficLayer, "No auto-posting", "social auto-posting boundary");
+    assertIncludes(pages.socialTrafficLayer, "No Instagram API call", "instagram boundary");
+    assertIncludes(pages.socialTrafficLayer, "No TikTok API call", "tiktok boundary");
+    assertIncludes(pages.socialTrafficLayer, "No YouTube API call", "youtube boundary");
+    assertIncludes(pages.socialTrafficLayer, "No Telegram API call", "telegram boundary");
+    assertIncludes(pages.socialTrafficLayer, "No scraping", "scraping boundary");
+    assertIncludes(pages.socialTrafficLayer, "No account credentials", "credentials boundary");
+    assertIncludes(pages.socialTrafficLayer, "No copied competitor content", "copying boundary");
+    assertIncludes(pages.socialTrafficLayer, "No active payment CTA", "payment CTA boundary");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");
