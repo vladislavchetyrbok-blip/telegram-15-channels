@@ -1975,6 +1975,18 @@
       "updatedAt": "2026-06-23T10:00:39.937Z",
       "messageId": "27,",
       "sentAt": "2026-06-23T10:00:39.937Z"
+    },
+    "2026-06-24:zodiac-general": {
+      "key": "2026-06-24:zodiac-general",
+      "date": "2026-06-24",
+      "slug": "zodiac-general",
+      "createdAt": "2026-06-24T09:48:11.439Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-06-24T09:48:11.439Z"
     }
   }
 }
