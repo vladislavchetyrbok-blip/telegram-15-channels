@@ -166,6 +166,7 @@ export default function RealImplementationPathPage() {
           <li><Link href="/dashboard/networks/zodiac/red-flags-scanner-foundation" className="text-rose-400 hover:text-rose-300 transition underline underline-offset-4">Red Flags Scanner Foundation</Link></li>
           <li><Link href="/dashboard/networks/zodiac/ai-future-timeline-foundation" className="text-rose-400 hover:text-rose-300 transition underline underline-offset-4">AI Future Timeline Foundation</Link></li>
           <li><Link href="/dashboard/networks/zodiac/social-traffic-layer" className="text-rose-400 hover:text-rose-300 transition underline underline-offset-4">Social Traffic Layer</Link></li>
+          <li><Link href="/dashboard/networks/zodiac/social-content-template-engine" className="text-rose-400 hover:text-rose-300 transition underline underline-offset-4">Social Content Template Engine</Link></li>
           <li><Link href="/dashboard/networks/zodiac/miniapp-master-index" className="text-indigo-400 hover:text-indigo-300 transition underline underline-offset-4">Master Index</Link></li>
           <li><Link href="/dashboard/networks/zodiac/miniapp-readiness" className="text-sky-400 hover:text-sky-300 transition underline underline-offset-4">Readiness Summary</Link></li>
           <li><Link href="/dashboard/networks/zodiac/stability" className="text-emerald-400 hover:text-emerald-300 transition underline underline-offset-4">Stability</Link></li>

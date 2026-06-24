@@ -182,6 +182,7 @@ export default function FirstResultExperiencePage() {
             <Link href="/dashboard/networks/zodiac/red-flags-scanner-foundation" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Red Flags Scanner Foundation</Link>
             <Link href="/dashboard/networks/zodiac/ai-future-timeline-foundation" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">AI Future Timeline Foundation</Link>
             <Link href="/dashboard/networks/zodiac/social-traffic-layer" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Social Traffic Layer</Link>
+            <Link href="/dashboard/networks/zodiac/social-content-template-engine" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Social Content Template Engine</Link>
             <Link href="/vip-compatibility-report" className="inline-flex items-center gap-1 text-rose-300 hover:text-rose-200 underline underline-offset-4">AI Love Reading Preview <ArrowRight className="w-3.5 h-3.5" /></Link>
           </div>
           <p className="text-xs text-slate-600">
