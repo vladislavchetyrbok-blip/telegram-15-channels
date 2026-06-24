@@ -5,8 +5,10 @@ import { ChevronLeft, LockKeyhole, AlertTriangle, Sparkles, User, Calendar, Cloc
 import Link from "next/link";
 import { calculateMockBirthMatrix } from "@/lib/zodiac/zodiac-birth-matrix-mock";
 import type { BirthMatrixResult } from "@/lib/zodiac/zodiac-birth-matrix-mock";
+import { MIN_BIRTH_DATE_ISO, getTodayIsoDate } from "@/lib/zodiac-birth-date-range";
 
 export function BirthMatrixClient() {
+  const todayIso = getTodayIsoDate();
   const [birthDate, setBirthDate] = useState("");
   const [birthTime, setBirthTime] = useState("");
   const [name, setName] = useState("");
@@ -56,6 +58,8 @@ export function BirthMatrixClient() {
                 <input
                   type="date"
                   required
+                  min={MIN_BIRTH_DATE_ISO}
+                  max={todayIso}
                   value={birthDate}
                   onChange={(e) => setBirthDate(e.target.value)}
                   className="w-full rounded-xl border border-slate-700 bg-slate-900/50 px-4 py-3 text-slate-100 outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500"
