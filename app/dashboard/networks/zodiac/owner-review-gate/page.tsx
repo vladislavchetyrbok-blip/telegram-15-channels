@@ -148,6 +148,7 @@ export default function OwnerReviewGatePage() {
         <ul className="flex flex-wrap gap-4 text-sm">
           <li><Link href="/dashboard/networks/zodiac/real-implementation-path" className="text-amber-400 hover:text-amber-300 transition underline underline-offset-4">Real Implementation Path</Link></li>
           <li><Link href="/dashboard/networks/zodiac/aphrodite-product-remediation" className="text-amber-400 hover:text-amber-300 transition underline underline-offset-4">Aphrodite Product Remediation</Link></li>
+          <li><Link href="/dashboard/networks/zodiac/first-result-experience" className="text-amber-400 hover:text-amber-300 transition underline underline-offset-4">First Result Experience</Link></li>
           <li><Link href="/dashboard/networks/zodiac" className="text-blue-400 hover:text-blue-300 transition underline underline-offset-4">Zodiac Dashboard</Link></li>
           <li><Link href="/dashboard/networks/zodiac/miniapp-master-index" className="text-indigo-400 hover:text-indigo-300 transition underline underline-offset-4">Master Index</Link></li>
           <li><Link href="/dashboard/networks/zodiac/miniapp-readiness" className="text-sky-400 hover:text-sky-300 transition underline underline-offset-4">Readiness Summary</Link></li>

@@ -218,6 +218,7 @@ export default function AphroditeProductRemediationPage() {
             <Link href="/dashboard/networks/zodiac" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Zodiac Network</Link>
             <Link href="/dashboard/networks/zodiac/real-implementation-path" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Real Implementation Path</Link>
             <Link href="/dashboard/networks/zodiac/invoice-draft-safety-hardening" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Invoice Draft Safety Hardening</Link>
+            <Link href="/dashboard/networks/zodiac/first-result-experience" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">First Result Experience</Link>
           </div>
         </div>
       </div>

@@ -59,6 +59,7 @@ const ROUTES = {
   telegramStarsInvoiceDraft: "/dashboard/networks/zodiac/telegram-stars-invoice-draft",
   invoiceDraftSafetyHardening: "/dashboard/networks/zodiac/invoice-draft-safety-hardening",
   aphroditeProductRemediation: "/dashboard/networks/zodiac/aphrodite-product-remediation",
+  firstResultExperience: "/dashboard/networks/zodiac/first-result-experience",
   vipCompatibilityReport: "/vip-compatibility-report",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
@@ -514,6 +515,13 @@ async function main() {
     assertIncludes(pages.aphroditeProductRemediation, "AI Future Timeline", "Future Timeline listed");
     assertIncludes(pages.aphroditeProductRemediation, "No payment", "payment boundary");
     assertIncludes(pages.aphroditeProductRemediation, "No real VIP unlock", "vip boundary");
+
+    assertIncludes(pages.firstResultExperience, "First Result Experience Rewrite", "first result experience page title");
+    assertIncludes(pages.firstResultExperience, "Experience rewrite only", "first result experience classification");
+    assertIncludes(pages.firstResultExperience, "AI Love Reading", "AI Love Reading listed");
+    assertIncludes(pages.firstResultExperience, "No payment", "first result payment boundary");
+    assertIncludes(pages.firstResultExperience, "No real VIP unlock", "first result vip boundary");
+    assertIncludes(pages.firstResultExperience, "No Telegram API call", "first result telegram boundary");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");

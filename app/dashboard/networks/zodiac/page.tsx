@@ -201,6 +201,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "First Result Experience",
+    href: "/dashboard/networks/zodiac/first-result-experience",
+    icon: GitBranch,
+    caption: "Package 135 - First result experience rewrite.",
+    tone: "cyan",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,
