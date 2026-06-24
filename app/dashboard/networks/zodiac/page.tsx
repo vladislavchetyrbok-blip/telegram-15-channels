@@ -229,6 +229,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "AI Future Timeline Foundation",
+    href: "/dashboard/networks/zodiac/ai-future-timeline-foundation",
+    icon: GitBranch,
+    caption: "Package 139 - Local AI Future Timeline foundation.",
+    tone: "cyan",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,

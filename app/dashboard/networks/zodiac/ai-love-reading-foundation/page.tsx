@@ -149,6 +149,7 @@ export default function AiLoveReadingFoundationPage() {
             <Link href="/dashboard/networks/zodiac/first-result-experience" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">First Result Experience</Link>
             <Link href="/dashboard/networks/zodiac/soulmate-scanner-foundation" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Soulmate Scanner Foundation</Link>
             <Link href="/dashboard/networks/zodiac/red-flags-scanner-foundation" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Red Flags Scanner Foundation</Link>
+            <Link href="/dashboard/networks/zodiac/ai-future-timeline-foundation" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">AI Future Timeline Foundation</Link>
             <Link href="/dashboard/networks/zodiac/aphrodite-product-remediation" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Aphrodite Product Remediation</Link>
           </div>
         </div>

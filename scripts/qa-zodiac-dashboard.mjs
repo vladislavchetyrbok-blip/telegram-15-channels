@@ -63,6 +63,7 @@ const ROUTES = {
   aiLoveReadingFoundation: "/dashboard/networks/zodiac/ai-love-reading-foundation",
   soulmateScannerFoundation: "/dashboard/networks/zodiac/soulmate-scanner-foundation",
   redFlagsScannerFoundation: "/dashboard/networks/zodiac/red-flags-scanner-foundation",
+  aiFutureTimelineFoundation: "/dashboard/networks/zodiac/ai-future-timeline-foundation",
   vipCompatibilityReport: "/vip-compatibility-report",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
@@ -550,6 +551,17 @@ async function main() {
     assertIncludes(pages.redFlagsScannerFoundation, "No abuse accusation", "abuse accusation boundary");
     assertIncludes(pages.redFlagsScannerFoundation, "No mental health diagnosis", "mental health boundary");
     assertIncludes(pages.redFlagsScannerFoundation, "No deterministic red flag claim", "deterministic red flag boundary");
+
+    assertIncludes(pages.aiFutureTimelineFoundation, "AI Future Timeline Foundation", "AI future timeline page title");
+    assertIncludes(pages.aiFutureTimelineFoundation, "Local foundation only", "AI future timeline classification");
+    assertIncludes(pages.aiFutureTimelineFoundation, "No AI API call", "AI boundary");
+    assertIncludes(pages.aiFutureTimelineFoundation, "No payment", "payment boundary");
+    assertIncludes(pages.aiFutureTimelineFoundation, "No real VIP unlock", "vip boundary");
+    assertIncludes(pages.aiFutureTimelineFoundation, "No Telegram API call", "telegram boundary");
+    assertIncludes(pages.aiFutureTimelineFoundation, "No deterministic future claim", "deterministic future boundary");
+    assertIncludes(pages.aiFutureTimelineFoundation, "No exact date prediction", "exact date boundary");
+    assertIncludes(pages.aiFutureTimelineFoundation, "No financial advice", "financial advice boundary");
+    assertIncludes(pages.aiFutureTimelineFoundation, "No medical/legal advice", "medical/legal boundary");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");
