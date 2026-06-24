@@ -2059,6 +2059,18 @@
       "updatedAt": "2026-06-24T09:48:34.961Z",
       "messageId": "32,",
       "sentAt": "2026-06-24T09:48:34.960Z"
+    },
+    "2026-06-24:virgo": {
+      "key": "2026-06-24:virgo",
+      "date": "2026-06-24",
+      "slug": "virgo",
+      "createdAt": "2026-06-24T09:48:35.897Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-06-24T09:48:35.897Z"
     }
   }
 }
