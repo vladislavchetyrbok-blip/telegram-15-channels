@@ -42,7 +42,7 @@ export default function SocialExportDashboardPage() {
           </p>
           <p className="text-slate-400 max-w-3xl text-lg">
             A local, read-only view that helps a human copy approved drafts out by hand. There is no
-            "Post now" or "Connect account" button, no platform API, no scheduling, no credentials,
+            &quot;Post now&quot; or &quot;Connect account&quot; button, no platform API, no scheduling, no credentials,
             and no database write — manual copy/export only.
           </p>
           <div className="flex flex-wrap gap-2 text-xs">
@@ -56,7 +56,7 @@ export default function SocialExportDashboardPage() {
           <h2 className="text-xl font-medium text-white">Export dashboard summary</h2>
           <p className="text-sm text-slate-400">
             {items.length} export items; {readyItems.length} marked ready for manual export. Only items a human
-            reviewer marked "Ready for Manual Export" can be copied out — everything else stays in review.
+            reviewer marked &quot;Ready for Manual Export&quot; can be copied out — everything else stays in review.
           </p>
         </section>
 
