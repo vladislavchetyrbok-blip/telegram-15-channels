@@ -65,8 +65,8 @@ export default function MiniAppHubPage() {
           </div>
           <h2 className="text-2xl font-bold text-white">AI Love Reading</h2>
           <p className="mt-2 text-sm leading-6 text-rose-100/90">Узнай, что между вами происходит, что он может чувствовать и где ваша главная зона риска.</p>
-          <Link href="/compatibility" className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-rose-500 px-4 py-3 text-sm font-semibold text-white hover:bg-rose-400 transition active:scale-[0.98]">
-            <Sparkles className="h-4 w-4" /> Get free Love Reading preview
+          <Link href="/miniapp/love-reading-preview" className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-rose-500 px-4 py-3 text-sm font-semibold text-white hover:bg-rose-400 transition active:scale-[0.98]">
+            <Sparkles className="h-4 w-4" /> Открыть бесплатный Love Reading preview
           </Link>
           <p className="mt-2 text-center text-[11px] text-slate-400">Free preview only / No payment / No real VIP unlock</p>
 
