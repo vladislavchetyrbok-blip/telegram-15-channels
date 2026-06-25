@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AlertTriangle, ShieldCheck, ChevronRight, LayoutGrid, Star, Fingerprint, Hash, HeartHandshake, Calendar, Users, LockKeyhole } from "lucide-react";
+import { AlertTriangle, ShieldCheck, ChevronRight, LayoutGrid, Star, Fingerprint, Hash, HeartHandshake, Calendar, Users, LockKeyhole, Heart, Sparkles } from "lucide-react";
 import { MOCK_MINI_APP_HUB_ITEMS, MOCK_MINI_APP_SAFETY_RULES } from "@/lib/zodiac/zodiac-miniapp-hub";
+import { createAphroditeLoveReadingFoundationPreview } from "@/lib/zodiac/aphrodite-ai-love-reading-foundation";
 
 export const metadata: Metadata = {
   title: "Zodiac Mini App Hub",
@@ -24,6 +25,11 @@ const statusColors = {
   "placeholder": "border-slate-500/30 bg-slate-500/10 text-slate-400",
   "future": "border-slate-700/50 bg-slate-800/30 text-slate-500",
 };
+
+// Package 148: deterministic, local example preview from the existing AI Love Reading model.
+const lovePreview = createAphroditeLoveReadingFoundationPreview({ firstName: "You", partnerName: "Them", firstSign: "leo", partnerSign: "scorpio" });
+const FUTURE_VIP_TEASER = "what he/she feels · why he/she pulls away · 30-day forecast · red flags · personal advice";
+const FIRST_SCREEN_BOUNDARIES = ["No payment", "No real VIP unlock", "No Telegram API call", "No database write", "No production launch"];
 
 export default function MiniAppHubPage() {
   return (
@@ -53,10 +59,41 @@ export default function MiniAppHubPage() {
           </div>
         </div>
 
+        <section className="mb-6 rounded-2xl border border-rose-900/40 bg-gradient-to-br from-rose-950/30 via-fuchsia-950/20 to-slate-900/40 p-5">
+          <div className="inline-flex items-center gap-2 rounded-full bg-slate-900/60 border border-slate-800 px-3 py-1 text-xs text-rose-300 mb-3">
+            <Heart className="h-3.5 w-3.5" /> Aphrodite
+          </div>
+          <h2 className="text-2xl font-bold text-white">AI Love Reading</h2>
+          <p className="mt-2 text-sm leading-6 text-rose-100/90">Узнай, что между вами происходит, что он может чувствовать и где ваша главная зона риска.</p>
+          <Link href="/compatibility" className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-rose-500 px-4 py-3 text-sm font-semibold text-white hover:bg-rose-400 transition active:scale-[0.98]">
+            <Sparkles className="h-4 w-4" /> Get free Love Reading preview
+          </Link>
+          <p className="mt-2 text-center text-[11px] text-slate-400">Free preview only / No payment / No real VIP unlock</p>
+
+          <div className="mt-4 rounded-xl border border-slate-800 bg-black/30 p-4">
+            <p className="text-[11px] uppercase tracking-wide text-emerald-400 mb-2">Example free preview</p>
+            <ul className="space-y-1.5 text-sm text-slate-200">
+              <li>Main energy: {lovePreview.connectionEnergy}</li>
+              <li>One strength: {lovePreview.strength}</li>
+              <li>One risk zone: {lovePreview.riskZone}</li>
+              <li>One next step: {lovePreview.nextStep}</li>
+            </ul>
+            <div className="mt-3 border-t border-slate-800 pt-3">
+              <p className="text-[11px] uppercase tracking-wide text-slate-500 mb-1">A full reading would add (future, not unlocked)</p>
+              <p className="text-xs text-slate-400">{FUTURE_VIP_TEASER}</p>
+            </div>
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              {FIRST_SCREEN_BOUNDARIES.map((b) => (
+                <span key={b} className="rounded-md bg-slate-800 px-2 py-0.5 text-[10px] text-emerald-400 border border-slate-700">{b}</span>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <div className="space-y-6">
           <div className="text-center">
-            <h2 className="text-2xl font-bold text-slate-100">Zodiac Universe</h2>
-            <p className="mt-2 text-sm text-slate-400">Select a module to explore your cosmic blueprint.</p>
+            <h2 className="text-xl font-semibold text-slate-100">More modules</h2>
+            <p className="mt-2 text-sm text-slate-400">Compatibility, Birth Matrix, Mystic Numbers and more remain available below.</p>
           </div>
 
           <div className="grid grid-cols-1 gap-3">
