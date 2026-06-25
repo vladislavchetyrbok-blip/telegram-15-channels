@@ -9,6 +9,7 @@ import {
   getTodayIsoDate,
   isBirthDateInAllowedRange,
   normalizeBirthDateInput,
+  normalizeBirthDateInputDisplay,
   parseBirthDateInput,
   parseBirthDateInputToIso,
 } from "../lib/zodiac-birth-date-range.ts";
@@ -78,12 +79,12 @@ const birthInputs = [
   {
     label: "Birth Matrix route /birth-matrix",
     source: sources.birthMatrixRoute,
-    checks: [/ZodiacDateInput/, /parseBirthDateInput/, /parsedBirthDate\.iso/],
+    checks: [/ZodiacDateInput/, /parseBirthDateInput/, /parsedBirthDate\.iso/, /birthDateScope="birth-matrix"/],
   },
   {
     label: "Mini App Matrix of Destiny",
     source: sources.mysticSections,
-    checks: [/BirthMatrixFeature/, /ZodiacDateInput/, /generateBirthMatrix/],
+    checks: [/BirthMatrixFeature/, /ZodiacDateInput/, /generateBirthMatrix/, /birthDateScope="miniapp-matrix"/],
   },
   {
     label: "Matrix of Destiny parser",
@@ -93,22 +94,27 @@ const birthInputs = [
   {
     label: "Compatibility birth data",
     source: sources.compatibilityMiniApp,
-    checks: [/parseBirthDateInput/, /formatSharedBirthDateInput/, /ZodiacDateInput/, /isReadyToCalculate/],
+    checks: [/parseBirthDateInput/, /formatSharedBirthDateInput/, /ZodiacDateInput/, /isReadyToCalculate/, /birthDateScope="compatibility"/],
   },
   {
     label: "VIP natal chart / birth chart",
-    source: sources.vipSections,
-    checks: [/vipNatalChart/, /parseBirthIsoDate/, /birthDateError/, /ZodiacDateInput/],
+    source: `${sources.vipSections}\n${sources.compatibilityMiniApp}`,
+    checks: [/vipNatalChart|NatalChartV1Card/, /parseBirthIsoDate|parseBirthDateInput/, /ZodiacDateInput/, /birthDateScope="vip-natal"/],
   },
   {
     label: "VIP numerology birth date",
     source: sources.vipSections,
-    checks: [/vipNumerology/, /parseBirthIsoDate/, /birthDateError/, /ZodiacDateInput/],
+    checks: [/vipNumerology/, /parseBirthIsoDate/, /birthDateError/, /ZodiacDateInput/, /birthDateScope="vip-numerology"/],
+  },
+  {
+    label: "Mystic/numerology birth date",
+    source: sources.compatibilityMiniApp,
+    checks: [/NumerologyCard/, /ZodiacDateInput/, /birthDateScope="mystic"/],
   },
   {
     label: "Shared ZodiacDateInput birth-date mode",
     source: sources.dateInput,
-    checks: [/dateKind = "birth"/, /data-birth-date-ui/, /BIRTH_DATE_UI_MARKER/, /formatBirthDateInput/],
+    checks: [/dateKind = "birth"/, /data-birth-date-ui/, /data-birth-date-scope/, /BIRTH_DATE_UI_MARKER/, /normalizeBirthDateInputDisplay/],
   },
 ];
 
@@ -145,8 +151,9 @@ for (const item of nonBirthDateInputs) {
 }
 
 check("runtime marker value exists", BIRTH_DATE_UI_MARKER === "v2-global-1900-today");
-check("shared input renders runtime marker for birth-date mode", sources.dateInput.includes(`data-birth-date-ui={isBirthDate ? BIRTH_DATE_UI_MARKER : undefined}`));
-check("shared input marks calendar opt-out mode", sources.dateInput.includes('data-date-kind={dateKind}'));
+check("shared input renders runtime marker for birth-date mode", sources.dateInput.includes("data-birth-date-ui={isBirthDate ? BIRTH_DATE_UI_MARKER : undefined}"));
+check("shared input renders scope marker for birth-date mode", sources.dateInput.includes("data-birth-date-scope={isBirthDate ? resolvedBirthDateScope : undefined}"));
+check("shared input marks calendar opt-out mode", sources.dateInput.includes("data-date-kind={dateKind}"));
 check("minimum birth date is 1900-01-01", MIN_BIRTH_DATE_ISO === "1900-01-01");
 check("current year helper is available", Number.isInteger(getCurrentYear()) && getCurrentYear() >= 2026);
 
@@ -161,12 +168,15 @@ for (const iso of acceptedDates) {
 }
 
 check("15.06.1998 accepted", parseBirthDateInput("15.06.1998").ok === true);
+check("15061998 accepted", parseBirthDateInput("15061998").ok === true);
 check("1998-06-15 accepted", parseBirthDateInput("1998-06-15").ok === true);
 check("1998-06-15 formats to display", formatBirthDateInput("1998-06-15") === "15.06.1998");
 check("15061998 formats to display", formatBirthDateInput("15061998") === "15.06.1998");
 check("1998-06-15 normalizes to display", normalizeBirthDateInput("1998-06-15") === "15.06.1998");
 check("formatBirthDateIsoToDisplay works", formatBirthDateIsoToDisplay("1990-01-01") === "01.01.1990");
 check("partial ISO draft is not remapped into invalid DD.MM text", formatBirthDateInput("1998-") === "1998-");
+check("typing 15.06.1998 keeps partial dots", normalizeBirthDateInputDisplay("15.06.") === "15.06.");
+check("typing 15.06.19 is not auto-expanded", normalizeBirthDateInputDisplay("15.06.19") === "15.06.19");
 
 const tomorrow = addDaysIso(today, 1);
 check("today accepted", parseBirthDateInput(today).ok === true);
@@ -175,10 +185,11 @@ check("pre-1900 rejected", parseBirthDateInput("1899-12-31").ok === false);
 check("invalid calendar date rejected", parseBirthDateInput("31.02.1998").ok === false);
 check("malformed date rejected", parseBirthDateInput("not-a-date").ok === false);
 
-check("Birth Matrix route does not use native date picker", !/type="date"/.test(sources.birthMatrixRoute));
-check("birth-date source bundle does not use native date picker", !/type="date"/.test(birthDateSourceBundle));
+check("Birth Matrix route does not use native date picker", !/type\s*=\s*[{]?\s*["']date["']/.test(sources.birthMatrixRoute));
+check("birth-date source bundle does not use native date picker", !/type\s*=\s*[{]?\s*["']date["']/.test(birthDateSourceBundle));
 check("shared input uses text field", /type="text"/.test(sources.dateInput));
-check("shared input exposes DD.MM.YYYY placeholder", /placeholder="ДД\.ММ\.ГГГГ"/.test(sources.dateInput));
+check("shared input exposes concrete birth-date placeholder", /placeholder=\{isBirthDate \? "15\.06\.1998" :/.test(sources.dateInput));
+check("shared input allows dot-friendly birth date typing", /inputMode=\{isBirthDate \? "decimal" : "numeric"\}/.test(sources.dateInput));
 check("birth-date autocomplete defaults to bday", /isBirthDate \? "bday" : "off"/.test(sources.dateInput));
 check(
   "no hardcoded 2020 birth-date restriction",

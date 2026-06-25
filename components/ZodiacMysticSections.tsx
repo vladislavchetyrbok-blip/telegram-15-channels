@@ -766,7 +766,7 @@ export function BirthMatrixFeature({
             <p className={publicMode ? "text-sm text-slate-300 mb-3" : "text-sm text-slate-600 mb-3"}>
               Введите дату рождения, чтобы рассчитать число пути, число души, реализацию, отношения и главный архетип. Сырая дата не сохраняется в истории или аналитике.
             </p>
-            <ZodiacDateInput publicMode={publicMode} value={inputVal} onChange={setInputVal} hasError={Boolean(inputVal && !generateBirthMatrix(inputVal))} />
+            <ZodiacDateInput publicMode={publicMode} value={inputVal} onChange={setInputVal} hasError={Boolean(inputVal && !generateBirthMatrix(inputVal))} birthDateScope="miniapp-matrix" />
             <button
               onClick={handleApply}
               disabled={!generateBirthMatrix(inputVal)}

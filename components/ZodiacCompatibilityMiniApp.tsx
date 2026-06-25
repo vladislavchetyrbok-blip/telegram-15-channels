@@ -2482,7 +2482,7 @@ function NumerologyCard({
             <input value={person.name} onChange={(event) => onPersonChange({ ...person, name: sanitizeNameInput(event.target.value) })} placeholder="можно оставить пустым" autoComplete="off" autoCorrect="off" spellCheck={false} className="h-12 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900" />
           </Field>
           <Field label="Дата рождения (необязательно)" publicMode={publicMode}>
-            <ZodiacDateInput publicMode={publicMode} value={person.birthDate} onChange={(nextValue) => updateBirthDate(person, nextValue, onPersonChange)} hasError={Boolean(dateError)} />
+            <ZodiacDateInput publicMode={publicMode} value={person.birthDate} onChange={(nextValue) => updateBirthDate(person, nextValue, onPersonChange)} hasError={Boolean(dateError)} birthDateScope="mystic" />
             {dateError ? <p className="mt-2 text-xs font-semibold text-rose-600">{dateError}</p> : null}
           </Field>
           <p className={publicMode ? "text-xs font-semibold text-emerald-100" : "text-xs font-semibold text-emerald-800"}>имя и дата остаются только на экране</p>
@@ -2745,7 +2745,7 @@ function PersonalityArchetypeCard({ publicMode, person, profile, onPersonChange,
             <input value={person.name} onChange={(event) => onPersonChange({ ...person, name: sanitizeNameInput(event.target.value) })} placeholder="можно оставить пустым" autoComplete="off" autoCorrect="off" spellCheck={false} className="h-12 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900" />
           </Field>
           <Field label="Дата рождения (необязательно)" publicMode={publicMode}>
-            <ZodiacDateInput publicMode={publicMode} value={person.birthDate} onChange={(nextValue) => updateBirthDate(person, nextValue, onPersonChange)} hasError={Boolean(dateError)} />
+            <ZodiacDateInput publicMode={publicMode} value={person.birthDate} onChange={(nextValue) => updateBirthDate(person, nextValue, onPersonChange)} hasError={Boolean(dateError)} birthDateScope="mystic" />
             {dateError ? <p className="mt-2 text-xs font-semibold text-rose-600">{dateError}</p> : null}
           </Field>
         </div>
@@ -2874,7 +2874,7 @@ function NatalChartV1Card({
           </Field>
 
           <Field label="Дата рождения" publicMode={publicMode}>
-            <ZodiacDateInput publicMode={publicMode} value={person.birthDate} onChange={(nextValue) => updateBirthDate(person, nextValue, onPersonChange)} hasError={Boolean(dateError)} />
+            <ZodiacDateInput publicMode={publicMode} value={person.birthDate} onChange={(nextValue) => updateBirthDate(person, nextValue, onPersonChange)} hasError={Boolean(dateError)} birthDateScope="vip-natal" />
             {dateError ? <p className="mt-2 text-xs font-semibold text-rose-600">{dateError}</p> : null}
           </Field>
 
@@ -3087,7 +3087,7 @@ function ChineseHoroscopeCard({
         </div>
 
         <Field label="Дата рождения" publicMode={publicMode}>
-          <ZodiacDateInput publicMode={publicMode} value={person.birthDate} onChange={(nextValue) => updateBirthDate(person, nextValue, onPersonChange)} hasError={Boolean(dateError)} />
+          <ZodiacDateInput publicMode={publicMode} value={person.birthDate} onChange={(nextValue) => updateBirthDate(person, nextValue, onPersonChange)} hasError={Boolean(dateError)} birthDateScope="mystic" />
           {dateError ? <p className="mt-2 text-xs font-semibold text-rose-600">{dateError}</p> : null}
         </Field>
 
@@ -3207,7 +3207,7 @@ function NameProfileCard({
           </Field>
 
           <Field label="Дата рождения (необязательно)" publicMode={publicMode}>
-            <ZodiacDateInput publicMode={publicMode} value={person.birthDate} onChange={(nextValue) => updateBirthDate(person, nextValue, onPersonChange)} hasError={Boolean(dateError)} />
+            <ZodiacDateInput publicMode={publicMode} value={person.birthDate} onChange={(nextValue) => updateBirthDate(person, nextValue, onPersonChange)} hasError={Boolean(dateError)} birthDateScope="mystic" />
             {dateError ? <p className="mt-2 text-xs font-semibold text-rose-600">{dateError}</p> : null}
           </Field>
         </div>
@@ -3449,6 +3449,7 @@ function PersonPanel({
                 value={value.birthDate}
                 onChange={(nextValue) => updateBirthDate(value, nextValue, onChange, onBirthDateAutosign)}
                 hasError={Boolean(value.birthDate && !parsedDate.ok)}
+                birthDateScope="compatibility"
               />
               {detectedSign ? (
                 <p className="mt-2 rounded-md border border-cyan-100 bg-cyan-50 px-3 py-2 text-xs font-semibold text-cyan-900">

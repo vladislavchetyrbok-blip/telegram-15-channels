@@ -11,7 +11,7 @@ import { ZodiacDateInput } from "./zodiac-mini-app/ZodiacDateInput";
 import type { ZodiacRetentionDraft } from "./zodiac-mini-app/retention";
 import { ZodiacSelect, type ZodiacSelectOption } from "./zodiac-mini-app/ZodiacSelect";
 import { dateInputToIsoDate, isoDateToDateInput } from "@/lib/zodiac-date-input";
-import { parseBirthDateInput } from "@/lib/zodiac-birth-date-range";
+import { normalizeBirthDateInputDisplay, parseBirthDateInput } from "@/lib/zodiac-birth-date-range";
 import type {
   AngelNumberProfile,
   CompatibilityResult,
@@ -946,7 +946,7 @@ export function ExtendedNatalFeature({
   });
 
   function updateBirthDate(value: string) {
-    const nextValue = isoDateToDateInput(value) || value;
+    const nextValue = normalizeBirthDateInputDisplay(value);
     setBirthDate(nextValue);
     const nextSign = signFromBirthDate(nextValue, signSlug);
     if (parseBirthIsoDate(nextValue)) setSignSlug(nextSign.slug);
@@ -963,6 +963,7 @@ export function ExtendedNatalFeature({
             value={birthDate}
             onChange={updateBirthDate}
             hasError={Boolean(birthDateValidationError)}
+            birthDateScope="vip-natal"
             hint="Формат: ДД.ММ.ГГГГ. Например: 15.06.1998. Можно ввести дату рождения с 1900 года до сегодняшнего дня."
           />
           {birthDateValidationError ? (
@@ -1455,6 +1456,7 @@ export function ExtendedNumerologyFeature({
             value={birthDate}
             onChange={setBirthDate}
             hasError={Boolean(birthDateValidationError)}
+            birthDateScope="vip-numerology"
             hint="Формат: ДД.ММ.ГГГГ. Например: 15.06.1998. Можно ввести дату рождения с 1900 года до сегодняшнего дня."
           />
           {birthDateValidationError ? (

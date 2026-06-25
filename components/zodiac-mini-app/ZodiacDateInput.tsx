@@ -2,7 +2,7 @@ import { CalendarDays } from "lucide-react";
 import { formatDateInput, normalizeDateInput } from "@/lib/zodiac-date-input";
 import {
   BIRTH_DATE_UI_MARKER,
-  formatBirthDateInput,
+  normalizeBirthDateInputDisplay,
   normalizeBirthDateInput,
 } from "@/lib/zodiac-birth-date-range";
 
@@ -17,6 +17,7 @@ interface ZodiacDateInputProps {
   disabled?: boolean;
   hasError?: boolean;
   hint?: string;
+  birthDateScope?: string;
 }
 
 export function ZodiacDateInput({
@@ -30,8 +31,10 @@ export function ZodiacDateInput({
   disabled = false,
   hasError = false,
   hint,
+  birthDateScope,
 }: ZodiacDateInputProps) {
   const isBirthDate = dateKind === "birth";
+  const resolvedBirthDateScope = birthDateScope ?? (isBirthDate ? "shared" : undefined);
   const resolvedAriaLabel =
     ariaLabel ?? (isBirthDate ? "Дата рождения в формате ДД.ММ.ГГГГ" : "Дата в формате ДД.ММ.ГГГГ");
   const resolvedAutoComplete = autoComplete ?? (isBirthDate ? "bday" : "off");
@@ -43,7 +46,7 @@ export function ZodiacDateInput({
   const inputClass = publicMode
     ? `h-12 w-full rounded-lg border bg-white/8 px-3 pr-12 text-base text-white placeholder-slate-400 outline-none transition focus:border-violet-300 focus:bg-white/10 ${hasError ? "border-rose-300" : "border-white/15"}`
     : `h-12 w-full rounded-lg border bg-white px-3 pr-12 text-base text-slate-900 placeholder-slate-400 outline-none transition focus:border-violet-500 ${hasError ? "border-rose-300" : "border-slate-200"}`;
-  const formatValue = isBirthDate ? formatBirthDateInput : formatDateInput;
+  const formatValue = isBirthDate ? normalizeBirthDateInputDisplay : formatDateInput;
   const normalizeValue = isBirthDate ? normalizeBirthDateInput : normalizeDateInput;
 
   return (
@@ -52,18 +55,19 @@ export function ZodiacDateInput({
         <input
           id={id}
           type="text"
-          inputMode="numeric"
+          inputMode={isBirthDate ? "decimal" : "numeric"}
           autoComplete={resolvedAutoComplete}
           autoCorrect="off"
           spellCheck={false}
           disabled={disabled}
           value={value}
           onChange={(event) => onChange(formatValue(event.target.value))}
-          onBlur={() => onChange(normalizeValue(value))}
-          placeholder="ДД.ММ.ГГГГ"
+          onBlur={(event) => onChange(normalizeValue(event.currentTarget.value))}
+          placeholder={isBirthDate ? "15.06.1998" : "ДД.ММ.ГГГГ"}
           aria-label={resolvedAriaLabel}
           data-zodiac-date-input="true"
           data-birth-date-ui={isBirthDate ? BIRTH_DATE_UI_MARKER : undefined}
+          data-birth-date-scope={isBirthDate ? resolvedBirthDateScope : undefined}
           data-date-kind={dateKind}
           className={inputClass}
         />

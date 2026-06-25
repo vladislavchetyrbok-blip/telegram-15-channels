@@ -87,14 +87,20 @@ export function parseBirthDateInput(
 }
 
 export function formatBirthDateInput(value: string): string {
+  return normalizeBirthDateInputDisplay(value);
+}
+
+export function normalizeBirthDateInputDisplay(value: string): string {
   const raw = String(value || "").trim();
   if (!raw) return "";
 
-  const parsed = parseBirthDateInput(raw, { emptyError: "" });
-  if (parsed.ok) return parsed.display;
+  const completeParsed = parseCompleteBirthDateInput(raw);
+  if (completeParsed.ok) return completeParsed.display;
 
   const isoDraft = formatIsoBirthDateDraft(raw);
   if (isoDraft) return isoDraft;
+
+  if (/[.,]/.test(raw)) return formatDisplayBirthDateDraft(raw);
 
   const digits = raw.replace(/\D/g, "").slice(0, 8);
   if (!digits) return "";
@@ -111,7 +117,7 @@ export function formatBirthDateInput(value: string): string {
 
 export function normalizeBirthDateInput(value: string): string {
   const parsed = parseBirthDateInput(value, { emptyError: "" });
-  return parsed.ok ? parsed.display : formatBirthDateInput(value);
+  return parsed.ok ? parsed.display : normalizeBirthDateInputDisplay(value);
 }
 
 export function parseBirthDateInputToIso(value: string): string | null {
@@ -145,6 +151,64 @@ function formatIsoBirthDateDraft(value: string): string {
   if (parts.length === 1) return year;
   if (parts.length === 2) return `${year}-${month}`;
   return `${year}-${month}-${day}`;
+}
+
+function formatDisplayBirthDateDraft(value: string): string {
+  const cleaned = value
+    .trim()
+    .replace(/\s+/g, "")
+    .replace(/,/g, ".")
+    .replace(/[^\d.]/g, "");
+  if (!cleaned) return "";
+
+  const parts = cleaned.split(".");
+  const day = (parts[0] ?? "").replace(/\D/g, "").slice(0, 2);
+  if (parts.length <= 1) return formatDigitBirthDateDraft(day);
+
+  const monthSource = (parts[1] ?? "").replace(/\D/g, "");
+  const month = monthSource.slice(0, 2);
+  const overflowYear = monthSource.slice(2);
+  const year = `${overflowYear}${parts.slice(2).join("")}`.replace(/\D/g, "").slice(0, 4);
+
+  let display = `${day}.`;
+  if (month) display += month;
+  if (parts.length >= 3 || overflowYear || year) display += `.${year}`;
+  return display;
+}
+
+function formatDigitBirthDateDraft(digits: string): string {
+  if (digits.length <= 2) return digits;
+  if (digits.length <= 4) return `${digits.slice(0, 2)}.${digits.slice(2)}`;
+  return `${digits.slice(0, 2)}.${digits.slice(2, 4)}.${digits.slice(4, 8)}`;
+}
+
+function parseCompleteBirthDateInput(value: string): BirthDateInputParseResult {
+  const raw = value.trim().replace(/\s+/g, "");
+
+  const iso = raw.match(/^(\d{4})[-./](\d{1,2})[-./](\d{1,2})$/);
+  if (iso) return validateBirthDateParts(Number(iso[3]), Number(iso[2]), Number(iso[1]));
+
+  const display = raw.match(/^(\d{1,2})[-./](\d{1,2})[-./](\d{4})$/);
+  if (display) return validateBirthDateParts(Number(display[1]), Number(display[2]), Number(display[3]));
+
+  const digits = raw.replace(/\D/g, "");
+  if (digits.length === 8) {
+    const dayFirst = validateBirthDateParts(
+      Number(digits.slice(0, 2)),
+      Number(digits.slice(2, 4)),
+      Number(digits.slice(4, 8)),
+      false,
+    );
+    if (dayFirst.ok) return dayFirst;
+
+    return validateBirthDateParts(
+      Number(digits.slice(6, 8)),
+      Number(digits.slice(4, 6)),
+      Number(digits.slice(0, 4)),
+    );
+  }
+
+  return { ok: false, error: "Введите дату в формате ДД.ММ.ГГГГ." };
 }
 
 function parseBirthDateParts(value: string): { day: number; month: number; year: number } | null {
