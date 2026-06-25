@@ -292,6 +292,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "План VIP-границы",
+    href: "/dashboard/networks/zodiac/vip-access-boundary-implementation-plan",
+    icon: ShieldCheck,
+    caption: "Package 157 - план внедрения server-side VIP boundary без оплаты и без unlock.",
+    tone: "cyan",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,

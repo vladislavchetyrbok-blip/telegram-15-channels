@@ -72,6 +72,7 @@ const ROUTES = {
   publicBotProfileLaunchPackaging: "/dashboard/networks/zodiac/public-bot-profile-launch-packaging",
   paywallReadiness: "/dashboard/networks/zodiac/paywall-readiness",
   entitlementEnforcementDesign: "/dashboard/networks/zodiac/entitlement-enforcement-design",
+  vipAccessBoundaryImplementationPlan: "/dashboard/networks/zodiac/vip-access-boundary-implementation-plan",
   vipCompatibilityReport: "/vip-compatibility-report",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
@@ -668,6 +669,18 @@ async function main() {
     assertIncludes(pages.entitlementEnforcementDesign, "Нет вызова Telegram API", "telegram boundary");
     assertIncludes(pages.entitlementEnforcementDesign, "Нет клиентской VIP-разблокировки", "client unlock boundary");
     assertIncludes(pages.entitlementEnforcementDesign, 'data-boundary="no-client-vip-unlock"', "client unlock data boundary");
+    assertIncludes(pages.vipAccessBoundaryImplementationPlan, "План внедрения границы VIP-доступа", "vip boundary implementation plan title");
+    assertIncludes(pages.vipAccessBoundaryImplementationPlan, "Только план внедрения", "vip boundary implementation plan classification");
+    assertIncludes(pages.vipAccessBoundaryImplementationPlan, "Нет реальной VIP-разблокировки", "vip unlock boundary");
+    assertIncludes(pages.vipAccessBoundaryImplementationPlan, "Нет оплаты", "payment boundary");
+    assertIncludes(pages.vipAccessBoundaryImplementationPlan, "Нет Telegram Stars invoice", "stars invoice boundary");
+    assertIncludes(pages.vipAccessBoundaryImplementationPlan, "Нет successful_payment handler", "successful payment boundary");
+    assertIncludes(pages.vipAccessBoundaryImplementationPlan, "Нет entitlement creation", "entitlement creation boundary");
+    assertIncludes(pages.vipAccessBoundaryImplementationPlan, "Нет записи в базу данных", "database boundary");
+    assertIncludes(pages.vipAccessBoundaryImplementationPlan, "Нет миграции схемы базы данных", "db schema boundary");
+    assertIncludes(pages.vipAccessBoundaryImplementationPlan, "Нет вызова Telegram API", "telegram boundary");
+    assertIncludes(pages.vipAccessBoundaryImplementationPlan, 'data-boundary="implementation-plan-only"', "implementation plan data boundary");
+    assertIncludes(pages.vipAccessBoundaryImplementationPlan, "VIP Couple Calendar", "vip couple calendar target");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");
