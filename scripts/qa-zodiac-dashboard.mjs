@@ -73,6 +73,7 @@ const ROUTES = {
   paywallReadiness: "/dashboard/networks/zodiac/paywall-readiness",
   entitlementEnforcementDesign: "/dashboard/networks/zodiac/entitlement-enforcement-design",
   vipAccessBoundaryImplementationPlan: "/dashboard/networks/zodiac/vip-access-boundary-implementation-plan",
+  vipAccessGuardSkeleton: "/dashboard/networks/zodiac/vip-access-guard-skeleton",
   vipCompatibilityReport: "/vip-compatibility-report",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
@@ -681,6 +682,19 @@ async function main() {
     assertIncludes(pages.vipAccessBoundaryImplementationPlan, "Нет вызова Telegram API", "telegram boundary");
     assertIncludes(pages.vipAccessBoundaryImplementationPlan, 'data-boundary="implementation-plan-only"', "implementation plan data boundary");
     assertIncludes(pages.vipAccessBoundaryImplementationPlan, "VIP Couple Calendar", "vip couple calendar target");
+    assertIncludes(pages.vipAccessGuardSkeleton, "Skeleton проверки VIP-доступа", "заголовок skeleton проверки VIP-доступа");
+    assertIncludes(pages.vipAccessGuardSkeleton, "Доступ всегда закрыт", "классификация deny-by-default");
+    assertIncludes(pages.vipAccessGuardSkeleton, "Нет реальной VIP-разблокировки", "граница VIP-разблокировки");
+    assertIncludes(pages.vipAccessGuardSkeleton, "Нет оплаты", "граница оплаты");
+    assertIncludes(pages.vipAccessGuardSkeleton, "Нет Telegram Stars invoice", "граница Telegram Stars invoice");
+    assertIncludes(pages.vipAccessGuardSkeleton, "Нет successful_payment handler", "граница successful_payment");
+    assertIncludes(pages.vipAccessGuardSkeleton, "Нет entitlement creation", "граница entitlement creation");
+    assertIncludes(pages.vipAccessGuardSkeleton, "Нет записи в базу данных", "граница базы данных");
+    assertIncludes(pages.vipAccessGuardSkeleton, "Нет миграции схемы базы данных", "граница схемы базы данных");
+    assertIncludes(pages.vipAccessGuardSkeleton, "Нет вызова Telegram API", "граница Telegram API");
+    assertIncludes(pages.vipAccessGuardSkeleton, "allowed=false", "результат deny-by-default guard");
+    assertIncludes(pages.vipAccessGuardSkeleton, 'data-boundary="guard-always-denies"', "data-boundary deny-by-default");
+    assertIncludes(pages.vipAccessGuardSkeleton, "/miniapp/love-reading-preview", "fallback route бесплатного preview");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");

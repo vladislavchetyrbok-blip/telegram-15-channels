@@ -174,6 +174,7 @@ export default function PublicBotProfileLaunchPackagingPage() {
             <Link href="/dashboard/networks/zodiac/paywall-readiness" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Подготовка paywall</Link>
             <Link href="/dashboard/networks/zodiac/entitlement-enforcement-design" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Дизайн VIP-доступа</Link>
             <Link href="/dashboard/networks/zodiac/vip-access-boundary-implementation-plan" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">План VIP-границы</Link>
+            <Link href="/dashboard/networks/zodiac/vip-access-guard-skeleton" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Skeleton VIP-guard</Link>
           </div>
         </div>
       </div>

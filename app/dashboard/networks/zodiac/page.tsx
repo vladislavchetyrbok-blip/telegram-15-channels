@@ -299,6 +299,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Skeleton VIP-guard",
+    href: "/dashboard/networks/zodiac/vip-access-guard-skeleton",
+    icon: ShieldCheck,
+    caption: "Package 158 - deny-by-default skeleton проверки VIP-доступа без production gating.",
+    tone: "cyan",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,
