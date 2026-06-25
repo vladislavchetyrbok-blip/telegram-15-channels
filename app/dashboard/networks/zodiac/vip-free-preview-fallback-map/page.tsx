@@ -1,33 +1,37 @@
 import Link from "next/link";
-import { FileSearch, ListChecks, LockKeyhole, Route, ShieldCheck, Split } from "lucide-react";
+import { ArrowRight, FileSearch, ListChecks, LockKeyhole, Route, ShieldCheck, Split } from "lucide-react";
 import {
-  APHRODITE_VIP_GUARD_INTEGRATION_CLASSIFICATION,
-  getAphroditeVipGuardIntegrationBoundaries,
-  getAphroditeVipGuardIntegrationNextSteps,
-  getAphroditeVipGuardIntegrationQaItems,
-  getAphroditeVipGuardIntegrationRules,
-  getAphroditeVipGuardIntegrationSurfaces,
-} from "@/lib/zodiac/aphrodite-vip-guard-integration-review";
+  APHRODITE_VIP_FALLBACK_CLASSIFICATION,
+  APHRODITE_VIP_FREE_PREVIEW_FALLBACK_ROUTE,
+  getAphroditeVipFallbackBoundaries,
+  getAphroditeVipFallbackNextSteps,
+  getAphroditeVipFallbackQaItems,
+  getAphroditeVipFallbackRules,
+  getAphroditeVipFallbackSurfaces,
+} from "@/lib/zodiac/aphrodite-vip-free-preview-fallback-map";
 import { checkAphroditeVipAccessSkeleton } from "@/lib/zodiac/aphrodite-vip-access-guard-skeleton";
+import { getAphroditeVipGuardIntegrationSurfaces } from "@/lib/zodiac/aphrodite-vip-guard-integration-review";
 
 export const metadata = {
-  title: "Review интеграции VIP-guard",
+  title: "Карта fallback для VIP-разделов",
 };
 
-const surfaces = getAphroditeVipGuardIntegrationSurfaces();
-const rules = getAphroditeVipGuardIntegrationRules();
-const qaItems = getAphroditeVipGuardIntegrationQaItems();
-const boundaries = getAphroditeVipGuardIntegrationBoundaries();
-const nextSteps = getAphroditeVipGuardIntegrationNextSteps();
-const futureSurfaces = surfaces.filter((surface) => surface.futureIntegrationStatus.includes("guard") || surface.futureIntegrationStatus.includes("server"));
-const mustRemainOpenSurfaces = surfaces.filter((surface) => surface.mustRemainOpen);
-const blockedShortcuts = Array.from(new Set(rules.flatMap((rule) => rule.blockedShortcut)));
-const placementCategories = Array.from(new Set(surfaces.flatMap((surface) => surface.futureGuardPlacement)));
+const surfaces = getAphroditeVipFallbackSurfaces();
+const rules = getAphroditeVipFallbackRules();
+const qaItems = getAphroditeVipFallbackQaItems();
+const boundaries = getAphroditeVipFallbackBoundaries();
+const nextSteps = getAphroditeVipFallbackNextSteps();
+const integrationSurfaces = getAphroditeVipGuardIntegrationSurfaces();
+
+const freeSurfaces = surfaces.filter((surface) => surface.mustRemainOpen);
+const futureVipSurfaces = surfaces.filter((surface) => surface.futureGuardRequired);
+const fallbackMessages = Array.from(new Set(surfaces.map((surface) => surface.visibleFallbackMessage)));
+const blockedFailureModes = Array.from(new Set(rules.flatMap((rule) => rule.blockedFailureModes)));
 const sampleDecisions = (["full-love-report", "vip-couple-calendar", "vip-numerology"] as const).map((product) =>
   checkAphroditeVipAccessSkeleton({
     product,
     source: "dashboard",
-    requestedRoute: "/dashboard/networks/zodiac/vip-guard-integration-review",
+    requestedRoute: "/dashboard/networks/zodiac/vip-free-preview-fallback-map",
     mockClientVipFlag: true,
     mockQueryVipFlag: true,
     mockPaymentSuccess: true,
@@ -41,20 +45,30 @@ const riskLabel = {
   critical: "критический",
 } as const;
 
-export default function AphroditeVipGuardIntegrationReviewPage() {
+const actionLabel = {
+  "show-free-preview": "показать бесплатный preview",
+  "show-locked-teaser": "показать locked teaser",
+  "redirect-to-free-preview": "перевести в free preview",
+  "deny-with-safe-message": "deny с безопасным сообщением",
+  "owner-review-required": "нужен owner review",
+  "keep-open": "оставить открытым",
+} as const;
+
+export default function AphroditeVipFreePreviewFallbackMapPage() {
   return (
     <div className="min-h-screen bg-black p-8 text-slate-200">
       <div className="mx-auto max-w-6xl space-y-10">
         <header className="space-y-4">
           <div className="inline-flex items-center gap-2 rounded-full border border-slate-800 bg-slate-900 px-3 py-1 text-xs text-rose-300">
             <FileSearch className="h-4 w-4" />
-            <span>Aphrodite / VIP guard / review</span>
+            <span>Aphrodite / VIP fallback / readiness</span>
           </div>
-          <h1 className="text-3xl font-light tracking-tight text-white">Review интеграции VIP-guard</h1>
-          <p className="text-sm font-medium text-rose-300/90">{APHRODITE_VIP_GUARD_INTEGRATION_CLASSIFICATION}</p>
+          <h1 className="text-3xl font-light tracking-tight text-white">Карта fallback для VIP-разделов</h1>
+          <p className="text-sm font-medium text-rose-300/90">{APHRODITE_VIP_FALLBACK_CLASSIFICATION}</p>
           <p className="max-w-3xl text-lg leading-8 text-slate-400">
-            Package 160 описывает, куда Package 158 deny-by-default guard можно будет безопасно подключать позже. Эта страница не
-            открывает VIP, не создаёт entitlement, не добавляет оплату и не меняет пользовательские production flows.
+            Package 161 фиксирует, что пользователь видит при отсутствии VIP-доступа: бесплатный preview, понятное
+            объяснение, безопасный маршрут назад и отсутствие пустого экрана. Это только карта fallback, без оплаты,
+            без entitlement creation и без подключения guard к production.
           </p>
           <div className="flex flex-wrap gap-2 text-xs">
             {boundaries.map((boundary) => (
@@ -75,21 +89,21 @@ export default function AphroditeVipGuardIntegrationReviewPage() {
             <h2 className="text-xl font-medium text-white">Сводка</h2>
           </div>
           <div className="mt-4 grid gap-3 text-sm md:grid-cols-4">
-            <Metric label="Поверхности" value={String(surfaces.length)} />
-            <Metric label="Оставить открытыми" value={String(mustRemainOpenSurfaces.length)} />
-            <Metric label="Правила обходов" value={String(blockedShortcuts.length)} />
-            <Metric label="Guard sample" value="allowed=false" />
+            <Metric label="Fallback surfaces" value={String(surfaces.length)} />
+            <Metric label="Must remain open" value={String(freeSurfaces.length)} />
+            <Metric label="Future VIP fallback" value={String(futureVipSurfaces.length)} />
+            <Metric label="Fallback route" value={APHRODITE_VIP_FREE_PREVIEW_FALLBACK_ROUTE} />
           </div>
           <p className="mt-4 text-sm leading-6 text-slate-400">
-            Review отвечает, какие free funnel места нельзя закрывать, где позже нужен server-side entitlement check, где нужен fallback
-            на бесплатный preview и какие client-side shortcuts должны приводить к deny.
+            Если VIP-доступа нет, пользователь не должен попасть в пустоту или ошибку. Он должен видеть безопасный
+            fallback: бесплатный preview, понятное объяснение и мягкий путь назад.
           </p>
         </section>
 
         <section className="rounded-lg border border-slate-800 bg-slate-900 p-6">
           <div className="flex items-center gap-2">
             <Route className="h-5 w-5 text-rose-400" />
-            <h2 className="text-xl font-medium text-white">Текущие поверхности</h2>
+            <h2 className="text-xl font-medium text-white">Fallback surfaces</h2>
           </div>
           <div className="mt-5 grid gap-4 md:grid-cols-2">
             {surfaces.map((surface) => (
@@ -104,46 +118,28 @@ export default function AphroditeVipGuardIntegrationReviewPage() {
                   </span>
                 </div>
                 <p className="mt-3 text-sm leading-6 text-slate-300">{surface.currentState}</p>
-                <div className="mt-3 text-xs text-emerald-300">
-                  {surface.mustRemainOpen ? "mustRemainOpen: да" : "future guard: требуется позже"}
+                <div className="mt-3 grid gap-2 text-xs sm:grid-cols-2">
+                  <div className="rounded-md border border-slate-800 bg-slate-950 px-3 py-2 text-slate-300">
+                    действие: {actionLabel[surface.fallbackAction]}
+                  </div>
+                  <div className="rounded-md border border-slate-800 bg-slate-950 px-3 py-2 text-emerald-300">
+                    fallback: {surface.fallbackRoute}
+                  </div>
                 </div>
-                <div className="mt-1 text-xs text-slate-500">fallback: {surface.freeFallback}</div>
+                <p className="mt-3 text-xs leading-5 text-slate-500">{surface.visibleFallbackMessage}</p>
               </article>
             ))}
           </div>
         </section>
 
         <section className="grid gap-4 lg:grid-cols-2">
-          <div className="rounded-lg border border-slate-800 bg-slate-900 p-6">
-            <div className="flex items-center gap-2">
-              <Split className="h-5 w-5 text-rose-400" />
-              <h2 className="text-xl font-medium text-white">Будущие места guard</h2>
-            </div>
-            <ul className="mt-4 list-disc space-y-2 pl-5 text-sm text-slate-300">
-              {placementCategories.map((placement) => (
-                <li key={placement}>{placement}</li>
-              ))}
-            </ul>
-            <div className="mt-5 space-y-3">
-              {futureSurfaces.slice(0, 6).map((surface) => (
-                <div key={surface.id} className="rounded-lg border border-slate-800 bg-black/30 p-3">
-                  <div className="text-sm font-medium text-white">{surface.label}</div>
-                  <div className="mt-1 text-xs leading-5 text-slate-500">{surface.futureGuardPlacement.join(", ")}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
           <div className="rounded-lg border border-emerald-900/40 bg-emerald-950/10 p-6">
             <div className="flex items-center gap-2">
               <ShieldCheck className="h-5 w-5 text-emerald-400" />
-              <h2 className="text-xl font-medium text-white">Нельзя закрывать</h2>
+              <h2 className="text-xl font-medium text-white">Free routes that must remain open</h2>
             </div>
-            <p className="mt-3 text-sm leading-6 text-slate-300">
-              Эти поверхности нужны для бесплатной воронки, fallback и ручной проверки. Guard не должен закрывать их в будущей интеграции.
-            </p>
             <div className="mt-4 space-y-2">
-              {mustRemainOpenSurfaces.map((surface) => (
+              {freeSurfaces.map((surface) => (
                 <div key={surface.id} className="rounded-lg border border-slate-800 bg-black/30 p-3">
                   <div className="text-sm font-medium text-emerald-200">{surface.label}</div>
                   <div className="mt-1 text-xs text-slate-500">{surface.fileOrRoute}</div>
@@ -151,19 +147,22 @@ export default function AphroditeVipGuardIntegrationReviewPage() {
               ))}
             </div>
           </div>
-        </section>
 
-        <section className="rounded-lg border border-rose-900/40 bg-rose-950/20 p-6">
-          <div className="flex items-center gap-2">
-            <LockKeyhole className="h-5 w-5 text-rose-300" />
-            <h2 className="text-xl font-medium text-rose-100">Заблокированные клиентские обходы</h2>
-          </div>
-          <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-            {blockedShortcuts.map((shortcut) => (
-              <span key={shortcut} className="rounded-md border border-rose-900/50 bg-black/20 px-3 py-2 text-sm text-rose-100/85">
-                {shortcut}
-              </span>
-            ))}
+          <div className="rounded-lg border border-slate-800 bg-slate-900 p-6">
+            <div className="flex items-center gap-2">
+              <Split className="h-5 w-5 text-rose-400" />
+              <h2 className="text-xl font-medium text-white">Future VIP fallback routes</h2>
+            </div>
+            <div className="mt-4 space-y-2">
+              {futureVipSurfaces.map((surface) => (
+                <div key={surface.id} className="rounded-lg border border-slate-800 bg-black/30 p-3">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-sm font-medium text-white">{surface.label}</span>
+                    <span className="text-xs text-emerald-300">{surface.fallbackRoute}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -171,7 +170,37 @@ export default function AphroditeVipGuardIntegrationReviewPage() {
           <div className="rounded-lg border border-slate-800 bg-slate-900 p-6">
             <div className="flex items-center gap-2">
               <ListChecks className="h-5 w-5 text-rose-400" />
-              <h2 className="text-xl font-medium text-white">QA перед реальной интеграцией</h2>
+              <h2 className="text-xl font-medium text-white">Visible fallback messages</h2>
+            </div>
+            <div className="mt-4 space-y-3">
+              {fallbackMessages.map((message) => (
+                <p key={message} className="rounded-lg border border-slate-800 bg-black/30 p-3 text-sm leading-6 text-slate-300">
+                  {message}
+                </p>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-lg border border-rose-900/40 bg-rose-950/20 p-6">
+            <div className="flex items-center gap-2">
+              <LockKeyhole className="h-5 w-5 text-rose-300" />
+              <h2 className="text-xl font-medium text-rose-100">Blocked failure modes</h2>
+            </div>
+            <div className="mt-4 grid gap-2 sm:grid-cols-2">
+              {blockedFailureModes.map((mode) => (
+                <span key={mode} className="rounded-md border border-rose-900/50 bg-black/20 px-3 py-2 text-sm text-rose-100/85">
+                  {mode}
+                </span>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="grid gap-4 lg:grid-cols-2">
+          <div className="rounded-lg border border-slate-800 bg-slate-900 p-6">
+            <div className="flex items-center gap-2">
+              <ListChecks className="h-5 w-5 text-rose-400" />
+              <h2 className="text-xl font-medium text-white">QA requirements</h2>
             </div>
             <div className="mt-4 space-y-4">
               {qaItems.map((item) => (
@@ -190,7 +219,7 @@ export default function AphroditeVipGuardIntegrationReviewPage() {
               <h2 className="text-xl font-medium text-white">Sample deny-by-default</h2>
             </div>
             <p className="mt-3 text-sm leading-6 text-slate-400">
-              Это только демонстрация Package 158 skeleton. Она показывает deny и fallback, но не подключает guard к production.
+              Это display-only проверка Package 158 skeleton. Она показывает deny и fallback, но не подключает guard к production.
             </p>
             <div className="mt-4 space-y-3">
               {sampleDecisions.map((decision) => (
@@ -209,7 +238,7 @@ export default function AphroditeVipGuardIntegrationReviewPage() {
         </section>
 
         <section className="rounded-lg border border-slate-800 bg-slate-900 p-6">
-          <h2 className="text-xl font-medium text-white">Границы безопасности</h2>
+          <h2 className="text-xl font-medium text-white">Safety boundaries</h2>
           <div className="mt-5 space-y-2">
             {boundaries.map((boundary) => (
               <div key={boundary.dataBoundary} data-boundary={boundary.dataBoundary} className="flex items-start justify-between gap-4 rounded-lg border border-slate-800 bg-black/30 p-3">
@@ -228,6 +257,19 @@ export default function AphroditeVipGuardIntegrationReviewPage() {
         </section>
 
         <section className="rounded-lg border border-slate-800 bg-slate-900 p-6">
+          <h2 className="text-xl font-medium text-white">Связь с Package 160</h2>
+          <p className="mt-3 text-sm leading-6 text-slate-400">
+            Package 160 описывает будущие места guard. Package 161 уточняет, какой fallback должен быть виден, если
+            доступ не подтверждён. Найдено review surfaces: {integrationSurfaces.length}.
+          </p>
+          <div className="mt-4">
+            <Link href="/dashboard/networks/zodiac/vip-guard-integration-review" className="inline-flex items-center gap-2 text-sm text-indigo-400 underline underline-offset-4 hover:text-indigo-300">
+              Review VIP-guard <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </section>
+
+        <section className="rounded-lg border border-slate-800 bg-slate-900 p-6">
           <h2 className="text-xl font-medium text-white">Следующий рекомендуемый пакет</h2>
           <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-300">
             {nextSteps.map((step) => (
@@ -239,7 +281,7 @@ export default function AphroditeVipGuardIntegrationReviewPage() {
               </li>
             ))}
           </ul>
-          <p className="mt-3 text-xs text-slate-500">Package 161 не начинается автоматически.</p>
+          <p className="mt-3 text-xs text-slate-500">Package 162 не начинается автоматически.</p>
         </section>
 
         <div className="border-t border-slate-800/50 pt-4">
@@ -247,12 +289,10 @@ export default function AphroditeVipGuardIntegrationReviewPage() {
           <div className="flex flex-wrap gap-3 text-sm">
             <Link href="/dashboard/networks/zodiac" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Zodiac Network</Link>
             <Link href="/dashboard/networks/zodiac/vip-access-guard-skeleton" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Skeleton VIP-guard</Link>
-            <Link href="/dashboard/networks/zodiac/vip-free-preview-fallback-map" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Карта fallback VIP</Link>
+            <Link href="/dashboard/networks/zodiac/vip-guard-integration-review" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Review VIP-guard</Link>
             <Link href="/dashboard/networks/zodiac/vip-access-boundary-implementation-plan" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">План VIP-границы</Link>
             <Link href="/dashboard/networks/zodiac/paywall-readiness" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Подготовка paywall</Link>
             <Link href="/dashboard/networks/zodiac/entitlement-enforcement-design" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Дизайн VIP-доступа</Link>
-            <Link href="/dashboard/networks/zodiac/aphrodite-product-remediation" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Aphrodite Product Remediation</Link>
-            <Link href="/dashboard/networks/zodiac/first-result-experience" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">First Result Experience</Link>
             <Link href="/miniapp/love-reading-preview" className="text-rose-300 underline underline-offset-4 hover:text-rose-200">Free Love Reading Preview</Link>
           </div>
         </div>
@@ -265,7 +305,7 @@ function Metric({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-lg border border-slate-800 bg-black/30 p-4">
       <div className="text-xs uppercase tracking-wide text-slate-500">{label}</div>
-      <div className="mt-2 text-2xl font-semibold text-white">{value}</div>
+      <div className="mt-2 text-lg font-semibold text-white">{value}</div>
     </div>
   );
 }

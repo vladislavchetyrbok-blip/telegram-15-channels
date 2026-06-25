@@ -75,6 +75,7 @@ const ROUTES = {
   vipAccessBoundaryImplementationPlan: "/dashboard/networks/zodiac/vip-access-boundary-implementation-plan",
   vipAccessGuardSkeleton: "/dashboard/networks/zodiac/vip-access-guard-skeleton",
   vipGuardIntegrationReview: "/dashboard/networks/zodiac/vip-guard-integration-review",
+  vipFreePreviewFallbackMap: "/dashboard/networks/zodiac/vip-free-preview-fallback-map",
   vipCompatibilityReport: "/vip-compatibility-report",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
@@ -710,6 +711,16 @@ async function main() {
     assertIncludes(pages.vipGuardIntegrationReview, "Нет вызова Telegram API", "граница Telegram API");
     assertIncludes(pages.vipGuardIntegrationReview, "allowed=false", "результат deny-by-default guard review");
     assertIncludes(pages.vipGuardIntegrationReview, "/miniapp/love-reading-preview", "fallback route review");
+    assertIncludes(pages.vipFreePreviewFallbackMap, "Карта fallback для VIP-разделов", "vip fallback map title");
+    assertIncludes(pages.vipFreePreviewFallbackMap, "Только карта fallback", "vip fallback map classification");
+    assertIncludes(pages.vipFreePreviewFallbackMap, "VIP не открывается", "vip not unlocked boundary");
+    assertIncludes(pages.vipFreePreviewFallbackMap, "Нет реальной VIP-разблокировки", "vip unlock boundary");
+    assertIncludes(pages.vipFreePreviewFallbackMap, "Нет оплаты", "payment boundary");
+    assertIncludes(pages.vipFreePreviewFallbackMap, "Нет Telegram Stars invoice", "stars invoice boundary");
+    assertIncludes(pages.vipFreePreviewFallbackMap, "Нет successful_payment handler", "successful payment boundary");
+    assertIncludes(pages.vipFreePreviewFallbackMap, "Нет entitlement creation", "entitlement creation boundary");
+    assertIncludes(pages.vipFreePreviewFallbackMap, "Нет записи в базу данных", "database boundary");
+    assertIncludes(pages.vipFreePreviewFallbackMap, "Нет вызова Telegram API", "telegram boundary");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");

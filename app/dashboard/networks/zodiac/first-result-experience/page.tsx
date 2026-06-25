@@ -192,6 +192,7 @@ export default function FirstResultExperiencePage() {
             <Link href="/dashboard/networks/zodiac/vip-access-boundary-implementation-plan" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">План VIP-границы</Link>
             <Link href="/dashboard/networks/zodiac/vip-access-guard-skeleton" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Skeleton VIP-guard</Link>
             <Link href="/dashboard/networks/zodiac/vip-guard-integration-review" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Review VIP-guard</Link>
+            <Link href="/dashboard/networks/zodiac/vip-free-preview-fallback-map" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Карта fallback VIP</Link>
             <Link href="/vip-compatibility-report" className="inline-flex items-center gap-1 text-rose-300 hover:text-rose-200 underline underline-offset-4">AI Love Reading Preview <ArrowRight className="w-3.5 h-3.5" /></Link>
           </div>
           <p className="text-xs text-slate-600">

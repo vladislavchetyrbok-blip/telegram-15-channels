@@ -313,6 +313,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Карта fallback VIP",
+    href: "/dashboard/networks/zodiac/vip-free-preview-fallback-map",
+    icon: ShieldCheck,
+    caption: "Package 161 - карта free preview fallback для будущих VIP-разделов.",
+    tone: "cyan",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,
