@@ -195,6 +195,7 @@ export default function AphroditePaywallReadinessPage() {
             <Link href="/dashboard/networks/zodiac/entitlement-enforcement-design" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Дизайн VIP-доступа</Link>
             <Link href="/dashboard/networks/zodiac/vip-access-boundary-implementation-plan" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">План VIP-границы</Link>
             <Link href="/dashboard/networks/zodiac/vip-access-guard-skeleton" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Skeleton VIP-guard</Link>
+            <Link href="/dashboard/networks/zodiac/vip-guard-integration-review" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Review VIP-guard</Link>
             <Link href="/miniapp/love-reading-preview" className="inline-flex items-center gap-1 text-rose-300 underline underline-offset-4 hover:text-rose-200">
               Love Reading preview <ArrowRight className="h-3.5 w-3.5" />
             </Link>

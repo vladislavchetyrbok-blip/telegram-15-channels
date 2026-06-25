@@ -74,6 +74,7 @@ const ROUTES = {
   entitlementEnforcementDesign: "/dashboard/networks/zodiac/entitlement-enforcement-design",
   vipAccessBoundaryImplementationPlan: "/dashboard/networks/zodiac/vip-access-boundary-implementation-plan",
   vipAccessGuardSkeleton: "/dashboard/networks/zodiac/vip-access-guard-skeleton",
+  vipGuardIntegrationReview: "/dashboard/networks/zodiac/vip-guard-integration-review",
   vipCompatibilityReport: "/vip-compatibility-report",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
@@ -697,6 +698,18 @@ async function main() {
     assertIncludes(pages.vipAccessGuardSkeleton, "allowed=false", "результат deny-by-default guard");
     assertIncludes(pages.vipAccessGuardSkeleton, 'data-boundary="guard-always-denies"', "data-boundary deny-by-default");
     assertIncludes(pages.vipAccessGuardSkeleton, "/miniapp/love-reading-preview", "fallback route бесплатного preview");
+    assertIncludes(pages.vipGuardIntegrationReview, "Review интеграции VIP-guard", "заголовок review интеграции VIP-guard");
+    assertIncludes(pages.vipGuardIntegrationReview, "Только review интеграции", "классификация review интеграции");
+    assertIncludes(pages.vipGuardIntegrationReview, "Guard не подключён к production", "граница guard не подключён к production");
+    assertIncludes(pages.vipGuardIntegrationReview, "Нет реальной VIP-разблокировки", "граница VIP-разблокировки");
+    assertIncludes(pages.vipGuardIntegrationReview, "Нет оплаты", "граница оплаты");
+    assertIncludes(pages.vipGuardIntegrationReview, "Нет Telegram Stars invoice", "граница Telegram Stars invoice");
+    assertIncludes(pages.vipGuardIntegrationReview, "Нет successful_payment handler", "граница successful_payment");
+    assertIncludes(pages.vipGuardIntegrationReview, "Нет entitlement creation", "граница entitlement creation");
+    assertIncludes(pages.vipGuardIntegrationReview, "Нет записи в базу данных", "граница базы данных");
+    assertIncludes(pages.vipGuardIntegrationReview, "Нет вызова Telegram API", "граница Telegram API");
+    assertIncludes(pages.vipGuardIntegrationReview, "allowed=false", "результат deny-by-default guard review");
+    assertIncludes(pages.vipGuardIntegrationReview, "/miniapp/love-reading-preview", "fallback route review");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");

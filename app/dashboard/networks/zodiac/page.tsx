@@ -306,6 +306,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Review VIP-guard",
+    href: "/dashboard/networks/zodiac/vip-guard-integration-review",
+    icon: ShieldCheck,
+    caption: "Package 160 - review будущей интеграции VIP-guard без подключения к production.",
+    tone: "cyan",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,

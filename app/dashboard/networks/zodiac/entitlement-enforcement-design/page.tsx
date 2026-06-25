@@ -234,6 +234,7 @@ export default function AphroditeEntitlementEnforcementDesignPage() {
             <Link href="/dashboard/networks/zodiac/public-bot-profile-launch-packaging" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Public Bot Launch Packaging</Link>
             <Link href="/dashboard/networks/zodiac/vip-access-boundary-implementation-plan" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">План VIP-границы</Link>
             <Link href="/dashboard/networks/zodiac/vip-access-guard-skeleton" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Skeleton VIP-guard</Link>
+            <Link href="/dashboard/networks/zodiac/vip-guard-integration-review" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Review VIP-guard</Link>
           </div>
         </div>
       </div>
