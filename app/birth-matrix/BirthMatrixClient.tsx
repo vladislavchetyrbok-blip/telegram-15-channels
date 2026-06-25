@@ -63,7 +63,7 @@ export function BirthMatrixClient() {
                   value={birthDate}
                   onChange={setBirthDate}
                   hasError={Boolean(birthDateError)}
-                  hint="ДД.ММ.ГГГГ, можно выбрать 1900 — сегодня"
+                  hint="Формат: ДД.ММ.ГГГГ. Например: 15.06.1998. Можно ввести дату рождения с 1900 года до сегодняшнего дня."
                 />
                 {birthDateError ? <p className="text-xs font-semibold text-rose-300">{birthDateError}</p> : null}
               </div>

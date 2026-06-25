@@ -58,7 +58,6 @@ import { findSign, sectionForFeature, vipDetailFeatureIds } from "./zodiac-mini-
 import {
   cityLabel,
   createInitialPerson,
-  formatDateInput,
   formatTimeInput,
   genderSuffix,
   getCityById,
@@ -79,7 +78,7 @@ import {
 } from "./zodiac-mini-app/MainMenuSections";
 import { MoreFeatureNavigation } from "./zodiac-mini-app/MoreFeatureNavigation";
 import { ZodiacDateInput } from "./zodiac-mini-app/ZodiacDateInput";
-import { parseBirthDateInput } from "@/lib/zodiac-birth-date-range";
+import { formatBirthDateInput as formatSharedBirthDateInput, parseBirthDateInput } from "@/lib/zodiac-birth-date-range";
 import { ProfileRetentionPanel, type ProfileQuickTarget } from "./zodiac-mini-app/ProfileRetentionPanel";
 import { useZodiacMiniAppRetention, type RetentionPanelFocus, type ZodiacRetentionDraft, type ZodiacRetentionItem } from "./zodiac-mini-app/retention";
 import { ResultPanel, ResultTextCard } from "./zodiac-mini-app/ResultCards";
@@ -3581,7 +3580,7 @@ function updateBirthDate(value: PersonState, rawValue: string, onChange: (value:
 }
 
 function formatBirthDateInput(rawValue: string) {
-  return formatDateInput(rawValue);
+  return formatSharedBirthDateInput(rawValue);
 }
 
 

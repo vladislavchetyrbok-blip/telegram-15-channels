@@ -566,7 +566,7 @@ export function LunarRitualFeature({ publicMode, dateKey, onSave, onShare, onEve
           </div>
           {dateBucket === "custom" ? (
             <div className="mt-3">
-              <ZodiacDateInput publicMode={publicMode} value={customDate} onChange={setCustomDate} autoComplete="off" hasError={Boolean(customDate && !selectedDateKey)} />
+              <ZodiacDateInput dateKind="calendar" publicMode={publicMode} value={customDate} onChange={setCustomDate} autoComplete="off" hasError={Boolean(customDate && !selectedDateKey)} />
             </div>
           ) : null}
           {dateBucket === "custom" && !selectedDateKey ? <p className={publicMode ? "mt-2 text-xs text-amber-200" : "mt-2 text-xs text-amber-700"}>Введите дату в формате ДД.ММ.ГГГГ.</p> : null}

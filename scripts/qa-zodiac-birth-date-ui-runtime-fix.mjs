@@ -154,7 +154,7 @@ const birthDateSourceBundle = [
 check("BirthMatrix route no longer uses native date picker", !/type="date"/.test(sources.birthMatrixRoute));
 check("birth-date code has no native date picker left", !/type="date"/.test(birthDateSourceBundle));
 check("text DOB control exposes DD.MM.YYYY placeholder", /placeholder="ДД\.ММ\.ГГГГ"/.test(sources.dateInput));
-check("text DOB control remains autocomplete bday by default", /autoComplete = "bday"/.test(sources.dateInput));
+check("text DOB control remains autocomplete bday by default", /isBirthDate \? "bday" : "off"/.test(sources.dateInput));
 
 check(
   "no hardcoded 2020 birth-date restriction",

@@ -963,7 +963,7 @@ export function ExtendedNatalFeature({
             value={birthDate}
             onChange={updateBirthDate}
             hasError={Boolean(birthDateValidationError)}
-            hint="ДД.ММ.ГГГГ, можно выбрать 1900 — сегодня"
+            hint="Формат: ДД.ММ.ГГГГ. Например: 15.06.1998. Можно ввести дату рождения с 1900 года до сегодняшнего дня."
           />
           {birthDateValidationError ? (
             <p className={publicMode ? "mt-2 text-xs font-semibold text-rose-200" : "mt-2 text-xs font-semibold text-rose-700"}>{birthDateValidationError}</p>
@@ -1295,7 +1295,7 @@ export function VipCoupleCalendarFeature({
         <SignSelect publicMode={publicMode} value={firstSlug} onChange={setFirstSlug} label="Первый знак" />
         <SignSelect publicMode={publicMode} value={secondSlug} onChange={setSecondSlug} label="Второй знак" />
         <VipField publicMode={publicMode} label="Старт">
-          <ZodiacDateInput publicMode={publicMode} value={startDate} onChange={setStartDate} autoComplete="off" />
+          <ZodiacDateInput dateKind="calendar" publicMode={publicMode} value={startDate} onChange={setStartDate} autoComplete="off" />
         </VipField>
       </VipInputPanel>
       <PrimaryVipButton publicMode={publicMode} onClick={() => {
@@ -1455,7 +1455,7 @@ export function ExtendedNumerologyFeature({
             value={birthDate}
             onChange={setBirthDate}
             hasError={Boolean(birthDateValidationError)}
-            hint="ДД.ММ.ГГГГ, можно выбрать 1900 — сегодня"
+            hint="Формат: ДД.ММ.ГГГГ. Например: 15.06.1998. Можно ввести дату рождения с 1900 года до сегодняшнего дня."
           />
           {birthDateValidationError ? (
             <p className={publicMode ? "mt-2 text-xs font-semibold text-rose-200" : "mt-2 text-xs font-semibold text-rose-700"}>{birthDateValidationError}</p>
@@ -1617,7 +1617,7 @@ export function VipMysticDayFeature({
       <VipInputPanel publicMode={publicMode}>
         <SignSelect publicMode={publicMode} value={signSlug} onChange={setSignSlug} />
         <VipField publicMode={publicMode} label="Дата">
-          <ZodiacDateInput publicMode={publicMode} value={date} onChange={setDate} autoComplete="off" />
+          <ZodiacDateInput dateKind="calendar" publicMode={publicMode} value={date} onChange={setDate} autoComplete="off" />
         </VipField>
         <GoalSelect publicMode={publicMode} value={goal} onChange={setGoal} />
       </VipInputPanel>

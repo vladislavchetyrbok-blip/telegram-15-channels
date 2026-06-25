@@ -10,6 +10,7 @@
  */
 
 export const MIN_BIRTH_DATE_ISO = "1900-01-01";
+export const BIRTH_DATE_UI_MARKER = "v2-global-1900-today";
 
 export interface ParsedBirthDateInput {
   ok: true;
@@ -85,9 +86,65 @@ export function parseBirthDateInput(
   return parsed;
 }
 
+export function formatBirthDateInput(value: string): string {
+  const raw = String(value || "").trim();
+  if (!raw) return "";
+
+  const parsed = parseBirthDateInput(raw, { emptyError: "" });
+  if (parsed.ok) return parsed.display;
+
+  const isoDraft = formatIsoBirthDateDraft(raw);
+  if (isoDraft) return isoDraft;
+
+  const digits = raw.replace(/\D/g, "").slice(0, 8);
+  if (!digits) return "";
+
+  if (digits.length === 8) {
+    const parsedDigits = parseBirthDateInput(digits, { emptyError: "" });
+    if (parsedDigits.ok) return parsedDigits.display;
+  }
+
+  if (digits.length <= 2) return digits;
+  if (digits.length <= 4) return `${digits.slice(0, 2)}.${digits.slice(2)}`;
+  return `${digits.slice(0, 2)}.${digits.slice(2, 4)}.${digits.slice(4)}`;
+}
+
+export function normalizeBirthDateInput(value: string): string {
+  const parsed = parseBirthDateInput(value, { emptyError: "" });
+  return parsed.ok ? parsed.display : formatBirthDateInput(value);
+}
+
+export function parseBirthDateInputToIso(value: string): string | null {
+  return birthDateInputToIsoDate(value);
+}
+
+export function formatBirthDateIsoToDisplay(value: string): string {
+  const parsed = parseBirthDateInput(value, { emptyError: "" });
+  return parsed.ok ? parsed.display : "";
+}
+
 export function birthDateInputToIsoDate(value: string): string | null {
   const parsed = parseBirthDateInput(value, { emptyError: "" });
   return parsed.ok ? parsed.iso : null;
+}
+
+function formatIsoBirthDateDraft(value: string): string {
+  const raw = value.trim().replace(/\s+/g, "");
+  if (!/^\d{4}[-/]/.test(raw)) return "";
+
+  const parts = raw.split(/[-/]/).slice(0, 3);
+  const year = parts[0].replace(/\D/g, "").slice(0, 4);
+  const month = (parts[1] ?? "").replace(/\D/g, "").slice(0, 2);
+  const day = (parts[2] ?? "").replace(/\D/g, "").slice(0, 2);
+
+  if (raw.endsWith("-") || raw.endsWith("/")) {
+    if (parts.length <= 2) return `${year}-`;
+    return `${year}-${month}-`;
+  }
+
+  if (parts.length === 1) return year;
+  if (parts.length === 2) return `${year}-${month}`;
+  return `${year}-${month}-${day}`;
 }
 
 function parseBirthDateParts(value: string): { day: number; month: number; year: number } | null {
