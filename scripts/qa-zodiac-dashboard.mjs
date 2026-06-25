@@ -76,6 +76,7 @@ const ROUTES = {
   vipAccessGuardSkeleton: "/dashboard/networks/zodiac/vip-access-guard-skeleton",
   vipGuardIntegrationReview: "/dashboard/networks/zodiac/vip-guard-integration-review",
   vipFreePreviewFallbackMap: "/dashboard/networks/zodiac/vip-free-preview-fallback-map",
+  productCatalogFinalization: "/dashboard/networks/zodiac/product-catalog-finalization",
   vipCompatibilityReport: "/vip-compatibility-report",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
@@ -721,6 +722,17 @@ async function main() {
     assertIncludes(pages.vipFreePreviewFallbackMap, "Нет entitlement creation", "entitlement creation boundary");
     assertIncludes(pages.vipFreePreviewFallbackMap, "Нет записи в базу данных", "database boundary");
     assertIncludes(pages.vipFreePreviewFallbackMap, "Нет вызова Telegram API", "telegram boundary");
+    assertIncludes(pages.productCatalogFinalization, "Финальный каталог продуктов Aphrodite", "product catalog title");
+    assertIncludes(pages.productCatalogFinalization, "Только каталог продуктов", "product catalog classification");
+    assertIncludes(pages.productCatalogFinalization, "VIP не открывается", "vip not unlocked boundary");
+    assertIncludes(pages.productCatalogFinalization, "Каталог не открывает VIP", "catalog no unlock boundary");
+    assertIncludes(pages.productCatalogFinalization, "Нет реальной VIP-разблокировки", "vip unlock boundary");
+    assertIncludes(pages.productCatalogFinalization, "Нет оплаты", "payment boundary");
+    assertIncludes(pages.productCatalogFinalization, "Нет Telegram Stars invoice", "stars invoice boundary");
+    assertIncludes(pages.productCatalogFinalization, "Нет successful_payment handler", "successful payment boundary");
+    assertIncludes(pages.productCatalogFinalization, "Нет entitlement creation", "entitlement creation boundary");
+    assertIncludes(pages.productCatalogFinalization, "Нет записи в базу данных", "database boundary");
+    assertIncludes(pages.productCatalogFinalization, "Нет вызова Telegram API", "telegram boundary");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");

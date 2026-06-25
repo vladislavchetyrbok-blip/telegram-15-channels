@@ -320,6 +320,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Каталог продуктов",
+    href: "/dashboard/networks/zodiac/product-catalog-finalization",
+    icon: ShieldCheck,
+    caption: "Package 162 - единый каталог продуктов Aphrodite без оплаты и без VIP-разблокировки.",
+    tone: "cyan",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,
