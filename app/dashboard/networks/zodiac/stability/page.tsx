@@ -242,6 +242,10 @@ export default function ZodiacStabilityMatrixPage() {
             <div className="flex items-center gap-2 text-white mb-1"><Activity className="h-4 w-4 text-rose-300" /> Social Content Calendar</div>
             <div className="text-xs text-slate-400">Planning only</div>
           </Link>
+          <Link href="/dashboard/networks/zodiac/public-bot-profile-launch-packaging" className="rounded-lg border border-slate-800 bg-slate-900/50 p-4 hover:bg-slate-800 transition-colors">
+            <div className="flex items-center gap-2 text-white mb-1"><Activity className="h-4 w-4 text-rose-300" /> Public Bot Launch Packaging</div>
+            <div className="text-xs text-slate-400">Manual setup</div>
+          </Link>
           <Link href="/dashboard/networks/zodiac/telegram-initdata-validation" className="rounded-lg border border-slate-800 bg-slate-900/50 p-4 hover:bg-slate-800 transition-colors">
             <div className="flex items-center gap-2 text-white mb-1"><Activity className="h-4 w-4 text-emerald-400" /> Telegram initData</div>
             <div className="text-xs text-slate-400">Validation Foundation</div>

@@ -69,6 +69,7 @@ const ROUTES = {
   socialDraftReviewQueue: "/dashboard/networks/zodiac/social-draft-review-queue",
   socialExportDashboard: "/dashboard/networks/zodiac/social-export-dashboard",
   socialContentCalendar: "/dashboard/networks/zodiac/social-content-calendar",
+  publicBotProfileLaunchPackaging: "/dashboard/networks/zodiac/public-bot-profile-launch-packaging",
   vipCompatibilityReport: "/vip-compatibility-report",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
@@ -631,6 +632,17 @@ async function main() {
     assertIncludes(pages.socialContentCalendar, "No account credentials", "credentials boundary");
     assertIncludes(pages.socialContentCalendar, "No database write", "database boundary");
     assertIncludes(pages.socialContentCalendar, "No active payment CTA", "payment CTA boundary");
+
+    assertIncludes(pages.publicBotProfileLaunchPackaging, "Public Bot Profile / Main Mini App Launch Packaging", "public bot launch page title");
+    assertIncludes(pages.publicBotProfileLaunchPackaging, "Launch packaging only", "public bot launch classification");
+    assertIncludes(pages.publicBotProfileLaunchPackaging, "Manual setup", "manual setup classification");
+    assertIncludes(pages.publicBotProfileLaunchPackaging, "No Telegram API call", "telegram boundary");
+    assertIncludes(pages.publicBotProfileLaunchPackaging, "No BotFather mutation", "botfather boundary");
+    assertIncludes(pages.publicBotProfileLaunchPackaging, "No production launch", "production launch boundary");
+    assertIncludes(pages.publicBotProfileLaunchPackaging, "No database write", "database boundary");
+    assertIncludes(pages.publicBotProfileLaunchPackaging, "No account credentials", "credentials boundary");
+    assertIncludes(pages.publicBotProfileLaunchPackaging, "No active payment CTA", "payment CTA boundary");
+    assertIncludes(pages.publicBotProfileLaunchPackaging, "No real VIP unlock", "vip boundary");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");

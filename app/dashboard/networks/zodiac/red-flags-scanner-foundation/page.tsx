@@ -154,6 +154,7 @@ export default function RedFlagsScannerFoundationPage() {
             <Link href="/dashboard/networks/zodiac/social-draft-review-queue" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Social Draft Review Queue</Link>
             <Link href="/dashboard/networks/zodiac/social-export-dashboard" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Social Export Dashboard</Link>
             <Link href="/dashboard/networks/zodiac/social-content-calendar" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Social Content Calendar</Link>
+            <Link href="/dashboard/networks/zodiac/public-bot-profile-launch-packaging" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Public Bot Launch Packaging</Link>
             <Link href="/dashboard/networks/zodiac/ai-love-reading-foundation" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">AI Love Reading Foundation</Link>
           </div>
         </div>

@@ -271,6 +271,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Public Bot Launch Packaging",
+    href: "/dashboard/networks/zodiac/public-bot-profile-launch-packaging",
+    icon: GitBranch,
+    caption: "Package 146 - Public bot / Mini App launch packaging.",
+    tone: "cyan",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,
