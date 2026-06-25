@@ -90,8 +90,16 @@ export function formatBirthDateInput(value: string): string {
   return normalizeBirthDateInputDisplay(value);
 }
 
+export function sanitizeBirthDateInputDraft(value: string): string {
+  return String(value || "")
+    .replace(/\s+/g, "")
+    .replace(/,/g, ".")
+    .replace(/[^\d.-]/g, "")
+    .slice(0, 10);
+}
+
 export function normalizeBirthDateInputDisplay(value: string): string {
-  const raw = String(value || "").trim();
+  const raw = sanitizeBirthDateInputDraft(value);
   if (!raw) return "";
 
   const completeParsed = parseCompleteBirthDateInput(raw);
@@ -110,9 +118,7 @@ export function normalizeBirthDateInputDisplay(value: string): string {
     if (parsedDigits.ok) return parsedDigits.display;
   }
 
-  if (digits.length <= 2) return digits;
-  if (digits.length <= 4) return `${digits.slice(0, 2)}.${digits.slice(2)}`;
-  return `${digits.slice(0, 2)}.${digits.slice(2, 4)}.${digits.slice(4)}`;
+  return digits;
 }
 
 export function normalizeBirthDateInput(value: string): string {
@@ -215,25 +221,16 @@ function parseBirthDateParts(value: string): { day: number; month: number; year:
   const iso = value.match(/^(\d{4})[-./](\d{1,2})[-./](\d{1,2})$/);
   if (iso) return { year: Number(iso[1]), month: Number(iso[2]), day: Number(iso[3]) };
 
-  const display = value.match(/^(\d{1,2})[-./](\d{1,2})[-./](\d{2}|\d{4})$/);
+  const display = value.match(/^(\d{1,2})[-./](\d{1,2})[-./](\d{4})$/);
   if (display) {
-    const yearRaw = Number(display[3]);
     return {
       day: Number(display[1]),
       month: Number(display[2]),
-      year: display[3].length === 2 ? expandTwoDigitBirthYear(yearRaw) : yearRaw,
+      year: Number(display[3]),
     };
   }
 
   const digits = value.replace(/\D/g, "");
-  if (digits.length === 6) {
-    return {
-      day: Number(digits.slice(0, 2)),
-      month: Number(digits.slice(2, 4)),
-      year: expandTwoDigitBirthYear(Number(digits.slice(4, 6))),
-    };
-  }
-
   if (digits.length === 8) {
     const dayFirst = validateBirthDateParts(
       Number(digits.slice(0, 2)),
@@ -251,10 +248,6 @@ function parseBirthDateParts(value: string): { day: number; month: number; year:
   }
 
   return null;
-}
-
-function expandTwoDigitBirthYear(year: number) {
-  return year <= 29 ? 2000 + year : 1900 + year;
 }
 
 function validateBirthDateParts(

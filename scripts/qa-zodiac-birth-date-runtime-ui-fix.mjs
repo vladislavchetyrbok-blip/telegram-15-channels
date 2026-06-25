@@ -12,6 +12,7 @@ import {
   normalizeBirthDateInputDisplay,
   parseBirthDateInput,
   parseBirthDateInputToIso,
+  sanitizeBirthDateInputDraft,
 } from "../lib/zodiac-birth-date-range.ts";
 
 let passed = 0;
@@ -94,7 +95,7 @@ const birthInputs = [
   {
     label: "Compatibility birth data",
     source: sources.compatibilityMiniApp,
-    checks: [/parseBirthDateInput/, /formatSharedBirthDateInput/, /ZodiacDateInput/, /isReadyToCalculate/, /birthDateScope="compatibility"/],
+    checks: [/parseBirthDateInput/, /sanitizeBirthDateInputDraft/, /ZodiacDateInput/, /isReadyToCalculate/, /birthDateScope="compatibility"/],
   },
   {
     label: "VIP natal chart / birth chart",
@@ -114,7 +115,7 @@ const birthInputs = [
   {
     label: "Shared ZodiacDateInput birth-date mode",
     source: sources.dateInput,
-    checks: [/dateKind = "birth"/, /data-birth-date-ui/, /data-birth-date-scope/, /BIRTH_DATE_UI_MARKER/, /normalizeBirthDateInputDisplay/],
+    checks: [/dateKind = "birth"/, /data-birth-date-ui/, /data-birth-date-scope/, /BIRTH_DATE_UI_MARKER/, /sanitizeBirthDateInputDraft/, /normalizeBirthDateInput/],
   },
 ];
 
@@ -174,9 +175,13 @@ check("1998-06-15 formats to display", formatBirthDateInput("1998-06-15") === "1
 check("15061998 formats to display", formatBirthDateInput("15061998") === "15.06.1998");
 check("1998-06-15 normalizes to display", normalizeBirthDateInput("1998-06-15") === "15.06.1998");
 check("formatBirthDateIsoToDisplay works", formatBirthDateIsoToDisplay("1990-01-01") === "01.01.1990");
+check("manual year draft 1990 remains raw while typing", sanitizeBirthDateInputDraft("1990") === "1990");
+check("manual year draft 1990 is not remapped into DD.MM text", normalizeBirthDateInputDisplay("1990") === "1990");
+check("manual year draft 1990 does not parse as complete date", parseBirthDateInput("1990").ok === false);
 check("partial ISO draft is not remapped into invalid DD.MM text", formatBirthDateInput("1998-") === "1998-");
 check("typing 15.06.1998 keeps partial dots", normalizeBirthDateInputDisplay("15.06.") === "15.06.");
 check("typing 15.06.19 is not auto-expanded", normalizeBirthDateInputDisplay("15.06.19") === "15.06.19");
+check("typing 15.06.19 does not parse as 2019", parseBirthDateInput("15.06.19").ok === false);
 
 const tomorrow = addDaysIso(today, 1);
 check("today accepted", parseBirthDateInput(today).ok === true);
@@ -191,6 +196,8 @@ check("shared input uses text field", /type="text"/.test(sources.dateInput));
 check("shared input exposes concrete birth-date placeholder", /placeholder=\{isBirthDate \? "15\.06\.1998" :/.test(sources.dateInput));
 check("shared input allows dot-friendly birth date typing", /inputMode=\{isBirthDate \? "decimal" : "numeric"\}/.test(sources.dateInput));
 check("birth-date autocomplete defaults to bday", /isBirthDate \? "bday" : "off"/.test(sources.dateInput));
+check("shared birth input stores raw draft on change", /const formatValue = isBirthDate \? sanitizeBirthDateInputDraft : formatDateInput;/.test(sources.dateInput));
+check("shared birth input normalizes only on blur", /const normalizeValue = isBirthDate \? normalizeBirthDateInput : normalizeDateInput;/.test(sources.dateInput));
 check(
   "no hardcoded 2020 birth-date restriction",
   !/min="2020|fromYear:\s*2020|startYear:\s*2020|new Date\(2020|year\s*[<>]=?\s*2020|defaultYear:\s*2020/.test(birthDateSourceBundle),

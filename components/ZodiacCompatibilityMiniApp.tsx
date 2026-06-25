@@ -78,7 +78,7 @@ import {
 } from "./zodiac-mini-app/MainMenuSections";
 import { MoreFeatureNavigation } from "./zodiac-mini-app/MoreFeatureNavigation";
 import { ZodiacDateInput } from "./zodiac-mini-app/ZodiacDateInput";
-import { formatBirthDateInput as formatSharedBirthDateInput, parseBirthDateInput } from "@/lib/zodiac-birth-date-range";
+import { parseBirthDateInput, sanitizeBirthDateInputDraft } from "@/lib/zodiac-birth-date-range";
 import { ProfileRetentionPanel, type ProfileQuickTarget } from "./zodiac-mini-app/ProfileRetentionPanel";
 import { useZodiacMiniAppRetention, type RetentionPanelFocus, type ZodiacRetentionDraft, type ZodiacRetentionItem } from "./zodiac-mini-app/retention";
 import { ResultPanel, ResultTextCard } from "./zodiac-mini-app/ResultCards";
@@ -3573,15 +3573,11 @@ function isReadyToCalculate(mode: Mode, self: PersonState, partner: PersonState)
 }
 
 function updateBirthDate(value: PersonState, rawValue: string, onChange: (value: PersonState) => void, onAutosign?: (value: PersonState, signSlug: string) => void) {
-  const formatted = formatBirthDateInput(rawValue);
-  const parsed = parseBirthDate(formatted);
-  const nextValue = { ...value, birthDate: formatted, sign: parsed.ok ? parsed.signSlug : value.sign };
+  const nextBirthDate = sanitizeBirthDateInputDraft(rawValue);
+  const parsed = parseBirthDate(nextBirthDate);
+  const nextValue = { ...value, birthDate: nextBirthDate, sign: parsed.ok ? parsed.signSlug : value.sign };
   onChange(nextValue);
   if (parsed.ok && parsed.signSlug !== value.sign) onAutosign?.(nextValue, parsed.signSlug);
-}
-
-function formatBirthDateInput(rawValue: string) {
-  return formatSharedBirthDateInput(rawValue);
 }
 
 

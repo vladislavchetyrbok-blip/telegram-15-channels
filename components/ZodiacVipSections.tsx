@@ -11,7 +11,7 @@ import { ZodiacDateInput } from "./zodiac-mini-app/ZodiacDateInput";
 import type { ZodiacRetentionDraft } from "./zodiac-mini-app/retention";
 import { ZodiacSelect, type ZodiacSelectOption } from "./zodiac-mini-app/ZodiacSelect";
 import { dateInputToIsoDate, isoDateToDateInput } from "@/lib/zodiac-date-input";
-import { normalizeBirthDateInputDisplay, parseBirthDateInput } from "@/lib/zodiac-birth-date-range";
+import { parseBirthDateInput, sanitizeBirthDateInputDraft } from "@/lib/zodiac-birth-date-range";
 import type {
   AngelNumberProfile,
   CompatibilityResult,
@@ -946,7 +946,7 @@ export function ExtendedNatalFeature({
   });
 
   function updateBirthDate(value: string) {
-    const nextValue = normalizeBirthDateInputDisplay(value);
+    const nextValue = sanitizeBirthDateInputDraft(value);
     setBirthDate(nextValue);
     const nextSign = signFromBirthDate(nextValue, signSlug);
     if (parseBirthIsoDate(nextValue)) setSignSlug(nextSign.slug);
