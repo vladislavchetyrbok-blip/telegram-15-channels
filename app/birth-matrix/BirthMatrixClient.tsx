@@ -5,19 +5,21 @@ import { ChevronLeft, LockKeyhole, AlertTriangle, Sparkles, User, Calendar, Cloc
 import Link from "next/link";
 import { calculateMockBirthMatrix } from "@/lib/zodiac/zodiac-birth-matrix-mock";
 import type { BirthMatrixResult } from "@/lib/zodiac/zodiac-birth-matrix-mock";
-import { MIN_BIRTH_DATE_ISO, getTodayIsoDate } from "@/lib/zodiac-birth-date-range";
+import { parseBirthDateInput } from "@/lib/zodiac-birth-date-range";
+import { ZodiacDateInput } from "@/components/zodiac-mini-app/ZodiacDateInput";
 
 export function BirthMatrixClient() {
-  const todayIso = getTodayIsoDate();
   const [birthDate, setBirthDate] = useState("");
   const [birthTime, setBirthTime] = useState("");
   const [name, setName] = useState("");
   const [result, setResult] = useState<BirthMatrixResult | null>(null);
+  const parsedBirthDate = parseBirthDateInput(birthDate, { emptyError: "Введите дату рождения." });
+  const birthDateError = birthDate && !parsedBirthDate.ok ? parsedBirthDate.error : "";
 
   const handleCalculate = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!birthDate) return;
-    setResult(calculateMockBirthMatrix({ birthDate, birthTime, name }));
+    if (!parsedBirthDate.ok) return;
+    setResult(calculateMockBirthMatrix({ birthDate: parsedBirthDate.iso, birthTime, name }));
   };
 
   return (
@@ -53,17 +55,17 @@ export function BirthMatrixClient() {
             <form onSubmit={handleCalculate} className="space-y-4">
               <div className="space-y-1.5">
                 <label className="text-sm font-medium text-slate-300 flex items-center gap-2">
-                  <Calendar className="h-4 w-4" /> Birth Date *
+                  <Calendar className="h-4 w-4" /> Дата рождения *
                 </label>
-                <input
-                  type="date"
-                  required
-                  min={MIN_BIRTH_DATE_ISO}
-                  max={todayIso}
+                <ZodiacDateInput
+                  publicMode
+                  id="birth-matrix-birth-date"
                   value={birthDate}
-                  onChange={(e) => setBirthDate(e.target.value)}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-900/50 px-4 py-3 text-slate-100 outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500"
+                  onChange={setBirthDate}
+                  hasError={Boolean(birthDateError)}
+                  hint="ДД.ММ.ГГГГ, можно выбрать 1900 — сегодня"
                 />
+                {birthDateError ? <p className="text-xs font-semibold text-rose-300">{birthDateError}</p> : null}
               </div>
 
               <div className="space-y-1.5">
@@ -93,9 +95,10 @@ export function BirthMatrixClient() {
 
               <button
                 type="submit"
-                className="mt-6 w-full rounded-xl bg-violet-600 py-3.5 font-semibold text-white shadow-md shadow-violet-900/20 transition active:scale-[0.98] active:bg-violet-700"
+                disabled={!parsedBirthDate.ok}
+                className={`mt-6 w-full rounded-xl bg-violet-600 py-3.5 font-semibold text-white shadow-md shadow-violet-900/20 transition active:scale-[0.98] active:bg-violet-700 ${parsedBirthDate.ok ? "" : "cursor-not-allowed opacity-50"}`}
               >
-                Calculate Matrix
+                Рассчитать матрицу
               </button>
             </form>
           </div>

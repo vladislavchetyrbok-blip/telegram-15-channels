@@ -11,6 +11,7 @@ import { ZodiacDateInput } from "./zodiac-mini-app/ZodiacDateInput";
 import type { ZodiacRetentionDraft } from "./zodiac-mini-app/retention";
 import { ZodiacSelect, type ZodiacSelectOption } from "./zodiac-mini-app/ZodiacSelect";
 import { dateInputToIsoDate, isoDateToDateInput } from "@/lib/zodiac-date-input";
+import { parseBirthDateInput } from "@/lib/zodiac-birth-date-range";
 import type {
   AngelNumberProfile,
   CompatibilityResult,
@@ -548,6 +549,18 @@ function parseIsoDate(value: string) {
   return { year, month, day };
 }
 
+function parseBirthIsoDate(value: string) {
+  const parsed = parseBirthDateInput(value, { emptyError: "" });
+  if (!parsed.ok) return null;
+  return { year: parsed.year, month: parsed.month, day: parsed.day };
+}
+
+function birthDateError(value: string) {
+  if (!value) return "";
+  const parsed = parseBirthDateInput(value, { emptyError: "" });
+  return parsed.ok ? "" : parsed.error;
+}
+
 function addDays(value: string, offset: number) {
   const date = new Date(`${dateInputToIsoDate(value) ?? value}T00:00:00.000Z`);
   date.setUTCDate(date.getUTCDate() + offset);
@@ -565,7 +578,7 @@ function displayMonth(value: string) {
 }
 
 function signFromBirthDate(value: string, fallbackSlug: string) {
-  const parsed = parseIsoDate(value);
+  const parsed = parseBirthIsoDate(value);
   if (!parsed) return signBySlug(fallbackSlug);
   const dayCode = parsed.month * 100 + parsed.day;
   if (dayCode >= 321 && dayCode <= 419) return signBySlug("aries");
@@ -640,8 +653,8 @@ function buildNatalBlocks(sign: ZodiacSign, birthDate: string, birthTime: string
 }
 
 function natalChartMode(birthDate: string, birthTime: string, birthCity: string): NatalChartMode {
-  if (parseIsoDate(birthDate) && /^\d{2}:\d{2}$/.test(birthTime) && birthCity.trim()) return "extended";
-  if (parseIsoDate(birthDate)) return "date";
+  if (parseBirthIsoDate(birthDate) && /^\d{2}:\d{2}$/.test(birthTime) && birthCity.trim()) return "extended";
+  if (parseBirthIsoDate(birthDate)) return "date";
   return "basic";
 }
 
@@ -921,9 +934,11 @@ export function ExtendedNatalFeature({
   const result = buildNatalBlocks(resultSign, birthDate, birthTime, birthCity, gender, natalChart?.sign.slug === resultSign.slug ? natalChart : null);
   const natalSections = buildNatalResultSections(result);
   const activeNatalSection = natalSections[activeNatalTab];
+  const parsedBirthDate = parseBirthIsoDate(birthDate);
+  const birthDateValidationError = birthDateError(birthDate);
   const payload = vipPayload({
     sign: resultSign.slug,
-    hasBirthDate: Boolean(parseIsoDate(birthDate)),
+    hasBirthDate: Boolean(parsedBirthDate),
     hasBirthTime: /^\d{2}:\d{2}$/.test(birthTime),
     hasBirthCity: Boolean(birthCity.trim()),
     inputMode: natalInputMode(result.mode),
@@ -931,9 +946,10 @@ export function ExtendedNatalFeature({
   });
 
   function updateBirthDate(value: string) {
-    setBirthDate(isoDateToDateInput(value) || value);
-    const nextSign = signFromBirthDate(value, signSlug);
-    if (parseIsoDate(value)) setSignSlug(nextSign.slug);
+    const nextValue = isoDateToDateInput(value) || value;
+    setBirthDate(nextValue);
+    const nextSign = signFromBirthDate(nextValue, signSlug);
+    if (parseBirthIsoDate(nextValue)) setSignSlug(nextSign.slug);
   }
 
   return (
@@ -942,7 +958,16 @@ export function ExtendedNatalFeature({
       <VipInputPanel publicMode={publicMode}>
         <SignSelect publicMode={publicMode} value={signSlug} onChange={setSignSlug} />
         <VipField publicMode={publicMode} label="Дата рождения">
-          <ZodiacDateInput publicMode={publicMode} value={birthDate} onChange={updateBirthDate} />
+          <ZodiacDateInput
+            publicMode={publicMode}
+            value={birthDate}
+            onChange={updateBirthDate}
+            hasError={Boolean(birthDateValidationError)}
+            hint="ДД.ММ.ГГГГ, можно выбрать 1900 — сегодня"
+          />
+          {birthDateValidationError ? (
+            <p className={publicMode ? "mt-2 text-xs font-semibold text-rose-200" : "mt-2 text-xs font-semibold text-rose-700"}>{birthDateValidationError}</p>
+          ) : null}
         </VipField>
         <VipField publicMode={publicMode} label="Время рождения">
           <input className={inputClass(publicMode)} type="time" value={birthTime} onChange={(event) => setBirthTime(event.target.value)} />
@@ -1413,7 +1438,8 @@ export function ExtendedNumerologyFeature({
   const [goal, setGoal] = useState<VipGoal>("energy");
   const [calculated, setCalculated] = useState(false);
   const sign = defaultSign ?? signs[0];
-  const parsedDate = parseIsoDate(birthDate);
+  const parsedDate = parseBirthIsoDate(birthDate);
+  const birthDateValidationError = birthDateError(birthDate);
   const lifePath = parsedDate ? reduceNumber(parsedDate.day + parsedDate.month + parsedDate.year) : numerology.lifePath;
   const nameNumber = name.trim() ? reduceNumber(Array.from(name.trim()).reduce((sum, char) => sum + char.charCodeAt(0), 0)) : numerology.nameNumber;
   const actions = useResultActions(featureKey, onEvent, onSave, onShare);
@@ -1424,7 +1450,16 @@ export function ExtendedNumerologyFeature({
       <VipIntro publicMode={publicMode} text="Нумерология показывает число пути, число имени, личный месяц и практичный совет. Имя и дата остаются только на экране." />
       <VipInputPanel publicMode={publicMode}>
         <VipField publicMode={publicMode} label="Дата рождения">
-          <ZodiacDateInput publicMode={publicMode} value={birthDate} onChange={setBirthDate} />
+          <ZodiacDateInput
+            publicMode={publicMode}
+            value={birthDate}
+            onChange={setBirthDate}
+            hasError={Boolean(birthDateValidationError)}
+            hint="ДД.ММ.ГГГГ, можно выбрать 1900 — сегодня"
+          />
+          {birthDateValidationError ? (
+            <p className={publicMode ? "mt-2 text-xs font-semibold text-rose-200" : "mt-2 text-xs font-semibold text-rose-700"}>{birthDateValidationError}</p>
+          ) : null}
         </VipField>
         <VipField publicMode={publicMode} label="Имя">
           <input className={inputClass(publicMode)} value={name} onChange={(event) => setName(event.target.value)} />

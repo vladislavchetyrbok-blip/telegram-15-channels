@@ -1,6 +1,7 @@
 import {
   MIN_BIRTH_DATE_ISO,
   getTodayIsoDate,
+  parseBirthDateInput,
   isBirthDateInAllowedRange,
 } from "../lib/zodiac-birth-date-range.ts";
 import { readFileSync } from "node:fs";
@@ -16,6 +17,7 @@ console.log("Starting Natal Chart Date Picker Range QA...\n");
 // Accepted real birth dates
 for (const d of ["1990-01-01", "1998-06-15", "1985-12-31", "2000-01-01", "1900-01-01"]) {
   check(`${d} accepted`, isBirthDateInAllowedRange(d) === true);
+  check(`${d} parsed by birth-date text helper`, parseBirthDateInput(d).ok === true);
 }
 
 // Minimum boundary
@@ -33,9 +35,9 @@ check("malformed input rejected", isBirthDateInAllowedRange("not-a-date") === fa
 
 // Birth date input source wiring
 const inputSrc = readFileSync(new URL("../app/birth-matrix/BirthMatrixClient.tsx", import.meta.url), "utf8");
-check("source contains minimum 1900-01-01 config", /MIN_BIRTH_DATE_ISO|min="1900-01-01"/.test(inputSrc));
-check("source contains today/current maximum logic", /max=\{todayIso\}|max="\$\{todayIso\}"|getTodayIsoDate|max=\{getTodayIsoDate/.test(inputSrc));
-check("source uses native date input", /type="date"/.test(inputSrc));
+check("source uses shared text date input", /ZodiacDateInput/.test(inputSrc));
+check("source uses birth-date parser helper", /parseBirthDateInput/.test(inputSrc));
+check("source does not use native date input", !/type="date"/.test(inputSrc));
 
 // Safety: no payment / telegram / database / VIP-unlock introduced by the helper or input
 const helperSrc = readFileSync(new URL("../lib/zodiac-birth-date-range.ts", import.meta.url), "utf8");
