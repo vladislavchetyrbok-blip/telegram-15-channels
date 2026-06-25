@@ -80,6 +80,7 @@ import {
 import { MoreFeatureNavigation } from "./zodiac-mini-app/MoreFeatureNavigation";
 import { ZodiacDateInput } from "./zodiac-mini-app/ZodiacDateInput";
 import { parseDateInput } from "@/lib/zodiac-date-input";
+import { isBirthDateInAllowedRange } from "@/lib/zodiac-birth-date-range";
 import { ProfileRetentionPanel, type ProfileQuickTarget } from "./zodiac-mini-app/ProfileRetentionPanel";
 import { useZodiacMiniAppRetention, type RetentionPanelFocus, type ZodiacRetentionDraft, type ZodiacRetentionItem } from "./zodiac-mini-app/retention";
 import { ResultPanel, ResultTextCard } from "./zodiac-mini-app/ResultCards";
@@ -5859,6 +5860,10 @@ const nameCompatibilityHints = [
 function parseBirthDate(value: string): ParsedDate {
   const parsed = parseDateInput(value, { emptyError: "Введите дату рождения." });
   if (!parsed.ok) return parsed;
+  // Package 147: block future birth dates (1900 .. today).
+  if (!isBirthDateInAllowedRange(parsed.iso)) {
+    return { ok: false, error: "Дата рождения вне диапазона: 1900 — сегодня." };
+  }
 
   return {
     ok: true,

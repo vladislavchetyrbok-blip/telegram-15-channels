@@ -1,4 +1,5 @@
 import { dateInputToIsoDate, parseDateInput } from "./zodiac-date-input";
+import { isBirthDateInAllowedRange } from "./zodiac-birth-date-range";
 
 export type ZodiacSignId = "aries" | "taurus" | "gemini" | "cancer" | "leo" | "virgo" | "libra" | "scorpio" | "sagittarius" | "capricorn" | "aquarius" | "pisces";
 
@@ -1092,6 +1093,8 @@ function getNumberProfile(number: number): BirthMatrixNumberProfile {
 function parseBirthMatrixDate(value: string) {
   const parsed = parseDateInput(value, { emptyError: "" });
   if (!parsed.ok || parsed.year > 2099) return null;
+  // Package 147: block future birth dates (1900 .. today).
+  if (!isBirthDateInAllowedRange(parsed.iso)) return null;
 
   return {
     day: parsed.day,
