@@ -70,6 +70,7 @@ export default function VipCompatibilityReportPreviewDashboardPage() {
           <li><Link href="/dashboard/networks/zodiac/social-content-template-engine" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Social Content Template Engine</Link></li>
           <li><Link href="/dashboard/networks/zodiac/social-draft-review-queue" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Social Draft Review Queue</Link></li>
           <li><Link href="/dashboard/networks/zodiac/social-export-dashboard" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Social Export Dashboard</Link></li>
+          <li><Link href="/dashboard/networks/zodiac/social-content-calendar" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Social Content Calendar</Link></li>
           <li><Link href="/dashboard/networks/zodiac/vip-access-boundary" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">VIP Access Boundary</Link></li>
           <li><Link href="/dashboard/networks/zodiac/telegram-stars-payment-prototype" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Stars Payment Prototype</Link></li>
           <li><Link href="/dashboard/networks/zodiac/stars-payment-safety-review" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Stars Payment Safety Review</Link></li>

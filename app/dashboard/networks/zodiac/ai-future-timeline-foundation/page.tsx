@@ -154,6 +154,7 @@ export default function AiFutureTimelineFoundationPage() {
             <Link href="/dashboard/networks/zodiac/social-content-template-engine" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Social Content Template Engine</Link>
             <Link href="/dashboard/networks/zodiac/social-draft-review-queue" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Social Draft Review Queue</Link>
             <Link href="/dashboard/networks/zodiac/social-export-dashboard" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Social Export Dashboard</Link>
+            <Link href="/dashboard/networks/zodiac/social-content-calendar" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Social Content Calendar</Link>
             <Link href="/dashboard/networks/zodiac/soulmate-scanner-foundation" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Soulmate Scanner Foundation</Link>
           </div>
         </div>

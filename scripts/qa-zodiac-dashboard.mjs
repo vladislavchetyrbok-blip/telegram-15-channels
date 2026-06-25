@@ -68,6 +68,7 @@ const ROUTES = {
   socialContentTemplateEngine: "/dashboard/networks/zodiac/social-content-template-engine",
   socialDraftReviewQueue: "/dashboard/networks/zodiac/social-draft-review-queue",
   socialExportDashboard: "/dashboard/networks/zodiac/social-export-dashboard",
+  socialContentCalendar: "/dashboard/networks/zodiac/social-content-calendar",
   vipCompatibilityReport: "/vip-compatibility-report",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
@@ -616,6 +617,20 @@ async function main() {
     assertIncludes(pages.socialExportDashboard, "No account credentials", "credentials boundary");
     assertIncludes(pages.socialExportDashboard, "No database write", "database boundary");
     assertIncludes(pages.socialExportDashboard, "No active payment CTA", "payment CTA boundary");
+
+    assertIncludes(pages.socialContentCalendar, "Social Content Calendar", "social content calendar page title");
+    assertIncludes(pages.socialContentCalendar, "Planning only", "social content calendar classification");
+    assertIncludes(pages.socialContentCalendar, "Manual review", "manual review classification");
+    assertIncludes(pages.socialContentCalendar, "No auto-posting", "auto-posting boundary");
+    assertIncludes(pages.socialContentCalendar, "No auto-scheduling", "auto-scheduling boundary");
+    assertIncludes(pages.socialContentCalendar, "No Instagram API call", "instagram boundary");
+    assertIncludes(pages.socialContentCalendar, "No TikTok API call", "tiktok boundary");
+    assertIncludes(pages.socialContentCalendar, "No YouTube API call", "youtube boundary");
+    assertIncludes(pages.socialContentCalendar, "No Telegram API call", "telegram boundary");
+    assertIncludes(pages.socialContentCalendar, "No scraping", "scraping boundary");
+    assertIncludes(pages.socialContentCalendar, "No account credentials", "credentials boundary");
+    assertIncludes(pages.socialContentCalendar, "No database write", "database boundary");
+    assertIncludes(pages.socialContentCalendar, "No active payment CTA", "payment CTA boundary");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");

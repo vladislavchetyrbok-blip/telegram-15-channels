@@ -264,6 +264,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Social Content Calendar",
+    href: "/dashboard/networks/zodiac/social-content-calendar",
+    icon: GitBranch,
+    caption: "Package 145 - Social content calendar.",
+    tone: "cyan",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,
