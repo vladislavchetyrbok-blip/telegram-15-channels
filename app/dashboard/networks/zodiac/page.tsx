@@ -285,6 +285,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Дизайн VIP-доступа",
+    href: "/dashboard/networks/zodiac/entitlement-enforcement-design",
+    icon: ShieldCheck,
+    caption: "Package 155 - дизайн server-side entitlement для будущего VIP без реальной разблокировки.",
+    tone: "cyan",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,

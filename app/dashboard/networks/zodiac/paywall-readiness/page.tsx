@@ -192,6 +192,7 @@ export default function AphroditePaywallReadinessPage() {
             <Link href="/dashboard/networks/zodiac" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Zodiac Network</Link>
             <Link href="/dashboard/networks/zodiac/ai-love-reading-foundation" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">AI Love Reading Foundation</Link>
             <Link href="/dashboard/networks/zodiac/public-bot-profile-launch-packaging" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Public Bot Launch Packaging</Link>
+            <Link href="/dashboard/networks/zodiac/entitlement-enforcement-design" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Дизайн VIP-доступа</Link>
             <Link href="/miniapp/love-reading-preview" className="inline-flex items-center gap-1 text-rose-300 underline underline-offset-4 hover:text-rose-200">
               Love Reading preview <ArrowRight className="h-3.5 w-3.5" />
             </Link>

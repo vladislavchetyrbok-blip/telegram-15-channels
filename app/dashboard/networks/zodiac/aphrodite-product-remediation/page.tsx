@@ -230,6 +230,7 @@ export default function AphroditeProductRemediationPage() {
             <Link href="/dashboard/networks/zodiac/social-content-calendar" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Social Content Calendar</Link>
             <Link href="/dashboard/networks/zodiac/public-bot-profile-launch-packaging" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Public Bot Launch Packaging</Link>
             <Link href="/dashboard/networks/zodiac/paywall-readiness" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Подготовка paywall</Link>
+            <Link href="/dashboard/networks/zodiac/entitlement-enforcement-design" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Дизайн VIP-доступа</Link>
           </div>
         </div>
       </div>

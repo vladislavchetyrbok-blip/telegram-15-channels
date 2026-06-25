@@ -71,6 +71,7 @@ const ROUTES = {
   socialContentCalendar: "/dashboard/networks/zodiac/social-content-calendar",
   publicBotProfileLaunchPackaging: "/dashboard/networks/zodiac/public-bot-profile-launch-packaging",
   paywallReadiness: "/dashboard/networks/zodiac/paywall-readiness",
+  entitlementEnforcementDesign: "/dashboard/networks/zodiac/entitlement-enforcement-design",
   vipCompatibilityReport: "/vip-compatibility-report",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
@@ -148,6 +149,7 @@ async function main() {
     assertIncludes(pages.overview, "Zodiac Shield — Безопасность", "Zodiac Shield module card visible");
     assertIncludes(pages.overview, "Zodiac Mini — Mini App", "Zodiac Mini module card visible");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/paywall-readiness"', "paywall readiness route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/entitlement-enforcement-design"', "entitlement design route link");
 
     assertIncludes(pages.analytics, "Аналитика Mini App", "analytics page heading");
     assertIncludes(pages.analytics, "First-users funnel", "first-users funnel block");
@@ -656,6 +658,16 @@ async function main() {
     assertIncludes(pages.paywallReadiness, "Нет активной платёжной CTA", "payment CTA boundary");
     assertIncludes(pages.paywallReadiness, 'data-boundary="no-payment"', "no-payment data boundary");
     assertIncludes(pages.paywallReadiness, 'href="/miniapp/love-reading-preview"', "love reading preview link");
+    assertIncludes(pages.entitlementEnforcementDesign, "Дизайн проверки VIP-доступа", "entitlement design page title");
+    assertIncludes(pages.entitlementEnforcementDesign, "Только дизайн доступа", "entitlement design classification");
+    assertIncludes(pages.entitlementEnforcementDesign, "Нет реальной VIP-разблокировки", "vip unlock boundary");
+    assertIncludes(pages.entitlementEnforcementDesign, "Нет оплаты", "payment boundary");
+    assertIncludes(pages.entitlementEnforcementDesign, "Нет Telegram Stars invoice", "stars invoice boundary");
+    assertIncludes(pages.entitlementEnforcementDesign, "Нет successful_payment handler", "successful payment boundary");
+    assertIncludes(pages.entitlementEnforcementDesign, "Нет записи в базу данных", "database boundary");
+    assertIncludes(pages.entitlementEnforcementDesign, "Нет вызова Telegram API", "telegram boundary");
+    assertIncludes(pages.entitlementEnforcementDesign, "Нет клиентской VIP-разблокировки", "client unlock boundary");
+    assertIncludes(pages.entitlementEnforcementDesign, 'data-boundary="no-client-vip-unlock"', "client unlock data boundary");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");
