@@ -356,7 +356,9 @@ async function main() {
 
     assertIncludes(pages.miniappHub, "Mini App Hub", "miniapp hub page title");
     assertIncludes(pages.miniappHub, "Static Hub (Package 106)", "miniapp hub mock notice");
-    assertIncludes(pages.miniappHub, "Zodiac Universe", "miniapp hub subtitle");
+    assertIncludes(pages.miniappHub, "Aphrodite", "miniapp Aphrodite positioning");
+    assertIncludes(pages.miniappHub, "AI Love Reading", "miniapp AI Love Reading hero");
+    assertIncludes(pages.miniappHub, "Узнай, что между вами происходит", "miniapp Russian love reading promise");
     assertIncludes(pages.miniappHub, "No payment", "miniapp hub safety: no payment");
     assertIncludes(pages.miniappHub, "No database", "miniapp hub safety: no database");
     assertIncludes(pages.miniappHub, "No Telegram API", "miniapp hub safety: no telegram API");
