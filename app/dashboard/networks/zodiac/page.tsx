@@ -257,6 +257,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Social Export Dashboard",
+    href: "/dashboard/networks/zodiac/social-export-dashboard",
+    icon: GitBranch,
+    caption: "Package 144 - Social export dashboard.",
+    tone: "cyan",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,
