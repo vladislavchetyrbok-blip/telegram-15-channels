@@ -12,6 +12,7 @@ import { useTelegramBackButton, useTelegramWebApp, type TelegramWebAppState } fr
 import { shareZodiacMiniAppContent } from "@/lib/zodiac-mini-app-share";
 import { trackZodiacMiniAppEvent } from "@/lib/zodiac-mini-app-analytics-client";
 import { zodiacAnalyticsScoreTier, zodiacAnalyticsStartappType, type ZodiacAnalyticsEventName, type ZodiacAnalyticsPayload } from "@/lib/zodiac-mini-app-analytics-shared";
+import { buildPersonalizedCoupleCalendar } from "@/lib/zodiac-couple-calendar-personalization";
 import { ArrowLeft, ArrowRight, Bookmark, CalendarDays, Check, Copy, Crown, Gift, MapPin, Share2, ShieldCheck, Sparkles, Star } from "lucide-react";
 import Link from "next/link";
 import {
@@ -1991,7 +1992,7 @@ function MoreSection({
           <VipMentalMapFeature publicMode={publicMode} result={result} pairReady={pairReady} defaultSign={selfSign} defaultSecondSign={partnerSign} relationshipMode={relationshipMode} scoreTier={vipScoreTier} onBack={returnToMoreMenu} onSave={() => onFavoriteSave(currentRetentionAction)} onShare={() => onShare(currentRetentionAction)} onEvent={onPersonalToolEvent} />
         ) : null}
         {activeMoreFeature === "vipCoupleCalendar" ? (
-          <VipCoupleCalendarFeature publicMode={publicMode} calendarDays={coupleCalendar} pairReady={pairReady} defaultSign={selfSign} defaultSecondSign={partnerSign} relationshipMode={relationshipMode} scoreTier={vipScoreTier} onBack={returnToMoreMenu} onSave={() => onFavoriteSave(currentRetentionAction)} onShare={() => onShare(currentRetentionAction)} onEvent={onPersonalToolEvent} />
+          <VipCoupleCalendarFeature publicMode={publicMode} calendarDays={coupleCalendar} pairReady={pairReady} firstPerson={self} secondPerson={partner} defaultSign={selfSign} defaultSecondSign={partnerSign} relationshipMode={relationshipMode} scoreTier={vipScoreTier} onBack={returnToMoreMenu} onSave={() => onFavoriteSave(currentRetentionAction)} onShare={() => onShare(currentRetentionAction)} onEvent={onPersonalToolEvent} />
         ) : null}
         {activeMoreFeature === "vipMonthForecast" ? (
           <VipMonthForecastFeature publicMode={publicMode} monthForecast={monthForecast} defaultSign={selfSign} onBack={returnToMoreMenu} onSave={() => onFavoriteSave(currentRetentionAction)} onShare={() => onShare(currentRetentionAction)} onEvent={onPersonalToolEvent} />
@@ -2312,12 +2313,14 @@ function CoupleCalendarCard({
                 </div>
               </div>
               <div className="mt-4 grid gap-3">
-                <InfoRow publicMode={publicMode} label="Тема" text={day.theme} />
-                <InfoRow publicMode={publicMode} label="Действие" text={day.action} />
+                <InfoRow publicMode={publicMode} label="Тема" text={day.emotionalTheme} />
+                <InfoRow publicMode={publicMode} label="Инсайт пары" text={day.coupleInsight} />
+                <InfoRow publicMode={publicMode} label="Действие" text={day.recommendedAction} />
                 <div className="grid gap-2 sm:grid-cols-2">
-                  <InfoRow publicMode={publicMode} label="Риск" text={day.risk} />
+                  <InfoRow publicMode={publicMode} label="Риск" text={day.riskZone} />
                   <InfoRow publicMode={publicMode} label="Совет" text={day.advice} />
                 </div>
+                <p className={publicMode ? "text-xs leading-5 text-slate-400" : "text-xs leading-5 text-slate-500"}>{day.softDisclaimer}</p>
               </div>
             </div>
           );
@@ -4464,22 +4467,20 @@ function buildCoupleAction(self: PersonState, partner: PersonState, dateKey: str
 }
 
 function buildCoupleCalendar(self: PersonState, partner: PersonState, dateKey: string, relationshipMode: RelationshipMode, result: CompatibilityResult, count = 7): CoupleCalendarDay[] {
-  return Array.from({ length: count }, (_, index) => {
-    const currentDateKey = addDaysToDateKey(dateKey, index);
-    const seed = pairSeed(self, partner, currentDateKey, `calendar:${relationshipMode}`);
-    const status = pickLine(coupleCalendarStatuses, seed + result.scores.total, 1);
-    const advice = pickLine(coupleCalendarAdvice[status] ?? coupleCalendarAdvice["🌙 спокойный день"], seed, 2);
-    return {
-      dateKey: currentDateKey,
-      date: formatShortDate(currentDateKey),
-      weekday: formatWeekday(currentDateKey),
-      status,
-      theme: pickLine(coupleCalendarThemes[relationshipMode], seed, 3),
-      energy: pickLine(coupleCalendarEnergy[relationshipMode], seed, 4),
-      action: pickLine(coupleCalendarActions[relationshipMode], seed, 5),
-      risk: pickLine(coupleCalendarRisks[relationshipMode], seed, 6),
-      advice,
-    };
+  return buildPersonalizedCoupleCalendar({
+    firstName: self.name,
+    secondName: partner.name,
+    firstBirthDate: self.birthDate,
+    secondBirthDate: partner.birthDate,
+    firstSign: self.sign,
+    secondSign: partner.sign,
+    relationshipMode,
+    startDate: dateKey,
+    count,
+    scoreTotal: result.scores.total,
+    scoreLove: result.scores.love,
+    scoreCommunication: result.scores.communication,
+    scoreAttraction: result.scores.attraction,
   });
 }
 
@@ -6770,51 +6771,6 @@ const coupleAvoidLines: Record<"strong" | "medium" | "tense", string[]> = {
   strong: ["не принимать тепло как должное", "не спорить из-за мелкой формы"],
   medium: ["не копить ожидания молча", "не проверять партнёра намёками"],
   tense: ["не начинать разговор с обвинения", "не требовать немедленного решения"],
-};
-
-const coupleCalendarStatuses = ["❤️ день для любви", "💬 день для разговора", "🕊 день для примирения", "⚠️ осторожнее", "🌙 спокойный день"];
-const coupleCalendarAdvice: Record<string, string[]> = {
-  "❤️ день для любви": ["подойдёт тёплая встреча или маленький знак внимания", "лучше говорить о приятном и укреплять доверие"],
-  "💬 день для разговора": ["обсудите одну тему и заранее договоритесь о спокойном тоне", "подойдёт честная переписка без проверок"],
-  "🕊 день для примирения": ["начните с мягкой фразы и не требуйте ответа сразу", "лучше признать чувство, а не спорить о деталях"],
-  "⚠️ осторожнее": ["сегодня легко обострить мелочь, поэтому важны паузы", "сложные темы лучше сократить до одного вопроса"],
-  "🌙 спокойный день": ["подойдёт тихая поддержка без больших решений", "лучше восстановить силы и не торопить события"],
-};
-
-const coupleCalendarThemes: Record<RelationshipMode, string[]> = {
-  love: ["тепло и внимание", "маленький романтический жест", "честный разговор о близости"],
-  friendship: ["поддержка без давления", "общий интерес", "бережная проверка состояния"],
-  work: ["ясные роли", "одно рабочее решение", "сверка ожиданий"],
-  family: ["домашний ритм", "забота и границы", "простая бытовая договорённость"],
-  passion: ["искра без ревности", "игра и лёгкость", "притяжение без проверки"],
-  reconciliation: ["мягкий шаг навстречу", "пауза перед ответом", "признание своей части напряжения"],
-};
-
-const coupleCalendarEnergy: Record<RelationshipMode, string[]> = {
-  love: ["тёплая", "нежная", "романтичная"],
-  friendship: ["ровная", "поддерживающая", "доверительная"],
-  work: ["собранная", "деловая", "структурная"],
-  family: ["заземляющая", "заботливая", "спокойная"],
-  passion: ["яркая", "живая", "магнитная"],
-  reconciliation: ["осторожная", "мягкая", "восстанавливающая"],
-};
-
-const coupleCalendarActions: Record<RelationshipMode, string[]> = {
-  love: ["предложить короткую встречу без спешки", "сказать одну конкретную благодарность", "добавить в день маленький знак внимания"],
-  friendship: ["спросить, чем можно поддержать", "поделиться простой хорошей новостью", "предложить общий спокойный план"],
-  work: ["зафиксировать следующий шаг письменно", "согласовать один приоритет", "разделить задачи без оценок личности"],
-  family: ["договориться об одной бытовой мелочи", "снять с другого человека одну маленькую нагрузку", "сказать просьбу прямо и мягко"],
-  passion: ["предложить лёгкий формат без давления", "оставить место для игры и паузы", "сделать комплимент без ожидания ответа"],
-  reconciliation: ["начать с короткой мирной фразы", "признать чувство без обвинения", "предложить разговор в удобное время"],
-};
-
-const coupleCalendarRisks: Record<RelationshipMode, string[]> = {
-  love: ["проверять чувства скоростью ответа", "ждать угадывания", "сравнивать жесты с идеалом"],
-  friendship: ["обесценить простую поддержку", "исчезнуть без объяснения", "перевести заботу в контроль"],
-  work: ["смешать личные эмоции и задачу", "менять договорённость на ходу", "спорить о статусе вместо результата"],
-  family: ["копить бытовое раздражение", "говорить намёками", "делать заботу обязательством"],
-  passion: ["подменить близость ревностью", "проверять реакцию молчанием", "ускорять то, что просит паузы"],
-  reconciliation: ["требовать примирения сразу", "возвращаться к старому спору без цели", "начинать с доказательств правоты"],
 };
 
 const coupleActionProfiles: Record<RelationshipMode, { mainAction: string[]; avoid: string[]; bestTone: string[]; smallStep: string[] }> = {

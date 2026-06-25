@@ -3,6 +3,7 @@ import { ArrowLeft, Bookmark, CalendarDays, Check, Copy, Crown, HeartHandshake, 
 import type { ZodiacAnalyticsEventName, ZodiacAnalyticsPayload } from "@/lib/zodiac-mini-app-analytics-shared";
 import { shareZodiacMiniAppContent } from "@/lib/zodiac-mini-app-share";
 import { synthesizeVipMysticDay } from "@/lib/zodiac-vip-content";
+import { buildPersonalizedCoupleCalendar } from "@/lib/zodiac-couple-calendar-personalization";
 import type { ZodiacSignId } from "@/lib/zodiac-mystic-content";
 import { relationshipModes, signs } from "./zodiac-mini-app/constants";
 import { AstroChartVisual } from "./zodiac-mini-app/AstroChartVisual";
@@ -22,6 +23,7 @@ import type {
   NameProfile,
   NatalChart,
   NumerologyProfile,
+  PersonState,
   DailyTalismanProfile,
   RelationshipMode,
   ZodiacSign,
@@ -559,12 +561,6 @@ function birthDateError(value: string) {
   if (!value) return "";
   const parsed = parseBirthDateInput(value, { emptyError: "" });
   return parsed.ok ? "" : parsed.error;
-}
-
-function addDays(value: string, offset: number) {
-  const date = new Date(`${dateInputToIsoDate(value) ?? value}T00:00:00.000Z`);
-  date.setUTCDate(date.getUTCDate() + offset);
-  return date.toISOString().slice(0, 10);
 }
 
 function displayDate(value: string) {
@@ -1252,6 +1248,8 @@ export function VipCoupleCalendarFeature({
   publicMode,
   calendarDays,
   pairReady,
+  firstPerson,
+  secondPerson,
   onBack,
   onSave,
   onShare,
@@ -1260,7 +1258,12 @@ export function VipCoupleCalendarFeature({
   defaultSecondSign,
   relationshipMode = "love",
   scoreTier,
-}: VipToolBaseProps & { calendarDays: CoupleCalendarDay[]; pairReady: boolean }) {
+}: VipToolBaseProps & {
+  calendarDays: CoupleCalendarDay[];
+  pairReady: boolean;
+  firstPerson?: Pick<PersonState, "name" | "birthDate" | "sign">;
+  secondPerson?: Pick<PersonState, "name" | "birthDate" | "sign">;
+}) {
   const featureKey: VipFeatureKey = "vipCoupleCalendar";
   const [firstSlug, setFirstSlug] = useState((defaultSign ?? signs[0]).slug);
   const [secondSlug, setSecondSlug] = useState((defaultSecondSign ?? signs[2]).slug);
@@ -1272,20 +1275,17 @@ export function VipCoupleCalendarFeature({
   const tier = scoreTier ?? safeScoreTier(score);
   const actions = useResultActions(featureKey, onEvent, onSave, onShare);
   const payload = vipPayload({ firstSign: first.slug, secondSign: second.slug, relationshipMode, scoreTier: tier, inputMode: "date_range" });
-  const days = calendarDays.length >= 30 && pairReady ? calendarDays : Array.from({ length: 30 }, (_, index) => {
-    const dateKey = addDays(startDate, index);
-    const seed = `${first.slug}:${second.slug}:${relationshipMode}:${dateKey}`;
-    return {
-      dateKey,
-      date: displayDate(dateKey),
-      weekday: `день ${index + 1}`,
-      status: pick(["мягкий контакт", "день разговора", "пауза и наблюдение", "совместное действие"], seed, 1),
-      theme: pick(["доверие", "планы", "тепло", "границы", "поддержка"], seed, 2),
-      energy: pick(["спокойная", "живая", "чувствительная", "собранная"], seed, 3),
-      action: pick(["задать один вопрос", "сделать маленький жест", "договориться о быте", "оставить место для ответа"], seed, 4),
-      risk: pick(["спешка", "намёки", "усталость", "соревнование"], seed, 5),
-      advice: pick(["говорите прямо и мягко", "не перегружайте день ожиданиями", "выберите общий маленький шаг", "дайте эмоциям созреть"], seed, 6),
-    };
+  const days = calendarDays.length >= 30 && pairReady ? calendarDays : buildPersonalizedCoupleCalendar({
+    firstName: firstPerson?.name,
+    secondName: secondPerson?.name,
+    firstBirthDate: firstPerson?.birthDate,
+    secondBirthDate: secondPerson?.birthDate,
+    firstSign: firstPerson?.sign || first.slug,
+    secondSign: secondPerson?.sign || second.slug,
+    relationshipMode,
+    startDate,
+    count: 30,
+    scoreTotal: score,
   });
 
   return (
@@ -1311,10 +1311,13 @@ export function VipCoupleCalendarFeature({
             {days.map((day, index) => (
               <div key={`${day.dateKey}-${index}`} className={publicMode ? "rounded-lg border border-white/10 bg-white/5 p-3" : "rounded-lg border border-slate-100 bg-white p-3"}>
                 <div className="flex items-center justify-between gap-2">
-                  <p className={publicMode ? "text-sm font-semibold text-white" : "text-sm font-semibold text-slate-950"}>День {index + 1} · {day.date}</p>
+                  <p className={publicMode ? "text-sm font-semibold text-white" : "text-sm font-semibold text-slate-950"}>День {day.dayNumber} · {day.date}</p>
                   <span className={publicMode ? "rounded-full bg-amber-200/15 px-2 py-1 text-[11px] font-semibold text-amber-100" : "rounded-full bg-amber-100 px-2 py-1 text-[11px] font-semibold text-amber-800"}>{day.energy}</span>
                 </div>
-                <p className={publicMode ? "mt-1 text-sm text-slate-300" : "mt-1 text-sm text-slate-700"}>{day.theme}: {day.action}. Риск: {day.risk}. Совет: {day.advice}</p>
+                <p className={publicMode ? "mt-1 text-sm text-slate-300" : "mt-1 text-sm text-slate-700"}>{day.title}: {day.emotionalTheme}</p>
+                <p className={publicMode ? "mt-1 text-sm text-slate-300" : "mt-1 text-sm text-slate-700"}>Инсайт пары: {day.coupleInsight}</p>
+                <p className={publicMode ? "mt-1 text-sm text-slate-300" : "mt-1 text-sm text-slate-700"}>Действие: {day.recommendedAction}. Риск: {day.riskZone}. Совет: {day.advice}</p>
+                <p className={publicMode ? "mt-2 text-xs leading-5 text-slate-400" : "mt-2 text-xs leading-5 text-slate-500"}>{day.softDisclaimer}</p>
               </div>
             ))}
           </div>

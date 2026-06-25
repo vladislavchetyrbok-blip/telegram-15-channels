@@ -194,15 +194,22 @@ export interface CoupleHoroscope {
 }
 
 export interface CoupleCalendarDay {
+  dayNumber: number;
   dateKey: string;
   date: string;
   weekday: string;
+  title: string;
   status: string;
+  emotionalTheme: string;
   theme: string;
+  coupleInsight: string;
   energy: string;
+  recommendedAction: string;
   action: string;
+  riskZone: string;
   risk: string;
   advice: string;
+  softDisclaimer: string;
 }
 
 export interface CoupleAction {
