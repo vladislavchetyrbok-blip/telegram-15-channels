@@ -188,6 +188,7 @@ export default function SocialTrafficLayerPage() {
             <Link href="/dashboard/networks/zodiac/social-export-dashboard" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Social Export Dashboard</Link>
             <Link href="/dashboard/networks/zodiac/social-content-calendar" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Social Content Calendar</Link>
             <Link href="/dashboard/networks/zodiac/public-bot-profile-launch-packaging" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Public Bot Launch Packaging</Link>
+            <Link href="/dashboard/networks/zodiac/paywall-readiness" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Подготовка paywall</Link>
             <Link href="/dashboard/networks/zodiac/aphrodite-product-remediation" className="text-indigo-400 hover:text-indigo-300 underline underline-offset-4">Aphrodite Product Remediation</Link>
           </div>
         </div>

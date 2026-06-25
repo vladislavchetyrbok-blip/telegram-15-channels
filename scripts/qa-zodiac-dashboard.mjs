@@ -70,6 +70,7 @@ const ROUTES = {
   socialExportDashboard: "/dashboard/networks/zodiac/social-export-dashboard",
   socialContentCalendar: "/dashboard/networks/zodiac/social-content-calendar",
   publicBotProfileLaunchPackaging: "/dashboard/networks/zodiac/public-bot-profile-launch-packaging",
+  paywallReadiness: "/dashboard/networks/zodiac/paywall-readiness",
   vipCompatibilityReport: "/vip-compatibility-report",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
@@ -146,6 +147,7 @@ async function main() {
     assertIncludes(pages.overview, "Zodiac Voice — Отзывы", "Zodiac Voice module card visible");
     assertIncludes(pages.overview, "Zodiac Shield — Безопасность", "Zodiac Shield module card visible");
     assertIncludes(pages.overview, "Zodiac Mini — Mini App", "Zodiac Mini module card visible");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/paywall-readiness"', "paywall readiness route link");
 
     assertIncludes(pages.analytics, "Аналитика Mini App", "analytics page heading");
     assertIncludes(pages.analytics, "First-users funnel", "first-users funnel block");
@@ -643,6 +645,17 @@ async function main() {
     assertIncludes(pages.publicBotProfileLaunchPackaging, "No account credentials", "credentials boundary");
     assertIncludes(pages.publicBotProfileLaunchPackaging, "No active payment CTA", "payment CTA boundary");
     assertIncludes(pages.publicBotProfileLaunchPackaging, "No real VIP unlock", "vip boundary");
+
+    assertIncludes(pages.paywallReadiness, "Подготовка paywall и VIP-оффера", "paywall readiness page title");
+    assertIncludes(pages.paywallReadiness, "Только подготовка оффера", "paywall readiness classification");
+    assertIncludes(pages.paywallReadiness, "Нет оплаты", "payment boundary");
+    assertIncludes(pages.paywallReadiness, "Нет реальной VIP-разблокировки", "vip boundary");
+    assertIncludes(pages.paywallReadiness, "Нет вызова Telegram API", "telegram boundary");
+    assertIncludes(pages.paywallReadiness, "Нет записи в базу данных", "database boundary");
+    assertIncludes(pages.paywallReadiness, "Нет Telegram Stars invoice", "stars invoice boundary");
+    assertIncludes(pages.paywallReadiness, "Нет активной платёжной CTA", "payment CTA boundary");
+    assertIncludes(pages.paywallReadiness, 'data-boundary="no-payment"', "no-payment data boundary");
+    assertIncludes(pages.paywallReadiness, 'href="/miniapp/love-reading-preview"', "love reading preview link");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Heart, Sparkles, ShieldCheck, ArrowLeft } from "lucide-react";
 import { createAphroditeLoveReadingFoundationPreview } from "@/lib/zodiac/aphrodite-ai-love-reading-foundation";
+import { getAphroditeVipOfferSections } from "@/lib/zodiac/aphrodite-paywall-readiness";
 
 export const metadata: Metadata = {
   title: "AI Love Reading — бесплатный preview",
@@ -15,6 +16,7 @@ const sample = createAphroditeLoveReadingFoundationPreview({
   firstSign: "leo",
   partnerSign: "scorpio",
 });
+const fullLoveReportSection = getAphroditeVipOfferSections().find((section) => section.id === "full-love-report");
 
 // Видимый текст — на русском. Превью носит иллюстративный характер.
 const PREVIEW_BLOCKS = [
@@ -76,6 +78,24 @@ export default function LoveReadingPreviewPage() {
           <p className="text-sm text-slate-400">{FUTURE_LOVE_REPORT.join(" · ")}</p>
           <p className="mt-2 text-[11px] text-slate-500">Полный разбор пока не открыт. Здесь это только пояснение — без оплаты и без VIP-разблокировки.</p>
         </section>
+
+        {fullLoveReportSection ? (
+          <section className="rounded-xl border border-rose-900/40 bg-rose-950/20 p-4">
+            <p className="text-[11px] uppercase tracking-wide text-rose-300">Что будет в полном Love Report позже</p>
+            <p className="mt-2 text-sm leading-6 text-rose-100/90">{fullLoveReportSection.description}</p>
+            <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-slate-300">
+              {fullLoveReportSection.includes.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+            <div className="mt-3 flex flex-wrap gap-2 text-[11px]">
+              <span className="rounded-md border border-slate-700 bg-slate-800 px-2 py-1 text-emerald-400">Сейчас доступен бесплатный preview</span>
+              <span className="rounded-md border border-slate-700 bg-slate-800 px-2 py-1 text-emerald-400">Полная версия будет подключена позже</span>
+              <span className="rounded-md border border-slate-700 bg-slate-800 px-2 py-1 text-emerald-400">Нет оплаты</span>
+              <span className="rounded-md border border-slate-700 bg-slate-800 px-2 py-1 text-emerald-400">Нет реальной VIP-разблокировки</span>
+            </div>
+          </section>
+        ) : null}
 
         <section className="rounded-xl border border-slate-800 bg-slate-900/40 p-4">
           <div className="flex items-center gap-2 text-sm font-medium text-slate-200">

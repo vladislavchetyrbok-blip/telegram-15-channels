@@ -278,6 +278,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Подготовка paywall",
+    href: "/dashboard/networks/zodiac/paywall-readiness",
+    icon: ShieldCheck,
+    caption: "Package 154 - упаковка будущего Full Love Report и VIP-оффера без оплаты.",
+    tone: "cyan",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,
