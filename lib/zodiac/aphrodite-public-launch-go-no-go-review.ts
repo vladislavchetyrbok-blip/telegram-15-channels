@@ -21,8 +21,29 @@ export type AphroditePublicLaunchGate = {
   evidence: string;
 };
 
+export type AphroditeProductionPreflightBlocker = {
+  id: string;
+  title: string;
+  sourceBlocker: string;
+  classification: "Manual production env blocker" | "Manual backup freshness blocker";
+  status: "BLOCKED";
+  ownerExplanation: string;
+  nextActions: readonly string[];
+  notCodeFailureReason: string;
+  forbiddenAutomation: readonly string[];
+};
+
+export type AphroditeProductionPreflightSafetySummary = {
+  automaticLaunch: false;
+  automaticSecretCreation: false;
+  productionDbConnection: false;
+  telegramApiCall: false;
+  databaseWrite: false;
+};
+
 export type AphroditePublicLaunchGoNoGoReviewModel = {
   packageNumber: 212;
+  preflightReadinessPackageNumber: 216;
   title: string;
   classification: string;
   publicLaunchApproved: false;
@@ -34,6 +55,9 @@ export type AphroditePublicLaunchGoNoGoReviewModel = {
   productionSafetyBlockers: readonly string[];
   envBlockers: readonly string[];
   backupBlockers: readonly string[];
+  productionPreflightBlockers: readonly AphroditeProductionPreflightBlocker[];
+  productionPreflightNextActions: readonly string[];
+  productionPreflightSafetySummary: AphroditeProductionPreflightSafetySummary;
   safetyFlags: {
     productionLaunchDone: false;
     telegramApiUsed: false;
@@ -49,6 +73,8 @@ export type AphroditePublicLaunchGoNoGoReviewModel = {
 };
 
 export const APHRODITE_PUBLIC_LAUNCH_GO_NO_GO_REVIEW_TITLE = "Public Launch Go/No-Go Review";
+
+export const APHRODITE_PRODUCTION_PREFLIGHT_PACKAGE_NUMBER = 216;
 
 export const APHRODITE_PUBLIC_LAUNCH_GO_NO_GO_REVIEW_CLASSIFICATION =
   "Только Go/No-Go review / Запуск не разрешён / Нужна ручная проверка";
@@ -144,14 +170,14 @@ const dependencies: readonly AphroditePublicLaunchDependency[] = [
     title: "env blockers",
     routeOrSource: "DATABASE_URL / TELEGRAM_BOT_TOKEN",
     status: "blocked",
-    note: "DATABASE_URL and TELEGRAM_BOT_TOKEN must be configured before production launch.",
+    note: "DATABASE_URL missing = Manual production env blocker; TELEGRAM_BOT_TOKEN missing = Manual production env blocker.",
   },
   {
     id: "backup-blocker",
     title: "backup blocker",
     routeOrSource: "latest backup age",
     status: "blocked",
-    note: "Latest backup older than 24h blocks launch readiness.",
+    note: "backup older than 24h = Manual backup freshness blocker.",
   },
   {
     id: "owner-approval",
@@ -197,7 +223,7 @@ const gates: readonly AphroditePublicLaunchGate[] = [
     id: "production-safety-gate",
     title: "production safety blockers",
     result: "no-go",
-    evidence: "DATABASE_URL, TELEGRAM_BOT_TOKEN and backup age are blockers.",
+    evidence: "DATABASE_URL, TELEGRAM_BOT_TOKEN and backup age are manual production blockers, not code failure.",
   },
   {
     id: "owner-approval-gate",
@@ -216,9 +242,91 @@ const productionSafetyBlockers = [
 const envBlockers = ["DATABASE_URL", "TELEGRAM_BOT_TOKEN"] as const;
 const backupBlockers = ["backup older than 24h"] as const;
 
+export const APHRODITE_PRODUCTION_PREFLIGHT_NEXT_ACTIONS = [
+  "configure production env manually",
+  "verify backup freshness manually",
+  "run production safety script again",
+  "owner manual review required",
+] as const;
+
+const secretForbiddenAutomation = [
+  "Do not add secrets to the repo",
+  "Do not create production secrets automatically",
+  "Do not connect to production DB",
+] as const;
+
+const telegramForbiddenAutomation = [
+  "Do not add secrets to the repo",
+  "Do not call Telegram API",
+  "Do not send Telegram messages",
+] as const;
+
+const backupForbiddenAutomation = [
+  "Do not fabricate backup evidence",
+  "Do not connect to production DB",
+  "Do not mark backup fresh automatically",
+] as const;
+
+const productionPreflightBlockers: readonly AphroditeProductionPreflightBlocker[] = [
+  {
+    id: "database-url",
+    title: "DATABASE_URL missing",
+    sourceBlocker: "DATABASE_URL is not configured",
+    classification: "Manual production env blocker",
+    status: "BLOCKED",
+    ownerExplanation: "DATABASE_URL missing = Manual production env blocker. Owner must configure production env manually before launch review can move forward.",
+    nextActions: [
+      "configure production env manually",
+      "run production safety script again",
+      "owner manual review required",
+    ],
+    notCodeFailureReason: "Missing production DATABASE_URL is an operations preflight item, not code failure.",
+    forbiddenAutomation: secretForbiddenAutomation,
+  },
+  {
+    id: "telegram-bot-token",
+    title: "TELEGRAM_BOT_TOKEN missing",
+    sourceBlocker: "TELEGRAM_BOT_TOKEN is not configured",
+    classification: "Manual production env blocker",
+    status: "BLOCKED",
+    ownerExplanation: "TELEGRAM_BOT_TOKEN missing = Manual production env blocker. Owner must configure production env manually before Telegram readiness can be approved.",
+    nextActions: [
+      "configure production env manually",
+      "run production safety script again",
+      "owner manual review required",
+    ],
+    notCodeFailureReason: "Missing production TELEGRAM_BOT_TOKEN is an operations preflight item, not code failure.",
+    forbiddenAutomation: telegramForbiddenAutomation,
+  },
+  {
+    id: "backup-freshness",
+    title: "backup older than 24h",
+    sourceBlocker: "Latest backup is older than 24 hours",
+    classification: "Manual backup freshness blocker",
+    status: "BLOCKED",
+    ownerExplanation: "backup older than 24h = Manual backup freshness blocker. Owner must verify backup freshness manually before launch approval.",
+    nextActions: [
+      "verify backup freshness manually",
+      "run production safety script again",
+      "owner manual review required",
+    ],
+    notCodeFailureReason: "Stale backup evidence is an operations readiness item, not code failure.",
+    forbiddenAutomation: backupForbiddenAutomation,
+  },
+];
+
+const productionPreflightSafetySummary: AphroditeProductionPreflightSafetySummary = {
+  automaticLaunch: false,
+  automaticSecretCreation: false,
+  productionDbConnection: false,
+  telegramApiCall: false,
+  databaseWrite: false,
+};
+
 export function getAphroditePublicLaunchGoNoGoReview(): AphroditePublicLaunchGoNoGoReviewModel {
   return {
     packageNumber: 212,
+    preflightReadinessPackageNumber: APHRODITE_PRODUCTION_PREFLIGHT_PACKAGE_NUMBER,
     title: APHRODITE_PUBLIC_LAUNCH_GO_NO_GO_REVIEW_TITLE,
     classification: APHRODITE_PUBLIC_LAUNCH_GO_NO_GO_REVIEW_CLASSIFICATION,
     publicLaunchApproved: false,
@@ -230,6 +338,13 @@ export function getAphroditePublicLaunchGoNoGoReview(): AphroditePublicLaunchGoN
     productionSafetyBlockers: [...productionSafetyBlockers],
     envBlockers: [...envBlockers],
     backupBlockers: [...backupBlockers],
+    productionPreflightBlockers: productionPreflightBlockers.map((blocker) => ({
+      ...blocker,
+      nextActions: [...blocker.nextActions],
+      forbiddenAutomation: [...blocker.forbiddenAutomation],
+    })),
+    productionPreflightNextActions: [...APHRODITE_PRODUCTION_PREFLIGHT_NEXT_ACTIONS],
+    productionPreflightSafetySummary: { ...productionPreflightSafetySummary },
     safetyFlags: {
       productionLaunchDone: false,
       telegramApiUsed: false,

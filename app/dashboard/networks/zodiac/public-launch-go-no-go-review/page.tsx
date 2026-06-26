@@ -13,6 +13,14 @@ export const metadata = {
   title: model.title,
 };
 
+const preflightSafetyLabels = [
+  { key: "automaticLaunch", label: "No automatic launch" },
+  { key: "automaticSecretCreation", label: "No automatic secret creation" },
+  { key: "productionDbConnection", label: "No production DB connection" },
+  { key: "telegramApiCall", label: "No Telegram API call" },
+  { key: "databaseWrite", label: "No DB write" },
+] as const;
+
 export default function AphroditePublicLaunchGoNoGoReviewPage() {
   return (
     <div className="min-h-screen overflow-x-hidden bg-black px-4 py-6 text-slate-200 sm:px-6 lg:px-8">
@@ -44,12 +52,63 @@ export default function AphroditePublicLaunchGoNoGoReviewPage() {
           </div>
         </header>
 
-        <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
           <Metric label="publicLaunchApproved" value={String(model.publicLaunchApproved)} tone="rose" />
           <Metric label="ownerManualReviewRequired" value={String(model.ownerManualReviewRequired)} tone="amber" />
           <Metric label="unresolvedBlockerCount" value={String(model.unresolvedBlockerCount)} tone="rose" />
           <Metric label="productionLaunchDone" value={String(model.safetyFlags.productionLaunchDone)} tone="rose" />
+          <Metric label="preflightReadinessPackage" value={`Package ${model.preflightReadinessPackageNumber}`} tone="amber" />
         </section>
+
+        <ReviewSection title="production env & backup preflight readiness" icon={<ShieldAlert className="h-5 w-5 text-rose-300" />}>
+          <div className="space-y-4">
+            <p className="max-w-5xl rounded-md border border-amber-900/50 bg-amber-950/20 px-3 py-2 text-sm leading-6 text-amber-100">
+              Package 216 classifies DATABASE_URL missing = Manual production env blocker, TELEGRAM_BOT_TOKEN missing = Manual production env blocker,
+              and backup older than 24h = Manual backup freshness blocker. These are manual production blockers, not code failure.
+              publicLaunchApproved=false and ownerManualReviewRequired=true.
+            </p>
+
+            <div className="grid gap-3 lg:grid-cols-3">
+              {model.productionPreflightBlockers.map((blocker) => (
+                <article key={blocker.id} className="min-w-0 rounded-lg border border-slate-800 bg-black/30 p-4">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <h2 className="text-sm font-medium text-white">{blocker.title}</h2>
+                    <span className="inline-flex max-w-full break-words rounded border border-rose-900/50 bg-rose-950/30 px-2 py-1 text-xs leading-5 text-rose-200">
+                      {blocker.status}
+                    </span>
+                  </div>
+                  <p className="mt-2 break-words font-mono text-xs text-slate-400">{blocker.sourceBlocker}</p>
+                  <p className="mt-3 inline-flex max-w-full break-words rounded border border-amber-900/50 bg-amber-950/30 px-2 py-1 text-xs leading-5 text-amber-100">
+                    {blocker.classification}
+                  </p>
+                  <p className="mt-3 text-sm leading-6 text-slate-300">{blocker.ownerExplanation}</p>
+                  <p className="mt-2 text-xs leading-5 text-emerald-200">{blocker.notCodeFailureReason}</p>
+                  <div className="mt-4 grid gap-3">
+                    <ListBlock title="next actions" items={blocker.nextActions} />
+                    <ListBlock title="forbidden automation" items={blocker.forbiddenAutomation} />
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            <div className="grid gap-3 lg:grid-cols-[1fr_1fr]">
+              <div className="rounded-lg border border-slate-800 bg-black/30 p-4">
+                <ListBlock title="owner next actions" items={model.productionPreflightNextActions} />
+              </div>
+              <div className="rounded-lg border border-emerald-900/40 bg-black/20 p-4">
+                <div className="text-[11px] font-semibold uppercase text-slate-500">preflight safety summary</div>
+                <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                  {preflightSafetyLabels.map(({ key, label }) => (
+                    <div key={key} className="rounded-md border border-emerald-900/40 bg-emerald-950/20 px-3 py-2">
+                      <div className="text-xs leading-5 text-emerald-200">{label}</div>
+                      <div className="font-mono text-[11px] leading-5 text-slate-500">{String(model.productionPreflightSafetySummary[key])}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </ReviewSection>
 
         <ReviewSection title="launch dependencies" icon={<ClipboardCheck className="h-5 w-5 text-cyan-400" />}>
           <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">

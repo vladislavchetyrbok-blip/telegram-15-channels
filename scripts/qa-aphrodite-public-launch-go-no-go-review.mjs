@@ -4,6 +4,8 @@ import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 
 import {
+  APHRODITE_PRODUCTION_PREFLIGHT_NEXT_ACTIONS,
+  APHRODITE_PRODUCTION_PREFLIGHT_PACKAGE_NUMBER,
   APHRODITE_PUBLIC_LAUNCH_GO_NO_GO_REVIEW_CLASSIFICATION,
   APHRODITE_PUBLIC_LAUNCH_GO_NO_GO_REVIEW_SAFETY_LABELS,
   APHRODITE_PUBLIC_LAUNCH_GO_NO_GO_REVIEW_TITLE,
@@ -46,6 +48,8 @@ const modelPath = "../lib/zodiac/aphrodite-public-launch-go-no-go-review.ts";
 const pagePath = "../app/dashboard/networks/zodiac/public-launch-go-no-go-review/page.tsx";
 const docsPath = "../docs/aphrodite-public-launch-go-no-go-review.md";
 const reportPath = "../docs/aphrodite-package-reports/package-212.md";
+const preflightDocsPath = "../docs/aphrodite-production-env-backup-preflight-readiness.md";
+const preflightReportPath = "../docs/aphrodite-package-reports/package-216.md";
 const dashboardPath = "../app/dashboard/networks/zodiac/page.tsx";
 const dashboardQaPath = "./qa-zodiac-dashboard.mjs";
 
@@ -54,6 +58,8 @@ for (const [label, path] of [
   ["dashboard", pagePath],
   ["docs", docsPath],
   ["package report", reportPath],
+  ["production preflight docs", preflightDocsPath],
+  ["package 216 report", preflightReportPath],
   ["dashboard navigation", dashboardPath],
   ["dashboard QA", dashboardQaPath],
 ]) {
@@ -64,15 +70,28 @@ const modelSource = exists(modelPath) ? read(modelPath) : "";
 const pageSource = exists(pagePath) ? read(pagePath) : "";
 const docsSource = exists(docsPath) ? read(docsPath) : "";
 const reportSource = exists(reportPath) ? read(reportPath) : "";
+const preflightDocsSource = exists(preflightDocsPath) ? read(preflightDocsPath) : "";
+const preflightReportSource = exists(preflightReportPath) ? read(preflightReportPath) : "";
 const dashboardSource = exists(dashboardPath) ? read(dashboardPath) : "";
 const dashboardQaSource = exists(dashboardQaPath) ? read(dashboardQaPath) : "";
 const model = getAphroditePublicLaunchGoNoGoReview();
-const implementationBundle = [modelSource, pageSource, docsSource, reportSource, dashboardSource, dashboardQaSource].join("\n");
-const safetyBundle = [modelSource, pageSource, docsSource, reportSource].join("\n");
+const implementationBundle = [
+  modelSource,
+  pageSource,
+  docsSource,
+  reportSource,
+  preflightDocsSource,
+  preflightReportSource,
+  dashboardSource,
+  dashboardQaSource,
+].join("\n");
+const safetyBundle = [modelSource, pageSource, docsSource, reportSource, preflightDocsSource, preflightReportSource].join("\n");
 
 check("title exported", model.title === APHRODITE_PUBLIC_LAUNCH_GO_NO_GO_REVIEW_TITLE);
 check("classification exported", model.classification === APHRODITE_PUBLIC_LAUNCH_GO_NO_GO_REVIEW_CLASSIFICATION);
 check("package number is 212", model.packageNumber === 212);
+check("preflight package number is 216", model.preflightReadinessPackageNumber === APHRODITE_PRODUCTION_PREFLIGHT_PACKAGE_NUMBER);
+check("Package 216 documented", implementationBundle.includes("Package 216"));
 check("dashboard route linked from overview", dashboardSource.includes("/dashboard/networks/zodiac/public-launch-go-no-go-review"));
 check("dashboard QA route exists", dashboardQaSource.includes("publicLaunchGoNoGoReview"));
 check("dashboard QA asserts title", dashboardQaSource.includes("Public Launch Go/No-Go Review"));
@@ -119,6 +138,57 @@ check("issue triage dependency exists", implementationBundle.includes("/dashboar
 check("support/refund dependency exists", implementationBundle.includes("/dashboard/networks/zodiac/support-refund-policy-readiness"));
 check("analytics/privacy dependency exists", implementationBundle.includes("/dashboard/networks/zodiac/analytics-privacy-safety-suite"));
 check("production safety blockers exist", model.productionSafetyBlockers.length >= 3);
+
+const preflightBlockerRequirements = [
+  {
+    id: "database-url",
+    title: "DATABASE_URL missing",
+    sourceBlocker: "DATABASE_URL is not configured",
+    classification: "Manual production env blocker",
+    explanation: "DATABASE_URL missing = Manual production env blocker",
+  },
+  {
+    id: "telegram-bot-token",
+    title: "TELEGRAM_BOT_TOKEN missing",
+    sourceBlocker: "TELEGRAM_BOT_TOKEN is not configured",
+    classification: "Manual production env blocker",
+    explanation: "TELEGRAM_BOT_TOKEN missing = Manual production env blocker",
+  },
+  {
+    id: "backup-freshness",
+    title: "backup older than 24h",
+    sourceBlocker: "Latest backup is older than 24 hours",
+    classification: "Manual backup freshness blocker",
+    explanation: "backup older than 24h = Manual backup freshness blocker",
+  },
+];
+
+check("three production preflight blockers exist", model.productionPreflightBlockers.length === 3);
+for (const requirement of preflightBlockerRequirements) {
+  const blocker = model.productionPreflightBlockers.find((item) => item.id === requirement.id);
+  check(`preflight blocker exists: ${requirement.id}`, Boolean(blocker));
+  check(`preflight blocker title: ${requirement.title}`, blocker?.title === requirement.title);
+  check(`preflight blocker source: ${requirement.sourceBlocker}`, blocker?.sourceBlocker === requirement.sourceBlocker);
+  check(`preflight blocker classification: ${requirement.classification}`, blocker?.classification === requirement.classification);
+  check(`preflight blocker status blocked: ${requirement.id}`, blocker?.status === "BLOCKED");
+  check(`preflight blocker explanation rendered: ${requirement.explanation}`, implementationBundle.includes(requirement.explanation));
+  check(`preflight blocker not code failure reason: ${requirement.id}`, Boolean(blocker?.notCodeFailureReason.includes("not code failure")));
+}
+
+for (const action of APHRODITE_PRODUCTION_PREFLIGHT_NEXT_ACTIONS) {
+  check(`preflight next action exists: ${action}`, model.productionPreflightNextActions.includes(action));
+  check(`preflight next action rendered/documented: ${action}`, implementationBundle.includes(action));
+}
+
+check("manual production env blockers rendered", implementationBundle.includes("Manual production env blocker"));
+check("manual backup freshness blocker rendered", implementationBundle.includes("Manual backup freshness blocker"));
+check("manual production blockers not code failure rendered", implementationBundle.includes("manual production blockers, not code failure") || implementationBundle.includes("Manual production blockers"));
+check("owner manual review required rendered", implementationBundle.includes("owner manual review required"));
+check("no automatic launch summary", model.productionPreflightSafetySummary.automaticLaunch === false && implementationBundle.includes("No automatic launch"));
+check("no automatic secret creation summary", model.productionPreflightSafetySummary.automaticSecretCreation === false && implementationBundle.includes("No automatic secret creation"));
+check("no production DB connection summary", model.productionPreflightSafetySummary.productionDbConnection === false && implementationBundle.includes("No production DB connection"));
+check("no Telegram API call summary", model.productionPreflightSafetySummary.telegramApiCall === false && implementationBundle.includes("No Telegram API call"));
+check("no DB write summary", model.productionPreflightSafetySummary.databaseWrite === false && implementationBundle.includes("No DB write"));
 check("no production launch", model.safetyFlags.productionLaunchDone === false);
 check("no Telegram API", model.safetyFlags.telegramApiUsed === false);
 check("no BotFather changes", model.safetyFlags.botFatherChanged === false);
@@ -131,6 +201,9 @@ check("next package is 213", model.nextRecommendedPackage.includes("Package 213"
 check("docs say Package 212", docsSource.includes("Package 212"));
 check("report says Package 212", reportSource.includes("Package 212"));
 check("report keeps Package 213 not started", reportSource.includes("Package 213 не начат"));
+check("preflight docs say Package 216", preflightDocsSource.includes("Package 216"));
+check("preflight report says Package 216", preflightReportSource.includes("Package 216"));
+check("production safety script remains blocker-aware", implementationBundle.includes("run production safety script again"));
 
 check("live Mini App source files not changed", gitDiffNames([
   "app/miniapp",
@@ -150,14 +223,22 @@ check("publish scripts not changed", gitDiffNames([
 ]).length === 0);
 check("package.json not changed", gitDiffNames(["package.json"]).length === 0);
 check("no DB schema/migration change", gitDiffNames(["prisma", "supabase", "migrations", "schema.prisma"]).filter((file) => /(^|\/)(prisma|supabase|migrations)(\/|$)|schema\.prisma$/i.test(file)).length === 0);
+check("no secret files changed", gitDiffNames([
+  ".env",
+  ".env.local",
+  ".env.production",
+  ".env.production.local",
+  ".env.development.local",
+]).length === 0);
 
 const scriptChanges = gitDiffNames(["scripts"]);
 const allowedScriptChanges = new Set([
   "scripts/qa-aphrodite-public-launch-go-no-go-review.mjs",
   "scripts/qa-zodiac-dashboard.mjs",
 ]);
-check("script changes limited to Package 212 QA/dashboard QA", scriptChanges.every((file) => allowedScriptChanges.has(file)));
+check("script changes limited to Package 216 QA/dashboard QA", scriptChanges.every((file) => allowedScriptChanges.has(file)));
 
+check("no secret literal added", !/(postgres(?:ql)?:\/\/|[0-9]{6,}:[A-Za-z0-9_-]{20,})/i.test(safetyBundle));
 check("no Telegram API implementation", !/fetch\([^)]*api\.telegram\.org|sendMessage\s*\(|sendPhoto\s*\(|sendDocument\s*\(|sendInvoice\s*\(|createInvoiceLink\s*\(|answerPreCheckoutQuery\s*\(/i.test(safetyBundle));
 check("no BotFather API modification", !/setChatMenuButton|setMyCommands|setWebhook|deleteWebhook/i.test(safetyBundle));
 check("no active CTA implementation change", !/activeCtaChanged:\s*true|sendAllowedNow=true|canCallTelegramApiNow=true/i.test(safetyBundle));
