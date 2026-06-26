@@ -31,6 +31,7 @@ import { BirthMatrixVisual } from "./zodiac-mini-app/BirthMatrixVisual";
 import { LunarCalendarVisual } from "./zodiac-mini-app/LunarCalendarVisual";
 import { RuneSpreadVisual } from "./zodiac-mini-app/RuneSpreadVisual";
 import { TarotSpreadVisual } from "./zodiac-mini-app/TarotSpreadVisual";
+import { AphroditeMysticUniversePanel } from "./zodiac-mini-app/AphroditeMysticUniversePanel";
 import { ZodiacDateInput } from "./zodiac-mini-app/ZodiacDateInput";
 import { FeatureCard, EmptyFeatureCard } from "./zodiac-mini-app/ui-primitives";
 
@@ -94,6 +95,7 @@ export function DailyCardFeature({ publicMode, dateKey, sign }: CommonProps & { 
   return (
     <FeatureCard publicMode={publicMode} title={`🔮 Карта дня: ${card.title}`} subtitle={card.theme}>
       <div className="mt-4 space-y-3">
+        <AphroditeMysticUniversePanel publicMode={publicMode} message={card.phrase} focus={card.advice} />
         <p className={publicMode ? "text-sm text-slate-300" : "text-sm text-slate-600"}><strong>Символический смысл:</strong> {card.phrase}</p>
         <p className={publicMode ? "text-sm text-slate-300" : "text-sm text-slate-600"}><strong>Любовь:</strong> {card.love}</p>
         <p className={publicMode ? "text-sm text-slate-300" : "text-sm text-slate-600"}><strong>Дела и ресурсы:</strong> {card.money}</p>
@@ -198,6 +200,13 @@ export function TarotCardFeature({ publicMode, dateKey, sign, onSave, onShare, o
             Это символическая интерпретация для размышления и выбора действия, а не фатальное предсказание. Карта дня для фона: <strong>{dayCard.card}</strong> — {dayCard.mainMeaning}.
           </p>
         </div>
+
+        <AphroditeMysticUniversePanel
+          publicMode={publicMode}
+          message={dayCard.phrase}
+          focus={dayCard.advice}
+          note="Таро показывает возможный фокус внимания, но не заменяет личный выбор и не обещает неизбежный исход."
+        />
 
         <div>
           <p className={publicMode ? "mb-2 text-sm font-semibold text-white" : "mb-2 text-sm font-semibold text-slate-900"}>Тема вопроса</p>
@@ -340,6 +349,13 @@ export function RuneDayFeature({ publicMode, dateKey, sign, onSave, onShare, onE
             Руны работают как символическая подсказка для внимания и действия. Руна дня для фона: <strong>{dayRune.name}</strong> — {dayRune.mainMeaning}.
           </p>
         </div>
+
+        <AphroditeMysticUniversePanel
+          publicMode={publicMode}
+          message={dayRune.power}
+          focus={dayRune.advice}
+          note="Руна помогает выбрать спокойный следующий шаг, без давления, страха и фатальных обещаний."
+        />
 
         <div>
           <p className={publicMode ? "mb-2 text-sm font-semibold text-white" : "mb-2 text-sm font-semibold text-slate-900"}>Режим</p>
