@@ -855,6 +855,7 @@ async function main() {
     assertIncludes(pages.visualIssueTriageBoard, "Нет внешних интеграций", "no external integrations boundary");
     assertIncludes(pages.visualIssueTriageBoard, "Нет GitHub API", "no github api boundary");
     assertIncludes(pages.visualIssueTriageBoard, "Triage board ничего не отправляет", "triage sends nothing boundary");
+    assertIncludes(pages.visualIssueTriageBoard, "Visual issues are separate from production blockers", "visual issues separated from blockers");
     assertIncludes(pages.visualIssueTriageBoard, "layout issue", "layout issue category");
     assertIncludes(pages.visualIssueTriageBoard, "text too long", "text too long category");
     assertIncludes(pages.visualIssueTriageBoard, "unclear CTA", "unclear cta category");
@@ -889,6 +890,9 @@ async function main() {
     assertIncludes(pages.publicLaunchGoNoGoReview, "TELEGRAM_BOT_TOKEN is not configured", "telegram bot token blocker");
     assertIncludes(pages.publicLaunchGoNoGoReview, "Latest backup is older than 24 hours", "backup blocker");
     assertIncludes(pages.publicLaunchGoNoGoReview, "Go/No-Go review ничего не запускает", "go no-go launches nothing");
+    assertIncludes(pages.publicLaunchGoNoGoReview, "Launch is not approved", "launch is not approved notice");
+    assertIncludes(pages.publicLaunchGoNoGoReview, "manual production blockers", "manual production blockers notice");
+    assertIncludes(pages.publicLaunchGoNoGoReview, "not code failure", "production blockers not code failure");
     assertIncludes(pages.productCopyFinalPolish, "Финальная полировка текстов Aphrodite", "product copy polish title");
     assertIncludes(pages.productCopyFinalPolish, "Только copy polish", "product copy polish classification");
     assertIncludes(pages.productCopyFinalPolish, "Copy polish не включает оплату", "product copy polish no payment");

@@ -141,7 +141,8 @@
     "db:reconciliation:plan:dry": "node scripts/apply-supabase-reconciliation-plan.mjs --dry-run",
     "db:reconciliation:plan:apply": "node scripts/apply-supabase-reconciliation-plan.mjs --apply",
     "zodiac:dashboard:qa": "node scripts/qa-zodiac-dashboard.mjs",
-    "zodiac:dashboard:auth:check": "node scripts/check-zodiac-dashboard-auth.mjs"
+    "zodiac:dashboard:auth:check": "node scripts/check-zodiac-dashboard-auth.mjs",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
     "clsx": "^2.1.1",
