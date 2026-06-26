@@ -57,6 +57,7 @@ const ROUTES = {
   supportRefundPolicyReadiness: "/dashboard/networks/zodiac/support-refund-policy-readiness",
   analyticsFunnelReadiness: "/dashboard/networks/zodiac/analytics-funnel-readiness",
   miniappAnalyticsNoopEventBus: "/dashboard/networks/zodiac/miniapp-analytics-noop-event-bus",
+  analyticsFunnelMockDashboard: "/dashboard/networks/zodiac/analytics-funnel-mock-dashboard",
   realImplementationPath: "/dashboard/networks/zodiac/real-implementation-path",
   telegramInitDataValidation: "/dashboard/networks/zodiac/telegram-initdata-validation",
   userProfileFoundation: "/dashboard/networks/zodiac/user-profile-foundation",
@@ -183,6 +184,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/support-refund-policy-readiness"', "support refund policy readiness route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/analytics-funnel-readiness"', "analytics funnel readiness route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-analytics-noop-event-bus"', "miniapp analytics noop event bus route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/analytics-funnel-mock-dashboard"', "analytics funnel mock dashboard route link");
 
     assertIncludes(pages.analytics, "Аналитика Mini App", "analytics page heading");
     assertIncludes(pages.analytics, "First-users funnel", "first-users funnel block");
@@ -610,6 +612,15 @@ async function main() {
     assertIncludes(pages.miniappAnalyticsNoopEventBus, "Нет Telegram API", "miniapp analytics noop telegram boundary");
     assertIncludes(pages.miniappAnalyticsNoopEventBus, "Нет payment tracking", "miniapp analytics noop payment tracking boundary");
     assertIncludes(pages.miniappAnalyticsNoopEventBus, "Noop event bus ничего не отправляет", "miniapp analytics noop sends nothing");
+    assertIncludes(pages.analyticsFunnelMockDashboard, "Mock Dashboard воронки Aphrodite", "analytics funnel mock dashboard title");
+    assertIncludes(pages.analyticsFunnelMockDashboard, "Только mock dashboard", "analytics funnel mock dashboard classification");
+    assertIncludes(pages.analyticsFunnelMockDashboard, "Нет реальных analytics данных", "analytics funnel mock no real data");
+    assertIncludes(pages.analyticsFunnelMockDashboard, "Нет чтения базы данных", "analytics funnel mock no db read");
+    assertIncludes(pages.analyticsFunnelMockDashboard, "Нет записи в базу данных", "analytics funnel mock no db write");
+    assertIncludes(pages.analyticsFunnelMockDashboard, "Нет внешней аналитики", "analytics funnel mock no external analytics");
+    assertIncludes(pages.analyticsFunnelMockDashboard, "Mock dashboard ничего не отправляет", "analytics funnel mock sends nothing");
+    assertIncludes(pages.analyticsFunnelMockDashboard, "Telegram CTA", "analytics funnel mock telegram cta");
+    assertIncludes(pages.analyticsFunnelMockDashboard, "daily/weekly/monthly content CTA", "analytics funnel mock content CTA");
 
     assertIncludes(pages.realImplementationPath, "Real Implementation Path", "real implementation path page title");
     assertIncludes(pages.realImplementationPath, "Selected path", "real implementation selected path classification");

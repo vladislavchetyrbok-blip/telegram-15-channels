@@ -447,6 +447,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Mock Dashboard воронки",
+    href: "/dashboard/networks/zodiac/analytics-funnel-mock-dashboard",
+    icon: BarChart3,
+    caption: "Package 183 - статичный mock dashboard будущих KPI и funnel stages без реальных данных, DB read/write и внешней аналитики.",
+    tone: "cyan",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,
