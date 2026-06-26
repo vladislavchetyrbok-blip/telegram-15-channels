@@ -48,6 +48,7 @@ const ROUTES = {
   ownerReviewGate: "/dashboard/networks/zodiac/owner-review-gate",
   telegramStarsPaymentArchitectureReview: "/dashboard/networks/zodiac/telegram-stars-payment-architecture-review",
   telegramStarsInvoiceBuilderSkeleton: "/dashboard/networks/zodiac/telegram-stars-invoice-builder-skeleton",
+  telegramStarsPreCheckoutSkeleton: "/dashboard/networks/zodiac/telegram-stars-precheckout-skeleton",
   realImplementationPath: "/dashboard/networks/zodiac/real-implementation-path",
   telegramInitDataValidation: "/dashboard/networks/zodiac/telegram-initdata-validation",
   userProfileFoundation: "/dashboard/networks/zodiac/user-profile-foundation",
@@ -165,6 +166,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/owner-review-gate"', "owner review gate route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/telegram-stars-payment-architecture-review"', "telegram stars architecture route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/telegram-stars-invoice-builder-skeleton"', "telegram stars invoice builder skeleton route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/telegram-stars-precheckout-skeleton"', "telegram stars pre-checkout skeleton route link");
 
     assertIncludes(pages.analytics, "Аналитика Mini App", "analytics page heading");
     assertIncludes(pages.analytics, "First-users funnel", "first-users funnel block");
@@ -490,6 +492,15 @@ async function main() {
     assertIncludes(pages.telegramStarsInvoiceBuilderSkeleton, "Нет entitlement creation", "invoice builder entitlement boundary");
     assertIncludes(pages.telegramStarsInvoiceBuilderSkeleton, "Нет вызова Telegram API", "invoice builder telegram api boundary");
     assertIncludes(pages.telegramStarsInvoiceBuilderSkeleton, "Invoice builder ничего не отправляет", "invoice builder sends nothing safety label");
+    assertIncludes(pages.telegramStarsPreCheckoutSkeleton, "Skeleton pre-checkout Telegram Stars", "telegram stars pre-checkout skeleton title");
+    assertIncludes(pages.telegramStarsPreCheckoutSkeleton, "Только pre-checkout skeleton", "telegram stars pre-checkout skeleton classification");
+    assertIncludes(pages.telegramStarsPreCheckoutSkeleton, "Ответ не отправляется", "pre-checkout sends no answer boundary");
+    assertIncludes(pages.telegramStarsPreCheckoutSkeleton, "Нет answerPreCheckoutQuery", "pre-checkout answer boundary");
+    assertIncludes(pages.telegramStarsPreCheckoutSkeleton, "Нет pre_checkout_query handler", "pre-checkout handler boundary");
+    assertIncludes(pages.telegramStarsPreCheckoutSkeleton, "Нет payment ledger write", "pre-checkout ledger boundary");
+    assertIncludes(pages.telegramStarsPreCheckoutSkeleton, "Нет entitlement creation", "pre-checkout entitlement boundary");
+    assertIncludes(pages.telegramStarsPreCheckoutSkeleton, "Нет вызова Telegram API", "pre-checkout telegram api boundary");
+    assertIncludes(pages.telegramStarsPreCheckoutSkeleton, "PreCheckout skeleton ничего не подтверждает", "pre-checkout confirms nothing safety label");
 
     assertIncludes(pages.realImplementationPath, "Real Implementation Path", "real implementation path page title");
     assertIncludes(pages.realImplementationPath, "Selected path", "real implementation selected path classification");

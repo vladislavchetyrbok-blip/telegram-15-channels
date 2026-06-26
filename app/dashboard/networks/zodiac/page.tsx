@@ -383,6 +383,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Skeleton pre-checkout",
+    href: "/dashboard/networks/zodiac/telegram-stars-precheckout-skeleton",
+    icon: ShieldCheck,
+    caption: "Package 171 - локальная pre-checkout validation без Telegram handler, ответа и продолжения оплаты.",
+    tone: "cyan",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,
