@@ -98,6 +98,7 @@ export default function AphroditeMiniappUxSimplificationReviewPage() {
             <Link href="/miniapp" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Mini App hub</Link>
             <Link href="/dashboard/networks/zodiac/compatibility-flow-safety" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Compatibility Flow Safety</Link>
             <Link href="/dashboard/networks/zodiac/visual-ui-polish-plan" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Visual UI Polish Plan</Link>
+            <Link href="/dashboard/networks/zodiac/public-launch-visual-readiness-review" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Visual Launch Review</Link>
           </div>
         </div>
       </div>

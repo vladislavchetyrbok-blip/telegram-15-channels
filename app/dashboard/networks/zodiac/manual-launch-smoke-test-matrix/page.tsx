@@ -100,6 +100,7 @@ export default function AphroditeManualLaunchSmokeTestMatrixPage() {
             <Link href="/dashboard/networks/zodiac" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Zodiac Network</Link>
             <Link href="/dashboard/networks/zodiac/product-copy-final-polish" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Product Copy Polish</Link>
             <Link href="/dashboard/networks/zodiac/public-launch-checklist-refresh" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Public Launch Checklist</Link>
+            <Link href="/dashboard/networks/zodiac/public-launch-visual-readiness-review" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Visual Launch Review</Link>
             <Link href="/dashboard/networks/zodiac/production-payment-safety-gate" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Production Safety Gate</Link>
           </div>
         </div>

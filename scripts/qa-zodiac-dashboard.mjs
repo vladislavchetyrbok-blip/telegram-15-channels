@@ -71,6 +71,7 @@ const ROUTES = {
   vipNatalNumerologyVisualReview: "/dashboard/networks/zodiac/vip-natal-numerology-visual-review",
   horoscopeVisualCards: "/dashboard/networks/zodiac/horoscope-visual-cards",
   miniappVisualQaConsolidation: "/dashboard/networks/zodiac/miniapp-visual-qa-consolidation",
+  publicLaunchVisualReadinessReview: "/dashboard/networks/zodiac/public-launch-visual-readiness-review",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -215,6 +216,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/vip-natal-numerology-visual-review"', "vip natal numerology visual review route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/horoscope-visual-cards"', "horoscope visual cards route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-visual-qa-consolidation"', "miniapp visual qa consolidation route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/public-launch-visual-readiness-review"', "public launch visual readiness review route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");
@@ -779,6 +781,19 @@ async function main() {
     assertIncludes(pages.miniappVisualQaConsolidation, "horoscope visual cards", "horoscope visual cards coverage");
     assertIncludes(pages.miniappVisualQaConsolidation, "date input", "date input coverage");
     assertIncludes(pages.miniappVisualQaConsolidation, "mobile CTA hierarchy", "mobile cta hierarchy coverage");
+    assertIncludes(pages.publicLaunchVisualReadinessReview, "Public Launch Visual Readiness Review", "visual launch readiness title");
+    assertIncludes(pages.publicLaunchVisualReadinessReview, "Только visual review", "visual launch readiness classification");
+    assertIncludes(pages.publicLaunchVisualReadinessReview, "Запуск не выполняется", "launch not performed boundary");
+    assertIncludes(pages.publicLaunchVisualReadinessReview, "Нужна ручная проверка", "manual review required");
+    assertIncludes(pages.publicLaunchVisualReadinessReview, "Нет production-запуска", "production launch boundary");
+    assertIncludes(pages.publicLaunchVisualReadinessReview, "Нет Telegram API", "telegram api boundary");
+    assertIncludes(pages.publicLaunchVisualReadinessReview, "Нет отправки сообщений", "messages boundary");
+    assertIncludes(pages.publicLaunchVisualReadinessReview, "Нет изменения BotFather", "botfather boundary");
+    assertIncludes(pages.publicLaunchVisualReadinessReview, "Нет изменения active CTA", "active cta boundary");
+    assertIncludes(pages.publicLaunchVisualReadinessReview, "Нет оплаты", "payment boundary");
+    assertIncludes(pages.publicLaunchVisualReadinessReview, "Нет VIP-разблокировки", "vip boundary");
+    assertIncludes(pages.publicLaunchVisualReadinessReview, "Visual readiness review ничего не запускает", "review launches nothing");
+    assertIncludes(pages.publicLaunchVisualReadinessReview, "publicLaunchApproved=false", "public launch not approved");
     assertIncludes(pages.productCopyFinalPolish, "Финальная полировка текстов Aphrodite", "product copy polish title");
     assertIncludes(pages.productCopyFinalPolish, "Только copy polish", "product copy polish classification");
     assertIncludes(pages.productCopyFinalPolish, "Copy polish не включает оплату", "product copy polish no payment");

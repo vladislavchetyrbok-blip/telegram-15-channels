@@ -101,6 +101,7 @@ export default function AphroditePublicLaunchChecklistRefreshPage() {
             <Link href="/dashboard/networks/zodiac/support-refund-policy-readiness" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Support & Refund</Link>
             <Link href="/dashboard/networks/zodiac/analytics-privacy-safety-suite" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Analytics Privacy Suite</Link>
             <Link href="/dashboard/networks/zodiac/miniapp-ux-simplification-review" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Mini App UX Review</Link>
+            <Link href="/dashboard/networks/zodiac/public-launch-visual-readiness-review" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Visual Launch Review</Link>
           </div>
         </div>
       </div>

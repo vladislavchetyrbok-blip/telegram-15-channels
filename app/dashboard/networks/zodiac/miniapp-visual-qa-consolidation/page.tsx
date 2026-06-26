@@ -115,6 +115,9 @@ export default function AphroditeMiniAppVisualQaConsolidationPage() {
             <Link href="/dashboard/networks/zodiac/vip-natal-numerology-visual-review" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">
               Review визуала VIP / Natal / Numerology
             </Link>
+            <Link href="/dashboard/networks/zodiac/public-launch-visual-readiness-review" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">
+              Visual Launch Review
+            </Link>
             <Link href="/miniapp" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">
               Mini App hub
             </Link>

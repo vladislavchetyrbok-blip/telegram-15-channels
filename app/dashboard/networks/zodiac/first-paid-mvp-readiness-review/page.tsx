@@ -192,6 +192,7 @@ export default function AphroditeFirstPaidMvpReadinessReviewPage() {
             <Link href="/dashboard/networks/zodiac/payment-ledger-mock-integration" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Mock payment ledger</Link>
             <Link href="/dashboard/networks/zodiac/entitlement-creation-mock" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Mock entitlement creation</Link>
             <Link href="/dashboard/networks/zodiac/vip-access-security-suite" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Security QA VIP-доступа</Link>
+            <Link href="/dashboard/networks/zodiac/public-launch-visual-readiness-review" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Visual Launch Review</Link>
           </div>
         </div>
       </div>

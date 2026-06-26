@@ -547,6 +547,13 @@ const platformSections = [
     tone: "emerald",
   },
   {
+    title: "Visual Launch Review",
+    href: "/dashboard/networks/zodiac/public-launch-visual-readiness-review",
+    icon: ClipboardCheck,
+    caption: "Package 207 - visual readiness review публичного запуска Mini App без production-запуска, Telegram API, BotFather, active CTA, оплаты, VIP и БД.",
+    tone: "emerald",
+  },
+  {
     title: "Финальная полировка текстов",
     href: "/dashboard/networks/zodiac/product-copy-final-polish",
     icon: FileText,
