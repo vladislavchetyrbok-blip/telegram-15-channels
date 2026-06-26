@@ -74,6 +74,7 @@ const ROUTES = {
   publicLaunchVisualReadinessReview: "/dashboard/networks/zodiac/public-launch-visual-readiness-review",
   realDeviceVisualQaChecklist: "/dashboard/networks/zodiac/real-device-visual-qa-checklist",
   telegramWebviewStartappDiagnostics: "/dashboard/networks/zodiac/telegram-webview-startapp-diagnostics",
+  liveVersionCacheMarkerReadiness: "/dashboard/networks/zodiac/live-version-cache-marker-readiness",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -221,6 +222,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/public-launch-visual-readiness-review"', "public launch visual readiness review route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/real-device-visual-qa-checklist"', "real device visual qa checklist route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/telegram-webview-startapp-diagnostics"', "telegram webview startapp diagnostics route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/live-version-cache-marker-readiness"', "live version cache marker readiness route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");
@@ -826,6 +828,23 @@ async function main() {
     assertIncludes(pages.telegramWebviewStartappDiagnostics, "monthly", "startapp monthly");
     assertIncludes(pages.telegramWebviewStartappDiagnostics, "stale Telegram WebView cache", "telegram stale cache");
     assertIncludes(pages.telegramWebviewStartappDiagnostics, "cache-buster query check", "cache buster check");
+    assertIncludes(pages.liveVersionCacheMarkerReadiness, "Live Version", "live version cache marker title");
+    assertIncludes(pages.liveVersionCacheMarkerReadiness, "Только readiness", "live version readiness classification");
+    assertIncludes(pages.liveVersionCacheMarkerReadiness, "Deploy не меняется", "deploy boundary");
+    assertIncludes(pages.liveVersionCacheMarkerReadiness, "Нет production-запуска", "production launch boundary");
+    assertIncludes(pages.liveVersionCacheMarkerReadiness, "Нет изменения deploy settings", "deploy settings boundary");
+    assertIncludes(pages.liveVersionCacheMarkerReadiness, "Version marker readiness ничего не деплоит", "version marker deploy boundary");
+    assertIncludes(pages.liveVersionCacheMarkerReadiness, 'data-aphrodite-visual-version="v1-visual-polish"', "dashboard visual version marker");
+    assertIncludes(pages.liveVersionCacheMarkerReadiness, "source commit marker", "source commit marker");
+    assertIncludes(pages.liveVersionCacheMarkerReadiness, "live HTML marker", "live html marker");
+    assertIncludes(pages.liveVersionCacheMarkerReadiness, "route-specific marker", "route specific marker");
+    assertIncludes(pages.liveVersionCacheMarkerReadiness, "/miniapp marker/check documented", "miniapp marker check");
+    assertIncludes(pages.liveVersionCacheMarkerReadiness, "/birth-matrix marker/check documented", "birth matrix marker check");
+    assertIncludes(pages.liveVersionCacheMarkerReadiness, "/compatibility marker/check documented", "compatibility marker check");
+    assertIncludes(pages.liveVersionCacheMarkerReadiness, "Telegram WebView cache diagnosis", "telegram cache diagnosis");
+    assertIncludes(pages.liveVersionCacheMarkerReadiness, "browser cache-buster diagnosis", "browser cache buster diagnosis");
+    assertIncludes(pages.liveVersionCacheMarkerReadiness, "Vercel deployment check notes", "vercel deployment notes");
+    assertIncludes(pages.liveVersionCacheMarkerReadiness, "stale build symptoms", "stale build symptoms");
     assertIncludes(pages.productCopyFinalPolish, "Финальная полировка текстов Aphrodite", "product copy polish title");
     assertIncludes(pages.productCopyFinalPolish, "Только copy polish", "product copy polish classification");
     assertIncludes(pages.productCopyFinalPolish, "Copy polish не включает оплату", "product copy polish no payment");

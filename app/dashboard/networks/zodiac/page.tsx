@@ -568,6 +568,13 @@ const platformSections = [
     tone: "emerald",
   },
   {
+    title: "Live Version Cache Marker",
+    href: "/dashboard/networks/zodiac/live-version-cache-marker-readiness",
+    icon: GitBranch,
+    caption: "Package 210 - readiness для source commit marker, live HTML marker, route-specific marker и cache diagnosis без deploy settings changes.",
+    tone: "emerald",
+  },
+  {
     title: "Финальная полировка текстов",
     href: "/dashboard/networks/zodiac/product-copy-final-polish",
     icon: FileText,
