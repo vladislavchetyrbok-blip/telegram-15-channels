@@ -327,6 +327,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Дизайн payment ledger",
+    href: "/dashboard/networks/zodiac/payment-ledger-design",
+    icon: ShieldCheck,
+    caption: "Package 163 - дизайн будущего ledger перед entitlement без оплаты, DB-записи и VIP-разблокировки.",
+    tone: "cyan",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,

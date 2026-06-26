@@ -77,6 +77,7 @@ const ROUTES = {
   vipGuardIntegrationReview: "/dashboard/networks/zodiac/vip-guard-integration-review",
   vipFreePreviewFallbackMap: "/dashboard/networks/zodiac/vip-free-preview-fallback-map",
   productCatalogFinalization: "/dashboard/networks/zodiac/product-catalog-finalization",
+  paymentLedgerDesign: "/dashboard/networks/zodiac/payment-ledger-design",
   vipCompatibilityReport: "/vip-compatibility-report",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
@@ -733,6 +734,18 @@ async function main() {
     assertIncludes(pages.productCatalogFinalization, "Нет entitlement creation", "entitlement creation boundary");
     assertIncludes(pages.productCatalogFinalization, "Нет записи в базу данных", "database boundary");
     assertIncludes(pages.productCatalogFinalization, "Нет вызова Telegram API", "telegram boundary");
+    assertIncludes(pages.paymentLedgerDesign, "Дизайн payment ledger", "payment ledger design title");
+    assertIncludes(pages.paymentLedgerDesign, "Только дизайн ledger", "payment ledger design classification");
+    assertIncludes(pages.paymentLedgerDesign, "Payment ledger требуется перед entitlement", "ledger before entitlement rule");
+    assertIncludes(pages.paymentLedgerDesign, "Нет реальной оплаты", "real payment boundary");
+    assertIncludes(pages.paymentLedgerDesign, "Нет Telegram Stars invoice", "stars invoice boundary");
+    assertIncludes(pages.paymentLedgerDesign, "Нет successful_payment handler", "successful payment boundary");
+    assertIncludes(pages.paymentLedgerDesign, "Нет entitlement creation", "entitlement creation boundary");
+    assertIncludes(pages.paymentLedgerDesign, "Нет записи в базу данных", "database boundary");
+    assertIncludes(pages.paymentLedgerDesign, "Нет миграции схемы базы данных", "database schema boundary");
+    assertIncludes(pages.paymentLedgerDesign, "Нет вызова Telegram API", "telegram boundary");
+    assertIncludes(pages.paymentLedgerDesign, "Ledger ничего не записывает", "ledger writes nothing boundary");
+    assertIncludes(pages.paymentLedgerDesign, 'data-boundary="ledger-writes-nothing"', "ledger writes nothing data boundary");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");
