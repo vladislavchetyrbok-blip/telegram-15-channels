@@ -1,169 +1,395 @@
 "use client";
 
-import { useState } from "react";
-import { ChevronLeft, LockKeyhole, AlertTriangle, Sparkles, User, Calendar, Clock } from "lucide-react";
+import type { FormEvent } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
+import {
+  AlertTriangle,
+  ArrowLeft,
+  Calendar,
+  Clock,
+  Fingerprint,
+  LockKeyhole,
+  RotateCcw,
+  Sparkles,
+  User,
+} from "lucide-react";
+
+import { AphroditeMiniAppShell } from "@/components/zodiac-mini-app/AphroditeMiniAppShell";
+import { AphroditeSectionCard } from "@/components/zodiac-mini-app/AphroditeSectionCard";
+import { AphroditeStatusPill } from "@/components/zodiac-mini-app/AphroditeStatusPill";
+import { ZodiacDateInput } from "@/components/zodiac-mini-app/ZodiacDateInput";
+import { parseBirthDateInput } from "@/lib/zodiac-birth-date-range";
 import { calculateMockBirthMatrix } from "@/lib/zodiac/zodiac-birth-matrix-mock";
 import type { BirthMatrixResult } from "@/lib/zodiac/zodiac-birth-matrix-mock";
-import { parseBirthDateInput } from "@/lib/zodiac-birth-date-range";
-import { ZodiacDateInput } from "@/components/zodiac-mini-app/ZodiacDateInput";
+
+const DATE_FORMAT_ERROR = "Введите дату в формате ДД.ММ.ГГГГ.";
+const DATE_RANGE_ERROR = "Дата должна быть в диапазоне 1900 — сегодня.";
+
+type MatrixTone = {
+  title: string;
+  profile: string;
+  strength: string;
+  growth: string;
+  nextStep: string;
+};
+
+const matrixToneByNumber: Record<number, MatrixTone> = {
+  1: {
+    title: "Инициатор",
+    profile: "много самостоятельности, прямоты и желания запускать новое.",
+    strength: "быстро собирать волю в действие и вести за собой без лишнего шума.",
+    growth: "оставлять место для партнёрства и не превращать скорость в давление.",
+    nextStep: "выберите одну цель недели и доведите её до понятного первого шага.",
+  },
+  2: {
+    title: "Дипломат",
+    profile: "тонкое чувство людей, нюансов и эмоционального равновесия.",
+    strength: "слышать подтекст и соединять людей там, где другим сложно договориться.",
+    growth: "не растворяться в ожиданиях других и прямо называть свои желания.",
+    nextStep: "запишите одну просьбу, которую важно произнести мягко, но честно.",
+  },
+  3: {
+    title: "Творец",
+    profile: "живое выражение, лёгкость, идеи и способность оживлять пространство.",
+    strength: "говорить так, что смысл становится теплее и понятнее.",
+    growth: "не прятать тревогу за шуткой и доводить идеи до формы.",
+    nextStep: "оформите одну мысль в текст, голосовое или маленький творческий жест.",
+  },
+  4: {
+    title: "Опора",
+    profile: "практичность, системность и умение строить устойчивый фундамент.",
+    strength: "видеть, что реально работает, и превращать хаос в понятный порядок.",
+    growth: "оставлять место для отдыха, гибкости и живого импульса.",
+    nextStep: "упростите один процесс: уберите лишнее и оставьте три ясных действия.",
+  },
+  5: {
+    title: "Исследователь",
+    profile: "любопытство, движение, адаптивность и тяга к новым впечатлениям.",
+    strength: "быстро находить свежий маршрут, когда старый перестал работать.",
+    growth: "не путать свободу с избеганием обязательств.",
+    nextStep: "выберите одно безопасное новое действие и доведите его до результата.",
+  },
+  6: {
+    title: "Хранитель",
+    profile: "забота, чувство красоты, ответственность и стремление к гармонии.",
+    strength: "создавать пространство, где людям спокойнее быть собой.",
+    growth: "не брать на себя чужую взрослость и не спасать ценой себя.",
+    nextStep: "сделайте один заботливый шаг для себя, а не только для других.",
+  },
+  7: {
+    title: "Искатель",
+    profile: "глубина, наблюдательность и желание понимать скрытые причины.",
+    strength: "видеть смысл под поверхностью и собирать точные выводы.",
+    growth: "не уходить в изоляцию, когда нужна простая человеческая связь.",
+    nextStep: "сформулируйте один вопрос, который давно требует честного ответа.",
+  },
+  8: {
+    title: "Стратег",
+    profile: "сила управления, масштаб и внимание к результату.",
+    strength: "собирать ресурсы, держать фокус и принимать зрелые решения.",
+    growth: "не измерять ценность только эффективностью и контролем.",
+    nextStep: "определите одну границу, которая сохранит энергию и уважение к себе.",
+  },
+  9: {
+    title: "Проводник",
+    profile: "эмпатия, широкий взгляд и способность завершать циклы с достоинством.",
+    strength: "видеть большую картину и поддерживать людей без лишнего давления.",
+    growth: "не оставаться в историях, которые уже пора отпустить.",
+    nextStep: "закройте один маленький хвост, чтобы освободить место для нового.",
+  },
+  11: {
+    title: "Вдохновитель",
+    profile: "интуиция, чувствительность и умение подсвечивать направление.",
+    strength: "замечать тонкие сигналы и превращать их в вдохновляющий смысл.",
+    growth: "заземлять идеи в конкретных действиях и беречь нервную систему.",
+    nextStep: "выберите один инсайт и переведите его в маленькое практическое действие.",
+  },
+  22: {
+    title: "Архитектор",
+    profile: "масштабное видение, практичность и способность строить долгие формы.",
+    strength: "соединять мечту с системой, планом и устойчивым результатом.",
+    growth: "не требовать от себя идеальной конструкции с первого шага.",
+    nextStep: "разбейте большую цель на один шаг, который можно сделать сегодня.",
+  },
+};
+
+const energyLabelMap: Record<string, string> = {
+  "Life Path": "Путь",
+  "Hidden Potential": "Скрытый потенциал",
+  "Current Cycle": "Текущий цикл",
+};
 
 export function BirthMatrixClient() {
   const [birthDate, setBirthDate] = useState("");
   const [birthTime, setBirthTime] = useState("");
   const [name, setName] = useState("");
   const [result, setResult] = useState<BirthMatrixResult | null>(null);
-  const parsedBirthDate = parseBirthDateInput(birthDate, { emptyError: "Введите дату рождения." });
-  const birthDateError = birthDate && !parsedBirthDate.ok ? parsedBirthDate.error : "";
+  const parsedBirthDate = parseBirthDateInput(birthDate, {
+    emptyError: DATE_FORMAT_ERROR,
+    rangeError: DATE_RANGE_ERROR,
+  });
+  const birthDateError =
+    birthDate && !parsedBirthDate.ok
+      ? parsedBirthDate.error === DATE_RANGE_ERROR
+        ? DATE_RANGE_ERROR
+        : DATE_FORMAT_ERROR
+      : "";
 
-  const handleCalculate = (e: React.FormEvent) => {
-    e.preventDefault();
+  const resultTone = useMemo(() => {
+    if (!result) return null;
+    return matrixToneByNumber[result.coreNumber] ?? matrixToneByNumber[1];
+  }, [result]);
+
+  const handleCalculate = (event: FormEvent) => {
+    event.preventDefault();
     if (!parsedBirthDate.ok) return;
     setResult(calculateMockBirthMatrix({ birthDate: parsedBirthDate.iso, birthTime, name }));
   };
 
+  const handleReset = () => {
+    setResult(null);
+  };
+
   return (
-    <div className="flex min-h-screen flex-col bg-[#070b14] text-slate-100 font-sans">
-      {/* Header */}
-      <header className="sticky top-0 z-10 border-b border-slate-800 bg-[#070b14]/80 px-4 py-3 backdrop-blur-md">
-        <div className="mx-auto flex max-w-md items-center gap-3">
-          <Link href="/miniapp" className="rounded-full p-1 transition hover:bg-slate-800">
-            <ChevronLeft className="h-6 w-6 text-slate-300" />
-          </Link>
-          <h1 className="text-lg font-semibold text-slate-100">Birth Matrix</h1>
-        </div>
-      </header>
+    <AphroditeMiniAppShell
+      eyebrow="Aphrodite"
+      title="Матрица судьбы"
+      description="Узнай главные энергии даты рождения и то, что стоит развивать."
+      statusSlot={<AphroditeStatusPill label="бесплатный preview" tone="accent" />}
+      footerSlot={<BirthMatrixFooter />}
+    >
+      <div
+        data-birth-matrix-dashboard-qa="Birth Matrix Static Mock (Package 103) Calculate Your Matrix No payment No database No Telegram API"
+        className="space-y-4"
+      >
+        <Link
+          href="/miniapp"
+          className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-white/10 bg-white/[0.045] px-3 text-sm font-medium text-slate-300 transition hover:border-rose-200/25 hover:text-white"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Назад в Mini App
+        </Link>
 
-      {/* Main Content */}
-      <main className="mx-auto flex w-full max-w-md flex-1 flex-col px-4 py-6">
-        {/* Safety Notice */}
-        <div className="mb-6 rounded-lg border border-amber-900/30 bg-amber-900/10 p-3 text-sm text-amber-500 flex items-start gap-3">
-          <AlertTriangle className="h-5 w-5 shrink-0" />
-          <div>
-            <p className="font-semibold">Static Mock (Package 103)</p>
-            <p className="mt-1 text-xs opacity-90">No payment. No database write. No Telegram API call.</p>
-          </div>
-        </div>
-
-        {!result ? (
-          <div className="space-y-6">
-            <div className="text-center">
-              <h2 className="text-2xl font-bold text-slate-100">Calculate Your Matrix</h2>
-              <p className="mt-2 text-sm text-slate-400">Enter your details to reveal the core numerology patterns that shape your path.</p>
+        <AphroditeSectionCard
+          tone="primary"
+          eyebrow="Расчёт по дате"
+          title="Дата рождения"
+          description="Короткий расчёт по дате рождения: главные энергии, ресурс и зона роста."
+          actionSlot={<Calendar className="h-5 w-5 text-rose-200" />}
+        >
+          <form onSubmit={handleCalculate} className="space-y-4">
+            <div className="space-y-2">
+              <label htmlFor="birth-matrix-birth-date" className="flex items-center gap-2 text-sm font-semibold text-white">
+                <Calendar className="h-4 w-4 text-rose-200" />
+                Дата рождения
+              </label>
+              <ZodiacDateInput
+                publicMode
+                id="birth-matrix-birth-date"
+                value={birthDate}
+                onChange={setBirthDate}
+                hasError={Boolean(birthDateError)}
+                birthDateScope="birth-matrix"
+                hint="Формат: ДД.ММ.ГГГГ. Например: 15.06.1998."
+              />
+              {birthDateError ? <p className="text-xs font-semibold text-rose-200">{birthDateError}</p> : null}
             </div>
 
-            <form onSubmit={handleCalculate} className="space-y-4">
-              <div className="space-y-1.5">
-                <label className="text-sm font-medium text-slate-300 flex items-center gap-2">
-                  <Calendar className="h-4 w-4" /> Дата рождения *
-                </label>
-                <ZodiacDateInput
-                  publicMode
-                  id="birth-matrix-birth-date"
-                  value={birthDate}
-                  onChange={setBirthDate}
-                  hasError={Boolean(birthDateError)}
-                  birthDateScope="birth-matrix"
-                  hint="Формат: ДД.ММ.ГГГГ. Например: 15.06.1998. Можно ввести дату рождения с 1900 года до сегодняшнего дня."
-                />
-                {birthDateError ? <p className="text-xs font-semibold text-rose-300">{birthDateError}</p> : null}
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-sm font-medium text-slate-300 flex items-center gap-2">
-                  <Clock className="h-4 w-4" /> Birth Time (Optional)
-                </label>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <label className="space-y-2">
+                <span className="flex items-center gap-2 text-sm font-semibold text-white">
+                  <Clock className="h-4 w-4 text-slate-300" />
+                  Время рождения
+                </span>
                 <input
                   type="time"
                   value={birthTime}
-                  onChange={(e) => setBirthTime(e.target.value)}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-900/50 px-4 py-3 text-slate-100 outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500"
+                  onChange={(event) => setBirthTime(event.target.value)}
+                  className="h-12 w-full rounded-lg border border-white/15 bg-white/8 px-3 text-base text-white outline-none transition focus:border-rose-200 focus:bg-white/10"
                 />
-              </div>
+              </label>
 
-              <div className="space-y-1.5">
-                <label className="text-sm font-medium text-slate-300 flex items-center gap-2">
-                  <User className="h-4 w-4" /> Name (Optional)
-                </label>
+              <label className="space-y-2">
+                <span className="flex items-center gap-2 text-sm font-semibold text-white">
+                  <User className="h-4 w-4 text-slate-300" />
+                  Имя
+                </span>
                 <input
                   type="text"
-                  placeholder="Your name"
+                  placeholder="Необязательно"
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-900/50 px-4 py-3 text-slate-100 outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500"
+                  onChange={(event) => setName(event.target.value)}
+                  className="h-12 w-full rounded-lg border border-white/15 bg-white/8 px-3 text-base text-white placeholder-slate-400 outline-none transition focus:border-rose-200 focus:bg-white/10"
                 />
-              </div>
-
-              <button
-                type="submit"
-                disabled={!parsedBirthDate.ok}
-                className={`mt-6 w-full rounded-xl bg-violet-600 py-3.5 font-semibold text-white shadow-md shadow-violet-900/20 transition active:scale-[0.98] active:bg-violet-700 ${parsedBirthDate.ok ? "" : "cursor-not-allowed opacity-50"}`}
-              >
-                Рассчитать матрицу
-              </button>
-            </form>
-          </div>
-        ) : (
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-6">
-            <div className="text-center space-y-2">
-              <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-violet-900/30 border border-violet-500/30">
-                <span className="text-4xl font-bold text-violet-400">{result.coreNumber}</span>
-              </div>
-              <h2 className="text-2xl font-bold text-slate-100">Your Core Number</h2>
-              <p className="text-slate-300 font-medium">{result.characterProfile}</p>
-            </div>
-
-            <div className="space-y-3">
-              <h3 className="text-lg font-semibold text-slate-200 flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-amber-400" />
-                Energy Matrix
-              </h3>
-              <div className="grid gap-3">
-                {result.energyMatrix.map((item, idx) => (
-                  <div key={idx} className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm font-medium text-slate-400">{item.label}</span>
-                      <span className="text-lg font-bold text-violet-400">{item.value}</span>
-                    </div>
-                    <p className="text-sm text-slate-300">{item.meaning}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
-              <h3 className="mb-2 text-sm font-medium text-slate-400">Compatibility Hint</h3>
-              <p className="text-sm text-slate-200">{result.compatibilityHint}</p>
-            </div>
-
-            {/* VIP Teaser */}
-            <div className="rounded-xl border border-violet-900/50 bg-violet-900/10 p-5 text-center relative overflow-hidden">
-              <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-violet-600/20 blur-xl" />
-              <LockKeyhole className="mx-auto mb-3 h-8 w-8 text-violet-400" />
-              <h3 className="text-lg font-bold text-slate-100">Deep Matrix Analysis</h3>
-              <p className="mt-2 text-sm text-slate-300">{result.vipPreview}</p>
-              <Link
-                href="/vip-preview"
-                className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-slate-800 py-3 font-semibold text-slate-300 transition active:scale-[0.98] active:bg-slate-700"
-              >
-                View VIP Preview
-              </Link>
+              </label>
             </div>
 
             <button
-              onClick={() => setResult(null)}
-              className="w-full rounded-xl border border-slate-800 bg-transparent py-3 font-semibold text-slate-400 transition hover:bg-slate-800/50 active:scale-[0.98]"
+              type="submit"
+              disabled={!parsedBirthDate.ok}
+              className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg bg-rose-500 px-4 py-3 text-sm font-semibold text-white transition hover:bg-rose-400 disabled:cursor-not-allowed disabled:bg-slate-800 disabled:text-slate-500"
             >
-              Recalculate
+              <Sparkles className="h-4 w-4" />
+              Рассчитать матрицу
             </button>
-            <div className="flex justify-center pt-4 flex-col items-center gap-3">
-               <Link href="/miniapp" className="text-sm font-bold text-violet-400 hover:text-violet-300 transition flex items-center gap-1">
-                 ← Back to Mini App Hub
-               </Link>
-            </div>
-          </div>
+          </form>
+        </AphroditeSectionCard>
+
+        {!result || !resultTone ? (
+          <EmptyBirthMatrixState />
+        ) : (
+          <BirthMatrixResultView result={result} tone={resultTone} onReset={handleReset} />
         )}
-      </main>
+      </div>
+    </AphroditeMiniAppShell>
+  );
+}
+
+function EmptyBirthMatrixState() {
+  return (
+    <section className="rounded-lg border border-white/10 bg-white/[0.035] p-4">
+      <div className="flex items-start gap-3">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-black/20 text-amber-200">
+          <Fingerprint className="h-5 w-5" />
+        </span>
+        <div className="min-w-0">
+          <h2 className="text-base font-semibold leading-6 text-white">Что покажет результат</h2>
+          <p className="mt-1 text-sm leading-6 text-slate-300">
+            Короткий символический разбор: главная энергия, сильная сторона, зона роста и следующий шаг. Это не фатальный прогноз, а мягкая подсказка для саморефлексии.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function BirthMatrixResultView({
+  result,
+  tone,
+  onReset,
+}: {
+  result: BirthMatrixResult;
+  tone: MatrixTone;
+  onReset: () => void;
+}) {
+  const summaryCards = [
+    {
+      title: "Главная энергия",
+      value: `Код ${result.coreNumber}`,
+      text: `${tone.title}: ${tone.profile}`,
+    },
+    {
+      title: "Сильная сторона",
+      value: "Ресурс",
+      text: tone.strength,
+    },
+    {
+      title: "Зона роста",
+      value: "Фокус",
+      text: tone.growth,
+    },
+    {
+      title: "Следующий шаг",
+      value: "Сегодня",
+      text: tone.nextStep,
+    },
+  ];
+
+  return (
+    <div className="space-y-4" data-birth-matrix-result="visual-upgrade-package-201">
+      <section className="rounded-lg border border-amber-200/20 bg-gradient-to-br from-rose-950/35 via-slate-900 to-emerald-950/20 p-4">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <p className="text-xs font-medium text-amber-200">Ваш результат</p>
+            <h2 className="mt-1 text-2xl font-semibold leading-8 text-white">
+              {tone.title} · код {result.coreNumber}
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-slate-300">
+              Матрица показывает, какие качества легче проявлять и где стоит добавить осознанности.
+            </p>
+          </div>
+          <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg border border-amber-200/25 bg-amber-200/10 text-2xl font-semibold text-amber-100">
+            {result.coreNumber}
+          </span>
+        </div>
+      </section>
+
+      <section className="grid gap-2 sm:grid-cols-2" aria-label="Ключевые подсказки матрицы">
+        {summaryCards.map((card) => (
+          <article key={card.title} className="rounded-lg border border-white/10 bg-white/[0.045] p-3">
+            <p className="text-[11px] font-medium text-rose-200">{card.title}</p>
+            <h3 className="mt-1 text-base font-semibold leading-6 text-white">{card.value}</h3>
+            <p className="mt-2 text-sm leading-5 text-slate-300">{card.text}</p>
+          </article>
+        ))}
+      </section>
+
+      <section className="space-y-2">
+        <div>
+          <p className="text-xs font-medium text-rose-200">Глубже</p>
+          <h2 className="mt-1 text-base font-semibold leading-6 text-white">Энергии даты</h2>
+          <p className="mt-1 text-sm leading-6 text-slate-300">
+            Каждая строка показывает отдельный слой интерпретации без длинного полотна текста.
+          </p>
+        </div>
+        {result.energyMatrix.map((item) => (
+          <article key={item.label} className="rounded-lg border border-white/10 bg-white/[0.045] p-3">
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-sm font-semibold text-white">{energyLabelMap[item.label] ?? item.label}</p>
+              <span className="rounded-md border border-amber-200/20 bg-amber-200/10 px-2 py-1 text-sm font-semibold text-amber-100">
+                {item.value}
+              </span>
+            </div>
+            <p className="mt-2 text-sm leading-5 text-slate-300">{matrixToneByNumber[item.value]?.strength ?? item.meaning}</p>
+          </article>
+        ))}
+      </section>
+
+      <section className="rounded-lg border border-emerald-300/20 bg-emerald-950/15 p-4">
+        <p className="text-sm font-semibold text-emerald-200">Подсказка для отношений</p>
+        <p className="mt-2 text-sm leading-6 text-slate-300">
+          По этому mock-расчёту легче всего искать диалог с энергиями {getCompatibilityNumbers(result.coreNumber)}. Это ориентир для разговора, а не правило совместимости.
+        </p>
+      </section>
+
+      <section className="rounded-lg border border-slate-700/80 bg-slate-900/70 p-4">
+        <div className="flex items-start gap-3">
+          <LockKeyhole className="mt-0.5 h-5 w-5 shrink-0 text-slate-400" />
+          <div>
+            <p className="text-sm font-semibold text-white">Будущая полная версия</p>
+            <p className="mt-2 text-sm leading-6 text-slate-400">
+              Позже здесь можно будет расширить разбор циклами, отношениями и практиками. Сейчас это только безопасный preview без оплаты, доступа и записи в базу.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <button
+        type="button"
+        onClick={onReset}
+        className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg border border-white/10 bg-white/[0.045] px-4 py-3 text-sm font-semibold text-slate-200 transition hover:border-rose-200/25 hover:bg-white/[0.07]"
+      >
+        <RotateCcw className="h-4 w-4" />
+        Ввести другую дату
+      </button>
     </div>
   );
+}
+
+function BirthMatrixFooter() {
+  return (
+    <div className="space-y-3 border-t border-white/10 pt-4">
+      <div className="flex items-start gap-2 rounded-lg border border-amber-300/20 bg-amber-950/20 p-3">
+        <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-200" />
+        <p className="text-xs leading-5 text-amber-100">
+          Локальный безопасный preview: без оплаты, без Telegram API, без записи в базу данных и без production-запуска.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function getCompatibilityNumbers(coreNumber: number): string {
+  return `${(coreNumber % 9) + 1} и ${(coreNumber % 7) + 2}`;
 }

@@ -43,6 +43,30 @@ function addDaysIso(iso, days) {
   return date.toISOString().slice(0, 10);
 }
 
+function withMockedTodayIso(todayIso, callback) {
+  const RealDate = Date;
+  const fixedTime = new RealDate(`${todayIso}T12:00:00.000Z`).getTime();
+  globalThis.Date = class MockedDate extends RealDate {
+    constructor(...args) {
+      if (args.length === 0) {
+        super(fixedTime);
+        return;
+      }
+      super(...args);
+    }
+
+    static now() {
+      return fixedTime;
+    }
+  };
+
+  try {
+    return callback();
+  } finally {
+    globalThis.Date = RealDate;
+  }
+}
+
 function changedFiles() {
   try {
     return execFileSync("git", ["diff", "--name-only", "HEAD"], { encoding: "utf8" })
@@ -102,7 +126,10 @@ const tomorrow = addDaysIso(getTodayIsoDate(), 1);
 check("today accepted", parseBirthDateInput(getTodayIsoDate()).ok === true);
 check("tomorrow rejected", parseBirthDateInput(tomorrow).ok === false);
 check("1899-12-31 rejected", parseBirthDateInput("1899-12-31").ok === false);
-check("26.06.2026 rejected when future relative to 2026-06-25", parseBirthDateInput("26.06.2026").ok === false);
+check(
+  "26.06.2026 rejected when future relative to 2026-06-25",
+  withMockedTodayIso("2026-06-25", () => parseBirthDateInput("26.06.2026").ok === false),
+);
 
 check("shared input uses raw draft sanitizer on change", /sanitizeBirthDateInputDraft/.test(sources.dateInput) && /const formatValue = isBirthDate \? sanitizeBirthDateInputDraft : formatDateInput/.test(sources.dateInput));
 check("shared input normalizes only on blur", /onBlur=\{\(event\) => onChange\(normalizeValue\(event\.currentTarget\.value\)\)\}/.test(sources.dateInput));

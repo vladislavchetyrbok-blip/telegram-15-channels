@@ -3,8 +3,8 @@ import { BirthMatrixClient } from "./BirthMatrixClient";
 import { recordAphroditeMiniAppNoopIntegrationPoint } from "@/lib/zodiac/aphrodite-miniapp-analytics-noop-integration-points";
 
 export const metadata: Metadata = {
-  title: "Birth Matrix",
-  description: "Calculate your numerological destiny and energy matrix.",
+  title: "Матрица судьбы",
+  description: "Короткий разбор главных энергий даты рождения и зоны роста.",
 };
 
 export default function BirthMatrixPage() {
