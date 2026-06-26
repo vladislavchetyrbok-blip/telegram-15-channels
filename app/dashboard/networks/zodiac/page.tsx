@@ -362,6 +362,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Owner Review Gate",
+    href: "/dashboard/networks/zodiac/owner-review-gate",
+    icon: ShieldCheck,
+    caption: "Package 168 - ручной owner review gate для будущего VIP/payment launch без оплаты, entitlement creation и production-запуска.",
+    tone: "cyan",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,

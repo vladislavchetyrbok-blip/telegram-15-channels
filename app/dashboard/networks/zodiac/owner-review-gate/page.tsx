@@ -1,167 +1,246 @@
-import React from "react";
 import Link from "next/link";
-import { Lock, ShieldAlert, CheckCircle2, Circle, AlertTriangle, AlertOctagon } from "lucide-react";
-import { OWNER_REVIEW_AREAS, OWNER_DECISION_OPTIONS } from "@/lib/zodiac/zodiac-owner-review-gate";
+import { ClipboardCheck, FileCheck2, KeyRound, LockKeyhole, ShieldCheck } from "lucide-react";
+import {
+  APHRODITE_OWNER_REVIEW_GATE_CLASSIFICATION,
+  APHRODITE_OWNER_REVIEW_GATE_RULE,
+  APHRODITE_OWNER_REVIEW_GATE_TITLE,
+  evaluateAphroditeOwnerReviewGate,
+  getAphroditeOwnerReviewBoundaries,
+  getAphroditeOwnerReviewChecklist,
+  getAphroditeOwnerReviewNextSteps,
+} from "@/lib/zodiac/aphrodite-owner-review-gate";
 
 export const metadata = {
-  title: "Owner Review Gate Before Real Implementation",
+  title: APHRODITE_OWNER_REVIEW_GATE_TITLE,
 };
 
-export default function OwnerReviewGatePage() {
-  return (
-    <div className="p-6 max-w-6xl mx-auto space-y-8">
-      <header className="mb-8 border-b border-rose-900/50 pb-6">
-        <h1 className="text-3xl font-bold text-slate-100 flex items-center gap-3">
-          <Lock className="h-8 w-8 text-rose-500" />
-          Owner Review Gate Before Real Implementation
-        </h1>
-        <p className="text-slate-400 mt-2 text-lg">
-          Strict isolation boundary. The system is currently in a safe, mock-only state.
-        </p>
-      </header>
+const gateResult = evaluateAphroditeOwnerReviewGate({
+  ownerApproved: true,
+  paymentsApproved: true,
+  starsApproved: true,
+  entitlementsApproved: true,
+  databaseApproved: true,
+  supportApproved: true,
+  securityQaApproved: true,
+  backupFresh: true,
+});
+const checklist = getAphroditeOwnerReviewChecklist();
+const boundaries = getAphroditeOwnerReviewBoundaries();
+const nextSteps = getAphroditeOwnerReviewNextSteps();
 
-      <div className="rounded-md bg-rose-950/40 border border-rose-900/50 p-6 mb-8">
-        <div className="flex items-center gap-2 text-rose-500 font-bold mb-4 text-xl">
-          <ShieldAlert className="h-6 w-6" />
-          Owner approval required / No real implementation / No production changes
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm text-slate-300">
-          <div className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-500" /> No payment</div>
-          <div className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-500" /> No real VIP access</div>
-          <div className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-500" /> No subscription logic</div>
-          <div className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-500" /> No database write</div>
-          <div className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-500" /> No Telegram API call</div>
-          <div className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-500" /> No active Telegram CTA logic changed</div>
-          <div className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-500" /> No production launch</div>
-          <div className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-500" /> No workflow/cron/publish script changes</div>
+const riskLabel = {
+  low: "низкий",
+  medium: "средний",
+  high: "высокий",
+  critical: "критический",
+} as const;
+
+export default function AphroditeOwnerReviewGatePage() {
+  return (
+    <div className="min-h-screen bg-black p-8 text-slate-200">
+      <div className="mx-auto max-w-7xl space-y-10">
+        <header className="space-y-4">
+          <div className="inline-flex items-center gap-2 rounded-full border border-slate-800 bg-slate-900 px-3 py-1 text-xs text-rose-300">
+            <LockKeyhole className="h-4 w-4" />
+            <span>Aphrodite / owner review / gate VIP-запуска</span>
+          </div>
+          <h1 className="text-3xl font-light tracking-tight text-white">{APHRODITE_OWNER_REVIEW_GATE_TITLE}</h1>
+          <p className="text-sm font-medium text-rose-300/90">{APHRODITE_OWNER_REVIEW_GATE_CLASSIFICATION}</p>
+          <p className="max-w-4xl text-lg leading-8 text-slate-400">
+            Package 168 добавляет обязательный ручной owner review перед любым будущим запуском оплаты, Telegram Stars,
+            entitlement creation, VIP-разблокировки, production DB write или live launch. Это только safety gate:
+            страница ничего не включает и не является runtime-переключателем.
+          </p>
+          <p className="max-w-4xl rounded-lg border border-slate-800 bg-slate-900 px-4 py-3 text-sm leading-6 text-slate-300">
+            {APHRODITE_OWNER_REVIEW_GATE_RULE}
+          </p>
+          <div className="flex flex-wrap gap-2 text-xs">
+            {boundaries.map((boundary) => (
+              <span
+                key={boundary.dataBoundary}
+                data-boundary={boundary.dataBoundary}
+                className="rounded-md border border-slate-700 bg-slate-800 px-2 py-1 text-emerald-400"
+              >
+                {boundary.visibleLabel}
+              </span>
+            ))}
+          </div>
+        </header>
+
+        <section className="rounded-lg border border-slate-800 bg-slate-900 p-6">
+          <div className="flex items-center gap-2">
+            <ShieldCheck className="h-5 w-5 text-rose-400" />
+            <h2 className="text-xl font-medium text-white">Сводка owner review</h2>
+          </div>
+          <div className="mt-4 grid gap-3 text-sm md:grid-cols-3">
+            <Metric label="Owner review" value="обязателен" />
+            <Metric label="Запуск" value="не разрешён" />
+            <Metric label="Оплата" value="нет" />
+          </div>
+          <p className="mt-4 text-sm leading-6 text-slate-400">{gateResult.visibleMessage}</p>
+        </section>
+
+        <section className="rounded-lg border border-rose-900/40 bg-rose-950/20 p-6">
+          <div className="flex items-center gap-2">
+            <KeyRound className="h-5 w-5 text-rose-300" />
+            <h2 className="text-xl font-medium text-rose-100">Результат owner review</h2>
+          </div>
+          <div className="mt-4 grid gap-3 text-sm md:grid-cols-3">
+            <ResultLine label="approvedForLaunch" value={String(gateResult.approvedForLaunch)} />
+            <ResultLine label="paymentsCanBeEnabledNow" value={String(gateResult.paymentsCanBeEnabledNow)} />
+            <ResultLine label="vipCanBeEnabledNow" value={String(gateResult.vipCanBeEnabledNow)} />
+            <ResultLine label="entitlementCreationCanBeEnabledNow" value={String(gateResult.entitlementCreationCanBeEnabledNow)} />
+            <ResultLine label="telegramStarsCanBeEnabledNow" value={String(gateResult.telegramStarsCanBeEnabledNow)} />
+            <ResultLine label="productionLaunchCanBeEnabledNow" value={String(gateResult.productionLaunchCanBeEnabledNow)} />
+          </div>
+          <ul className="mt-5 list-disc space-y-2 pl-5 text-sm leading-6 text-rose-100/80">
+            {gateResult.blockedReasons.map((reason) => (
+              <li key={reason}>{reason}</li>
+            ))}
+          </ul>
+        </section>
+
+        <section className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
+          <div className="rounded-lg border border-slate-800 bg-slate-900 p-6">
+            <div className="flex items-center gap-2">
+              <ClipboardCheck className="h-5 w-5 text-rose-400" />
+              <h2 className="text-xl font-medium text-white">Обязательный owner checklist</h2>
+            </div>
+            <div className="mt-5 grid gap-4 md:grid-cols-2">
+              {checklist.map((item) => (
+                <article key={item.id} className="rounded-lg border border-slate-800 bg-black/30 p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <h3 className="text-sm font-medium text-white">{item.label}</h3>
+                    <span className="shrink-0 rounded-md border border-slate-700 bg-slate-800 px-2 py-0.5 text-[11px] text-slate-300">
+                      риск: {riskLabel[item.riskLevel]}
+                    </span>
+                  </div>
+                  <p className="mt-2 font-mono text-xs text-slate-500">{item.area}</p>
+                  <p className="mt-3 text-xs leading-5 text-slate-400">
+                    Нужно до запуска: {item.requiredBeforeLaunch.join("; ")}.
+                  </p>
+                  <p className="mt-2 text-xs leading-5 text-rose-200/80">
+                    Заблокировано до: {item.blockedUntil.join("; ")}.
+                  </p>
+                </article>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <section className="rounded-lg border border-slate-800 bg-slate-900 p-6">
+              <div className="flex items-center gap-2">
+                <FileCheck2 className="h-5 w-5 text-rose-400" />
+                <h2 className="text-xl font-medium text-white">Будущие env flags</h2>
+              </div>
+              <p className="mt-3 text-sm leading-6 text-slate-400">
+                Эти flags документированы только для будущего review. Package 168 их не читает и не применяет.
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {gateResult.requiredFutureEnvFlags.map((flag) => (
+                  <span key={flag} className="rounded-md border border-slate-700 bg-black/30 px-3 py-2 font-mono text-xs text-slate-300">
+                    {flag}
+                  </span>
+                ))}
+              </div>
+            </section>
+
+            <section className="rounded-lg border border-slate-800 bg-slate-900 p-6">
+              <h2 className="text-xl font-medium text-white">Зависимость от security QA</h2>
+              <p className="mt-3 text-sm leading-6 text-slate-400">
+                Package 167 должен оставаться PASS: no payment API, no Telegram Stars invoice, no successful_payment handler,
+                no entitlement creation, no DB write, no Telegram API call.
+              </p>
+              <Link href="/dashboard/networks/zodiac/vip-access-security-suite" className="mt-4 inline-block text-sm text-indigo-400 underline underline-offset-4 hover:text-indigo-300">
+                Security QA VIP-доступа
+              </Link>
+            </section>
+
+            <section className="rounded-lg border border-slate-800 bg-slate-900 p-6">
+              <h2 className="text-xl font-medium text-white">Готовность support/refund</h2>
+              <p className="mt-3 text-sm leading-6 text-slate-400">
+                До оплаты нужно вручную описать поддержку, возвраты, revoke entitlement и спорные платежи. Без этого launch остаётся закрытым.
+              </p>
+            </section>
+
+            <section className="rounded-lg border border-slate-800 bg-slate-900 p-6">
+              <h2 className="text-xl font-medium text-white">Требование production backup</h2>
+              <p className="mt-3 text-sm leading-6 text-slate-400">
+                Перед любым production DB write требуется свежий backup и PASS в production safety. Package 168 не создаёт backup и не пишет в DB.
+              </p>
+            </section>
+          </div>
+        </section>
+
+        <section className="rounded-lg border border-rose-900/40 bg-rose-950/20 p-6">
+          <div className="flex items-center gap-2">
+            <LockKeyhole className="h-5 w-5 text-rose-300" />
+            <h2 className="text-xl font-medium text-rose-100">Границы безопасности</h2>
+          </div>
+          <div className="mt-5 space-y-2">
+            {boundaries.map((boundary) => (
+              <div key={boundary.dataBoundary} data-boundary={boundary.dataBoundary} className="rounded-lg border border-rose-900/40 bg-black/20 p-3">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <div className="text-sm font-medium text-white">{boundary.visibleLabel}</div>
+                    <div className="mt-1 text-xs leading-5 text-rose-100/80">
+                      Разрешено сейчас: {boundary.allowedNow.join(", ")}. Заблокировано до: {boundary.blockedUntil.join(", ")}.
+                    </div>
+                  </div>
+                  <span className="shrink-0 rounded-md border border-rose-900/50 bg-rose-950 px-2 py-0.5 text-[11px] text-rose-100">
+                    риск: {riskLabel[boundary.riskLevel]}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="rounded-lg border border-slate-800 bg-slate-900 p-6">
+          <h2 className="text-xl font-medium text-white">Следующий рекомендуемый пакет</h2>
+          <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-300">
+            {nextSteps.map((step) => (
+              <li key={step.package}>
+                <span className="text-white">
+                  {step.package} - {step.title}:
+                </span>{" "}
+                {step.purpose}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3 text-xs text-slate-500">Package 169 не начинается автоматически.</p>
+        </section>
+
+        <div className="border-t border-slate-800/50 pt-4">
+          <div className="mb-2 text-sm text-slate-400">Связанные разделы</div>
+          <div className="flex flex-wrap gap-3 text-sm">
+            <Link href="/dashboard/networks/zodiac" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Zodiac Network</Link>
+            <Link href="/dashboard/networks/zodiac/product-catalog-finalization" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Каталог продуктов</Link>
+            <Link href="/dashboard/networks/zodiac/payment-ledger-design" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Дизайн payment ledger</Link>
+            <Link href="/dashboard/networks/zodiac/entitlement-storage-design" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Дизайн хранения VIP-доступа</Link>
+            <Link href="/dashboard/networks/zodiac/server-entitlement-check-skeleton" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Skeleton server-side entitlement</Link>
+            <Link href="/dashboard/networks/zodiac/vip-access-security-suite" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Security QA VIP-доступа</Link>
+            <Link href="/miniapp/love-reading-preview" className="text-rose-300 underline underline-offset-4 hover:text-rose-200">Free Love Reading Preview</Link>
+          </div>
         </div>
       </div>
+    </div>
+  );
+}
 
-      <section className="space-y-6">
-        <h2 className="text-2xl font-semibold text-slate-200 border-b border-slate-800 pb-2">
-          Current System State (Packages 103–120)
-        </h2>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-slate-400 border-collapse">
-            <thead className="text-xs text-slate-500 uppercase bg-slate-900/50">
-              <tr>
-                <th className="px-4 py-3 font-semibold border-b border-slate-800">Review Area</th>
-                <th className="px-4 py-3 font-semibold border-b border-slate-800">Status</th>
-                <th className="px-4 py-3 font-semibold border-b border-slate-800">Blocked Until</th>
-                <th className="px-4 py-3 font-semibold border-b border-slate-800">Safe Next Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {OWNER_REVIEW_AREAS.map((item, idx) => (
-                <tr key={idx} className="border-b border-slate-800/50 hover:bg-slate-800/20 transition">
-                  <td className="px-4 py-3 font-medium text-slate-300">
-                    {item.area}
-                    <div className="text-xs text-slate-600 mt-1">
-                      {item.evidence.map(e => <span key={e} className="mr-2 inline-block font-mono bg-slate-900 px-1 rounded">{e}</span>)}
-                    </div>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className={`px-2 py-1 text-[10px] font-bold rounded-full uppercase ${
-                      item.currentStatus === 'complete' ? 'bg-emerald-900/40 text-emerald-400' :
-                      item.currentStatus === 'mock-only' ? 'bg-indigo-900/40 text-indigo-400' :
-                      item.currentStatus === 'architecture-only' ? 'bg-amber-900/40 text-amber-400' :
-                      item.currentStatus === 'requires-owner-approval' ? 'bg-rose-900/40 text-rose-400' :
-                      'bg-slate-800 text-slate-400'
-                    }`}>
-                      {item.currentStatus}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    {item.blockedUntil.length > 0 ? (
-                      <ul className="list-disc pl-4 space-y-1 text-rose-400/80">
-                        {item.blockedUntil.map(b => <li key={b}>{b}</li>)}
-                      </ul>
-                    ) : (
-                      <span className="text-slate-600 italic">None</span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3 text-emerald-400/80">{item.safeNextAction}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
+function Metric({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-lg border border-slate-800 bg-black/30 p-4">
+      <div className="text-xs uppercase tracking-wide text-slate-500">{label}</div>
+      <div className="mt-2 break-words text-lg font-semibold text-white">{value}</div>
+    </div>
+  );
+}
 
-      <section className="space-y-6 mt-12">
-        <h2 className="text-2xl font-semibold text-slate-200 border-b border-slate-800 pb-2 flex items-center gap-2">
-          <AlertOctagon className="h-6 w-6 text-amber-500" />
-          Owner Decision Required: Next Phase Options
-        </h2>
-        <div className="grid gap-6 md:grid-cols-2">
-          {OWNER_DECISION_OPTIONS.map((item, idx) => (
-            <div key={idx} className={`p-5 rounded-xl border ${
-              item.riskLevel === 'critical' ? 'border-rose-900/50 bg-rose-950/20' :
-              item.riskLevel === 'high' ? 'border-orange-900/50 bg-orange-950/20' :
-              item.riskLevel === 'medium' ? 'border-amber-900/50 bg-amber-950/20' :
-              'border-emerald-900/50 bg-emerald-950/20'
-            }`}>
-              <div className="flex justify-between items-start mb-3">
-                <span className="text-xs text-slate-500 font-bold bg-slate-900 px-2 py-1 rounded">
-                  Option {item.recommendedOrder}
-                </span>
-                <span className={`px-2 py-1 text-[10px] font-bold rounded-full uppercase ${
-                  item.riskLevel === 'critical' ? 'bg-rose-900/40 text-rose-400' :
-                  item.riskLevel === 'high' ? 'bg-orange-900/40 text-orange-400' :
-                  item.riskLevel === 'medium' ? 'bg-amber-900/40 text-amber-400' :
-                  'bg-emerald-900/40 text-emerald-400'
-                }`}>
-                  Risk: {item.riskLevel}
-                </span>
-              </div>
-              <h3 className="font-semibold text-slate-200 text-lg mb-2">{item.option}</h3>
-              <p className="text-sm text-slate-400 mb-4">{item.description}</p>
-              
-              {item.requiresBeforeStart.length > 0 && (
-                <div className="mb-3">
-                  <span className="text-xs text-amber-500/80 uppercase tracking-wider font-semibold block mb-1 flex items-center gap-1">
-                    <AlertTriangle className="h-3 w-3" /> Requires Before Start:
-                  </span>
-                  <ul className="list-disc pl-4 text-xs text-amber-200/60 space-y-0.5">
-                    {item.requiresBeforeStart.map(r => <li key={r}>{r}</li>)}
-                  </ul>
-                </div>
-              )}
-
-              {item.forbiddenWithoutApproval.length > 0 && (
-                <div>
-                  <span className="text-xs text-rose-500/80 uppercase tracking-wider font-semibold block mb-1 flex items-center gap-1">
-                    <Circle className="h-3 w-3" /> Forbidden Without Approval:
-                  </span>
-                  <ul className="list-disc pl-4 text-xs text-rose-200/60 space-y-0.5">
-                    {item.forbiddenWithoutApproval.map(r => <li key={r}>{r}</li>)}
-                  </ul>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="rounded-lg border border-slate-800 bg-slate-900/30 p-6 mt-8">
-        <h3 className="text-lg font-medium text-slate-300 mb-3">Safe Navigation</h3>
-        <ul className="flex flex-wrap gap-4 text-sm">
-          <li><Link href="/dashboard/networks/zodiac/real-implementation-path" className="text-amber-400 hover:text-amber-300 transition underline underline-offset-4">Real Implementation Path</Link></li>
-          <li><Link href="/dashboard/networks/zodiac/aphrodite-product-remediation" className="text-amber-400 hover:text-amber-300 transition underline underline-offset-4">Aphrodite Product Remediation</Link></li>
-          <li><Link href="/dashboard/networks/zodiac/first-result-experience" className="text-amber-400 hover:text-amber-300 transition underline underline-offset-4">First Result Experience</Link></li>
-          <li><Link href="/dashboard/networks/zodiac" className="text-blue-400 hover:text-blue-300 transition underline underline-offset-4">Zodiac Dashboard</Link></li>
-          <li><Link href="/dashboard/networks/zodiac/miniapp-master-index" className="text-indigo-400 hover:text-indigo-300 transition underline underline-offset-4">Master Index</Link></li>
-          <li><Link href="/dashboard/networks/zodiac/miniapp-readiness" className="text-sky-400 hover:text-sky-300 transition underline underline-offset-4">Readiness Summary</Link></li>
-          <li><Link href="/dashboard/networks/zodiac/miniapp-risk-register" className="text-red-400 hover:text-red-300 transition underline underline-offset-4">Risk Register</Link></li>
-          <li><Link href="/dashboard/networks/zodiac/stability" className="text-emerald-400 hover:text-emerald-300 transition underline underline-offset-4">Stability</Link></li>
-          <li><Link href="/dashboard/networks/zodiac/telegram-initdata-validation" className="text-emerald-400 hover:text-emerald-300 transition underline underline-offset-4">Telegram initData Validation</Link></li>
-          <li><Link href="/dashboard/networks/zodiac/user-profile-foundation" className="text-emerald-400 hover:text-emerald-300 transition underline underline-offset-4">User Profile Foundation</Link></li>
-          <li><Link href="/dashboard/networks/zodiac/product-catalog-foundation" className="text-emerald-400 hover:text-emerald-300 transition underline underline-offset-4">Product Catalog Foundation</Link></li>
-          <li><Link href="/dashboard/networks/zodiac/entitlement-foundation" className="text-emerald-400 hover:text-emerald-300 transition underline underline-offset-4">Entitlement Foundation</Link></li>
-          <li><Link href="/dashboard/networks/zodiac/vip-access-boundary" className="text-emerald-400 hover:text-emerald-300 transition underline underline-offset-4">VIP Access Boundary</Link></li>
-          <li><Link href="/dashboard/networks/zodiac/vip-compatibility-report-foundation" className="text-emerald-400 hover:text-emerald-300 transition underline underline-offset-4">VIP Compatibility Report</Link></li>
-        </ul>
-      </section>
+function ResultLine({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-md border border-rose-900/40 bg-black/30 px-3 py-2 font-mono text-sm text-rose-100">
+      {`${label}=${value}`}
     </div>
   );
 }

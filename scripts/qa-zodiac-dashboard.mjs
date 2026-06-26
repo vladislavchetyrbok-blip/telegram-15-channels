@@ -160,6 +160,7 @@ async function main() {
     assertIncludes(pages.overview, "Zodiac Mini — Mini App", "Zodiac Mini module card visible");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/paywall-readiness"', "paywall readiness route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/entitlement-enforcement-design"', "entitlement design route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/owner-review-gate"', "owner review gate route link");
 
     assertIncludes(pages.analytics, "Аналитика Mini App", "analytics page heading");
     assertIncludes(pages.analytics, "First-users funnel", "first-users funnel block");
@@ -449,12 +450,18 @@ async function main() {
     assertIncludes(pages.miniappMasterIndex, "Mock Mode Active", "master index mock boundary");
     assertIncludes(pages.miniappMasterIndex, "No live Telegram API calls are made", "master index telegram boundary");
 
-    assertIncludes(pages.ownerReviewGate, "Owner Review Gate Before Real Implementation", "owner review gate page title");
-    assertIncludes(pages.ownerReviewGate, "Owner approval required", "owner review gate classification");
-    assertIncludes(pages.ownerReviewGate, "No real implementation", "owner review gate implementation boundary");
-    assertIncludes(pages.ownerReviewGate, "No production changes", "owner review gate production boundary");
-    assertIncludes(pages.ownerReviewGate, "No payment", "owner review gate payment boundary");
-    assertIncludes(pages.ownerReviewGate, "No Telegram API call", "owner review gate telegram boundary");
+    assertIncludes(pages.ownerReviewGate, "Owner Review Gate для VIP-запуска", "owner review gate title");
+    assertIncludes(pages.ownerReviewGate, "Только safety gate", "owner review gate classification");
+    assertIncludes(pages.ownerReviewGate, "Запуск не разрешён", "launch not approved boundary");
+    assertIncludes(pages.ownerReviewGate, "Нет реальной оплаты", "payment boundary");
+    assertIncludes(pages.ownerReviewGate, "Нет реальной VIP-разблокировки", "vip unlock boundary");
+    assertIncludes(pages.ownerReviewGate, "Нет Telegram Stars invoice", "stars invoice boundary");
+    assertIncludes(pages.ownerReviewGate, "Нет successful_payment handler", "successful payment boundary");
+    assertIncludes(pages.ownerReviewGate, "Нет entitlement creation", "entitlement creation boundary");
+    assertIncludes(pages.ownerReviewGate, "Нет записи в базу данных", "database boundary");
+    assertIncludes(pages.ownerReviewGate, "Нет вызова Telegram API", "telegram boundary");
+    assertIncludes(pages.ownerReviewGate, "Owner review не включает оплату", "owner review no payment boundary");
+    assertIncludes(pages.ownerReviewGate, "approvedForLaunch=false", "launch denied result");
 
     assertIncludes(pages.realImplementationPath, "Real Implementation Path", "real implementation path page title");
     assertIncludes(pages.realImplementationPath, "Selected path", "real implementation selected path classification");
