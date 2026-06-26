@@ -1,39 +1,39 @@
 import Link from "next/link";
-import { Layers3, ListChecks, MousePointerClick, ShieldCheck, Smartphone } from "lucide-react";
+import { Brush, Eye, Layers3, ShieldCheck, Sparkles } from "lucide-react";
 import type { ReactNode } from "react";
 
 import {
-  APHRODITE_MINIAPP_UX_SIMPLIFICATION_REVIEW_RULE,
-  getAphroditeMiniappUxSimplificationReview,
-} from "@/lib/zodiac/aphrodite-miniapp-ux-simplification-review";
+  APHRODITE_VISUAL_UI_POLISH_PLAN_RULE,
+  getAphroditeVisualUiPolishPlan,
+} from "@/lib/zodiac/aphrodite-visual-ui-polish-plan";
 
-const uxReview = getAphroditeMiniappUxSimplificationReview();
+const polishPlan = getAphroditeVisualUiPolishPlan();
 
 export const metadata = {
-  title: uxReview.title,
+  title: polishPlan.title,
 };
 
-export default function AphroditeMiniappUxSimplificationReviewPage() {
+export default function AphroditeVisualUiPolishPlanPage() {
   return (
     <div className="min-h-screen bg-black p-8 text-slate-200">
       <div className="mx-auto max-w-7xl space-y-10">
         <header className="space-y-4">
           <div className="inline-flex items-center gap-2 rounded-full border border-slate-800 bg-slate-900 px-3 py-1 text-xs text-emerald-300">
-            <Smartphone className="h-4 w-4" />
-            <span>Aphrodite / Mini App UX review / Package 192</span>
+            <Brush className="h-4 w-4" />
+            <span>Aphrodite / Visual UI polish plan / Package 193</span>
           </div>
-          <h1 className="text-3xl font-light tracking-tight text-white">{uxReview.title}</h1>
-          <p className="text-sm font-medium text-emerald-300/90">{uxReview.classification}</p>
+          <h1 className="text-3xl font-light tracking-tight text-white">{polishPlan.title}</h1>
+          <p className="text-sm font-medium text-emerald-300/90">{polishPlan.classification}</p>
           <p className="max-w-4xl text-lg leading-8 text-slate-400">
-            Review фиксирует будущий план упрощения Mini App home screen, Love Reading entry, Compatibility entry,
-            Birth Matrix entry, daily/weekly/monthly content entry, CTA hierarchy и Telegram WebApp feel. Live UI и live
-            flow в этом пакете не меняются.
+            План описывает future polish для simplified visual style, premium mystical but not overloaded, readable cards,
+            fewer gradients, better spacing, clearer typography, result cards style и Telegram WebApp safe area. Live дизайн
+            в этом пакете не меняется.
           </p>
           <p className="max-w-4xl rounded-lg border border-slate-800 bg-slate-900 px-4 py-3 text-sm leading-6 text-slate-300">
-            {APHRODITE_MINIAPP_UX_SIMPLIFICATION_REVIEW_RULE}
+            {APHRODITE_VISUAL_UI_POLISH_PLAN_RULE}
           </p>
           <div className="flex flex-wrap gap-2 text-xs">
-            {uxReview.safetyLabels.map((label) => (
+            {polishPlan.safetyLabels.map((label) => (
               <span key={label} className="rounded-md border border-slate-700 bg-slate-800 px-2 py-1 text-emerald-300">
                 {label}
               </span>
@@ -42,33 +42,33 @@ export default function AphroditeMiniappUxSimplificationReviewPage() {
         </header>
 
         <section className="grid gap-4 md:grid-cols-4">
-          <Metric label="UX areas" value={String(uxReview.summary.uxAreasReviewed)} />
-          <Metric label="recommendations" value={String(uxReview.summary.recommendationsCount)} />
-          <Metric label="liveUiChangedNow" value={String(uxReview.liveUiChangedNow)} tone="rose" />
-          <Metric label="productionLaunchNow" value={String(uxReview.productionLaunchNow)} tone="rose" />
+          <Metric label="polish areas" value={String(polishPlan.summary.polishAreasPlanned)} />
+          <Metric label="principles" value={String(polishPlan.summary.principlesCount)} />
+          <Metric label="liveDesignChangedNow" value={String(polishPlan.liveDesignChangedNow)} tone="rose" />
+          <Metric label="telegramApiNow" value={String(polishPlan.telegramApiNow)} tone="rose" />
         </section>
 
-        <ReviewSection title="reviewed UX areas" icon={<Layers3 className="h-5 w-5 text-cyan-400" />}>
+        <ReviewSection title="visual polish areas" icon={<Layers3 className="h-5 w-5 text-cyan-400" />}>
           <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-            {uxReview.uxAreas.map((area) => (
+            {polishPlan.polishAreas.map((area) => (
               <article key={area.id} className="rounded-lg border border-slate-800 bg-black/30 p-4">
                 <h2 className="text-sm font-medium text-white">{area.label}</h2>
-                <p className="mt-2 text-xs leading-5 text-amber-100/80">{area.currentRisk}</p>
-                <p className="mt-2 text-xs leading-5 text-slate-400">{area.simplificationReview}</p>
+                <p className="mt-2 text-xs leading-5 text-amber-100/80">{area.currentIssue}</p>
+                <p className="mt-2 text-xs leading-5 text-slate-400">{area.polishPlan}</p>
                 <p className="mt-3 font-mono text-[11px] text-emerald-300">{area.source}</p>
               </article>
             ))}
           </div>
         </ReviewSection>
 
-        <section className="grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
-          <ReviewSection title="future simplification recommendations" icon={<MousePointerClick className="h-5 w-5 text-cyan-400" />}>
+        <section className="grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
+          <ReviewSection title="visual principles" icon={<Sparkles className="h-5 w-5 text-cyan-400" />}>
             <div className="grid gap-3 md:grid-cols-2">
-              {uxReview.recommendations.map((recommendation) => (
-                <div key={recommendation.id} className="rounded-lg border border-slate-800 bg-black/20 p-3">
-                  <div className="text-sm font-medium text-white">{recommendation.label}</div>
-                  <p className="mt-1 text-xs leading-5 text-slate-400">{recommendation.reason}</p>
-                  <p className="mt-2 font-mono text-[11px] text-amber-200">{recommendation.implementationState}</p>
+              {polishPlan.principles.map((principle) => (
+                <div key={principle.id} className="rounded-lg border border-slate-800 bg-black/20 p-3">
+                  <div className="text-sm font-medium text-white">{principle.label}</div>
+                  <p className="mt-1 text-xs leading-5 text-slate-400">{principle.description}</p>
+                  <p className="mt-2 font-mono text-[11px] text-amber-200">{principle.implementationState}</p>
                 </div>
               ))}
             </div>
@@ -76,7 +76,7 @@ export default function AphroditeMiniappUxSimplificationReviewPage() {
 
           <ReviewSection title="safety boundaries" icon={<ShieldCheck className="h-5 w-5 text-emerald-300" />}>
             <div className="space-y-3">
-              {uxReview.boundaries.map((boundary) => (
+              {polishPlan.boundaries.map((boundary) => (
                 <div key={boundary.id} data-boundary={boundary.id} className="rounded-lg border border-emerald-900/40 bg-black/20 p-3">
                   <div className="text-sm font-medium text-white">{boundary.label}</div>
                   <p className="mt-1 text-xs leading-5 text-slate-400">{boundary.currentState}</p>
@@ -86,18 +86,17 @@ export default function AphroditeMiniappUxSimplificationReviewPage() {
           </ReviewSection>
         </section>
 
-        <ReviewSection title="next recommended package" icon={<ListChecks className="h-5 w-5 text-cyan-400" />}>
-          <p className="text-sm leading-6 text-slate-300">{uxReview.nextRecommendedPackage}</p>
+        <ReviewSection title="next recommended package" icon={<Eye className="h-5 w-5 text-cyan-400" />}>
+          <p className="text-sm leading-6 text-slate-300">{polishPlan.nextRecommendedPackage}</p>
         </ReviewSection>
 
         <div className="border-t border-slate-800/50 pt-4">
           <div className="mb-2 text-sm text-slate-400">Связанные разделы</div>
           <div className="flex flex-wrap gap-3 text-sm">
             <Link href="/dashboard/networks/zodiac" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Zodiac Network</Link>
+            <Link href="/dashboard/networks/zodiac/miniapp-ux-simplification-review" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Mini App UX Review</Link>
             <Link href="/dashboard/networks/zodiac/public-launch-checklist-refresh" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Public Launch Checklist</Link>
             <Link href="/miniapp" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Mini App hub</Link>
-            <Link href="/dashboard/networks/zodiac/compatibility-flow-safety" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Compatibility Flow Safety</Link>
-            <Link href="/dashboard/networks/zodiac/visual-ui-polish-plan" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Visual UI Polish Plan</Link>
           </div>
         </div>
       </div>

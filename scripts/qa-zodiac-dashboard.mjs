@@ -67,6 +67,7 @@ const ROUTES = {
   retentionMockDashboardSafetySuite: "/dashboard/networks/zodiac/retention-mock-dashboard-safety-suite",
   publicLaunchChecklistRefresh: "/dashboard/networks/zodiac/public-launch-checklist-refresh",
   miniappUxSimplificationReview: "/dashboard/networks/zodiac/miniapp-ux-simplification-review",
+  visualUiPolishPlan: "/dashboard/networks/zodiac/visual-ui-polish-plan",
   realImplementationPath: "/dashboard/networks/zodiac/real-implementation-path",
   telegramInitDataValidation: "/dashboard/networks/zodiac/telegram-initdata-validation",
   userProfileFoundation: "/dashboard/networks/zodiac/user-profile-foundation",
@@ -203,6 +204,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/retention-mock-dashboard-safety-suite"', "retention mock dashboard safety suite route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/public-launch-checklist-refresh"', "public launch checklist refresh route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-ux-simplification-review"', "miniapp ux simplification review route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/visual-ui-polish-plan"', "visual ui polish plan route link");
 
     assertIncludes(pages.analytics, "Аналитика Mini App", "analytics page heading");
     assertIncludes(pages.analytics, "First-users funnel", "first-users funnel block");
@@ -724,6 +726,15 @@ async function main() {
     assertIncludes(pages.miniappUxSimplificationReview, "Telegram WebApp feel", "miniapp ux telegram feel");
     assertIncludes(pages.miniappUxSimplificationReview, "one primary CTA", "miniapp ux one primary cta");
     assertIncludes(pages.miniappUxSimplificationReview, "Telegram safe area", "miniapp ux safe area");
+    assertIncludes(pages.visualUiPolishPlan, "План визуального улучшения Aphrodite", "visual polish title");
+    assertIncludes(pages.visualUiPolishPlan, "Только UI polish plan", "visual polish classification");
+    assertIncludes(pages.visualUiPolishPlan, "UI polish plan не меняет live дизайн", "visual polish live design boundary");
+    assertIncludes(pages.visualUiPolishPlan, "simplified visual style", "visual polish simplified style");
+    assertIncludes(pages.visualUiPolishPlan, "premium mystical but not overloaded", "visual polish premium mystical");
+    assertIncludes(pages.visualUiPolishPlan, "readable cards", "visual polish readable cards");
+    assertIncludes(pages.visualUiPolishPlan, "Love Reading result style", "visual polish love result");
+    assertIncludes(pages.visualUiPolishPlan, "Telegram WebApp safe area", "visual polish safe area");
+    assertIncludes(pages.visualUiPolishPlan, "dark theme consistency", "visual polish dark theme");
 
     assertIncludes(pages.realImplementationPath, "Real Implementation Path", "real implementation path page title");
     assertIncludes(pages.realImplementationPath, "Selected path", "real implementation selected path classification");

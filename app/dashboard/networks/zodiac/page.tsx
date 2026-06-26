@@ -3,6 +3,7 @@ import {
   Activity,
   BarChart3,
   Bot,
+  Brush,
   CalendarClock,
   ClipboardCheck,
   CheckCircle2,
@@ -515,6 +516,13 @@ const platformSections = [
     href: "/dashboard/networks/zodiac/miniapp-ux-simplification-review",
     icon: Smartphone,
     caption: "Package 192 - UX review будущего упрощения Mini App без изменения live flow, оплаты, VIP и Telegram API.",
+    tone: "emerald",
+  },
+  {
+    title: "План визуального улучшения",
+    href: "/dashboard/networks/zodiac/visual-ui-polish-plan",
+    icon: Brush,
+    caption: "Package 193 - план будущей визуальной полировки Aphrodite без изменения live дизайна, оплаты, VIP и Telegram API.",
     tone: "emerald",
   },
   {
