@@ -490,6 +490,13 @@ const platformSections = [
     tone: "emerald",
   },
   {
+    title: "Noop skeleton streak/reminder",
+    href: "/dashboard/networks/zodiac/streak-reminder-noop-skeleton",
+    icon: CalendarClock,
+    caption: "Package 189 - noop-функции будущих streak/reminder без schedule, Telegram API, DB read/write и уведомлений.",
+    tone: "emerald",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,

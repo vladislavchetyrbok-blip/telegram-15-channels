@@ -101,6 +101,7 @@ export default function AphroditeReturnJourneyCtaReadinessPage() {
           <div className="mb-2 text-sm text-slate-400">Связанные разделы</div>
           <div className="flex flex-wrap gap-3 text-sm">
             <Link href="/dashboard/networks/zodiac" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Zodiac Network</Link>
+            <Link href="/dashboard/networks/zodiac/streak-reminder-noop-skeleton" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Streak Reminder Noop</Link>
             <Link href="/dashboard/networks/zodiac/saved-reports-history-mock-readiness" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Saved Reports Mock</Link>
             <Link href="/dashboard/networks/zodiac/retention-system-readiness" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Retention Readiness</Link>
             <Link href="/dashboard/networks/zodiac/telegram-cta-attribution-readiness" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">CTA Attribution</Link>

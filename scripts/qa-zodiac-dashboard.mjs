@@ -63,6 +63,7 @@ const ROUTES = {
   retentionSystemReadiness: "/dashboard/networks/zodiac/retention-system-readiness",
   savedReportsHistoryMockReadiness: "/dashboard/networks/zodiac/saved-reports-history-mock-readiness",
   returnJourneyCtaReadiness: "/dashboard/networks/zodiac/return-journey-cta-readiness",
+  streakReminderNoopSkeleton: "/dashboard/networks/zodiac/streak-reminder-noop-skeleton",
   realImplementationPath: "/dashboard/networks/zodiac/real-implementation-path",
   telegramInitDataValidation: "/dashboard/networks/zodiac/telegram-initdata-validation",
   userProfileFoundation: "/dashboard/networks/zodiac/user-profile-foundation",
@@ -195,6 +196,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/retention-system-readiness"', "retention system readiness route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/saved-reports-history-mock-readiness"', "saved reports history mock readiness route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/return-journey-cta-readiness"', "return journey cta readiness route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/streak-reminder-noop-skeleton"', "streak reminder noop skeleton route link");
 
     assertIncludes(pages.analytics, "Аналитика Mini App", "analytics page heading");
     assertIncludes(pages.analytics, "First-users funnel", "first-users funnel block");
@@ -678,6 +680,16 @@ async function main() {
     assertIncludes(pages.returnJourneyCtaReadiness, "monthly horoscope → monthly module / Mini App", "return journey monthly path");
     assertIncludes(pages.returnJourneyCtaReadiness, "Telegram channel → Love Reading preview", "return journey telegram love path");
     assertIncludes(pages.returnJourneyCtaReadiness, "guard denied → free preview fallback", "return journey guard denied fallback");
+    assertIncludes(pages.streakReminderNoopSkeleton, "Noop skeleton streak/reminder", "streak reminder noop title");
+    assertIncludes(pages.streakReminderNoopSkeleton, "Только noop", "streak reminder noop classification");
+    assertIncludes(pages.streakReminderNoopSkeleton, "Нет реальных напоминаний", "streak reminder no real reminders");
+    assertIncludes(pages.streakReminderNoopSkeleton, "Reminder noop ничего не отправляет", "streak reminder sends nothing");
+    assertIncludes(pages.streakReminderNoopSkeleton, "daily-message-return", "streak reminder daily type");
+    assertIncludes(pages.streakReminderNoopSkeleton, "weekly-horoscope-return", "streak reminder weekly type");
+    assertIncludes(pages.streakReminderNoopSkeleton, "monthly-horoscope-return", "streak reminder monthly type");
+    assertIncludes(pages.streakReminderNoopSkeleton, "streakPersistedNow", "streak reminder streak flag visible");
+    assertIncludes(pages.streakReminderNoopSkeleton, "reminderScheduledNow", "streak reminder schedule flag visible");
+    assertIncludes(pages.streakReminderNoopSkeleton, "telegramMessageSentNow", "streak reminder telegram flag visible");
 
     assertIncludes(pages.realImplementationPath, "Real Implementation Path", "real implementation path page title");
     assertIncludes(pages.realImplementationPath, "Selected path", "real implementation selected path classification");
