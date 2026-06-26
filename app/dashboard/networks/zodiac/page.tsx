@@ -14,6 +14,7 @@ import {
   ListPlus,
   LockKeyhole,
   MessageSquareText,
+  MousePointerClick,
   RadioTower,
   GitBranch,
   Rocket,
@@ -451,6 +452,13 @@ const platformSections = [
     href: "/dashboard/networks/zodiac/analytics-funnel-mock-dashboard",
     icon: BarChart3,
     caption: "Package 183 - статичный mock dashboard будущих KPI и funnel stages без реальных данных, DB read/write и внешней аналитики.",
+    tone: "cyan",
+  },
+  {
+    title: "Telegram CTA attribution",
+    href: "/dashboard/networks/zodiac/telegram-cta-attribution-readiness",
+    icon: MousePointerClick,
+    caption: "Package 184 - readiness source keys, startapp param draft и attribution dimensions без изменения active CTA и tracking.",
     tone: "cyan",
   },
   {

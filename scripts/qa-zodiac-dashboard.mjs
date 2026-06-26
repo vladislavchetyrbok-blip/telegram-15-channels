@@ -58,6 +58,7 @@ const ROUTES = {
   analyticsFunnelReadiness: "/dashboard/networks/zodiac/analytics-funnel-readiness",
   miniappAnalyticsNoopEventBus: "/dashboard/networks/zodiac/miniapp-analytics-noop-event-bus",
   analyticsFunnelMockDashboard: "/dashboard/networks/zodiac/analytics-funnel-mock-dashboard",
+  telegramCtaAttributionReadiness: "/dashboard/networks/zodiac/telegram-cta-attribution-readiness",
   realImplementationPath: "/dashboard/networks/zodiac/real-implementation-path",
   telegramInitDataValidation: "/dashboard/networks/zodiac/telegram-initdata-validation",
   userProfileFoundation: "/dashboard/networks/zodiac/user-profile-foundation",
@@ -185,6 +186,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/analytics-funnel-readiness"', "analytics funnel readiness route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-analytics-noop-event-bus"', "miniapp analytics noop event bus route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/analytics-funnel-mock-dashboard"', "analytics funnel mock dashboard route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/telegram-cta-attribution-readiness"', "telegram cta attribution readiness route link");
 
     assertIncludes(pages.analytics, "Аналитика Mini App", "analytics page heading");
     assertIncludes(pages.analytics, "First-users funnel", "first-users funnel block");
@@ -621,6 +623,15 @@ async function main() {
     assertIncludes(pages.analyticsFunnelMockDashboard, "Mock dashboard ничего не отправляет", "analytics funnel mock sends nothing");
     assertIncludes(pages.analyticsFunnelMockDashboard, "Telegram CTA", "analytics funnel mock telegram cta");
     assertIncludes(pages.analyticsFunnelMockDashboard, "daily/weekly/monthly content CTA", "analytics funnel mock content CTA");
+    assertIncludes(pages.telegramCtaAttributionReadiness, "Readiness Telegram CTA attribution", "telegram cta attribution readiness title");
+    assertIncludes(pages.telegramCtaAttributionReadiness, "Только attribution readiness", "telegram cta attribution readiness classification");
+    assertIncludes(pages.telegramCtaAttributionReadiness, "Нет изменения active CTA", "telegram cta attribution no active cta change");
+    assertIncludes(pages.telegramCtaAttributionReadiness, "CTA attribution readiness ничего не отправляет", "telegram cta attribution sends nothing");
+    assertIncludes(pages.telegramCtaAttributionReadiness, "tg_daily_aries", "telegram cta attribution daily source");
+    assertIncludes(pages.telegramCtaAttributionReadiness, "tg_weekly_leo", "telegram cta attribution weekly source");
+    assertIncludes(pages.telegramCtaAttributionReadiness, "tg_monthly_2026_07_general", "telegram cta attribution monthly source");
+    assertIncludes(pages.telegramCtaAttributionReadiness, "source channel", "telegram cta attribution source channel dimension");
+    assertIncludes(pages.telegramCtaAttributionReadiness, "startapp param draft", "telegram cta attribution startapp draft dimension");
 
     assertIncludes(pages.realImplementationPath, "Real Implementation Path", "real implementation path page title");
     assertIncludes(pages.realImplementationPath, "Selected path", "real implementation selected path classification");
