@@ -2367,6 +2367,18 @@
       "updatedAt": "2026-06-26T09:46:52.740Z",
       "messageId": "36,",
       "sentAt": "2026-06-26T09:46:52.739Z"
+    },
+    "2026-06-26:taurus": {
+      "key": "2026-06-26:taurus",
+      "date": "2026-06-26",
+      "slug": "taurus",
+      "createdAt": "2026-06-26T09:46:53.953Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-06-26T09:46:53.953Z"
     }
   }
 }
