@@ -47,6 +47,7 @@ const ROUTES = {
   miniappMasterIndex: "/dashboard/networks/zodiac/miniapp-master-index",
   ownerReviewGate: "/dashboard/networks/zodiac/owner-review-gate",
   telegramStarsPaymentArchitectureReview: "/dashboard/networks/zodiac/telegram-stars-payment-architecture-review",
+  telegramStarsInvoiceBuilderSkeleton: "/dashboard/networks/zodiac/telegram-stars-invoice-builder-skeleton",
   realImplementationPath: "/dashboard/networks/zodiac/real-implementation-path",
   telegramInitDataValidation: "/dashboard/networks/zodiac/telegram-initdata-validation",
   userProfileFoundation: "/dashboard/networks/zodiac/user-profile-foundation",
@@ -163,6 +164,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/entitlement-enforcement-design"', "entitlement design route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/owner-review-gate"', "owner review gate route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/telegram-stars-payment-architecture-review"', "telegram stars architecture route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/telegram-stars-invoice-builder-skeleton"', "telegram stars invoice builder skeleton route link");
 
     assertIncludes(pages.analytics, "Аналитика Mini App", "analytics page heading");
     assertIncludes(pages.analytics, "First-users funnel", "first-users funnel block");
@@ -477,6 +479,17 @@ async function main() {
     assertIncludes(pages.telegramStarsPaymentArchitectureReview, "Нет entitlement creation", "entitlement boundary");
     assertIncludes(pages.telegramStarsPaymentArchitectureReview, "Нет вызова Telegram API", "telegram api boundary");
     assertIncludes(pages.telegramStarsPaymentArchitectureReview, "Architecture review не включает оплату", "architecture no payment boundary");
+    assertIncludes(pages.telegramStarsInvoiceBuilderSkeleton, "Skeleton invoice builder Telegram Stars", "telegram stars invoice builder skeleton title");
+    assertIncludes(pages.telegramStarsInvoiceBuilderSkeleton, "Только invoice draft", "telegram stars invoice builder skeleton classification");
+    assertIncludes(pages.telegramStarsInvoiceBuilderSkeleton, "Ничего не отправляется", "invoice draft sends nothing boundary");
+    assertIncludes(pages.telegramStarsInvoiceBuilderSkeleton, "Нет реальной оплаты", "invoice builder payment boundary");
+    assertIncludes(pages.telegramStarsInvoiceBuilderSkeleton, "Нет Telegram Stars invoice", "invoice builder stars invoice boundary");
+    assertIncludes(pages.telegramStarsInvoiceBuilderSkeleton, "Нет sendInvoice", "invoice builder sendInvoice boundary");
+    assertIncludes(pages.telegramStarsInvoiceBuilderSkeleton, "Нет createInvoiceLink", "invoice builder createInvoiceLink boundary");
+    assertIncludes(pages.telegramStarsInvoiceBuilderSkeleton, "Нет payment ledger write", "invoice builder ledger boundary");
+    assertIncludes(pages.telegramStarsInvoiceBuilderSkeleton, "Нет entitlement creation", "invoice builder entitlement boundary");
+    assertIncludes(pages.telegramStarsInvoiceBuilderSkeleton, "Нет вызова Telegram API", "invoice builder telegram api boundary");
+    assertIncludes(pages.telegramStarsInvoiceBuilderSkeleton, "Invoice builder ничего не отправляет", "invoice builder sends nothing safety label");
 
     assertIncludes(pages.realImplementationPath, "Real Implementation Path", "real implementation path page title");
     assertIncludes(pages.realImplementationPath, "Selected path", "real implementation selected path classification");

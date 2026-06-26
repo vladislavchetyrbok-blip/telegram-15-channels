@@ -376,6 +376,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Skeleton invoice builder",
+    href: "/dashboard/networks/zodiac/telegram-stars-invoice-builder-skeleton",
+    icon: ShieldCheck,
+    caption: "Package 170 - локальный invoice draft skeleton для Telegram Stars: ничего не отправляет и не вызывает Telegram API.",
+    tone: "cyan",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,
