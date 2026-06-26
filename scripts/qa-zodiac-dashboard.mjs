@@ -815,6 +815,12 @@ async function main() {
     assertIncludes(pages.realDeviceVisualQaChecklist, "keyboard open state", "real device keyboard state");
     assertIncludes(pages.realDeviceVisualQaChecklist, "back button behavior", "real device back button");
     assertIncludes(pages.realDeviceVisualQaChecklist, "/miniapp/love-reading-preview", "real device love preview");
+    assertIncludes(pages.realDeviceVisualQaChecklist, "Evidence Pack 214", "real device evidence pack label");
+    assertIncludes(pages.realDeviceVisualQaChecklist, "required real-device evidence pack", "real device evidence pack section");
+    assertIncludes(pages.realDeviceVisualQaChecklist, "Telegram WebView check", "real device telegram webview evidence");
+    assertIncludes(pages.realDeviceVisualQaChecklist, "startapp/deep link check", "real device startapp evidence");
+    assertIncludes(pages.realDeviceVisualQaChecklist, "OWNER REVIEW REQUIRED", "real device owner review required");
+    assertIncludes(pages.realDeviceVisualQaChecklist, "Launch remains not approved", "real device launch remains not approved");
     assertIncludes(pages.realDeviceVisualQaChecklist, "daily horoscope card", "real device daily card");
     assertIncludes(pages.realDeviceVisualQaChecklist, "weekly horoscope card", "real device weekly card");
     assertIncludes(pages.realDeviceVisualQaChecklist, "monthly horoscope card", "real device monthly card");

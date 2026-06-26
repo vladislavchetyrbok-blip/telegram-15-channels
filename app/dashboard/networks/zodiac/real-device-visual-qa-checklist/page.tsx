@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ClipboardCheck, ListChecks, MonitorSmartphone, ShieldCheck } from "lucide-react";
+import { Camera, ClipboardCheck, ListChecks, MonitorSmartphone, ShieldCheck, UserCheck } from "lucide-react";
 import type { ReactNode } from "react";
 
 import {
@@ -20,7 +20,7 @@ export default function AphroditeRealDeviceVisualQaChecklistPage() {
         <header className="space-y-4">
           <div className="inline-flex max-w-full flex-wrap items-center gap-2 rounded-lg border border-slate-800 bg-slate-900 px-3 py-1.5 text-xs leading-5 text-emerald-300">
             <MonitorSmartphone className="h-4 w-4 shrink-0" />
-            <span>Aphrodite / Real device visual QA / Package 208</span>
+            <span>Aphrodite / Real device visual QA / Package 208 + Evidence Pack 214</span>
           </div>
           <h1 className="text-2xl font-light tracking-tight text-white sm:text-3xl">{model.title}</h1>
           <p className="inline-flex max-w-full rounded-md border border-emerald-900/40 bg-emerald-950/30 px-3 py-2 text-sm font-medium leading-6 text-emerald-200">{model.classification}</p>
@@ -41,11 +41,47 @@ export default function AphroditeRealDeviceVisualQaChecklistPage() {
         </header>
 
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <Metric label="devices" value={String(model.devices.length)} />
-          <Metric label="screens" value={String(model.screens.length)} />
-          <Metric label="telegramApiUsed" value={String(model.launchFlags.telegramApiUsed)} tone="rose" />
-          <Metric label="paymentAdded" value={String(model.launchFlags.paymentAdded)} tone="rose" />
+          <Metric label="evidencePackPackage" value={`Package ${model.evidencePackPackageNumber}`} />
+          <Metric label="requiredEvidenceChecks" value={String(model.evidenceChecks.length)} />
+          <Metric label="ownerManualReview" value={model.ownerManualReview.status} tone="amber" />
+          <Metric label="publicLaunchApproved" value={String(model.ownerManualReview.publicLaunchApproved)} tone="rose" />
         </section>
+
+        <ReviewSection title="evidence status legend" icon={<ClipboardCheck className="h-5 w-5 text-cyan-400" />}>
+          <div className="flex flex-wrap gap-2">
+            {model.evidenceStatuses.map((status) => (
+              <span key={status} className={statusClassName(status)}>
+                {status}
+              </span>
+            ))}
+          </div>
+          <p className="mt-4 rounded-md border border-rose-900/50 bg-rose-950/20 px-3 py-2 text-sm leading-6 text-rose-100">
+            Launch remains not approved. publicLaunchApproved=false and ownerManualReviewRequired=true until the owner manually confirms every required evidence item.
+          </p>
+        </ReviewSection>
+
+        <ReviewSection title="required real-device evidence pack" icon={<Camera className="h-5 w-5 text-cyan-400" />}>
+          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            {model.evidenceChecks.map((check) => (
+              <article key={check.id} className="min-w-0 rounded-lg border border-slate-800 bg-black/30 p-4">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <h2 className="text-sm font-medium text-white">{check.title}</h2>
+                    <p className="mt-1 text-xs text-slate-500">{check.category}</p>
+                  </div>
+                  <span className={statusClassName(check.status)}>{check.status}</span>
+                </div>
+                <p className="mt-3 break-all font-mono text-xs text-cyan-200">{check.routeOrFlow}</p>
+                <div className="mt-4 grid gap-3">
+                  <EvidenceField label="required screenshot" value={check.requiredScreenshot} />
+                  <EvidenceField label="PASS criteria" value={check.passCriteria} />
+                  <EvidenceField label="FAIL criteria" value={check.failCriteria} />
+                  <ListBlock title="cannot automate" items={check.cannotAutomate} />
+                </div>
+              </article>
+            ))}
+          </div>
+        </ReviewSection>
 
         <ReviewSection title="device checklist" icon={<MonitorSmartphone className="h-5 w-5 text-cyan-400" />}>
           <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
@@ -93,6 +129,25 @@ export default function AphroditeRealDeviceVisualQaChecklistPage() {
           </ReviewSection>
         </section>
 
+        <ReviewSection title="owner manual review status" icon={<UserCheck className="h-5 w-5 text-amber-300" />}>
+          <div className="rounded-lg border border-amber-900/50 bg-amber-950/20 p-4">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <p className="text-sm font-medium text-white">{model.ownerManualReview.status}</p>
+                <p className="mt-2 text-sm leading-6 text-amber-100">{model.ownerManualReview.summary}</p>
+              </div>
+              <span className={statusClassName(model.ownerManualReview.status)}>{model.ownerManualReview.status}</span>
+            </div>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              <EvidenceField label="publicLaunchApproved" value={String(model.ownerManualReview.publicLaunchApproved)} />
+              <EvidenceField label="ownerManualReviewRequired" value={String(model.ownerManualReview.ownerManualReviewRequired)} />
+            </div>
+            <div className="mt-4">
+              <ListBlock title="required before launch" items={model.ownerManualReview.requiredBeforeLaunch} />
+            </div>
+          </div>
+        </ReviewSection>
+
         <div className="border-t border-slate-800/50 pt-4">
           <div className="mb-2 text-sm text-slate-400">Связанные разделы</div>
           <div className="flex flex-wrap gap-3 text-sm">
@@ -133,8 +188,25 @@ function ListBlock({ title, items }: { title: string; items: readonly string[] }
   );
 }
 
-function Metric({ label, value, tone = "default" }: { label: string; value: string; tone?: "default" | "rose" }) {
-  const toneClass = tone === "rose" ? "text-rose-300" : "text-emerald-300";
+function EvidenceField({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-md border border-slate-800 bg-slate-950/60 px-3 py-2">
+      <div className="text-[11px] font-semibold uppercase text-slate-500">{label}</div>
+      <p className="mt-1 text-xs leading-5 text-slate-300">{value}</p>
+    </div>
+  );
+}
+
+function statusClassName(status: string) {
+  if (status === "PASS") return "inline-flex max-w-full rounded-md border border-emerald-900/50 bg-emerald-950/30 px-2.5 py-1.5 text-xs leading-5 text-emerald-200";
+  if (status === "NEEDS FIX") return "inline-flex max-w-full rounded-md border border-amber-900/50 bg-amber-950/30 px-2.5 py-1.5 text-xs leading-5 text-amber-200";
+  if (status === "BLOCKED") return "inline-flex max-w-full rounded-md border border-rose-900/50 bg-rose-950/30 px-2.5 py-1.5 text-xs leading-5 text-rose-200";
+  if (status === "OWNER REVIEW REQUIRED") return "inline-flex max-w-full rounded-md border border-cyan-900/50 bg-cyan-950/30 px-2.5 py-1.5 text-xs leading-5 text-cyan-200";
+  return "inline-flex max-w-full rounded-md border border-slate-700 bg-slate-800 px-2.5 py-1.5 text-xs leading-5 text-slate-300";
+}
+
+function Metric({ label, value, tone = "default" }: { label: string; value: string; tone?: "default" | "rose" | "amber" }) {
+  const toneClass = tone === "rose" ? "text-rose-300" : tone === "amber" ? "text-amber-200" : "text-emerald-300";
 
   return (
     <div className="min-w-0 rounded-lg border border-slate-800 bg-slate-900 p-4">

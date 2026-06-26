@@ -4,6 +4,7 @@ import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 
 import {
+  APHRODITE_REAL_DEVICE_EVIDENCE_STATUSES,
   APHRODITE_REAL_DEVICE_VISUAL_QA_CLASSIFICATION,
   APHRODITE_REAL_DEVICE_VISUAL_QA_SAFETY_LABELS,
   APHRODITE_REAL_DEVICE_VISUAL_QA_TITLE,
@@ -45,7 +46,9 @@ console.log("Старт QA: real-device visual QA checklist...\n");
 const modelPath = "../lib/zodiac/aphrodite-real-device-visual-qa-checklist.ts";
 const pagePath = "../app/dashboard/networks/zodiac/real-device-visual-qa-checklist/page.tsx";
 const docsPath = "../docs/aphrodite-real-device-visual-qa-checklist.md";
+const evidencePackDocsPath = "../docs/aphrodite-real-device-evidence-pack.md";
 const reportPath = "../docs/aphrodite-package-reports/package-208.md";
+const evidencePackReportPath = "../docs/aphrodite-package-reports/package-214.md";
 const dashboardPath = "../app/dashboard/networks/zodiac/page.tsx";
 const dashboardQaPath = "./qa-zodiac-dashboard.mjs";
 
@@ -53,7 +56,9 @@ for (const [label, path] of [
   ["model", modelPath],
   ["dashboard", pagePath],
   ["docs", docsPath],
+  ["evidence pack docs", evidencePackDocsPath],
   ["package report", reportPath],
+  ["Package 214 report", evidencePackReportPath],
   ["dashboard navigation", dashboardPath],
   ["dashboard QA", dashboardQaPath],
 ]) {
@@ -63,16 +68,19 @@ for (const [label, path] of [
 const modelSource = exists(modelPath) ? read(modelPath) : "";
 const pageSource = exists(pagePath) ? read(pagePath) : "";
 const docsSource = exists(docsPath) ? read(docsPath) : "";
+const evidencePackDocsSource = exists(evidencePackDocsPath) ? read(evidencePackDocsPath) : "";
 const reportSource = exists(reportPath) ? read(reportPath) : "";
+const evidencePackReportSource = exists(evidencePackReportPath) ? read(evidencePackReportPath) : "";
 const dashboardSource = exists(dashboardPath) ? read(dashboardPath) : "";
 const dashboardQaSource = exists(dashboardQaPath) ? read(dashboardQaPath) : "";
 const model = getAphroditeRealDeviceVisualQaChecklist();
-const implementationBundle = [modelSource, pageSource, docsSource, reportSource, dashboardSource, dashboardQaSource].join("\n");
-const safetyBundle = [modelSource, pageSource, docsSource, reportSource].join("\n");
+const implementationBundle = [modelSource, pageSource, docsSource, evidencePackDocsSource, reportSource, evidencePackReportSource, dashboardSource, dashboardQaSource].join("\n");
+const safetyBundle = [modelSource, pageSource, docsSource, evidencePackDocsSource, reportSource, evidencePackReportSource].join("\n");
 
 check("title exported", model.title === APHRODITE_REAL_DEVICE_VISUAL_QA_TITLE);
 check("classification exported", model.classification === APHRODITE_REAL_DEVICE_VISUAL_QA_CLASSIFICATION);
 check("package number is 208", model.packageNumber === 208);
+check("evidence pack package number is 214", model.evidencePackPackageNumber === 214);
 check("dashboard route linked from overview", dashboardSource.includes("/dashboard/networks/zodiac/real-device-visual-qa-checklist"));
 check("dashboard QA route exists", dashboardQaSource.includes("realDeviceVisualQaChecklist"));
 check("dashboard QA asserts title", dashboardQaSource.includes("Real Device Visual QA Checklist"));
@@ -80,6 +88,36 @@ check("dashboard QA asserts title", dashboardQaSource.includes("Real Device Visu
 for (const label of APHRODITE_REAL_DEVICE_VISUAL_QA_SAFETY_LABELS) {
   check(`safety label exists: ${label}`, implementationBundle.includes(label));
 }
+
+for (const status of APHRODITE_REAL_DEVICE_EVIDENCE_STATUSES) {
+  check(`evidence status exists: ${status}`, model.evidenceStatuses.includes(status) && implementationBundle.includes(status));
+}
+
+for (const requiredCheck of [
+  "desktop check",
+  "mobile browser check",
+  "Telegram WebView check",
+  "startapp/deep link check",
+  "Mini App main screen check",
+  "compatibility flow check",
+  "Birth Matrix flow check",
+  "Mystic cards flow check",
+  "VIP locked state check",
+  "CTA visibility check",
+  "cache/version marker check",
+  "owner manual review status",
+]) {
+  check(`required evidence check exists: ${requiredCheck}`, model.evidenceChecks.some((item) => item.title === requiredCheck));
+  check(`required evidence check rendered/documented: ${requiredCheck}`, implementationBundle.includes(requiredCheck));
+}
+
+check("all evidence checks include screenshot field", model.evidenceChecks.every((item) => item.requiredScreenshot.length > 20) && implementationBundle.includes("required screenshot"));
+check("all evidence checks include PASS criteria", model.evidenceChecks.every((item) => item.passCriteria.length > 20) && implementationBundle.includes("PASS criteria"));
+check("all evidence checks include FAIL criteria", model.evidenceChecks.every((item) => item.failCriteria.length > 20) && implementationBundle.includes("FAIL criteria"));
+check("all evidence checks include cannot automate rules", model.evidenceChecks.every((item) => item.cannotAutomate.length > 0) && implementationBundle.includes("cannot automate"));
+check("Telegram WebView/startapp checks exist", implementationBundle.includes("Telegram WebView check") && implementationBundle.includes("startapp/deep link check"));
+check("owner manual review exists", model.ownerManualReview.status === "OWNER REVIEW REQUIRED" && implementationBundle.includes("ownerManualReviewRequired=true"));
+check("launch remains not approved", model.ownerManualReview.publicLaunchApproved === false && implementationBundle.includes("Launch remains not approved") && implementationBundle.includes("publicLaunchApproved=false"));
 
 for (const device of [
   "iPhone Telegram WebView",
@@ -129,6 +167,8 @@ check("next package is 209", model.nextRecommendedPackage.includes("Package 209"
 check("docs say Package 208", docsSource.includes("Package 208"));
 check("report says Package 208", reportSource.includes("Package 208"));
 check("report keeps Package 209 not started", reportSource.includes("Package 209 не начат"));
+check("evidence pack docs say Package 214", evidencePackDocsSource.includes("Package 214"));
+check("evidence pack report says Package 214", evidencePackReportSource.includes("Package 214"));
 
 check("live Mini App source files not changed", gitDiffNames([
   "app/miniapp",
