@@ -72,6 +72,7 @@ const ROUTES = {
   horoscopeVisualCards: "/dashboard/networks/zodiac/horoscope-visual-cards",
   miniappVisualQaConsolidation: "/dashboard/networks/zodiac/miniapp-visual-qa-consolidation",
   publicLaunchVisualReadinessReview: "/dashboard/networks/zodiac/public-launch-visual-readiness-review",
+  realDeviceVisualQaChecklist: "/dashboard/networks/zodiac/real-device-visual-qa-checklist",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -217,6 +218,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/horoscope-visual-cards"', "horoscope visual cards route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-visual-qa-consolidation"', "miniapp visual qa consolidation route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/public-launch-visual-readiness-review"', "public launch visual readiness review route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/real-device-visual-qa-checklist"', "real device visual qa checklist route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");
@@ -794,6 +796,20 @@ async function main() {
     assertIncludes(pages.publicLaunchVisualReadinessReview, "Нет VIP-разблокировки", "vip boundary");
     assertIncludes(pages.publicLaunchVisualReadinessReview, "Visual readiness review ничего не запускает", "review launches nothing");
     assertIncludes(pages.publicLaunchVisualReadinessReview, "publicLaunchApproved=false", "public launch not approved");
+    assertIncludes(pages.realDeviceVisualQaChecklist, "Real Device Visual QA Checklist", "real device visual qa title");
+    assertIncludes(pages.realDeviceVisualQaChecklist, "Только manual QA", "real device visual qa classification");
+    assertIncludes(pages.realDeviceVisualQaChecklist, "Ничего не запускается", "real device launches nothing classification");
+    assertIncludes(pages.realDeviceVisualQaChecklist, "Нет Telegram API", "real device telegram api boundary");
+    assertIncludes(pages.realDeviceVisualQaChecklist, "Real device checklist ничего не запускает", "real device sends nothing safety label");
+    assertIncludes(pages.realDeviceVisualQaChecklist, "iPhone Telegram WebView", "real device iphone webview");
+    assertIncludes(pages.realDeviceVisualQaChecklist, "Android Telegram WebView", "real device android webview");
+    assertIncludes(pages.realDeviceVisualQaChecklist, "Telegram Desktop", "real device telegram desktop");
+    assertIncludes(pages.realDeviceVisualQaChecklist, "keyboard open state", "real device keyboard state");
+    assertIncludes(pages.realDeviceVisualQaChecklist, "back button behavior", "real device back button");
+    assertIncludes(pages.realDeviceVisualQaChecklist, "/miniapp/love-reading-preview", "real device love preview");
+    assertIncludes(pages.realDeviceVisualQaChecklist, "daily horoscope card", "real device daily card");
+    assertIncludes(pages.realDeviceVisualQaChecklist, "weekly horoscope card", "real device weekly card");
+    assertIncludes(pages.realDeviceVisualQaChecklist, "monthly horoscope card", "real device monthly card");
     assertIncludes(pages.productCopyFinalPolish, "Финальная полировка текстов Aphrodite", "product copy polish title");
     assertIncludes(pages.productCopyFinalPolish, "Только copy polish", "product copy polish classification");
     assertIncludes(pages.productCopyFinalPolish, "Copy polish не включает оплату", "product copy polish no payment");

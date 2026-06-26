@@ -554,6 +554,13 @@ const platformSections = [
     tone: "emerald",
   },
   {
+    title: "Real Device Visual QA",
+    href: "/dashboard/networks/zodiac/real-device-visual-qa-checklist",
+    icon: Smartphone,
+    caption: "Package 208 - ручной checklist iPhone, Android, Telegram Desktop, browser fallback, safe area, keyboard и back behavior без Telegram API.",
+    tone: "emerald",
+  },
+  {
     title: "Финальная полировка текстов",
     href: "/dashboard/networks/zodiac/product-copy-final-polish",
     icon: FileText,
