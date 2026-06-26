@@ -61,6 +61,7 @@ const ROUTES = {
   telegramCtaAttributionReadiness: "/dashboard/networks/zodiac/telegram-cta-attribution-readiness",
   analyticsPrivacySafetySuite: "/dashboard/networks/zodiac/analytics-privacy-safety-suite",
   retentionSystemReadiness: "/dashboard/networks/zodiac/retention-system-readiness",
+  savedReportsHistoryMockReadiness: "/dashboard/networks/zodiac/saved-reports-history-mock-readiness",
   realImplementationPath: "/dashboard/networks/zodiac/real-implementation-path",
   telegramInitDataValidation: "/dashboard/networks/zodiac/telegram-initdata-validation",
   userProfileFoundation: "/dashboard/networks/zodiac/user-profile-foundation",
@@ -191,6 +192,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/telegram-cta-attribution-readiness"', "telegram cta attribution readiness route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/analytics-privacy-safety-suite"', "analytics privacy safety suite route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/retention-system-readiness"', "retention system readiness route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/saved-reports-history-mock-readiness"', "saved reports history mock readiness route link");
 
     assertIncludes(pages.analytics, "Аналитика Mini App", "analytics page heading");
     assertIncludes(pages.analytics, "First-users funnel", "first-users funnel block");
@@ -656,6 +658,15 @@ async function main() {
     assertIncludes(pages.retentionSystemReadiness, "Saved reports future", "retention system saved reports future");
     assertIncludes(pages.retentionSystemReadiness, "Streak future", "retention system streak future");
     assertIncludes(pages.retentionSystemReadiness, "Reminder future", "retention system reminder future");
+    assertIncludes(pages.savedReportsHistoryMockReadiness, "Mock истории сохранённых отчётов", "saved reports mock readiness title");
+    assertIncludes(pages.savedReportsHistoryMockReadiness, "Только mock", "saved reports mock readiness classification");
+    assertIncludes(pages.savedReportsHistoryMockReadiness, "Нет реального сохранения отчётов", "saved reports mock no real persistence");
+    assertIncludes(pages.savedReportsHistoryMockReadiness, "Saved reports mock ничего не сохраняет", "saved reports mock saves nothing");
+    assertIncludes(pages.savedReportsHistoryMockReadiness, "love-reading-preview", "saved reports love reading preview");
+    assertIncludes(pages.savedReportsHistoryMockReadiness, "full-love-report-future", "saved reports full love future");
+    assertIncludes(pages.savedReportsHistoryMockReadiness, "daily-horoscope-snapshot", "saved reports daily snapshot");
+    assertIncludes(pages.savedReportsHistoryMockReadiness, "weekly-horoscope-snapshot", "saved reports weekly snapshot");
+    assertIncludes(pages.savedReportsHistoryMockReadiness, "monthly-horoscope-snapshot", "saved reports monthly snapshot");
 
     assertIncludes(pages.realImplementationPath, "Real Implementation Path", "real implementation path page title");
     assertIncludes(pages.realImplementationPath, "Selected path", "real implementation selected path classification");

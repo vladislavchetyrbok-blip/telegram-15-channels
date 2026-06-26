@@ -476,6 +476,13 @@ const platformSections = [
     tone: "emerald",
   },
   {
+    title: "Mock истории отчётов",
+    href: "/dashboard/networks/zodiac/saved-reports-history-mock-readiness",
+    icon: FileText,
+    caption: "Package 187 - mock history будущих saved reports без DB persistence, production localStorage, оплаты и VIP unlock.",
+    tone: "emerald",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,
