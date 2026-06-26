@@ -55,6 +55,7 @@ const ROUTES = {
   productionPaymentSafetyGate: "/dashboard/networks/zodiac/production-payment-safety-gate",
   firstPaidMvpReadinessReview: "/dashboard/networks/zodiac/first-paid-mvp-readiness-review",
   supportRefundPolicyReadiness: "/dashboard/networks/zodiac/support-refund-policy-readiness",
+  analyticsFunnelReadiness: "/dashboard/networks/zodiac/analytics-funnel-readiness",
   realImplementationPath: "/dashboard/networks/zodiac/real-implementation-path",
   telegramInitDataValidation: "/dashboard/networks/zodiac/telegram-initdata-validation",
   userProfileFoundation: "/dashboard/networks/zodiac/user-profile-foundation",
@@ -179,6 +180,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/production-payment-safety-gate"', "production payment safety gate route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/first-paid-mvp-readiness-review"', "first paid mvp readiness route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/support-refund-policy-readiness"', "support refund policy readiness route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/analytics-funnel-readiness"', "analytics funnel readiness route link");
 
     assertIncludes(pages.analytics, "Аналитика Mini App", "analytics page heading");
     assertIncludes(pages.analytics, "First-users funnel", "first-users funnel block");
@@ -586,6 +588,17 @@ async function main() {
     assertIncludes(pages.supportRefundPolicyReadiness, "Нет миграции схемы базы данных", "schema boundary");
     assertIncludes(pages.supportRefundPolicyReadiness, "Нет вызова Telegram API", "telegram api boundary");
     assertIncludes(pages.supportRefundPolicyReadiness, "Support/refund readiness не включает оплату", "support refund no payment");
+    assertIncludes(pages.analyticsFunnelReadiness, "Analytics/Funnel Tracking Readiness", "analytics funnel readiness title");
+    assertIncludes(pages.analyticsFunnelReadiness, "Только readiness", "analytics readiness classification");
+    assertIncludes(pages.analyticsFunnelReadiness, "События не отправляются", "analytics events not sent boundary");
+    assertIncludes(pages.analyticsFunnelReadiness, "Нет внешней аналитики", "external analytics boundary");
+    assertIncludes(pages.analyticsFunnelReadiness, "Нет отправки событий", "event sending boundary");
+    assertIncludes(pages.analyticsFunnelReadiness, "Нет записи в базу данных", "database boundary");
+    assertIncludes(pages.analyticsFunnelReadiness, "Нет Telegram API", "telegram api boundary");
+    assertIncludes(pages.analyticsFunnelReadiness, "Нет payment tracking", "payment tracking boundary");
+    assertIncludes(pages.analyticsFunnelReadiness, "Нет реальной оплаты", "payment boundary");
+    assertIncludes(pages.analyticsFunnelReadiness, "Нет VIP-разблокировки", "vip boundary");
+    assertIncludes(pages.analyticsFunnelReadiness, "Analytics readiness ничего не отправляет", "analytics sends nothing");
 
     assertIncludes(pages.realImplementationPath, "Real Implementation Path", "real implementation path page title");
     assertIncludes(pages.realImplementationPath, "Selected path", "real implementation selected path classification");

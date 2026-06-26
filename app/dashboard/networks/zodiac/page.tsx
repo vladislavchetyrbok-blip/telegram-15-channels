@@ -433,6 +433,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Analytics/Funnel",
+    href: "/dashboard/networks/zodiac/analytics-funnel-readiness",
+    icon: BarChart3,
+    caption: "Package 180 - readiness таксономии событий, KPI, attribution и privacy boundaries без отправки аналитики.",
+    tone: "cyan",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,
