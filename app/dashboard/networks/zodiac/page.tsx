@@ -673,6 +673,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Final Content & CTA Inventory Audit",
+    href: "/dashboard/networks/zodiac/final-content-cta-inventory-audit",
+    icon: MousePointerClick,
+    caption: "Package 219 - final content and CTA inventory audit with static labels, destinations, risk, status and owner manual review notes.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

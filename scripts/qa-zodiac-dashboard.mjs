@@ -78,6 +78,7 @@ const ROUTES = {
   visualIssueTriageBoard: "/dashboard/networks/zodiac/visual-issue-triage-board",
   publicLaunchGoNoGoReview: "/dashboard/networks/zodiac/public-launch-go-no-go-review",
   publicLaunchDryRunMatrix: "/dashboard/networks/zodiac/public-launch-dry-run-matrix",
+  finalContentCtaInventoryAudit: "/dashboard/networks/zodiac/final-content-cta-inventory-audit",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -229,6 +230,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/visual-issue-triage-board"', "visual issue triage board route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/public-launch-go-no-go-review"', "public launch go no-go review route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/public-launch-dry-run-matrix"', "public launch dry-run matrix route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/final-content-cta-inventory-audit"', "final content cta inventory audit route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");
@@ -982,6 +984,36 @@ async function main() {
     assertIncludes(pages.publicLaunchDryRunMatrix, "paymentAdded", "dry-run payment safety flag");
     assertIncludes(pages.publicLaunchDryRunMatrix, "vipUnlockAdded", "dry-run vip safety flag");
     assertIncludes(pages.publicLaunchDryRunMatrix, "workflowChanged", "dry-run workflow safety flag");
+    assertIncludes(pages.finalContentCtaInventoryAudit, "Final Content &amp; CTA Inventory Audit", "final content cta inventory audit title");
+    assertIncludes(pages.finalContentCtaInventoryAudit, "This is an inventory audit only.", "inventory audit only notice");
+    assertIncludes(pages.finalContentCtaInventoryAudit, "Active CTA logic was not changed.", "active cta logic unchanged notice");
+    assertIncludes(pages.finalContentCtaInventoryAudit, "No Telegram messages were sent.", "inventory no telegram messages notice");
+    assertIncludes(pages.finalContentCtaInventoryAudit, "No publish scripts or workflows were changed.", "inventory no publish workflow changes notice");
+    assertIncludes(pages.finalContentCtaInventoryAudit, "publicLaunchApproved", "inventory public launch approved metric");
+    assertIncludes(pages.finalContentCtaInventoryAudit, "ownerManualReviewRequired", "inventory owner review metric");
+    assertIncludes(pages.finalContentCtaInventoryAudit, "activeCtaLogicChanged", "inventory active cta safety flag");
+    assertIncludes(pages.finalContentCtaInventoryAudit, "publishScriptsChanged", "inventory publish scripts safety flag");
+    assertIncludes(pages.finalContentCtaInventoryAudit, "Daily Zodiac posts", "inventory daily zodiac posts section");
+    assertIncludes(pages.finalContentCtaInventoryAudit, "Weekly Zodiac posts", "inventory weekly zodiac posts section");
+    assertIncludes(pages.finalContentCtaInventoryAudit, "General channel CTA", "inventory general channel cta section");
+    assertIncludes(pages.finalContentCtaInventoryAudit, "Sign channels CTA", "inventory sign channels cta section");
+    assertIncludes(pages.finalContentCtaInventoryAudit, "Mini App entry CTA", "inventory mini app entry cta section");
+    assertIncludes(pages.finalContentCtaInventoryAudit, "Compatibility CTA", "inventory compatibility cta section");
+    assertIncludes(pages.finalContentCtaInventoryAudit, "Birth Matrix CTA", "inventory birth matrix cta section");
+    assertIncludes(pages.finalContentCtaInventoryAudit, "Mystic Cards CTA", "inventory mystic cards cta section");
+    assertIncludes(pages.finalContentCtaInventoryAudit, "VIP locked state CTA", "inventory vip locked state cta section");
+    assertIncludes(pages.finalContentCtaInventoryAudit, "Public launch dashboard links", "inventory public launch dashboard links section");
+    assertIncludes(pages.finalContentCtaInventoryAudit, "Telegram WebView/startapp links", "inventory telegram webview startapp links section");
+    assertIncludes(pages.finalContentCtaInventoryAudit, "Owner manual review CTA/status", "inventory owner manual review cta status section");
+    assertIncludes(pages.finalContentCtaInventoryAudit, "LOW", "inventory low risk");
+    assertIncludes(pages.finalContentCtaInventoryAudit, "MEDIUM", "inventory medium risk");
+    assertIncludes(pages.finalContentCtaInventoryAudit, "HIGH", "inventory high risk");
+    assertIncludes(pages.finalContentCtaInventoryAudit, "PASS", "inventory pass status");
+    assertIncludes(pages.finalContentCtaInventoryAudit, "MANUAL REVIEW", "inventory manual review status");
+    assertIncludes(pages.finalContentCtaInventoryAudit, "BLOCKED", "inventory blocked status");
+    assertIncludes(pages.finalContentCtaInventoryAudit, "NOT CHECKED", "inventory not checked status");
+    assertIncludes(pages.finalContentCtaInventoryAudit, "Active logic changed", "inventory active logic changed column");
+    assertIncludes(pages.finalContentCtaInventoryAudit, "owner manual review items", "inventory owner manual review items section");
     assertIncludes(pages.productCopyFinalPolish, "Финальная полировка текстов Aphrodite", "product copy polish title");
     assertIncludes(pages.productCopyFinalPolish, "Только copy polish", "product copy polish classification");
     assertIncludes(pages.productCopyFinalPolish, "Copy polish не включает оплату", "product copy polish no payment");
