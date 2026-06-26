@@ -79,6 +79,7 @@ const ROUTES = {
   publicLaunchGoNoGoReview: "/dashboard/networks/zodiac/public-launch-go-no-go-review",
   publicLaunchDryRunMatrix: "/dashboard/networks/zodiac/public-launch-dry-run-matrix",
   finalContentCtaInventoryAudit: "/dashboard/networks/zodiac/final-content-cta-inventory-audit",
+  backupRestoreRehearsalReadiness: "/dashboard/networks/zodiac/backup-restore-rehearsal-readiness",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -231,6 +232,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/public-launch-go-no-go-review"', "public launch go no-go review route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/public-launch-dry-run-matrix"', "public launch dry-run matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/final-content-cta-inventory-audit"', "final content cta inventory audit route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/backup-restore-rehearsal-readiness"', "backup restore rehearsal readiness route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");
@@ -1014,6 +1016,30 @@ async function main() {
     assertIncludes(pages.finalContentCtaInventoryAudit, "NOT CHECKED", "inventory not checked status");
     assertIncludes(pages.finalContentCtaInventoryAudit, "Active logic changed", "inventory active logic changed column");
     assertIncludes(pages.finalContentCtaInventoryAudit, "owner manual review items", "inventory owner manual review items section");
+    assertIncludes(pages.backupRestoreRehearsalReadiness, "Backup &amp; Restore Rehearsal Readiness", "backup restore rehearsal readiness title");
+    assertIncludes(pages.backupRestoreRehearsalReadiness, "backup older than 24h is a launch blocker.", "backup older than 24h blocker wording");
+    assertIncludes(pages.backupRestoreRehearsalReadiness, "backup must be verified manually before launch.", "manual backup verification wording");
+    assertIncludes(pages.backupRestoreRehearsalReadiness, "no production DB connection was made.", "no production db connection wording");
+    assertIncludes(pages.backupRestoreRehearsalReadiness, "no backup was created automatically.", "no automatic backup wording");
+    assertIncludes(pages.backupRestoreRehearsalReadiness, "no restore was executed automatically.", "no automatic restore wording");
+    assertIncludes(pages.backupRestoreRehearsalReadiness, "publicLaunchApproved", "backup restore public launch approved metric");
+    assertIncludes(pages.backupRestoreRehearsalReadiness, "ownerManualReviewRequired", "backup restore owner review metric");
+    assertIncludes(pages.backupRestoreRehearsalReadiness, "productionDbConnectionMade", "backup restore db connection safety flag");
+    assertIncludes(pages.backupRestoreRehearsalReadiness, "backupCreatedAutomatically", "backup restore automatic backup safety flag");
+    assertIncludes(pages.backupRestoreRehearsalReadiness, "restoreExecutedAutomatically", "backup restore automatic restore safety flag");
+    assertIncludes(pages.backupRestoreRehearsalReadiness, "Backup freshness status", "backup freshness status section");
+    assertIncludes(pages.backupRestoreRehearsalReadiness, "Last backup age classification", "last backup age classification section");
+    assertIncludes(pages.backupRestoreRehearsalReadiness, "Manual backup verification checklist", "manual backup verification checklist section");
+    assertIncludes(pages.backupRestoreRehearsalReadiness, "Restore rehearsal checklist", "restore rehearsal checklist section");
+    assertIncludes(pages.backupRestoreRehearsalReadiness, "Rollback dependency list", "rollback dependency section");
+    assertIncludes(pages.backupRestoreRehearsalReadiness, "Production launch blocker status", "production launch blocker status section");
+    assertIncludes(pages.backupRestoreRehearsalReadiness, "Owner manual review", "backup restore owner manual review section");
+    assertIncludes(pages.backupRestoreRehearsalReadiness, "No automatic DB access guarantee", "no automatic db access guarantee section");
+    assertIncludes(pages.backupRestoreRehearsalReadiness, "PASS", "backup restore pass status");
+    assertIncludes(pages.backupRestoreRehearsalReadiness, "BLOCKED", "backup restore blocked status");
+    assertIncludes(pages.backupRestoreRehearsalReadiness, "MANUAL REQUIRED", "backup restore manual required status");
+    assertIncludes(pages.backupRestoreRehearsalReadiness, "NOT VERIFIED", "backup restore not verified status");
+    assertIncludes(pages.backupRestoreRehearsalReadiness, "OWNER REVIEW REQUIRED", "backup restore owner review required status");
     assertIncludes(pages.productCopyFinalPolish, "Финальная полировка текстов Aphrodite", "product copy polish title");
     assertIncludes(pages.productCopyFinalPolish, "Только copy polish", "product copy polish classification");
     assertIncludes(pages.productCopyFinalPolish, "Copy polish не включает оплату", "product copy polish no payment");

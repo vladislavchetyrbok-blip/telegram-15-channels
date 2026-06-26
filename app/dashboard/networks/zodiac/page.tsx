@@ -680,6 +680,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Backup & Restore Rehearsal Readiness",
+    href: "/dashboard/networks/zodiac/backup-restore-rehearsal-readiness",
+    icon: Database,
+    caption: "Package 220 - backup freshness, restore rehearsal and rollback readiness checklist without production DB access or automatic restore.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
