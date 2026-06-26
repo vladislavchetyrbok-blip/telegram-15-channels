@@ -60,6 +60,7 @@ const ROUTES = {
   analyticsFunnelMockDashboard: "/dashboard/networks/zodiac/analytics-funnel-mock-dashboard",
   telegramCtaAttributionReadiness: "/dashboard/networks/zodiac/telegram-cta-attribution-readiness",
   analyticsPrivacySafetySuite: "/dashboard/networks/zodiac/analytics-privacy-safety-suite",
+  retentionSystemReadiness: "/dashboard/networks/zodiac/retention-system-readiness",
   realImplementationPath: "/dashboard/networks/zodiac/real-implementation-path",
   telegramInitDataValidation: "/dashboard/networks/zodiac/telegram-initdata-validation",
   userProfileFoundation: "/dashboard/networks/zodiac/user-profile-foundation",
@@ -189,6 +190,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/analytics-funnel-mock-dashboard"', "analytics funnel mock dashboard route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/telegram-cta-attribution-readiness"', "telegram cta attribution readiness route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/analytics-privacy-safety-suite"', "analytics privacy safety suite route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/retention-system-readiness"', "retention system readiness route link");
 
     assertIncludes(pages.analytics, "Аналитика Mini App", "analytics page heading");
     assertIncludes(pages.analytics, "First-users funnel", "first-users funnel block");
@@ -644,6 +646,16 @@ async function main() {
     assertIncludes(pages.analyticsPrivacySafetySuite, "Payment payload analytics: запрещены", "analytics privacy safety no payment payloads");
     assertIncludes(pages.analyticsPrivacySafetySuite, "Private Telegram messages analytics: запрещены", "analytics privacy safety no private messages");
     assertIncludes(pages.analyticsPrivacySafetySuite, "Full report text analytics: запрещён", "analytics privacy safety no report text");
+    assertIncludes(pages.retentionSystemReadiness, "Retention System Readiness", "retention system readiness title");
+    assertIncludes(pages.retentionSystemReadiness, "Только readiness", "retention system readiness classification");
+    assertIncludes(pages.retentionSystemReadiness, "Нет реальных уведомлений", "retention system no real reminders");
+    assertIncludes(pages.retentionSystemReadiness, "Retention readiness ничего не отправляет", "retention system sends nothing");
+    assertIncludes(pages.retentionSystemReadiness, "Daily Message", "retention system daily message");
+    assertIncludes(pages.retentionSystemReadiness, "Weekly Horoscope", "retention system weekly horoscope");
+    assertIncludes(pages.retentionSystemReadiness, "Monthly Horoscope", "retention system monthly horoscope");
+    assertIncludes(pages.retentionSystemReadiness, "Saved reports future", "retention system saved reports future");
+    assertIncludes(pages.retentionSystemReadiness, "Streak future", "retention system streak future");
+    assertIncludes(pages.retentionSystemReadiness, "Reminder future", "retention system reminder future");
 
     assertIncludes(pages.realImplementationPath, "Real Implementation Path", "real implementation path page title");
     assertIncludes(pages.realImplementationPath, "Selected path", "real implementation selected path classification");

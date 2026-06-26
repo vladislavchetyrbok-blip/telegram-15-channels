@@ -469,6 +469,13 @@ const platformSections = [
     tone: "emerald",
   },
   {
+    title: "Retention System Readiness",
+    href: "/dashboard/networks/zodiac/retention-system-readiness",
+    icon: Activity,
+    caption: "Package 186 - карта будущего удержания, return habits, saved reports/streak/reminder future без уведомлений и tracking.",
+    tone: "emerald",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,

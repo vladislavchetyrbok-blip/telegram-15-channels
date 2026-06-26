@@ -113,6 +113,7 @@ export default function AphroditeAnalyticsPrivacySafetySuitePage() {
             <Link href="/dashboard/networks/zodiac/miniapp-analytics-noop-event-bus" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Noop Event Bus</Link>
             <Link href="/dashboard/networks/zodiac/analytics-funnel-mock-dashboard" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Mock Dashboard</Link>
             <Link href="/dashboard/networks/zodiac/telegram-cta-attribution-readiness" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">CTA Attribution</Link>
+            <Link href="/dashboard/networks/zodiac/retention-system-readiness" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Retention Readiness</Link>
           </div>
         </div>
       </div>
