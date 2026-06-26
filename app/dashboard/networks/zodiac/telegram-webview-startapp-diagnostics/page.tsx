@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Bug, ClipboardCheck, Route, ShieldCheck, Smartphone } from "lucide-react";
+import { Bug, ClipboardCheck, Route, SearchCheck, ShieldCheck, Smartphone, UserCheck } from "lucide-react";
 import type { ReactNode } from "react";
 
 import {
@@ -20,7 +20,7 @@ export default function AphroditeTelegramWebViewStartAppDiagnosticsPage() {
         <header className="space-y-4">
           <div className="inline-flex max-w-full flex-wrap items-center gap-2 rounded-lg border border-slate-800 bg-slate-900 px-3 py-1.5 text-xs leading-5 text-emerald-300">
             <Smartphone className="h-4 w-4 shrink-0" />
-            <span>Aphrodite / Telegram WebView diagnostics / Package 209</span>
+            <span>Aphrodite / Telegram WebView diagnostics / Package 209 + Final Diagnostics 215</span>
           </div>
           <h1 className="text-2xl font-light tracking-tight text-white sm:text-3xl">{model.title}</h1>
           <p className="inline-flex max-w-full rounded-md border border-emerald-900/40 bg-emerald-950/30 px-3 py-2 text-sm font-medium leading-6 text-emerald-200">{model.classification}</p>
@@ -41,11 +41,33 @@ export default function AphroditeTelegramWebViewStartAppDiagnosticsPage() {
         </header>
 
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <Metric label="startapp routes" value={String(model.routes.length)} />
-          <Metric label="cache diagnostics" value={String(model.cacheDiagnostics.length)} />
-          <Metric label="telegramApiUsed" value={String(model.safetyFlags.telegramApiUsed)} tone="rose" />
-          <Metric label="botFatherChanged" value={String(model.safetyFlags.botFatherChanged)} tone="rose" />
+          <Metric label="finalDiagnosticsPackage" value={`Package ${model.finalDiagnosticsPackageNumber}`} />
+          <Metric label="final diagnostics" value={String(model.finalDiagnostics.length)} />
+          <Metric label="ownerManualReview" value={model.ownerManualReview.status} tone="amber" />
+          <Metric label="publicLaunchApproved" value={String(model.ownerManualReview.publicLaunchApproved)} tone="rose" />
         </section>
+
+        <ReviewSection title="final launch diagnostics" icon={<SearchCheck className="h-5 w-5 text-cyan-400" />}>
+          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            {model.finalDiagnostics.map((diagnostic) => (
+              <article key={diagnostic.id} className="min-w-0 rounded-lg border border-slate-800 bg-black/30 p-4">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <h2 className="text-sm font-medium text-white">{diagnostic.title}</h2>
+                  <span className={statusClassName(diagnostic.status)}>{diagnostic.status}</span>
+                </div>
+                <div className="mt-4 grid gap-3">
+                  <DiagnosticField label="expected signal" value={diagnostic.expectedSignal} />
+                  <DiagnosticField label="missing signal meaning" value={diagnostic.missingSignalMeaning} />
+                  <DiagnosticField label="manual action" value={diagnostic.manualAction} />
+                  <DiagnosticField label="not code failure when" value={diagnostic.notCodeFailureWhen} />
+                </div>
+              </article>
+            ))}
+          </div>
+          <p className="mt-4 rounded-md border border-rose-900/50 bg-rose-950/20 px-3 py-2 text-sm leading-6 text-rose-100">
+            Launch not approved: publicLaunchApproved=false and ownerManualReviewRequired=true. Telegram WebView must be checked manually on real device.
+          </p>
+        </ReviewSection>
 
         <ReviewSection title="startapp routes" icon={<Route className="h-5 w-5 text-cyan-400" />}>
           <div className="grid gap-3 md:grid-cols-2">
@@ -112,6 +134,25 @@ export default function AphroditeTelegramWebViewStartAppDiagnosticsPage() {
           </ReviewSection>
         </section>
 
+        <ReviewSection title="owner manual review" icon={<UserCheck className="h-5 w-5 text-amber-300" />}>
+          <div className="rounded-lg border border-amber-900/50 bg-amber-950/20 p-4">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <p className="text-sm font-medium text-white">{model.ownerManualReview.status}</p>
+                <p className="mt-2 text-sm leading-6 text-amber-100">{model.ownerManualReview.summary}</p>
+              </div>
+              <span className={statusClassName(model.ownerManualReview.status)}>{model.ownerManualReview.status}</span>
+            </div>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              <DiagnosticField label="publicLaunchApproved" value={String(model.ownerManualReview.publicLaunchApproved)} />
+              <DiagnosticField label="ownerManualReviewRequired" value={String(model.ownerManualReview.ownerManualReviewRequired)} />
+            </div>
+            <div className="mt-4">
+              <ListBlock title="remaining manual Telegram checks" items={model.ownerManualReview.remainingManualChecks} />
+            </div>
+          </div>
+        </ReviewSection>
+
         <div className="border-t border-slate-800/50 pt-4">
           <div className="mb-2 text-sm text-slate-400">Связанные разделы</div>
           <div className="flex flex-wrap gap-3 text-sm">
@@ -152,8 +193,25 @@ function ListBlock({ title, items }: { title: string; items: readonly string[] }
   );
 }
 
-function Metric({ label, value, tone = "default" }: { label: string; value: string; tone?: "default" | "rose" }) {
-  const toneClass = tone === "rose" ? "text-rose-300" : "text-emerald-300";
+function DiagnosticField({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-md border border-slate-800 bg-slate-950/60 px-3 py-2">
+      <div className="text-[11px] font-semibold uppercase text-slate-500">{label}</div>
+      <p className="mt-1 text-xs leading-5 text-slate-300">{value}</p>
+    </div>
+  );
+}
+
+function statusClassName(status: string) {
+  if (status === "DETECTED" || status === "EXPECTED") return "inline-flex max-w-full rounded-md border border-emerald-900/50 bg-emerald-950/30 px-2.5 py-1.5 text-xs leading-5 text-emerald-200";
+  if (status === "NOT DETECTED" || status === "MISSING") return "inline-flex max-w-full rounded-md border border-amber-900/50 bg-amber-950/30 px-2.5 py-1.5 text-xs leading-5 text-amber-200";
+  if (status === "LAUNCH NOT APPROVED") return "inline-flex max-w-full rounded-md border border-rose-900/50 bg-rose-950/30 px-2.5 py-1.5 text-xs leading-5 text-rose-200";
+  if (status === "OWNER REVIEW REQUIRED" || status === "MANUAL CHECK REQUIRED") return "inline-flex max-w-full rounded-md border border-cyan-900/50 bg-cyan-950/30 px-2.5 py-1.5 text-xs leading-5 text-cyan-200";
+  return "inline-flex max-w-full rounded-md border border-slate-700 bg-slate-800 px-2.5 py-1.5 text-xs leading-5 text-slate-300";
+}
+
+function Metric({ label, value, tone = "default" }: { label: string; value: string; tone?: "default" | "rose" | "amber" }) {
+  const toneClass = tone === "rose" ? "text-rose-300" : tone === "amber" ? "text-amber-200" : "text-emerald-300";
 
   return (
     <div className="min-w-0 rounded-lg border border-slate-800 bg-slate-900 p-4">

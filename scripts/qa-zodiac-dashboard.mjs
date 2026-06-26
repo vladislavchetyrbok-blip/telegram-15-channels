@@ -836,6 +836,14 @@ async function main() {
     assertIncludes(pages.telegramWebviewStartappDiagnostics, "daily", "startapp daily");
     assertIncludes(pages.telegramWebviewStartappDiagnostics, "weekly", "startapp weekly");
     assertIncludes(pages.telegramWebviewStartappDiagnostics, "monthly", "startapp monthly");
+    assertIncludes(pages.telegramWebviewStartappDiagnostics, "Final Diagnostics 215", "telegram final diagnostics label");
+    assertIncludes(pages.telegramWebviewStartappDiagnostics, "final launch diagnostics", "telegram final diagnostics section");
+    assertIncludes(pages.telegramWebviewStartappDiagnostics, "Telegram WebView detected", "telegram webview detected diagnostic");
+    assertIncludes(pages.telegramWebviewStartappDiagnostics, "startapp param missing", "startapp missing diagnostic");
+    assertIncludes(pages.telegramWebviewStartappDiagnostics, "fallback browser mode", "fallback browser diagnostic");
+    assertIncludes(pages.telegramWebviewStartappDiagnostics, "cache marker status", "cache marker diagnostic");
+    assertIncludes(pages.telegramWebviewStartappDiagnostics, "ownerManualReviewRequired", "telegram owner manual review metric");
+    assertIncludes(pages.telegramWebviewStartappDiagnostics, "Launch not approved", "telegram launch not approved");
     assertIncludes(pages.telegramWebviewStartappDiagnostics, "stale Telegram WebView cache", "telegram stale cache");
     assertIncludes(pages.telegramWebviewStartappDiagnostics, "cache-buster query check", "cache buster check");
     assertIncludes(pages.liveVersionCacheMarkerReadiness, "Live Version", "live version cache marker title");

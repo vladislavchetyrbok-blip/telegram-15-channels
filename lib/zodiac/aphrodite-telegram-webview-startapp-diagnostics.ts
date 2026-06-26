@@ -30,14 +30,46 @@ export type AphroditeWebViewPlatformDiagnostic = {
   riskNotes: readonly string[];
 };
 
+export type AphroditeWebViewFinalDiagnosticStatus =
+  | "DETECTED"
+  | "NOT DETECTED"
+  | "EXPECTED"
+  | "MISSING"
+  | "MANUAL CHECK REQUIRED"
+  | "FALLBACK BROWSER MODE"
+  | "CACHE MARKER CHECK REQUIRED"
+  | "OWNER REVIEW REQUIRED"
+  | "LAUNCH NOT APPROVED";
+
+export type AphroditeWebViewFinalDiagnostic = {
+  id: string;
+  title: string;
+  status: AphroditeWebViewFinalDiagnosticStatus;
+  expectedSignal: string;
+  missingSignalMeaning: string;
+  manualAction: string;
+  notCodeFailureWhen: string;
+};
+
+export type AphroditeWebViewOwnerReview = {
+  status: "OWNER REVIEW REQUIRED";
+  publicLaunchApproved: false;
+  ownerManualReviewRequired: true;
+  summary: string;
+  remainingManualChecks: readonly string[];
+};
+
 export type AphroditeTelegramWebViewStartAppDiagnosticsModel = {
   packageNumber: 209;
+  finalDiagnosticsPackageNumber: 215;
   title: string;
   classification: string;
   safetyLabels: readonly string[];
   routes: readonly AphroditeStartAppDiagnosticRoute[];
   cacheDiagnostics: readonly AphroditeWebViewCacheDiagnostic[];
   platformDiagnostics: readonly AphroditeWebViewPlatformDiagnostic[];
+  finalDiagnostics: readonly AphroditeWebViewFinalDiagnostic[];
+  ownerManualReview: AphroditeWebViewOwnerReview;
   safetyFlags: {
     productionLaunchDone: false;
     telegramApiUsed: false;
@@ -197,9 +229,109 @@ const platformDiagnostics: readonly AphroditeWebViewPlatformDiagnostic[] = [
   },
 ];
 
+const finalDiagnostics: readonly AphroditeWebViewFinalDiagnostic[] = [
+  {
+    id: "telegram-webview-detected",
+    title: "Telegram WebView detected",
+    status: "DETECTED",
+    expectedSignal: "window.Telegram.WebApp exists on a real Telegram Mini App device.",
+    missingSignalMeaning: "If this signal is absent, the page is probably opened in a normal browser or Telegram did not inject WebApp context.",
+    manualAction: "Open the Mini App from Telegram on iOS and Android, then capture the screen and route path.",
+    notCodeFailureWhen: "Opening the route in a desktop browser or direct URL will usually not expose Telegram WebApp context.",
+  },
+  {
+    id: "telegram-webview-not-detected",
+    title: "Telegram WebView not detected",
+    status: "NOT DETECTED",
+    expectedSignal: "Browser fallback mode is allowed for direct URL checks.",
+    missingSignalMeaning: "No Telegram WebView context means startapp/init data cannot be trusted from that session.",
+    manualAction: "Compare browser fallback with real Telegram WebView before classifying the issue.",
+    notCodeFailureWhen: "Telegram WebView not detected in a normal browser is expected and is not a code failure.",
+  },
+  {
+    id: "startapp-param-expected",
+    title: "startapp param expected",
+    status: "EXPECTED",
+    expectedSignal: "startapp/deep link contains one of: love_reading, compatibility, birth_matrix, daily, weekly, monthly.",
+    missingSignalMeaning: "If the owner opened the default Mini App button, there may be no startapp parameter.",
+    manualAction: "Record the exact entry point, startapp parameter, expected route, and actual screen title.",
+    notCodeFailureWhen: "A missing startapp parameter on default browser/manual open is not a code failure.",
+  },
+  {
+    id: "startapp-param-missing",
+    title: "startapp param missing",
+    status: "MISSING",
+    expectedSignal: "Telegram should pass the expected startapp parameter only when the deep link was opened with one.",
+    missingSignalMeaning: "Missing startapp can mean default open, wrong BotFather button, stale Telegram cache, or unsupported entry path.",
+    manualAction: "Ask for screenshot plus the exact Telegram button/link used; verify against the startapp route table.",
+    notCodeFailureWhen: "No startapp in a regular browser URL or default Mini App open is not a code failure.",
+  },
+  {
+    id: "startapp-manual-check-required",
+    title: "startapp/deep link manual check required",
+    status: "MANUAL CHECK REQUIRED",
+    expectedSignal: "Real device opens the expected route for each documented startapp value.",
+    missingSignalMeaning: "Automated source checks cannot prove that Telegram passed the parameter in a live WebView.",
+    manualAction: "Manually test default, love_reading, compatibility, birth_matrix, daily, weekly, and monthly from Telegram.",
+    notCodeFailureWhen: "Local browser success does not prove Telegram WebView success; it only narrows the diagnosis.",
+  },
+  {
+    id: "fallback-browser-mode",
+    title: "fallback browser mode",
+    status: "FALLBACK BROWSER MODE",
+    expectedSignal: "Direct browser open works without Telegram-only crashes and may not include startapp/init data.",
+    missingSignalMeaning: "Missing Telegram-specific fields in browser fallback should not block source QA.",
+    manualAction: "Use browser fallback to separate code/rendering issues from Telegram WebView cache or routing issues.",
+    notCodeFailureWhen: "Absence of startapp in a normal browser is not a code failure.",
+  },
+  {
+    id: "cache-marker-status",
+    title: "cache marker status",
+    status: "CACHE MARKER CHECK REQUIRED",
+    expectedSignal: "Fresh live version matches current source markers and does not show old UI.",
+    missingSignalMeaning: "A mismatch between browser and Telegram can indicate stale deploy, browser cache, or Telegram WebView cache.",
+    manualAction: "Compare live URL with cache-buster, /miniapp, /birth-matrix, /compatibility, and Telegram WebView screenshots.",
+    notCodeFailureWhen: "Source/build pass but Telegram shows old UI usually points to stale cache/deploy, not this diagnostics code.",
+  },
+  {
+    id: "owner-manual-review",
+    title: "owner manual review",
+    status: "OWNER REVIEW REQUIRED",
+    expectedSignal: "Owner confirms real Telegram WebView screenshots and route/startapp evidence.",
+    missingSignalMeaning: "Without owner evidence, launch readiness remains unresolved.",
+    manualAction: "Owner must collect screenshots, classify issues, and approve launch outside this package.",
+    notCodeFailureWhen: "Manual review pending is a readiness blocker, not a code failure.",
+  },
+  {
+    id: "launch-not-approved",
+    title: "launch not approved",
+    status: "LAUNCH NOT APPROVED",
+    expectedSignal: "publicLaunchApproved=false and ownerManualReviewRequired=true.",
+    missingSignalMeaning: "This package intentionally does not grant launch approval.",
+    manualAction: "Keep public launch blocked until owner review, env blockers, backup freshness, and live checks pass.",
+    notCodeFailureWhen: "Launch not approved is the required safe state for Package 215.",
+  },
+];
+
+const ownerManualReview: AphroditeWebViewOwnerReview = {
+  status: "OWNER REVIEW REQUIRED",
+  publicLaunchApproved: false,
+  ownerManualReviewRequired: true,
+  summary: "Telegram WebView must be checked manually on a real device. BotFather was not changed, Telegram API was not used, and no messages were sent.",
+  remainingManualChecks: [
+    "verify Telegram WebView detected on iOS Telegram",
+    "verify Telegram WebView detected on Android Telegram",
+    "verify every expected startapp/deep link route",
+    "confirm missing startapp in normal browser is not treated as code failure",
+    "compare fresh live cache marker against Telegram WebView",
+    "confirm launch remains not approved until owner review is complete",
+  ],
+};
+
 export function getAphroditeTelegramWebViewStartAppDiagnostics(): AphroditeTelegramWebViewStartAppDiagnosticsModel {
   return {
     packageNumber: 209,
+    finalDiagnosticsPackageNumber: 215,
     title: APHRODITE_TELEGRAM_WEBVIEW_STARTAPP_DIAGNOSTICS_TITLE,
     classification: APHRODITE_TELEGRAM_WEBVIEW_STARTAPP_DIAGNOSTICS_CLASSIFICATION,
     safetyLabels: APHRODITE_TELEGRAM_WEBVIEW_STARTAPP_DIAGNOSTICS_SAFETY_LABELS,
@@ -214,6 +346,11 @@ export function getAphroditeTelegramWebViewStartAppDiagnostics(): AphroditeTeleg
       behaviorToCheck: [...platform.behaviorToCheck],
       riskNotes: [...platform.riskNotes],
     })),
+    finalDiagnostics: finalDiagnostics.map((diagnostic) => ({ ...diagnostic })),
+    ownerManualReview: {
+      ...ownerManualReview,
+      remainingManualChecks: [...ownerManualReview.remainingManualChecks],
+    },
     safetyFlags: {
       productionLaunchDone: false,
       telegramApiUsed: false,

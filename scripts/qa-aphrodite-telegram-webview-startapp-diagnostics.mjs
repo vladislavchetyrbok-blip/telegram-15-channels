@@ -45,7 +45,9 @@ console.log("Старт QA: Telegram WebView / startapp diagnostics...\n");
 const modelPath = "../lib/zodiac/aphrodite-telegram-webview-startapp-diagnostics.ts";
 const pagePath = "../app/dashboard/networks/zodiac/telegram-webview-startapp-diagnostics/page.tsx";
 const docsPath = "../docs/aphrodite-telegram-webview-startapp-diagnostics.md";
+const finalDiagnosticsDocsPath = "../docs/aphrodite-telegram-webview-startapp-final-diagnostics.md";
 const reportPath = "../docs/aphrodite-package-reports/package-209.md";
+const finalDiagnosticsReportPath = "../docs/aphrodite-package-reports/package-215.md";
 const dashboardPath = "../app/dashboard/networks/zodiac/page.tsx";
 const dashboardQaPath = "./qa-zodiac-dashboard.mjs";
 
@@ -53,7 +55,9 @@ for (const [label, path] of [
   ["model", modelPath],
   ["dashboard", pagePath],
   ["docs", docsPath],
+  ["final diagnostics docs", finalDiagnosticsDocsPath],
   ["package report", reportPath],
+  ["Package 215 report", finalDiagnosticsReportPath],
   ["dashboard navigation", dashboardPath],
   ["dashboard QA", dashboardQaPath],
 ]) {
@@ -63,16 +67,19 @@ for (const [label, path] of [
 const modelSource = exists(modelPath) ? read(modelPath) : "";
 const pageSource = exists(pagePath) ? read(pagePath) : "";
 const docsSource = exists(docsPath) ? read(docsPath) : "";
+const finalDiagnosticsDocsSource = exists(finalDiagnosticsDocsPath) ? read(finalDiagnosticsDocsPath) : "";
 const reportSource = exists(reportPath) ? read(reportPath) : "";
+const finalDiagnosticsReportSource = exists(finalDiagnosticsReportPath) ? read(finalDiagnosticsReportPath) : "";
 const dashboardSource = exists(dashboardPath) ? read(dashboardPath) : "";
 const dashboardQaSource = exists(dashboardQaPath) ? read(dashboardQaPath) : "";
 const model = getAphroditeTelegramWebViewStartAppDiagnostics();
-const implementationBundle = [modelSource, pageSource, docsSource, reportSource, dashboardSource, dashboardQaSource].join("\n");
-const safetyBundle = [modelSource, pageSource, docsSource, reportSource].join("\n");
+const implementationBundle = [modelSource, pageSource, docsSource, finalDiagnosticsDocsSource, reportSource, finalDiagnosticsReportSource, dashboardSource, dashboardQaSource].join("\n");
+const safetyBundle = [modelSource, pageSource, docsSource, finalDiagnosticsDocsSource, reportSource, finalDiagnosticsReportSource].join("\n");
 
 check("title exported", model.title === APHRODITE_TELEGRAM_WEBVIEW_STARTAPP_DIAGNOSTICS_TITLE);
 check("classification exported", model.classification === APHRODITE_TELEGRAM_WEBVIEW_STARTAPP_DIAGNOSTICS_CLASSIFICATION);
 check("package number is 209", model.packageNumber === 209);
+check("final diagnostics package number is 215", model.finalDiagnosticsPackageNumber === 215);
 check("dashboard route linked from overview", dashboardSource.includes("/dashboard/networks/zodiac/telegram-webview-startapp-diagnostics"));
 check("dashboard QA route exists", dashboardQaSource.includes("telegramWebviewStartappDiagnostics"));
 check("dashboard QA asserts title", dashboardQaSource.includes("Диагностика Telegram WebView / startapp"));
@@ -80,6 +87,35 @@ check("dashboard QA asserts title", dashboardQaSource.includes("Диагност
 for (const label of APHRODITE_TELEGRAM_WEBVIEW_STARTAPP_DIAGNOSTICS_SAFETY_LABELS) {
   check(`safety label exists: ${label}`, implementationBundle.includes(label));
 }
+
+for (const requiredFinalDiagnostic of [
+  "Telegram WebView detected",
+  "Telegram WebView not detected",
+  "startapp param expected",
+  "startapp param missing",
+  "startapp/deep link manual check required",
+  "fallback browser mode",
+  "cache marker status",
+  "owner manual review",
+  "launch not approved",
+]) {
+  check(`final diagnostic exists: ${requiredFinalDiagnostic}`, model.finalDiagnostics.some((item) => item.title === requiredFinalDiagnostic));
+  check(`final diagnostic rendered/documented: ${requiredFinalDiagnostic}`, implementationBundle.includes(requiredFinalDiagnostic));
+}
+
+check("WebView diagnostics exist", implementationBundle.includes("Telegram WebView detected") && implementationBundle.includes("Telegram WebView not detected"));
+check("startapp/deep link diagnostics exist", implementationBundle.includes("startapp param expected") && implementationBundle.includes("startapp param missing") && implementationBundle.includes("startapp/deep link manual check required"));
+check("fallback browser mode exists", implementationBundle.includes("fallback browser mode"));
+check("cache marker status exists", implementationBundle.includes("cache marker status"));
+check("owner manual review exists", model.ownerManualReview.status === "OWNER REVIEW REQUIRED" && implementationBundle.includes("ownerManualReviewRequired=true"));
+check("launch not approved exists", model.ownerManualReview.publicLaunchApproved === false && implementationBundle.includes("Launch not approved") && implementationBundle.includes("publicLaunchApproved=false"));
+check("normal browser missing startapp not code failure", implementationBundle.includes("Absence of startapp in a normal browser is not a code failure") || implementationBundle.includes("missing startapp parameter on default browser/manual open is not a code failure"));
+check("real device manual WebView check exists", implementationBundle.includes("Telegram WebView must be checked manually on real device") || implementationBundle.includes("checked manually on a real device"));
+check("BotFather not changed text exists", implementationBundle.includes("BotFather was not changed"));
+check("Telegram API not used text exists", implementationBundle.includes("Telegram API was not used"));
+check("no messages sent text exists", implementationBundle.includes("no messages were sent"));
+check("all final diagnostics include manual action", model.finalDiagnostics.every((item) => item.manualAction.length > 20) && implementationBundle.includes("manual action"));
+check("all final diagnostics include not code failure guidance", model.finalDiagnostics.every((item) => item.notCodeFailureWhen.length > 20) && implementationBundle.includes("not code failure when"));
 
 for (const startapp of [
   "default Mini App open",
@@ -125,6 +161,8 @@ check("next package is 210", model.nextRecommendedPackage.includes("Package 210"
 check("docs say Package 209", docsSource.includes("Package 209"));
 check("report says Package 209", reportSource.includes("Package 209"));
 check("report keeps Package 210 not started", reportSource.includes("Package 210 не начат"));
+check("final diagnostics docs say Package 215", finalDiagnosticsDocsSource.includes("Package 215"));
+check("final diagnostics report says Package 215", finalDiagnosticsReportSource.includes("Package 215"));
 
 check("live Mini App source files not changed", gitDiffNames([
   "app/miniapp",
