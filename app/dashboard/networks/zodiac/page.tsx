@@ -701,6 +701,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Real Device QA Execution Pack",
+    href: "/dashboard/networks/zodiac/real-device-qa-execution-pack",
+    icon: Smartphone,
+    caption: "Package 223 - owner-run real-device QA execution pack with device checks, Mini App flow evidence, screenshots and launch gate.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

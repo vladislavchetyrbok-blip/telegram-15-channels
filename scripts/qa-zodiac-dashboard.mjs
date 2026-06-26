@@ -82,6 +82,7 @@ const ROUTES = {
   backupRestoreRehearsalReadiness: "/dashboard/networks/zodiac/backup-restore-rehearsal-readiness",
   productionEnvHandoffChecklist: "/dashboard/networks/zodiac/production-env-handoff-checklist",
   manualLaunchRunbookRollbackPack: "/dashboard/networks/zodiac/manual-launch-runbook-rollback-pack",
+  realDeviceQaExecutionPack: "/dashboard/networks/zodiac/real-device-qa-execution-pack",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -237,6 +238,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/backup-restore-rehearsal-readiness"', "backup restore rehearsal readiness route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/production-env-handoff-checklist"', "production env handoff checklist route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-runbook-rollback-pack"', "manual launch runbook rollback pack route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/real-device-qa-execution-pack"', "real device qa execution pack route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");
@@ -1119,6 +1121,39 @@ async function main() {
     assertIncludes(pages.manualLaunchRunbookRollbackPack, "paymentAdded", "manual launch payment safety flag");
     assertIncludes(pages.manualLaunchRunbookRollbackPack, "vipUnlockAdded", "manual launch vip safety flag");
     assertIncludes(pages.manualLaunchRunbookRollbackPack, "publishScriptsChanged", "manual launch publish scripts safety flag");
+    assertIncludes(pages.realDeviceQaExecutionPack, "Real Device QA Execution Pack", "real device qa execution title");
+    assertIncludes(pages.realDeviceQaExecutionPack, "Launch not approved. Real-device QA must be completed manually before soft launch.", "real device qa launch not approved wording");
+    assertIncludes(pages.realDeviceQaExecutionPack, "publicLaunchApproved", "real device qa public launch metric");
+    assertIncludes(pages.realDeviceQaExecutionPack, "ownerManualReviewRequired", "real device qa owner review metric");
+    assertIncludes(pages.realDeviceQaExecutionPack, "iPhone Safari / mobile browser", "real device qa iphone safari section");
+    assertIncludes(pages.realDeviceQaExecutionPack, "Android Chrome / mobile browser, if available", "real device qa android chrome section");
+    assertIncludes(pages.realDeviceQaExecutionPack, "Telegram iOS WebView", "real device qa telegram ios section");
+    assertIncludes(pages.realDeviceQaExecutionPack, "Telegram Android WebView, if available", "real device qa telegram android section");
+    assertIncludes(pages.realDeviceQaExecutionPack, "Desktop browser sanity check", "real device qa desktop section");
+    assertIncludes(pages.realDeviceQaExecutionPack, "Mini App main screen opens", "real device qa mini app main screen");
+    assertIncludes(pages.realDeviceQaExecutionPack, "Telegram WebApp ready/expand behavior", "real device qa ready expand behavior");
+    assertIncludes(pages.realDeviceQaExecutionPack, "Back button behavior", "real device qa back button behavior");
+    assertIncludes(pages.realDeviceQaExecutionPack, "Haptics behavior, if available", "real device qa haptics behavior");
+    assertIncludes(pages.realDeviceQaExecutionPack, "startapp/deep link behavior", "real device qa startapp behavior");
+    assertIncludes(pages.realDeviceQaExecutionPack, "fallback browser mode", "real device qa fallback browser mode");
+    assertIncludes(pages.realDeviceQaExecutionPack, "cache/live version marker", "real device qa cache marker");
+    assertIncludes(pages.realDeviceQaExecutionPack, "compatibility flow", "real device qa compatibility flow");
+    assertIncludes(pages.realDeviceQaExecutionPack, "Birth Matrix flow", "real device qa birth matrix flow");
+    assertIncludes(pages.realDeviceQaExecutionPack, "Mystic Cards flow", "real device qa mystic cards flow");
+    assertIncludes(pages.realDeviceQaExecutionPack, "VIP locked state", "real device qa vip locked state");
+    assertIncludes(pages.realDeviceQaExecutionPack, "CTA visibility", "real device qa cta visibility");
+    assertIncludes(pages.realDeviceQaExecutionPack, "no payment shown as active", "real device qa no payment active");
+    assertIncludes(pages.realDeviceQaExecutionPack, "no VIP unlock without entitlement", "real device qa no vip unlock");
+    assertIncludes(pages.realDeviceQaExecutionPack, "owner evidence section", "real device qa owner evidence section");
+    assertIncludes(pages.realDeviceQaExecutionPack, "screenshots checklist", "real device qa screenshots checklist");
+    assertIncludes(pages.realDeviceQaExecutionPack, "launch gate section", "real device qa launch gate section");
+    assertIncludes(pages.realDeviceQaExecutionPack, "productionLaunchDone", "real device qa production launch flag");
+    assertIncludes(pages.realDeviceQaExecutionPack, "telegramApiUsed", "real device qa telegram api flag");
+    assertIncludes(pages.realDeviceQaExecutionPack, "databaseWriteAdded", "real device qa db write flag");
+    assertIncludes(pages.realDeviceQaExecutionPack, "paymentAdded", "real device qa payment flag");
+    assertIncludes(pages.realDeviceQaExecutionPack, "vipUnlockAdded", "real device qa vip flag");
+    assertIncludes(pages.realDeviceQaExecutionPack, "secretsAdded", "real device qa secrets flag");
+    assertIncludes(pages.realDeviceQaExecutionPack, "productionDbConnected", "real device qa production db flag");
     assertIncludes(pages.productCopyFinalPolish, "Финальная полировка текстов Aphrodite", "product copy polish title");
     assertIncludes(pages.productCopyFinalPolish, "Только copy polish", "product copy polish classification");
     assertIncludes(pages.productCopyFinalPolish, "Copy polish не включает оплату", "product copy polish no payment");
