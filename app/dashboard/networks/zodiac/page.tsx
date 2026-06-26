@@ -694,6 +694,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Manual Launch Runbook & Rollback Pack",
+    href: "/dashboard/networks/zodiac/manual-launch-runbook-rollback-pack",
+    icon: Rocket,
+    caption: "Package 222 - final manual launch runbook and rollback pack with freeze status, blockers, monitoring and safety confirmation.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

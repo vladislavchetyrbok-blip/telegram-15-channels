@@ -81,6 +81,7 @@ const ROUTES = {
   finalContentCtaInventoryAudit: "/dashboard/networks/zodiac/final-content-cta-inventory-audit",
   backupRestoreRehearsalReadiness: "/dashboard/networks/zodiac/backup-restore-rehearsal-readiness",
   productionEnvHandoffChecklist: "/dashboard/networks/zodiac/production-env-handoff-checklist",
+  manualLaunchRunbookRollbackPack: "/dashboard/networks/zodiac/manual-launch-runbook-rollback-pack",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -235,6 +236,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/final-content-cta-inventory-audit"', "final content cta inventory audit route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/backup-restore-rehearsal-readiness"', "backup restore rehearsal readiness route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/production-env-handoff-checklist"', "production env handoff checklist route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-runbook-rollback-pack"', "manual launch runbook rollback pack route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");
@@ -1070,6 +1072,53 @@ async function main() {
     assertIncludes(pages.productionEnvHandoffChecklist, "realEnvValuesStored", "production env real values flag");
     assertIncludes(pages.productionEnvHandoffChecklist, "productionDbConnectionMade", "production env db connection flag");
     assertIncludes(pages.productionEnvHandoffChecklist, "telegramApiCallMade", "production env telegram api flag");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "Manual Launch Runbook &amp; Rollback Pack", "manual launch runbook rollback title");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "Launch not performed. This runbook is manual readiness only.", "manual launch not performed wording");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "publicLaunchApproved", "manual launch public launch metric");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "ownerManualReviewRequired", "manual launch owner review metric");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "Launch freeze status", "manual launch freeze status section");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "Required pre-launch checks", "manual launch required pre launch checks section");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "Owner approval checklist", "manual launch owner approval checklist section");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "Manual launch sequence", "manual launch sequence section");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "Abort conditions", "manual launch abort conditions section");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "Rollback plan", "manual launch rollback plan section");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "Post-launch monitoring checklist", "manual launch post launch monitoring section");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "Incident response checklist", "manual launch incident response section");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "Current blockers", "manual launch current blockers section");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "Safety confirmation", "manual launch safety confirmation section");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "TypeScript PASS", "manual launch typescript pass check");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "Build PASS", "manual launch build pass check");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "zodiac:dashboard:qa PASS", "manual launch dashboard qa check");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "all public launch QA scripts PASS", "manual launch public launch qa check");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "DATABASE_URL configured manually", "manual launch database configured check");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "TELEGRAM_BOT_TOKEN configured manually", "manual launch telegram token configured check");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "backup fresh &lt;24h", "manual launch backup fresh check");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "restore rehearsal checked manually", "manual launch restore rehearsal check");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "real-device visual QA completed", "manual launch real device check");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "Telegram WebView/startapp QA completed", "manual launch webview check");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "content/CTA inventory reviewed", "manual launch content cta check");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "owner manual approval granted", "manual launch owner approval granted check");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "freeze/disable launch mode", "manual launch rollback freeze step");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "revert to previous verified commit", "manual launch rollback revert step");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "stop affected workflow manually, if needed", "manual launch rollback workflow step");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "verify no duplicate posting", "manual launch rollback duplicate posting step");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "verify ledger consistency", "manual launch rollback ledger step");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "verify Mini App fallback", "manual launch rollback mini app fallback step");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "document incident", "manual launch rollback incident step");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "do not retry blindly", "manual launch rollback retry step");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "NOT APPROVED", "manual launch not approved status");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "OWNER REVIEW REQUIRED", "manual launch owner review required status");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "BLOCKED BY ENV", "manual launch blocked by env status");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "BLOCKED BY BACKUP", "manual launch blocked by backup status");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "BLOCKED BY MANUAL QA", "manual launch blocked by manual qa status");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "READY FOR OWNER REVIEW", "manual launch ready for owner review status");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "LAUNCH NOT PERFORMED", "manual launch not performed status");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "productionLaunchDone", "manual launch production launch safety flag");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "telegramApiUsed", "manual launch telegram api safety flag");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "databaseWriteAdded", "manual launch db write safety flag");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "paymentAdded", "manual launch payment safety flag");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "vipUnlockAdded", "manual launch vip safety flag");
+    assertIncludes(pages.manualLaunchRunbookRollbackPack, "publishScriptsChanged", "manual launch publish scripts safety flag");
     assertIncludes(pages.productCopyFinalPolish, "Финальная полировка текстов Aphrodite", "product copy polish title");
     assertIncludes(pages.productCopyFinalPolish, "Только copy polish", "product copy polish classification");
     assertIncludes(pages.productCopyFinalPolish, "Copy polish не включает оплату", "product copy polish no payment");
