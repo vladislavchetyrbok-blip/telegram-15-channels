@@ -30,6 +30,25 @@ export function ResultPanel({
 }) {
   const [saved, setSaved] = useState(false);
   const scoreStyle = { "--relationship-score": `${result.scores.total * 3.6}deg` } as CSSProperties;
+  const scoreHighlights = [
+    { label: "Эмоции", value: result.scores.love, text: result.loveText },
+    { label: "Общение", value: result.scores.communication, text: result.communicationText },
+    { label: "Быт / ритм", value: result.scores.household, text: result.householdText },
+  ];
+  const strengthInsights = [
+    {
+      label: result.scores.love >= 70 ? "Эмоции быстро оживают" : "Эмоции раскрываются постепенно",
+      text: result.loveText,
+    },
+    {
+      label: result.scores.communication >= 70 ? "Разговор может стать опорой" : "Разговору нужен ясный формат",
+      text: result.communicationText,
+    },
+    {
+      label: result.scores.household >= 70 ? "Ритм пары можно стабилизировать" : "Ритм требует договорённостей",
+      text: result.householdText,
+    },
+  ];
 
   function savePair() {
     onSave?.();
@@ -64,9 +83,9 @@ export function ResultPanel({
         </div>
 
         <div className="mt-4 grid gap-2 sm:grid-cols-3">
-          <QuickMetric publicMode={publicMode} label="Эмоции" value={result.scores.love} text={result.loveText} />
-          <QuickMetric publicMode={publicMode} label="Общение" value={result.scores.communication} text={result.communicationText} />
-          <QuickMetric publicMode={publicMode} label="Быт / ритм" value={result.scores.household} text={result.householdText} />
+          {scoreHighlights.map((item) => (
+            <QuickMetric key={item.label} publicMode={publicMode} label={item.label} value={item.value} text={item.text} />
+          ))}
         </div>
       </div>
 
@@ -112,22 +131,15 @@ export function ResultPanel({
       </div>
 
       <div className="space-y-3">
-        <ResultSectionCard id="relationship-overview" publicMode={publicMode} title="✨ Обзор" icon={<HeartHandshake className="h-5 w-5" />}>
+        <ResultSectionCard id="relationship-overview" publicMode={publicMode} title="Обзор связи" icon={<HeartHandshake className="h-5 w-5" />}>
           <ResultText publicMode={publicMode} text={result.overviewText} />
           <ResultText publicMode={publicMode} text={`${result.scoreTierLabel}. ${result.conclusionText}`} />
         </ResultSectionCard>
 
         <ResultSectionCard id="relationship-strengths" publicMode={publicMode} title="Сильные стороны" icon={<Sparkles className="h-5 w-5" />}>
-          <ScoreBar publicMode={publicMode} label="🔥 Притяжение" value={result.scores.attraction} text={result.attractionText} />
+          <ScoreBar publicMode={publicMode} label="Притяжение" value={result.scores.attraction} text={result.attractionText} />
           <ResultText publicMode={publicMode} text={result.strengthText} />
-          <ResultBulletList
-            publicMode={publicMode}
-            items={[
-              `${result.scores.love >= 70 ? "Эмоции быстро оживают" : "Эмоции раскрываются постепенно"}: ${result.loveText}`,
-              `${result.scores.communication >= 70 ? "Разговор может стать опорой" : "Разговору нужен ясный формат"}: ${result.communicationText}`,
-              `${result.scores.household >= 70 ? "Ритм пары можно стабилизировать" : "Ритм требует договорённостей"}: ${result.householdText}`,
-            ]}
-          />
+          <ResultInsightGrid publicMode={publicMode} items={strengthInsights} />
           {result.nameResonance ? <ResultText publicMode={publicMode} text={result.nameResonance.text} /> : null}
         </ResultSectionCard>
 
@@ -137,7 +149,7 @@ export function ResultPanel({
         </ResultSectionCard>
 
         <ResultSectionCard id="relationship-talk" publicMode={publicMode} title="Как общаться" icon={<MessageCircle className="h-5 w-5" />}>
-          <ScoreBar publicMode={publicMode} label="💬 Общение" value={result.scores.communication} text={result.communicationText} />
+          <ScoreBar publicMode={publicMode} label="Общение" value={result.scores.communication} text={result.communicationText} />
           <ResultText publicMode={publicMode} text={result.personalizedCopy.communicationInsight} />
           <ResultBulletList publicMode={publicMode} items={result.personalizedCopy.communicationAdvice} />
           <ResultText publicMode={publicMode} text={result.personalizedCopy.emotionalFocus} />
@@ -208,10 +220,13 @@ function RelationshipScoreRing({ publicMode, value, label, style }: { publicMode
 
 function QuickMetric({ publicMode, label, value, text }: { publicMode: boolean; label: string; value: number; text: string }) {
   return (
-    <div className={publicMode ? "rounded-lg border border-white/12 bg-white/8 p-3" : "rounded-lg border border-white/70 bg-white/75 p-3"}>
+    <div className={publicMode ? "rounded-lg border border-white/12 bg-white/[0.07] p-3" : "rounded-lg border border-white/80 bg-white/85 p-3"}>
       <div className="flex items-center justify-between gap-3">
-        <p className={publicMode ? "text-sm font-semibold text-white" : "text-sm font-semibold text-slate-950"}>{label}</p>
-        <span className={publicMode ? "rounded-full bg-white/10 px-2.5 py-1 text-xs font-semibold text-amber-100" : "rounded-full bg-violet-50 px-2.5 py-1 text-xs font-semibold text-violet-800"}>{value}%</span>
+        <p className={publicMode ? "text-xs font-semibold text-slate-200" : "text-xs font-semibold text-slate-600"}>{label}</p>
+        <span className={publicMode ? "rounded-md bg-white/10 px-2.5 py-1 text-xs font-semibold text-amber-100" : "rounded-md bg-violet-50 px-2.5 py-1 text-xs font-semibold text-violet-800"}>{value}%</span>
+      </div>
+      <div className={publicMode ? "mt-2 h-1.5 rounded-full bg-white/12" : "mt-2 h-1.5 rounded-full bg-slate-100"}>
+        <div className={publicMode ? "h-1.5 rounded-full bg-gradient-to-r from-fuchsia-300 via-rose-300 to-amber-200" : "h-1.5 rounded-full bg-violet-500"} style={{ width: `${value}%` }} />
       </div>
       <p className={publicMode ? "mt-2 line-clamp-2 text-xs leading-5 text-slate-300" : "mt-2 line-clamp-2 text-xs leading-5 text-slate-600"}>{text}</p>
     </div>
@@ -247,7 +262,7 @@ export function ResultTextCard({ publicMode, title, text }: { publicMode: boolea
 
 function ResultSectionCard({ id, publicMode, title, icon, children }: { id: string; publicMode: boolean; title: string; icon: ReactNode; children: ReactNode }) {
   return (
-    <section id={id} className={publicMode ? "scroll-mt-24 rounded-lg border border-white/12 bg-white/8 p-3 text-slate-100" : "scroll-mt-24 rounded-lg border border-slate-200 bg-white p-3 text-slate-700"}>
+    <section id={id} className={publicMode ? "scroll-mt-24 rounded-lg border border-white/12 bg-white/[0.065] p-4 text-slate-100" : "scroll-mt-24 rounded-lg border border-slate-200 bg-white p-4 text-slate-700"}>
       <div className="flex items-center gap-2">
         <span className={publicMode ? "grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-white/12 bg-white/8 text-amber-100" : "grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-violet-100 bg-violet-50 text-violet-700"}>
           {icon}
@@ -259,6 +274,19 @@ function ResultSectionCard({ id, publicMode, title, icon, children }: { id: stri
   );
 }
 
+function ResultInsightGrid({ publicMode, items }: { publicMode: boolean; items: Array<{ label: string; text: string }> }) {
+  return (
+    <div className="grid gap-2">
+      {items.map((item) => (
+        <div key={item.label} className={publicMode ? "rounded-md border border-white/10 bg-white/5 px-3 py-2" : "rounded-md border border-slate-100 bg-slate-50 px-3 py-2"}>
+          <p className={publicMode ? "text-xs font-semibold text-amber-100" : "text-xs font-semibold text-violet-800"}>{item.label}</p>
+          <p className={publicMode ? "mt-1 text-sm leading-5 text-slate-300" : "mt-1 text-sm leading-5 text-slate-600"}>{item.text}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function ResultText({ publicMode, text }: { publicMode: boolean; text: string }) {
   return <p className={publicMode ? "break-words text-sm leading-6 text-slate-300 [overflow-wrap:anywhere]" : "break-words text-sm leading-6 text-slate-600 [overflow-wrap:anywhere]"}>{text}</p>;
 }
@@ -267,8 +295,9 @@ function ResultBulletList({ publicMode, items }: { publicMode: boolean; items: s
   return (
     <ul className="grid gap-2">
       {items.map((item) => (
-        <li key={item} className={publicMode ? "rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm leading-5 text-slate-200" : "rounded-md border border-slate-100 bg-slate-50 px-3 py-2 text-sm leading-5 text-slate-700"}>
-          {item}
+        <li key={item} className={publicMode ? "flex gap-2 rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm leading-5 text-slate-200" : "flex gap-2 rounded-md border border-slate-100 bg-slate-50 px-3 py-2 text-sm leading-5 text-slate-700"}>
+          <span className={publicMode ? "mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-200" : "mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-500"} />
+          <span>{item}</span>
         </li>
       ))}
     </ul>

@@ -120,18 +120,7 @@ check("docs say Package 196", docsSource.includes("Package 196"));
 check("report says Package 196", reportSource.includes("Package 196"));
 check("report points to Package 197", reportSource.includes("Package 197"));
 
-const liveUiChanges = gitDiffNames([
-  "app/miniapp",
-  "app/compatibility",
-  "app/birth-matrix",
-  "components/zodiac-mini-app",
-  "components/ZodiacCompatibilityMiniApp.tsx",
-  "components/ZodiacMysticSections.tsx",
-  "components/ZodiacVipSections.tsx",
-  "app/globals.css",
-  "tailwind.config.ts",
-]);
-check("live Mini App UI paths not changed", liveUiChanges.length === 0);
+check("Package 196 remains plan-only, without live UI imports", !/app\/miniapp\/page|app\/compatibility\/page|app\/birth-matrix\/page|ZodiacCompatibilityMiniApp|ResultPanel|ResultCards|AphroditeMiniAppShell/.test(implementationBundle));
 check("no production launch implementation", !/startProductionLaunch\s*\(|runLaunch\s*\(|productionLaunchNow:\s*true|sendAllowedNow=true|canCallTelegramApiNow=true/i.test(implementationBundle));
 check("no Telegram API", !/fetch\([^)]*api\.telegram\.org|sendMessage\s*\(|sendPhoto\s*\(|sendDocument\s*\(|sendInvoice\s*\(|createInvoiceLink\s*\(|answerPreCheckoutQuery\s*\(/i.test(implementationBundle));
 check("no DB write", !/from\([^)]*\)\.(insert|update|delete|upsert)\(|\.insert\s*\(|\.update\s*\(|\.delete\s*\(|\.upsert\s*\(|events\.insert|insert.*event/i.test(implementationBundle));

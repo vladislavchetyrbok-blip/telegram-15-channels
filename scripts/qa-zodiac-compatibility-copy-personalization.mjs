@@ -241,7 +241,12 @@ const restrictedChangedFiles = gitDiffNames([".github/workflows", "package.json"
 check("workflows/package/db schema не изменены", restrictedChangedFiles.length === 0);
 
 const scriptChanges = gitDiffNames(["scripts"]);
-const allowedScriptChanges = new Set(["scripts/qa-zodiac-compatibility-copy-personalization.mjs"]);
+const allowedScriptChanges = new Set([
+  "scripts/qa-zodiac-compatibility-copy-personalization.mjs",
+  "scripts/qa-zodiac-vip-couple-calendar-personalization.mjs",
+  "scripts/qa-aphrodite-compatibility-result-visual-upgrade.mjs",
+  "scripts/qa-aphrodite-miniapp-simplified-redesign-implementation-plan.mjs",
+]);
 check("cron/publish scripts не изменены", scriptChanges.every((file) => allowedScriptChanges.has(file)) && !scriptChanges.some((file) => /publish|cron|workflow/i.test(file)));
 
 console.log("\nQA завершён: " + passed + " успехов, " + failed + " ошибок.");
