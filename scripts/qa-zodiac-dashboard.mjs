@@ -73,6 +73,7 @@ const ROUTES = {
   miniappVisualQaConsolidation: "/dashboard/networks/zodiac/miniapp-visual-qa-consolidation",
   publicLaunchVisualReadinessReview: "/dashboard/networks/zodiac/public-launch-visual-readiness-review",
   realDeviceVisualQaChecklist: "/dashboard/networks/zodiac/real-device-visual-qa-checklist",
+  telegramWebviewStartappDiagnostics: "/dashboard/networks/zodiac/telegram-webview-startapp-diagnostics",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -219,6 +220,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-visual-qa-consolidation"', "miniapp visual qa consolidation route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/public-launch-visual-readiness-review"', "public launch visual readiness review route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/real-device-visual-qa-checklist"', "real device visual qa checklist route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/telegram-webview-startapp-diagnostics"', "telegram webview startapp diagnostics route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");
@@ -810,6 +812,20 @@ async function main() {
     assertIncludes(pages.realDeviceVisualQaChecklist, "daily horoscope card", "real device daily card");
     assertIncludes(pages.realDeviceVisualQaChecklist, "weekly horoscope card", "real device weekly card");
     assertIncludes(pages.realDeviceVisualQaChecklist, "monthly horoscope card", "real device monthly card");
+    assertIncludes(pages.telegramWebviewStartappDiagnostics, "Диагностика Telegram WebView / startapp", "telegram webview diagnostics title");
+    assertIncludes(pages.telegramWebviewStartappDiagnostics, "Только диагностика", "telegram webview diagnostics classification");
+    assertIncludes(pages.telegramWebviewStartappDiagnostics, "BotFather не изменяется", "telegram webview botfather boundary");
+    assertIncludes(pages.telegramWebviewStartappDiagnostics, "Нет Telegram API", "telegram webview api boundary");
+    assertIncludes(pages.telegramWebviewStartappDiagnostics, "StartApp diagnostics ничего не меняет", "startapp diagnostics changes nothing");
+    assertIncludes(pages.telegramWebviewStartappDiagnostics, "default Mini App open", "startapp default");
+    assertIncludes(pages.telegramWebviewStartappDiagnostics, "love_reading", "startapp love reading");
+    assertIncludes(pages.telegramWebviewStartappDiagnostics, "compatibility", "startapp compatibility");
+    assertIncludes(pages.telegramWebviewStartappDiagnostics, "birth_matrix", "startapp birth matrix");
+    assertIncludes(pages.telegramWebviewStartappDiagnostics, "daily", "startapp daily");
+    assertIncludes(pages.telegramWebviewStartappDiagnostics, "weekly", "startapp weekly");
+    assertIncludes(pages.telegramWebviewStartappDiagnostics, "monthly", "startapp monthly");
+    assertIncludes(pages.telegramWebviewStartappDiagnostics, "stale Telegram WebView cache", "telegram stale cache");
+    assertIncludes(pages.telegramWebviewStartappDiagnostics, "cache-buster query check", "cache buster check");
     assertIncludes(pages.productCopyFinalPolish, "Финальная полировка текстов Aphrodite", "product copy polish title");
     assertIncludes(pages.productCopyFinalPolish, "Только copy polish", "product copy polish classification");
     assertIncludes(pages.productCopyFinalPolish, "Copy polish не включает оплату", "product copy polish no payment");

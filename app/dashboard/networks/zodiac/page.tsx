@@ -561,6 +561,13 @@ const platformSections = [
     tone: "emerald",
   },
   {
+    title: "StartApp Diagnostics",
+    href: "/dashboard/networks/zodiac/telegram-webview-startapp-diagnostics",
+    icon: Smartphone,
+    caption: "Package 209 - диагностика Telegram WebView, startapp routes, cache и wrong route symptoms без BotFather, Telegram API и active CTA changes.",
+    tone: "emerald",
+  },
+  {
     title: "Финальная полировка текстов",
     href: "/dashboard/networks/zodiac/product-copy-final-polish",
     icon: FileText,

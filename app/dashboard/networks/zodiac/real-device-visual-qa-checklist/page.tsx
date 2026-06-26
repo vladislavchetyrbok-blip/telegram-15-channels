@@ -98,6 +98,7 @@ export default function AphroditeRealDeviceVisualQaChecklistPage() {
           <div className="flex flex-wrap gap-3 text-sm">
             <Link href="/dashboard/networks/zodiac" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Zodiac Network</Link>
             <Link href="/dashboard/networks/zodiac/public-launch-visual-readiness-review" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Visual Launch Review</Link>
+            <Link href="/dashboard/networks/zodiac/telegram-webview-startapp-diagnostics" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">StartApp Diagnostics</Link>
             <Link href="/dashboard/networks/zodiac/miniapp-visual-qa-consolidation" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Mini App Visual QA</Link>
             <Link href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Manual Smoke Test Matrix</Link>
           </div>
