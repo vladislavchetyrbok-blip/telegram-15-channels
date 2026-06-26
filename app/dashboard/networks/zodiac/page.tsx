@@ -355,6 +355,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Security QA VIP-доступа",
+    href: "/dashboard/networks/zodiac/vip-access-security-suite",
+    icon: ShieldCheck,
+    caption: "Package 167 - consolidated QA suite для VIP/payment/entitlement safety без открытия доступа.",
+    tone: "cyan",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,

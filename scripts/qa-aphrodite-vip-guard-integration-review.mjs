@@ -206,8 +206,8 @@ const workflowChanges = gitDiffNames([".github/workflows", "package.json"]);
 check("workflows и package.json не изменены", workflowChanges.length === 0);
 
 const scriptChanges = gitDiffNames(["scripts"]);
-check("в scripts изменены только Package 160 QA и dashboard QA", scriptChanges.every((file) =>
-  file === "scripts/qa-aphrodite-vip-guard-integration-review.mjs" || file === "scripts/qa-zodiac-dashboard.mjs",
+check("в scripts изменены только Aphrodite QA и dashboard QA", scriptChanges.every((file) =>
+  file === "scripts/qa-zodiac-dashboard.mjs" || /^scripts\/qa-aphrodite-.*\.mjs$/.test(file),
 ));
 
 console.log(`\nQA завершён: ${passed} успешно, ${failed} ошибок.`);

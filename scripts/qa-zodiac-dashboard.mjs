@@ -81,6 +81,7 @@ const ROUTES = {
   entitlementStorageDesign: "/dashboard/networks/zodiac/entitlement-storage-design",
   entitlementSchemaSkeleton: "/dashboard/networks/zodiac/entitlement-schema-skeleton",
   serverEntitlementCheckSkeleton: "/dashboard/networks/zodiac/server-entitlement-check-skeleton",
+  vipAccessSecuritySuite: "/dashboard/networks/zodiac/vip-access-security-suite",
   vipCompatibilityReport: "/vip-compatibility-report",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
@@ -788,6 +789,24 @@ async function main() {
     assertIncludes(pages.serverEntitlementCheckSkeleton, "Нет миграции схемы базы данных", "database schema boundary");
     assertIncludes(pages.serverEntitlementCheckSkeleton, "Нет вызова Telegram API", "telegram boundary");
     assertIncludes(pages.serverEntitlementCheckSkeleton, 'data-boundary="server-check-always-denies"', "server entitlement deny data boundary");
+    assertIncludes(pages.vipAccessSecuritySuite, "Security QA для VIP-доступа", "vip access security suite title");
+    assertIncludes(pages.vipAccessSecuritySuite, "Только QA безопасности", "vip access security suite classification");
+    assertIncludes(pages.vipAccessSecuritySuite, "QA suite ничего не открывает", "vip access security suite opens nothing boundary");
+    assertIncludes(pages.vipAccessSecuritySuite, "No VIP from localStorage", "localStorage security gate");
+    assertIncludes(pages.vipAccessSecuritySuite, "No VIP from query param", "query security gate");
+    assertIncludes(pages.vipAccessSecuritySuite, "No VIP from mock payment success", "payment mock security gate");
+    assertIncludes(pages.vipAccessSecuritySuite, "No VIP from fake entitlement record", "fake entitlement security gate");
+    assertIncludes(pages.vipAccessSecuritySuite, "Guard skeleton allowed=false", "guard skeleton deny gate");
+    assertIncludes(pages.vipAccessSecuritySuite, "Server entitlement skeleton allowed=false", "server skeleton deny gate");
+    assertIncludes(pages.vipAccessSecuritySuite, "Нет реальной VIP-разблокировки", "vip unlock boundary");
+    assertIncludes(pages.vipAccessSecuritySuite, "Нет оплаты", "payment boundary");
+    assertIncludes(pages.vipAccessSecuritySuite, "Нет Telegram Stars invoice", "stars invoice boundary");
+    assertIncludes(pages.vipAccessSecuritySuite, "Нет successful_payment handler", "successful payment boundary");
+    assertIncludes(pages.vipAccessSecuritySuite, "Нет entitlement creation", "entitlement creation boundary");
+    assertIncludes(pages.vipAccessSecuritySuite, "Нет записи в базу данных", "database boundary");
+    assertIncludes(pages.vipAccessSecuritySuite, "Нет миграции схемы базы данных", "database schema boundary");
+    assertIncludes(pages.vipAccessSecuritySuite, "Нет вызова Telegram API", "telegram boundary");
+    assertIncludes(pages.vipAccessSecuritySuite, 'data-boundary="qa-suite-opens-nothing"', "suite opens nothing data boundary");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");
