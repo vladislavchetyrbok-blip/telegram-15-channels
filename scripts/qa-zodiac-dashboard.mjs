@@ -65,6 +65,7 @@ const ROUTES = {
   returnJourneyCtaReadiness: "/dashboard/networks/zodiac/return-journey-cta-readiness",
   streakReminderNoopSkeleton: "/dashboard/networks/zodiac/streak-reminder-noop-skeleton",
   retentionMockDashboardSafetySuite: "/dashboard/networks/zodiac/retention-mock-dashboard-safety-suite",
+  publicLaunchChecklistRefresh: "/dashboard/networks/zodiac/public-launch-checklist-refresh",
   realImplementationPath: "/dashboard/networks/zodiac/real-implementation-path",
   telegramInitDataValidation: "/dashboard/networks/zodiac/telegram-initdata-validation",
   userProfileFoundation: "/dashboard/networks/zodiac/user-profile-foundation",
@@ -199,6 +200,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/return-journey-cta-readiness"', "return journey cta readiness route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/streak-reminder-noop-skeleton"', "streak reminder noop skeleton route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/retention-mock-dashboard-safety-suite"', "retention mock dashboard safety suite route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/public-launch-checklist-refresh"', "public launch checklist refresh route link");
 
     assertIncludes(pages.analytics, "Аналитика Mini App", "analytics page heading");
     assertIncludes(pages.analytics, "First-users funnel", "first-users funnel block");
@@ -702,6 +704,15 @@ async function main() {
     assertIncludes(pages.retentionMockDashboardSafetySuite, "monthly return loop", "retention mock monthly loop");
     assertIncludes(pages.retentionMockDashboardSafetySuite, "saved report future loop", "retention mock saved report loop");
     assertIncludes(pages.retentionMockDashboardSafetySuite, "streak/reminder future loop", "retention mock streak reminder loop");
+    assertIncludes(pages.publicLaunchChecklistRefresh, "Обновлённый checklist публичного запуска", "public launch checklist title");
+    assertIncludes(pages.publicLaunchChecklistRefresh, "Только checklist", "public launch checklist classification");
+    assertIncludes(pages.publicLaunchChecklistRefresh, "Нет production-запуска", "public launch checklist no production launch");
+    assertIncludes(pages.publicLaunchChecklistRefresh, "Launch checklist ничего не запускает", "public launch checklist sends nothing");
+    assertIncludes(pages.publicLaunchChecklistRefresh, "BotFather profile", "public launch checklist botfather profile");
+    assertIncludes(pages.publicLaunchChecklistRefresh, "Main Mini App button", "public launch checklist main mini app button");
+    assertIncludes(pages.publicLaunchChecklistRefresh, "daily/weekly/monthly content", "public launch checklist content cadence");
+    assertIncludes(pages.publicLaunchChecklistRefresh, "Love Reading preview", "public launch checklist love preview");
+    assertIncludes(pages.publicLaunchChecklistRefresh, "owner review", "public launch checklist owner review");
 
     assertIncludes(pages.realImplementationPath, "Real Implementation Path", "real implementation path page title");
     assertIncludes(pages.realImplementationPath, "Selected path", "real implementation selected path classification");

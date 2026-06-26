@@ -504,6 +504,13 @@ const platformSections = [
     tone: "emerald",
   },
   {
+    title: "Checklist публичного запуска",
+    href: "/dashboard/networks/zodiac/public-launch-checklist-refresh",
+    icon: ClipboardCheck,
+    caption: "Package 191 - ручной checklist будущего публичного запуска без Telegram API, BotFather changes, оплаты и VIP unlock.",
+    tone: "emerald",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,

@@ -126,6 +126,7 @@ export default function AphroditeRetentionMockDashboardSafetySuitePage() {
             <Link href="/dashboard/networks/zodiac/return-journey-cta-readiness" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Return CTA Readiness</Link>
             <Link href="/dashboard/networks/zodiac/saved-reports-history-mock-readiness" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Saved Reports Mock</Link>
             <Link href="/dashboard/networks/zodiac/retention-system-readiness" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Retention Readiness</Link>
+            <Link href="/dashboard/networks/zodiac/public-launch-checklist-refresh" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Public Launch Checklist</Link>
           </div>
         </div>
       </div>

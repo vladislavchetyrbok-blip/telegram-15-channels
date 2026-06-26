@@ -1,0 +1,127 @@
+#!/usr/bin/env node
+
+import { execFileSync } from "node:child_process";
+import { existsSync, readFileSync } from "node:fs";
+import {
+  APHRODITE_PUBLIC_LAUNCH_CHECKLIST_REFRESH_CLASSIFICATION,
+  APHRODITE_PUBLIC_LAUNCH_CHECKLIST_REFRESH_SAFETY_LABELS,
+  APHRODITE_PUBLIC_LAUNCH_CHECKLIST_REFRESH_TITLE,
+  getAphroditePublicLaunchChecklistRefresh,
+} from "../lib/zodiac/aphrodite-public-launch-checklist-refresh.ts";
+
+let passed = 0;
+let failed = 0;
+
+function check(name, condition) {
+  if (condition) {
+    passed += 1;
+    console.log("УСПЕХ: " + name);
+  } else {
+    failed += 1;
+    console.log("ОШИБКА: " + name);
+  }
+}
+
+function read(rel) {
+  return readFileSync(new URL(rel, import.meta.url), "utf8");
+}
+
+function exists(rel) {
+  return existsSync(new URL(rel, import.meta.url));
+}
+
+function gitDiffNames(paths) {
+  try {
+    const output = execFileSync("git", ["diff", "--name-only", "HEAD", "--", ...paths], { encoding: "utf8" });
+    return output.split(/\r?\n/).filter(Boolean);
+  } catch {
+    return ["__git_diff_failed__"];
+  }
+}
+
+console.log("Старт QA: Public Launch Checklist Refresh...\n");
+
+const modelPath = "../lib/zodiac/aphrodite-public-launch-checklist-refresh.ts";
+const pagePath = "../app/dashboard/networks/zodiac/public-launch-checklist-refresh/page.tsx";
+const docsPath = "../docs/aphrodite-public-launch-checklist-refresh.md";
+const reportPath = "../docs/aphrodite-package-reports/package-191.md";
+const dashboardQaPath = "./qa-zodiac-dashboard.mjs";
+
+check("model exists", exists(modelPath));
+check("dashboard exists", exists(pagePath));
+check("docs exist", exists(docsPath));
+check("package report exists", exists(reportPath));
+
+const modelSource = exists(modelPath) ? read(modelPath) : "";
+const pageSource = exists(pagePath) ? read(pagePath) : "";
+const docsSource = exists(docsPath) ? read(docsPath) : "";
+const reportSource = exists(reportPath) ? read(reportPath) : "";
+const dashboardQaSource = exists(dashboardQaPath) ? read(dashboardQaPath) : "";
+const implementationBundle = [modelSource, pageSource].join("\n");
+const userFacingBundle = [modelSource, pageSource, docsSource, reportSource].join("\n");
+const checklistRefresh = getAphroditePublicLaunchChecklistRefresh();
+
+check("model returns title", checklistRefresh.title === APHRODITE_PUBLIC_LAUNCH_CHECKLIST_REFRESH_TITLE);
+check("model returns classification", checklistRefresh.classification === APHRODITE_PUBLIC_LAUNCH_CHECKLIST_REFRESH_CLASSIFICATION);
+check("checklist has all required areas", checklistRefresh.checklist.length >= 17);
+check("all checklist entries are checklist-only", checklistRefresh.checklist.every((item) => item.source === "checklist-only"));
+check("all checklist entries require owner review", checklistRefresh.checklist.every((item) => item.ownerReviewRequired === true));
+check("all checklist entries are blocked now", checklistRefresh.checklist.every((item) => item.blockedNow === true));
+check("boundaries exist", checklistRefresh.boundaries.length >= 8);
+check("summary launch ready false", checklistRefresh.summary.launchReadyNow === false);
+check("launch approved false", checklistRefresh.launchApprovedNow === false);
+check("production launch false", checklistRefresh.productionLaunchNow === false);
+check("telegram api false", checklistRefresh.telegramApiNow === false);
+check("message sending false", checklistRefresh.messageSendingNow === false);
+check("botfather changed false", checklistRefresh.botFatherChangedNow === false);
+check("active cta changed false", checklistRefresh.activeCtaChangedNow === false);
+check("payment enabled false", checklistRefresh.paymentEnabledNow === false);
+check("vip unlock false", checklistRefresh.vipUnlockNow === false);
+check("database write false", checklistRefresh.databaseWriteNow === false);
+
+for (const area of [
+  "BotFather profile",
+  "Main Mini App button",
+  "Mini App routes",
+  "daily/weekly/monthly content",
+  "Love Reading preview",
+  "compatibility",
+  "birth matrix",
+  "30 days couple calendar",
+  "fallback route",
+  "support/refund",
+  "privacy/terms",
+  "analytics readiness",
+  "retention readiness",
+  "production safety",
+  "env blockers",
+  "backup freshness",
+  "owner review",
+]) {
+  check(`required checklist area exists: ${area}`, checklistRefresh.checklist.some((item) => item.label === area) && userFacingBundle.includes(area));
+}
+
+for (const label of APHRODITE_PUBLIC_LAUNCH_CHECKLIST_REFRESH_SAFETY_LABELS) {
+  check(`safety label exists: ${label}`, userFacingBundle.includes(label));
+}
+
+check("dashboard QA route key exists", dashboardQaSource.includes("publicLaunchChecklistRefresh"));
+check("dashboard QA overview link exists", dashboardQaSource.includes("/dashboard/networks/zodiac/public-launch-checklist-refresh"));
+check("page renders title from model", pageSource.includes("checklistRefresh.title") && userFacingBundle.includes(APHRODITE_PUBLIC_LAUNCH_CHECKLIST_REFRESH_TITLE));
+check("page renders classification from model", pageSource.includes("checklistRefresh.classification") && userFacingBundle.includes(APHRODITE_PUBLIC_LAUNCH_CHECKLIST_REFRESH_CLASSIFICATION));
+check("docs say launch not executed", docsSource.includes("Запуск не выполняется") && docsSource.includes("Нет Telegram API"));
+check("report says Package 191", reportSource.includes("Package 191"));
+check("report points to Package 192", reportSource.includes("Package 192"));
+
+check("no production launch implementation", !/startProductionLaunch\s*\(|runLaunch\s*\(|launchApprovedNow:\s*true|productionLaunchNow:\s*true|sendAllowedNow=true|canCallTelegramApiNow=true/i.test(implementationBundle));
+check("no Telegram API", !/fetch\([^)]*api\.telegram\.org|sendMessage\s*\(|sendPhoto\s*\(|sendDocument\s*\(|sendInvoice\s*\(|createInvoiceLink\s*\(|answerPreCheckoutQuery\s*\(/i.test(implementationBundle));
+check("no BotFather API or active CTA mutation", !/setMyDescription\s*\(|setMyShortDescription\s*\(|setChatMenuButton\s*\(|activeCtaChangedNow:\s*true|botFatherChangedNow:\s*true/i.test(implementationBundle));
+check("no DB write", !/from\([^)]*\)\.(insert|update|delete|upsert)\(|\.insert\s*\(|\.update\s*\(|\.delete\s*\(|\.upsert\s*\(|events\.insert|insert.*event/i.test(implementationBundle));
+check("no payment or VIP changes", !/sendInvoice\s*\(|createInvoiceLink\s*\(|paymentEnabledNow:\s*true|createEntitlement\s*\(|grantVip\s*\(|unlockVip\s*\(|createsEntitlementNow=true|unlocksVipNow=true|grantsAccessNow=true|productionPaymentAllowedNow=true/i.test(implementationBundle));
+check("no cron/workflow changes", gitDiffNames([".github/workflows", "vercel.json"]).length === 0);
+check("publish scripts not changed", gitDiffNames(["scripts/publish-zodiac-by-date.mjs", "scripts/publish-zodiac-weekly-by-week.mjs", "scripts/zodiac-telegram-publisher.mjs", "scripts/publish-due.mjs", "scripts/publish-due-json.mjs"]).length === 0);
+check("package.json not changed", gitDiffNames(["package.json"]).length === 0);
+check("no DB schema/migration change", gitDiffNames(["prisma", "supabase", "migrations", "schema.prisma"]).filter((file) => /(^|\/)(prisma|supabase|migrations)(\/|$)|schema\.prisma$/i.test(file)).length === 0);
+
+console.log(`\nQA завершён: ${passed} успешно, ${failed} ошибок.`);
+if (failed > 0) process.exit(1);
