@@ -53,6 +53,7 @@ const ROUTES = {
   paymentLedgerMockIntegration: "/dashboard/networks/zodiac/payment-ledger-mock-integration",
   entitlementCreationMock: "/dashboard/networks/zodiac/entitlement-creation-mock",
   productionPaymentSafetyGate: "/dashboard/networks/zodiac/production-payment-safety-gate",
+  firstPaidMvpReadinessReview: "/dashboard/networks/zodiac/first-paid-mvp-readiness-review",
   realImplementationPath: "/dashboard/networks/zodiac/real-implementation-path",
   telegramInitDataValidation: "/dashboard/networks/zodiac/telegram-initdata-validation",
   userProfileFoundation: "/dashboard/networks/zodiac/user-profile-foundation",
@@ -175,6 +176,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/payment-ledger-mock-integration"', "payment ledger mock integration route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/entitlement-creation-mock"', "entitlement creation mock route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/production-payment-safety-gate"', "production payment safety gate route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/first-paid-mvp-readiness-review"', "first paid mvp readiness route link");
 
     assertIncludes(pages.analytics, "Аналитика Mini App", "analytics page heading");
     assertIncludes(pages.analytics, "First-users funnel", "first-users funnel block");
@@ -550,6 +552,17 @@ async function main() {
     assertIncludes(pages.productionPaymentSafetyGate, "Production payment safety gate всегда закрыт", "fail closed boundary");
     assertIncludes(pages.productionPaymentSafetyGate, "productionPaymentAllowedNow=false", "payment denied result");
     assertIncludes(pages.productionPaymentSafetyGate, "vipUnlockAllowedNow=false", "vip denied result");
+    assertIncludes(pages.firstPaidMvpReadinessReview, "Readiness Review первого платного MVP", "paid mvp readiness title");
+    assertIncludes(pages.firstPaidMvpReadinessReview, "Только review готовности", "paid mvp readiness classification");
+    assertIncludes(pages.firstPaidMvpReadinessReview, "Запуск не разрешён", "launch not approved boundary");
+    assertIncludes(pages.firstPaidMvpReadinessReview, "Нет реальной оплаты", "payment boundary");
+    assertIncludes(pages.firstPaidMvpReadinessReview, "Нет Telegram Stars invoice", "stars invoice boundary");
+    assertIncludes(pages.firstPaidMvpReadinessReview, "Нет sendInvoice", "sendInvoice boundary");
+    assertIncludes(pages.firstPaidMvpReadinessReview, "Нет successful_payment handler", "successful payment boundary");
+    assertIncludes(pages.firstPaidMvpReadinessReview, "Нет payment ledger write", "ledger write boundary");
+    assertIncludes(pages.firstPaidMvpReadinessReview, "Нет entitlement creation", "entitlement boundary");
+    assertIncludes(pages.firstPaidMvpReadinessReview, "Нет вызова Telegram API", "telegram api boundary");
+    assertIncludes(pages.firstPaidMvpReadinessReview, "Paid MVP не разрешён к запуску", "paid mvp not approved");
 
     assertIncludes(pages.realImplementationPath, "Real Implementation Path", "real implementation path page title");
     assertIncludes(pages.realImplementationPath, "Selected path", "real implementation selected path classification");

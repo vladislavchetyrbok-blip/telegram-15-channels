@@ -4,6 +4,7 @@ import {
   BarChart3,
   Bot,
   CalendarClock,
+  ClipboardCheck,
   CheckCircle2,
   ChevronLeft,
   ChevronRight,
@@ -415,6 +416,13 @@ const platformSections = [
     href: "/dashboard/networks/zodiac/production-payment-safety-gate",
     icon: ShieldCheck,
     caption: "Package 175 - fail-closed gate для будущей оплаты, Telegram Stars, ledger, entitlement и VIP unlock.",
+    tone: "cyan",
+  },
+  {
+    title: "Paid MVP Readiness",
+    href: "/dashboard/networks/zodiac/first-paid-mvp-readiness-review",
+    icon: ClipboardCheck,
+    caption: "Package 178 - review готовности первого платного MVP без оплаты, VIP unlock, entitlement и production-запуска.",
     tone: "cyan",
   },
   {
