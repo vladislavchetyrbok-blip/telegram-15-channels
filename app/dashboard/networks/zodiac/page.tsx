@@ -483,6 +483,13 @@ const platformSections = [
     tone: "emerald",
   },
   {
+    title: "Readiness возвратных CTA",
+    href: "/dashboard/networks/zodiac/return-journey-cta-readiness",
+    icon: MousePointerClick,
+    caption: "Package 188 - карта future return paths без изменения active CTA, tracking, Telegram API и DB write.",
+    tone: "emerald",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,

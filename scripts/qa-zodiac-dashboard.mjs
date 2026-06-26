@@ -62,6 +62,7 @@ const ROUTES = {
   analyticsPrivacySafetySuite: "/dashboard/networks/zodiac/analytics-privacy-safety-suite",
   retentionSystemReadiness: "/dashboard/networks/zodiac/retention-system-readiness",
   savedReportsHistoryMockReadiness: "/dashboard/networks/zodiac/saved-reports-history-mock-readiness",
+  returnJourneyCtaReadiness: "/dashboard/networks/zodiac/return-journey-cta-readiness",
   realImplementationPath: "/dashboard/networks/zodiac/real-implementation-path",
   telegramInitDataValidation: "/dashboard/networks/zodiac/telegram-initdata-validation",
   userProfileFoundation: "/dashboard/networks/zodiac/user-profile-foundation",
@@ -193,6 +194,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/analytics-privacy-safety-suite"', "analytics privacy safety suite route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/retention-system-readiness"', "retention system readiness route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/saved-reports-history-mock-readiness"', "saved reports history mock readiness route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/return-journey-cta-readiness"', "return journey cta readiness route link");
 
     assertIncludes(pages.analytics, "Аналитика Mini App", "analytics page heading");
     assertIncludes(pages.analytics, "First-users funnel", "first-users funnel block");
@@ -667,6 +669,15 @@ async function main() {
     assertIncludes(pages.savedReportsHistoryMockReadiness, "daily-horoscope-snapshot", "saved reports daily snapshot");
     assertIncludes(pages.savedReportsHistoryMockReadiness, "weekly-horoscope-snapshot", "saved reports weekly snapshot");
     assertIncludes(pages.savedReportsHistoryMockReadiness, "monthly-horoscope-snapshot", "saved reports monthly snapshot");
+    assertIncludes(pages.returnJourneyCtaReadiness, "Readiness возвратных CTA", "return journey cta readiness title");
+    assertIncludes(pages.returnJourneyCtaReadiness, "Только CTA readiness", "return journey cta readiness classification");
+    assertIncludes(pages.returnJourneyCtaReadiness, "Нет изменения active CTA", "return journey no active cta change");
+    assertIncludes(pages.returnJourneyCtaReadiness, "Return CTA readiness ничего не отправляет", "return journey sends nothing");
+    assertIncludes(pages.returnJourneyCtaReadiness, "daily horoscope → Mini App", "return journey daily path");
+    assertIncludes(pages.returnJourneyCtaReadiness, "weekly horoscope → weekly module / Mini App", "return journey weekly path");
+    assertIncludes(pages.returnJourneyCtaReadiness, "monthly horoscope → monthly module / Mini App", "return journey monthly path");
+    assertIncludes(pages.returnJourneyCtaReadiness, "Telegram channel → Love Reading preview", "return journey telegram love path");
+    assertIncludes(pages.returnJourneyCtaReadiness, "guard denied → free preview fallback", "return journey guard denied fallback");
 
     assertIncludes(pages.realImplementationPath, "Real Implementation Path", "real implementation path page title");
     assertIncludes(pages.realImplementationPath, "Selected path", "real implementation selected path classification");
