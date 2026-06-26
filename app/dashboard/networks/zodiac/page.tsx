@@ -526,6 +526,13 @@ const platformSections = [
     tone: "emerald",
   },
   {
+    title: "Review визуала VIP / Natal / Numerology",
+    href: "/dashboard/networks/zodiac/vip-natal-numerology-visual-review",
+    icon: Sparkles,
+    caption: "Package 202 - review VIP/Natal/Numerology визуала без изменения live VIP, оплаты, Telegram API и БД.",
+    tone: "emerald",
+  },
+  {
     title: "Финальная полировка текстов",
     href: "/dashboard/networks/zodiac/product-copy-final-polish",
     icon: FileText,
