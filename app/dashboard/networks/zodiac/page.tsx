@@ -533,6 +533,13 @@ const platformSections = [
     tone: "emerald",
   },
   {
+    title: "Manual Smoke Test Matrix",
+    href: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
+    icon: ClipboardCheck,
+    caption: "Package 195 - manual QA matrix будущего запуска без Telegram API, отправки сообщений, оплаты, VIP и active CTA changes.",
+    tone: "emerald",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,

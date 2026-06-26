@@ -97,6 +97,7 @@ export default function AphroditeProductCopyFinalPolishPage() {
             <Link href="/dashboard/networks/zodiac/visual-ui-polish-plan" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Visual UI Polish Plan</Link>
             <Link href="/dashboard/networks/zodiac/miniapp-ux-simplification-review" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Mini App UX Review</Link>
             <Link href="/dashboard/networks/zodiac/support-refund-policy-readiness" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Support & Refund</Link>
+            <Link href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Manual Smoke Matrix</Link>
           </div>
         </div>
       </div>

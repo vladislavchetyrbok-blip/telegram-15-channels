@@ -69,6 +69,7 @@ const ROUTES = {
   miniappUxSimplificationReview: "/dashboard/networks/zodiac/miniapp-ux-simplification-review",
   visualUiPolishPlan: "/dashboard/networks/zodiac/visual-ui-polish-plan",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
+  manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   realImplementationPath: "/dashboard/networks/zodiac/real-implementation-path",
   telegramInitDataValidation: "/dashboard/networks/zodiac/telegram-initdata-validation",
   userProfileFoundation: "/dashboard/networks/zodiac/user-profile-foundation",
@@ -207,6 +208,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-ux-simplification-review"', "miniapp ux simplification review route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/visual-ui-polish-plan"', "visual ui polish plan route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
 
     assertIncludes(pages.analytics, "Аналитика Mini App", "analytics page heading");
     assertIncludes(pages.analytics, "First-users funnel", "first-users funnel block");
@@ -746,6 +748,15 @@ async function main() {
     assertIncludes(pages.productCopyFinalPolish, "no manipulative fear copy", "product copy no fear");
     assertIncludes(pages.productCopyFinalPolish, "no medical/legal/financial advice", "product copy no advice");
     assertIncludes(pages.productCopyFinalPolish, "short mobile-readable text", "product copy mobile readable");
+    assertIncludes(pages.manualLaunchSmokeTestMatrix, "Manual Smoke Test Matrix запуска", "manual smoke title");
+    assertIncludes(pages.manualLaunchSmokeTestMatrix, "Только manual QA", "manual smoke classification");
+    assertIncludes(pages.manualLaunchSmokeTestMatrix, "Manual smoke matrix ничего не запускает", "manual smoke launches nothing");
+    assertIncludes(pages.manualLaunchSmokeTestMatrix, "iPhone Telegram Mini App", "manual smoke iphone");
+    assertIncludes(pages.manualLaunchSmokeTestMatrix, "Android Telegram Mini App", "manual smoke android");
+    assertIncludes(pages.manualLaunchSmokeTestMatrix, "/miniapp/love-reading-preview", "manual smoke love preview");
+    assertIncludes(pages.manualLaunchSmokeTestMatrix, "analytics noop", "manual smoke analytics noop");
+    assertIncludes(pages.manualLaunchSmokeTestMatrix, "guard denied flow", "manual smoke guard denied");
+    assertIncludes(pages.manualLaunchSmokeTestMatrix, "production safety blocked state", "manual smoke production safety blocked");
 
     assertIncludes(pages.realImplementationPath, "Real Implementation Path", "real implementation path page title");
     assertIncludes(pages.realImplementationPath, "Selected path", "real implementation selected path classification");
