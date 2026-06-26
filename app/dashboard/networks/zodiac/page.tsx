@@ -533,6 +533,13 @@ const platformSections = [
     tone: "emerald",
   },
   {
+    title: "Визуальные карточки гороскопов",
+    href: "/dashboard/networks/zodiac/horoscope-visual-cards",
+    icon: CalendarClock,
+    caption: "Package 203 - reusable daily/weekly/monthly UI cards без изменения публикаций, ledger, cron и Telegram API.",
+    tone: "emerald",
+  },
+  {
     title: "Финальная полировка текстов",
     href: "/dashboard/networks/zodiac/product-copy-final-polish",
     icon: FileText,

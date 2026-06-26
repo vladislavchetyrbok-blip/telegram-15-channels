@@ -69,6 +69,7 @@ const ROUTES = {
   miniappUxSimplificationReview: "/dashboard/networks/zodiac/miniapp-ux-simplification-review",
   visualUiPolishPlan: "/dashboard/networks/zodiac/visual-ui-polish-plan",
   vipNatalNumerologyVisualReview: "/dashboard/networks/zodiac/vip-natal-numerology-visual-review",
+  horoscopeVisualCards: "/dashboard/networks/zodiac/horoscope-visual-cards",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -211,6 +212,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-ux-simplification-review"', "miniapp ux simplification review route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/visual-ui-polish-plan"', "visual ui polish plan route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/vip-natal-numerology-visual-review"', "vip natal numerology visual review route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/horoscope-visual-cards"', "horoscope visual cards route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");
@@ -755,6 +757,13 @@ async function main() {
     assertIncludes(pages.vipNatalNumerologyVisualReview, "VIP numerology visual structure", "vip numerology visual review area");
     assertIncludes(pages.vipNatalNumerologyVisualReview, "VIP couple calendar visual structure", "vip couple calendar visual review area");
     assertIncludes(pages.vipNatalNumerologyVisualReview, "free preview fallback", "vip free preview fallback review area");
+    assertIncludes(pages.horoscopeVisualCards, "Визуальные карточки гороскопов", "horoscope visual cards title");
+    assertIncludes(pages.horoscopeVisualCards, "Только UI cards", "horoscope visual cards classification");
+    assertIncludes(pages.horoscopeVisualCards, "Horoscope cards не публикуют посты", "horoscope visual cards safety label");
+    assertIncludes(pages.horoscopeVisualCards, "Daily horoscope card", "daily horoscope visual card");
+    assertIncludes(pages.horoscopeVisualCards, "Weekly horoscope card", "weekly horoscope visual card");
+    assertIncludes(pages.horoscopeVisualCards, "Monthly horoscope card", "monthly horoscope visual card");
+    assertIncludes(pages.horoscopeVisualCards, "CTA/fallback area", "horoscope cta fallback area");
     assertIncludes(pages.productCopyFinalPolish, "Финальная полировка текстов Aphrodite", "product copy polish title");
     assertIncludes(pages.productCopyFinalPolish, "Только copy polish", "product copy polish classification");
     assertIncludes(pages.productCopyFinalPolish, "Copy polish не включает оплату", "product copy polish no payment");
