@@ -687,6 +687,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Production Env Handoff Checklist",
+    href: "/dashboard/networks/zodiac/production-env-handoff-checklist",
+    icon: Settings,
+    caption: "Package 221 - manual production env and secret hygiene checklist without storing secrets, reading env values, or calling production services.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

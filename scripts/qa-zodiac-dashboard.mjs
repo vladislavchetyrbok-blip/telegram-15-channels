@@ -80,6 +80,7 @@ const ROUTES = {
   publicLaunchDryRunMatrix: "/dashboard/networks/zodiac/public-launch-dry-run-matrix",
   finalContentCtaInventoryAudit: "/dashboard/networks/zodiac/final-content-cta-inventory-audit",
   backupRestoreRehearsalReadiness: "/dashboard/networks/zodiac/backup-restore-rehearsal-readiness",
+  productionEnvHandoffChecklist: "/dashboard/networks/zodiac/production-env-handoff-checklist",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -233,6 +234,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/public-launch-dry-run-matrix"', "public launch dry-run matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/final-content-cta-inventory-audit"', "final content cta inventory audit route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/backup-restore-rehearsal-readiness"', "backup restore rehearsal readiness route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/production-env-handoff-checklist"', "production env handoff checklist route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");
@@ -1040,6 +1042,34 @@ async function main() {
     assertIncludes(pages.backupRestoreRehearsalReadiness, "MANUAL REQUIRED", "backup restore manual required status");
     assertIncludes(pages.backupRestoreRehearsalReadiness, "NOT VERIFIED", "backup restore not verified status");
     assertIncludes(pages.backupRestoreRehearsalReadiness, "OWNER REVIEW REQUIRED", "backup restore owner review required status");
+    assertIncludes(pages.productionEnvHandoffChecklist, "Production Env Handoff Checklist", "production env handoff checklist title");
+    assertIncludes(pages.productionEnvHandoffChecklist, "No secrets were added.", "no secrets added wording");
+    assertIncludes(pages.productionEnvHandoffChecklist, "No real env values are stored here.", "no real env values stored wording");
+    assertIncludes(pages.productionEnvHandoffChecklist, "No production DB connection was made.", "no production db connection wording");
+    assertIncludes(pages.productionEnvHandoffChecklist, "No Telegram API call was made.", "no telegram api call wording");
+    assertIncludes(pages.productionEnvHandoffChecklist, "DATABASE_URL", "production env database url item");
+    assertIncludes(pages.productionEnvHandoffChecklist, "TELEGRAM_BOT_TOKEN", "production env telegram bot token item");
+    assertIncludes(pages.productionEnvHandoffChecklist, "COMPATIBILITY_MINI_APP_URL", "production env mini app url item");
+    assertIncludes(pages.productionEnvHandoffChecklist, "NEXT_PUBLIC_APP_URL", "production env public app url item");
+    assertIncludes(pages.productionEnvHandoffChecklist, "Backup location/freshness marker", "production env backup marker item");
+    assertIncludes(pages.productionEnvHandoffChecklist, "Launch mode/freeze flag", "production env launch mode item");
+    assertIncludes(pages.productionEnvHandoffChecklist, "Owner approval flag/status", "production env owner approval item");
+    assertIncludes(pages.productionEnvHandoffChecklist, "CONFIGURED", "production env configured status");
+    assertIncludes(pages.productionEnvHandoffChecklist, "MISSING", "production env missing status");
+    assertIncludes(pages.productionEnvHandoffChecklist, "MANUAL REQUIRED", "production env manual required status");
+    assertIncludes(pages.productionEnvHandoffChecklist, "NOT CHECKED", "production env not checked status");
+    assertIncludes(pages.productionEnvHandoffChecklist, "secret hygiene", "production env secret hygiene section");
+    assertIncludes(pages.productionEnvHandoffChecklist, "never commit .env production secrets.", "secret hygiene never commit rule");
+    assertIncludes(pages.productionEnvHandoffChecklist, "never paste secrets into chat reports.", "secret hygiene no chat reports rule");
+    assertIncludes(pages.productionEnvHandoffChecklist, "never print secrets in logs.", "secret hygiene no logs rule");
+    assertIncludes(pages.productionEnvHandoffChecklist, "use masked display only.", "secret hygiene masked display rule");
+    assertIncludes(pages.productionEnvHandoffChecklist, "rotate token if leaked.", "secret hygiene rotate token rule");
+    assertIncludes(pages.productionEnvHandoffChecklist, "verify BotFather manually but do not change automatically.", "secret hygiene botfather manual rule");
+    assertIncludes(pages.productionEnvHandoffChecklist, "owner manual review and safety confirmation", "production env owner manual review section");
+    assertIncludes(pages.productionEnvHandoffChecklist, "secretsAdded", "production env secrets added flag");
+    assertIncludes(pages.productionEnvHandoffChecklist, "realEnvValuesStored", "production env real values flag");
+    assertIncludes(pages.productionEnvHandoffChecklist, "productionDbConnectionMade", "production env db connection flag");
+    assertIncludes(pages.productionEnvHandoffChecklist, "telegramApiCallMade", "production env telegram api flag");
     assertIncludes(pages.productCopyFinalPolish, "Финальная полировка текстов Aphrodite", "product copy polish title");
     assertIncludes(pages.productCopyFinalPolish, "Только copy polish", "product copy polish classification");
     assertIncludes(pages.productCopyFinalPolish, "Copy polish не включает оплату", "product copy polish no payment");
