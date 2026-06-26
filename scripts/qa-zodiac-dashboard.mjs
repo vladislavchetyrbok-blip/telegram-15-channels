@@ -415,18 +415,21 @@ async function main() {
     assertIncludes(pages.affirmations, "Static Mock (Package 105)", "affirmations mock notice");
     assertIncludes(pages.affirmations, "Your Daily Affirmation", "affirmations subtitle");
 
-    assertIncludes(pages.miniappHub, "Mini App Hub", "miniapp hub page title");
-    assertIncludes(pages.miniappHub, "Static Hub (Package 106)", "miniapp hub mock notice");
-    assertIncludes(pages.miniappHub, "Aphrodite", "miniapp Aphrodite positioning");
-    assertIncludes(pages.miniappHub, "AI Love Reading", "miniapp AI Love Reading hero");
+    assertIncludes(pages.miniappHub, "AI Love Reading", "miniapp simplified page title");
+    assertIncludes(pages.miniappHub, "Открыть бесплатный Love Reading preview", "miniapp primary love reading CTA");
+    assertIncludes(pages.miniappHub, "Совместимость", "miniapp compatibility secondary module");
+    assertIncludes(pages.miniappHub, "Матрица судьбы", "miniapp birth matrix secondary module");
+    assertIncludes(pages.miniappHub, "Гороскоп на день", "miniapp daily secondary module");
+    assertIncludes(pages.miniappHub, "Гороскоп на неделю", "miniapp weekly secondary module");
+    assertIncludes(pages.miniappHub, "Гороскоп на месяц", "miniapp monthly secondary module");
     assertIncludes(pages.miniappHub, "Узнай, что между вами происходит", "miniapp Russian love reading promise");
-    assertIncludes(pages.miniappHub, "No payment", "miniapp hub safety: no payment");
-    assertIncludes(pages.miniappHub, "No database", "miniapp hub safety: no database");
-    assertIncludes(pages.miniappHub, "No Telegram API", "miniapp hub safety: no telegram API");
+    assertIncludes(pages.miniappHub, "Без оплаты", "miniapp hub safety: no payment");
+    assertIncludes(pages.miniappHub, "Без записи в базу данных", "miniapp hub safety: no database write");
+    assertIncludes(pages.miniappHub, "Без Telegram API", "miniapp hub safety: no telegram API");
     assertIncludes(pages.miniappHub, "birth-matrix", "miniapp hub contains birth matrix link");
     assertIncludes(pages.miniappHub, "mystic-numbers", "miniapp hub contains mystic numbers link");
     assertIncludes(pages.miniappHub, "affirmations", "miniapp hub contains affirmations link");
-    assertIncludes(pages.miniappHub, "vip-preview", "miniapp hub contains vip preview link");
+    assertIncludes(pages.miniappHub, "vip-compatibility-report", "miniapp hub contains locked vip preview link");
 
     assertIncludes(pages.birthMatrix, "No payment", "birth matrix safety: no payment");
     assertIncludes(pages.birthMatrix, "No database", "birth matrix safety: no database");
