@@ -50,6 +50,7 @@ const ROUTES = {
   telegramStarsInvoiceBuilderSkeleton: "/dashboard/networks/zodiac/telegram-stars-invoice-builder-skeleton",
   telegramStarsPreCheckoutSkeleton: "/dashboard/networks/zodiac/telegram-stars-precheckout-skeleton",
   telegramStarsSuccessfulPaymentSkeleton: "/dashboard/networks/zodiac/telegram-stars-successful-payment-skeleton",
+  paymentLedgerMockIntegration: "/dashboard/networks/zodiac/payment-ledger-mock-integration",
   realImplementationPath: "/dashboard/networks/zodiac/real-implementation-path",
   telegramInitDataValidation: "/dashboard/networks/zodiac/telegram-initdata-validation",
   userProfileFoundation: "/dashboard/networks/zodiac/user-profile-foundation",
@@ -169,6 +170,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/telegram-stars-invoice-builder-skeleton"', "telegram stars invoice builder skeleton route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/telegram-stars-precheckout-skeleton"', "telegram stars pre-checkout skeleton route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/telegram-stars-successful-payment-skeleton"', "telegram stars successful payment skeleton route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/payment-ledger-mock-integration"', "payment ledger mock integration route link");
 
     assertIncludes(pages.analytics, "Аналитика Mini App", "analytics page heading");
     assertIncludes(pages.analytics, "First-users funnel", "first-users funnel block");
@@ -511,6 +513,14 @@ async function main() {
     assertIncludes(pages.telegramStarsSuccessfulPaymentSkeleton, "Нет entitlement creation", "successful payment entitlement boundary");
     assertIncludes(pages.telegramStarsSuccessfulPaymentSkeleton, "Нет вызова Telegram API", "successful payment telegram api boundary");
     assertIncludes(pages.telegramStarsSuccessfulPaymentSkeleton, "successful_payment skeleton не выдаёт доступ", "successful payment grants no access");
+    assertIncludes(pages.paymentLedgerMockIntegration, "Mock-интеграция payment ledger", "payment ledger mock integration title");
+    assertIncludes(pages.paymentLedgerMockIntegration, "Только mock", "payment ledger mock integration classification");
+    assertIncludes(pages.paymentLedgerMockIntegration, "Ledger не сохраняется", "payment ledger mock persistence boundary");
+    assertIncludes(pages.paymentLedgerMockIntegration, "Нет payment ledger write", "payment ledger mock write boundary");
+    assertIncludes(pages.paymentLedgerMockIntegration, "Нет entitlement creation", "payment ledger mock entitlement boundary");
+    assertIncludes(pages.paymentLedgerMockIntegration, "Нет реальной VIP-разблокировки", "payment ledger mock vip boundary");
+    assertIncludes(pages.paymentLedgerMockIntegration, "Нет вызова Telegram API", "payment ledger mock telegram api boundary");
+    assertIncludes(pages.paymentLedgerMockIntegration, "Mock ledger ничего не сохраняет", "payment ledger mock saves nothing");
 
     assertIncludes(pages.realImplementationPath, "Real Implementation Path", "real implementation path page title");
     assertIncludes(pages.realImplementationPath, "Selected path", "real implementation selected path classification");

@@ -397,6 +397,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Mock payment ledger",
+    href: "/dashboard/networks/zodiac/payment-ledger-mock-integration",
+    icon: ShieldCheck,
+    caption: "Package 173 - локальная mock-интеграция payment ledger без persistence, entitlement и VIP unlock.",
+    tone: "cyan",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,
