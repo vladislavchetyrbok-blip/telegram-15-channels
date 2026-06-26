@@ -390,6 +390,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Skeleton successful_payment",
+    href: "/dashboard/networks/zodiac/telegram-stars-successful-payment-skeleton",
+    icon: ShieldCheck,
+    caption: "Package 172 - локальный successful_payment inspection без handler, ledger write и VIP-доступа.",
+    tone: "cyan",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,
