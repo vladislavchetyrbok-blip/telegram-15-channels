@@ -666,6 +666,13 @@ const platformSections = [
     tone: "violet",
   },
   {
+    title: "Public Launch Dry-Run Matrix",
+    href: "/dashboard/networks/zodiac/public-launch-dry-run-matrix",
+    icon: ClipboardCheck,
+    caption: "Package 218 - safe public launch dry-run matrix: simulated launch steps, blockers, owner actions and safety notes without production side effects.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

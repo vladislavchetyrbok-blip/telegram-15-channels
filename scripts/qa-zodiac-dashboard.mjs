@@ -77,6 +77,7 @@ const ROUTES = {
   liveVersionCacheMarkerReadiness: "/dashboard/networks/zodiac/live-version-cache-marker-readiness",
   visualIssueTriageBoard: "/dashboard/networks/zodiac/visual-issue-triage-board",
   publicLaunchGoNoGoReview: "/dashboard/networks/zodiac/public-launch-go-no-go-review",
+  publicLaunchDryRunMatrix: "/dashboard/networks/zodiac/public-launch-dry-run-matrix",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -227,6 +228,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/live-version-cache-marker-readiness"', "live version cache marker readiness route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/visual-issue-triage-board"', "visual issue triage board route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/public-launch-go-no-go-review"', "public launch go no-go review route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/public-launch-dry-run-matrix"', "public launch dry-run matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");
@@ -950,6 +952,36 @@ async function main() {
     assertIncludes(pages.publicLaunchGoNoGoReview, "no cron/publish workflow changes", "freeze no cron publish changes");
     assertIncludes(pages.publicLaunchGoNoGoReview, "manual real-device QA", "remaining manual real device qa blocker");
     assertIncludes(pages.publicLaunchGoNoGoReview, "owner approval", "remaining owner approval blocker");
+    assertIncludes(pages.publicLaunchDryRunMatrix, "Public Launch Dry-Run Matrix", "public launch dry-run matrix title");
+    assertIncludes(pages.publicLaunchDryRunMatrix, "Dry-run only. No production launch was performed.", "dry-run only notice");
+    assertIncludes(pages.publicLaunchDryRunMatrix, "No Telegram messages were sent.", "no telegram messages notice");
+    assertIncludes(pages.publicLaunchDryRunMatrix, "No Telegram API calls were made.", "no telegram api calls notice");
+    assertIncludes(pages.publicLaunchDryRunMatrix, "Owner approval is still required.", "owner approval still required notice");
+    assertIncludes(pages.publicLaunchDryRunMatrix, "publicLaunchApproved", "dry-run public launch approved metric");
+    assertIncludes(pages.publicLaunchDryRunMatrix, "ownerManualReviewRequired", "dry-run owner review metric");
+    assertIncludes(pages.publicLaunchDryRunMatrix, "Production env readiness", "dry-run production env section");
+    assertIncludes(pages.publicLaunchDryRunMatrix, "DATABASE_URL readiness", "dry-run database url section");
+    assertIncludes(pages.publicLaunchDryRunMatrix, "TELEGRAM_BOT_TOKEN readiness", "dry-run telegram bot token section");
+    assertIncludes(pages.publicLaunchDryRunMatrix, "Backup freshness readiness", "dry-run backup freshness section");
+    assertIncludes(pages.publicLaunchDryRunMatrix, "Real-device visual QA", "dry-run real device visual qa section");
+    assertIncludes(pages.publicLaunchDryRunMatrix, "Telegram WebView/startapp QA", "dry-run telegram webview section");
+    assertIncludes(pages.publicLaunchDryRunMatrix, "Live version/cache marker", "dry-run live version marker section");
+    assertIncludes(pages.publicLaunchDryRunMatrix, "Content/CTA inventory", "dry-run content cta inventory section");
+    assertIncludes(pages.publicLaunchDryRunMatrix, "Public launch freeze", "dry-run public launch freeze section");
+    assertIncludes(pages.publicLaunchDryRunMatrix, "Owner manual approval", "dry-run owner approval section");
+    assertIncludes(pages.publicLaunchDryRunMatrix, "Rollback readiness", "dry-run rollback readiness section");
+    assertIncludes(pages.publicLaunchDryRunMatrix, "PASS", "dry-run pass status");
+    assertIncludes(pages.publicLaunchDryRunMatrix, "BLOCKED", "dry-run blocked status");
+    assertIncludes(pages.publicLaunchDryRunMatrix, "MANUAL", "dry-run manual status");
+    assertIncludes(pages.publicLaunchDryRunMatrix, "NOT RUN", "dry-run not run status");
+    assertIncludes(pages.publicLaunchDryRunMatrix, "OWNER REQUIRED", "dry-run owner required status");
+    assertIncludes(pages.publicLaunchDryRunMatrix, "productionLaunchDone", "dry-run production launch safety flag");
+    assertIncludes(pages.publicLaunchDryRunMatrix, "telegramApiUsed", "dry-run telegram api safety flag");
+    assertIncludes(pages.publicLaunchDryRunMatrix, "messagesSent", "dry-run messages safety flag");
+    assertIncludes(pages.publicLaunchDryRunMatrix, "databaseWriteAdded", "dry-run db write safety flag");
+    assertIncludes(pages.publicLaunchDryRunMatrix, "paymentAdded", "dry-run payment safety flag");
+    assertIncludes(pages.publicLaunchDryRunMatrix, "vipUnlockAdded", "dry-run vip safety flag");
+    assertIncludes(pages.publicLaunchDryRunMatrix, "workflowChanged", "dry-run workflow safety flag");
     assertIncludes(pages.productCopyFinalPolish, "Финальная полировка текстов Aphrodite", "product copy polish title");
     assertIncludes(pages.productCopyFinalPolish, "Только copy polish", "product copy polish classification");
     assertIncludes(pages.productCopyFinalPolish, "Copy polish не включает оплату", "product copy polish no payment");
