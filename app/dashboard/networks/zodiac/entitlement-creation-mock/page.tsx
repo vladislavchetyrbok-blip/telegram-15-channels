@@ -137,7 +137,7 @@ export default function AphroditeEntitlementCreationMockPage() {
               ))}
             </ul>
             <p className="mt-4 text-xs leading-5 text-slate-500">
-              Package 175 не начинается автоматически. Для него нужно отдельное подтверждение.
+              Package 175 оформлен как отдельный safety gate. Package 176 не начинается автоматически.
             </p>
           </div>
         </section>
@@ -146,6 +146,7 @@ export default function AphroditeEntitlementCreationMockPage() {
           <div className="mb-2 text-sm text-slate-400">Связанные разделы</div>
           <div className="flex flex-wrap gap-3 text-sm">
             <Link href="/dashboard/networks/zodiac" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Zodiac Network</Link>
+            <Link href="/dashboard/networks/zodiac/production-payment-safety-gate" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Production Safety Gate</Link>
             <Link href="/dashboard/networks/zodiac/payment-ledger-mock-integration" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Mock payment ledger</Link>
             <Link href="/dashboard/networks/zodiac/entitlement-storage-design" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Дизайн entitlement storage</Link>
             <Link href="/dashboard/networks/zodiac/entitlement-schema-skeleton" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Skeleton схемы entitlement</Link>

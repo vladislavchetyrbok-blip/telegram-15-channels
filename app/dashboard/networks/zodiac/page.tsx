@@ -411,6 +411,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Production Safety Gate",
+    href: "/dashboard/networks/zodiac/production-payment-safety-gate",
+    icon: ShieldCheck,
+    caption: "Package 175 - fail-closed gate для будущей оплаты, Telegram Stars, ledger, entitlement и VIP unlock.",
+    tone: "cyan",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,

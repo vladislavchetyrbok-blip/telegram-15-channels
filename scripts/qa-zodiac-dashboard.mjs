@@ -52,6 +52,7 @@ const ROUTES = {
   telegramStarsSuccessfulPaymentSkeleton: "/dashboard/networks/zodiac/telegram-stars-successful-payment-skeleton",
   paymentLedgerMockIntegration: "/dashboard/networks/zodiac/payment-ledger-mock-integration",
   entitlementCreationMock: "/dashboard/networks/zodiac/entitlement-creation-mock",
+  productionPaymentSafetyGate: "/dashboard/networks/zodiac/production-payment-safety-gate",
   realImplementationPath: "/dashboard/networks/zodiac/real-implementation-path",
   telegramInitDataValidation: "/dashboard/networks/zodiac/telegram-initdata-validation",
   userProfileFoundation: "/dashboard/networks/zodiac/user-profile-foundation",
@@ -173,6 +174,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/telegram-stars-successful-payment-skeleton"', "telegram stars successful payment skeleton route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/payment-ledger-mock-integration"', "payment ledger mock integration route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/entitlement-creation-mock"', "entitlement creation mock route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/production-payment-safety-gate"', "production payment safety gate route link");
 
     assertIncludes(pages.analytics, "Аналитика Mini App", "analytics page heading");
     assertIncludes(pages.analytics, "First-users funnel", "first-users funnel block");
@@ -532,6 +534,22 @@ async function main() {
     assertIncludes(pages.entitlementCreationMock, "Нет миграции схемы базы данных", "entitlement creation schema boundary");
     assertIncludes(pages.entitlementCreationMock, "Нет вызова Telegram API", "entitlement creation telegram api boundary");
     assertIncludes(pages.entitlementCreationMock, "Entitlement mock не выдаёт доступ", "entitlement mock grants no access");
+    assertIncludes(pages.productionPaymentSafetyGate, "Production Safety Gate для оплаты", "production payment safety gate title");
+    assertIncludes(pages.productionPaymentSafetyGate, "Fail-closed safety gate", "production payment safety gate classification");
+    assertIncludes(pages.productionPaymentSafetyGate, "Оплата не разрешена", "payment not allowed boundary");
+    assertIncludes(pages.productionPaymentSafetyGate, "VIP не открывается", "vip not unlocked boundary");
+    assertIncludes(pages.productionPaymentSafetyGate, "Нет реальной оплаты", "payment boundary");
+    assertIncludes(pages.productionPaymentSafetyGate, "Нет Telegram Stars invoice", "stars invoice boundary");
+    assertIncludes(pages.productionPaymentSafetyGate, "Нет sendInvoice", "sendInvoice boundary");
+    assertIncludes(pages.productionPaymentSafetyGate, "Нет createInvoiceLink", "createInvoiceLink boundary");
+    assertIncludes(pages.productionPaymentSafetyGate, "Нет pre_checkout_query handler", "pre-checkout boundary");
+    assertIncludes(pages.productionPaymentSafetyGate, "Нет successful_payment handler", "successful payment boundary");
+    assertIncludes(pages.productionPaymentSafetyGate, "Нет payment ledger write", "ledger write boundary");
+    assertIncludes(pages.productionPaymentSafetyGate, "Нет entitlement creation", "entitlement boundary");
+    assertIncludes(pages.productionPaymentSafetyGate, "Нет вызова Telegram API", "telegram api boundary");
+    assertIncludes(pages.productionPaymentSafetyGate, "Production payment safety gate всегда закрыт", "fail closed boundary");
+    assertIncludes(pages.productionPaymentSafetyGate, "productionPaymentAllowedNow=false", "payment denied result");
+    assertIncludes(pages.productionPaymentSafetyGate, "vipUnlockAllowedNow=false", "vip denied result");
 
     assertIncludes(pages.realImplementationPath, "Real Implementation Path", "real implementation path page title");
     assertIncludes(pages.realImplementationPath, "Selected path", "real implementation selected path classification");
