@@ -462,6 +462,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Privacy Safety Suite",
+    href: "/dashboard/networks/zodiac/analytics-privacy-safety-suite",
+    icon: ShieldCheck,
+    caption: "Package 185 - QA безопасности analytics payload, noop bus, mock dashboard и CTA attribution без tracking и DB write.",
+    tone: "emerald",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,

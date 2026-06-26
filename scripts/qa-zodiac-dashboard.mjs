@@ -59,6 +59,7 @@ const ROUTES = {
   miniappAnalyticsNoopEventBus: "/dashboard/networks/zodiac/miniapp-analytics-noop-event-bus",
   analyticsFunnelMockDashboard: "/dashboard/networks/zodiac/analytics-funnel-mock-dashboard",
   telegramCtaAttributionReadiness: "/dashboard/networks/zodiac/telegram-cta-attribution-readiness",
+  analyticsPrivacySafetySuite: "/dashboard/networks/zodiac/analytics-privacy-safety-suite",
   realImplementationPath: "/dashboard/networks/zodiac/real-implementation-path",
   telegramInitDataValidation: "/dashboard/networks/zodiac/telegram-initdata-validation",
   userProfileFoundation: "/dashboard/networks/zodiac/user-profile-foundation",
@@ -187,6 +188,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-analytics-noop-event-bus"', "miniapp analytics noop event bus route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/analytics-funnel-mock-dashboard"', "analytics funnel mock dashboard route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/telegram-cta-attribution-readiness"', "telegram cta attribution readiness route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/analytics-privacy-safety-suite"', "analytics privacy safety suite route link");
 
     assertIncludes(pages.analytics, "Аналитика Mini App", "analytics page heading");
     assertIncludes(pages.analytics, "First-users funnel", "first-users funnel block");
@@ -632,6 +634,16 @@ async function main() {
     assertIncludes(pages.telegramCtaAttributionReadiness, "tg_monthly_2026_07_general", "telegram cta attribution monthly source");
     assertIncludes(pages.telegramCtaAttributionReadiness, "source channel", "telegram cta attribution source channel dimension");
     assertIncludes(pages.telegramCtaAttributionReadiness, "startapp param draft", "telegram cta attribution startapp draft dimension");
+    assertIncludes(pages.analyticsPrivacySafetySuite, "Privacy Safety Suite для аналитики", "analytics privacy safety suite title");
+    assertIncludes(pages.analyticsPrivacySafetySuite, "Только QA безопасности", "analytics privacy safety suite classification");
+    assertIncludes(pages.analyticsPrivacySafetySuite, "Нет внешней аналитики", "analytics privacy safety no external analytics");
+    assertIncludes(pages.analyticsPrivacySafetySuite, "Нет чтения базы данных", "analytics privacy safety no db read");
+    assertIncludes(pages.analyticsPrivacySafetySuite, "Privacy safety suite ничего не отправляет", "analytics privacy safety sends nothing");
+    assertIncludes(pages.analyticsPrivacySafetySuite, "Raw names analytics: запрещены", "analytics privacy safety no raw names");
+    assertIncludes(pages.analyticsPrivacySafetySuite, "Raw birth dates analytics: запрещены", "analytics privacy safety no raw birth dates");
+    assertIncludes(pages.analyticsPrivacySafetySuite, "Payment payload analytics: запрещены", "analytics privacy safety no payment payloads");
+    assertIncludes(pages.analyticsPrivacySafetySuite, "Private Telegram messages analytics: запрещены", "analytics privacy safety no private messages");
+    assertIncludes(pages.analyticsPrivacySafetySuite, "Full report text analytics: запрещён", "analytics privacy safety no report text");
 
     assertIncludes(pages.realImplementationPath, "Real Implementation Path", "real implementation path page title");
     assertIncludes(pages.realImplementationPath, "Selected path", "real implementation selected path classification");
