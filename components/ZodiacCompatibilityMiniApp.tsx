@@ -13,6 +13,7 @@ import { shareZodiacMiniAppContent } from "@/lib/zodiac-mini-app-share";
 import { trackZodiacMiniAppEvent } from "@/lib/zodiac-mini-app-analytics-client";
 import { zodiacAnalyticsScoreTier, zodiacAnalyticsStartappType, type ZodiacAnalyticsEventName, type ZodiacAnalyticsPayload } from "@/lib/zodiac-mini-app-analytics-shared";
 import { buildPersonalizedCoupleCalendar } from "@/lib/zodiac-couple-calendar-personalization";
+import { buildZodiacCompatibilityPersonalizedCopy } from "@/lib/zodiac-compatibility-copy-personalization";
 import { ArrowLeft, ArrowRight, Bookmark, CalendarDays, Check, Copy, Crown, Gift, MapPin, Share2, ShieldCheck, Sparkles, Star } from "lucide-react";
 import Link from "next/link";
 import {
@@ -3625,6 +3626,17 @@ function buildCompatibilityResult(mode: Mode, relationshipMode: RelationshipMode
     love: clampScore(total + relationshipScoreNudge(relationshipMode, "love") + variance(seed, 3, 21) - 10 + (nameResonance?.loveShift ?? 0)),
     household: clampScore(total + relationshipScoreNudge(relationshipMode, "household") + variance(seed, 4, 17) - 8),
   };
+  const personalizedCopy = buildZodiacCompatibilityPersonalizedCopy({
+    firstName: self.name,
+    secondName: partner.name,
+    firstBirthDate: selfDate.ok ? selfDate.iso : self.birthDate,
+    secondBirthDate: partnerDate.ok ? partnerDate.iso : partner.birthDate,
+    firstSign: selfSign.slug,
+    secondSign: partnerSign.slug,
+    relationshipMode,
+    scoreProfile: scores,
+  });
+  const primaryBoundary = personalizedCopy.boundaries[0] ?? personalizedCopy.nextStep;
   const mapScores = buildRelationshipMapScores(scores, seed, relationshipMode);
   const mentalMapSummary = buildMentalMapSummary(mapScores, scores, seed);
   const mentalMapDynamics = buildMentalMapDynamics(mapScores, scores, seed);
@@ -3642,10 +3654,10 @@ function buildCompatibilityResult(mode: Mode, relationshipMode: RelationshipMode
     connectionLevel: buildConnectionLevel(total, relationshipMode),
     overviewText: buildCompatibilityOverview(selfSign, partnerSign, relationshipMode, total, seed),
     emotionalDynamicsText: buildEmotionalDynamicsText(scores, relationshipMode, seed),
-    communicationPlanText: buildCommunicationPlanText(scores.communication, relationshipMode, seed),
-    conflictPointsText: buildConflictPointsText(scores, relationshipMode, seed),
-    bestContactFormat: buildBestContactFormat(scores, relationshipMode, seed),
-    coupleAdvice: buildCoupleAdviceText(scores, relationshipMode, seed),
+    communicationPlanText: personalizedCopy.communicationInsight,
+    conflictPointsText: personalizedCopy.riskIntro,
+    bestContactFormat: personalizedCopy.emotionalFocus,
+    coupleAdvice: personalizedCopy.nextStep,
     note: preciseKnown ? exactBirthDataNote : unknownPreciseTime ? unknownBirthTimeNote : null,
     validationMessages,
     scores,
@@ -3653,8 +3665,8 @@ function buildCompatibilityResult(mode: Mode, relationshipMode: RelationshipMode
     communicationText: buildScoreText("communication", scores.communication, seed),
     loveText: buildScoreText("love", scores.love, seed),
     householdText: buildScoreText("household", scores.household, seed),
-    weakSpotText: buildRiskText(total, seed),
-    adviceText: nameResonance ? `${buildAdviceText(total, relationshipMode, seed)}. ${nameResonance.adviceText}` : buildAdviceText(total, relationshipMode, seed),
+    weakSpotText: personalizedCopy.riskLines[0] ?? buildRiskText(total, seed),
+    adviceText: nameResonance ? `${primaryBoundary}. ${nameResonance.adviceText}` : primaryBoundary,
     conclusionText: buildConclusion(total, mode, relationshipMode),
     nameResonance,
     mapScores,
@@ -3662,7 +3674,8 @@ function buildCompatibilityResult(mode: Mode, relationshipMode: RelationshipMode
     mentalMapSummary,
     mentalMapDynamics,
     strengthText: buildStrengthText(scores, seed),
-    riskText: buildRiskText(total, seed + 11),
+    riskText: personalizedCopy.riskLines[1] ?? personalizedCopy.riskIntro,
+    personalizedCopy,
   };
 }
 

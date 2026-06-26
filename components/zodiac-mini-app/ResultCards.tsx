@@ -132,23 +132,15 @@ export function ResultPanel({
         </ResultSectionCard>
 
         <ResultSectionCard id="relationship-risks" publicMode={publicMode} title="Риски" icon={<Sparkles className="h-5 w-5" />}>
-          <ResultText publicMode={publicMode} text={result.conflictPointsText} />
-          <ResultText publicMode={publicMode} text={result.weakSpotText} />
-          <ResultText publicMode={publicMode} text={result.riskText} />
-          <ResultBulletList
-            publicMode={publicMode}
-            items={[
-              "Не спорить на усталости: сначала пауза, потом одна конкретная тема.",
-              "Не проверять чувства молчанием: лучше назвать ожидание прямо и коротко.",
-              `Не превращать ${result.relationshipModeLabel.toLowerCase()} в экзамен: паре нужен следующий шаг, а не победитель разговора.`,
-            ]}
-          />
+          <ResultText publicMode={publicMode} text={result.personalizedCopy.riskIntro} />
+          <ResultBulletList publicMode={publicMode} items={result.personalizedCopy.riskLines} />
         </ResultSectionCard>
 
         <ResultSectionCard id="relationship-talk" publicMode={publicMode} title="Как общаться" icon={<MessageCircle className="h-5 w-5" />}>
           <ScoreBar publicMode={publicMode} label="💬 Общение" value={result.scores.communication} text={result.communicationText} />
-          <ResultText publicMode={publicMode} text={result.communicationPlanText} />
-          <ResultText publicMode={publicMode} text={result.bestContactFormat} />
+          <ResultText publicMode={publicMode} text={result.personalizedCopy.communicationInsight} />
+          <ResultBulletList publicMode={publicMode} items={result.personalizedCopy.communicationAdvice} />
+          <ResultText publicMode={publicMode} text={result.personalizedCopy.emotionalFocus} />
         </ResultSectionCard>
 
         <ResultSectionCard id="relationship-calendar" publicMode={publicMode} title="30 дней" icon={<CalendarDays className="h-5 w-5" />}>
@@ -160,8 +152,8 @@ export function ResultPanel({
         </ResultSectionCard>
 
         <ResultSectionCard id="relationship-action" publicMode={publicMode} title="Действие сегодня" icon={<Sparkles className="h-5 w-5" />}>
-          <ResultText publicMode={publicMode} text={result.adviceText} />
-          <ResultText publicMode={publicMode} text={`Следующий шаг: выберите один небольшой жест на сегодня и один разговор без подтекста. Для ${result.pairLabel} это полезнее, чем пытаться решить весь сценарий сразу.`} />
+          <ResultText publicMode={publicMode} text={result.personalizedCopy.nextStep} />
+          <ResultBulletList publicMode={publicMode} items={result.personalizedCopy.boundaries} />
         </ResultSectionCard>
       </div>
 

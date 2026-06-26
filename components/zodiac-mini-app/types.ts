@@ -1,3 +1,5 @@
+import type { ZodiacCompatibilityPersonalizedCopy } from "@/lib/zodiac-compatibility-copy-personalization";
+
 export type Mode = "fast" | "personal" | "precise";
 export type RelationshipMode = "love" | "friendship" | "work" | "family" | "passion" | "reconciliation";
 export type Gender = "male" | "female" | "unspecified";
@@ -172,6 +174,7 @@ export interface CompatibilityResult {
   mentalMapDynamics: MentalMapDynamic[];
   strengthText: string;
   riskText: string;
+  personalizedCopy: ZodiacCompatibilityPersonalizedCopy;
 }
 
 export interface DayEnergy {
