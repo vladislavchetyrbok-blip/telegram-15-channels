@@ -156,7 +156,7 @@ export function parseWeekCode(value) {
 }
 
 export function getWeeklyPublishKey(week, slug) {
-  return `${week}:${slug}`;
+  return `zodiac:weekly:${week}:${normalizeWeeklyLedgerSlug(slug)}`;
 }
 
 export function normalizeWeeklyStatus(status) {
@@ -202,7 +202,7 @@ export function validateWeeklyLedger(ledger = loadWeeklyLedger()) {
       continue;
     }
 
-    const logicalKey = `${entry.week ?? ""}:${entry.slug ?? ""}`;
+    const logicalKey = getWeeklyPublishKey(entry.week ?? "", entry.slug ?? "");
     if (logicalKey !== key) problems.push(`Entry key mismatch: ${key} contains ${logicalKey}.`);
     if (!parseWeekCode(entry.week).ok) problems.push(`Entry ${key} has invalid week.`);
     if (!ZODIAC_WEEKLY_CHANNELS.some((channel) => channel.slug === entry.slug)) problems.push(`Entry ${key} has invalid slug.`);
@@ -531,6 +531,10 @@ export function validateWeeklyPostQuality(post) {
 
 export function getWeeklyTelegramTargetEnv(slug) {
   return ZODIAC_WEEKLY_CHANNELS.find((channel) => channel.slug === slug)?.env ?? null;
+}
+
+function normalizeWeeklyLedgerSlug(slug) {
+  return slug === "zodiac-general" ? "general" : slug;
 }
 
 function loadChannelLinks() {
