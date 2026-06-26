@@ -80,6 +80,7 @@ const ROUTES = {
   paymentLedgerDesign: "/dashboard/networks/zodiac/payment-ledger-design",
   entitlementStorageDesign: "/dashboard/networks/zodiac/entitlement-storage-design",
   entitlementSchemaSkeleton: "/dashboard/networks/zodiac/entitlement-schema-skeleton",
+  serverEntitlementCheckSkeleton: "/dashboard/networks/zodiac/server-entitlement-check-skeleton",
   vipCompatibilityReport: "/vip-compatibility-report",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
@@ -773,6 +774,20 @@ async function main() {
     assertIncludes(pages.entitlementSchemaSkeleton, "Нет миграции схемы базы данных", "database schema boundary");
     assertIncludes(pages.entitlementSchemaSkeleton, "Нет вызова Telegram API", "telegram boundary");
     assertIncludes(pages.entitlementSchemaSkeleton, 'data-boundary="schema-skeleton-grants-no-access"', "schema skeleton no access data boundary");
+    assertIncludes(pages.serverEntitlementCheckSkeleton, "Skeleton server-side проверки entitlement", "server entitlement skeleton title");
+    assertIncludes(pages.serverEntitlementCheckSkeleton, "Server-side skeleton", "server entitlement skeleton classification");
+    assertIncludes(pages.serverEntitlementCheckSkeleton, "allowed=false", "server entitlement skeleton always denies");
+    assertIncludes(pages.serverEntitlementCheckSkeleton, "/miniapp/love-reading-preview", "server entitlement fallback route");
+    assertIncludes(pages.serverEntitlementCheckSkeleton, "Server check skeleton всегда возвращает allowed=false", "server entitlement no access boundary");
+    assertIncludes(pages.serverEntitlementCheckSkeleton, "Нет реальной VIP-разблокировки", "vip unlock boundary");
+    assertIncludes(pages.serverEntitlementCheckSkeleton, "Нет оплаты", "payment boundary");
+    assertIncludes(pages.serverEntitlementCheckSkeleton, "Нет Telegram Stars invoice", "stars invoice boundary");
+    assertIncludes(pages.serverEntitlementCheckSkeleton, "Нет successful_payment handler", "successful payment boundary");
+    assertIncludes(pages.serverEntitlementCheckSkeleton, "Нет entitlement creation", "entitlement creation boundary");
+    assertIncludes(pages.serverEntitlementCheckSkeleton, "Нет записи в базу данных", "database boundary");
+    assertIncludes(pages.serverEntitlementCheckSkeleton, "Нет миграции схемы базы данных", "database schema boundary");
+    assertIncludes(pages.serverEntitlementCheckSkeleton, "Нет вызова Telegram API", "telegram boundary");
+    assertIncludes(pages.serverEntitlementCheckSkeleton, 'data-boundary="server-check-always-denies"', "server entitlement deny data boundary");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");

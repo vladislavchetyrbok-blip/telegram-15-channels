@@ -348,6 +348,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Skeleton server-side entitlement",
+    href: "/dashboard/networks/zodiac/server-entitlement-check-skeleton",
+    icon: ShieldCheck,
+    caption: "Package 166 - fail-closed server-side check skeleton с allowed=false и fallback preview.",
+    tone: "cyan",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,
