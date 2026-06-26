@@ -547,6 +547,13 @@ const platformSections = [
     tone: "emerald",
   },
   {
+    title: "Design Tokens & UI Shell",
+    href: "/dashboard/networks/zodiac/design-tokens-ui-shell",
+    icon: Brush,
+    caption: "Package 197 - visual tokens и shell components для Mini App без отправки данных, оплаты, VIP, Telegram API и DB write.",
+    tone: "emerald",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,

@@ -71,6 +71,7 @@ const ROUTES = {
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
+  designTokensUiShell: "/dashboard/networks/zodiac/design-tokens-ui-shell",
   realImplementationPath: "/dashboard/networks/zodiac/real-implementation-path",
   telegramInitDataValidation: "/dashboard/networks/zodiac/telegram-initdata-validation",
   userProfileFoundation: "/dashboard/networks/zodiac/user-profile-foundation",
@@ -211,6 +212,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/design-tokens-ui-shell"', "design tokens ui shell route link");
 
     assertIncludes(pages.analytics, "Аналитика Mini App", "analytics page heading");
     assertIncludes(pages.analytics, "First-users funnel", "first-users funnel block");
@@ -763,6 +765,10 @@ async function main() {
     assertIncludes(pages.miniappSimplifiedRedesignImplementationPlan, "Только implementation plan", "miniapp simplified redesign plan classification");
     assertIncludes(pages.miniappSimplifiedRedesignImplementationPlan, "clear first CTA: AI Love Reading", "miniapp simplified redesign primary cta");
     assertIncludes(pages.miniappSimplifiedRedesignImplementationPlan, "Live UI не изменён", "miniapp simplified redesign live ui unchanged");
+    assertIncludes(pages.designTokensUiShell, "Design Tokens &amp; UI Shell Skeleton", "design tokens ui shell title");
+    assertIncludes(pages.designTokensUiShell, "UI shell ничего не отправляет", "design tokens ui shell safety label");
+    assertIncludes(pages.designTokensUiShell, "spacing scale", "design tokens spacing scale");
+    assertIncludes(pages.designTokensUiShell, "data-aphrodite-ui-shell=\"package-197\"", "design tokens shell marker");
 
     assertIncludes(pages.realImplementationPath, "Real Implementation Path", "real implementation path page title");
     assertIncludes(pages.realImplementationPath, "Selected path", "real implementation selected path classification");
