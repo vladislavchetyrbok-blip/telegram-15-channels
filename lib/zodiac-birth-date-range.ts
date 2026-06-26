@@ -98,6 +98,19 @@ export function sanitizeBirthDateInputDraft(value: string): string {
     .slice(0, 10);
 }
 
+export function formatBirthDateInputDraft(value: string): string {
+  const raw = sanitizeBirthDateInputDraft(value);
+  if (!raw) return "";
+
+  const isoDraft = formatIsoBirthDateDraft(raw);
+  if (isoDraft) return isoDraft.slice(0, 10);
+
+  if (/[.]/.test(raw)) return formatDisplayBirthDateDraft(raw).slice(0, 10);
+
+  const digits = raw.replace(/\D/g, "").slice(0, 8);
+  return formatDigitBirthDateDraft(digits).slice(0, 10);
+}
+
 export function normalizeBirthDateInputDisplay(value: string): string {
   const raw = sanitizeBirthDateInputDraft(value);
   if (!raw) return "";

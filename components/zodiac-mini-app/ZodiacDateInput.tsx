@@ -2,8 +2,8 @@ import { CalendarDays } from "lucide-react";
 import { formatDateInput, normalizeDateInput } from "@/lib/zodiac-date-input";
 import {
   BIRTH_DATE_UI_MARKER,
+  formatBirthDateInputDraft,
   normalizeBirthDateInput,
-  sanitizeBirthDateInputDraft,
 } from "@/lib/zodiac-birth-date-range";
 
 interface ZodiacDateInputProps {
@@ -46,7 +46,7 @@ export function ZodiacDateInput({
   const inputClass = publicMode
     ? `h-12 w-full rounded-lg border bg-white/8 px-3 pr-12 text-base text-white placeholder-slate-400 outline-none transition focus:border-violet-300 focus:bg-white/10 ${hasError ? "border-rose-300" : "border-white/15"}`
     : `h-12 w-full rounded-lg border bg-white px-3 pr-12 text-base text-slate-900 placeholder-slate-400 outline-none transition focus:border-violet-500 ${hasError ? "border-rose-300" : "border-slate-200"}`;
-  const formatValue = isBirthDate ? sanitizeBirthDateInputDraft : formatDateInput;
+  const formatValue = isBirthDate ? formatBirthDateInputDraft : formatDateInput;
   const normalizeValue = isBirthDate ? normalizeBirthDateInput : normalizeDateInput;
 
   return (
