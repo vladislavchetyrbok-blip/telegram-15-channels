@@ -540,6 +540,13 @@ const platformSections = [
     tone: "emerald",
   },
   {
+    title: "Консолидация visual QA Mini App",
+    href: "/dashboard/networks/zodiac/miniapp-visual-qa-consolidation",
+    icon: ClipboardCheck,
+    caption: "Package 206 - consolidated visual QA suite для Mini App без production-запуска, Telegram API, БД, оплаты и VIP unlock.",
+    tone: "emerald",
+  },
+  {
     title: "Финальная полировка текстов",
     href: "/dashboard/networks/zodiac/product-copy-final-polish",
     icon: FileText,
