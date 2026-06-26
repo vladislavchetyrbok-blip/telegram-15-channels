@@ -75,6 +75,7 @@ const ROUTES = {
   realDeviceVisualQaChecklist: "/dashboard/networks/zodiac/real-device-visual-qa-checklist",
   telegramWebviewStartappDiagnostics: "/dashboard/networks/zodiac/telegram-webview-startapp-diagnostics",
   liveVersionCacheMarkerReadiness: "/dashboard/networks/zodiac/live-version-cache-marker-readiness",
+  visualIssueTriageBoard: "/dashboard/networks/zodiac/visual-issue-triage-board",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -223,6 +224,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/real-device-visual-qa-checklist"', "real device visual qa checklist route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/telegram-webview-startapp-diagnostics"', "telegram webview startapp diagnostics route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/live-version-cache-marker-readiness"', "live version cache marker readiness route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/visual-issue-triage-board"', "visual issue triage board route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");
@@ -845,6 +847,27 @@ async function main() {
     assertIncludes(pages.liveVersionCacheMarkerReadiness, "browser cache-buster diagnosis", "browser cache buster diagnosis");
     assertIncludes(pages.liveVersionCacheMarkerReadiness, "Vercel deployment check notes", "vercel deployment notes");
     assertIncludes(pages.liveVersionCacheMarkerReadiness, "stale build symptoms", "stale build symptoms");
+    assertIncludes(pages.visualIssueTriageBoard, "Visual Issue Triage Board", "visual issue triage title");
+    assertIncludes(pages.visualIssueTriageBoard, "Только triage board", "visual issue triage classification");
+    assertIncludes(pages.visualIssueTriageBoard, "Issues не отправляются", "issues not sent boundary");
+    assertIncludes(pages.visualIssueTriageBoard, "Нет внешних интеграций", "no external integrations boundary");
+    assertIncludes(pages.visualIssueTriageBoard, "Нет GitHub API", "no github api boundary");
+    assertIncludes(pages.visualIssueTriageBoard, "Triage board ничего не отправляет", "triage sends nothing boundary");
+    assertIncludes(pages.visualIssueTriageBoard, "layout issue", "layout issue category");
+    assertIncludes(pages.visualIssueTriageBoard, "text too long", "text too long category");
+    assertIncludes(pages.visualIssueTriageBoard, "unclear CTA", "unclear cta category");
+    assertIncludes(pages.visualIssueTriageBoard, "mobile overflow", "mobile overflow category");
+    assertIncludes(pages.visualIssueTriageBoard, "Telegram WebView issue", "telegram webview issue category");
+    assertIncludes(pages.visualIssueTriageBoard, "date input issue", "date input issue category");
+    assertIncludes(pages.visualIssueTriageBoard, "compatibility repeated copy", "compatibility repeated copy category");
+    assertIncludes(pages.visualIssueTriageBoard, "visual hierarchy issue", "visual hierarchy issue category");
+    assertIncludes(pages.visualIssueTriageBoard, "loading state issue", "loading state issue category");
+    assertIncludes(pages.visualIssueTriageBoard, "error state issue", "error state issue category");
+    assertIncludes(pages.visualIssueTriageBoard, "route/startapp issue", "route startapp issue category");
+    assertIncludes(pages.visualIssueTriageBoard, "cache/deploy issue", "cache deploy issue category");
+    assertIncludes(pages.visualIssueTriageBoard, "blocker", "blocker severity");
+    assertIncludes(pages.visualIssueTriageBoard, "needs screenshot", "needs screenshot status");
+    assertIncludes(pages.visualIssueTriageBoard, "ready for fix", "ready for fix status");
     assertIncludes(pages.productCopyFinalPolish, "Финальная полировка текстов Aphrodite", "product copy polish title");
     assertIncludes(pages.productCopyFinalPolish, "Только copy polish", "product copy polish classification");
     assertIncludes(pages.productCopyFinalPolish, "Copy polish не включает оплату", "product copy polish no payment");

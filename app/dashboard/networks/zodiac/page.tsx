@@ -575,6 +575,13 @@ const platformSections = [
     tone: "emerald",
   },
   {
+    title: "Visual Issue Triage Board",
+    href: "/dashboard/networks/zodiac/visual-issue-triage-board",
+    icon: ClipboardCheck,
+    caption: "Package 211 - ручная triage board для screenshots, live QA findings, route/startapp и cache/deploy issues без внешних интеграций.",
+    tone: "emerald",
+  },
+  {
     title: "Финальная полировка текстов",
     href: "/dashboard/networks/zodiac/product-copy-final-polish",
     icon: FileText,
