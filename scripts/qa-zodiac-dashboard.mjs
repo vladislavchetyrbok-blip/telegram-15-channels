@@ -51,6 +51,7 @@ const ROUTES = {
   telegramStarsPreCheckoutSkeleton: "/dashboard/networks/zodiac/telegram-stars-precheckout-skeleton",
   telegramStarsSuccessfulPaymentSkeleton: "/dashboard/networks/zodiac/telegram-stars-successful-payment-skeleton",
   paymentLedgerMockIntegration: "/dashboard/networks/zodiac/payment-ledger-mock-integration",
+  entitlementCreationMock: "/dashboard/networks/zodiac/entitlement-creation-mock",
   realImplementationPath: "/dashboard/networks/zodiac/real-implementation-path",
   telegramInitDataValidation: "/dashboard/networks/zodiac/telegram-initdata-validation",
   userProfileFoundation: "/dashboard/networks/zodiac/user-profile-foundation",
@@ -171,6 +172,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/telegram-stars-precheckout-skeleton"', "telegram stars pre-checkout skeleton route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/telegram-stars-successful-payment-skeleton"', "telegram stars successful payment skeleton route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/payment-ledger-mock-integration"', "payment ledger mock integration route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/entitlement-creation-mock"', "entitlement creation mock route link");
 
     assertIncludes(pages.analytics, "Аналитика Mini App", "analytics page heading");
     assertIncludes(pages.analytics, "First-users funnel", "first-users funnel block");
@@ -521,6 +523,15 @@ async function main() {
     assertIncludes(pages.paymentLedgerMockIntegration, "Нет реальной VIP-разблокировки", "payment ledger mock vip boundary");
     assertIncludes(pages.paymentLedgerMockIntegration, "Нет вызова Telegram API", "payment ledger mock telegram api boundary");
     assertIncludes(pages.paymentLedgerMockIntegration, "Mock ledger ничего не сохраняет", "payment ledger mock saves nothing");
+    assertIncludes(pages.entitlementCreationMock, "Mock создания entitlement", "entitlement creation mock title");
+    assertIncludes(pages.entitlementCreationMock, "Только mock / Entitlement не создаётся", "entitlement creation mock classification");
+    assertIncludes(pages.entitlementCreationMock, "Доступ не выдаётся", "entitlement creation mock access boundary");
+    assertIncludes(pages.entitlementCreationMock, "Нет entitlement creation", "entitlement creation boundary");
+    assertIncludes(pages.entitlementCreationMock, "Нет реальной VIP-разблокировки", "entitlement creation vip boundary");
+    assertIncludes(pages.entitlementCreationMock, "Нет записи в базу данных", "entitlement creation db boundary");
+    assertIncludes(pages.entitlementCreationMock, "Нет миграции схемы базы данных", "entitlement creation schema boundary");
+    assertIncludes(pages.entitlementCreationMock, "Нет вызова Telegram API", "entitlement creation telegram api boundary");
+    assertIncludes(pages.entitlementCreationMock, "Entitlement mock не выдаёт доступ", "entitlement mock grants no access");
 
     assertIncludes(pages.realImplementationPath, "Real Implementation Path", "real implementation path page title");
     assertIncludes(pages.realImplementationPath, "Selected path", "real implementation selected path classification");

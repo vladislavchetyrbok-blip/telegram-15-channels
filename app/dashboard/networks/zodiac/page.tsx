@@ -404,6 +404,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Mock entitlement creation",
+    href: "/dashboard/networks/zodiac/entitlement-creation-mock",
+    icon: ShieldCheck,
+    caption: "Package 174 - local preview будущего entitlement grant без DB write, access grant и VIP unlock.",
+    tone: "cyan",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,

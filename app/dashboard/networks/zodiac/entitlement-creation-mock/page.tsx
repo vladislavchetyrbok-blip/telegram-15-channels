@@ -1,53 +1,55 @@
 import Link from "next/link";
-import { FileCheck2, GitBranch, LockKeyhole, ShieldCheck } from "lucide-react";
+import { FileCheck2, KeyRound, LockKeyhole, ShieldCheck } from "lucide-react";
 
 import {
-  APHRODITE_PAYMENT_LEDGER_MOCK_CLASSIFICATION,
-  APHRODITE_PAYMENT_LEDGER_MOCK_RULE,
-  APHRODITE_PAYMENT_LEDGER_MOCK_SAFETY_LABELS,
-  APHRODITE_PAYMENT_LEDGER_MOCK_TITLE,
-  getAphroditePaymentLedgerMockIntegrationBoundaries,
-  getAphroditePaymentLedgerMockIntegrationNextSteps,
-  getAphroditePaymentLedgerMockIntegrationSteps,
-  simulateAphroditePaymentLedgerMockIntegration,
-} from "@/lib/zodiac/aphrodite-payment-ledger-mock-integration";
+  APHRODITE_ENTITLEMENT_CREATION_MOCK_CLASSIFICATION,
+  APHRODITE_ENTITLEMENT_CREATION_MOCK_RULE,
+  APHRODITE_ENTITLEMENT_CREATION_MOCK_SAFETY_LABELS,
+  APHRODITE_ENTITLEMENT_CREATION_MOCK_TITLE,
+  draftAphroditeEntitlementGrantMock,
+  getAphroditeEntitlementCreationMockBoundaries,
+  getAphroditeEntitlementCreationMockNextSteps,
+  getAphroditeEntitlementCreationMockRules,
+} from "@/lib/zodiac/aphrodite-entitlement-creation-mock";
 
 export const metadata = {
-  title: APHRODITE_PAYMENT_LEDGER_MOCK_TITLE,
+  title: APHRODITE_ENTITLEMENT_CREATION_MOCK_TITLE,
 };
 
-const steps = getAphroditePaymentLedgerMockIntegrationSteps();
-const boundaries = getAphroditePaymentLedgerMockIntegrationBoundaries();
-const nextSteps = getAphroditePaymentLedgerMockIntegrationNextSteps();
-const sampleResult = simulateAphroditePaymentLedgerMockIntegration({
+const rules = getAphroditeEntitlementCreationMockRules();
+const boundaries = getAphroditeEntitlementCreationMockBoundaries();
+const nextSteps = getAphroditeEntitlementCreationMockNextSteps();
+const sampleResult = draftAphroditeEntitlementGrantMock({
   productId: "full_love_report",
   telegramUserId: "mock-user",
-  amount: 299,
-  currency: "XTR",
-  invoicePayload: "aphrodite:full_love_report:mock-user",
-  mockPaymentChargeId: "mock-payment-charge",
+  mockVerifiedLedger: true,
+  ownerApproved: true,
+  entitlementsEnabled: true,
+  securityQaApproved: true,
+  supportPolicyReady: true,
+  backupFresh: true,
 });
 
-export default function AphroditePaymentLedgerMockIntegrationPage() {
+export default function AphroditeEntitlementCreationMockPage() {
   return (
     <div className="min-h-screen bg-black p-8 text-slate-200">
       <div className="mx-auto max-w-7xl space-y-10">
         <header className="space-y-4">
           <div className="inline-flex items-center gap-2 rounded-full border border-slate-800 bg-slate-900 px-3 py-1 text-xs text-rose-300">
             <ShieldCheck className="h-4 w-4" />
-            <span>Aphrodite / Telegram Stars / ledger mock</span>
+            <span>Aphrodite / Telegram Stars / entitlement mock</span>
           </div>
-          <h1 className="text-3xl font-light tracking-tight text-white">{APHRODITE_PAYMENT_LEDGER_MOCK_TITLE}</h1>
-          <p className="text-sm font-medium text-rose-300/90">{APHRODITE_PAYMENT_LEDGER_MOCK_CLASSIFICATION}</p>
+          <h1 className="text-3xl font-light tracking-tight text-white">{APHRODITE_ENTITLEMENT_CREATION_MOCK_TITLE}</h1>
+          <p className="text-sm font-medium text-rose-300/90">{APHRODITE_ENTITLEMENT_CREATION_MOCK_CLASSIFICATION}</p>
           <p className="max-w-4xl text-lg leading-8 text-slate-400">
-            Package 173 связывает invoice draft, pre-checkout и successful_payment skeleton в локальный mock ledger preview.
-            Ledger не сохраняется, payment не становится verified, entitlement не создаётся и VIP остаётся закрытым.
+            Package 174 моделирует будущие требования к entitlement grant, но не создаёт entitlement, не пишет в базу,
+            не выдаёт доступ и не открывает VIP. Даже all-true mock input остаётся deny-by-default.
           </p>
           <p className="max-w-4xl rounded-lg border border-slate-800 bg-slate-900 px-4 py-3 text-sm leading-6 text-slate-300">
-            {APHRODITE_PAYMENT_LEDGER_MOCK_RULE}
+            {APHRODITE_ENTITLEMENT_CREATION_MOCK_RULE}
           </p>
           <div className="flex flex-wrap gap-2 text-xs">
-            {APHRODITE_PAYMENT_LEDGER_MOCK_SAFETY_LABELS.map((label) => (
+            {APHRODITE_ENTITLEMENT_CREATION_MOCK_SAFETY_LABELS.map((label) => (
               <span key={label} className="rounded-md border border-slate-700 bg-slate-800 px-2 py-1 text-emerald-400">
                 {label}
               </span>
@@ -55,29 +57,27 @@ export default function AphroditePaymentLedgerMockIntegrationPage() {
           </div>
         </header>
 
-        <section className="grid gap-4 md:grid-cols-4 xl:grid-cols-7">
+        <section className="grid gap-4 md:grid-cols-3 xl:grid-cols-6">
           <Metric label="mockOnly" value={String(sampleResult.mockOnly)} />
-          <Metric label="writesToDatabaseNow" value={String(sampleResult.writesToDatabaseNow)} />
-          <Metric label="persistsLedgerNow" value={String(sampleResult.persistsLedgerNow)} />
-          <Metric label="verifiedPaymentNow" value={String(sampleResult.verifiedPaymentNow)} />
           <Metric label="createsEntitlementNow" value={String(sampleResult.createsEntitlementNow)} />
-          <Metric label="unlocksVipNow" value={String(sampleResult.unlocksVipNow)} />
+          <Metric label="writesToDatabaseNow" value={String(sampleResult.writesToDatabaseNow)} />
           <Metric label="grantsAccessNow" value={String(sampleResult.grantsAccessNow)} />
+          <Metric label="unlocksVipNow" value={String(sampleResult.unlocksVipNow)} />
+          <Metric label="allowed" value={String(sampleResult.allowed)} />
         </section>
 
         <section className="rounded-lg border border-slate-800 bg-slate-900 p-6">
           <div className="flex items-center gap-2">
-            <GitBranch className="h-5 w-5 text-rose-400" />
-            <h2 className="text-xl font-medium text-white">Mock flow</h2>
+            <KeyRound className="h-5 w-5 text-rose-400" />
+            <h2 className="text-xl font-medium text-white">Будущие зависимости entitlement grant</h2>
           </div>
-          <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {steps.map((step) => (
-              <article key={step.id} className="rounded-lg border border-slate-800 bg-black/30 p-4">
-                <h3 className="text-base font-medium text-white">{step.label}</h3>
-                <p className="mt-2 text-xs text-emerald-300">{step.status}</p>
-                <p className="mt-3 text-sm leading-6 text-slate-300">{step.description}</p>
-                <p className="mt-3 text-xs leading-5 text-rose-200/80">
-                  Заблокировано сейчас: {step.blocksNow.join("; ")}.
+          <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {rules.map((rule) => (
+              <article key={rule.id} className="rounded-lg border border-slate-800 bg-black/30 p-4">
+                <h3 className="text-base font-medium text-white">{rule.label}</h3>
+                <p className="mt-3 text-sm leading-6 text-slate-300">{rule.futureDependency}</p>
+                <p className="mt-3 text-xs leading-5 text-slate-500">
+                  До live: {rule.requiredBeforeLive.join("; ")}.
                 </p>
               </article>
             ))}
@@ -85,18 +85,18 @@ export default function AphroditePaymentLedgerMockIntegrationPage() {
         </section>
 
         <section className="rounded-lg border border-slate-800 bg-slate-900 p-6">
-          <h2 className="text-xl font-medium text-white">Mock ledger preview result</h2>
+          <h2 className="text-xl font-medium text-white">Mock entitlement draft</h2>
           <div className="mt-5 grid gap-4 md:grid-cols-[0.9fr_1.1fr]">
             <div className="rounded-lg border border-slate-800 bg-black/30 p-4 text-sm text-slate-300">
               <Row label="productId" value={sampleResult.productId} />
-              <Row label="mockFlowId" value={sampleResult.mockFlowId} />
+              <Row label="entitlementDraftId" value={sampleResult.entitlementDraftId} />
               <Row label="fallbackRoute" value={sampleResult.fallbackRoute} />
             </div>
             <div className="rounded-lg border border-rose-900/40 bg-rose-950/20 p-4">
-              <h3 className="text-sm font-medium text-rose-100">Referenced skeletons</h3>
-              <ul className="mt-3 list-disc space-y-2 pl-5 font-mono text-xs text-rose-100/80">
-                {sampleResult.referencedSkeletons.map((name) => (
-                  <li key={name}>{name}</li>
+              <h3 className="text-sm font-medium text-rose-100">Dependency notes</h3>
+              <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-rose-100/80">
+                {sampleResult.dependencyNotes.map((note) => (
+                  <li key={note}>{note}</li>
                 ))}
               </ul>
             </div>
@@ -137,7 +137,7 @@ export default function AphroditePaymentLedgerMockIntegrationPage() {
               ))}
             </ul>
             <p className="mt-4 text-xs leading-5 text-slate-500">
-              Package 174 можно начинать только после отдельного commit/push Package 173 и PASS проверок.
+              Package 175 не начинается автоматически. Для него нужно отдельное подтверждение.
             </p>
           </div>
         </section>
@@ -146,9 +146,9 @@ export default function AphroditePaymentLedgerMockIntegrationPage() {
           <div className="mb-2 text-sm text-slate-400">Связанные разделы</div>
           <div className="flex flex-wrap gap-3 text-sm">
             <Link href="/dashboard/networks/zodiac" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Zodiac Network</Link>
-            <Link href="/dashboard/networks/zodiac/entitlement-creation-mock" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Mock entitlement creation</Link>
-            <Link href="/dashboard/networks/zodiac/telegram-stars-successful-payment-skeleton" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Skeleton successful_payment</Link>
-            <Link href="/dashboard/networks/zodiac/payment-ledger-design" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Дизайн payment ledger</Link>
+            <Link href="/dashboard/networks/zodiac/payment-ledger-mock-integration" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Mock payment ledger</Link>
+            <Link href="/dashboard/networks/zodiac/entitlement-storage-design" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Дизайн entitlement storage</Link>
+            <Link href="/dashboard/networks/zodiac/entitlement-schema-skeleton" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Skeleton схемы entitlement</Link>
             <Link href="/dashboard/networks/zodiac/server-entitlement-check-skeleton" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Skeleton server-side entitlement</Link>
             <Link href="/miniapp/love-reading-preview" className="text-rose-300 underline underline-offset-4 hover:text-rose-200">Free Love Reading Preview</Link>
           </div>
