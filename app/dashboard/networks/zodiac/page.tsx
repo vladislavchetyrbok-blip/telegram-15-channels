@@ -497,6 +497,13 @@ const platformSections = [
     tone: "emerald",
   },
   {
+    title: "Retention Mock Safety Suite",
+    href: "/dashboard/networks/zodiac/retention-mock-dashboard-safety-suite",
+    icon: ShieldCheck,
+    caption: "Package 190 - consolidated mock dashboard и safety QA для retention без reminders, tracking, DB и Telegram API.",
+    tone: "emerald",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,

@@ -64,6 +64,7 @@ const ROUTES = {
   savedReportsHistoryMockReadiness: "/dashboard/networks/zodiac/saved-reports-history-mock-readiness",
   returnJourneyCtaReadiness: "/dashboard/networks/zodiac/return-journey-cta-readiness",
   streakReminderNoopSkeleton: "/dashboard/networks/zodiac/streak-reminder-noop-skeleton",
+  retentionMockDashboardSafetySuite: "/dashboard/networks/zodiac/retention-mock-dashboard-safety-suite",
   realImplementationPath: "/dashboard/networks/zodiac/real-implementation-path",
   telegramInitDataValidation: "/dashboard/networks/zodiac/telegram-initdata-validation",
   userProfileFoundation: "/dashboard/networks/zodiac/user-profile-foundation",
@@ -197,6 +198,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/saved-reports-history-mock-readiness"', "saved reports history mock readiness route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/return-journey-cta-readiness"', "return journey cta readiness route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/streak-reminder-noop-skeleton"', "streak reminder noop skeleton route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/retention-mock-dashboard-safety-suite"', "retention mock dashboard safety suite route link");
 
     assertIncludes(pages.analytics, "Аналитика Mini App", "analytics page heading");
     assertIncludes(pages.analytics, "First-users funnel", "first-users funnel block");
@@ -690,6 +692,16 @@ async function main() {
     assertIncludes(pages.streakReminderNoopSkeleton, "streakPersistedNow", "streak reminder streak flag visible");
     assertIncludes(pages.streakReminderNoopSkeleton, "reminderScheduledNow", "streak reminder schedule flag visible");
     assertIncludes(pages.streakReminderNoopSkeleton, "telegramMessageSentNow", "streak reminder telegram flag visible");
+    assertIncludes(pages.retentionMockDashboardSafetySuite, "Retention Mock Dashboard &amp; Safety Suite", "retention mock suite title");
+    assertIncludes(pages.retentionMockDashboardSafetySuite, "Только mock/QA", "retention mock suite classification");
+    assertIncludes(pages.retentionMockDashboardSafetySuite, "Нет реальных напоминаний", "retention mock suite no real reminders");
+    assertIncludes(pages.retentionMockDashboardSafetySuite, "Retention mock dashboard ничего не отправляет", "retention mock suite sends nothing");
+    assertIncludes(pages.retentionMockDashboardSafetySuite, "mock retention funnel", "retention mock funnel section");
+    assertIncludes(pages.retentionMockDashboardSafetySuite, "daily return loop", "retention mock daily loop");
+    assertIncludes(pages.retentionMockDashboardSafetySuite, "weekly return loop", "retention mock weekly loop");
+    assertIncludes(pages.retentionMockDashboardSafetySuite, "monthly return loop", "retention mock monthly loop");
+    assertIncludes(pages.retentionMockDashboardSafetySuite, "saved report future loop", "retention mock saved report loop");
+    assertIncludes(pages.retentionMockDashboardSafetySuite, "streak/reminder future loop", "retention mock streak reminder loop");
 
     assertIncludes(pages.realImplementationPath, "Real Implementation Path", "real implementation path page title");
     assertIncludes(pages.realImplementationPath, "Selected path", "real implementation selected path classification");
