@@ -52,13 +52,77 @@ export default function AphroditePublicLaunchGoNoGoReviewPage() {
           </div>
         </header>
 
-        <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+        <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-6">
           <Metric label="publicLaunchApproved" value={String(model.publicLaunchApproved)} tone="rose" />
           <Metric label="ownerManualReviewRequired" value={String(model.ownerManualReviewRequired)} tone="amber" />
+          <Metric label="ownerLaunchDecisionState" value={model.ownerLaunchDecisionState} tone="rose" />
           <Metric label="unresolvedBlockerCount" value={String(model.unresolvedBlockerCount)} tone="rose" />
           <Metric label="productionLaunchDone" value={String(model.safetyFlags.productionLaunchDone)} tone="rose" />
           <Metric label="preflightReadinessPackage" value={`Package ${model.preflightReadinessPackageNumber}`} tone="amber" />
+          <Metric label="freezeOwnerPack" value={`Package ${model.freezePackPackageNumber}`} tone="amber" />
         </section>
+
+        <ReviewSection title="public launch freeze / owner go-no-go pack" icon={<ShieldAlert className="h-5 w-5 text-rose-300" />}>
+          <div className="space-y-4">
+            <div className="grid gap-3 lg:grid-cols-[1.3fr_1fr]">
+              <div className="rounded-lg border border-rose-900/50 bg-rose-950/20 p-4">
+                <div className="text-[11px] font-semibold uppercase text-rose-200">launch freeze status</div>
+                <p className="mt-2 text-xl font-semibold text-white">{model.launchFreezePack.status}</p>
+                <p className="mt-2 text-sm leading-6 text-rose-100">{model.launchFreezePack.summary}</p>
+                <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                  <div className="rounded-md border border-rose-900/40 bg-black/20 px-3 py-2">
+                    <div className="font-mono text-[11px] leading-5 text-slate-500">publicLaunchApproved</div>
+                    <div className="text-sm font-medium text-rose-200">{String(model.launchFreezePack.publicLaunchApproved)}</div>
+                  </div>
+                  <div className="rounded-md border border-amber-900/40 bg-black/20 px-3 py-2">
+                    <div className="font-mono text-[11px] leading-5 text-slate-500">ownerManualReviewRequired</div>
+                    <div className="text-sm font-medium text-amber-200">{String(model.launchFreezePack.ownerManualReviewRequired)}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-lg border border-slate-800 bg-black/30 p-4">
+                <ListBlock title="remaining launch blockers" items={model.remainingLaunchBlockers} />
+              </div>
+            </div>
+
+            <div className="grid gap-3 lg:grid-cols-[1fr_1fr]">
+              <div className="rounded-lg border border-slate-800 bg-black/30 p-4">
+                <ListBlock title="launch freeze rules" items={model.launchFreezePack.freezeRules} />
+              </div>
+              <div className="rounded-lg border border-slate-800 bg-black/30 p-4">
+                <ListBlock title="cannot automate" items={model.launchFreezePack.cannotAutomate} />
+              </div>
+            </div>
+
+            <div className="rounded-lg border border-slate-800 bg-black/30 p-4">
+              <div className="text-[11px] font-semibold uppercase text-slate-500">owner decision states</div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {model.ownerDecisionStates.map((state) => (
+                  <span key={state} className={decisionStateClassName(state)}>
+                    {state}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </ReviewSection>
+
+        <ReviewSection title="linked launch readiness sections" icon={<ClipboardCheck className="h-5 w-5 text-cyan-400" />}>
+          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+            {model.launchReadinessSections.map((section) => (
+              <article key={section.id} className="min-w-0 rounded-lg border border-slate-800 bg-black/30 p-4">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <h2 className="text-sm font-medium text-white">{section.title}</h2>
+                  <span className={decisionStateClassName(section.ownerDecisionState)}>{section.ownerDecisionState}</span>
+                </div>
+                <ReadinessRoute routeOrSource={section.routeOrSource} />
+                <p className="mt-3 text-sm leading-6 text-slate-300">{section.evidence}</p>
+                <p className="mt-2 text-xs leading-5 text-amber-100">{section.manualStep}</p>
+              </article>
+            ))}
+          </div>
+        </ReviewSection>
 
         <ReviewSection title="production env & backup preflight readiness" icon={<ShieldAlert className="h-5 w-5 text-rose-300" />}>
           <div className="space-y-4">
@@ -143,7 +207,7 @@ export default function AphroditePublicLaunchGoNoGoReviewPage() {
           <ReviewSection title="production safety blockers" icon={<ShieldAlert className="h-5 w-5 text-rose-300" />}>
             <div className="grid gap-3">
               <p className="rounded-md border border-amber-900/50 bg-amber-950/20 px-3 py-2 text-xs leading-5 text-amber-100">
-                Manual production blockers: это операционные условия перед запуском, не ошибка кода Package 213.
+                Manual production blockers: это операционные условия перед запуском, не ошибка кода Package 217.
               </p>
               <ListBlock title="production safety blockers" items={model.productionSafetyBlockers} />
               <ListBlock title="env blockers" items={model.envBlockers} />
@@ -164,9 +228,9 @@ export default function AphroditePublicLaunchGoNoGoReviewPage() {
             </div>
           </ReviewSection>
 
-          <ReviewSection title="next recommended package" icon={<ClipboardCheck className="h-5 w-5 text-cyan-400" />}>
+          <ReviewSection title="owner decision next step" icon={<ClipboardCheck className="h-5 w-5 text-cyan-400" />}>
             <p className="text-sm leading-6 text-slate-300">{model.nextRecommendedPackage}</p>
-            <p className="mt-3 text-xs text-slate-500">Package 213 не начинается автоматически из этой страницы.</p>
+            <p className="mt-3 text-xs text-slate-500">Package 217 не запускает production и не выдает approval автоматически.</p>
           </ReviewSection>
         </section>
 
@@ -188,6 +252,30 @@ function statusClassName(status: string) {
   if (status === "blocked") return "inline-flex max-w-full break-words rounded border border-rose-900/50 bg-rose-950/30 px-2 py-1 text-xs leading-5 text-rose-200";
   if (status === "manual-required") return "inline-flex max-w-full break-words rounded border border-amber-900/50 bg-amber-950/30 px-2 py-1 text-xs leading-5 text-amber-200";
   return "inline-flex max-w-full break-words rounded border border-emerald-900/50 bg-emerald-950/30 px-2 py-1 text-xs leading-5 text-emerald-200";
+}
+
+function decisionStateClassName(state: string) {
+  if (state.includes("BLOCKED") || state === "NOT READY") {
+    return "inline-flex max-w-full break-words rounded border border-rose-900/50 bg-rose-950/30 px-2 py-1 text-xs leading-5 text-rose-200";
+  }
+
+  if (state === "APPROVAL NOT GRANTED") {
+    return "inline-flex max-w-full break-words rounded border border-amber-900/50 bg-amber-950/30 px-2 py-1 text-xs leading-5 text-amber-200";
+  }
+
+  return "inline-flex max-w-full break-words rounded border border-emerald-900/50 bg-emerald-950/30 px-2 py-1 text-xs leading-5 text-emerald-200";
+}
+
+function ReadinessRoute({ routeOrSource }: { routeOrSource: string }) {
+  if (routeOrSource.startsWith("/")) {
+    return (
+      <Link href={routeOrSource} className="mt-2 block break-all font-mono text-xs leading-5 text-cyan-200 underline underline-offset-4">
+        {routeOrSource}
+      </Link>
+    );
+  }
+
+  return <p className="mt-2 break-all font-mono text-xs leading-5 text-cyan-200">{routeOrSource}</p>;
 }
 
 function ReviewSection({ title, icon, children }: { title: string; icon: ReactNode; children: ReactNode }) {

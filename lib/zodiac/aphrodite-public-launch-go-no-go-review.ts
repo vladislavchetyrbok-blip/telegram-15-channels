@@ -41,13 +41,42 @@ export type AphroditeProductionPreflightSafetySummary = {
   databaseWrite: false;
 };
 
+export type AphroditeLaunchOwnerDecisionState =
+  | "NOT READY"
+  | "READY FOR OWNER REVIEW"
+  | "BLOCKED BY ENV"
+  | "BLOCKED BY BACKUP"
+  | "BLOCKED BY VISUAL QA"
+  | "BLOCKED BY TELEGRAM WEBVIEW QA"
+  | "APPROVAL NOT GRANTED";
+
+export type AphroditeLaunchReadinessSection = {
+  id: string;
+  title: string;
+  routeOrSource: string;
+  ownerDecisionState: AphroditeLaunchOwnerDecisionState;
+  evidence: string;
+  manualStep: string;
+};
+
+export type AphroditeLaunchFreezePack = {
+  status: "FROZEN";
+  summary: string;
+  publicLaunchApproved: false;
+  ownerManualReviewRequired: true;
+  freezeRules: readonly string[];
+  cannotAutomate: readonly string[];
+};
+
 export type AphroditePublicLaunchGoNoGoReviewModel = {
   packageNumber: 212;
   preflightReadinessPackageNumber: 216;
+  freezePackPackageNumber: 217;
   title: string;
   classification: string;
   publicLaunchApproved: false;
   ownerManualReviewRequired: true;
+  ownerLaunchDecisionState: AphroditeLaunchOwnerDecisionState;
   unresolvedBlockerCount: number;
   safetyLabels: readonly string[];
   dependencies: readonly AphroditePublicLaunchDependency[];
@@ -58,6 +87,10 @@ export type AphroditePublicLaunchGoNoGoReviewModel = {
   productionPreflightBlockers: readonly AphroditeProductionPreflightBlocker[];
   productionPreflightNextActions: readonly string[];
   productionPreflightSafetySummary: AphroditeProductionPreflightSafetySummary;
+  launchFreezePack: AphroditeLaunchFreezePack;
+  ownerDecisionStates: readonly AphroditeLaunchOwnerDecisionState[];
+  launchReadinessSections: readonly AphroditeLaunchReadinessSection[];
+  remainingLaunchBlockers: readonly string[];
   safetyFlags: {
     productionLaunchDone: false;
     telegramApiUsed: false;
@@ -65,6 +98,7 @@ export type AphroditePublicLaunchGoNoGoReviewModel = {
     botFatherChanged: false;
     activeCtaChanged: false;
     databaseWriteAdded: false;
+    externalAnalyticsAdded: false;
     paymentAdded: false;
     vipUnlockAdded: false;
     workflowChanged: false;
@@ -75,6 +109,18 @@ export type AphroditePublicLaunchGoNoGoReviewModel = {
 export const APHRODITE_PUBLIC_LAUNCH_GO_NO_GO_REVIEW_TITLE = "Public Launch Go/No-Go Review";
 
 export const APHRODITE_PRODUCTION_PREFLIGHT_PACKAGE_NUMBER = 216;
+
+export const APHRODITE_PUBLIC_LAUNCH_FREEZE_PACKAGE_NUMBER = 217;
+
+export const APHRODITE_OWNER_DECISION_STATES: readonly AphroditeLaunchOwnerDecisionState[] = [
+  "NOT READY",
+  "READY FOR OWNER REVIEW",
+  "BLOCKED BY ENV",
+  "BLOCKED BY BACKUP",
+  "BLOCKED BY VISUAL QA",
+  "BLOCKED BY TELEGRAM WEBVIEW QA",
+  "APPROVAL NOT GRANTED",
+] as const;
 
 export const APHRODITE_PUBLIC_LAUNCH_GO_NO_GO_REVIEW_CLASSIFICATION =
   "Только Go/No-Go review / Запуск не разрешён / Нужна ручная проверка";
@@ -323,14 +369,124 @@ const productionPreflightSafetySummary: AphroditeProductionPreflightSafetySummar
   databaseWrite: false,
 };
 
+const launchFreezePack: AphroditeLaunchFreezePack = {
+  status: "FROZEN",
+  summary: "launch is frozen until owner approval",
+  publicLaunchApproved: false,
+  ownerManualReviewRequired: true,
+  freezeRules: [
+    "publicLaunchApproved=false",
+    "ownerManualReviewRequired=true",
+    "launch is frozen until owner approval",
+    "no Telegram API usage",
+    "no messages sent",
+    "no BotFather changes",
+    "no payments",
+    "no VIP unlock",
+    "no DB writes",
+    "no cron/publish workflow changes",
+  ],
+  cannotAutomate: [
+    "Do not enable production launch automatically",
+    "Do not set publicLaunchApproved=true",
+    "Do not set ownerManualReviewRequired=false",
+    "Do not call Telegram API",
+    "Do not send messages",
+    "Do not change BotFather",
+    "Do not change active CTA logic",
+    "Do not add DB writes",
+    "Do not add external analytics",
+    "Do not add payments",
+    "Do not unlock VIP",
+    "Do not change cron/workflows/publish scripts",
+  ],
+};
+
+const launchReadinessSections: readonly AphroditeLaunchReadinessSection[] = [
+  {
+    id: "real-device-visual-qa",
+    title: "Real Device Visual QA",
+    routeOrSource: "/dashboard/networks/zodiac/real-device-visual-qa-checklist",
+    ownerDecisionState: "BLOCKED BY VISUAL QA",
+    evidence: "Real-device screenshot evidence pack exists, but owner manual device review is still required.",
+    manualStep: "Owner checks iPhone, Android, Telegram Desktop, browser widths and required screenshots.",
+  },
+  {
+    id: "telegram-webview-startapp-diagnostics",
+    title: "Telegram WebView/startapp Diagnostics",
+    routeOrSource: "/dashboard/networks/zodiac/telegram-webview-startapp-diagnostics",
+    ownerDecisionState: "BLOCKED BY TELEGRAM WEBVIEW QA",
+    evidence: "Diagnostics explain WebView/startapp/cache symptoms; actual Telegram WebView validation remains manual.",
+    manualStep: "Owner opens the real Mini App on device and confirms startapp/deep link behavior.",
+  },
+  {
+    id: "live-version-cache-marker",
+    title: "Live Version/Cache Marker",
+    routeOrSource: "/dashboard/networks/zodiac/live-version-cache-marker-readiness",
+    ownerDecisionState: "READY FOR OWNER REVIEW",
+    evidence: "Live version/cache marker readiness is documented for deployment freshness checks.",
+    manualStep: "Owner confirms deployed version marker in browser and Telegram WebView.",
+  },
+  {
+    id: "visual-issue-triage-board",
+    title: "Visual Issue Triage Board",
+    routeOrSource: "/dashboard/networks/zodiac/visual-issue-triage-board",
+    ownerDecisionState: "BLOCKED BY VISUAL QA",
+    evidence: "Visual issues are separated from production blockers and must be reviewed before launch approval.",
+    manualStep: "Owner confirms there are no unresolved launch-blocking visual issues.",
+  },
+  {
+    id: "production-env-blockers",
+    title: "Production Env/Backup blockers",
+    routeOrSource: "DATABASE_URL / TELEGRAM_BOT_TOKEN / npm run production:safety:check",
+    ownerDecisionState: "BLOCKED BY ENV",
+    evidence: "DATABASE_URL and TELEGRAM_BOT_TOKEN remain manual production env blockers.",
+    manualStep: "Owner configures production env manually and reruns the production safety script.",
+  },
+  {
+    id: "backup-freshness-blocker",
+    title: "Backup Freshness",
+    routeOrSource: "latest backup age / npm run production:safety:check",
+    ownerDecisionState: "BLOCKED BY BACKUP",
+    evidence: "Backup older than 24h remains a manual backup freshness blocker.",
+    manualStep: "Owner verifies backup freshness manually and reruns the production safety script.",
+  },
+  {
+    id: "owner-manual-review",
+    title: "Owner Manual Review",
+    routeOrSource: "manual owner decision",
+    ownerDecisionState: "APPROVAL NOT GRANTED",
+    evidence: "Owner approval has not been granted; public launch remains frozen.",
+    manualStep: "Owner makes the final Go/No-Go decision after all blockers are cleared.",
+  },
+  {
+    id: "safety-confirmation",
+    title: "Safety confirmation",
+    routeOrSource: "static dashboard safety flags",
+    ownerDecisionState: "READY FOR OWNER REVIEW",
+    evidence: "Safety flags confirm no production launch, Telegram API, messages, DB writes, payments, VIP unlocks or workflows changed.",
+    manualStep: "Owner verifies the safety confirmation before any later launch action.",
+  },
+];
+
+const remainingLaunchBlockers = [
+  "DATABASE_URL",
+  "TELEGRAM_BOT_TOKEN",
+  "backup freshness",
+  "manual real-device QA",
+  "owner approval",
+] as const;
+
 export function getAphroditePublicLaunchGoNoGoReview(): AphroditePublicLaunchGoNoGoReviewModel {
   return {
     packageNumber: 212,
     preflightReadinessPackageNumber: APHRODITE_PRODUCTION_PREFLIGHT_PACKAGE_NUMBER,
+    freezePackPackageNumber: APHRODITE_PUBLIC_LAUNCH_FREEZE_PACKAGE_NUMBER,
     title: APHRODITE_PUBLIC_LAUNCH_GO_NO_GO_REVIEW_TITLE,
     classification: APHRODITE_PUBLIC_LAUNCH_GO_NO_GO_REVIEW_CLASSIFICATION,
     publicLaunchApproved: false,
     ownerManualReviewRequired: true,
+    ownerLaunchDecisionState: "NOT READY",
     unresolvedBlockerCount: 3,
     safetyLabels: APHRODITE_PUBLIC_LAUNCH_GO_NO_GO_REVIEW_SAFETY_LABELS,
     dependencies: dependencies.map((dependency) => ({ ...dependency })),
@@ -345,6 +501,14 @@ export function getAphroditePublicLaunchGoNoGoReview(): AphroditePublicLaunchGoN
     })),
     productionPreflightNextActions: [...APHRODITE_PRODUCTION_PREFLIGHT_NEXT_ACTIONS],
     productionPreflightSafetySummary: { ...productionPreflightSafetySummary },
+    launchFreezePack: {
+      ...launchFreezePack,
+      freezeRules: [...launchFreezePack.freezeRules],
+      cannotAutomate: [...launchFreezePack.cannotAutomate],
+    },
+    ownerDecisionStates: [...APHRODITE_OWNER_DECISION_STATES],
+    launchReadinessSections: launchReadinessSections.map((section) => ({ ...section })),
+    remainingLaunchBlockers: [...remainingLaunchBlockers],
     safetyFlags: {
       productionLaunchDone: false,
       telegramApiUsed: false,
@@ -352,10 +516,11 @@ export function getAphroditePublicLaunchGoNoGoReview(): AphroditePublicLaunchGoN
       botFatherChanged: false,
       activeCtaChanged: false,
       databaseWriteAdded: false,
+      externalAnalyticsAdded: false,
       paymentAdded: false,
       vipUnlockAdded: false,
       workflowChanged: false,
     },
-    nextRecommendedPackage: "Package 213 — Live Screenshot Fix Sprint",
+    nextRecommendedPackage: "Owner manual Go/No-Go decision after Package 217; no automatic launch.",
   };
 }
