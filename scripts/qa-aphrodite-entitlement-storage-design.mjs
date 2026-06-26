@@ -3,21 +3,22 @@
 import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import {
-  APHRODITE_PAYMENT_LEDGER_DESIGN_CLASSIFICATION,
-  APHRODITE_PAYMENT_LEDGER_DESIGN_RULE,
-  APHRODITE_PAYMENT_LEDGER_CATALOG_REFERENCE,
-  APHRODITE_PAYMENT_LEDGER_FALLBACK_ROUTE,
-  APHRODITE_PAYMENT_LEDGER_SAFETY_LABELS,
-  getAphroditePaymentLedgerCatalogAlignment,
-  getAphroditePaymentLedgerDesignBoundaries,
-  getAphroditePaymentLedgerDesignItems,
-  getAphroditePaymentLedgerDesignNextSteps,
-  getAphroditePaymentLedgerDesignRules,
-} from "../lib/zodiac/aphrodite-payment-ledger-design.ts";
+  APHRODITE_ENTITLEMENT_STORAGE_CATALOG_REFERENCE,
+  APHRODITE_ENTITLEMENT_STORAGE_DESIGN_CLASSIFICATION,
+  APHRODITE_ENTITLEMENT_STORAGE_DESIGN_RULE,
+  APHRODITE_ENTITLEMENT_STORAGE_LEDGER_REFERENCE,
+  APHRODITE_ENTITLEMENT_STORAGE_SAFETY_LABELS,
+  getAphroditeEntitlementStorageBoundaries,
+  getAphroditeEntitlementStorageDependencies,
+  getAphroditeEntitlementStorageFields,
+  getAphroditeEntitlementStorageNextSteps,
+  getAphroditeEntitlementStorageRules,
+} from "../lib/zodiac/aphrodite-entitlement-storage-design.ts";
 import {
-  APHRODITE_PRODUCT_CATALOG_FREE_FALLBACK_ROUTE,
-  getAphroditeFutureVipProducts,
-} from "../lib/zodiac/aphrodite-product-catalog.ts";
+  APHRODITE_PAYMENT_LEDGER_DESIGN_RULE,
+  getAphroditePaymentLedgerCatalogAlignment,
+} from "../lib/zodiac/aphrodite-payment-ledger-design.ts";
+import { getAphroditeFutureVipProducts } from "../lib/zodiac/aphrodite-product-catalog.ts";
 
 let passed = 0;
 let failed = 0;
@@ -49,12 +50,12 @@ function gitDiffNames(paths) {
   }
 }
 
-console.log("Старт QA: дизайн payment ledger Aphrodite...\n");
+console.log("Старт QA: дизайн хранения VIP-доступа Aphrodite...\n");
 
-const modelPath = "../lib/zodiac/aphrodite-payment-ledger-design.ts";
-const dashboardPath = "../app/dashboard/networks/zodiac/payment-ledger-design/page.tsx";
-const docsPath = "../docs/aphrodite-payment-ledger-design.md";
-const reportPath = "../docs/aphrodite-package-reports/package-163.md";
+const modelPath = "../lib/zodiac/aphrodite-entitlement-storage-design.ts";
+const dashboardPath = "../app/dashboard/networks/zodiac/entitlement-storage-design/page.tsx";
+const docsPath = "../docs/aphrodite-entitlement-storage-design.md";
+const reportPath = "../docs/aphrodite-package-reports/package-164.md";
 const dashboardQaPath = "./qa-zodiac-dashboard.mjs";
 
 check("model file exists", exists(modelPath));
@@ -71,49 +72,69 @@ const dashboardQaSource = exists(dashboardQaPath) ? read(dashboardQaPath) : "";
 const implementationBundle = [modelSource, dashboardSource].join("\n");
 const userFacingBundle = [modelSource, dashboardSource, docsSource, reportSource].join("\n");
 
-const ledgerItems = getAphroditePaymentLedgerDesignItems();
-const rules = getAphroditePaymentLedgerDesignRules();
-const boundaries = getAphroditePaymentLedgerDesignBoundaries();
-const nextSteps = getAphroditePaymentLedgerDesignNextSteps();
-const catalogAlignment = getAphroditePaymentLedgerCatalogAlignment();
+const fields = getAphroditeEntitlementStorageFields();
+const rules = getAphroditeEntitlementStorageRules();
+const boundaries = getAphroditeEntitlementStorageBoundaries();
+const nextSteps = getAphroditeEntitlementStorageNextSteps();
+const dependencies = getAphroditeEntitlementStorageDependencies();
+const ledgerAlignment = getAphroditePaymentLedgerCatalogAlignment();
 const futureVipProducts = getAphroditeFutureVipProducts();
 
-check("classification is ledger design only", APHRODITE_PAYMENT_LEDGER_DESIGN_CLASSIFICATION.includes("Только дизайн ledger"));
-check("main ledger rule is visible", APHRODITE_PAYMENT_LEDGER_DESIGN_RULE.includes("Payment ledger требуется перед entitlement"));
-check("product catalog reference is declared", APHRODITE_PAYMENT_LEDGER_CATALOG_REFERENCE === "lib/zodiac/aphrodite-product-catalog.ts");
-check("fallback route matches product catalog", APHRODITE_PAYMENT_LEDGER_FALLBACK_ROUTE === APHRODITE_PRODUCT_CATALOG_FREE_FALLBACK_ROUTE);
-check("payment ledger items exist", ledgerItems.length >= 3);
-check("ledger rules exist", rules.length >= 5);
-check("ledger boundaries exist", boundaries.length >= 9);
-check("ledger next steps exist", nextSteps.some((step) => step.package === "Package 164" && step.title === "Entitlement Storage Design"));
-check("product catalog has future VIP products", futureVipProducts.length > 0);
-check("catalog alignment references future products", catalogAlignment.futureProductIds.length === futureVipProducts.length);
-check("catalog alignment requires ledger before entitlement", catalogAlignment.requiredBeforeEntitlement === true);
-check("catalog alignment requires owner review", catalogAlignment.ownerReviewRequired === true);
+check("classification is storage design only", APHRODITE_ENTITLEMENT_STORAGE_DESIGN_CLASSIFICATION.includes("Только дизайн хранения"));
+check("design rule says entitlement is not created", APHRODITE_ENTITLEMENT_STORAGE_DESIGN_RULE.includes("Entitlement не создаётся"));
+check("ledger reference is declared", APHRODITE_ENTITLEMENT_STORAGE_LEDGER_REFERENCE === "lib/zodiac/aphrodite-payment-ledger-design.ts");
+check("catalog reference is declared", APHRODITE_ENTITLEMENT_STORAGE_CATALOG_REFERENCE === "lib/zodiac/aphrodite-product-catalog.ts");
+check("payment ledger dependency rule is available", APHRODITE_PAYMENT_LEDGER_DESIGN_RULE.includes("Payment ledger требуется перед entitlement"));
+check("ledger alignment still references future products", ledgerAlignment.futureProductIds.length === futureVipProducts.length);
 
-check("all ledger items are designOnly=true", ledgerItems.every((item) => item.designOnly === true));
-check("all ledger items avoid entitlement creation now", ledgerItems.every((item) => item.createsEntitlementNow === false));
-check("all ledger items avoid database writes now", ledgerItems.every((item) => item.writesToDatabaseNow === false));
-check("all required field aliases exist", ledgerItems.every((item) =>
-  [
-    item.userIdField,
-    item.telegramUserIdField,
-    item.sourcePaymentIdField,
-    item.amountField,
-    item.currencyField,
-    item.createdAtField,
-    item.verifiedAtField,
-    item.refundedAtField,
-    item.auditReasonField,
-  ].every((value) => typeof value === "string" && value.length > 0),
-));
+check("storage fields exist", fields.length >= 13);
+check("storage rules exist", rules.length >= 8);
+check("storage boundaries exist", boundaries.length >= 10);
+check("storage next step points to Package 165", nextSteps.some((step) => step.package === "Package 165" && step.title === "Entitlement Schema Skeleton"));
+check("dependencies include ledger and product catalog", dependencies.some((item) => item.source === APHRODITE_ENTITLEMENT_STORAGE_LEDGER_REFERENCE) && dependencies.some((item) => item.source === APHRODITE_ENTITLEMENT_STORAGE_CATALOG_REFERENCE));
 
-for (const label of APHRODITE_PAYMENT_LEDGER_SAFETY_LABELS) {
+for (const fieldName of [
+  "userId",
+  "telegramUserId",
+  "productId",
+  "sourcePaymentLedgerId",
+  "sourcePaymentProvider",
+  "status",
+  "startsAt",
+  "expiresAt",
+  "revokedAt",
+  "createdAt",
+  "updatedAt",
+  "auditReason",
+  "ownerReviewStatus",
+]) {
+  check(`required future field exists: ${fieldName}`, fields.some((field) => field.fieldName === fieldName));
+}
+
+check("all fields are designOnly=true", fields.every((field) => field.designOnly === true));
+check("all fields avoid database writes now", fields.every((field) => field.writesToDatabaseNow === false));
+check("required fields have visible purpose", fields.every((field) => field.visiblePurpose.length > 0));
+
+for (const requiredRule of [
+  "No entitlement without verified payment ledger",
+  "No entitlement without catalog productId",
+  "No access if expired",
+  "No access if revoked",
+  "No access if refunded",
+  "Owner review required before real launch",
+  "Server-side check required",
+  "Client-side flags ignored",
+]) {
+  check(`required rule exists: ${requiredRule}`, rules.some((rule) => rule.label === requiredRule && rule.blocksAccessNow === true));
+}
+
+for (const label of APHRODITE_ENTITLEMENT_STORAGE_SAFETY_LABELS) {
   check(`required safety label exists: ${label}`, userFacingBundle.includes(label));
 }
 
 for (const boundary of [
-  "no-real-payment",
+  "no-real-vip-unlock",
+  "no-payment",
   "no-stars-invoice",
   "no-successful-payment-handler",
   "no-entitlement-creation",
@@ -121,15 +142,15 @@ for (const boundary of [
   "no-database-schema-migration",
   "no-telegram-api-call",
   "no-production-launch",
-  "ledger-writes-nothing",
+  "entitlement-not-created",
 ]) {
   check(`data boundary exists: ${boundary}`, boundaries.some((item) => item.dataBoundary === boundary) && dashboardSource.includes("data-boundary={boundary.dataBoundary}"));
 }
 
-check("dashboard route is registered in dashboard QA", dashboardQaSource.includes("paymentLedgerDesign"));
-check("dashboard QA checks ledger title", dashboardQaSource.includes("Дизайн payment ledger"));
-check("dashboard QA checks ledger classification", dashboardQaSource.includes("Только дизайн ledger"));
-check("dashboard QA checks ledger no write label", dashboardQaSource.includes("Ledger ничего не записывает"));
+check("dashboard route is registered in dashboard QA", dashboardQaSource.includes("entitlementStorageDesign"));
+check("dashboard QA checks storage title", dashboardQaSource.includes("Дизайн хранения VIP-доступа"));
+check("dashboard QA checks storage classification", dashboardQaSource.includes("Только дизайн хранения"));
+check("dashboard QA checks entitlement-not-created label", dashboardQaSource.includes("Entitlement не создаётся"));
 
 check("no real payment API is used", !/from ['"]stripe|require\(['"]stripe|new Stripe\b|checkout\.sessions|charges\.create|payment_intents|paypal|yookassa|liqpay/i.test(implementationBundle));
 check("no Stars invoice is created", !/sendInvoice\(|createInvoiceLink\(|answerPreCheckoutQuery\(/i.test(implementationBundle));

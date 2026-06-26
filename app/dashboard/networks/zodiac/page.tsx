@@ -334,6 +334,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Дизайн хранения VIP-доступа",
+    href: "/dashboard/networks/zodiac/entitlement-storage-design",
+    icon: ShieldCheck,
+    caption: "Package 164 - дизайн будущих entitlement records без создания доступа, оплаты и DB-записи.",
+    tone: "cyan",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,

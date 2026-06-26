@@ -78,6 +78,7 @@ const ROUTES = {
   vipFreePreviewFallbackMap: "/dashboard/networks/zodiac/vip-free-preview-fallback-map",
   productCatalogFinalization: "/dashboard/networks/zodiac/product-catalog-finalization",
   paymentLedgerDesign: "/dashboard/networks/zodiac/payment-ledger-design",
+  entitlementStorageDesign: "/dashboard/networks/zodiac/entitlement-storage-design",
   vipCompatibilityReport: "/vip-compatibility-report",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
@@ -746,6 +747,18 @@ async function main() {
     assertIncludes(pages.paymentLedgerDesign, "Нет вызова Telegram API", "telegram boundary");
     assertIncludes(pages.paymentLedgerDesign, "Ledger ничего не записывает", "ledger writes nothing boundary");
     assertIncludes(pages.paymentLedgerDesign, 'data-boundary="ledger-writes-nothing"', "ledger writes nothing data boundary");
+    assertIncludes(pages.entitlementStorageDesign, "Дизайн хранения VIP-доступа", "entitlement storage title");
+    assertIncludes(pages.entitlementStorageDesign, "Только дизайн хранения", "entitlement storage classification");
+    assertIncludes(pages.entitlementStorageDesign, "Entitlement не создаётся", "entitlement not created boundary");
+    assertIncludes(pages.entitlementStorageDesign, "Нет реальной VIP-разблокировки", "vip unlock boundary");
+    assertIncludes(pages.entitlementStorageDesign, "Нет оплаты", "payment boundary");
+    assertIncludes(pages.entitlementStorageDesign, "Нет Telegram Stars invoice", "stars invoice boundary");
+    assertIncludes(pages.entitlementStorageDesign, "Нет successful_payment handler", "successful payment boundary");
+    assertIncludes(pages.entitlementStorageDesign, "Нет entitlement creation", "entitlement creation boundary");
+    assertIncludes(pages.entitlementStorageDesign, "Нет записи в базу данных", "database boundary");
+    assertIncludes(pages.entitlementStorageDesign, "Нет миграции схемы базы данных", "database schema boundary");
+    assertIncludes(pages.entitlementStorageDesign, "Нет вызова Telegram API", "telegram boundary");
+    assertIncludes(pages.entitlementStorageDesign, 'data-boundary="entitlement-not-created"', "entitlement not created data boundary");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");
