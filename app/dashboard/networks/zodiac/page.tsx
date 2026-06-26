@@ -526,6 +526,13 @@ const platformSections = [
     tone: "emerald",
   },
   {
+    title: "Финальная полировка текстов",
+    href: "/dashboard/networks/zodiac/product-copy-final-polish",
+    icon: FileText,
+    caption: "Package 194 - copy standards для Aphrodite без изменения live Mini App текстов, оплаты, VIP и Telegram API.",
+    tone: "emerald",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,

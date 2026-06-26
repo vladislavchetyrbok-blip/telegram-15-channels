@@ -68,6 +68,7 @@ const ROUTES = {
   publicLaunchChecklistRefresh: "/dashboard/networks/zodiac/public-launch-checklist-refresh",
   miniappUxSimplificationReview: "/dashboard/networks/zodiac/miniapp-ux-simplification-review",
   visualUiPolishPlan: "/dashboard/networks/zodiac/visual-ui-polish-plan",
+  productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   realImplementationPath: "/dashboard/networks/zodiac/real-implementation-path",
   telegramInitDataValidation: "/dashboard/networks/zodiac/telegram-initdata-validation",
   userProfileFoundation: "/dashboard/networks/zodiac/user-profile-foundation",
@@ -205,6 +206,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/public-launch-checklist-refresh"', "public launch checklist refresh route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-ux-simplification-review"', "miniapp ux simplification review route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/visual-ui-polish-plan"', "visual ui polish plan route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
 
     assertIncludes(pages.analytics, "Аналитика Mini App", "analytics page heading");
     assertIncludes(pages.analytics, "First-users funnel", "first-users funnel block");
@@ -735,6 +737,15 @@ async function main() {
     assertIncludes(pages.visualUiPolishPlan, "Love Reading result style", "visual polish love result");
     assertIncludes(pages.visualUiPolishPlan, "Telegram WebApp safe area", "visual polish safe area");
     assertIncludes(pages.visualUiPolishPlan, "dark theme consistency", "visual polish dark theme");
+    assertIncludes(pages.productCopyFinalPolish, "Финальная полировка текстов Aphrodite", "product copy polish title");
+    assertIncludes(pages.productCopyFinalPolish, "Только copy polish", "product copy polish classification");
+    assertIncludes(pages.productCopyFinalPolish, "Copy polish не включает оплату", "product copy polish no payment");
+    assertIncludes(pages.productCopyFinalPolish, "first screen promise", "product copy first screen promise");
+    assertIncludes(pages.productCopyFinalPolish, "AI Love Reading", "product copy love reading");
+    assertIncludes(pages.productCopyFinalPolish, "Full Love Report teaser", "product copy teaser");
+    assertIncludes(pages.productCopyFinalPolish, "no manipulative fear copy", "product copy no fear");
+    assertIncludes(pages.productCopyFinalPolish, "no medical/legal/financial advice", "product copy no advice");
+    assertIncludes(pages.productCopyFinalPolish, "short mobile-readable text", "product copy mobile readable");
 
     assertIncludes(pages.realImplementationPath, "Real Implementation Path", "real implementation path page title");
     assertIncludes(pages.realImplementationPath, "Selected path", "real implementation selected path classification");
