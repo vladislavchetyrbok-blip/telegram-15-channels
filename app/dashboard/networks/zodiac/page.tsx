@@ -369,6 +369,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Review Telegram Stars",
+    href: "/dashboard/networks/zodiac/telegram-stars-payment-architecture-review",
+    icon: ShieldCheck,
+    caption: "Package 169 - финальный architecture review будущей Telegram Stars оплаты без invoice, handler, ledger write и VIP unlock.",
+    tone: "cyan",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,
