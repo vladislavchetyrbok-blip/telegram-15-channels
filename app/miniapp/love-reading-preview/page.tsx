@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Heart, Sparkles, ShieldCheck, ArrowLeft } from "lucide-react";
 import { createAphroditeLoveReadingFoundationPreview } from "@/lib/zodiac/aphrodite-ai-love-reading-foundation";
 import { getAphroditeVipOfferSections } from "@/lib/zodiac/aphrodite-paywall-readiness";
+import { recordAphroditeMiniAppNoopIntegrationPoint } from "@/lib/zodiac/aphrodite-miniapp-analytics-noop-integration-points";
 
 export const metadata: Metadata = {
   title: "AI Love Reading — бесплатный preview",
@@ -43,6 +44,11 @@ const SAFETY_BOUNDARIES = [
 ];
 
 export default function LoveReadingPreviewPage() {
+  recordAphroditeMiniAppNoopIntegrationPoint("route-love-reading-opened");
+  recordAphroditeMiniAppNoopIntegrationPoint("route-love-reading-preview-viewed");
+  recordAphroditeMiniAppNoopIntegrationPoint("route-full-love-report-teaser-viewed");
+  recordAphroditeMiniAppNoopIntegrationPoint("route-free-preview-fallback-shown");
+
   return (
     <div className="flex min-h-screen flex-col bg-[#070b14] text-slate-100 font-sans">
       <header className="sticky top-0 z-10 border-b border-slate-800 bg-[#070b14]/80 px-4 py-3 backdrop-blur-md">

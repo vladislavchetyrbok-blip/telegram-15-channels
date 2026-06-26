@@ -12,6 +12,7 @@ import {
   getAphroditeMiniAppAnalyticsNoopEvents,
   getAphroditeMiniAppAnalyticsNoopNextSteps,
 } from "@/lib/zodiac/aphrodite-miniapp-analytics-noop-event-bus";
+import { getAphroditeMiniAppAnalyticsNoopIntegrationPoints } from "@/lib/zodiac/aphrodite-miniapp-analytics-noop-integration-points";
 
 export const metadata = {
   title: APHRODITE_MINIAPP_ANALYTICS_NOOP_EVENT_BUS_TITLE,
@@ -20,6 +21,7 @@ export const metadata = {
 const events = getAphroditeMiniAppAnalyticsNoopEvents();
 const boundaries = getAphroditeMiniAppAnalyticsNoopBoundaries();
 const nextSteps = getAphroditeMiniAppAnalyticsNoopNextSteps();
+const integrationPoints = getAphroditeMiniAppAnalyticsNoopIntegrationPoints();
 const sampleResult = emitAphroditeMiniAppAnalyticsNoopEvent({
   eventId: "love_reading_form_submitted",
   source: "dashboard-readiness",
@@ -117,6 +119,27 @@ export default function AphroditeMiniAppAnalyticsNoopEventBusPage() {
                 <p className="mt-3 text-xs leading-5 text-slate-400">Stage: {event.stage}. Surface: {event.surface}.</p>
                 <p className="mt-2 text-xs leading-5 text-emerald-100/80">Allowed safe fields: {event.allowedPayloadFields.slice(0, 8).join("; ")}.</p>
                 <p className="mt-2 text-xs leading-5 text-rose-100/80">Forbidden fields include: {event.forbiddenPayloadFields.slice(0, 8).join("; ")}.</p>
+              </article>
+            ))}
+          </div>
+        </ReviewSection>
+
+        <ReviewSection title="noop integration points" icon={<Smartphone className="h-5 w-5 text-cyan-400" />}>
+          <div className="grid gap-4 md:grid-cols-2">
+            {integrationPoints.map((point) => (
+              <article key={point.id} className="rounded-lg border border-slate-800 bg-black/30 p-4">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <h2 className="text-sm font-medium text-white">{point.eventId}</h2>
+                    <p className="mt-1 font-mono text-xs text-slate-500">{point.route}</p>
+                  </div>
+                  <span className={point.status === "integrated" ? "rounded-md border border-emerald-900/50 bg-emerald-950 px-2 py-0.5 text-[11px] text-emerald-200" : "rounded-md border border-amber-900/50 bg-amber-950 px-2 py-0.5 text-[11px] text-amber-200"}>
+                    {point.status}
+                  </span>
+                </div>
+                <p className="mt-3 text-xs leading-5 text-slate-400">Файл: {point.file}</p>
+                <p className="mt-2 text-xs leading-5 text-emerald-100/80">{point.safeReason}</p>
+                {point.pendingReason ? <p className="mt-2 text-xs leading-5 text-amber-100/80">Pending: {point.pendingReason}</p> : null}
               </article>
             ))}
           </div>

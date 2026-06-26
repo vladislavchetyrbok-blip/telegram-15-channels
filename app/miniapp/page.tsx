@@ -3,6 +3,7 @@ import Link from "next/link";
 import { AlertTriangle, ShieldCheck, ChevronRight, LayoutGrid, Star, Fingerprint, Hash, HeartHandshake, Calendar, Users, LockKeyhole, Heart, Sparkles } from "lucide-react";
 import { MOCK_MINI_APP_HUB_ITEMS, MOCK_MINI_APP_SAFETY_RULES } from "@/lib/zodiac/zodiac-miniapp-hub";
 import { createAphroditeLoveReadingFoundationPreview } from "@/lib/zodiac/aphrodite-ai-love-reading-foundation";
+import { recordAphroditeMiniAppNoopIntegrationPoint } from "@/lib/zodiac/aphrodite-miniapp-analytics-noop-integration-points";
 
 export const metadata: Metadata = {
   title: "Zodiac Mini App Hub",
@@ -32,6 +33,8 @@ const FUTURE_VIP_TEASER = "what he/she feels · why he/she pulls away · 30-day 
 const FIRST_SCREEN_BOUNDARIES = ["No payment", "No real VIP unlock", "No Telegram API call", "No database write", "No production launch"];
 
 export default function MiniAppHubPage() {
+  recordAphroditeMiniAppNoopIntegrationPoint("route-miniapp-opened");
+
   return (
     <div className="flex min-h-screen flex-col bg-[#070b14] text-slate-100 font-sans">
       <header className="sticky top-0 z-10 border-b border-slate-800 bg-[#070b14]/80 px-4 py-3 backdrop-blur-md">

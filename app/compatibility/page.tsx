@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ZodiacCompatibilityMiniApp } from "@/components/ZodiacCompatibilityMiniApp";
+import { recordAphroditeMiniAppNoopIntegrationPoint } from "@/lib/zodiac/aphrodite-miniapp-analytics-noop-integration-points";
 
 export const metadata: Metadata = {
   title: "Гороскопы и совместимость",
@@ -11,6 +12,8 @@ interface CompatibilityPageProps {
 }
 
 export default function CompatibilityPage({ searchParams = {} }: CompatibilityPageProps) {
+  recordAphroditeMiniAppNoopIntegrationPoint("route-compatibility-opened");
+
   return (
     <ZodiacCompatibilityMiniApp
       variant="public"
