@@ -56,6 +56,7 @@ const ROUTES = {
   firstPaidMvpReadinessReview: "/dashboard/networks/zodiac/first-paid-mvp-readiness-review",
   supportRefundPolicyReadiness: "/dashboard/networks/zodiac/support-refund-policy-readiness",
   analyticsFunnelReadiness: "/dashboard/networks/zodiac/analytics-funnel-readiness",
+  miniappAnalyticsNoopEventBus: "/dashboard/networks/zodiac/miniapp-analytics-noop-event-bus",
   realImplementationPath: "/dashboard/networks/zodiac/real-implementation-path",
   telegramInitDataValidation: "/dashboard/networks/zodiac/telegram-initdata-validation",
   userProfileFoundation: "/dashboard/networks/zodiac/user-profile-foundation",
@@ -181,6 +182,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/first-paid-mvp-readiness-review"', "first paid mvp readiness route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/support-refund-policy-readiness"', "support refund policy readiness route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/analytics-funnel-readiness"', "analytics funnel readiness route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-analytics-noop-event-bus"', "miniapp analytics noop event bus route link");
 
     assertIncludes(pages.analytics, "Аналитика Mini App", "analytics page heading");
     assertIncludes(pages.analytics, "First-users funnel", "first-users funnel block");
@@ -599,6 +601,15 @@ async function main() {
     assertIncludes(pages.analyticsFunnelReadiness, "Нет реальной оплаты", "payment boundary");
     assertIncludes(pages.analyticsFunnelReadiness, "Нет VIP-разблокировки", "vip boundary");
     assertIncludes(pages.analyticsFunnelReadiness, "Analytics readiness ничего не отправляет", "analytics sends nothing");
+    assertIncludes(pages.miniappAnalyticsNoopEventBus, "Noop Event Bus для Mini App аналитики", "miniapp analytics noop event bus title");
+    assertIncludes(pages.miniappAnalyticsNoopEventBus, "Только noop", "miniapp analytics noop classification");
+    assertIncludes(pages.miniappAnalyticsNoopEventBus, "События не отправляются", "miniapp analytics noop events not sent");
+    assertIncludes(pages.miniappAnalyticsNoopEventBus, "Нет внешней аналитики", "miniapp analytics noop external boundary");
+    assertIncludes(pages.miniappAnalyticsNoopEventBus, "Нет отправки событий", "miniapp analytics noop event sending boundary");
+    assertIncludes(pages.miniappAnalyticsNoopEventBus, "Нет записи в базу данных", "miniapp analytics noop database boundary");
+    assertIncludes(pages.miniappAnalyticsNoopEventBus, "Нет Telegram API", "miniapp analytics noop telegram boundary");
+    assertIncludes(pages.miniappAnalyticsNoopEventBus, "Нет payment tracking", "miniapp analytics noop payment tracking boundary");
+    assertIncludes(pages.miniappAnalyticsNoopEventBus, "Noop event bus ничего не отправляет", "miniapp analytics noop sends nothing");
 
     assertIncludes(pages.realImplementationPath, "Real Implementation Path", "real implementation path page title");
     assertIncludes(pages.realImplementationPath, "Selected path", "real implementation selected path classification");

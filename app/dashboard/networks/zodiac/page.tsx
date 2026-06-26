@@ -440,6 +440,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Noop Event Bus Mini App",
+    href: "/dashboard/networks/zodiac/miniapp-analytics-noop-event-bus",
+    icon: Activity,
+    caption: "Package 181 - безопасная noop-шина событий Mini App без отправки аналитики, DB write, Telegram API и payment tracking.",
+    tone: "cyan",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,
