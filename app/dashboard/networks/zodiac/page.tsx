@@ -582,6 +582,13 @@ const platformSections = [
     tone: "emerald",
   },
   {
+    title: "Public Launch Go/No-Go",
+    href: "/dashboard/networks/zodiac/public-launch-go-no-go-review",
+    icon: ShieldCheck,
+    caption: "Package 212 - финальный Go/No-Go review с publicLaunchApproved=false и ownerManualReviewRequired=true до ручной проверки.",
+    tone: "amber",
+  },
+  {
     title: "Финальная полировка текстов",
     href: "/dashboard/networks/zodiac/product-copy-final-polish",
     icon: FileText,

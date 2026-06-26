@@ -110,6 +110,7 @@ export default function AphroditeVisualIssueTriageBoardPage() {
           <div className="flex flex-wrap gap-3 text-sm">
             <Link href="/dashboard/networks/zodiac" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Zodiac Network</Link>
             <Link href="/dashboard/networks/zodiac/live-version-cache-marker-readiness" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Live Version Cache Marker</Link>
+            <Link href="/dashboard/networks/zodiac/public-launch-go-no-go-review" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Public Launch Go/No-Go</Link>
             <Link href="/dashboard/networks/zodiac/real-device-visual-qa-checklist" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">Real Device Visual QA</Link>
             <Link href="/dashboard/networks/zodiac/telegram-webview-startapp-diagnostics" className="text-indigo-400 underline underline-offset-4 hover:text-indigo-300">StartApp Diagnostics</Link>
           </div>

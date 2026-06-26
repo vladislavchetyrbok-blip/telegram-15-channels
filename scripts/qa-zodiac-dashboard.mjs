@@ -76,6 +76,7 @@ const ROUTES = {
   telegramWebviewStartappDiagnostics: "/dashboard/networks/zodiac/telegram-webview-startapp-diagnostics",
   liveVersionCacheMarkerReadiness: "/dashboard/networks/zodiac/live-version-cache-marker-readiness",
   visualIssueTriageBoard: "/dashboard/networks/zodiac/visual-issue-triage-board",
+  publicLaunchGoNoGoReview: "/dashboard/networks/zodiac/public-launch-go-no-go-review",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -225,6 +226,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/telegram-webview-startapp-diagnostics"', "telegram webview startapp diagnostics route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/live-version-cache-marker-readiness"', "live version cache marker readiness route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/visual-issue-triage-board"', "visual issue triage board route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/public-launch-go-no-go-review"', "public launch go no-go review route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");
@@ -868,6 +870,25 @@ async function main() {
     assertIncludes(pages.visualIssueTriageBoard, "blocker", "blocker severity");
     assertIncludes(pages.visualIssueTriageBoard, "needs screenshot", "needs screenshot status");
     assertIncludes(pages.visualIssueTriageBoard, "ready for fix", "ready for fix status");
+    assertIncludes(pages.publicLaunchGoNoGoReview, "Public Launch Go/No-Go Review", "public launch go no-go title");
+    assertIncludes(pages.publicLaunchGoNoGoReview, "Только Go/No-Go review", "go no-go classification");
+    assertIncludes(pages.publicLaunchGoNoGoReview, "Запуск не разрешён", "launch not approved boundary");
+    assertIncludes(pages.publicLaunchGoNoGoReview, "Нужна ручная проверка", "manual review required boundary");
+    assertIncludes(pages.publicLaunchGoNoGoReview, "publicLaunchApproved", "public launch approved metric");
+    assertIncludes(pages.publicLaunchGoNoGoReview, "false", "public launch approved false");
+    assertIncludes(pages.publicLaunchGoNoGoReview, "ownerManualReviewRequired", "owner review metric");
+    assertIncludes(pages.publicLaunchGoNoGoReview, "true", "owner review true");
+    assertIncludes(pages.publicLaunchGoNoGoReview, "real device checklist", "real device dependency");
+    assertIncludes(pages.publicLaunchGoNoGoReview, "WebView/startapp diagnostics", "startapp dependency");
+    assertIncludes(pages.publicLaunchGoNoGoReview, "live version/cache marker", "cache marker dependency");
+    assertIncludes(pages.publicLaunchGoNoGoReview, "issue triage board", "issue triage dependency");
+    assertIncludes(pages.publicLaunchGoNoGoReview, "support/refund readiness", "support refund dependency");
+    assertIncludes(pages.publicLaunchGoNoGoReview, "analytics/privacy readiness", "analytics privacy dependency");
+    assertIncludes(pages.publicLaunchGoNoGoReview, "production safety blockers", "production safety blockers");
+    assertIncludes(pages.publicLaunchGoNoGoReview, "DATABASE_URL is not configured", "database url blocker");
+    assertIncludes(pages.publicLaunchGoNoGoReview, "TELEGRAM_BOT_TOKEN is not configured", "telegram bot token blocker");
+    assertIncludes(pages.publicLaunchGoNoGoReview, "Latest backup is older than 24 hours", "backup blocker");
+    assertIncludes(pages.publicLaunchGoNoGoReview, "Go/No-Go review ничего не запускает", "go no-go launches nothing");
     assertIncludes(pages.productCopyFinalPolish, "Финальная полировка текстов Aphrodite", "product copy polish title");
     assertIncludes(pages.productCopyFinalPolish, "Только copy polish", "product copy polish classification");
     assertIncludes(pages.productCopyFinalPolish, "Copy polish не включает оплату", "product copy polish no payment");
