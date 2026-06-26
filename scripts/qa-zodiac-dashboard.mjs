@@ -79,6 +79,7 @@ const ROUTES = {
   productCatalogFinalization: "/dashboard/networks/zodiac/product-catalog-finalization",
   paymentLedgerDesign: "/dashboard/networks/zodiac/payment-ledger-design",
   entitlementStorageDesign: "/dashboard/networks/zodiac/entitlement-storage-design",
+  entitlementSchemaSkeleton: "/dashboard/networks/zodiac/entitlement-schema-skeleton",
   vipCompatibilityReport: "/vip-compatibility-report",
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
@@ -759,6 +760,19 @@ async function main() {
     assertIncludes(pages.entitlementStorageDesign, "Нет миграции схемы базы данных", "database schema boundary");
     assertIncludes(pages.entitlementStorageDesign, "Нет вызова Telegram API", "telegram boundary");
     assertIncludes(pages.entitlementStorageDesign, 'data-boundary="entitlement-not-created"', "entitlement not created data boundary");
+    assertIncludes(pages.entitlementSchemaSkeleton, "Skeleton схемы entitlement", "entitlement schema skeleton title");
+    assertIncludes(pages.entitlementSchemaSkeleton, "Только TypeScript skeleton", "entitlement schema skeleton classification");
+    assertIncludes(pages.entitlementSchemaSkeleton, "grantsAccessNow=false", "schema skeleton grants no access result");
+    assertIncludes(pages.entitlementSchemaSkeleton, "Schema skeleton не выдаёт доступ", "schema skeleton no access boundary");
+    assertIncludes(pages.entitlementSchemaSkeleton, "Нет реальной VIP-разблокировки", "vip unlock boundary");
+    assertIncludes(pages.entitlementSchemaSkeleton, "Нет оплаты", "payment boundary");
+    assertIncludes(pages.entitlementSchemaSkeleton, "Нет Telegram Stars invoice", "stars invoice boundary");
+    assertIncludes(pages.entitlementSchemaSkeleton, "Нет successful_payment handler", "successful payment boundary");
+    assertIncludes(pages.entitlementSchemaSkeleton, "Нет entitlement creation", "entitlement creation boundary");
+    assertIncludes(pages.entitlementSchemaSkeleton, "Нет записи в базу данных", "database boundary");
+    assertIncludes(pages.entitlementSchemaSkeleton, "Нет миграции схемы базы данных", "database schema boundary");
+    assertIncludes(pages.entitlementSchemaSkeleton, "Нет вызова Telegram API", "telegram boundary");
+    assertIncludes(pages.entitlementSchemaSkeleton, 'data-boundary="schema-skeleton-grants-no-access"', "schema skeleton no access data boundary");
 
     assertIncludes(pages.launch, 'data-qa="launch-decision-matrix"', "decision matrix visible");
     assertIncludes(pages.launch, 'data-qa="launch-cross-links"', "launch cross links visible");

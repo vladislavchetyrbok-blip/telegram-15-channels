@@ -341,6 +341,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Skeleton схемы entitlement",
+    href: "/dashboard/networks/zodiac/entitlement-schema-skeleton",
+    icon: ShieldCheck,
+    caption: "Package 165 - TypeScript-only validation skeleton, который не выдаёт доступ и не пишет в DB.",
+    tone: "cyan",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,
