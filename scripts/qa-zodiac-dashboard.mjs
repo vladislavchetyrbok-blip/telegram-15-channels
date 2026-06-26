@@ -70,6 +70,7 @@ const ROUTES = {
   visualUiPolishPlan: "/dashboard/networks/zodiac/visual-ui-polish-plan",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
+  miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
   realImplementationPath: "/dashboard/networks/zodiac/real-implementation-path",
   telegramInitDataValidation: "/dashboard/networks/zodiac/telegram-initdata-validation",
   userProfileFoundation: "/dashboard/networks/zodiac/user-profile-foundation",
@@ -209,6 +210,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/visual-ui-polish-plan"', "visual ui polish plan route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");
 
     assertIncludes(pages.analytics, "Аналитика Mini App", "analytics page heading");
     assertIncludes(pages.analytics, "First-users funnel", "first-users funnel block");
@@ -757,6 +759,10 @@ async function main() {
     assertIncludes(pages.manualLaunchSmokeTestMatrix, "analytics noop", "manual smoke analytics noop");
     assertIncludes(pages.manualLaunchSmokeTestMatrix, "guard denied flow", "manual smoke guard denied");
     assertIncludes(pages.manualLaunchSmokeTestMatrix, "production safety blocked state", "manual smoke production safety blocked");
+    assertIncludes(pages.miniappSimplifiedRedesignImplementationPlan, "План внедрения упрощённого дизайна Mini App", "miniapp simplified redesign plan title");
+    assertIncludes(pages.miniappSimplifiedRedesignImplementationPlan, "Только implementation plan", "miniapp simplified redesign plan classification");
+    assertIncludes(pages.miniappSimplifiedRedesignImplementationPlan, "clear first CTA: AI Love Reading", "miniapp simplified redesign primary cta");
+    assertIncludes(pages.miniappSimplifiedRedesignImplementationPlan, "Live UI не изменён", "miniapp simplified redesign live ui unchanged");
 
     assertIncludes(pages.realImplementationPath, "Real Implementation Path", "real implementation path page title");
     assertIncludes(pages.realImplementationPath, "Selected path", "real implementation selected path classification");
