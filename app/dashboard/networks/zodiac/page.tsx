@@ -426,6 +426,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Support & Refund",
+    href: "/dashboard/networks/zodiac/support-refund-policy-readiness",
+    icon: HeartHandshake,
+    caption: "Package 179 - policy readiness для поддержки и возвратов без оплаты, автоматического refund и Telegram API.",
+    tone: "cyan",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,

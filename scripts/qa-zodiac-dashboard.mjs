@@ -54,6 +54,7 @@ const ROUTES = {
   entitlementCreationMock: "/dashboard/networks/zodiac/entitlement-creation-mock",
   productionPaymentSafetyGate: "/dashboard/networks/zodiac/production-payment-safety-gate",
   firstPaidMvpReadinessReview: "/dashboard/networks/zodiac/first-paid-mvp-readiness-review",
+  supportRefundPolicyReadiness: "/dashboard/networks/zodiac/support-refund-policy-readiness",
   realImplementationPath: "/dashboard/networks/zodiac/real-implementation-path",
   telegramInitDataValidation: "/dashboard/networks/zodiac/telegram-initdata-validation",
   userProfileFoundation: "/dashboard/networks/zodiac/user-profile-foundation",
@@ -177,6 +178,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/entitlement-creation-mock"', "entitlement creation mock route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/production-payment-safety-gate"', "production payment safety gate route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/first-paid-mvp-readiness-review"', "first paid mvp readiness route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/support-refund-policy-readiness"', "support refund policy readiness route link");
 
     assertIncludes(pages.analytics, "Аналитика Mini App", "analytics page heading");
     assertIncludes(pages.analytics, "First-users funnel", "first-users funnel block");
@@ -563,6 +565,27 @@ async function main() {
     assertIncludes(pages.firstPaidMvpReadinessReview, "Нет entitlement creation", "entitlement boundary");
     assertIncludes(pages.firstPaidMvpReadinessReview, "Нет вызова Telegram API", "telegram api boundary");
     assertIncludes(pages.firstPaidMvpReadinessReview, "Paid MVP не разрешён к запуску", "paid mvp not approved");
+    assertIncludes(pages.supportRefundPolicyReadiness, "Support &amp; Refund Readiness", "support refund readiness title");
+    assertIncludes(pages.supportRefundPolicyReadiness, "Только policy readiness", "support refund readiness classification");
+    assertIncludes(pages.supportRefundPolicyReadiness, "Возвраты не автоматизированы", "refunds not automated boundary");
+    assertIncludes(pages.supportRefundPolicyReadiness, "/paysupport", "paysupport readiness visible");
+    assertIncludes(pages.supportRefundPolicyReadiness, "manual owner review rules", "manual owner review section");
+    assertIncludes(pages.supportRefundPolicyReadiness, "Telegram Stars support notes", "telegram stars support notes");
+    assertIncludes(pages.supportRefundPolicyReadiness, "entitlement revocation dependency", "entitlement revocation dependency");
+    assertIncludes(pages.supportRefundPolicyReadiness, "ledger dependency", "ledger dependency");
+    assertIncludes(pages.supportRefundPolicyReadiness, "Нет реальной оплаты", "payment boundary");
+    assertIncludes(pages.supportRefundPolicyReadiness, "Нет Telegram Stars invoice", "stars invoice boundary");
+    assertIncludes(pages.supportRefundPolicyReadiness, "Нет sendInvoice", "sendInvoice boundary");
+    assertIncludes(pages.supportRefundPolicyReadiness, "Нет createInvoiceLink", "createInvoiceLink boundary");
+    assertIncludes(pages.supportRefundPolicyReadiness, "Нет pre_checkout_query handler", "pre-checkout boundary");
+    assertIncludes(pages.supportRefundPolicyReadiness, "Нет successful_payment handler", "successful payment boundary");
+    assertIncludes(pages.supportRefundPolicyReadiness, "Нет payment ledger write", "ledger write boundary");
+    assertIncludes(pages.supportRefundPolicyReadiness, "Нет entitlement creation", "entitlement boundary");
+    assertIncludes(pages.supportRefundPolicyReadiness, "Нет автоматического возврата", "no automatic refund boundary");
+    assertIncludes(pages.supportRefundPolicyReadiness, "Нет записи в базу данных", "database boundary");
+    assertIncludes(pages.supportRefundPolicyReadiness, "Нет миграции схемы базы данных", "schema boundary");
+    assertIncludes(pages.supportRefundPolicyReadiness, "Нет вызова Telegram API", "telegram api boundary");
+    assertIncludes(pages.supportRefundPolicyReadiness, "Support/refund readiness не включает оплату", "support refund no payment");
 
     assertIncludes(pages.realImplementationPath, "Real Implementation Path", "real implementation path page title");
     assertIncludes(pages.realImplementationPath, "Selected path", "real implementation selected path classification");
