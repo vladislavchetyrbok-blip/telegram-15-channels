@@ -511,6 +511,13 @@ const platformSections = [
     tone: "emerald",
   },
   {
+    title: "Review упрощения Mini App UX",
+    href: "/dashboard/networks/zodiac/miniapp-ux-simplification-review",
+    icon: Smartphone,
+    caption: "Package 192 - UX review будущего упрощения Mini App без изменения live flow, оплаты, VIP и Telegram API.",
+    tone: "emerald",
+  },
+  {
     title: "Telegram initData Validation",
     href: "/dashboard/networks/zodiac/telegram-initdata-validation",
     icon: ShieldCheck,

@@ -66,6 +66,7 @@ const ROUTES = {
   streakReminderNoopSkeleton: "/dashboard/networks/zodiac/streak-reminder-noop-skeleton",
   retentionMockDashboardSafetySuite: "/dashboard/networks/zodiac/retention-mock-dashboard-safety-suite",
   publicLaunchChecklistRefresh: "/dashboard/networks/zodiac/public-launch-checklist-refresh",
+  miniappUxSimplificationReview: "/dashboard/networks/zodiac/miniapp-ux-simplification-review",
   realImplementationPath: "/dashboard/networks/zodiac/real-implementation-path",
   telegramInitDataValidation: "/dashboard/networks/zodiac/telegram-initdata-validation",
   userProfileFoundation: "/dashboard/networks/zodiac/user-profile-foundation",
@@ -201,6 +202,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/streak-reminder-noop-skeleton"', "streak reminder noop skeleton route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/retention-mock-dashboard-safety-suite"', "retention mock dashboard safety suite route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/public-launch-checklist-refresh"', "public launch checklist refresh route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-ux-simplification-review"', "miniapp ux simplification review route link");
 
     assertIncludes(pages.analytics, "Аналитика Mini App", "analytics page heading");
     assertIncludes(pages.analytics, "First-users funnel", "first-users funnel block");
@@ -713,6 +715,15 @@ async function main() {
     assertIncludes(pages.publicLaunchChecklistRefresh, "daily/weekly/monthly content", "public launch checklist content cadence");
     assertIncludes(pages.publicLaunchChecklistRefresh, "Love Reading preview", "public launch checklist love preview");
     assertIncludes(pages.publicLaunchChecklistRefresh, "owner review", "public launch checklist owner review");
+    assertIncludes(pages.miniappUxSimplificationReview, "Review упрощения Mini App UX", "miniapp ux review title");
+    assertIncludes(pages.miniappUxSimplificationReview, "Только UX review", "miniapp ux review classification");
+    assertIncludes(pages.miniappUxSimplificationReview, "UX review не меняет live flow", "miniapp ux review live flow boundary");
+    assertIncludes(pages.miniappUxSimplificationReview, "Mini App home screen", "miniapp ux home screen");
+    assertIncludes(pages.miniappUxSimplificationReview, "Love Reading entry", "miniapp ux love reading");
+    assertIncludes(pages.miniappUxSimplificationReview, "CTA hierarchy", "miniapp ux cta hierarchy");
+    assertIncludes(pages.miniappUxSimplificationReview, "Telegram WebApp feel", "miniapp ux telegram feel");
+    assertIncludes(pages.miniappUxSimplificationReview, "one primary CTA", "miniapp ux one primary cta");
+    assertIncludes(pages.miniappUxSimplificationReview, "Telegram safe area", "miniapp ux safe area");
 
     assertIncludes(pages.realImplementationPath, "Real Implementation Path", "real implementation path page title");
     assertIncludes(pages.realImplementationPath, "Selected path", "real implementation selected path classification");
