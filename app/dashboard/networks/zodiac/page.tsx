@@ -764,6 +764,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Content CTA Owner Review Gate",
+    href: "/dashboard/networks/zodiac/content-cta-owner-review-gate",
+    icon: MousePointerClick,
+    caption: "Package 233 - owner review gate for final content and CTA inventory before soft launch, with active CTA logic unchanged.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

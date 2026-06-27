@@ -91,6 +91,7 @@ const ROUTES = {
   backupFreshnessVerificationProtocol: "/dashboard/networks/zodiac/backup-freshness-verification-protocol",
   manualRealDeviceQaEvidenceCapture: "/dashboard/networks/zodiac/manual-real-device-qa-evidence-capture",
   telegramWebviewStartappManualQaProtocol: "/dashboard/networks/zodiac/telegram-webview-startapp-manual-qa-protocol",
+  contentCtaOwnerReviewGate: "/dashboard/networks/zodiac/content-cta-owner-review-gate",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -258,6 +259,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/backup-freshness-verification-protocol"', "backup freshness verification protocol route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-real-device-qa-evidence-capture"', "manual real-device qa evidence capture route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/telegram-webview-startapp-manual-qa-protocol"', "telegram webview startapp manual qa protocol route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/content-cta-owner-review-gate"', "content cta owner review gate route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");
@@ -1269,6 +1271,24 @@ async function main() {
     assertIncludes(pages.telegramWebviewStartappManualQaProtocol, "No messages were sent", "telegram webview no messages");
     assertIncludes(pages.telegramWebviewStartappManualQaProtocol, "publicLaunchApproved", "telegram webview launch flag");
     assertIncludes(pages.telegramWebviewStartappManualQaProtocol, "ownerManualReviewRequired", "telegram webview owner review flag");
+    assertIncludes(pages.contentCtaOwnerReviewGate, "Content CTA Owner Review Gate", "content cta owner gate title");
+    assertIncludes(pages.contentCtaOwnerReviewGate, "Daily Zodiac posts CTA", "content cta daily");
+    assertIncludes(pages.contentCtaOwnerReviewGate, "Weekly Zodiac posts CTA", "content cta weekly");
+    assertIncludes(pages.contentCtaOwnerReviewGate, "general channel CTA", "content cta general channel");
+    assertIncludes(pages.contentCtaOwnerReviewGate, "sign channel CTA", "content cta sign channel");
+    assertIncludes(pages.contentCtaOwnerReviewGate, "Mini App entry CTA", "content cta miniapp");
+    assertIncludes(pages.contentCtaOwnerReviewGate, "compatibility CTA", "content cta compatibility");
+    assertIncludes(pages.contentCtaOwnerReviewGate, "Birth Matrix CTA", "content cta birth matrix");
+    assertIncludes(pages.contentCtaOwnerReviewGate, "Mystic Cards CTA", "content cta mystic");
+    assertIncludes(pages.contentCtaOwnerReviewGate, "VIP locked CTA", "content cta vip locked");
+    assertIncludes(pages.contentCtaOwnerReviewGate, "public launch dashboard links", "content cta dashboard links");
+    assertIncludes(pages.contentCtaOwnerReviewGate, "Telegram WebView/startapp links", "content cta telegram links");
+    assertIncludes(pages.contentCtaOwnerReviewGate, "owner decision status", "content cta owner decision");
+    assertIncludes(pages.contentCtaOwnerReviewGate, "Active CTA logic was not changed", "content cta active logic unchanged");
+    assertIncludes(pages.contentCtaOwnerReviewGate, "No publish scripts changed", "content cta publish scripts unchanged");
+    assertIncludes(pages.contentCtaOwnerReviewGate, "No Telegram messages were sent", "content cta no messages");
+    assertIncludes(pages.contentCtaOwnerReviewGate, "publicLaunchApproved", "content cta launch flag");
+    assertIncludes(pages.contentCtaOwnerReviewGate, "ownerManualReviewRequired", "content cta owner review flag");
     assertIncludes(pages.productCopyFinalPolish, "Финальная полировка текстов Aphrodite", "product copy polish title");
     assertIncludes(pages.productCopyFinalPolish, "Только copy polish", "product copy polish classification");
     assertIncludes(pages.productCopyFinalPolish, "Copy polish не включает оплату", "product copy polish no payment");
