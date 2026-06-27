@@ -913,6 +913,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Content CTA Owner Review Execution",
+    href: "/dashboard/networks/zodiac/content-cta-owner-review-execution",
+    icon: MousePointerClick,
+    caption: "Package 255 - execution record for content and CTA owner review before soft launch; browser verified where safe, owner approval still required.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
