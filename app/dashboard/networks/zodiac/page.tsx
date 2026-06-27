@@ -778,6 +778,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Soft Launch Owner Go/No-Go Gate",
+    href: "/dashboard/networks/zodiac/soft-launch-owner-go-no-go-gate",
+    icon: ShieldCheck,
+    caption: "Package 235 - final owner go/no-go gate for future soft launch; publicLaunchApproved=false and owner review remains required.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

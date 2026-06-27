@@ -93,6 +93,7 @@ const ROUTES = {
   telegramWebviewStartappManualQaProtocol: "/dashboard/networks/zodiac/telegram-webview-startapp-manual-qa-protocol",
   contentCtaOwnerReviewGate: "/dashboard/networks/zodiac/content-cta-owner-review-gate",
   launchSimulationStatusReport: "/dashboard/networks/zodiac/launch-simulation-status-report",
+  softLaunchOwnerGoNoGoGate: "/dashboard/networks/zodiac/soft-launch-owner-go-no-go-gate",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -1308,6 +1309,28 @@ async function main() {
     assertIncludes(pages.launchSimulationStatusReport, "No production launch", "launch simulation no production launch");
     assertIncludes(pages.launchSimulationStatusReport, "publicLaunchApproved", "launch simulation launch flag");
     assertIncludes(pages.launchSimulationStatusReport, "ownerManualReviewRequired", "launch simulation owner review flag");
+    assertIncludes(pages.softLaunchOwnerGoNoGoGate, "Soft Launch Owner Go/No-Go Gate", "soft launch owner gate title");
+    assertIncludes(pages.softLaunchOwnerGoNoGoGate, "publicLaunchApproved", "soft launch publicLaunchApproved flag");
+    assertIncludes(pages.softLaunchOwnerGoNoGoGate, "ownerManualReviewRequired", "soft launch owner review required flag");
+    assertIncludes(pages.softLaunchOwnerGoNoGoGate, "soft launch not approved", "soft launch not approved");
+    assertIncludes(pages.softLaunchOwnerGoNoGoGate, "production launch not done", "soft launch production not done");
+    assertIncludes(pages.softLaunchOwnerGoNoGoGate, "Telegram API not used", "soft launch telegram api not used");
+    assertIncludes(pages.softLaunchOwnerGoNoGoGate, "messages not sent", "soft launch messages not sent");
+    assertIncludes(pages.softLaunchOwnerGoNoGoGate, "payments not added", "soft launch payments not added");
+    assertIncludes(pages.softLaunchOwnerGoNoGoGate, "VIP unlock not added", "soft launch vip not added");
+    assertIncludes(pages.softLaunchOwnerGoNoGoGate, "DB writes not added", "soft launch db writes not added");
+    assertIncludes(pages.softLaunchOwnerGoNoGoGate, "cron/workflows/publish scripts not changed", "soft launch cron publish unchanged");
+    assertIncludes(pages.softLaunchOwnerGoNoGoGate, "DATABASE_URL configured manually", "soft launch database url");
+    assertIncludes(pages.softLaunchOwnerGoNoGoGate, "TELEGRAM_BOT_TOKEN configured manually", "soft launch telegram token");
+    assertIncludes(pages.softLaunchOwnerGoNoGoGate, "backup &lt;24h confirmed manually", "soft launch backup less than 24h");
+    assertIncludes(pages.softLaunchOwnerGoNoGoGate, "restore rehearsal manually checked", "soft launch restore rehearsal");
+    assertIncludes(pages.softLaunchOwnerGoNoGoGate, "real-device QA completed manually", "soft launch real device qa");
+    assertIncludes(pages.softLaunchOwnerGoNoGoGate, "Telegram WebView/startapp QA completed manually", "soft launch webview qa");
+    assertIncludes(pages.softLaunchOwnerGoNoGoGate, "content/CTA owner review completed manually", "soft launch cta review");
+    assertIncludes(pages.softLaunchOwnerGoNoGoGate, "launch simulation report reviewed", "soft launch simulation reviewed");
+    assertIncludes(pages.softLaunchOwnerGoNoGoGate, "rollback plan understood", "soft launch rollback plan");
+    assertIncludes(pages.softLaunchOwnerGoNoGoGate, "owner explicit approval", "soft launch owner approval");
+    assertIncludes(pages.softLaunchOwnerGoNoGoGate, "autoApprovalAdded", "soft launch no auto approval flag");
     assertIncludes(pages.productCopyFinalPolish, "Финальная полировка текстов Aphrodite", "product copy polish title");
     assertIncludes(pages.productCopyFinalPolish, "Только copy polish", "product copy polish classification");
     assertIncludes(pages.productCopyFinalPolish, "Copy polish не включает оплату", "product copy polish no payment");
