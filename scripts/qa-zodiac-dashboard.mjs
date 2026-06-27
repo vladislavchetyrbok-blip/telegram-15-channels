@@ -87,6 +87,7 @@ const ROUTES = {
   publicApiExposureHardening: "/dashboard/networks/zodiac/public-api-exposure-hardening",
   envExampleExpansionReadiness: "/dashboard/networks/zodiac/env-example-expansion-readiness",
   qaCrlfCrossPlatformRobustness: "/dashboard/networks/zodiac/qa-crlf-cross-platform-robustness",
+  productionEnvSetupProtocol: "/dashboard/networks/zodiac/production-env-setup-protocol",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -250,6 +251,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/public-api-exposure-hardening"', "public api exposure hardening route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/env-example-expansion-readiness"', "env example expansion readiness route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/qa-crlf-cross-platform-robustness"', "qa crlf cross-platform robustness route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/production-env-setup-protocol"', "production env setup protocol route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");
@@ -1203,6 +1205,18 @@ async function main() {
     assertIncludes(pages.qaCrlfCrossPlatformRobustness, "runtimeBehaviorChanged", "qa crlf runtime behavior flag");
     assertIncludes(pages.qaCrlfCrossPlatformRobustness, "publicLaunchApproved", "qa crlf launch flag");
     assertIncludes(pages.qaCrlfCrossPlatformRobustness, "ownerManualReviewRequired", "qa crlf owner review flag");
+    assertIncludes(pages.productionEnvSetupProtocol, "Production Env Setup Protocol", "production env setup title");
+    assertIncludes(pages.productionEnvSetupProtocol, "DATABASE_URL", "production env database url");
+    assertIncludes(pages.productionEnvSetupProtocol, "TELEGRAM_BOT_TOKEN", "production env telegram token");
+    assertIncludes(pages.productionEnvSetupProtocol, "APHRODITE_SESSION_SECRET", "production env aphrodite session secret");
+    assertIncludes(pages.productionEnvSetupProtocol, "public app URL", "production env public app url");
+    assertIncludes(pages.productionEnvSetupProtocol, "Telegram Mini App URL", "production env mini app url");
+    assertIncludes(pages.productionEnvSetupProtocol, "secret masking", "production env secret masking");
+    assertIncludes(pages.productionEnvSetupProtocol, "token rotation", "production env token rotation");
+    assertIncludes(pages.productionEnvSetupProtocol, "Never paste secrets into chat reports", "production env never paste secrets");
+    assertIncludes(pages.productionEnvSetupProtocol, "never commit .env production values", "production env never commit env values");
+    assertIncludes(pages.productionEnvSetupProtocol, "publicLaunchApproved", "production env launch flag");
+    assertIncludes(pages.productionEnvSetupProtocol, "ownerManualReviewRequired", "production env owner review flag");
     assertIncludes(pages.productCopyFinalPolish, "Финальная полировка текстов Aphrodite", "product copy polish title");
     assertIncludes(pages.productCopyFinalPolish, "Только copy polish", "product copy polish classification");
     assertIncludes(pages.productCopyFinalPolish, "Copy polish не включает оплату", "product copy polish no payment");

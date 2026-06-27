@@ -736,6 +736,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Production Env Setup Protocol",
+    href: "/dashboard/networks/zodiac/production-env-setup-protocol",
+    icon: Settings,
+    caption: "Package 229 - manual owner protocol for DATABASE_URL, TELEGRAM_BOT_TOKEN, session secret, public URLs, backup, launch flags and secret hygiene.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
