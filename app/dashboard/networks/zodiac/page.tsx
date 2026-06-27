@@ -708,6 +708,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Dashboard Auth System Decision",
+    href: "/dashboard/networks/zodiac/dashboard-auth-system-decision",
+    icon: LockKeyhole,
+    caption: "Package 225 - canonical dashboard auth decision: aphrodite_session via middleware, legacy zodiac_dashboard_session disabled.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

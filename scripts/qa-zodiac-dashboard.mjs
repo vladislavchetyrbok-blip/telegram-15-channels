@@ -83,6 +83,7 @@ const ROUTES = {
   productionEnvHandoffChecklist: "/dashboard/networks/zodiac/production-env-handoff-checklist",
   manualLaunchRunbookRollbackPack: "/dashboard/networks/zodiac/manual-launch-runbook-rollback-pack",
   realDeviceQaExecutionPack: "/dashboard/networks/zodiac/real-device-qa-execution-pack",
+  dashboardAuthSystemDecision: "/dashboard/networks/zodiac/dashboard-auth-system-decision",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -127,7 +128,6 @@ const ROUTES = {
   vipPreview: "/vip-preview",
   dailySystem: "/dashboard/networks/zodiac/daily-system",
   softLaunch: "/dashboard/networks/zodiac/soft-launch",
-  dashboardAuthStatus: "/api/dashboard/auth/status",
   unifiedStatus: "/api/system/unified-status",
   aphroditeOverview: "/dashboard/networks/aphrodite",
   aphroditeChannels: "/dashboard/networks/aphrodite/channels",
@@ -160,6 +160,10 @@ async function main() {
     // Check that a protected route redirects
     console.log(`Checking unauthorized access to /dashboard/networks/aphrodite`);
     await checkRedirect(`${URL_BASE}/dashboard/networks/aphrodite`);
+    await checkRedirectWithCookie(`${URL_BASE}/dashboard/networks/zodiac`, "zodiac_dashboard_session=legacy-test-cookie");
+    await checkLegacyDashboardAuthDisabled(`${URL_BASE}/api/dashboard/auth/status`, "GET");
+    await checkLegacyDashboardAuthDisabled(`${URL_BASE}/api/dashboard/auth/login`, "POST");
+    await checkLegacyDashboardAuthDisabled(`${URL_BASE}/api/dashboard/auth/logout`, "POST");
 
     // Login and get cookie
     console.log(`Logging in via API...`);
@@ -239,6 +243,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/production-env-handoff-checklist"', "production env handoff checklist route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-runbook-rollback-pack"', "manual launch runbook rollback pack route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/real-device-qa-execution-pack"', "real device qa execution pack route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/dashboard-auth-system-decision"', "dashboard auth system decision route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");
@@ -1154,6 +1159,18 @@ async function main() {
     assertIncludes(pages.realDeviceQaExecutionPack, "vipUnlockAdded", "real device qa vip flag");
     assertIncludes(pages.realDeviceQaExecutionPack, "secretsAdded", "real device qa secrets flag");
     assertIncludes(pages.realDeviceQaExecutionPack, "productionDbConnected", "real device qa production db flag");
+    assertIncludes(pages.dashboardAuthSystemDecision, "Dashboard Auth System Decision", "dashboard auth decision title");
+    assertIncludes(pages.dashboardAuthSystemDecision, "aphrodite_session", "dashboard auth canonical cookie");
+    assertIncludes(pages.dashboardAuthSystemDecision, "middleware.ts", "dashboard auth middleware protection");
+    assertIncludes(pages.dashboardAuthSystemDecision, "/dashboard/*", "dashboard auth protected pattern");
+    assertIncludes(pages.dashboardAuthSystemDecision, "/login", "dashboard auth canonical login path");
+    assertIncludes(pages.dashboardAuthSystemDecision, "zodiac_dashboard_session", "dashboard auth legacy cookie");
+    assertIncludes(pages.dashboardAuthSystemDecision, "LEGACY DISABLED", "dashboard auth legacy disabled status");
+    assertIncludes(pages.dashboardAuthSystemDecision, "410 Disabled", "dashboard auth legacy api disabled handling");
+    assertIncludes(pages.dashboardAuthSystemDecision, "publicLaunchApproved", "dashboard auth public launch flag");
+    assertIncludes(pages.dashboardAuthSystemDecision, "ownerManualReviewRequired", "dashboard auth owner review flag");
+    assertIncludes(pages.dashboardAuthSystemDecision, "dashboardRemainsProtected", "dashboard auth protection flag");
+    assertIncludes(pages.dashboardAuthSystemDecision, "dashboardPublicBypassAdded", "dashboard auth bypass flag");
     assertIncludes(pages.productCopyFinalPolish, "Финальная полировка текстов Aphrodite", "product copy polish title");
     assertIncludes(pages.productCopyFinalPolish, "Только copy polish", "product copy polish classification");
     assertIncludes(pages.productCopyFinalPolish, "Copy polish не включает оплату", "product copy polish no payment");
@@ -1950,6 +1967,38 @@ async function checkRedirect(url) {
   if (!location || !location.includes("/login")) {
     throw new Error(`Expected redirect to /login for ${url}, but got ${location}`);
   }
+  return true;
+}
+
+async function checkRedirectWithCookie(url, cookie) {
+  const res = await fetch(url, {
+    headers: { "Cookie": cookie },
+    redirect: "manual",
+  });
+  if (res.status !== 307 && res.status !== 302 && res.status !== 308) {
+    throw new Error(`Expected redirect for ${url} with cookie ${cookie}, but got ${res.status}`);
+  }
+  const location = res.headers.get("location");
+  if (!location || !location.includes("/login")) {
+    throw new Error(`Expected redirect to /login for ${url} with cookie ${cookie}, but got ${location}`);
+  }
+  return true;
+}
+
+async function checkLegacyDashboardAuthDisabled(url, method) {
+  const options = {
+    method,
+    headers: method === "POST" ? { "Content-Type": "application/json" } : {},
+    body: method === "POST" ? JSON.stringify({ password: "legacy-passcode", next: "/dashboard/networks/zodiac" }) : undefined,
+    redirect: "manual",
+  };
+  const res = await fetch(url, options);
+  if (res.status !== 410) {
+    throw new Error(`Expected legacy dashboard auth endpoint ${url} to return 410, got ${res.status}`);
+  }
+  const text = await res.text();
+  assertIncludes(text, "legacy_dashboard_auth_disabled", `legacy dashboard auth disabled response for ${url}`);
+  assertIncludes(text, "aphrodite_session", `canonical auth cookie response for ${url}`);
   return true;
 }
 
