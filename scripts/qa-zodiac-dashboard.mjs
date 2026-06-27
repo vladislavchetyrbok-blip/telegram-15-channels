@@ -84,6 +84,7 @@ const ROUTES = {
   manualLaunchRunbookRollbackPack: "/dashboard/networks/zodiac/manual-launch-runbook-rollback-pack",
   realDeviceQaExecutionPack: "/dashboard/networks/zodiac/real-device-qa-execution-pack",
   dashboardAuthSystemDecision: "/dashboard/networks/zodiac/dashboard-auth-system-decision",
+  publicApiExposureHardening: "/dashboard/networks/zodiac/public-api-exposure-hardening",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -244,6 +245,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-runbook-rollback-pack"', "manual launch runbook rollback pack route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/real-device-qa-execution-pack"', "real device qa execution pack route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/dashboard-auth-system-decision"', "dashboard auth system decision route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/public-api-exposure-hardening"', "public api exposure hardening route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");
@@ -1171,6 +1173,15 @@ async function main() {
     assertIncludes(pages.dashboardAuthSystemDecision, "ownerManualReviewRequired", "dashboard auth owner review flag");
     assertIncludes(pages.dashboardAuthSystemDecision, "dashboardRemainsProtected", "dashboard auth protection flag");
     assertIncludes(pages.dashboardAuthSystemDecision, "dashboardPublicBypassAdded", "dashboard auth bypass flag");
+    assertIncludes(pages.publicApiExposureHardening, "Public API Exposure Hardening", "public api exposure hardening title");
+    assertIncludes(pages.publicApiExposureHardening, "/api/system/unified-status", "public api unified status route");
+    assertIncludes(pages.publicApiExposureHardening, "/api/zodiac/analytics/event", "public api analytics event route");
+    assertIncludes(pages.publicApiExposureHardening, "REDACTED", "public api redacted status");
+    assertIncludes(pages.publicApiExposureHardening, "NO TRUST", "public api no trust status");
+    assertIncludes(pages.publicApiExposureHardening, "publicLaunchApproved", "public api launch flag");
+    assertIncludes(pages.publicApiExposureHardening, "ownerManualReviewRequired", "public api owner review flag");
+    assertIncludes(pages.publicApiExposureHardening, "databaseWriteAdded", "public api db write flag");
+    assertIncludes(pages.publicApiExposureHardening, "externalAnalyticsAdded", "public api external analytics flag");
     assertIncludes(pages.productCopyFinalPolish, "Финальная полировка текстов Aphrodite", "product copy polish title");
     assertIncludes(pages.productCopyFinalPolish, "Только copy polish", "product copy polish classification");
     assertIncludes(pages.productCopyFinalPolish, "Copy polish не включает оплату", "product copy polish no payment");

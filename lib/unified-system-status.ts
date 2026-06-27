@@ -75,3 +75,62 @@ export async function getUnifiedSystemStatus() {
     updatedAt: new Date().toISOString(),
   };
 }
+
+export async function getRedactedUnifiedSystemStatus() {
+  const status = await getUnifiedSystemStatus();
+
+  return {
+    channelsTotal: status.channelsTotal,
+    telegram: {
+      tokenConfigured: status.telegram.tokenConfigured,
+      getMeOk: status.telegram.getMeOk,
+      botUsername: null,
+      targetsLinked: null,
+      chatFound: null,
+      botAdmin: null,
+      canPost: null,
+      botAccessOk: status.telegram.botAccessOk > 0 ? 1 : 0,
+      accessStatus: status.telegram.botAccessOk > 0 ? "available" : "not_verified",
+      mode: status.telegram.productionEnabled ? "production-configured" : "safe-preview",
+      productionEnabled: status.telegram.productionEnabled,
+      realSendsTotal: null,
+      lastRealSend: null,
+      lastError: null,
+      lastErrorRedacted: Boolean(status.telegram.lastError),
+    },
+    autopublish: {
+      enabled: status.autopublish.enabled,
+      currentMode: status.autopublish.currentMode,
+      schedulerStatus: status.autopublish.enabled ? status.autopublish.schedulerStatus : "stopped",
+      workerRunning: Boolean(status.autopublish.workerRunning && status.autopublish.enabled),
+      lastCheck: null,
+      nextCheck: null,
+      nextPublicationTime: null,
+      nextChannel: null,
+      nextPost: null,
+      publishedToday: null,
+      failedToday: null,
+      blockedToday: null,
+      skippedToday: null,
+      queueHealth: "redacted",
+      telegramConnection: "redacted",
+      contentQuality: "redacted",
+    },
+    content: {
+      weeklyPlanTotal: null,
+      readyToPublish: 0,
+      scheduled: null,
+      published: null,
+      blocked: null,
+      weakText: null,
+      weakImage: null,
+      telegramImagesOk: status.content.telegramImagesOk,
+      legacyTestPublishable: null,
+      countsRedacted: true,
+    },
+    nonBlockers: status.nonBlockers,
+    publicRedacted: true,
+    redactionReason: "Public API response hides operational internals.",
+    updatedAt: status.updatedAt,
+  };
+}

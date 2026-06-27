@@ -715,6 +715,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Public API Exposure Hardening",
+    href: "/dashboard/networks/zodiac/public-api-exposure-hardening",
+    icon: ShieldCheck,
+    caption: "Package 226 - redacted unified status and no-trust analytics event hardening without DB writes or external analytics.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
