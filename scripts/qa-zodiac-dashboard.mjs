@@ -109,6 +109,7 @@ const ROUTES = {
   softLaunchPreflightChecklist: "/dashboard/networks/zodiac/soft-launch-preflight-checklist",
   ownerManualReviewPack: "/dashboard/networks/zodiac/owner-manual-review-pack",
   realDeviceQaExecutionGate: "/dashboard/networks/zodiac/real-device-qa-execution-gate",
+  softLaunchCandidateReport: "/dashboard/networks/zodiac/soft-launch-candidate-report",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -286,6 +287,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/soft-launch-preflight-checklist"', "soft launch preflight checklist route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/owner-manual-review-pack"', "owner manual review pack route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/real-device-qa-execution-gate"', "real device qa execution gate route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/soft-launch-candidate-report"', "soft launch candidate report route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");
@@ -1404,6 +1406,20 @@ async function main() {
     assertIncludes(pages.realDeviceQaExecutionGate, "screenshot/evidence", "real device qa evidence field");
     assertIncludes(pages.realDeviceQaExecutionGate, "No fake screenshots", "real device qa no fake screenshots");
     assertIncludes(pages.realDeviceQaExecutionGate, "Package 252 - Soft Launch Candidate Report", "real device qa next package");
+    assertIncludes(pages.softLaunchCandidateReport, "Soft Launch Candidate Report", "soft launch candidate report title");
+    assertIncludes(pages.softLaunchCandidateReport, "Soft Launch Candidate Status: NOT READY", "soft launch candidate status");
+    assertIncludes(pages.softLaunchCandidateReport, "APPROVAL NOT GRANTED", "soft launch candidate approval not granted");
+    assertIncludes(pages.softLaunchCandidateReport, "Can execute soft launch now: No", "soft launch candidate cannot execute");
+    assertIncludes(pages.softLaunchCandidateReport, "design sprint status", "soft launch candidate design sprint status");
+    assertIncludes(pages.softLaunchCandidateReport, "Claude audit status", "soft launch candidate claude audit status");
+    assertIncludes(pages.softLaunchCandidateReport, "real-device QA status", "soft launch candidate real device status");
+    assertIncludes(pages.softLaunchCandidateReport, "Telegram WebView/startapp QA status", "soft launch candidate webview status");
+    assertIncludes(pages.softLaunchCandidateReport, "DATABASE_URL still blocker", "soft launch candidate database blocker");
+    assertIncludes(pages.softLaunchCandidateReport, "TELEGRAM_BOT_TOKEN still blocker", "soft launch candidate telegram blocker");
+    assertIncludes(pages.softLaunchCandidateReport, "backup freshness still blocker", "soft launch candidate backup blocker");
+    assertIncludes(pages.softLaunchCandidateReport, "owner approval still required", "soft launch candidate owner approval blocker");
+    assertIncludes(pages.softLaunchCandidateReport, "Production launch not done.", "soft launch candidate no production launch");
+    assertIncludes(pages.softLaunchCandidateReport, "Package 253 - Owner Manual Real-Device Review Execution", "soft launch candidate next package");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "Aphrodite Mini App Visual Design Audit", "aphrodite visual design audit title");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "current Mini App visual status", "aphrodite visual audit current status");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "screen-by-screen findings", "aphrodite visual audit screens");

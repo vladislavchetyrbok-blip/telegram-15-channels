@@ -892,6 +892,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Soft Launch Candidate Report",
+    href: "/dashboard/networks/zodiac/soft-launch-candidate-report",
+    icon: ClipboardCheck,
+    caption: "Package 252 - final soft-launch candidate report; current status is NOT READY and approval remains not granted.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
