@@ -899,6 +899,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Owner Manual Real-Device Review Execution",
+    href: "/dashboard/networks/zodiac/owner-manual-real-device-review-execution",
+    icon: Smartphone,
+    caption: "Package 253 - execution record for manual review across simulated and real mobile devices.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

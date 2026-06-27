@@ -110,6 +110,7 @@ const ROUTES = {
   ownerManualReviewPack: "/dashboard/networks/zodiac/owner-manual-review-pack",
   realDeviceQaExecutionGate: "/dashboard/networks/zodiac/real-device-qa-execution-gate",
   softLaunchCandidateReport: "/dashboard/networks/zodiac/soft-launch-candidate-report",
+  ownerManualRealDeviceReviewExecution: "/dashboard/networks/zodiac/owner-manual-real-device-review-execution",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -1420,6 +1421,11 @@ async function main() {
     assertIncludes(pages.softLaunchCandidateReport, "owner approval still required", "soft launch candidate owner approval blocker");
     assertIncludes(pages.softLaunchCandidateReport, "Production launch not done.", "soft launch candidate no production launch");
     assertIncludes(pages.softLaunchCandidateReport, "Package 253 - Owner Manual Real-Device Review Execution", "soft launch candidate next package");
+    assertIncludes(pages.ownerManualRealDeviceReviewExecution, "Owner Manual Real-Device Review Execution", "owner manual review execution title");
+    assertIncludes(pages.ownerManualRealDeviceReviewExecution, "OWNER REVIEW REQUIRED", "owner manual review execution status");
+    assertIncludes(pages.ownerManualRealDeviceReviewExecution, "Real iPhone Safari", "owner manual review execution iphone");
+    assertIncludes(pages.ownerManualRealDeviceReviewExecution, "Telegram iOS WebView", "owner manual review execution telegram");
+    assertIncludes(pages.ownerManualRealDeviceReviewExecution, "Package 254 — Telegram WebView Startapp Owner Review Execution", "owner manual review execution next package");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "Aphrodite Mini App Visual Design Audit", "aphrodite visual design audit title");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "current Mini App visual status", "aphrodite visual audit current status");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "screen-by-screen findings", "aphrodite visual audit screens");
