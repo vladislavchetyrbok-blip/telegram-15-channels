@@ -107,6 +107,7 @@ const ROUTES = {
   visualFixesAfterScreenshotReview: "/dashboard/networks/zodiac/visual-fixes-after-screenshot-review",
   softLaunchScopeSelector: "/dashboard/networks/zodiac/soft-launch-scope-selector",
   softLaunchPreflightChecklist: "/dashboard/networks/zodiac/soft-launch-preflight-checklist",
+  ownerManualReviewPack: "/dashboard/networks/zodiac/owner-manual-review-pack",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -282,6 +283,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/visual-fixes-after-screenshot-review"', "visual fixes after screenshot review route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/soft-launch-scope-selector"', "soft launch scope selector route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/soft-launch-preflight-checklist"', "soft launch preflight checklist route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/owner-manual-review-pack"', "owner manual review pack route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");
@@ -1373,6 +1375,19 @@ async function main() {
     assertIncludes(pages.softLaunchPreflightChecklist, "backup &lt;24h", "soft launch preflight backup less than 24h");
     assertIncludes(pages.softLaunchPreflightChecklist, "smoke fail", "soft launch preflight smoke fail stop condition");
     assertIncludes(pages.softLaunchPreflightChecklist, "Package 250 - Owner Manual Review Pack", "soft launch preflight next package");
+    assertIncludes(pages.ownerManualReviewPack, "Owner Manual Review Pack", "owner manual review pack title");
+    assertIncludes(pages.ownerManualReviewPack, "APPROVAL NOT GRANTED", "owner manual review approval not granted");
+    assertIncludes(pages.ownerManualReviewPack, "design sprint review summary", "owner manual review design summary");
+    assertIncludes(pages.ownerManualReviewPack, "soft launch scope summary", "owner manual review scope summary");
+    assertIncludes(pages.ownerManualReviewPack, "preflight checklist summary", "owner manual review preflight summary");
+    assertIncludes(pages.ownerManualReviewPack, "content/CTA review status", "owner manual review cta status");
+    assertIncludes(pages.ownerManualReviewPack, "real-device QA status", "owner manual review real device status");
+    assertIncludes(pages.ownerManualReviewPack, "Telegram WebView/startapp QA status", "owner manual review webview status");
+    assertIncludes(pages.ownerManualReviewPack, "backup/restore status", "owner manual review backup status");
+    assertIncludes(pages.ownerManualReviewPack, "env status", "owner manual review env status");
+    assertIncludes(pages.ownerManualReviewPack, "payment/VIP locked status", "owner manual review payment vip locked");
+    assertIncludes(pages.ownerManualReviewPack, "READY FOR LIMITED SOFT LAUNCH, future state only", "owner manual review future state only");
+    assertIncludes(pages.ownerManualReviewPack, "Package 251 - Real Device QA Execution Gate", "owner manual review next package");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "Aphrodite Mini App Visual Design Audit", "aphrodite visual design audit title");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "current Mini App visual status", "aphrodite visual audit current status");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "screen-by-screen findings", "aphrodite visual audit screens");

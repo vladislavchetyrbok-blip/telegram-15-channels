@@ -878,6 +878,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Owner Manual Review Pack",
+    href: "/dashboard/networks/zodiac/owner-manual-review-pack",
+    icon: ClipboardCheck,
+    caption: "Package 250 - owner-facing final blocker and decision review pack; approval remains not granted and manual review remains required.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
