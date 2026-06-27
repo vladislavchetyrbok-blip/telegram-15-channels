@@ -750,6 +750,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Manual Real-Device QA Evidence Capture",
+    href: "/dashboard/networks/zodiac/manual-real-device-qa-evidence-capture",
+    icon: Smartphone,
+    caption: "Package 231 - manual evidence fields for devices, screenshots, owner notes, Mini App flows and cache marker without automatic PASS.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

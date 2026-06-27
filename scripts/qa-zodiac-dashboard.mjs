@@ -89,6 +89,7 @@ const ROUTES = {
   qaCrlfCrossPlatformRobustness: "/dashboard/networks/zodiac/qa-crlf-cross-platform-robustness",
   productionEnvSetupProtocol: "/dashboard/networks/zodiac/production-env-setup-protocol",
   backupFreshnessVerificationProtocol: "/dashboard/networks/zodiac/backup-freshness-verification-protocol",
+  manualRealDeviceQaEvidenceCapture: "/dashboard/networks/zodiac/manual-real-device-qa-evidence-capture",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -254,6 +255,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/qa-crlf-cross-platform-robustness"', "qa crlf cross-platform robustness route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/production-env-setup-protocol"', "production env setup protocol route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/backup-freshness-verification-protocol"', "backup freshness verification protocol route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-real-device-qa-evidence-capture"', "manual real-device qa evidence capture route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");
@@ -1230,6 +1232,24 @@ async function main() {
     assertIncludes(pages.backupFreshnessVerificationProtocol, "owner sign-off required", "backup freshness owner sign-off");
     assertIncludes(pages.backupFreshnessVerificationProtocol, "publicLaunchApproved", "backup freshness launch flag");
     assertIncludes(pages.backupFreshnessVerificationProtocol, "ownerManualReviewRequired", "backup freshness owner review flag");
+    assertIncludes(pages.manualRealDeviceQaEvidenceCapture, "Manual Real-Device QA Evidence Capture", "manual real-device evidence title");
+    assertIncludes(pages.manualRealDeviceQaEvidenceCapture, "iPhone Safari", "manual real-device iphone safari");
+    assertIncludes(pages.manualRealDeviceQaEvidenceCapture, "Android Chrome", "manual real-device android chrome");
+    assertIncludes(pages.manualRealDeviceQaEvidenceCapture, "Telegram iOS WebView", "manual real-device telegram ios");
+    assertIncludes(pages.manualRealDeviceQaEvidenceCapture, "Telegram Android WebView", "manual real-device telegram android");
+    assertIncludes(pages.manualRealDeviceQaEvidenceCapture, "Desktop browser", "manual real-device desktop");
+    assertIncludes(pages.manualRealDeviceQaEvidenceCapture, "device name", "manual real-device device name");
+    assertIncludes(pages.manualRealDeviceQaEvidenceCapture, "Telegram version manual field", "manual real-device telegram version");
+    assertIncludes(pages.manualRealDeviceQaEvidenceCapture, "startapp/deep link checked", "manual real-device startapp field");
+    assertIncludes(pages.manualRealDeviceQaEvidenceCapture, "screenshots required", "manual real-device screenshots");
+    assertIncludes(pages.manualRealDeviceQaEvidenceCapture, "timestamp manual field", "manual real-device timestamp");
+    assertIncludes(pages.manualRealDeviceQaEvidenceCapture, "no active payment", "manual real-device no active payment");
+    assertIncludes(pages.manualRealDeviceQaEvidenceCapture, "no VIP unlock without entitlement", "manual real-device no vip unlock");
+    assertIncludes(pages.manualRealDeviceQaEvidenceCapture, "cache marker", "manual real-device cache marker");
+    assertIncludes(pages.manualRealDeviceQaEvidenceCapture, "No automatic PASS claims", "manual real-device no automatic pass");
+    assertIncludes(pages.manualRealDeviceQaEvidenceCapture, "realDeviceQaCompletedAutomatically", "manual real-device auto complete flag");
+    assertIncludes(pages.manualRealDeviceQaEvidenceCapture, "publicLaunchApproved", "manual real-device launch flag");
+    assertIncludes(pages.manualRealDeviceQaEvidenceCapture, "ownerManualReviewRequired", "manual real-device owner review flag");
     assertIncludes(pages.productCopyFinalPolish, "Финальная полировка текстов Aphrodite", "product copy polish title");
     assertIncludes(pages.productCopyFinalPolish, "Только copy polish", "product copy polish classification");
     assertIncludes(pages.productCopyFinalPolish, "Copy polish не включает оплату", "product copy polish no payment");
