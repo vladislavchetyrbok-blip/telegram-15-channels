@@ -2643,8 +2643,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-06-27T08:48:19.793Z"
+      "status": "sent",
+      "updatedAt": "2026-06-27T08:48:22.528Z",
+      "messageId": "36,",
+      "sentAt": "2026-06-27T08:48:22.527Z"
     }
   }
 }
