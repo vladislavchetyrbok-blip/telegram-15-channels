@@ -927,6 +927,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Backup Freshness Restore Rehearsal Execution Plan",
+    href: "/dashboard/networks/zodiac/backup-freshness-restore-rehearsal-execution-plan",
+    icon: GitBranch,
+    caption: "Package 257 - owner-facing backup freshness, restore rehearsal, rollback, stop condition and incident response plan; no backup or restore executed.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

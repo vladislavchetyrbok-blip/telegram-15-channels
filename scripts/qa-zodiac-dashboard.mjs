@@ -114,6 +114,7 @@ const ROUTES = {
   telegramWebviewStartappOwnerReviewExecution: "/dashboard/networks/zodiac/telegram-webview-startapp-owner-review-execution",
   contentCtaOwnerReviewExecution: "/dashboard/networks/zodiac/content-cta-owner-review-execution",
   productionEnvManualSetupExecutionPlan: "/dashboard/networks/zodiac/production-env-manual-setup-execution-plan",
+  backupFreshnessRestoreRehearsalExecutionPlan: "/dashboard/networks/zodiac/backup-freshness-restore-rehearsal-execution-plan",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -1460,6 +1461,16 @@ async function main() {
     assertIncludes(pages.productionEnvManualSetupExecutionPlan, "publicLaunchApproved", "production env manual setup launch flag");
     assertIncludes(pages.productionEnvManualSetupExecutionPlan, "ownerManualReviewRequired", "production env manual setup owner flag");
     assertIncludes(pages.productionEnvManualSetupExecutionPlan, "Package 257 - Backup Freshness Restore Rehearsal Execution Plan", "production env manual setup next package");
+    assertIncludes(pages.backupFreshnessRestoreRehearsalExecutionPlan, "Backup Freshness Restore Rehearsal Execution Plan", "backup freshness restore execution title");
+    assertIncludes(pages.backupFreshnessRestoreRehearsalExecutionPlan, "backup freshness requirements", "backup freshness restore execution freshness section");
+    assertIncludes(pages.backupFreshnessRestoreRehearsalExecutionPlan, "restore rehearsal requirements", "backup freshness restore execution restore section");
+    assertIncludes(pages.backupFreshnessRestoreRehearsalExecutionPlan, "rollback point requirements", "backup freshness restore execution rollback section");
+    assertIncludes(pages.backupFreshnessRestoreRehearsalExecutionPlan, "stop conditions", "backup freshness restore execution stop conditions");
+    assertIncludes(pages.backupFreshnessRestoreRehearsalExecutionPlan, "failure response protocol", "backup freshness restore execution failure response");
+    assertIncludes(pages.backupFreshnessRestoreRehearsalExecutionPlan, "owner sign-off requirements", "backup freshness restore execution owner signoff");
+    assertIncludes(pages.backupFreshnessRestoreRehearsalExecutionPlan, "publicLaunchApproved", "backup freshness restore execution launch flag");
+    assertIncludes(pages.backupFreshnessRestoreRehearsalExecutionPlan, "ownerManualReviewRequired", "backup freshness restore execution owner flag");
+    assertIncludes(pages.backupFreshnessRestoreRehearsalExecutionPlan, "Package 258 - Owner Approval Gate Final Manual Decision Plan", "backup freshness restore execution next package");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "Aphrodite Mini App Visual Design Audit", "aphrodite visual design audit title");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "current Mini App visual status", "aphrodite visual audit current status");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "screen-by-screen findings", "aphrodite visual audit screens");
