@@ -113,6 +113,7 @@ const ROUTES = {
   ownerManualRealDeviceReviewExecution: "/dashboard/networks/zodiac/owner-manual-real-device-review-execution",
   telegramWebviewStartappOwnerReviewExecution: "/dashboard/networks/zodiac/telegram-webview-startapp-owner-review-execution",
   contentCtaOwnerReviewExecution: "/dashboard/networks/zodiac/content-cta-owner-review-execution",
+  productionEnvManualSetupExecutionPlan: "/dashboard/networks/zodiac/production-env-manual-setup-execution-plan",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -1449,6 +1450,16 @@ async function main() {
     assertIncludes(pages.contentCtaOwnerReviewExecution, "publicLaunchApproved", "content cta execution launch flag");
     assertIncludes(pages.contentCtaOwnerReviewExecution, "ownerManualReviewRequired", "content cta execution owner flag");
     assertIncludes(pages.contentCtaOwnerReviewExecution, "Package 256 - Production Env Manual Setup Execution Plan", "content cta execution next package");
+    assertIncludes(pages.productionEnvManualSetupExecutionPlan, "Production Env Manual Setup Execution Plan", "production env manual setup execution title");
+    assertIncludes(pages.productionEnvManualSetupExecutionPlan, "DATABASE_URL", "production env manual setup database");
+    assertIncludes(pages.productionEnvManualSetupExecutionPlan, "TELEGRAM_BOT_TOKEN", "production env manual setup telegram token");
+    assertIncludes(pages.productionEnvManualSetupExecutionPlan, "APHRODITE_SESSION_SECRET", "production env manual setup session secret");
+    assertIncludes(pages.productionEnvManualSetupExecutionPlan, "secret hygiene rules", "production env manual setup hygiene");
+    assertIncludes(pages.productionEnvManualSetupExecutionPlan, "leak response protocol", "production env manual setup leak response");
+    assertIncludes(pages.productionEnvManualSetupExecutionPlan, "post-setup checks", "production env manual setup post checks");
+    assertIncludes(pages.productionEnvManualSetupExecutionPlan, "publicLaunchApproved", "production env manual setup launch flag");
+    assertIncludes(pages.productionEnvManualSetupExecutionPlan, "ownerManualReviewRequired", "production env manual setup owner flag");
+    assertIncludes(pages.productionEnvManualSetupExecutionPlan, "Package 257 - Backup Freshness Restore Rehearsal Execution Plan", "production env manual setup next package");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "Aphrodite Mini App Visual Design Audit", "aphrodite visual design audit title");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "current Mini App visual status", "aphrodite visual audit current status");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "screen-by-screen findings", "aphrodite visual audit screens");

@@ -920,6 +920,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Production Env Manual Setup Execution Plan",
+    href: "/dashboard/networks/zodiac/production-env-manual-setup-execution-plan",
+    icon: Database,
+    caption: "Package 256 - owner-facing manual production env setup plan; no real secrets added and launch remains blocked.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
