@@ -133,8 +133,13 @@ export default function MiniAppHubPage() {
             meaning="Мягкая подсказка дня в violet/rose/gold стиле: красиво, читаемо и без пугающей мистики."
           />
           <AphroditeLockedPreviewCard
+            variant="home"
+            scope="miniapp-entry"
             title="VIP locked preview"
-            preview="Full relationship report остается только preview: no active payment, no VIP unlock, entitlement не меняется."
+            subtitle="Static Mini App entry"
+            preview="Full relationship report, Birth Matrix Pro and shareable premium card stay preview-only: no active payment, no VIP unlock, entitlement не меняется."
+            features={["Deep compatibility report", "Birth Matrix Pro", "Shareable premium card"]}
+            previewItems={["Relationship calendar", "Personal advice", "Owner review required"]}
           />
         </div>
 

@@ -100,6 +100,7 @@ const ROUTES = {
   compatibilityFlowRedesign: "/dashboard/networks/zodiac/compatibility-flow-redesign",
   birthMatrixNatalFlowRedesign: "/dashboard/networks/zodiac/birth-matrix-natal-flow-redesign",
   mysticCardsRedesign: "/dashboard/networks/zodiac/mystic-cards-redesign",
+  vipLockedPreviewRedesign: "/dashboard/networks/zodiac/vip-locked-preview-redesign",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -269,6 +270,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/telegram-webview-startapp-manual-qa-protocol"', "telegram webview startapp manual qa protocol route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/content-cta-owner-review-gate"', "content cta owner review gate route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/launch-simulation-status-report"', "launch simulation status report route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/vip-locked-preview-redesign"', "vip locked preview redesign route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");
@@ -1437,6 +1439,22 @@ async function main() {
     assertIncludes(pages.birthMatrixNatalFlowRedesign, "publicLaunchApproved", "birth matrix natal launch flag");
     assertIncludes(pages.birthMatrixNatalFlowRedesign, "ownerManualReviewRequired", "birth matrix natal owner review flag");
     assertIncludes(pages.birthMatrixNatalFlowRedesign, "Package 241 - Mystic Cards Redesign", "birth matrix natal next package");
+    assertIncludes(pages.vipLockedPreviewRedesign, "VIP Locked Preview Redesign", "vip locked preview redesign title");
+    assertIncludes(pages.vipLockedPreviewRedesign, "redesignedSurfaces", "vip locked preview redesigned surfaces");
+    assertIncludes(pages.vipLockedPreviewRedesign, "vipPreviewPrinciples", "vip locked preview principles");
+    assertIncludes(pages.vipLockedPreviewRedesign, "lockedStatePrinciples", "vip locked state principles");
+    assertIncludes(pages.vipLockedPreviewRedesign, "valueLadderPreview", "vip locked value ladder");
+    assertIncludes(pages.vipLockedPreviewRedesign, "Deep compatibility report", "vip locked deep compatibility report");
+    assertIncludes(pages.vipLockedPreviewRedesign, "Relationship calendar", "vip locked relationship calendar");
+    assertIncludes(pages.vipLockedPreviewRedesign, "Birth Matrix Pro", "vip locked birth matrix pro");
+    assertIncludes(pages.vipLockedPreviewRedesign, "Mystic deep reading", "vip locked mystic deep reading");
+    assertIncludes(pages.vipLockedPreviewRedesign, "Natal profile", "vip locked natal profile");
+    assertIncludes(pages.vipLockedPreviewRedesign, "Shareable premium card", "vip locked shareable card");
+    assertIncludes(pages.vipLockedPreviewRedesign, "no active payment", "vip locked no active payment");
+    assertIncludes(pages.vipLockedPreviewRedesign, "no VIP unlock", "vip locked no vip unlock");
+    assertIncludes(pages.vipLockedPreviewRedesign, "publicLaunchApproved", "vip locked launch flag");
+    assertIncludes(pages.vipLockedPreviewRedesign, "ownerManualReviewRequired", "vip locked owner review flag");
+    assertIncludes(pages.vipLockedPreviewRedesign, "Package 243 - Result / Share Cards", "vip locked next package");
     assertIncludes(pages.productCopyFinalPolish, "Финальная полировка текстов Aphrodite", "product copy polish title");
     assertIncludes(pages.productCopyFinalPolish, "Только copy polish", "product copy polish classification");
     assertIncludes(pages.productCopyFinalPolish, "Copy polish не включает оплату", "product copy polish no payment");

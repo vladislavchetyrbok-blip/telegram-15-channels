@@ -146,7 +146,11 @@ for (const marker of [
   check(`live marker exists: ${marker}`, liveBundle.includes(marker));
 }
 
-check("Aphrodite design primitives used", resultCardsSource.includes("AphroditeCard") && resultCardsSource.includes("AphroditeBadge"));
+check(
+  "Aphrodite design primitives used",
+  resultCardsSource.includes("AphroditeLockedPreviewCard") &&
+    resultCardsSource.includes("data-aphrodite-compatibility-vip-preview=\"package-239\""),
+);
 check("existing date input still used", liveCompatibilitySource.includes("<ZodiacDateInput") && liveCompatibilitySource.includes('birthDateScope="compatibility"'));
 check("Package 224 date input helper still present", zodiacDateInputSource.includes("formatBirthDateInputDraft") && zodiacDateInputSource.includes("normalizeBirthDateInput"));
 check("birth date UI marker still present", zodiacDateInputSource.includes("BIRTH_DATE_UI_MARKER"));

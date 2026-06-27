@@ -827,6 +827,13 @@ const platformSections = [
     tone: "violet",
   },
   {
+    title: "VIP Locked Preview Redesign",
+    href: "/dashboard/networks/zodiac/vip-locked-preview-redesign",
+    icon: LockKeyhole,
+    caption: "Package 242 - unified preview-only VIP locked layer across Mini App home, compatibility, Birth Matrix, Mystic Cards, Natal and safe VIP preview pages.",
+    tone: "violet",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

@@ -36,6 +36,7 @@ import { ZodiacDateInput } from "./zodiac-mini-app/ZodiacDateInput";
 import {
   AphroditeBadge,
   AphroditeCard,
+  AphroditeLockedPreviewCard,
   AphroditeMetricCard,
   AphroditeMysticCardPreview,
   AphroditeSectionHeader,
@@ -1037,20 +1038,15 @@ export function BirthMatrixFeature({
             </div>
 
             <div data-aphrodite-birth-matrix-vip-preview="package-240">
-              <AphroditeCard tone="locked" className="space-y-3">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <AphroditeBadge tone="locked">preview only / no active payment</AphroditeBadge>
-                    <h4 className="mt-3 text-base font-semibold leading-6 text-[#fff7ed]">Pro-разбор матрицы</h4>
-                    <p className="mt-2 text-sm leading-6 text-slate-300">
-                      Будущий Pro-слой может раскрывать циклы, деньги, отношения, миссию и практики глубже. Сейчас это только визуальный locked preview: без оплаты, без entitlement и без реального VIP unlock.
-                    </p>
-                  </div>
-                  <span className="shrink-0 rounded-lg border border-amber-200/20 bg-amber-200/10 px-3 py-2 text-sm font-semibold text-amber-100">
-                    locked
-                  </span>
-                </div>
-              </AphroditeCard>
+              <AphroditeLockedPreviewCard
+                variant="birthMatrix"
+                scope="miniapp-matrix"
+                title="Pro-разбор матрицы"
+                subtitle="Birth Matrix Pro locked preview"
+                preview="Будущий Pro-слой может раскрывать циклы, деньги, отношения, миссию и практики глубже. Сейчас это визуальный locked preview: без оплаты, без entitlement и без реального VIP unlock."
+                features={["Birth Matrix Pro", "Personal advice", "Relationship patterns"]}
+                previewItems={["Cycles and money", "Mission and purpose", "Shareable premium card"]}
+              />
             </div>
 
             <div className="grid gap-2 sm:grid-cols-2">
@@ -1159,24 +1155,18 @@ function MysticEmptyRevealState({ publicMode, text }: { publicMode: boolean; tex
 function MysticLockedPreview({ publicMode, context }: { publicMode: boolean; context: string }) {
   return (
     <div
-      className={publicMode ? "rounded-lg border border-amber-200/25 bg-slate-950/46 p-4 shadow-[0_18px_54px_rgba(146,64,14,0.2)]" : "rounded-lg border border-amber-200 bg-amber-50 p-4 shadow-sm"}
       data-aphrodite-mystic-card-vip-preview="package-241"
       data-aphrodite-mystic-card-preview-only="package-241"
     >
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <AphroditeBadge tone="locked">preview only / no active payment</AphroditeBadge>
-          <h4 className={publicMode ? "mt-3 text-base font-semibold leading-6 text-[#fff7ed]" : "mt-3 text-base font-semibold leading-6 text-slate-950"}>
-            Глубокий Mystic Reading: {context}
-          </h4>
-          <p className={publicMode ? "mt-2 text-sm leading-6 text-slate-300" : "mt-2 text-sm leading-6 text-slate-700"}>
-            Preview-only слой показывает, как позже могут выглядеть deep card interpretation, love reading, money/luck reading, relationship warning и personal ritual/advice. В Package 241 нет активной оплаты, entitlement bypass или real VIP unlock.
-          </p>
-        </div>
-        <span className={publicMode ? "shrink-0 rounded-lg border border-amber-200/20 bg-amber-200/10 px-3 py-2 text-sm font-semibold text-amber-100" : "shrink-0 rounded-lg border border-amber-200 bg-white/80 px-3 py-2 text-sm font-semibold text-amber-800"}>
-          locked
-        </span>
-      </div>
+      <AphroditeLockedPreviewCard
+        variant="mystic"
+        scope={publicMode ? "mystic" : "mystic-dashboard-preview"}
+        title={`Глубокий Mystic Reading: ${context}`}
+        subtitle="Mystic deep reading locked preview"
+        preview="Preview-only слой показывает, как позже могут выглядеть deep card interpretation, love reading, money/luck reading, relationship warning и personal ritual/advice. Нет активной оплаты, entitlement bypass или real VIP unlock."
+        features={["Mystic deep reading", "Personal ritual", "Relationship warning"]}
+        previewItems={["Deep card interpretation", "Love and money/luck reading", "Personal advice"]}
+      />
     </div>
   );
 }

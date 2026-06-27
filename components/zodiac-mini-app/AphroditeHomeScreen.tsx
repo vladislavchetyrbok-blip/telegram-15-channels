@@ -17,7 +17,7 @@ import {
   WandSparkles,
 } from "lucide-react";
 
-import { AphroditeBadge, AphroditeCard } from "./aphrodite-design-system";
+import { AphroditeBadge, AphroditeCard, AphroditeLockedPreviewCard } from "./aphrodite-design-system";
 import { panelClass } from "./ui-primitives";
 import type { HubTab, MoreFeatureId, ZodiacSign } from "./types";
 
@@ -236,18 +236,16 @@ export function AphroditeAstrologyCenterHome({
           </div>
         </AphroditeCard>
 
-        <AphroditeCard tone="locked" className="min-h-[148px]">
-          <div className="flex h-full flex-col justify-between gap-3">
-            <AphroditeBadge tone="locked">VIP locked preview</AphroditeBadge>
-            <div>
-              <h3 className="text-base font-semibold leading-6 text-white">Full relationship report</h3>
-              <p className="mt-2 text-sm leading-6 text-slate-300">
-                Deep compatibility, Birth Matrix Pro and 30-day couple focus stay preview-only:
-                no active payment, no VIP unlock.
-              </p>
-            </div>
-          </div>
-        </AphroditeCard>
+        <AphroditeLockedPreviewCard
+          variant="home"
+          scope="home"
+          title="Full relationship report"
+          subtitle="VIP locked preview"
+          preview="Deep compatibility, Birth Matrix Pro, relationship calendar and shareable premium card stay preview-only: no active payment, no VIP unlock."
+          features={["Deep compatibility report", "Birth Matrix Pro", "Relationship calendar"]}
+          previewItems={["Shareable premium card", "Personal advice", "Owner review required"]}
+          className="min-h-[148px]"
+        />
       </div>
 
       <div className="space-y-3">

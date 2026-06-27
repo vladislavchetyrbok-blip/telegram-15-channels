@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import type { CSSProperties, ReactNode } from "react";
-import { ArrowLeft, Bookmark, CalendarDays, HeartHandshake, LockKeyhole, MessageCircle, RotateCcw, Share2, Sparkles } from "lucide-react";
+import { ArrowLeft, Bookmark, CalendarDays, HeartHandshake, MessageCircle, RotateCcw, Share2, Sparkles } from "lucide-react";
 import { FinalAstroMap } from "./AstroChartVisual";
 import type { CompatibilityResult, ZodiacSign } from "./types";
 import { primaryButtonClass, secondaryButtonClass } from "./WizardControls";
-import { AphroditeBadge, AphroditeCard } from "./aphrodite-design-system";
+import { AphroditeLockedPreviewCard } from "./aphrodite-design-system";
 
 export function ResultPanel({
   publicMode,
@@ -211,44 +211,20 @@ export function ResultPanel({
 }
 
 function CompatibilityVipPreview({ publicMode }: { publicMode: boolean }) {
-  if (!publicMode) {
-    return (
-      <div
-        className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-amber-950"
-        data-aphrodite-compatibility-vip-preview="package-239"
-      >
-        <p className="text-sm font-semibold">Full compatibility report</p>
-        <p className="mt-2 text-sm leading-6">
-          Preview only: emotional dynamics, conflict risks, love calendar, and Birth Matrix connection stay locked. No active payment and no real VIP unlock.
-        </p>
-      </div>
-    );
-  }
+  const previewScope = publicMode ? "compatibility" : "compatibility-dashboard-preview";
 
   return (
     <div data-aphrodite-compatibility-vip-preview="package-239">
-      <AphroditeCard tone="locked" className="space-y-4">
-        <div className="flex items-start justify-between gap-3">
-          <AphroditeBadge tone="locked">preview only</AphroditeBadge>
-          <LockKeyhole aria-hidden="true" className="h-5 w-5 shrink-0 text-amber-100" />
-        </div>
-        <div className="space-y-2">
-          <h3 className="break-words text-base font-semibold leading-6 text-[#fff7ed]">Full compatibility report</h3>
-          <p className="text-sm leading-6 text-slate-300">
-            Глубже можно раскрыть эмоциональную динамику, конфликтные риски, love calendar и связь с Birth Matrix.
-          </p>
-        </div>
-        <div className="grid gap-2 sm:grid-cols-2">
-          {["Emotional dynamics", "Conflict risks", "Love calendar", "Birth Matrix connection"].map((item) => (
-            <div key={item} className="rounded-lg border border-white/10 bg-white/[0.055] px-3 py-2 text-xs font-semibold text-slate-200">
-              {item}
-            </div>
-          ))}
-        </div>
-        <p className="rounded-lg border border-amber-100/20 bg-black/20 p-3 text-xs leading-5 text-amber-100">
-          Preview only: no active payment, no real VIP unlock, entitlement unchanged.
-        </p>
-      </AphroditeCard>
+      <AphroditeLockedPreviewCard
+        variant="compatibility"
+        scope={previewScope}
+        title="Full compatibility report"
+        subtitle="Compatibility VIP locked preview"
+        preview="Future deeper layer can show emotional dynamics, conflict risks, love calendar, and Birth Matrix connection. This stays preview only."
+        features={["Deep compatibility report", "Relationship calendar", "Birth Matrix connection"]}
+        previewItems={["Emotional dynamics", "Conflict risks", "Love calendar", "No active payment and no real VIP unlock"]}
+        safetyLabel="Preview only: no active payment, no real VIP unlock, entitlement unchanged."
+      />
     </div>
   );
 }

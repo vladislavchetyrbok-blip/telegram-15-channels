@@ -9,12 +9,12 @@ import {
   Calendar,
   Clock,
   Fingerprint,
-  LockKeyhole,
   RotateCcw,
   Sparkles,
   User,
 } from "lucide-react";
 
+import { AphroditeLockedPreviewCard } from "@/components/zodiac-mini-app/aphrodite-design-system";
 import { AphroditeMiniAppShell } from "@/components/zodiac-mini-app/AphroditeMiniAppShell";
 import { AphroditeSectionCard } from "@/components/zodiac-mini-app/AphroditeSectionCard";
 import { AphroditeStatusPill } from "@/components/zodiac-mini-app/AphroditeStatusPill";
@@ -364,16 +364,17 @@ function BirthMatrixResultView({
         </p>
       </section>
 
-      <section className="rounded-lg border border-slate-700/80 bg-slate-900/70 p-4" data-aphrodite-birth-matrix-vip-preview="package-240">
-        <div className="flex items-start gap-3">
-          <LockKeyhole className="mt-0.5 h-5 w-5 shrink-0 text-slate-400" />
-          <div>
-            <p className="text-sm font-semibold text-white">Будущая полная версия</p>
-            <p className="mt-2 text-sm leading-6 text-slate-400">
-              Позже здесь можно будет расширить разбор циклами, отношениями и практиками. Сейчас это только безопасный preview без оплаты, доступа и записи в базу.
-            </p>
-          </div>
-        </div>
+      <section data-aphrodite-birth-matrix-vip-preview="package-240">
+        <AphroditeLockedPreviewCard
+          variant="birthMatrix"
+          scope="birth-matrix"
+          title="Будущая полная версия"
+          subtitle="Birth Matrix Pro locked preview"
+          preview="Позже здесь можно будет расширить разбор циклами, отношениями и практиками. Сейчас это только безопасный preview без оплаты, доступа и записи в базу."
+          features={["Birth Matrix Pro", "Personal advice", "Shareable premium card"]}
+          previewItems={["Cycles and relationships", "Money and purpose", "Practice plan"]}
+          safetyLabel="Preview only: no active payment, no real VIP unlock, no DB write."
+        />
       </section>
 
       <button

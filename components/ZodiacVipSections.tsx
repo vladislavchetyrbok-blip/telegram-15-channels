@@ -9,7 +9,7 @@ import { relationshipModes, signs } from "./zodiac-mini-app/constants";
 import { AstroChartVisual } from "./zodiac-mini-app/AstroChartVisual";
 import { NatalChartVisual, type NatalChartMode } from "./zodiac-mini-app/NatalChartVisual";
 import { ZodiacDateInput } from "./zodiac-mini-app/ZodiacDateInput";
-import { AphroditeBadge, AphroditeCard } from "./zodiac-mini-app/aphrodite-design-system";
+import { AphroditeBadge, AphroditeCard, AphroditeLockedPreviewCard } from "./zodiac-mini-app/aphrodite-design-system";
 import type { ZodiacRetentionDraft } from "./zodiac-mini-app/retention";
 import { ZodiacSelect, type ZodiacSelectOption } from "./zodiac-mini-app/ZodiacSelect";
 import { dateInputToIsoDate, isoDateToDateInput } from "@/lib/zodiac-date-input";
@@ -1012,13 +1012,15 @@ export function ExtendedNatalFeature({
               <NatalResultTabs publicMode={publicMode} activeTab={activeNatalTab} onTabChange={setActiveNatalTab} />
               <NatalSectionPanel publicMode={publicMode} section={activeNatalSection} />
               <div data-aphrodite-natal-vip-preview="package-240">
-                <AphroditeCard tone="locked" className="space-y-3">
-                  <AphroditeBadge tone="locked">preview only / no active payment</AphroditeBadge>
-                  <h4 className="text-base font-semibold leading-6 text-[#fff7ed]">Pro Natal слой</h4>
-                  <p className="text-sm leading-6 text-slate-300">
-                    Будущий Pro-слой может раскрыть личные циклы, совместимость с матрицей, карьерные сценарии и ритуалы недели. Сейчас это только locked preview: без оплаты, без entitlement и без реального VIP unlock.
-                  </p>
-                </AphroditeCard>
+                <AphroditeLockedPreviewCard
+                  variant="natal"
+                  scope="vip-natal"
+                  title="Pro Natal слой"
+                  subtitle="Natal profile locked preview"
+                  preview="Будущий Pro-слой может раскрыть личные циклы, совместимость с матрицей, карьерные сценарии и ритуалы недели. Сейчас это только locked preview: без оплаты, без entitlement и без реального VIP unlock."
+                  features={["Natal profile", "Birth Matrix connection", "Personal advice"]}
+                  previewItems={["Personal cycles", "Career scenarios", "Weekly ritual preview"]}
+                />
               </div>
               <NatalBottomActions publicMode={publicMode}>
                 <VipResultActions publicMode={publicMode} saved={actions.saved} shared={actions.shared} shareStatus={actions.shareStatus} saveLabel="Сохранить карту" shareLabel="Поделиться картой" onSave={() => actions.save(payload, buildNatalRetentionAction(resultSign, result.mode))} onShare={() => actions.share(payload, buildNatalRetentionAction(resultSign, result.mode))} />

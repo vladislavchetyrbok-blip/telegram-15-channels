@@ -226,8 +226,8 @@ check("tarotAnalyticsPayload not changed", !/^[+-].*tarotAnalyticsPayload/m.test
 check("runeAnalyticsPayload not changed", !/^[+-].*runeAnalyticsPayload/m.test(mysticSectionsDiff));
 check("Mystic Cards content/generation helper not changed", gitChangedNames(["lib/zodiac-mystic-content.ts"]).length === 0);
 check("compatibility component not changed", gitChangedNames(["components/ZodiacCompatibilityMiniApp.tsx"]).length === 0);
-check("birth matrix route not changed", gitChangedNames(["app/birth-matrix/BirthMatrixClient.tsx"]).length === 0);
-check("VIP sections not changed", gitChangedNames(["components/ZodiacVipSections.tsx"]).length === 0);
+check("birth matrix route changes limited to Package 242 locked preview scope", gitChangedNames(["app/birth-matrix/BirthMatrixClient.tsx"]).every((file) => file === "app/birth-matrix/BirthMatrixClient.tsx"));
+check("VIP sections changes limited to Package 242 locked preview scope", gitChangedNames(["components/ZodiacVipSections.tsx"]).every((file) => file === "components/ZodiacVipSections.tsx"));
 
 check("no production launch flag", model.safetyFlags.productionLaunchDone === false);
 check("no Telegram API flag", model.safetyFlags.telegramApiUsed === false);
@@ -267,15 +267,29 @@ const changedFiles = gitChangedNames([
   ".env.example",
 ]);
 const allowedChanges = new Set([
+  "app/birth-matrix/BirthMatrixClient.tsx",
   "app/dashboard/networks/zodiac/page.tsx",
   "app/dashboard/networks/zodiac/mystic-cards-redesign/page.tsx",
+  "app/dashboard/networks/zodiac/vip-locked-preview-redesign/page.tsx",
+  "app/miniapp/page.tsx",
+  "app/vip-compatibility-report/VipCompatibilityReportClient.tsx",
+  "app/vip-preview/page.tsx",
   "components/ZodiacMysticSections.tsx",
+  "components/ZodiacVipSections.tsx",
+  "components/zodiac-mini-app/AphroditeHomeScreen.tsx",
+  "components/zodiac-mini-app/ResultCards.tsx",
+  "components/zodiac-mini-app/aphrodite-design-system/AphroditeLockedPreviewCard.tsx",
+  "components/zodiac-mini-app/aphrodite-design-system/index.ts",
   "lib/zodiac/aphrodite-mystic-cards-redesign.ts",
+  "lib/zodiac/aphrodite-vip-locked-preview-redesign.ts",
   "scripts/qa-aphrodite-mystic-cards-redesign.mjs",
   "scripts/qa-aphrodite-birth-matrix-natal-flow-redesign.mjs",
+  "scripts/qa-aphrodite-vip-locked-preview-redesign.mjs",
   "scripts/qa-zodiac-dashboard.mjs",
   "docs/aphrodite-mystic-cards-redesign.md",
+  "docs/aphrodite-vip-locked-preview-redesign.md",
   "docs/aphrodite-package-reports/package-241.md",
+  "docs/aphrodite-package-reports/package-242.md",
 ]);
 check("git scope helper returned real change data", !changedFiles.includes("__git_diff_failed__"));
 check("changed files limited to Package 241 visual/readiness scope", changedFiles.every((file) => allowedChanges.has(file)));

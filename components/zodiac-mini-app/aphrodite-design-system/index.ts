@@ -11,4 +11,5 @@ export { AphroditeSectionHeader } from "./AphroditeSectionHeader";
 export { AphroditeSurface } from "./AphroditeSurface";
 export type { AphroditeButtonProps, AphroditeButtonVariant } from "./AphroditeButton";
 export type { AphroditeCardProps } from "./AphroditeCard";
+export type { AphroditeLockedPreviewCardProps, AphroditeLockedPreviewVariant } from "./AphroditeLockedPreviewCard";
 export type { AphroditeTone } from "./shared";

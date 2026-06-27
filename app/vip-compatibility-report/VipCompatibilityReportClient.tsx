@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import { ShieldCheck, ShieldAlert, AlertTriangle, Sparkles, User, Lock, Heart } from "lucide-react";
+import { ShieldAlert, AlertTriangle, Sparkles, Heart } from "lucide-react";
 import Link from "next/link";
+import { AphroditeLockedPreviewCard } from "@/components/zodiac-mini-app/aphrodite-design-system";
 import { createVipCompatibilityReportMock } from "@/lib/zodiac/zodiac-vip-compatibility-report-foundation";
 
 const ZODIAC_SIGNS = [
@@ -124,15 +125,18 @@ export function VipCompatibilityReportClient() {
               {mockReport!.sections.map((section, idx) => (
                 <div key={idx} className={`rounded-xl border ${section.previewLevel === 'free-preview' ? 'bg-slate-800/50 border-slate-700 p-6' : 'bg-slate-950/80 border-indigo-900/30 p-6 relative overflow-hidden'}`}>
                   {section.previewLevel === 'future-vip' && (
-                    <div className="absolute inset-0 bg-slate-950/90 backdrop-blur-sm z-10 flex flex-col items-center justify-center p-6 text-center">
-                      <Lock className="w-8 h-8 text-indigo-400 mb-3 opacity-80" />
-                      <h4 className="text-lg font-bold text-slate-200 mb-2">{section.title}</h4>
-                      <p className="text-sm text-slate-400 mb-4 max-w-sm">
-                        Future VIP section — not unlocked here. Preview only.
-                      </p>
-                      <div className="px-4 py-2 bg-indigo-500/10 border border-indigo-500/20 rounded text-xs text-indigo-300">
-                        Requires future entitlement / Requires future payment integration
-                      </div>
+                    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-slate-950/90 p-5 text-center backdrop-blur-sm">
+                      <AphroditeLockedPreviewCard
+                        variant="compatibility"
+                        scope="vip-compatibility-report"
+                        title={section.title}
+                        subtitle="Future VIP section"
+                        preview="Future VIP section is not unlocked here. Preview only."
+                        features={["Deep compatibility report", "Relationship calendar", "Shareable premium card"]}
+                        previewItems={["Requires future entitlement", "Requires future payment integration", "No active payment now"]}
+                        safetyLabel="No payment handler. No Telegram Stars integration. No real VIP unlock."
+                        className="w-full max-w-sm text-left"
+                      />
                     </div>
                   )}
 

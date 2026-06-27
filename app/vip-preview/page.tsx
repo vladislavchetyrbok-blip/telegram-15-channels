@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AlertTriangle, ShieldAlert, ChevronLeft, LockKeyhole, Sparkles, Ban, ShieldCheck, Settings2, FileText, Database, CreditCard, LayoutGrid } from "lucide-react";
+import { ShieldAlert, ChevronLeft, LockKeyhole, Sparkles, Ban, ShieldCheck, Settings2, FileText, Database, CreditCard } from "lucide-react";
+import { AphroditeLockedPreviewCard } from "@/components/zodiac-mini-app/aphrodite-design-system";
 import { MOCK_VIP_PREVIEW_FEATURES, MOCK_VIP_BOUNDARY_RULES } from "@/lib/zodiac/zodiac-vip-preview";
 
 export const metadata: Metadata = {
@@ -30,6 +31,19 @@ export default function VipPreviewPage() {
       </header>
 
       <main className="mx-auto flex w-full max-w-md flex-1 flex-col px-4 py-6">
+        <div className="mb-6" data-aphrodite-vip-preview-index="package-242">
+          <AphroditeLockedPreviewCard
+            variant="general"
+            scope="vip-preview-index"
+            title="Future VIP Access"
+            subtitle="Unified VIP locked preview"
+            preview="This index shows the value ladder only: no active payment, no entitlement creation, no real VIP unlock, and no Telegram API call."
+            features={["Deep compatibility report", "Birth Matrix Pro", "Mystic deep reading"]}
+            previewItems={["Natal profile", "Personal advice", "Shareable premium card"]}
+            safetyLabel="Preview-only index. No payment logic or real VIP access is active."
+          />
+        </div>
+
         <div className="mb-6 rounded-lg border border-amber-900/30 bg-amber-900/10 p-4 text-sm flex items-start gap-3">
           <ShieldAlert className="h-6 w-6 shrink-0 text-amber-500 mt-1" />
           <div>
