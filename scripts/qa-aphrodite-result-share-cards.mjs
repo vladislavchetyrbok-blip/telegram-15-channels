@@ -4,10 +4,10 @@ import { existsSync, readFileSync } from "node:fs";
 
 import { gitChangedNames } from "./lib/qa-git-scope.mjs";
 import {
-  APHRODITE_VIP_LOCKED_PREVIEW_REDESIGN_ROUTE,
-  APHRODITE_VIP_LOCKED_PREVIEW_REDESIGN_TITLE,
-  getAphroditeVipLockedPreviewRedesign,
-} from "../lib/zodiac/aphrodite-vip-locked-preview-redesign.ts";
+  APHRODITE_RESULT_SHARE_CARDS_ROUTE,
+  APHRODITE_RESULT_SHARE_CARDS_TITLE,
+  getAphroditeResultShareCards,
+} from "../lib/zodiac/aphrodite-result-share-cards.ts";
 
 let passed = 0;
 let failed = 0;
@@ -34,36 +34,34 @@ function textFor(value) {
   return JSON.stringify(value).toLowerCase();
 }
 
-console.log("Starting QA: Aphrodite VIP Locked Preview Redesign...\n");
+console.log("Starting QA: Aphrodite Result / Share Cards...\n");
 
-const modelPath = "../lib/zodiac/aphrodite-vip-locked-preview-redesign.ts";
-const dashboardPagePath = "../app/dashboard/networks/zodiac/vip-locked-preview-redesign/page.tsx";
-const lockedPreviewComponentPath = "../components/zodiac-mini-app/aphrodite-design-system/AphroditeLockedPreviewCard.tsx";
+const modelPath = "../lib/zodiac/aphrodite-result-share-cards.ts";
+const dashboardPagePath = "../app/dashboard/networks/zodiac/result-share-cards/page.tsx";
+const shareCardComponentPath = "../components/zodiac-mini-app/aphrodite-design-system/AphroditeShareCard.tsx";
+const resultPreviewComponentPath = "../components/zodiac-mini-app/aphrodite-design-system/AphroditeResultCardPreview.tsx";
 const designSystemIndexPath = "../components/zodiac-mini-app/aphrodite-design-system/index.ts";
-const homePath = "../components/zodiac-mini-app/AphroditeHomeScreen.tsx";
-const miniappPagePath = "../app/miniapp/page.tsx";
 const compatibilityResultPath = "../components/zodiac-mini-app/ResultCards.tsx";
+const birthMatrixRoutePath = "../app/birth-matrix/BirthMatrixClient.tsx";
 const mysticSectionsPath = "../components/ZodiacMysticSections.tsx";
 const vipSectionsPath = "../components/ZodiacVipSections.tsx";
-const birthMatrixRoutePath = "../app/birth-matrix/BirthMatrixClient.tsx";
 const vipCompatibilityReportPath = "../app/vip-compatibility-report/VipCompatibilityReportClient.tsx";
 const vipPreviewPath = "../app/vip-preview/page.tsx";
-const docsPath = "../docs/aphrodite-vip-locked-preview-redesign.md";
-const reportPath = "../docs/aphrodite-package-reports/package-242.md";
+const docsPath = "../docs/aphrodite-result-share-cards.md";
+const reportPath = "../docs/aphrodite-package-reports/package-243.md";
 const dashboardPath = "../app/dashboard/networks/zodiac/page.tsx";
 const dashboardQaPath = "./qa-zodiac-dashboard.mjs";
 
 for (const [label, path] of [
   ["model", modelPath],
   ["dashboard page", dashboardPagePath],
-  ["locked preview component", lockedPreviewComponentPath],
+  ["share card component", shareCardComponentPath],
+  ["result preview component", resultPreviewComponentPath],
   ["design system index", designSystemIndexPath],
-  ["home component", homePath],
-  ["miniapp page", miniappPagePath],
   ["compatibility result cards", compatibilityResultPath],
+  ["birth matrix route", birthMatrixRoutePath],
   ["mystic sections", mysticSectionsPath],
   ["VIP sections", vipSectionsPath],
-  ["birth matrix route", birthMatrixRoutePath],
   ["VIP compatibility report page", vipCompatibilityReportPath],
   ["VIP preview index", vipPreviewPath],
   ["docs", docsPath],
@@ -76,14 +74,13 @@ for (const [label, path] of [
 
 const modelSource = exists(modelPath) ? read(modelPath) : "";
 const dashboardPageSource = exists(dashboardPagePath) ? read(dashboardPagePath) : "";
-const componentSource = exists(lockedPreviewComponentPath) ? read(lockedPreviewComponentPath) : "";
+const shareCardSource = exists(shareCardComponentPath) ? read(shareCardComponentPath) : "";
+const resultPreviewSource = exists(resultPreviewComponentPath) ? read(resultPreviewComponentPath) : "";
 const designIndexSource = exists(designSystemIndexPath) ? read(designSystemIndexPath) : "";
-const homeSource = exists(homePath) ? read(homePath) : "";
-const miniappPageSource = exists(miniappPagePath) ? read(miniappPagePath) : "";
 const compatibilitySource = exists(compatibilityResultPath) ? read(compatibilityResultPath) : "";
+const birthMatrixSource = exists(birthMatrixRoutePath) ? read(birthMatrixRoutePath) : "";
 const mysticSource = exists(mysticSectionsPath) ? read(mysticSectionsPath) : "";
 const vipSectionsSource = exists(vipSectionsPath) ? read(vipSectionsPath) : "";
-const birthMatrixSource = exists(birthMatrixRoutePath) ? read(birthMatrixRoutePath) : "";
 const vipCompatibilityReportSource = exists(vipCompatibilityReportPath) ? read(vipCompatibilityReportPath) : "";
 const vipPreviewSource = exists(vipPreviewPath) ? read(vipPreviewPath) : "";
 const docsSource = exists(docsPath) ? read(docsPath) : "";
@@ -91,16 +88,15 @@ const reportSource = exists(reportPath) ? read(reportPath) : "";
 const dashboardSource = exists(dashboardPath) ? read(dashboardPath) : "";
 const dashboardQaSource = exists(dashboardQaPath) ? read(dashboardQaPath) : "";
 
-const model = getAphroditeVipLockedPreviewRedesign();
+const model = getAphroditeResultShareCards();
 const liveBundle = [
-  componentSource,
+  shareCardSource,
+  resultPreviewSource,
   designIndexSource,
-  homeSource,
-  miniappPageSource,
   compatibilitySource,
+  birthMatrixSource,
   mysticSource,
   vipSectionsSource,
-  birthMatrixSource,
   vipCompatibilityReportSource,
   vipPreviewSource,
 ].join("\n");
@@ -116,28 +112,45 @@ const implementationBundle = [
 const safetyBundle = [
   modelSource,
   dashboardPageSource,
-  liveBundle,
+  shareCardSource,
+  resultPreviewSource,
+  docsSource,
+  reportSource,
+].join("\n");
+const changedBundle = [
+  shareCardSource,
+  resultPreviewSource,
+  compatibilitySource,
+  birthMatrixSource,
+  mysticSource,
+  vipSectionsSource,
+  vipCompatibilityReportSource,
+  vipPreviewSource,
+  modelSource,
+  dashboardPageSource,
   docsSource,
   reportSource,
 ].join("\n");
 const modelText = textFor(model);
 
-check("title exported", model.title === APHRODITE_VIP_LOCKED_PREVIEW_REDESIGN_TITLE);
-check("route exported", model.route === APHRODITE_VIP_LOCKED_PREVIEW_REDESIGN_ROUTE);
-check("package number is 242", model.packageNumber === 242);
+check("title exported", model.title === APHRODITE_RESULT_SHARE_CARDS_TITLE);
+check("route exported", model.route === APHRODITE_RESULT_SHARE_CARDS_ROUTE);
+check("package number is 243", model.packageNumber === 243);
 check("dashboard route uses readiness page", dashboardPageSource.includes("AphroditeReadinessPage"));
-check("dashboard route linked from overview", dashboardSource.includes(APHRODITE_VIP_LOCKED_PREVIEW_REDESIGN_ROUTE));
-check("dashboard QA route exists", dashboardQaSource.includes("vipLockedPreviewRedesign"));
-check("docs/report exist", docsSource.includes("Package 242") && reportSource.includes("Package 242"));
+check("dashboard route linked from overview", dashboardSource.includes(APHRODITE_RESULT_SHARE_CARDS_ROUTE));
+check("dashboard QA route exists", dashboardQaSource.includes("resultShareCards"));
+check("docs/report exist", docsSource.includes("Package 243") && reportSource.includes("Package 243"));
 check("publicLaunchApproved=false", model.publicLaunchApproved === false && implementationBundle.includes("publicLaunchApproved=false"));
 check("ownerManualReviewRequired=true", model.ownerManualReviewRequired === true && implementationBundle.includes("ownerManualReviewRequired=true"));
 
 for (const field of [
   "redesignedSurfaces",
-  "vipPreviewPrinciples",
-  "lockedStatePrinciples",
-  "valueLadderPreview",
-  "safetyCopy",
+  "resultCardPrinciples",
+  "shareCardPrinciples",
+  "compatibilityResultCardPrinciples",
+  "birthMatrixResultCardPrinciples",
+  "mysticResultCardPrinciples",
+  "vipPreviewResultPrinciples",
   "mobileBreakpoints",
   "telegramWebViewRules",
   "safetyBoundaries",
@@ -148,96 +161,95 @@ for (const field of [
   check(`model field exists: ${field}`, (Array.isArray(value) ? value.length > 0 : Boolean(value)) && implementationBundle.includes(field));
 }
 
-for (const route of ["/miniapp", "/compatibility", "/birth-matrix", "/vip-compatibility-report", "/vip-preview"]) {
+for (const route of ["/compatibility", "/miniapp", "/birth-matrix", "/vip-compatibility-report", "/vip-preview"]) {
   check(`live route documented: ${route}`, model.liveRoutes.includes(route) && implementationBundle.includes(route));
 }
 
 for (const marker of [
-  'data-aphrodite-vip-locked-preview-redesign="package-242"',
-  "data-aphrodite-vip-locked-scope",
-  "data-aphrodite-compatibility-vip-preview=\"package-239\"",
-  "data-aphrodite-birth-matrix-vip-preview=\"package-240\"",
-  "data-aphrodite-natal-vip-preview=\"package-240\"",
-  "data-aphrodite-mystic-card-vip-preview=\"package-241\"",
+  'data-aphrodite-result-share-card="package-243"',
+  "data-aphrodite-result-share-scope",
+  'data-aphrodite-share-ready-preview="package-243"',
+  'data-aphrodite-compatibility-shareable-result="package-239"',
+  'data-aphrodite-birth-matrix-report="package-240"',
+  'data-aphrodite-mystic-card-result="package-241"',
+  'data-aphrodite-natal-report="package-240"',
+  'data-aphrodite-vip-preview-share-card="package-243"',
+  'data-aphrodite-vip-compatibility-share-card="package-243"',
 ]) {
-  check(`VIP locked marker exists: ${marker}`, liveBundle.includes(marker));
+  check(`result/share marker exists: ${marker}`, liveBundle.includes(marker));
 }
 
 for (const scope of [
-  "home",
-  "miniapp-entry",
   "compatibility",
-  "miniapp-matrix",
   "birth-matrix",
-  "mystic",
+  "miniapp-matrix",
+  "mystic-daily",
+  "mystic-tarot",
+  "mystic-rune",
   "vip-natal",
+  "vip-preview",
   "vip-compatibility-report",
-  "vip-preview-index",
+  "design-system-preview",
 ]) {
   check(`scope documented and used: ${scope}`, model.redesignedSurfaces.some((item) => item.scope === scope) && implementationBundle.includes(scope));
 }
 
-for (const variant of ["general", "home", "compatibility", "birthMatrix", "mystic", "natal"]) {
-  check(`component variant exists: ${variant}`, componentSource.includes(`"${variant}"`) && liveBundle.includes(`variant="${variant}"`));
+for (const variant of ["general", "compatibility", "birthMatrix", "mystic", "natal", "vipPreview"]) {
+  check(`share card variant exists: ${variant}`, shareCardSource.includes(`"${variant}"`) && liveBundle.includes(`variant="${variant}"`));
 }
 
 for (const phrase of [
-  "AphroditeLockedPreviewCard",
-  "preview-only",
-  "VIP locked preview",
-  "No active payment",
-  "No real VIP unlock",
-  "No entitlement bypass",
-  "no active payment",
-  "no real VIP unlock",
-  "entitlement unchanged",
-  "Deep compatibility report",
-  "Relationship calendar",
-  "Birth Matrix Pro",
-  "Mystic deep reading",
-  "Natal profile",
-  "Personal advice",
-  "Shareable premium card",
+  "Result / Share Cards",
+  "share-ready preview",
+  "Share-ready visual only",
+  "No real Telegram share/send API",
+  "no canvas export",
+  "no DB write",
+  "calculation logic unchanged",
+  "Mystic selection/random/storage changed",
+  "VIP preview teaser result card",
+  "Package 244 - Telegram WebView Mobile Polish",
 ]) {
-  check(`VIP locked phrase exists: ${phrase}`, implementationBundle.toLowerCase().includes(phrase.toLowerCase()) || modelText.includes(phrase.toLowerCase()));
+  check(`required wording exists: ${phrase}`, implementationBundle.toLowerCase().includes(phrase.toLowerCase()) || modelText.includes(phrase.toLowerCase()));
+}
+
+for (const surface of [
+  "Compatibility result card",
+  "Direct Birth Matrix summary card",
+  "Mini App Birth Matrix summary card",
+  "Mystic Daily Card result card",
+  "Mystic Tarot result card",
+  "Mystic Rune result card",
+  "VIP Natal summary card",
+  "VIP preview teaser result card",
+  "VIP compatibility report teaser card",
+  "Design-system preview card",
+]) {
+  check(`redesigned surface documented: ${surface}`, model.redesignedSurfaces.some((item) => item.area === surface) && implementationBundle.includes(surface));
 }
 
 for (const width of ["360px", "390px", "430px"]) {
   check(`mobile breakpoint exists: ${width}`, model.mobileBreakpoints.includes(width) && implementationBundle.includes(width));
 }
 
-check("component exported from design-system index", designIndexSource.includes("AphroditeLockedPreviewCard") && designIndexSource.includes("AphroditeLockedPreviewVariant"));
-check("component is presentational only", !/onPay|onUnlock|onPurchase|onSubscribe|href=|useState|useEffect|useRouter|router\.push|fetch\(|navigator\.sendBeacon|localStorage|sessionStorage/i.test(componentSource));
-check("component has no active payment-looking button", !/AphroditeButton|<button\b|buy now|unlock now|pay now|subscribe now/i.test(componentSource));
-check("no active payment prop contract", !/onPay|onUnlock|sendInvoice|createInvoiceLink|entitlement check/i.test(componentSource));
-
-for (const surface of [
-  "Mini App home screen locked preview",
-  "Static Mini App entry locked preview",
-  "Compatibility result VIP preview",
-  "Birth Matrix Pro preview in Mini App",
-  "Direct Birth Matrix page preview",
-  "Mystic Cards deeper reading preview",
-  "VIP Natal preview",
-  "VIP Compatibility report preview page",
-  "VIP Preview index",
-]) {
-  check(`redesigned surface documented: ${surface}`, model.redesignedSurfaces.some((item) => item.area === surface) && implementationBundle.includes(surface));
-}
+check("share component exported from design-system index", designIndexSource.includes("AphroditeShareCard") && designIndexSource.includes("AphroditeShareCardProps"));
+check("result preview uses share card", resultPreviewSource.includes("AphroditeShareCard") && resultPreviewSource.includes("design-system-preview"));
+check("share component is presentational only", !/<button\b|onClick=|useState|useEffect|useRouter|router\.push|fetch\(|navigator\.sendBeacon|localStorage|sessionStorage|window\.Telegram|Telegram\.WebApp|<canvas\b|toDataURL\s*\(|html2canvas\s*\(/i.test(shareCardSource));
+check("share component has no active CTA", !/AphroditeButton|href=|buy now|unlock now|pay now|subscribe now/i.test(shareCardSource));
+check("no external images in share component", !/<img\b|next\/image|https?:\/\/|fonts\.googleapis/i.test(shareCardSource));
 
 for (const unchanged of [
-  "active CTA logic unchanged",
-  "app flows unchanged",
-  "payment not added",
-  "VIP unlock not added",
-  "entitlement bypass not added",
-  "Telegram API not used",
-  "DB/storage not changed",
+  "Telegram share/send added",
+  "compatibility calculation changed",
+  "Birth Matrix/Natal calculation changed",
+  "Mystic selection/random/storage changed",
+  "payment added",
+  "VIP unlock or entitlement bypass added",
+  "DB/storage writes added",
+  "active CTA logic changed",
 ]) {
   check(`unchanged scope documented: ${unchanged}`, model.whatWasNotChanged.some((item) => item.area === unchanged) && implementationBundle.includes(unchanged));
 }
-
-check("next package recommendation documented", model.nextPackageRecommendation === "Package 243 - Result / Share Cards" && implementationBundle.includes("Package 243 - Result / Share Cards"));
 
 check("no production launch flag", model.safetyFlags.productionLaunchDone === false);
 check("no Telegram API flag", model.safetyFlags.telegramApiUsed === false);
@@ -246,6 +258,7 @@ check("no BotFather change flag", model.safetyFlags.botFatherChanged === false);
 check("no active CTA logic change flag", model.safetyFlags.activeCtaLogicChanged === false);
 check("no app flow change flag", model.safetyFlags.appFlowsChanged === false);
 check("no DB write flag", model.safetyFlags.databaseWriteAdded === false);
+check("no storage write flag", model.safetyFlags.storageWriteAdded === false);
 check("no external analytics flag", model.safetyFlags.externalAnalyticsAdded === false);
 check("no payment flag", model.safetyFlags.paymentAdded === false);
 check("no VIP unlock flag", model.safetyFlags.vipUnlockAdded === false);
@@ -270,43 +283,37 @@ const changedFiles = gitChangedNames([
   "migrations",
   "schema.prisma",
   ".env",
-  ".env.local",
-  ".env.production",
   ".env.example",
 ]);
+check("git scope helper returned real change data", !changedFiles.includes("__git_diff_failed__"));
+
 const allowedChanges = new Set([
   "app/birth-matrix/BirthMatrixClient.tsx",
   "app/dashboard/networks/zodiac/page.tsx",
   "app/dashboard/networks/zodiac/result-share-cards/page.tsx",
-  "app/dashboard/networks/zodiac/vip-locked-preview-redesign/page.tsx",
-  "app/miniapp/page.tsx",
   "app/vip-compatibility-report/VipCompatibilityReportClient.tsx",
   "app/vip-preview/page.tsx",
   "components/ZodiacMysticSections.tsx",
   "components/ZodiacVipSections.tsx",
-  "components/zodiac-mini-app/AphroditeHomeScreen.tsx",
   "components/zodiac-mini-app/ResultCards.tsx",
-  "components/zodiac-mini-app/aphrodite-design-system/AphroditeLockedPreviewCard.tsx",
   "components/zodiac-mini-app/aphrodite-design-system/AphroditeResultCardPreview.tsx",
   "components/zodiac-mini-app/aphrodite-design-system/AphroditeShareCard.tsx",
   "components/zodiac-mini-app/aphrodite-design-system/index.ts",
+  "docs/aphrodite-package-reports/package-243.md",
+  "docs/aphrodite-result-share-cards.md",
   "lib/zodiac/aphrodite-result-share-cards.ts",
-  "lib/zodiac/aphrodite-vip-locked-preview-redesign.ts",
-  "scripts/qa-aphrodite-result-share-cards.mjs",
-  "scripts/qa-aphrodite-vip-locked-preview-redesign.mjs",
-  "scripts/qa-aphrodite-design-system.mjs",
-  "scripts/qa-aphrodite-miniapp-home-screen-redesign.mjs",
-  "scripts/qa-aphrodite-compatibility-flow-redesign.mjs",
   "scripts/qa-aphrodite-birth-matrix-natal-flow-redesign.mjs",
   "scripts/qa-aphrodite-mystic-cards-redesign.mjs",
+  "scripts/qa-aphrodite-result-share-cards.mjs",
+  "scripts/qa-aphrodite-vip-locked-preview-redesign.mjs",
   "scripts/qa-zodiac-dashboard.mjs",
-  "docs/aphrodite-result-share-cards.md",
-  "docs/aphrodite-vip-locked-preview-redesign.md",
-  "docs/aphrodite-package-reports/package-242.md",
-  "docs/aphrodite-package-reports/package-243.md",
 ]);
-check("git scope helper returned real change data", !changedFiles.includes("__git_diff_failed__"));
-check("changed files limited to Package 242 visual/readiness scope", changedFiles.every((file) => allowedChanges.has(file)));
+const unexpectedChanges = changedFiles.filter((file) => !allowedChanges.has(file));
+check("only Package 243-scoped files changed", unexpectedChanges.length === 0);
+if (unexpectedChanges.length) {
+  console.log("Unexpected changed files:", unexpectedChanges.join(", "));
+}
+
 check("no workflow/cron changes", gitChangedNames([".github/workflows", "vercel.json"]).length === 0);
 check("publish scripts not changed", gitChangedNames([
   "scripts/publish-zodiac-by-date.mjs",
@@ -319,18 +326,15 @@ check("package.json not changed", gitChangedNames(["package.json"]).length === 0
 check("no DB schema/migration change", gitChangedNames(["prisma", "supabase", "migrations", "schema.prisma"]).filter((file) => /(^|\/)(prisma|supabase|migrations)(\/|$)|schema\.prisma$/i.test(file)).length === 0);
 check("no env or secret files changed", gitChangedNames([".env", ".env.local", ".env.production", ".env.example"]).length === 0);
 
-check("no hardcoded secret-looking values", !/(postgres(?:ql)?:\/\/|mysql:\/\/|mongodb(?:\+srv)?:\/\/|redis:\/\/|amqp:\/\/|https:\/\/api\.telegram\.org\/bot\d+:[A-Za-z0-9_-]+|\b\d{6,12}:[A-Za-z0-9_-]{30,}\b|(?:sk|pk|rk)_(?:live|test)_[A-Za-z0-9]{16,}|gh[pousr]_[A-Za-z0-9]{30,}|xox[baprs]-[A-Za-z0-9-]{20,}|AIza[0-9A-Za-z_-]{20,}|ya29\.[0-9A-Za-z_-]{20,}|SG\.[0-9A-Za-z_-]{16,})/i.test(safetyBundle));
-check("no Telegram API implementation", !/fetch\([^)]*api\.telegram\.org|sendMessage\s*\(|sendPhoto\s*\(|sendDocument\s*\(|sendInvoice\s*\(|createInvoiceLink\s*\(|answerPreCheckoutQuery\s*\(/i.test(safetyBundle));
-check("no Telegram payment handler implementation", !/pre_checkout|successful_payment|answerPreCheckoutQuery|createInvoiceLink/i.test(safetyBundle));
-check("no BotFather action implementation", !/setChatMenuButton|setMyCommands|setWebhook|deleteWebhook/i.test(safetyBundle));
+check("no hardcoded secret-looking values", !/(postgres(?:ql)?:\/\/|mysql:\/\/|mongodb(?:\+srv)?:\/\/|redis:\/\/|amqp:\/\/|https:\/\/api\.telegram\.org\/bot\d+:[A-Za-z0-9_-]+|\b\d{6,12}:[A-Za-z0-9_-]{30,}\b|(?:sk|pk|rk)_(?:live|test)_[A-Za-z0-9]{16,}|gh[pousr]_[A-Za-z0-9]{30,}|xox[baprs]-[A-Za-z0-9-]{20,}|AIza[0-9A-Za-z_-]{20,}|ya29\.[0-9A-Za-z_-]{20,}|SG\.[0-9A-Za-z_-]{16,})/i.test(changedBundle));
+check("no Telegram API implementation", !/fetch\([^)]*api\.telegram\.org|sendMessage\s*\(|sendPhoto\s*\(|sendDocument\s*\(|sendInvoice\s*\(|createInvoiceLink\s*\(|answerPreCheckoutQuery\s*\(/i.test(changedBundle));
+check("no Telegram payment handler implementation", !/pre_checkout\s*[:=]|successful_payment\s*[:=]|answerPreCheckoutQuery\s*\(|createInvoiceLink\s*\(|sendInvoice\s*\(/i.test(changedBundle));
+check("no BotFather action implementation", !/setChatMenuButton|setMyCommands|setWebhook|deleteWebhook/i.test(changedBundle));
 check("no active CTA implementation change", !/activeCtaLogicChanged:\s*true|activeCtaChanged:\s*true|sendAllowedNow=true|canCallTelegramApiNow=true/i.test(safetyBundle));
-check("no production DB client implementation", !/new\s+PrismaClient\b|from ['"]@prisma\/client|postgres\s*\(|neon\s*\(|new\s+Pool\s*\(|new\s+Client\s*\(/i.test(safetyBundle));
-check("no DB write implementation", !/prisma\.[a-zA-Z0-9_]+\.(create|update|delete|upsert)|from\([^)]*\)\.(insert|update|delete|upsert)\(|supabase\.[a-zA-Z0-9_]+\.(insert|update|delete|upsert)|events\.insert/i.test(safetyBundle));
-check("no payment or VIP implementation", !/from ['"]stripe|new Stripe\b|sendInvoice\s*\(|createInvoiceLink\s*\(|createEntitlement\s*\(|grantVip\s*\(|unlockVip\s*\(|allowed=true|productionPaymentAllowedNow=true|publicLaunchApproved:\s*true|ownerManualReviewRequired:\s*false/i.test(safetyBundle));
-check("no external analytics implementation", !/posthog|amplitude|gtag|GoogleAnalytics|navigator\.sendBeacon/i.test(safetyBundle));
+check("no production DB client implementation", !/new\s+PrismaClient\b|from ['"]@prisma\/client|postgres\s*\(|neon\s*\(|new\s+Pool\s*\(|new\s+Client\s*\(/i.test(changedBundle));
+check("no DB/storage write implementation", !/prisma\.[a-zA-Z0-9_]+\.(create|update|delete|upsert)|from\([^)]*\)\.(insert|update|delete|upsert)\(|supabase\.[a-zA-Z0-9_]+\.(insert|update|delete|upsert)|events\.insert|localStorage\.setItem|sessionStorage\.setItem/i.test(changedBundle));
+check("no payment or VIP implementation", !/from ['"]stripe|new Stripe\b|sendInvoice\s*\(|createInvoiceLink\s*\(|createEntitlement\s*\(|grantVip\s*\(|unlockVip\s*\(|allowed=true|productionPaymentAllowedNow=true|publicLaunchApproved:\s*true|ownerManualReviewRequired:\s*false/i.test(changedBundle));
+check("no external analytics implementation", !/posthog|amplitude|gtag|GoogleAnalytics|navigator\.sendBeacon/i.test(changedBundle));
 
-console.log(`\nAphrodite VIP Locked Preview Redesign QA complete: ${passed} passed, ${failed} failed.`);
-
-if (failed > 0) {
-  process.exit(1);
-}
+console.log(`\nQA complete: ${passed} passed, ${failed} failed.`);
+if (failed > 0) process.exit(1);

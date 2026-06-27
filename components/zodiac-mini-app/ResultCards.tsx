@@ -6,7 +6,7 @@ import { ArrowLeft, Bookmark, CalendarDays, HeartHandshake, MessageCircle, Rotat
 import { FinalAstroMap } from "./AstroChartVisual";
 import type { CompatibilityResult, ZodiacSign } from "./types";
 import { primaryButtonClass, secondaryButtonClass } from "./WizardControls";
-import { AphroditeLockedPreviewCard } from "./aphrodite-design-system";
+import { AphroditeLockedPreviewCard, AphroditeShareCard } from "./aphrodite-design-system";
 
 export function ResultPanel({
   publicMode,
@@ -91,6 +91,23 @@ export function ResultPanel({
           ))}
         </div>
       </div>
+
+      <AphroditeShareCard
+        variant="compatibility"
+        scope="compatibility"
+        eyebrow="Compatibility result card"
+        title={result.pairLabel}
+        subtitle={`${result.relationshipModeLabel} / ${result.modeLabel}`}
+        scoreLabel={`${result.scores.total}%`}
+        scoreDetail={levelLabel}
+        insight={result.coupleAdvice}
+        highlights={[
+          { label: "strength", value: `${result.scores.love}%`, detail: result.loveText },
+          { label: "talk", value: `${result.scores.communication}%`, detail: result.communicationText },
+          { label: "rhythm", value: `${result.scores.household}%`, detail: result.householdText },
+        ]}
+        footer="Share-ready compatibility result preview only. Existing safe share fallback stays unchanged; no real Telegram share/send API was added."
+      />
 
       <FinalAstroMap
         publicMode={publicMode}

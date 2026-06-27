@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ShieldAlert, ChevronLeft, LockKeyhole, Sparkles, Ban, ShieldCheck, Settings2, FileText, Database, CreditCard } from "lucide-react";
-import { AphroditeLockedPreviewCard } from "@/components/zodiac-mini-app/aphrodite-design-system";
+import { AphroditeLockedPreviewCard, AphroditeShareCard } from "@/components/zodiac-mini-app/aphrodite-design-system";
 import { MOCK_VIP_PREVIEW_FEATURES, MOCK_VIP_BOUNDARY_RULES } from "@/lib/zodiac/zodiac-vip-preview";
 
 export const metadata: Metadata = {
@@ -41,6 +41,25 @@ export default function VipPreviewPage() {
             features={["Deep compatibility report", "Birth Matrix Pro", "Mystic deep reading"]}
             previewItems={["Natal profile", "Personal advice", "Shareable premium card"]}
             safetyLabel="Preview-only index. No payment logic or real VIP access is active."
+          />
+        </div>
+
+        <div className="mb-6" data-aphrodite-vip-preview-share-card="package-243">
+          <AphroditeShareCard
+            variant="vipPreview"
+            scope="vip-preview"
+            eyebrow="VIP teaser result card"
+            title="Future VIP Access"
+            subtitle="Preview-only premium result"
+            scoreLabel="locked"
+            scoreDetail="preview"
+            insight="A premium result card can show the value of a future VIP reading without activating payment, entitlement, Telegram API, or real unlock behavior."
+            highlights={[
+              { label: "preview", value: "safe", detail: "Visual teaser only; the value ladder stays visible before any future payment work." },
+              { label: "boundary", value: "locked", detail: "No invoice, no entitlement bypass, no real VIP access, and no DB write." },
+              { label: "format", value: "mobile", detail: "Compact Telegram WebView card for 360px, 390px, and 430px screens." },
+            ]}
+            footer="Share-ready VIP preview visual only. No real Telegram share/send API, payment, invoice, entitlement change, or DB write."
           />
         </div>
 

@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { ShieldAlert, AlertTriangle, Sparkles, Heart } from "lucide-react";
 import Link from "next/link";
-import { AphroditeLockedPreviewCard } from "@/components/zodiac-mini-app/aphrodite-design-system";
+import { AphroditeLockedPreviewCard, AphroditeShareCard } from "@/components/zodiac-mini-app/aphrodite-design-system";
 import { createVipCompatibilityReportMock } from "@/lib/zodiac/zodiac-vip-compatibility-report-foundation";
 
 const ZODIAC_SIGNS = [
@@ -119,6 +119,25 @@ export function VipCompatibilityReportClient() {
               <Heart className="w-12 h-12 text-fuchsia-400 mx-auto mb-4" />
               <h1 className="text-3xl font-bold text-white mb-3">{mockReport!.headline}</h1>
               <p className="text-slate-300 max-w-2xl mx-auto">{mockReport!.summary}</p>
+            </div>
+
+            <div className="p-6 pb-0" data-aphrodite-vip-compatibility-share-card="package-243">
+              <AphroditeShareCard
+                variant="vipPreview"
+                scope="vip-compatibility-report"
+                eyebrow="VIP compatibility teaser card"
+                title={mockReport!.headline}
+                subtitle={`${firstSign} + ${secondSign}`}
+                scoreLabel="preview"
+                scoreDetail="locked"
+                insight={mockReport!.summary}
+                highlights={[
+                  { label: "report", value: "teaser", detail: "Shows the premium result shape without unlocking future VIP sections." },
+                  { label: "boundary", value: "safe", detail: mockReport!.vipBoundaryNote },
+                  { label: "sharing", value: "visual", detail: "Share-ready preview only; no Telegram send API, invoice, or DB write." },
+                ]}
+                footer="VIP report card is preview-only. No payment, no Telegram invoice, no entitlement bypass, no real VIP unlock."
+              />
             </div>
 
             <div className="p-6 space-y-6">

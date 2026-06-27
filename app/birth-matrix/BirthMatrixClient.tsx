@@ -14,7 +14,7 @@ import {
   User,
 } from "lucide-react";
 
-import { AphroditeLockedPreviewCard } from "@/components/zodiac-mini-app/aphrodite-design-system";
+import { AphroditeLockedPreviewCard, AphroditeShareCard } from "@/components/zodiac-mini-app/aphrodite-design-system";
 import { AphroditeMiniAppShell } from "@/components/zodiac-mini-app/AphroditeMiniAppShell";
 import { AphroditeSectionCard } from "@/components/zodiac-mini-app/AphroditeSectionCard";
 import { AphroditeStatusPill } from "@/components/zodiac-mini-app/AphroditeStatusPill";
@@ -325,6 +325,23 @@ function BirthMatrixResultView({
           </span>
         </div>
       </section>
+
+      <AphroditeShareCard
+        variant="birthMatrix"
+        scope="birth-matrix"
+        eyebrow="Birth Matrix summary card"
+        title={`${tone.title} / code ${result.coreNumber}`}
+        subtitle="Share-ready Birth Matrix / Natal summary."
+        scoreLabel={String(result.coreNumber)}
+        scoreDetail="core"
+        insight={tone.profile}
+        highlights={[
+          { label: "strength", value: "resource", detail: tone.strength },
+          { label: "growth", value: "focus", detail: tone.growth },
+          { label: "today", value: "next step", detail: tone.nextStep },
+        ]}
+        footer="Share-ready Birth Matrix visual only. No real share/send API, no DB write, and calculation logic unchanged."
+      />
 
       <section className="grid gap-2 sm:grid-cols-2" aria-label="Ключевые подсказки матрицы">
         {summaryCards.map((card) => (

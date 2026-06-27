@@ -9,7 +9,7 @@ import { relationshipModes, signs } from "./zodiac-mini-app/constants";
 import { AstroChartVisual } from "./zodiac-mini-app/AstroChartVisual";
 import { NatalChartVisual, type NatalChartMode } from "./zodiac-mini-app/NatalChartVisual";
 import { ZodiacDateInput } from "./zodiac-mini-app/ZodiacDateInput";
-import { AphroditeBadge, AphroditeCard, AphroditeLockedPreviewCard } from "./zodiac-mini-app/aphrodite-design-system";
+import { AphroditeBadge, AphroditeCard, AphroditeLockedPreviewCard, AphroditeShareCard } from "./zodiac-mini-app/aphrodite-design-system";
 import type { ZodiacRetentionDraft } from "./zodiac-mini-app/retention";
 import { ZodiacSelect, type ZodiacSelectOption } from "./zodiac-mini-app/ZodiacSelect";
 import { dateInputToIsoDate, isoDateToDateInput } from "@/lib/zodiac-date-input";
@@ -1008,6 +1008,22 @@ export function ExtendedNatalFeature({
           <VipResultPanel publicMode={publicMode} title={result.title}>
             <div className="space-y-3" data-aphrodite-natal-report="package-240">
               <NatalResultHero publicMode={publicMode} result={result} resultSign={resultSign} />
+              <AphroditeShareCard
+                variant="natal"
+                scope="vip-natal"
+                eyebrow="Natal summary card"
+                title={`${resultSign.emoji} ${resultSign.name}`}
+                subtitle={result.modeLabel}
+                scoreLabel={vipElementLabel(resultSign.element)}
+                scoreDetail={result.mode === "extended" ? "extended" : result.mode === "date" ? "date" : "sign"}
+                insight={result.summary}
+                highlights={[
+                  { label: "strength", value: resultSign.element, detail: result.items[0]?.text ?? result.summary },
+                  { label: "growth", value: "focus", detail: result.recommendations[1] ?? result.summary },
+                  { label: "today", value: "action", detail: result.recommendations[0] ?? result.summary },
+                ]}
+                footer="Share-ready Natal visual only. Existing safe share fallback unchanged; no DB write, no exact astro claim, and no calculation change."
+              />
               <NatalChartVisual publicMode={publicMode} sign={resultSign} birthDate={birthDate} birthTime={birthTime} birthCity={birthCity} gender={gender} mode={result.mode} title={`${resultSign.name} · символическая натальная карта`} />
               <NatalResultTabs publicMode={publicMode} activeTab={activeNatalTab} onTabChange={setActiveNatalTab} />
               <NatalSectionPanel publicMode={publicMode} section={activeNatalSection} />

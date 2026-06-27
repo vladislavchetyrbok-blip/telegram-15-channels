@@ -101,6 +101,7 @@ const ROUTES = {
   birthMatrixNatalFlowRedesign: "/dashboard/networks/zodiac/birth-matrix-natal-flow-redesign",
   mysticCardsRedesign: "/dashboard/networks/zodiac/mystic-cards-redesign",
   vipLockedPreviewRedesign: "/dashboard/networks/zodiac/vip-locked-preview-redesign",
+  resultShareCards: "/dashboard/networks/zodiac/result-share-cards",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -1455,6 +1456,28 @@ async function main() {
     assertIncludes(pages.vipLockedPreviewRedesign, "publicLaunchApproved", "vip locked launch flag");
     assertIncludes(pages.vipLockedPreviewRedesign, "ownerManualReviewRequired", "vip locked owner review flag");
     assertIncludes(pages.vipLockedPreviewRedesign, "Package 243 - Result / Share Cards", "vip locked next package");
+    assertIncludes(pages.resultShareCards, "Result / Share Cards", "result share cards title");
+    assertIncludes(pages.resultShareCards, "redesignedSurfaces", "result share cards redesigned surfaces");
+    assertIncludes(pages.resultShareCards, "resultCardPrinciples", "result share cards result principles");
+    assertIncludes(pages.resultShareCards, "shareCardPrinciples", "result share cards share principles");
+    assertIncludes(pages.resultShareCards, "compatibilityResultCardPrinciples", "result share cards compatibility principles");
+    assertIncludes(pages.resultShareCards, "birthMatrixResultCardPrinciples", "result share cards birth matrix principles");
+    assertIncludes(pages.resultShareCards, "mysticResultCardPrinciples", "result share cards mystic principles");
+    assertIncludes(pages.resultShareCards, "vipPreviewResultPrinciples", "result share cards vip preview principles");
+    assertIncludes(pages.resultShareCards, "share-ready preview", "result share cards share-ready wording");
+    assertIncludes(pages.resultShareCards, "No real Telegram share/send API", "result share cards no real send wording");
+    assertIncludes(pages.resultShareCards, "No DB/storage writes", "result share cards no db storage wording");
+    assertIncludes(pages.resultShareCards, "Compatibility result card", "result share cards compatibility surface");
+    assertIncludes(pages.resultShareCards, "Direct Birth Matrix summary card", "result share cards direct birth matrix surface");
+    assertIncludes(pages.resultShareCards, "Mystic Tarot result card", "result share cards tarot surface");
+    assertIncludes(pages.resultShareCards, "VIP preview teaser result card", "result share cards vip preview surface");
+    assertIncludes(pages.resultShareCards, "360px", "result share cards 360px width");
+    assertIncludes(pages.resultShareCards, "390px", "result share cards 390px width");
+    assertIncludes(pages.resultShareCards, "430px", "result share cards 430px width");
+    assertIncludes(pages.resultShareCards, "Telegram WebView", "result share cards webview");
+    assertIncludes(pages.resultShareCards, "publicLaunchApproved", "result share cards launch flag");
+    assertIncludes(pages.resultShareCards, "ownerManualReviewRequired", "result share cards owner review flag");
+    assertIncludes(pages.resultShareCards, "Package 244 - Telegram WebView Mobile Polish", "result share cards next package");
     assertIncludes(pages.productCopyFinalPolish, "Финальная полировка текстов Aphrodite", "product copy polish title");
     assertIncludes(pages.productCopyFinalPolish, "Только copy polish", "product copy polish classification");
     assertIncludes(pages.productCopyFinalPolish, "Copy polish не включает оплату", "product copy polish no payment");

@@ -21,6 +21,7 @@ import {
   Rocket,
   Settings,
   ShieldCheck,
+  Share2,
   Smartphone,
   Sparkles,
   ShoppingCart,
@@ -831,6 +832,13 @@ const platformSections = [
     href: "/dashboard/networks/zodiac/vip-locked-preview-redesign",
     icon: LockKeyhole,
     caption: "Package 242 - unified preview-only VIP locked layer across Mini App home, compatibility, Birth Matrix, Mystic Cards, Natal and safe VIP preview pages.",
+    tone: "violet",
+  },
+  {
+    title: "Result / Share Cards",
+    href: "/dashboard/networks/zodiac/result-share-cards",
+    icon: Share2,
+    caption: "Package 243 - visual-only premium result/share cards across compatibility, Birth Matrix, Mystic Cards, Natal and preview-only VIP surfaces.",
     tone: "violet",
   },
   {

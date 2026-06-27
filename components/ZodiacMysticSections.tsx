@@ -40,6 +40,7 @@ import {
   AphroditeMetricCard,
   AphroditeMysticCardPreview,
   AphroditeSectionHeader,
+  AphroditeShareCard,
 } from "./zodiac-mini-app/aphrodite-design-system";
 import { FeatureCard, EmptyFeatureCard } from "./zodiac-mini-app/ui-primitives";
 
@@ -143,6 +144,23 @@ export function DailyCardFeature({ publicMode, dateKey, sign }: CommonProps & { 
             </div>
           ))}
         </div>
+
+        <AphroditeShareCard
+          variant="mystic"
+          scope="mystic-daily"
+          eyebrow="Mystic Card result card"
+          title={card.title}
+          subtitle={card.theme}
+          scoreLabel="card"
+          scoreDetail="daily"
+          insight={card.phrase}
+          highlights={[
+            { label: "love", value: "signal", detail: card.love },
+            { label: "money", value: "resource", detail: card.money },
+            { label: "action", value: "today", detail: card.action },
+          ]}
+          footer="Share-ready Mystic visual only. No real Telegram share/send API and Mystic generation logic unchanged."
+        />
 
         <div className={publicMode ? "rounded-lg border border-emerald-200/20 bg-emerald-200/10 p-4" : "rounded-lg border border-emerald-200 bg-emerald-50 p-4"}>
           <p className={publicMode ? "text-sm font-semibold text-emerald-100" : "text-sm font-semibold text-emerald-800"}>Действие</p>
@@ -341,6 +359,23 @@ export function TarotCardFeature({ publicMode, dateKey, sign, onSave, onShare, o
             <div data-aphrodite-mystic-card-spread="package-241">
               <TarotSpreadVisual publicMode={publicMode} spread={spread} />
             </div>
+            <AphroditeShareCard
+              variant="mystic"
+              scope="mystic-tarot"
+              eyebrow="Tarot result card"
+              title={spread.spreadLabel}
+              subtitle={spread.topicLabel}
+              scoreLabel={String(spread.cardCount)}
+              scoreDetail="cards"
+              insight={spread.shortAnswer}
+              highlights={[
+                { label: "hidden", value: "meaning", detail: spread.hiddenMeaning },
+                { label: "risk", value: "watch", detail: spread.risk },
+                { label: "action", value: "today", detail: spread.actionToday },
+              ]}
+              footer="Share-ready Tarot visual only. No real Telegram share/send API and Tarot selection logic unchanged."
+            />
+
 
             <MysticResultBlock publicMode={publicMode} title="Краткий ответ" body={spread.shortAnswer} />
             <div className={publicMode ? "rounded-xl border border-white/10 bg-white/7 p-4" : "rounded-xl border border-slate-200 bg-white p-4"}>
@@ -516,6 +551,23 @@ export function RuneDayFeature({ publicMode, dateKey, sign, onSave, onShare, onE
             <div data-aphrodite-mystic-card-spread="package-241">
               <RuneSpreadVisual publicMode={publicMode} spread={spread} />
             </div>
+            <AphroditeShareCard
+              variant="mystic"
+              scope="mystic-rune"
+              eyebrow="Rune result card"
+              title={spread.modeLabel}
+              subtitle={spread.resultTier}
+              scoreLabel={String(spread.runeCount)}
+              scoreDetail="runes"
+              insight={spread.mainRune.rune.name + ": " + spread.mainRune.rune.mainMeaning}
+              highlights={[
+                { label: "power", value: "signal", detail: spread.power },
+                { label: "risk", value: "watch", detail: spread.risk },
+                { label: "action", value: "today", detail: spread.actionToday },
+              ]}
+              footer="Share-ready Rune visual only. No real Telegram share/send API and Rune random/storage logic unchanged."
+            />
+
 
             <MysticResultBlock publicMode={publicMode} title="Главная руна" body={`${spread.mainRune.rune.name}: ${spread.mainRune.rune.mainMeaning}`} />
             <MysticResultBlock publicMode={publicMode} title="Сила" body={spread.power} tone="action" />
@@ -975,6 +1027,23 @@ export function BirthMatrixFeature({
               <Metric publicMode={publicMode} label="Реализация" value={matrix.realizationNumber} />
               <Metric publicMode={publicMode} label="Отношения" value={matrix.relationshipNumber} />
             </div>
+
+            <AphroditeShareCard
+              variant="birthMatrix"
+              scope="miniapp-matrix"
+              eyebrow="Birth Matrix result card"
+              title={matrix.archetype}
+              subtitle={"code " + matrix.centralNumber + " / " + matrix.tier}
+              scoreLabel={String(matrix.lifePath)}
+              scoreDetail="life path"
+              insight={matrix.hero}
+              highlights={[
+                { label: "soul", value: String(matrix.soulNumber), detail: matrix.sections.find((section) => section.id === "main")?.points[0] ?? matrix.hero },
+                { label: "growth", value: String(matrix.realizationNumber), detail: matrix.sections.find((section) => section.id === "lesson")?.body ?? matrix.tier },
+                { label: "relations", value: String(matrix.relationshipNumber), detail: matrix.sections.find((section) => section.id === "today")?.body ?? matrix.archetype },
+              ]}
+              footer="Share-ready Birth Matrix visual only. Safe share fallback unchanged; no DB write and no calculation change."
+            />
 
             <BirthMatrixVisual publicMode={publicMode} matrix={matrix} activeSection={activeSection} onSectionSelect={handleSectionSelect} />
 
