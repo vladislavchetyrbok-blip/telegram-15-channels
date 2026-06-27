@@ -722,6 +722,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Env Example Expansion Readiness",
+    href: "/dashboard/networks/zodiac/env-example-expansion-readiness",
+    icon: Database,
+    caption: "Package 227 - expanded .env.example placeholders for URLs, auth, Telegram, DB, publishing, analytics, backup and launch gates.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

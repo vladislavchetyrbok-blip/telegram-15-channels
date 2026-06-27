@@ -85,6 +85,7 @@ const ROUTES = {
   realDeviceQaExecutionPack: "/dashboard/networks/zodiac/real-device-qa-execution-pack",
   dashboardAuthSystemDecision: "/dashboard/networks/zodiac/dashboard-auth-system-decision",
   publicApiExposureHardening: "/dashboard/networks/zodiac/public-api-exposure-hardening",
+  envExampleExpansionReadiness: "/dashboard/networks/zodiac/env-example-expansion-readiness",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -246,6 +247,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/real-device-qa-execution-pack"', "real device qa execution pack route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/dashboard-auth-system-decision"', "dashboard auth system decision route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/public-api-exposure-hardening"', "public api exposure hardening route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/env-example-expansion-readiness"', "env example expansion readiness route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");
@@ -1182,6 +1184,15 @@ async function main() {
     assertIncludes(pages.publicApiExposureHardening, "ownerManualReviewRequired", "public api owner review flag");
     assertIncludes(pages.publicApiExposureHardening, "databaseWriteAdded", "public api db write flag");
     assertIncludes(pages.publicApiExposureHardening, "externalAnalyticsAdded", "public api external analytics flag");
+    assertIncludes(pages.envExampleExpansionReadiness, "Env Example Expansion Readiness", "env example readiness title");
+    assertIncludes(pages.envExampleExpansionReadiness, "DATABASE_URL", "env example database url");
+    assertIncludes(pages.envExampleExpansionReadiness, "TELEGRAM_BOT_TOKEN", "env example telegram token");
+    assertIncludes(pages.envExampleExpansionReadiness, "APHRODITE_SESSION_SECRET", "env example aphrodite session secret");
+    assertIncludes(pages.envExampleExpansionReadiness, "ZODIAC_DASHBOARD_SESSION_SECRET", "env example legacy session secret");
+    assertIncludes(pages.envExampleExpansionReadiness, "publicLaunchApproved", "env example launch flag");
+    assertIncludes(pages.envExampleExpansionReadiness, "ownerManualReviewRequired", "env example owner review flag");
+    assertIncludes(pages.envExampleExpansionReadiness, "secretsAdded", "env example secrets flag");
+    assertIncludes(pages.envExampleExpansionReadiness, "productionDbConnected", "env example production db flag");
     assertIncludes(pages.productCopyFinalPolish, "Финальная полировка текстов Aphrodite", "product copy polish title");
     assertIncludes(pages.productCopyFinalPolish, "Только copy polish", "product copy polish classification");
     assertIncludes(pages.productCopyFinalPolish, "Copy polish не включает оплату", "product copy polish no payment");
