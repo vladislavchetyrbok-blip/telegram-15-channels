@@ -90,6 +90,7 @@ const ROUTES = {
   productionEnvSetupProtocol: "/dashboard/networks/zodiac/production-env-setup-protocol",
   backupFreshnessVerificationProtocol: "/dashboard/networks/zodiac/backup-freshness-verification-protocol",
   manualRealDeviceQaEvidenceCapture: "/dashboard/networks/zodiac/manual-real-device-qa-evidence-capture",
+  telegramWebviewStartappManualQaProtocol: "/dashboard/networks/zodiac/telegram-webview-startapp-manual-qa-protocol",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -256,6 +257,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/production-env-setup-protocol"', "production env setup protocol route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/backup-freshness-verification-protocol"', "backup freshness verification protocol route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-real-device-qa-evidence-capture"', "manual real-device qa evidence capture route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/telegram-webview-startapp-manual-qa-protocol"', "telegram webview startapp manual qa protocol route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");
@@ -1250,6 +1252,23 @@ async function main() {
     assertIncludes(pages.manualRealDeviceQaEvidenceCapture, "realDeviceQaCompletedAutomatically", "manual real-device auto complete flag");
     assertIncludes(pages.manualRealDeviceQaEvidenceCapture, "publicLaunchApproved", "manual real-device launch flag");
     assertIncludes(pages.manualRealDeviceQaEvidenceCapture, "ownerManualReviewRequired", "manual real-device owner review flag");
+    assertIncludes(pages.telegramWebviewStartappManualQaProtocol, "Telegram WebView Startapp Manual QA Protocol", "telegram webview manual protocol title");
+    assertIncludes(pages.telegramWebviewStartappManualQaProtocol, "Telegram iOS WebView", "telegram webview ios");
+    assertIncludes(pages.telegramWebviewStartappManualQaProtocol, "Telegram Android WebView", "telegram webview android");
+    assertIncludes(pages.telegramWebviewStartappManualQaProtocol, "startapp param present/missing", "telegram webview startapp param");
+    assertIncludes(pages.telegramWebviewStartappManualQaProtocol, "deep link open", "telegram webview deep link");
+    assertIncludes(pages.telegramWebviewStartappManualQaProtocol, "browser fallback", "telegram webview browser fallback");
+    assertIncludes(pages.telegramWebviewStartappManualQaProtocol, "Telegram WebApp ready/expand", "telegram webview ready expand");
+    assertIncludes(pages.telegramWebviewStartappManualQaProtocol, "BackButton", "telegram webview backbutton");
+    assertIncludes(pages.telegramWebviewStartappManualQaProtocol, "haptics", "telegram webview haptics");
+    assertIncludes(pages.telegramWebviewStartappManualQaProtocol, "initData presence manual observation", "telegram webview initdata");
+    assertIncludes(pages.telegramWebviewStartappManualQaProtocol, "cache/live marker", "telegram webview cache marker");
+    assertIncludes(pages.telegramWebviewStartappManualQaProtocol, "NOT a code failure", "telegram webview browser mode not code failure");
+    assertIncludes(pages.telegramWebviewStartappManualQaProtocol, "BotFather was not changed", "telegram webview botfather not changed");
+    assertIncludes(pages.telegramWebviewStartappManualQaProtocol, "Telegram API was not used", "telegram webview api not used");
+    assertIncludes(pages.telegramWebviewStartappManualQaProtocol, "No messages were sent", "telegram webview no messages");
+    assertIncludes(pages.telegramWebviewStartappManualQaProtocol, "publicLaunchApproved", "telegram webview launch flag");
+    assertIncludes(pages.telegramWebviewStartappManualQaProtocol, "ownerManualReviewRequired", "telegram webview owner review flag");
     assertIncludes(pages.productCopyFinalPolish, "Финальная полировка текстов Aphrodite", "product copy polish title");
     assertIncludes(pages.productCopyFinalPolish, "Только copy polish", "product copy polish classification");
     assertIncludes(pages.productCopyFinalPolish, "Copy polish не включает оплату", "product copy polish no payment");

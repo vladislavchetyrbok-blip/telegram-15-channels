@@ -757,6 +757,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Telegram WebView Startapp Manual QA Protocol",
+    href: "/dashboard/networks/zodiac/telegram-webview-startapp-manual-qa-protocol",
+    icon: Smartphone,
+    caption: "Package 232 - manual Telegram WebView, startapp, deep-link, browser fallback, BackButton, haptics and initData protocol.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
