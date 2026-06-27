@@ -209,10 +209,13 @@ check("report says launch not performed", reportSource.includes("No production l
 check("report says next recommended package", reportSource.includes("Package 224 — Production Env Setup Protocol"));
 
 const approvedPackage238HomeFiles = new Set([
+  "app/birth-matrix/BirthMatrixClient.tsx",
   "app/miniapp/page.tsx",
   "components/zodiac-mini-app/AphroditeHomeScreen.tsx",
   "components/zodiac-mini-app/MainMenuSections.tsx",
   "components/ZodiacCompatibilityMiniApp.tsx",
+  "components/ZodiacMysticSections.tsx",
+  "components/ZodiacVipSections.tsx",
   "components/zodiac-mini-app/ResultCards.tsx",
   "components/zodiac-mini-app/WizardControls.tsx",
 ]);
@@ -222,6 +225,7 @@ const liveMiniAppSourceChanges = gitChangedNames([
   "app/compatibility",
   "components/ZodiacCompatibilityMiniApp.tsx",
   "components/ZodiacMysticSections.tsx",
+  "components/ZodiacVipSections.tsx",
   "components/zodiac-mini-app/AphroditeHomeScreen.tsx",
   "components/zodiac-mini-app/MainMenuSections.tsx",
   "components/zodiac-mini-app/ResultCards.tsx",
@@ -229,7 +233,7 @@ const liveMiniAppSourceChanges = gitChangedNames([
   "components/zodiac-mini-app/ZodiacDateInput.tsx",
 ]);
 check(
-  "live Mini App source changes limited to approved Package 238 home files and Package 239 compatibility visual files",
+  "live Mini App source changes limited to approved Package 238 home files, Package 239 compatibility visual files and Package 240 Birth Matrix/Natal visual files",
   liveMiniAppSourceChanges.every((file) => approvedPackage238HomeFiles.has(file)),
 );
 check("no workflow/cron changes", gitChangedNames([".github/workflows", "vercel.json"]).length === 0);

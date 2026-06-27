@@ -98,6 +98,7 @@ const ROUTES = {
   aphroditeDesignSystem: "/dashboard/networks/zodiac/aphrodite-design-system",
   miniappHomeScreenRedesign: "/dashboard/networks/zodiac/miniapp-home-screen-redesign",
   compatibilityFlowRedesign: "/dashboard/networks/zodiac/compatibility-flow-redesign",
+  birthMatrixNatalFlowRedesign: "/dashboard/networks/zodiac/birth-matrix-natal-flow-redesign",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -1415,6 +1416,26 @@ async function main() {
     assertIncludes(pages.compatibilityFlowRedesign, "publicLaunchApproved", "compatibility flow launch flag");
     assertIncludes(pages.compatibilityFlowRedesign, "ownerManualReviewRequired", "compatibility flow owner review flag");
     assertIncludes(pages.compatibilityFlowRedesign, "Package 240 - Birth Matrix / Natal Flow Redesign", "compatibility flow next package");
+    assertIncludes(pages.birthMatrixNatalFlowRedesign, "Birth Matrix / Natal Flow Redesign", "birth matrix natal redesign title");
+    assertIncludes(pages.birthMatrixNatalFlowRedesign, "redesignedSections", "birth matrix natal redesigned sections");
+    assertIncludes(pages.birthMatrixNatalFlowRedesign, "birthMatrixInputPrinciples", "birth matrix natal input principles");
+    assertIncludes(pages.birthMatrixNatalFlowRedesign, "natalResultPresentationPrinciples", "birth matrix natal result principles");
+    assertIncludes(pages.birthMatrixNatalFlowRedesign, "energyCardPrinciples", "birth matrix natal energy cards");
+    assertIncludes(pages.birthMatrixNatalFlowRedesign, "personalReportPrinciples", "birth matrix natal personal report");
+    assertIncludes(pages.birthMatrixNatalFlowRedesign, "vipLockedPreviewPrinciples", "birth matrix natal locked preview");
+    assertIncludes(pages.birthMatrixNatalFlowRedesign, "birth-date / birth data input", "birth matrix natal input wording");
+    assertIncludes(pages.birthMatrixNatalFlowRedesign, "personal energy report", "birth matrix natal energy report wording");
+    assertIncludes(pages.birthMatrixNatalFlowRedesign, "preview only", "birth matrix natal preview only");
+    assertIncludes(pages.birthMatrixNatalFlowRedesign, "no active payment", "birth matrix natal no active payment");
+    assertIncludes(pages.birthMatrixNatalFlowRedesign, "no real VIP unlock", "birth matrix natal no real VIP unlock");
+    assertIncludes(pages.birthMatrixNatalFlowRedesign, "Birth Matrix/Natal calculation logic unchanged", "birth matrix natal calculation unchanged");
+    assertIncludes(pages.birthMatrixNatalFlowRedesign, "birth-date parsing/validation unchanged", "birth matrix natal date parsing unchanged");
+    assertIncludes(pages.birthMatrixNatalFlowRedesign, "Package 224 date formatting", "birth matrix natal package 224 safe");
+    assertIncludes(pages.birthMatrixNatalFlowRedesign, "360px / 390px / 430px", "birth matrix natal mobile widths");
+    assertIncludes(pages.birthMatrixNatalFlowRedesign, "Telegram WebView", "birth matrix natal webview");
+    assertIncludes(pages.birthMatrixNatalFlowRedesign, "publicLaunchApproved", "birth matrix natal launch flag");
+    assertIncludes(pages.birthMatrixNatalFlowRedesign, "ownerManualReviewRequired", "birth matrix natal owner review flag");
+    assertIncludes(pages.birthMatrixNatalFlowRedesign, "Package 241 - Mystic Cards Redesign", "birth matrix natal next package");
     assertIncludes(pages.productCopyFinalPolish, "Финальная полировка текстов Aphrodite", "product copy polish title");
     assertIncludes(pages.productCopyFinalPolish, "Только copy polish", "product copy polish classification");
     assertIncludes(pages.productCopyFinalPolish, "Copy polish не включает оплату", "product copy polish no payment");

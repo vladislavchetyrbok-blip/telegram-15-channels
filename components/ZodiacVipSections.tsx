@@ -9,6 +9,7 @@ import { relationshipModes, signs } from "./zodiac-mini-app/constants";
 import { AstroChartVisual } from "./zodiac-mini-app/AstroChartVisual";
 import { NatalChartVisual, type NatalChartMode } from "./zodiac-mini-app/NatalChartVisual";
 import { ZodiacDateInput } from "./zodiac-mini-app/ZodiacDateInput";
+import { AphroditeBadge, AphroditeCard } from "./zodiac-mini-app/aphrodite-design-system";
 import type { ZodiacRetentionDraft } from "./zodiac-mini-app/retention";
 import { ZodiacSelect, type ZodiacSelectOption } from "./zodiac-mini-app/ZodiacSelect";
 import { dateInputToIsoDate, isoDateToDateInput } from "@/lib/zodiac-date-input";
@@ -950,58 +951,82 @@ export function ExtendedNatalFeature({
 
   return (
     <VipScreenLayout publicMode={publicMode} title="Расширенная натальная карта" onBack={onBack}>
-      <VipIntro publicMode={publicMode} text="Премиальная натальная карта показывает личный код, темперамент, отношения, решения, работу, рост и действие на сегодня. Данные используются только на экране расчёта." />
-      <VipInputPanel publicMode={publicMode}>
-        <SignSelect publicMode={publicMode} value={signSlug} onChange={setSignSlug} />
-        <VipField publicMode={publicMode} label="Дата рождения">
-          <ZodiacDateInput
-            publicMode={publicMode}
-            value={birthDate}
-            onChange={updateBirthDate}
-            hasError={Boolean(birthDateValidationError)}
-            birthDateScope="vip-natal"
-            hint="Формат: ДД.ММ.ГГГГ. Например: 15.06.1998. Можно ввести дату рождения с 1900 года до сегодняшнего дня."
-          />
-          {birthDateValidationError ? (
-            <p className={publicMode ? "mt-2 text-xs font-semibold text-rose-200" : "mt-2 text-xs font-semibold text-rose-700"}>{birthDateValidationError}</p>
-          ) : null}
-        </VipField>
-        <VipField publicMode={publicMode} label="Время рождения">
-          <input className={inputClass(publicMode)} type="time" value={birthTime} onChange={(event) => setBirthTime(event.target.value)} />
-        </VipField>
-        <VipField publicMode={publicMode} label="Город рождения">
-          <input className={inputClass(publicMode)} value={birthCity} onChange={(event) => setBirthCity(event.target.value)} />
-        </VipField>
-        <GenderSelect publicMode={publicMode} value={gender} onChange={setGender} />
-      </VipInputPanel>
-      <div className={publicMode ? "rounded-lg border border-white/10 bg-white/5 p-3 text-sm leading-6 text-slate-300" : "rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm leading-6 text-slate-600"}>
-        {result.mode === "extended" ? "Данные учтены в расширенной интерпретации, но точные дома и асцендент не заявляются без real astro engine." : result.mode === "date" ? "Базовый расчёт без точного времени: дата определяет знак автоматически, время и город можно не вводить." : "Базовая карта по знаку: дату можно добавить позже, чтобы открыть более личный слой."}
+      <div className="space-y-4" data-aphrodite-natal-flow-redesign="package-240">
+        <VipIntro publicMode={publicMode} text="Премиальная натальная карта показывает личный код, темперамент, отношения, решения, работу, рост и действие на сегодня. Данные используются только на экране расчёта." />
+        <div data-aphrodite-natal-input="package-240">
+          <AphroditeCard tone="rose" className="mb-3 space-y-3">
+            <AphroditeBadge tone="rose">Natal birth profile</AphroditeBadge>
+            <div>
+              <h3 className="text-base font-semibold leading-6 text-[#fff7ed]">Что даст натальная карта</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-300">
+                Ввод остаётся тем же: знак, дата рождения ДД.ММ.ГГГГ, время и город по желанию. Результат собирается в личный отчёт: характер, отношения, деньги, рост и один понятный шаг на сегодня.
+              </p>
+            </div>
+          </AphroditeCard>
+          <VipInputPanel publicMode={publicMode}>
+            <SignSelect publicMode={publicMode} value={signSlug} onChange={setSignSlug} />
+            <VipField publicMode={publicMode} label="Дата рождения">
+              <ZodiacDateInput
+                publicMode={publicMode}
+                value={birthDate}
+                onChange={updateBirthDate}
+                hasError={Boolean(birthDateValidationError)}
+                birthDateScope="vip-natal"
+                hint="Формат: ДД.ММ.ГГГГ. Например: 15.06.1998. Можно ввести дату рождения с 1900 года до сегодняшнего дня."
+              />
+              {birthDateValidationError ? (
+                <p className={publicMode ? "mt-2 text-xs font-semibold text-rose-200" : "mt-2 text-xs font-semibold text-rose-700"}>{birthDateValidationError}</p>
+              ) : null}
+            </VipField>
+            <VipField publicMode={publicMode} label="Время рождения">
+              <input className={inputClass(publicMode)} type="time" value={birthTime} onChange={(event) => setBirthTime(event.target.value)} />
+            </VipField>
+            <VipField publicMode={publicMode} label="Город рождения">
+              <input className={inputClass(publicMode)} value={birthCity} onChange={(event) => setBirthCity(event.target.value)} />
+            </VipField>
+            <GenderSelect publicMode={publicMode} value={gender} onChange={setGender} />
+          </VipInputPanel>
+        </div>
+        <div className={publicMode ? "rounded-lg border border-white/10 bg-white/5 p-3 text-sm leading-6 text-slate-300" : "rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm leading-6 text-slate-600"}>
+          {result.mode === "extended" ? "Данные учтены в расширенной интерпретации, но точные дома и асцендент не заявляются без real astro engine." : result.mode === "date" ? "Базовый расчёт без точного времени: дата определяет знак автоматически, время и город можно не вводить." : "Базовая карта по знаку: дату можно добавить позже, чтобы открыть более личный слой."}
+        </div>
+        {natalChart ? (
+          <VipReuseButton publicMode={publicMode} onClick={() => {
+            setSignSlug(natalChart.sign.slug);
+            actions.reuse({ featureKey, sign: natalChart.sign.slug, hasBirthDate: natalChart.hasBirthDate, hasBirthTime: natalChart.hasBirthTime, hasBirthCity: natalChart.hasBirthCity, inputMode: "profile" });
+          }} />
+        ) : null}
+        <PrimaryVipButton publicMode={publicMode} onClick={() => {
+          actions.calculate(payload);
+          actions.chart(payload);
+          setActiveNatalTab("main");
+          setCalculated(true);
+        }}>
+          Рассчитать
+        </PrimaryVipButton>
+        {calculated ? (
+          <VipResultPanel publicMode={publicMode} title={result.title}>
+            <div className="space-y-3" data-aphrodite-natal-report="package-240">
+              <NatalResultHero publicMode={publicMode} result={result} resultSign={resultSign} />
+              <NatalChartVisual publicMode={publicMode} sign={resultSign} birthDate={birthDate} birthTime={birthTime} birthCity={birthCity} gender={gender} mode={result.mode} title={`${resultSign.name} · символическая натальная карта`} />
+              <NatalResultTabs publicMode={publicMode} activeTab={activeNatalTab} onTabChange={setActiveNatalTab} />
+              <NatalSectionPanel publicMode={publicMode} section={activeNatalSection} />
+              <div data-aphrodite-natal-vip-preview="package-240">
+                <AphroditeCard tone="locked" className="space-y-3">
+                  <AphroditeBadge tone="locked">preview only / no active payment</AphroditeBadge>
+                  <h4 className="text-base font-semibold leading-6 text-[#fff7ed]">Pro Natal слой</h4>
+                  <p className="text-sm leading-6 text-slate-300">
+                    Будущий Pro-слой может раскрыть личные циклы, совместимость с матрицей, карьерные сценарии и ритуалы недели. Сейчас это только locked preview: без оплаты, без entitlement и без реального VIP unlock.
+                  </p>
+                </AphroditeCard>
+              </div>
+              <NatalBottomActions publicMode={publicMode}>
+                <VipResultActions publicMode={publicMode} saved={actions.saved} shared={actions.shared} shareStatus={actions.shareStatus} saveLabel="Сохранить карту" shareLabel="Поделиться картой" onSave={() => actions.save(payload, buildNatalRetentionAction(resultSign, result.mode))} onShare={() => actions.share(payload, buildNatalRetentionAction(resultSign, result.mode))} />
+              </NatalBottomActions>
+            </div>
+          </VipResultPanel>
+        ) : null}
       </div>
-      {natalChart ? (
-        <VipReuseButton publicMode={publicMode} onClick={() => {
-          setSignSlug(natalChart.sign.slug);
-          actions.reuse({ featureKey, sign: natalChart.sign.slug, hasBirthDate: natalChart.hasBirthDate, hasBirthTime: natalChart.hasBirthTime, hasBirthCity: natalChart.hasBirthCity, inputMode: "profile" });
-        }} />
-      ) : null}
-      <PrimaryVipButton publicMode={publicMode} onClick={() => {
-        actions.calculate(payload);
-        actions.chart(payload);
-        setActiveNatalTab("main");
-        setCalculated(true);
-      }}>
-        Рассчитать
-      </PrimaryVipButton>
-      {calculated ? (
-        <VipResultPanel publicMode={publicMode} title={result.title}>
-          <NatalResultHero publicMode={publicMode} result={result} resultSign={resultSign} />
-          <NatalChartVisual publicMode={publicMode} sign={resultSign} birthDate={birthDate} birthTime={birthTime} birthCity={birthCity} gender={gender} mode={result.mode} title={`${resultSign.name} · символическая натальная карта`} />
-          <NatalResultTabs publicMode={publicMode} activeTab={activeNatalTab} onTabChange={setActiveNatalTab} />
-          <NatalSectionPanel publicMode={publicMode} section={activeNatalSection} />
-          <NatalBottomActions publicMode={publicMode}>
-            <VipResultActions publicMode={publicMode} saved={actions.saved} shared={actions.shared} shareStatus={actions.shareStatus} saveLabel="Сохранить карту" shareLabel="Поделиться картой" onSave={() => actions.save(payload, buildNatalRetentionAction(resultSign, result.mode))} onShare={() => actions.share(payload, buildNatalRetentionAction(resultSign, result.mode))} />
-          </NatalBottomActions>
-        </VipResultPanel>
-      ) : null}
     </VipScreenLayout>
   );
 }

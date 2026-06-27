@@ -813,6 +813,13 @@ const platformSections = [
     tone: "violet",
   },
   {
+    title: "Birth Matrix / Natal Flow Redesign",
+    href: "/dashboard/networks/zodiac/birth-matrix-natal-flow-redesign",
+    icon: Sparkles,
+    caption: "Package 240 - user-facing Birth Matrix / Natal flow redesign: birth-date input, personal report hierarchy, energy cards and preview-only Pro locked state.",
+    tone: "violet",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

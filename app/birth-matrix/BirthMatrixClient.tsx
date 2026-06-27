@@ -161,7 +161,8 @@ export function BirthMatrixClient() {
     >
       <div
         data-birth-matrix-dashboard-qa="Birth Matrix Static Mock (Package 103) Calculate Your Matrix No payment No database No Telegram API"
-        className="space-y-4"
+        data-aphrodite-birth-matrix-natal-flow-redesign="package-240"
+        className="space-y-5"
       >
         <Link
           href="/miniapp"
@@ -171,14 +172,23 @@ export function BirthMatrixClient() {
           Назад в Mini App
         </Link>
 
-        <AphroditeSectionCard
-          tone="primary"
-          eyebrow="Расчёт по дате"
-          title="Дата рождения"
-          description="Короткий расчёт по дате рождения: главные энергии, ресурс и зона роста."
-          actionSlot={<Calendar className="h-5 w-5 text-rose-200" />}
-        >
-          <form onSubmit={handleCalculate} className="space-y-4">
+        <section className="rounded-lg border border-violet-300/20 bg-violet-300/[0.08] p-4" data-aphrodite-birth-matrix-what-user-gets="package-240">
+          <p className="text-xs font-semibold uppercase tracking-wide text-violet-100">Birth Matrix / Natal profile</p>
+          <h2 className="mt-2 text-lg font-semibold leading-7 text-white">Личный отчёт по дате рождения</h2>
+          <p className="mt-2 text-sm leading-6 text-slate-300">
+            Экран показывает главный код, сильную сторону, зону роста, энергии даты, отношения и preview будущего Pro-разбора. Формат даты и проверка диапазона остаются прежними.
+          </p>
+        </section>
+
+        <div data-aphrodite-birth-matrix-input="package-240">
+          <AphroditeSectionCard
+            tone="primary"
+            eyebrow="Расчёт по дате"
+            title="Дата рождения"
+            description="Короткий расчёт по дате рождения: главные энергии, ресурс и зона роста."
+            actionSlot={<Calendar className="h-5 w-5 text-rose-200" />}
+          >
+            <form onSubmit={handleCalculate} className="space-y-4">
             <div className="space-y-2">
               <label htmlFor="birth-matrix-birth-date" className="flex items-center gap-2 text-sm font-semibold text-white">
                 <Calendar className="h-4 w-4 text-rose-200" />
@@ -233,8 +243,9 @@ export function BirthMatrixClient() {
               <Sparkles className="h-4 w-4" />
               Рассчитать матрицу
             </button>
-          </form>
-        </AphroditeSectionCard>
+            </form>
+          </AphroditeSectionCard>
+        </div>
 
         {!result || !resultTone ? (
           <EmptyBirthMatrixState />
@@ -297,7 +308,7 @@ function BirthMatrixResultView({
   ];
 
   return (
-    <div className="space-y-4" data-birth-matrix-result="visual-upgrade-package-201">
+    <div className="space-y-4" data-birth-matrix-result="visual-upgrade-package-201" data-aphrodite-birth-matrix-report="package-240">
       <section className="rounded-lg border border-amber-200/20 bg-gradient-to-br from-rose-950/35 via-slate-900 to-emerald-950/20 p-4">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
@@ -325,7 +336,7 @@ function BirthMatrixResultView({
         ))}
       </section>
 
-      <section className="space-y-2">
+      <section className="space-y-2" data-aphrodite-birth-matrix-energy-card="package-240">
         <div>
           <p className="text-xs font-medium text-rose-200">Глубже</p>
           <h2 className="mt-1 text-base font-semibold leading-6 text-white">Энергии даты</h2>
@@ -353,7 +364,7 @@ function BirthMatrixResultView({
         </p>
       </section>
 
-      <section className="rounded-lg border border-slate-700/80 bg-slate-900/70 p-4">
+      <section className="rounded-lg border border-slate-700/80 bg-slate-900/70 p-4" data-aphrodite-birth-matrix-vip-preview="package-240">
         <div className="flex items-start gap-3">
           <LockKeyhole className="mt-0.5 h-5 w-5 shrink-0 text-slate-400" />
           <div>

@@ -33,6 +33,7 @@ import { RuneSpreadVisual } from "./zodiac-mini-app/RuneSpreadVisual";
 import { TarotSpreadVisual } from "./zodiac-mini-app/TarotSpreadVisual";
 import { AphroditeMysticUniversePanel } from "./zodiac-mini-app/AphroditeMysticUniversePanel";
 import { ZodiacDateInput } from "./zodiac-mini-app/ZodiacDateInput";
+import { AphroditeBadge, AphroditeCard, AphroditeMetricCard, AphroditeSectionHeader } from "./zodiac-mini-app/aphrodite-design-system";
 import { FeatureCard, EmptyFeatureCard } from "./zodiac-mini-app/ui-primitives";
 
 const signNames: Record<ZodiacSignId, string> = {
@@ -776,12 +777,29 @@ export function BirthMatrixFeature({
 
   return (
     <FeatureCard publicMode={publicMode} title="🧿 Матрица судьбы" subtitle="Символическая интерпретация по дате рождения без фатальных обещаний">
-      <div className="mt-4 space-y-4">
+      <div className="mt-4 space-y-4" data-aphrodite-birth-matrix-flow-redesign="package-240">
         {!matrix ? (
-          <div className={publicMode ? "rounded-lg border border-white/10 bg-white/7 p-4 text-center" : "rounded-lg border border-slate-200 bg-slate-50 p-4 text-center"}>
-            <p className={publicMode ? "text-sm text-slate-300 mb-3" : "text-sm text-slate-600 mb-3"}>
-              Введите дату рождения, чтобы рассчитать число пути, число души, реализацию, отношения и главный архетип. Сырая дата не сохраняется в истории или аналитике.
-            </p>
+          <div
+            className={publicMode ? "rounded-lg border border-white/10 bg-white/7 p-4 text-left" : "rounded-lg border border-slate-200 bg-slate-50 p-4 text-left"}
+            data-aphrodite-birth-matrix-input="package-240"
+          >
+            <AphroditeSectionHeader
+              eyebrow="Birth Matrix / Natal input"
+              title="Личный профиль по дате рождения"
+              description="Введите дату рождения, чтобы увидеть число пути, число души, реализацию, отношения и главный архетип. Дата используется только на экране расчёта."
+            />
+            <div className="my-4 grid gap-2 sm:grid-cols-3">
+              {[
+                ["Энергия", "число пути"],
+                ["Профиль", "сила и рост"],
+                ["Отношения", "мягкая подсказка"],
+              ].map(([label, value]) => (
+                <div key={label} className={publicMode ? "rounded-lg border border-white/10 bg-black/15 p-3" : "rounded-lg border border-white bg-white/80 p-3"}>
+                  <p className={publicMode ? "text-[11px] font-semibold uppercase tracking-wide text-rose-100" : "text-[11px] font-semibold uppercase tracking-wide text-rose-800"}>{label}</p>
+                  <p className={publicMode ? "mt-1 text-sm font-semibold text-white" : "mt-1 text-sm font-semibold text-slate-900"}>{value}</p>
+                </div>
+              ))}
+            </div>
             <ZodiacDateInput publicMode={publicMode} value={inputVal} onChange={setInputVal} hasError={Boolean(inputVal && !generateBirthMatrix(inputVal))} birthDateScope="miniapp-matrix" />
             <button
               onClick={handleApply}
@@ -796,11 +814,17 @@ export function BirthMatrixFeature({
             </button>
           </div>
         ) : (
-          <div className="space-y-4">
-            <div className={publicMode ? "rounded-lg border border-amber-200/20 bg-gradient-to-br from-amber-200/12 via-fuchsia-200/10 to-cyan-200/10 p-4" : "rounded-lg border border-amber-100 bg-gradient-to-br from-amber-50 via-fuchsia-50 to-cyan-50 p-4"}>
+          <div className="space-y-4" data-aphrodite-birth-matrix-report="package-240">
+            <div
+              className={publicMode ? "rounded-lg border border-amber-200/20 bg-gradient-to-br from-amber-200/14 via-fuchsia-300/12 to-cyan-300/10 p-4 shadow-[0_18px_54px_rgba(88,28,135,0.22)]" : "rounded-lg border border-amber-100 bg-gradient-to-br from-amber-50 via-fuchsia-50 to-cyan-50 p-4 shadow-sm"}
+              data-aphrodite-birth-matrix-hero="package-240"
+            >
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className={publicMode ? "text-xs font-semibold uppercase tracking-wide text-amber-100" : "text-xs font-semibold uppercase tracking-wide text-amber-800"}>Матрица судьбы</p>
+                  <div className="mb-2 flex flex-wrap gap-2">
+                    <AphroditeBadge tone="gold">Матрица судьбы</AphroditeBadge>
+                    <AphroditeBadge tone="rose">personal energy report</AphroditeBadge>
+                  </div>
                   <h3 className={publicMode ? "mt-1 text-2xl font-semibold leading-tight text-white" : "mt-1 text-2xl font-semibold leading-tight text-slate-950"}>
                     {matrix.archetype} · код {matrix.centralNumber}
                   </h3>
@@ -828,7 +852,7 @@ export function BirthMatrixFeature({
               </button>
             </div>
 
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+            <div className="grid gap-2 sm:grid-cols-4" data-aphrodite-birth-matrix-energy-card="package-240">
               <Metric publicMode={publicMode} label="Путь" value={matrix.lifePath} />
               <Metric publicMode={publicMode} label="Душа" value={matrix.soulNumber} />
               <Metric publicMode={publicMode} label="Реализация" value={matrix.realizationNumber} />
@@ -874,6 +898,19 @@ export function BirthMatrixFeature({
               </div>
             ) : null}
 
+            <div className="grid gap-2 sm:grid-cols-3" data-aphrodite-birth-matrix-personal-report="package-240">
+              {[
+                ["Сильные стороны", matrix.sections.find((section) => section.id === "main")?.points[0] ?? matrix.hero],
+                ["Риски и тень", matrix.sections.find((section) => section.id === "lesson")?.body ?? matrix.tier],
+                ["Предназначение", matrix.sections.find((section) => section.id === "today")?.body ?? matrix.archetype],
+              ].map(([title, text]) => (
+                <AphroditeCard key={title} tone="violet" className="min-h-[132px]">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-violet-100">{title}</p>
+                  <p className="mt-2 text-sm leading-6 text-slate-200">{text}</p>
+                </AphroditeCard>
+              ))}
+            </div>
+
             <div className={publicMode ? "rounded-lg border border-emerald-200/20 bg-emerald-200/10 p-4" : "rounded-lg border border-emerald-200 bg-emerald-50 p-4"}>
               <p className={publicMode ? "text-sm font-semibold text-emerald-100" : "text-sm font-semibold text-emerald-800"}>3 рекомендации</p>
               <ul className="mt-3 space-y-2">
@@ -881,6 +918,23 @@ export function BirthMatrixFeature({
                   <li key={item} className={publicMode ? "text-sm leading-5 text-slate-200" : "text-sm leading-5 text-slate-700"}>• {item}</li>
                 ))}
               </ul>
+            </div>
+
+            <div data-aphrodite-birth-matrix-vip-preview="package-240">
+              <AphroditeCard tone="locked" className="space-y-3">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <AphroditeBadge tone="locked">preview only / no active payment</AphroditeBadge>
+                    <h4 className="mt-3 text-base font-semibold leading-6 text-[#fff7ed]">Pro-разбор матрицы</h4>
+                    <p className="mt-2 text-sm leading-6 text-slate-300">
+                      Будущий Pro-слой может раскрывать циклы, деньги, отношения, миссию и практики глубже. Сейчас это только визуальный locked preview: без оплаты, без entitlement и без реального VIP unlock.
+                    </p>
+                  </div>
+                  <span className="shrink-0 rounded-lg border border-amber-200/20 bg-amber-200/10 px-3 py-2 text-sm font-semibold text-amber-100">
+                    locked
+                  </span>
+                </div>
+              </AphroditeCard>
             </div>
 
             <div className="grid gap-2 sm:grid-cols-2">
@@ -901,10 +955,7 @@ export function BirthMatrixFeature({
 
 function Metric({ publicMode, label, value }: { publicMode: boolean; label: string; value: number }) {
   return (
-    <div className={publicMode ? "rounded-lg border border-white/10 bg-white/7 p-3 text-center" : "rounded-lg border border-slate-200 bg-white p-3 text-center"}>
-      <p className={publicMode ? "text-xs text-slate-400" : "text-xs text-slate-500"}>{label}</p>
-      <p className={publicMode ? "mt-1 text-2xl font-bold text-indigo-200" : "mt-1 text-2xl font-bold text-indigo-700"}>{value}</p>
-    </div>
+    <AphroditeMetricCard label={label} value={String(value)} detail="Личный числовой акцент в матрице" tone={publicMode ? "gold" : "violet"} />
   );
 }
 

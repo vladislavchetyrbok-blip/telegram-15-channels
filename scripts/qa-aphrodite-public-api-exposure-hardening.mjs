@@ -133,10 +133,13 @@ check("no secrets added flag", model.safetyFlags.secretsAdded === false);
 check("no production DB connected flag", model.safetyFlags.productionDbConnected === false);
 
 const approvedPackage238HomeFiles = new Set([
+  "app/birth-matrix/BirthMatrixClient.tsx",
   "app/miniapp/page.tsx",
   "components/zodiac-mini-app/AphroditeHomeScreen.tsx",
   "components/zodiac-mini-app/MainMenuSections.tsx",
   "components/ZodiacCompatibilityMiniApp.tsx",
+  "components/ZodiacMysticSections.tsx",
+  "components/ZodiacVipSections.tsx",
   "components/zodiac-mini-app/ResultCards.tsx",
   "components/zodiac-mini-app/WizardControls.tsx",
 ]);
@@ -146,6 +149,7 @@ const liveMiniAppSourceChanges = gitChangedNames([
   "app/compatibility",
   "components/ZodiacCompatibilityMiniApp.tsx",
   "components/ZodiacMysticSections.tsx",
+  "components/ZodiacVipSections.tsx",
   "components/zodiac-mini-app/AphroditeHomeScreen.tsx",
   "components/zodiac-mini-app/MainMenuSections.tsx",
   "components/zodiac-mini-app/ResultCards.tsx",
@@ -153,7 +157,7 @@ const liveMiniAppSourceChanges = gitChangedNames([
   "components/zodiac-mini-app/ZodiacDateInput.tsx",
 ]);
 check(
-  "live Mini App source changes limited to approved Package 238 home files and Package 239 compatibility visual files",
+  "live Mini App source changes limited to approved Package 238 home files, Package 239 compatibility visual files and Package 240 Birth Matrix/Natal visual files",
   liveMiniAppSourceChanges.every((file) => approvedPackage238HomeFiles.has(file)),
 );
 check("no workflow/cron changes", gitChangedNames([".github/workflows", "vercel.json"]).length === 0);
