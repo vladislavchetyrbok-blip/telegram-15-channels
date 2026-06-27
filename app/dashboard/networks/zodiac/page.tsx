@@ -871,6 +871,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Soft Launch Preflight Checklist",
+    href: "/dashboard/networks/zodiac/soft-launch-preflight-checklist",
+    icon: ClipboardCheck,
+    caption: "Package 249 - owner-facing preflight checklist for code checks, env, backup, real-device QA, Telegram WebView QA, CTA review, safety and stop conditions.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

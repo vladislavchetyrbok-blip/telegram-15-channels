@@ -106,6 +106,7 @@ const ROUTES = {
   visualQaScreenshotPack: "/dashboard/networks/zodiac/visual-qa-screenshot-pack",
   visualFixesAfterScreenshotReview: "/dashboard/networks/zodiac/visual-fixes-after-screenshot-review",
   softLaunchScopeSelector: "/dashboard/networks/zodiac/soft-launch-scope-selector",
+  softLaunchPreflightChecklist: "/dashboard/networks/zodiac/soft-launch-preflight-checklist",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -280,6 +281,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/visual-qa-screenshot-pack"', "visual qa screenshot pack route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/visual-fixes-after-screenshot-review"', "visual fixes after screenshot review route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/soft-launch-scope-selector"', "soft launch scope selector route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/soft-launch-preflight-checklist"', "soft launch preflight checklist route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");
@@ -1359,6 +1361,18 @@ async function main() {
     assertIncludes(pages.softLaunchScopeSelector, "Telegram WebView/startapp QA completed manually", "soft launch scope webview blocker");
     assertIncludes(pages.softLaunchScopeSelector, "content/CTA owner review completed", "soft launch scope cta blocker");
     assertIncludes(pages.softLaunchScopeSelector, "Package 249 - Soft Launch Preflight Checklist", "soft launch scope next package");
+    assertIncludes(pages.softLaunchPreflightChecklist, "Soft Launch Preflight Checklist", "soft launch preflight checklist title");
+    assertIncludes(pages.softLaunchPreflightChecklist, "code checks", "soft launch preflight code checks");
+    assertIncludes(pages.softLaunchPreflightChecklist, "production env", "soft launch preflight env");
+    assertIncludes(pages.softLaunchPreflightChecklist, "backup/restore", "soft launch preflight backup restore");
+    assertIncludes(pages.softLaunchPreflightChecklist, "real-device QA", "soft launch preflight real device");
+    assertIncludes(pages.softLaunchPreflightChecklist, "Telegram WebView/startapp QA", "soft launch preflight webview");
+    assertIncludes(pages.softLaunchPreflightChecklist, "content/CTA owner review", "soft launch preflight cta review");
+    assertIncludes(pages.softLaunchPreflightChecklist, "DATABASE_URL manual blocker", "soft launch preflight database blocker");
+    assertIncludes(pages.softLaunchPreflightChecklist, "TELEGRAM_BOT_TOKEN manual blocker", "soft launch preflight token blocker");
+    assertIncludes(pages.softLaunchPreflightChecklist, "backup &lt;24h", "soft launch preflight backup less than 24h");
+    assertIncludes(pages.softLaunchPreflightChecklist, "smoke fail", "soft launch preflight smoke fail stop condition");
+    assertIncludes(pages.softLaunchPreflightChecklist, "Package 250 - Owner Manual Review Pack", "soft launch preflight next package");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "Aphrodite Mini App Visual Design Audit", "aphrodite visual design audit title");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "current Mini App visual status", "aphrodite visual audit current status");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "screen-by-screen findings", "aphrodite visual audit screens");
