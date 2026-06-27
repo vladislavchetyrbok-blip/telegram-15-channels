@@ -95,6 +95,7 @@ const ROUTES = {
   launchSimulationStatusReport: "/dashboard/networks/zodiac/launch-simulation-status-report",
   softLaunchOwnerGoNoGoGate: "/dashboard/networks/zodiac/soft-launch-owner-go-no-go-gate",
   aphroditeMiniappVisualDesignAudit: "/dashboard/networks/zodiac/aphrodite-miniapp-visual-design-audit",
+  aphroditeDesignSystem: "/dashboard/networks/zodiac/aphrodite-design-system",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -1352,6 +1353,31 @@ async function main() {
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "miniAppScreensRedesigned", "aphrodite visual audit no redesign flag");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "publicLaunchApproved", "aphrodite visual audit launch flag");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "ownerManualReviewRequired", "aphrodite visual audit owner review flag");
+    assertIncludes(pages.aphroditeDesignSystem, "Aphrodite Design System", "aphrodite design system title");
+    assertIncludes(pages.aphroditeDesignSystem, "brandMood", "aphrodite design system brandMood");
+    assertIncludes(pages.aphroditeDesignSystem, "colorTokens", "aphrodite design system colorTokens");
+    assertIncludes(pages.aphroditeDesignSystem, "gradientTokens", "aphrodite design system gradientTokens");
+    assertIncludes(pages.aphroditeDesignSystem, "cardStyles and buttonStyles", "aphrodite design system cards buttons");
+    assertIncludes(pages.aphroditeDesignSystem, "typographyScale and spacingRules", "aphrodite design system typography spacing");
+    assertIncludes(pages.aphroditeDesignSystem, "telegramWebViewSafeAreaRules", "aphrodite design system safe area rules");
+    assertIncludes(pages.aphroditeDesignSystem, "componentPrinciples", "aphrodite design system component principles");
+    assertIncludes(pages.aphroditeDesignSystem, "AphroditeResultCardPreview", "aphrodite design system result card primitive");
+    assertIncludes(pages.aphroditeDesignSystem, "AphroditeLockedPreviewCard", "aphrodite design system locked preview primitive");
+    assertIncludes(pages.aphroditeDesignSystem, "AphroditeMysticCardPreview", "aphrodite design system mystic card primitive");
+    assertIncludes(pages.aphroditeDesignSystem, "premium mystical romantic modern", "aphrodite design system visual direction");
+    assertIncludes(pages.aphroditeDesignSystem, "not childish / not casino / not cheap horoscope spam", "aphrodite design system anti-spam direction");
+    assertIncludes(pages.aphroditeDesignSystem, "dark cosmic base", "aphrodite design system dark cosmic base");
+    assertIncludes(pages.aphroditeDesignSystem, "rose", "aphrodite design system rose accent");
+    assertIncludes(pages.aphroditeDesignSystem, "violet", "aphrodite design system violet accent");
+    assertIncludes(pages.aphroditeDesignSystem, "gold", "aphrodite design system gold accent");
+    assertIncludes(pages.aphroditeDesignSystem, "glass-like cards", "aphrodite design system glass cards");
+    assertIncludes(pages.aphroditeDesignSystem, "Telegram WebView", "aphrodite design system webview");
+    assertIncludes(pages.aphroditeDesignSystem, "360px / 390px / 430px", "aphrodite design system mobile widths");
+    assertIncludes(pages.aphroditeDesignSystem, "Package 238 - Mini App Home Screen Redesign", "aphrodite design system package 238");
+    assertIncludes(pages.aphroditeDesignSystem, "Package 245 - Visual QA Screenshot Pack", "aphrodite design system package 245");
+    assertIncludes(pages.aphroditeDesignSystem, "miniAppScreensRedesigned", "aphrodite design system no redesign flag");
+    assertIncludes(pages.aphroditeDesignSystem, "publicLaunchApproved", "aphrodite design system launch flag");
+    assertIncludes(pages.aphroditeDesignSystem, "ownerManualReviewRequired", "aphrodite design system owner review flag");
     assertIncludes(pages.productCopyFinalPolish, "Финальная полировка текстов Aphrodite", "product copy polish title");
     assertIncludes(pages.productCopyFinalPolish, "Только copy polish", "product copy polish classification");
     assertIncludes(pages.productCopyFinalPolish, "Copy polish не включает оплату", "product copy polish no payment");

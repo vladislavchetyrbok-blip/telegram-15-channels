@@ -792,6 +792,13 @@ const platformSections = [
     tone: "violet",
   },
   {
+    title: "Aphrodite Design System",
+    href: "/dashboard/networks/zodiac/aphrodite-design-system",
+    icon: Brush,
+    caption: "Package 237 - Mini App design-system foundation, tokens and reusable preview primitives for Packages 238-245.",
+    tone: "violet",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
