@@ -274,16 +274,21 @@ const allowedChanges = new Set([
   "app/birth-matrix/BirthMatrixClient.tsx",
   "app/dashboard/networks/zodiac/page.tsx",
   "app/dashboard/networks/zodiac/birth-matrix-natal-flow-redesign/page.tsx",
+  "app/dashboard/networks/zodiac/mystic-cards-redesign/page.tsx",
   "components/ZodiacMysticSections.tsx",
   "components/ZodiacVipSections.tsx",
   "lib/zodiac/aphrodite-birth-matrix-natal-flow-redesign.ts",
+  "lib/zodiac/aphrodite-mystic-cards-redesign.ts",
   "scripts/qa-aphrodite-birth-matrix-natal-flow-redesign.mjs",
+  "scripts/qa-aphrodite-mystic-cards-redesign.mjs",
   "scripts/qa-zodiac-dashboard.mjs",
   "scripts/qa-aphrodite-dashboard-auth-system-decision.mjs",
   "scripts/qa-aphrodite-public-api-exposure-hardening.mjs",
   "scripts/qa-aphrodite-real-device-qa-execution-pack.mjs",
   "docs/aphrodite-birth-matrix-natal-flow-redesign.md",
+  "docs/aphrodite-mystic-cards-redesign.md",
   "docs/aphrodite-package-reports/package-240.md",
+  "docs/aphrodite-package-reports/package-241.md",
 ]);
 check("git scope helper returned real change data", !changedFiles.includes("__git_diff_failed__"));
 check("changed files limited to Package 240 visual/readiness scope", changedFiles.every((file) => allowedChanges.has(file)));

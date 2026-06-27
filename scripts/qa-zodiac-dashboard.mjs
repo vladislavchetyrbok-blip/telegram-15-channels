@@ -99,6 +99,7 @@ const ROUTES = {
   miniappHomeScreenRedesign: "/dashboard/networks/zodiac/miniapp-home-screen-redesign",
   compatibilityFlowRedesign: "/dashboard/networks/zodiac/compatibility-flow-redesign",
   birthMatrixNatalFlowRedesign: "/dashboard/networks/zodiac/birth-matrix-natal-flow-redesign",
+  mysticCardsRedesign: "/dashboard/networks/zodiac/mystic-cards-redesign",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",

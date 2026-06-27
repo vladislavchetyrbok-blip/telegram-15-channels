@@ -33,7 +33,13 @@ import { RuneSpreadVisual } from "./zodiac-mini-app/RuneSpreadVisual";
 import { TarotSpreadVisual } from "./zodiac-mini-app/TarotSpreadVisual";
 import { AphroditeMysticUniversePanel } from "./zodiac-mini-app/AphroditeMysticUniversePanel";
 import { ZodiacDateInput } from "./zodiac-mini-app/ZodiacDateInput";
-import { AphroditeBadge, AphroditeCard, AphroditeMetricCard, AphroditeSectionHeader } from "./zodiac-mini-app/aphrodite-design-system";
+import {
+  AphroditeBadge,
+  AphroditeCard,
+  AphroditeMetricCard,
+  AphroditeMysticCardPreview,
+  AphroditeSectionHeader,
+} from "./zodiac-mini-app/aphrodite-design-system";
 import { FeatureCard, EmptyFeatureCard } from "./zodiac-mini-app/ui-primitives";
 
 const signNames: Record<ZodiacSignId, string> = {
@@ -95,16 +101,55 @@ export function DailyCardFeature({ publicMode, dateKey, sign }: CommonProps & { 
   const card = generateDailyCard(dateKey, sign);
   return (
     <FeatureCard publicMode={publicMode} title={`🔮 Карта дня: ${card.title}`} subtitle={card.theme}>
-      <div className="mt-4 space-y-3">
-        <AphroditeMysticUniversePanel publicMode={publicMode} message={card.phrase} focus={card.advice} />
-        <p className={publicMode ? "text-sm text-slate-300" : "text-sm text-slate-600"}><strong>Символический смысл:</strong> {card.phrase}</p>
-        <p className={publicMode ? "text-sm text-slate-300" : "text-sm text-slate-600"}><strong>Любовь:</strong> {card.love}</p>
-        <p className={publicMode ? "text-sm text-slate-300" : "text-sm text-slate-600"}><strong>Дела и ресурсы:</strong> {card.money}</p>
-        <div className={publicMode ? "rounded bg-white/10 p-3" : "rounded bg-slate-50 p-3"}>
-          <p className={publicMode ? "text-sm text-white" : "text-sm text-slate-800"}><strong>Действие:</strong> {card.action}</p>
-          <p className={publicMode ? "text-sm text-white mt-1" : "text-sm text-slate-800 mt-1"}><strong>Избегать:</strong> {card.avoid}</p>
+      <div
+        className="mt-4 space-y-4"
+        data-aphrodite-mystic-cards-redesign="package-241"
+        data-aphrodite-mystic-card-daily="package-241"
+      >
+        <MysticCardsRitualFrame
+          publicMode={publicMode}
+          eyebrow="Mystic Cards / карта дня"
+          title="Закрытая карта уже выбрана для вашего знака"
+          body="Откройте результат как тихий ритуал: сначала общий символ, затем любовь, деньги, предупреждение и один мягкий шаг."
+        >
+          <MysticClosedCardStack
+            publicMode={publicMode}
+            cards={[
+              { label: "daily", detail: card.theme, active: true },
+              { label: "love", detail: "отношения" },
+              { label: "money", detail: "ресурс" },
+              { label: "warning", detail: "граница" },
+            ]}
+          />
+        </MysticCardsRitualFrame>
+
+        <div data-aphrodite-mystic-card-reveal="package-241">
+          <AphroditeMysticCardPreview title={`Карта открыта: ${card.title}`} meaning={card.phrase} />
         </div>
-        <p className={publicMode ? "text-sm font-medium text-emerald-400" : "text-sm font-medium text-emerald-600"}>Совет: {card.advice}</p>
+
+        <AphroditeMysticUniversePanel publicMode={publicMode} message={card.phrase} focus={card.advice} />
+
+        <div className="grid gap-2 sm:grid-cols-2" data-aphrodite-mystic-card-result="package-241">
+          {[
+            ["card meaning / interpretation", card.phrase],
+            ["love card", card.love],
+            ["money card", card.money],
+            ["warning card", card.avoid],
+          ].map(([label, text]) => (
+            <div key={label} className={publicMode ? "rounded-lg border border-white/10 bg-black/15 p-3" : "rounded-lg border border-slate-100 bg-white/80 p-3"}>
+              <p className={publicMode ? "text-[11px] font-semibold uppercase tracking-wide text-violet-100" : "text-[11px] font-semibold uppercase tracking-wide text-violet-800"}>{label}</p>
+              <p className={publicMode ? "mt-2 text-sm leading-5 text-slate-200" : "mt-2 text-sm leading-5 text-slate-700"}>{text}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className={publicMode ? "rounded-lg border border-emerald-200/20 bg-emerald-200/10 p-4" : "rounded-lg border border-emerald-200 bg-emerald-50 p-4"}>
+          <p className={publicMode ? "text-sm font-semibold text-emerald-100" : "text-sm font-semibold text-emerald-800"}>Действие</p>
+          <p className={publicMode ? "mt-2 text-sm leading-6 text-slate-200" : "mt-2 text-sm leading-6 text-slate-700"}>{card.action}</p>
+          <p className={publicMode ? "mt-3 text-sm font-semibold text-emerald-100" : "mt-3 text-sm font-semibold text-emerald-800"}>Совет: {card.advice}</p>
+        </div>
+
+        <MysticLockedPreview publicMode={publicMode} context="Карта дня" />
       </div>
     </FeatureCard>
   );
@@ -194,13 +239,27 @@ export function TarotCardFeature({ publicMode, dateKey, sign, onSave, onShare, o
 
   return (
     <FeatureCard publicMode={publicMode} title="🃏 Таро: символический расклад" subtitle="Выберите тему и тип расклада. Вопрос можно написать для себя: он не сохраняется и не уходит в аналитику.">
-      <div className="mt-4 space-y-4">
-        <div className={publicMode ? "rounded-lg border border-amber-200/20 bg-amber-200/10 p-3" : "rounded-lg border border-amber-200 bg-amber-50 p-3"}>
-          <p className={publicMode ? "text-xs font-semibold uppercase tracking-wide text-amber-100" : "text-xs font-semibold uppercase tracking-wide text-amber-800"}>Честно о формате</p>
-          <p className={publicMode ? "mt-1 text-sm leading-5 text-slate-200" : "mt-1 text-sm leading-5 text-slate-700"}>
-            Это символическая интерпретация для размышления и выбора действия, а не фатальное предсказание. Карта дня для фона: <strong>{dayCard.card}</strong> — {dayCard.mainMeaning}.
-          </p>
-        </div>
+      <div
+        className="mt-4 space-y-4"
+        data-aphrodite-mystic-cards-redesign="package-241"
+        data-aphrodite-mystic-card-tarot="package-241"
+      >
+        <MysticCardsRitualFrame
+          publicMode={publicMode}
+          eyebrow="Mystic Cards / Tarot selection"
+          title="Выберите тему, затем откройте закрытый расклад"
+          body={`Карта фона: ${dayCard.card} — ${dayCard.mainMeaning}. Логика выбора осталась прежней: это символическая интерпретация для размышления и выбора действия, а не фатальное предсказание.`}
+        >
+          <MysticClosedCardStack
+            publicMode={publicMode}
+            cards={[
+              { label: "daily", detail: dayCard.card, active: true },
+              { label: "love", detail: topic === "love" ? "выбрано" : "можно выбрать" },
+              { label: "money", detail: topic === "money" ? "выбрано" : "можно выбрать" },
+              { label: "warning", detail: "риск / граница" },
+            ]}
+          />
+        </MysticCardsRitualFrame>
 
         <AphroditeMysticUniversePanel
           publicMode={publicMode}
@@ -209,7 +268,7 @@ export function TarotCardFeature({ publicMode, dateKey, sign, onSave, onShare, o
           note="Таро показывает возможный фокус внимания, но не заменяет личный выбор и не обещает неизбежный исход."
         />
 
-        <div>
+        <div data-aphrodite-mystic-card-selection="package-241" data-aphrodite-mystic-card-input="package-241">
           <p className={publicMode ? "mb-2 text-sm font-semibold text-white" : "mb-2 text-sm font-semibold text-slate-900"}>Тема вопроса</p>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
             {tarotTopics.map((item) => (
@@ -220,7 +279,7 @@ export function TarotCardFeature({ publicMode, dateKey, sign, onSave, onShare, o
           </div>
         </div>
 
-        <div>
+        <div data-aphrodite-mystic-card-input="package-241">
           <label className={publicMode ? "mb-2 block text-sm font-semibold text-white" : "mb-2 block text-sm font-semibold text-slate-900"} htmlFor="tarot-question">
             Сформулируйте вопрос
           </label>
@@ -238,7 +297,7 @@ export function TarotCardFeature({ publicMode, dateKey, sign, onSave, onShare, o
           <p className={publicMode ? "mt-1 text-xs text-slate-400" : "mt-1 text-xs text-slate-500"}>Сырой текст вопроса не сохраняется в истории, избранном, share или analytics.</p>
         </div>
 
-        <div>
+        <div data-aphrodite-mystic-card-selection="package-241">
           <p className={publicMode ? "mb-2 text-sm font-semibold text-white" : "mb-2 text-sm font-semibold text-slate-900"}>Тип расклада</p>
           <div className="grid gap-2">
             {tarotSpreadOptions.map((item) => (
@@ -255,18 +314,39 @@ export function TarotCardFeature({ publicMode, dateKey, sign, onSave, onShare, o
         </button>
 
         {spread ? (
-          <div className="space-y-4">
-            <div className={publicMode ? "rounded-xl border border-white/10 bg-white/7 p-4" : "rounded-xl border border-slate-200 bg-white p-4"}>
-              <p className={publicMode ? "text-xs font-semibold uppercase tracking-wide text-amber-100" : "text-xs font-semibold uppercase tracking-wide text-amber-700"}>Hero summary</p>
-              <h3 className={publicMode ? "mt-1 text-xl font-semibold text-white" : "mt-1 text-xl font-semibold text-slate-950"}>{spread.spreadLabel} · {spread.topicLabel}</h3>
-              <p className={publicMode ? "mt-2 text-sm leading-6 text-slate-300" : "mt-2 text-sm leading-6 text-slate-600"}>{spread.hero}</p>
+          <div
+            className="space-y-4"
+            data-aphrodite-mystic-card-reveal="package-241"
+            data-aphrodite-mystic-card-result="package-241"
+            data-aphrodite-mystic-card-state="package-241"
+          >
+            <div className={publicMode ? "rounded-lg border border-amber-200/25 bg-gradient-to-br from-amber-200/16 via-fuchsia-300/14 to-violet-300/10 p-4 shadow-[0_18px_54px_rgba(88,28,135,0.22)]" : "rounded-lg border border-amber-100 bg-gradient-to-br from-amber-50 via-fuchsia-50 to-violet-50 p-4 shadow-sm"}>
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="mb-2 flex flex-wrap gap-2">
+                    <AphroditeBadge tone="gold">revealed card</AphroditeBadge>
+                    <AphroditeBadge tone="violet">{spread.resultTier}</AphroditeBadge>
+                  </div>
+                  <h3 className={publicMode ? "mt-1 text-xl font-semibold leading-7 text-white" : "mt-1 text-xl font-semibold leading-7 text-slate-950"}>{spread.spreadLabel} · {spread.topicLabel}</h3>
+                  <p className={publicMode ? "mt-2 text-sm leading-6 text-slate-200" : "mt-2 text-sm leading-6 text-slate-700"}>{spread.hero}</p>
+                </div>
+                <div className={publicMode ? "shrink-0 rounded-lg border border-amber-100/20 bg-black/20 px-3 py-2 text-center" : "shrink-0 rounded-lg border border-white bg-white/70 px-3 py-2 text-center"}>
+                  <p className={publicMode ? "text-2xl text-amber-100" : "text-2xl text-fuchsia-800"}>{spread.cardCount}</p>
+                  <p className={publicMode ? "mt-1 text-[11px] font-semibold text-slate-300" : "mt-1 text-[11px] font-semibold text-slate-500"}>cards</p>
+                </div>
+              </div>
             </div>
 
-            <TarotSpreadVisual publicMode={publicMode} spread={spread} />
+            <div data-aphrodite-mystic-card-spread="package-241">
+              <TarotSpreadVisual publicMode={publicMode} spread={spread} />
+            </div>
 
             <MysticResultBlock publicMode={publicMode} title="Краткий ответ" body={spread.shortAnswer} />
             <div className={publicMode ? "rounded-xl border border-white/10 bg-white/7 p-4" : "rounded-xl border border-slate-200 bg-white p-4"}>
-              <p className={publicMode ? "text-sm font-semibold text-white" : "text-sm font-semibold text-slate-900"}>Карты расклада</p>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <p className={publicMode ? "text-sm font-semibold text-white" : "text-sm font-semibold text-slate-900"}>Карты расклада</p>
+                <AphroditeBadge tone="rose">card meaning / interpretation</AphroditeBadge>
+              </div>
               <div className="mt-3 grid gap-2">
                 {spread.cards.map((item) => (
                   <div key={`deep-${item.key}`} className={publicMode ? "rounded-lg border border-white/10 bg-black/15 p-3" : "rounded-lg border border-slate-100 bg-slate-50 p-3"}>
@@ -283,6 +363,8 @@ export function TarotCardFeature({ publicMode, dateKey, sign, onSave, onShare, o
             <MysticResultBlock publicMode={publicMode} title="Что не делать" body={spread.avoidToday} />
             <MysticResultBlock publicMode={publicMode} title="Итоговый вывод" body={spread.conclusion} tone="action" />
 
+            <MysticLockedPreview publicMode={publicMode} context="Таро" />
+
             <div className="grid gap-2 sm:grid-cols-2">
               <button type="button" onClick={handleSave} className={secondaryMysticButtonClass(publicMode)}>
                 Сохранить расклад
@@ -294,7 +376,7 @@ export function TarotCardFeature({ publicMode, dateKey, sign, onSave, onShare, o
             {saveStatus || shareStatus ? <p className={publicMode ? "text-center text-sm font-semibold text-emerald-300" : "text-center text-sm font-semibold text-emerald-700"}>{saveStatus || shareStatus}</p> : null}
           </div>
         ) : (
-          <p className={publicMode ? "text-center text-sm text-slate-400" : "text-center text-sm text-slate-500"}>Выберите тему и нажмите «Рассчитать расклад», чтобы открыть визуальные карты и интерпретацию.</p>
+          <MysticEmptyRevealState publicMode={publicMode} text="Выберите тему и нажмите «Рассчитать расклад», чтобы открыть визуальные карты и интерпретацию." />
         )}
       </div>
     </FeatureCard>
@@ -343,13 +425,27 @@ export function RuneDayFeature({ publicMode, dateKey, sign, onSave, onShare, onE
 
   return (
     <FeatureCard publicMode={publicMode} title="ᚱ Руны: символический расклад" subtitle="Выберите режим рунической подсказки. Вопрос можно держать на экране, но он не сохраняется.">
-      <div className="mt-4 space-y-4">
-        <div className={publicMode ? "rounded-lg border border-cyan-200/20 bg-cyan-200/10 p-3" : "rounded-lg border border-cyan-200 bg-cyan-50 p-3"}>
-          <p className={publicMode ? "text-xs font-semibold uppercase tracking-wide text-cyan-100" : "text-xs font-semibold uppercase tracking-wide text-cyan-800"}>Честно о формате</p>
-          <p className={publicMode ? "mt-1 text-sm leading-5 text-slate-200" : "mt-1 text-sm leading-5 text-slate-700"}>
-            Руны работают как символическая подсказка для внимания и действия. Руна дня для фона: <strong>{dayRune.name}</strong> — {dayRune.mainMeaning}.
-          </p>
-        </div>
+      <div
+        className="mt-4 space-y-4"
+        data-aphrodite-mystic-cards-redesign="package-241"
+        data-aphrodite-mystic-card-rune="package-241"
+      >
+        <MysticCardsRitualFrame
+          publicMode={publicMode}
+          eyebrow="Mystic Cards / Rune selection"
+          title="Выберите рунический режим и откройте знак"
+          body={`Руна фона: ${dayRune.name} — ${dayRune.mainMeaning}. Руны работают как символическая подсказка для внимания и действия, без давления, страха и фатальных обещаний.`}
+        >
+          <MysticClosedCardStack
+            publicMode={publicMode}
+            cards={[
+              { label: "daily", detail: dayRune.symbol, active: true },
+              { label: "love", detail: "контакт" },
+              { label: "money", detail: "ресурс" },
+              { label: "warning", detail: "граница" },
+            ]}
+          />
+        </MysticCardsRitualFrame>
 
         <AphroditeMysticUniversePanel
           publicMode={publicMode}
@@ -358,7 +454,7 @@ export function RuneDayFeature({ publicMode, dateKey, sign, onSave, onShare, onE
           note="Руна помогает выбрать спокойный следующий шаг, без давления, страха и фатальных обещаний."
         />
 
-        <div>
+        <div data-aphrodite-mystic-card-selection="package-241" data-aphrodite-mystic-card-input="package-241">
           <p className={publicMode ? "mb-2 text-sm font-semibold text-white" : "mb-2 text-sm font-semibold text-slate-900"}>Режим</p>
           <div className="grid gap-2 sm:grid-cols-2">
             {runeModeOptions.map((item) => (
@@ -370,7 +466,7 @@ export function RuneDayFeature({ publicMode, dateKey, sign, onSave, onShare, onE
           </div>
         </div>
 
-        <div>
+        <div data-aphrodite-mystic-card-input="package-241">
           <label className={publicMode ? "mb-2 block text-sm font-semibold text-white" : "mb-2 block text-sm font-semibold text-slate-900"} htmlFor="rune-question">
             Вопрос к рунам
           </label>
@@ -393,14 +489,32 @@ export function RuneDayFeature({ publicMode, dateKey, sign, onSave, onShare, onE
         </button>
 
         {spread ? (
-          <div className="space-y-4">
-            <div className={publicMode ? "rounded-xl border border-white/10 bg-white/7 p-4" : "rounded-xl border border-slate-200 bg-white p-4"}>
-              <p className={publicMode ? "text-xs font-semibold uppercase tracking-wide text-cyan-100" : "text-xs font-semibold uppercase tracking-wide text-cyan-700"}>Hero summary</p>
-              <h3 className={publicMode ? "mt-1 text-xl font-semibold text-white" : "mt-1 text-xl font-semibold text-slate-950"}>{spread.modeLabel}</h3>
-              <p className={publicMode ? "mt-2 text-sm leading-6 text-slate-300" : "mt-2 text-sm leading-6 text-slate-600"}>{spread.hero}</p>
+          <div
+            className="space-y-4"
+            data-aphrodite-mystic-card-reveal="package-241"
+            data-aphrodite-mystic-card-result="package-241"
+            data-aphrodite-mystic-card-state="package-241"
+          >
+            <div className={publicMode ? "rounded-lg border border-cyan-200/25 bg-gradient-to-br from-cyan-200/16 via-violet-300/14 to-rose-300/10 p-4 shadow-[0_18px_54px_rgba(14,116,144,0.20)]" : "rounded-lg border border-cyan-100 bg-gradient-to-br from-cyan-50 via-violet-50 to-rose-50 p-4 shadow-sm"}>
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="mb-2 flex flex-wrap gap-2">
+                    <AphroditeBadge tone="violet">revealed rune</AphroditeBadge>
+                    <AphroditeBadge tone="gold">{spread.resultTier}</AphroditeBadge>
+                  </div>
+                  <h3 className={publicMode ? "mt-1 text-xl font-semibold leading-7 text-white" : "mt-1 text-xl font-semibold leading-7 text-slate-950"}>{spread.modeLabel}</h3>
+                  <p className={publicMode ? "mt-2 text-sm leading-6 text-slate-200" : "mt-2 text-sm leading-6 text-slate-700"}>{spread.hero}</p>
+                </div>
+                <div className={publicMode ? "shrink-0 rounded-lg border border-cyan-100/20 bg-black/20 px-3 py-2 text-center" : "shrink-0 rounded-lg border border-white bg-white/70 px-3 py-2 text-center"}>
+                  <p className={publicMode ? "text-2xl text-cyan-100" : "text-2xl text-cyan-800"}>{spread.runeCount}</p>
+                  <p className={publicMode ? "mt-1 text-[11px] font-semibold text-slate-300" : "mt-1 text-[11px] font-semibold text-slate-500"}>runes</p>
+                </div>
+              </div>
             </div>
 
-            <RuneSpreadVisual publicMode={publicMode} spread={spread} />
+            <div data-aphrodite-mystic-card-spread="package-241">
+              <RuneSpreadVisual publicMode={publicMode} spread={spread} />
+            </div>
 
             <MysticResultBlock publicMode={publicMode} title="Главная руна" body={`${spread.mainRune.rune.name}: ${spread.mainRune.rune.mainMeaning}`} />
             <MysticResultBlock publicMode={publicMode} title="Сила" body={spread.power} tone="action" />
@@ -408,6 +522,8 @@ export function RuneDayFeature({ publicMode, dateKey, sign, onSave, onShare, onE
             <MysticResultBlock publicMode={publicMode} title="Совет" body={spread.advice} />
             <MysticResultBlock publicMode={publicMode} title="Действие сегодня" body={spread.actionToday} tone="action" />
             <MysticResultBlock publicMode={publicMode} title="Талисман" body={spread.talisman} />
+
+            <MysticLockedPreview publicMode={publicMode} context="Руны" />
 
             <div className="grid gap-2 sm:grid-cols-2">
               <button type="button" onClick={handleSave} className={secondaryMysticButtonClass(publicMode)}>
@@ -420,7 +536,7 @@ export function RuneDayFeature({ publicMode, dateKey, sign, onSave, onShare, onE
             {saveStatus || shareStatus ? <p className={publicMode ? "text-center text-sm font-semibold text-emerald-300" : "text-center text-sm font-semibold text-emerald-700"}>{saveStatus || shareStatus}</p> : null}
           </div>
         ) : (
-          <p className={publicMode ? "text-center text-sm text-slate-400" : "text-center text-sm text-slate-500"}>Выберите режим и нажмите «Рассчитать руны», чтобы открыть визуальный расклад.</p>
+          <MysticEmptyRevealState publicMode={publicMode} text="Выберите режим и нажмите «Рассчитать руны», чтобы открыть визуальный расклад." />
         )}
       </div>
     </FeatureCard>
@@ -950,6 +1066,118 @@ export function BirthMatrixFeature({
         )}
       </div>
     </FeatureCard>
+  );
+}
+
+function MysticCardsRitualFrame({
+  publicMode,
+  eyebrow,
+  title,
+  body,
+  children,
+}: {
+  publicMode: boolean;
+  eyebrow: string;
+  title: string;
+  body: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div
+      className={
+        publicMode
+          ? "overflow-hidden rounded-lg border border-violet-200/20 bg-[radial-gradient(circle_at_20%_0%,rgba(244,114,182,0.16),transparent_30%),linear-gradient(135deg,rgba(17,16,36,0.90),rgba(88,28,135,0.28),rgba(15,23,42,0.88))] p-4 shadow-[0_22px_70px_rgba(88,28,135,0.28)]"
+          : "overflow-hidden rounded-lg border border-violet-100 bg-gradient-to-br from-violet-50 via-rose-50 to-amber-50 p-4 shadow-sm"
+      }
+      data-aphrodite-mystic-card-selection-frame="package-241"
+    >
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <AphroditeBadge tone="violet">{eyebrow}</AphroditeBadge>
+          <h3 className={publicMode ? "mt-3 text-xl font-semibold leading-7 text-white" : "mt-3 text-xl font-semibold leading-7 text-slate-950"}>{title}</h3>
+          <p className={publicMode ? "mt-2 text-sm leading-6 text-slate-200" : "mt-2 text-sm leading-6 text-slate-700"}>{body}</p>
+        </div>
+        <div className="w-full shrink-0 sm:w-[168px]">{children}</div>
+      </div>
+      <div className="mt-4 flex flex-wrap gap-2" data-aphrodite-mystic-card-state="package-241">
+        <AphroditeBadge tone="gold">closed card</AphroditeBadge>
+        <AphroditeBadge tone="rose">selected card</AphroditeBadge>
+        <AphroditeBadge tone="cosmic">reveal stays user-triggered</AphroditeBadge>
+      </div>
+    </div>
+  );
+}
+
+function MysticClosedCardStack({
+  publicMode,
+  cards,
+}: {
+  publicMode: boolean;
+  cards: Array<{ label: string; detail: string; active?: boolean }>;
+}) {
+  return (
+    <div className="grid grid-cols-2 gap-2" data-aphrodite-mystic-card-closed-state="package-241">
+      {cards.map((card) => (
+        <div
+          key={`${card.label}-${card.detail}`}
+          data-aphrodite-mystic-card-selected-state={card.active ? "package-241" : undefined}
+          className={
+            card.active
+              ? publicMode
+                ? "min-h-[88px] rounded-lg border border-amber-100/30 bg-amber-100/14 p-3 text-center shadow-[0_12px_36px_rgba(251,191,36,0.12)]"
+                : "min-h-[88px] rounded-lg border border-amber-200 bg-white/80 p-3 text-center shadow-sm"
+              : publicMode
+                ? "min-h-[88px] rounded-lg border border-white/10 bg-black/20 p-3 text-center"
+                : "min-h-[88px] rounded-lg border border-white bg-white/60 p-3 text-center"
+          }
+        >
+          <div className={publicMode ? "mx-auto flex h-9 w-9 items-center justify-center rounded-lg border border-violet-200/20 bg-violet-200/10 text-sm font-semibold text-amber-100" : "mx-auto flex h-9 w-9 items-center justify-center rounded-lg border border-violet-100 bg-violet-50 text-sm font-semibold text-violet-800"}>
+            A
+          </div>
+          <p className={publicMode ? "mt-2 text-[11px] font-semibold uppercase tracking-wide text-slate-200" : "mt-2 text-[11px] font-semibold uppercase tracking-wide text-slate-600"}>{card.label}</p>
+          <p className={publicMode ? "mt-1 text-xs leading-4 text-slate-300" : "mt-1 text-xs leading-4 text-slate-500"}>{card.detail}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function MysticEmptyRevealState({ publicMode, text }: { publicMode: boolean; text: string }) {
+  return (
+    <div
+      className={publicMode ? "rounded-lg border border-dashed border-violet-200/25 bg-violet-200/8 p-4 text-center" : "rounded-lg border border-dashed border-violet-200 bg-violet-50 p-4 text-center"}
+      data-aphrodite-mystic-card-empty-state="package-241"
+    >
+      <p className={publicMode ? "text-sm leading-6 text-slate-300" : "text-sm leading-6 text-slate-600"}>{text}</p>
+      <p className={publicMode ? "mt-2 text-xs font-semibold uppercase tracking-wide text-violet-100" : "mt-2 text-xs font-semibold uppercase tracking-wide text-violet-800"}>
+        Закрытая карта ждёт раскрытия
+      </p>
+    </div>
+  );
+}
+
+function MysticLockedPreview({ publicMode, context }: { publicMode: boolean; context: string }) {
+  return (
+    <div
+      className={publicMode ? "rounded-lg border border-amber-200/25 bg-slate-950/46 p-4 shadow-[0_18px_54px_rgba(146,64,14,0.2)]" : "rounded-lg border border-amber-200 bg-amber-50 p-4 shadow-sm"}
+      data-aphrodite-mystic-card-vip-preview="package-241"
+      data-aphrodite-mystic-card-preview-only="package-241"
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <AphroditeBadge tone="locked">preview only / no active payment</AphroditeBadge>
+          <h4 className={publicMode ? "mt-3 text-base font-semibold leading-6 text-[#fff7ed]" : "mt-3 text-base font-semibold leading-6 text-slate-950"}>
+            Глубокий Mystic Reading: {context}
+          </h4>
+          <p className={publicMode ? "mt-2 text-sm leading-6 text-slate-300" : "mt-2 text-sm leading-6 text-slate-700"}>
+            Preview-only слой показывает, как позже могут выглядеть deep card interpretation, love reading, money/luck reading, relationship warning и personal ritual/advice. В Package 241 нет активной оплаты, entitlement bypass или real VIP unlock.
+          </p>
+        </div>
+        <span className={publicMode ? "shrink-0 rounded-lg border border-amber-200/20 bg-amber-200/10 px-3 py-2 text-sm font-semibold text-amber-100" : "shrink-0 rounded-lg border border-amber-200 bg-white/80 px-3 py-2 text-sm font-semibold text-amber-800"}>
+          locked
+        </span>
+      </div>
+    </div>
   );
 }
 

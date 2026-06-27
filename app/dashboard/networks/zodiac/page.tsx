@@ -820,6 +820,13 @@ const platformSections = [
     tone: "violet",
   },
   {
+    title: "Mystic Cards Redesign",
+    href: "/dashboard/networks/zodiac/mystic-cards-redesign",
+    icon: Sparkles,
+    caption: "Package 241 - user-facing Mystic Cards flow redesign: closed-card selection, Tarot/Rune reveal hierarchy, card states and preview-only deeper reading.",
+    tone: "violet",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
