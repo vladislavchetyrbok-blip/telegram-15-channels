@@ -92,6 +92,7 @@ const ROUTES = {
   manualRealDeviceQaEvidenceCapture: "/dashboard/networks/zodiac/manual-real-device-qa-evidence-capture",
   telegramWebviewStartappManualQaProtocol: "/dashboard/networks/zodiac/telegram-webview-startapp-manual-qa-protocol",
   contentCtaOwnerReviewGate: "/dashboard/networks/zodiac/content-cta-owner-review-gate",
+  launchSimulationStatusReport: "/dashboard/networks/zodiac/launch-simulation-status-report",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -260,6 +261,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-real-device-qa-evidence-capture"', "manual real-device qa evidence capture route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/telegram-webview-startapp-manual-qa-protocol"', "telegram webview startapp manual qa protocol route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/content-cta-owner-review-gate"', "content cta owner review gate route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/launch-simulation-status-report"', "launch simulation status report route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");
@@ -1289,6 +1291,23 @@ async function main() {
     assertIncludes(pages.contentCtaOwnerReviewGate, "No Telegram messages were sent", "content cta no messages");
     assertIncludes(pages.contentCtaOwnerReviewGate, "publicLaunchApproved", "content cta launch flag");
     assertIncludes(pages.contentCtaOwnerReviewGate, "ownerManualReviewRequired", "content cta owner review flag");
+    assertIncludes(pages.launchSimulationStatusReport, "Launch Simulation Status Report", "launch simulation report title");
+    assertIncludes(pages.launchSimulationStatusReport, "TypeScript status expected", "launch simulation typescript");
+    assertIncludes(pages.launchSimulationStatusReport, "lint status expected", "launch simulation lint");
+    assertIncludes(pages.launchSimulationStatusReport, "build status expected", "launch simulation build");
+    assertIncludes(pages.launchSimulationStatusReport, "miniapp smoke status expected", "launch simulation miniapp smoke");
+    assertIncludes(pages.launchSimulationStatusReport, "dashboard QA status expected", "launch simulation dashboard qa");
+    assertIncludes(pages.launchSimulationStatusReport, "public API exposure hardening status", "launch simulation public api");
+    assertIncludes(pages.launchSimulationStatusReport, "env setup protocol status", "launch simulation env setup");
+    assertIncludes(pages.launchSimulationStatusReport, "backup freshness status", "launch simulation backup");
+    assertIncludes(pages.launchSimulationStatusReport, "real-device QA status", "launch simulation real device");
+    assertIncludes(pages.launchSimulationStatusReport, "Telegram WebView QA status", "launch simulation webview");
+    assertIncludes(pages.launchSimulationStatusReport, "content/CTA owner review status", "launch simulation cta review");
+    assertIncludes(pages.launchSimulationStatusReport, "owner approval status", "launch simulation owner approval");
+    assertIncludes(pages.launchSimulationStatusReport, "Launch not approved", "launch simulation not approved");
+    assertIncludes(pages.launchSimulationStatusReport, "No production launch", "launch simulation no production launch");
+    assertIncludes(pages.launchSimulationStatusReport, "publicLaunchApproved", "launch simulation launch flag");
+    assertIncludes(pages.launchSimulationStatusReport, "ownerManualReviewRequired", "launch simulation owner review flag");
     assertIncludes(pages.productCopyFinalPolish, "Финальная полировка текстов Aphrodite", "product copy polish title");
     assertIncludes(pages.productCopyFinalPolish, "Только copy polish", "product copy polish classification");
     assertIncludes(pages.productCopyFinalPolish, "Copy polish не включает оплату", "product copy polish no payment");

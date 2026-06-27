@@ -771,6 +771,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Launch Simulation Status Report",
+    href: "/dashboard/networks/zodiac/launch-simulation-status-report",
+    icon: ClipboardCheck,
+    caption: "Package 234 - consolidated dry-run/readiness report for checks, API hardening, env, backup, real-device QA, WebView QA and owner approval.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
