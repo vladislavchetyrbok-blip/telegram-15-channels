@@ -906,6 +906,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Telegram WebView Startapp Owner Review Execution",
+    href: "/dashboard/networks/zodiac/telegram-webview-startapp-owner-review-execution",
+    icon: Smartphone,
+    caption: "Package 254 - execution record for Telegram WebView, startapp routing, deep-link handling, and browser fallback behavior.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

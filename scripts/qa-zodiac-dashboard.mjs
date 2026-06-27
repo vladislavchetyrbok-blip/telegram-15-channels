@@ -111,6 +111,7 @@ const ROUTES = {
   realDeviceQaExecutionGate: "/dashboard/networks/zodiac/real-device-qa-execution-gate",
   softLaunchCandidateReport: "/dashboard/networks/zodiac/soft-launch-candidate-report",
   ownerManualRealDeviceReviewExecution: "/dashboard/networks/zodiac/owner-manual-real-device-review-execution",
+  telegramWebviewStartappOwnerReviewExecution: "/dashboard/networks/zodiac/telegram-webview-startapp-owner-review-execution",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -289,6 +290,8 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/owner-manual-review-pack"', "owner manual review pack route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/real-device-qa-execution-gate"', "real device qa execution gate route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/soft-launch-candidate-report"', "soft launch candidate report route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/owner-manual-real-device-review-execution"', "owner manual real-device review execution route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/telegram-webview-startapp-owner-review-execution"', "telegram webview startapp owner review execution route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");
@@ -1426,6 +1429,11 @@ async function main() {
     assertIncludes(pages.ownerManualRealDeviceReviewExecution, "Real iPhone Safari", "owner manual review execution iphone");
     assertIncludes(pages.ownerManualRealDeviceReviewExecution, "Telegram iOS WebView", "owner manual review execution telegram");
     assertIncludes(pages.ownerManualRealDeviceReviewExecution, "Package 254 — Telegram WebView Startapp Owner Review Execution", "owner manual review execution next package");
+    assertIncludes(pages.telegramWebviewStartappOwnerReviewExecution, "Telegram WebView Startapp Owner Review Execution", "telegram webview startapp review execution title");
+    assertIncludes(pages.telegramWebviewStartappOwnerReviewExecution, "OWNER REVIEW REQUIRED", "telegram webview startapp review execution status");
+    assertIncludes(pages.telegramWebviewStartappOwnerReviewExecution, "Telegram iOS Sandbox Opening", "telegram webview startapp review execution ios");
+    assertIncludes(pages.telegramWebviewStartappOwnerReviewExecution, "Telegram Android Sandbox Opening", "telegram webview startapp review execution android");
+    assertIncludes(pages.telegramWebviewStartappOwnerReviewExecution, "Package 255 — Content CTA Owner Review Execution", "telegram webview startapp review execution next package");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "Aphrodite Mini App Visual Design Audit", "aphrodite visual design audit title");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "current Mini App visual status", "aphrodite visual audit current status");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "screen-by-screen findings", "aphrodite visual audit screens");
