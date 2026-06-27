@@ -87,6 +87,23 @@ a {
     -webkit-overflow-scrolling: touch;
   }
 
+  /* Package 246 Visual Fixes */
+  .aphrodite-pkg-246-visual-fix {
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .aphrodite-button-touch-fix {
+    min-height: 48px;
+    touch-action: manipulation;
+  }
+
+  .aphrodite-card-spacing-fix {
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .aphrodite-mobile-shell *,
     .zodiac-miniapp-safe-area * {

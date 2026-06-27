@@ -33,7 +33,7 @@ export function AphroditeButton({
       disabled={disabled || variant === "locked"}
       className={aphroditeClassNames(
         "inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-semibold leading-5 transition-colors",
-        "aphrodite-touch-target max-w-full text-center",
+        "aphrodite-touch-target aphrodite-button-touch-fix max-w-full text-center",
         "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-200",
         variantClassNames[variant],
         className,

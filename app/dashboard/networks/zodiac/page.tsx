@@ -857,6 +857,13 @@ const platformSections = [
     tone: "violet",
   },
   {
+    title: "Visual Fixes After Screenshot Review",
+    href: "/dashboard/networks/zodiac/visual-fixes-after-screenshot-review",
+    icon: CheckCircle2,
+    caption: "Package 246 - executes visual QA inspection and applies scoped CSS remediations across mobile viewports (360px, 390px, 430px) and live Mini App screens.",
+    tone: "emerald",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
