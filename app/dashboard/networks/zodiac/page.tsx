@@ -864,6 +864,13 @@ const platformSections = [
     tone: "emerald",
   },
   {
+    title: "Soft Launch Scope Selector",
+    href: "/dashboard/networks/zodiac/soft-launch-scope-selector",
+    icon: ClipboardCheck,
+    caption: "Package 248 - conservative future soft-launch scope selector: internal owner review first, blockers, stop conditions and rollback boundaries without launch approval.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

@@ -105,6 +105,7 @@ const ROUTES = {
   telegramWebviewMobilePolish: "/dashboard/networks/zodiac/telegram-webview-mobile-polish",
   visualQaScreenshotPack: "/dashboard/networks/zodiac/visual-qa-screenshot-pack",
   visualFixesAfterScreenshotReview: "/dashboard/networks/zodiac/visual-fixes-after-screenshot-review",
+  softLaunchScopeSelector: "/dashboard/networks/zodiac/soft-launch-scope-selector",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -278,6 +279,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/telegram-webview-mobile-polish"', "telegram webview mobile polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/visual-qa-screenshot-pack"', "visual qa screenshot pack route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/visual-fixes-after-screenshot-review"', "visual fixes after screenshot review route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/soft-launch-scope-selector"', "soft launch scope selector route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");
@@ -1345,6 +1347,18 @@ async function main() {
     assertIncludes(pages.softLaunchOwnerGoNoGoGate, "rollback plan understood", "soft launch rollback plan");
     assertIncludes(pages.softLaunchOwnerGoNoGoGate, "owner explicit approval", "soft launch owner approval");
     assertIncludes(pages.softLaunchOwnerGoNoGoGate, "autoApprovalAdded", "soft launch no auto approval flag");
+    assertIncludes(pages.softLaunchScopeSelector, "Soft Launch Scope Selector", "soft launch scope selector title");
+    assertIncludes(pages.softLaunchScopeSelector, "APPROVAL NOT GRANTED", "soft launch scope approval not granted");
+    assertIncludes(pages.softLaunchScopeSelector, "recommended smallest soft launch scope", "soft launch scope recommended scope");
+    assertIncludes(pages.softLaunchScopeSelector, "Internal owner review only", "soft launch scope internal owner review");
+    assertIncludes(pages.softLaunchScopeSelector, "full 13-channel rollout", "soft launch scope full rollout excluded");
+    assertIncludes(pages.softLaunchScopeSelector, "VIP preview locked-only", "soft launch scope vip locked only");
+    assertIncludes(pages.softLaunchScopeSelector, "DATABASE_URL configured manually", "soft launch scope database blocker");
+    assertIncludes(pages.softLaunchScopeSelector, "TELEGRAM_BOT_TOKEN configured manually", "soft launch scope telegram token blocker");
+    assertIncludes(pages.softLaunchScopeSelector, "backup freshness &lt;24h confirmed", "soft launch scope backup blocker");
+    assertIncludes(pages.softLaunchScopeSelector, "Telegram WebView/startapp QA completed manually", "soft launch scope webview blocker");
+    assertIncludes(pages.softLaunchScopeSelector, "content/CTA owner review completed", "soft launch scope cta blocker");
+    assertIncludes(pages.softLaunchScopeSelector, "Package 249 - Soft Launch Preflight Checklist", "soft launch scope next package");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "Aphrodite Mini App Visual Design Audit", "aphrodite visual design audit title");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "current Mini App visual status", "aphrodite visual audit current status");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "screen-by-screen findings", "aphrodite visual audit screens");
