@@ -14,7 +14,7 @@ import { trackZodiacMiniAppEvent } from "@/lib/zodiac-mini-app-analytics-client"
 import { zodiacAnalyticsScoreTier, zodiacAnalyticsStartappType, type ZodiacAnalyticsEventName, type ZodiacAnalyticsPayload } from "@/lib/zodiac-mini-app-analytics-shared";
 import { buildPersonalizedCoupleCalendar } from "@/lib/zodiac-couple-calendar-personalization";
 import { buildZodiacCompatibilityPersonalizedCopy } from "@/lib/zodiac-compatibility-copy-personalization";
-import { ArrowLeft, ArrowRight, Bookmark, CalendarDays, Check, Copy, Crown, Gift, MapPin, Share2, ShieldCheck, Sparkles, Star } from "lucide-react";
+import { ArrowLeft, ArrowRight, Bookmark, CalendarDays, Check, Copy, Crown, Gift, HeartHandshake, MapPin, Share2, ShieldCheck, Sparkles, Star } from "lucide-react";
 import Link from "next/link";
 import {
   AuraColorFeature,
@@ -1044,12 +1044,40 @@ export function ZodiacCompatibilityMiniApp({
                 />
               ) : null}
               {activeTab === "love" ? (
-                <div className="space-y-4">
+                <div className="space-y-4" data-aphrodite-compatibility-flow-redesign="package-239">
                   <button type="button" onClick={returnToMainMenu} className={secondaryButtonClass(publicMode)}>
                     <ArrowLeft className="h-4 w-4" />
                     Главное меню
                   </button>
                   <StepProgress publicMode={publicMode} step={step} />
+                  <div
+                    className={
+                      publicMode
+                        ? "rounded-lg border border-rose-200/18 bg-gradient-to-br from-rose-300/12 via-violet-300/10 to-amber-200/10 p-4 text-slate-100 shadow-[0_18px_56px_rgba(12,10,30,0.28)]"
+                        : "rounded-lg border border-rose-100 bg-rose-50 p-4 text-slate-800"
+                    }
+                    data-aphrodite-compatibility-input="package-239"
+                  >
+                    <div className="flex items-start gap-3">
+                      <span
+                        className={
+                          publicMode
+                            ? "grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-amber-200/20 bg-amber-200/10 text-amber-100"
+                            : "grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-rose-100 bg-white text-rose-700"
+                        }
+                      >
+                        <HeartHandshake className="h-5 w-5" />
+                      </span>
+                      <div className="min-w-0">
+                        <p className={publicMode ? "text-sm font-semibold text-amber-50" : "text-sm font-semibold text-rose-950"}>
+                          Совместимость двух людей
+                        </p>
+                        <p className={publicMode ? "mt-1 text-sm leading-6 text-slate-300" : "mt-1 text-sm leading-6 text-slate-700"}>
+                          Введите данные пары: имя можно оставить пустым, дату рождения можно набрать цифрами, а знак подставится автоматически.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                   <ModeSelector publicMode={publicMode} mode={mode} onChange={changeMode} />
                   <RelationshipModeSelector publicMode={publicMode} mode={relationshipMode} onChange={changeRelationshipMode} />
                   <div className="min-w-0 flex-1 transition-all duration-300">
@@ -3409,9 +3437,15 @@ function PersonPanel({
   const namePlaceholder = "необязательно";
 
   return (
-    <div className={publicMode ? "min-w-0 space-y-4" : "min-w-0 space-y-4"}>
+    <div className={publicMode ? "min-w-0 space-y-4" : "min-w-0 space-y-4"} data-aphrodite-compatibility-person-panel="package-239">
       {!publicMode ? <h2 className="text-lg font-semibold text-slate-950">{title}</h2> : null}
-      <div className="mt-5 space-y-4">
+      <div
+        className={
+          publicMode
+            ? "mt-5 space-y-4 rounded-lg border border-white/10 bg-white/[0.045] p-3"
+            : "mt-5 space-y-4"
+        }
+      >
         <Field label={nameLabel} publicMode={publicMode}>
           <input
             type="text"
@@ -3423,7 +3457,11 @@ function PersonPanel({
             onBlur={() => onChange({ ...value, name: normalizeName(value.name) })}
             onChange={(event) => onChange({ ...value, name: sanitizeNameInput(event.target.value) })}
             placeholder={namePlaceholder}
-            className="h-12 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900"
+            className={
+              publicMode
+                ? "h-12 w-full rounded-lg border border-white/12 bg-white/10 px-3 text-base text-white outline-none transition placeholder:text-slate-500 focus:border-amber-200 focus:ring-2 focus:ring-amber-200/25"
+                : "h-12 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900"
+            }
           />
         </Field>
 
@@ -3438,9 +3476,15 @@ function PersonPanel({
                     key={gender}
                     type="button"
                     onClick={() => onChange({ ...value, gender })}
-                    className={`min-h-11 rounded-lg border px-3 py-2 text-sm font-semibold transition ${
-                      value.gender === gender ? "border-cyan-300 bg-cyan-50 text-cyan-900" : "border-slate-200 bg-slate-50 text-slate-600"
-                    }`}
+                    className={
+                      publicMode
+                        ? `min-h-11 rounded-lg border px-3 py-2 text-sm font-semibold transition ${
+                            value.gender === gender ? "border-rose-200/70 bg-rose-200/15 text-rose-50" : "border-white/10 bg-white/[0.065] text-slate-300"
+                          }`
+                        : `min-h-11 rounded-lg border px-3 py-2 text-sm font-semibold transition ${
+                            value.gender === gender ? "border-cyan-300 bg-cyan-50 text-cyan-900" : "border-slate-200 bg-slate-50 text-slate-600"
+                          }`
+                    }
                   >
                     {genderLabels[gender]}
                   </button>
@@ -3456,11 +3500,21 @@ function PersonPanel({
                 birthDateScope="compatibility"
               />
               {detectedSign ? (
-                <p className="mt-2 rounded-md border border-cyan-100 bg-cyan-50 px-3 py-2 text-xs font-semibold text-cyan-900">
+                <p
+                  className={
+                    publicMode
+                      ? "mt-2 rounded-md border border-amber-200/25 bg-amber-200/10 px-3 py-2 text-xs font-semibold text-amber-50"
+                      : "mt-2 rounded-md border border-cyan-100 bg-cyan-50 px-3 py-2 text-xs font-semibold text-cyan-900"
+                  }
+                >
                   Определён знак: {detectedSign.emoji} {detectedSign.name}
                 </p>
               ) : null}
-              {value.birthDate && !parsedDate.ok ? <p className="mt-2 text-xs font-semibold text-rose-700">{parsedDate.error}</p> : null}
+              {value.birthDate && !parsedDate.ok ? (
+                <p className={publicMode ? "mt-2 text-xs font-semibold text-rose-200" : "mt-2 text-xs font-semibold text-rose-700"}>
+                  {parsedDate.error}
+                </p>
+              ) : null}
             </Field>
           </>
         ) : null}

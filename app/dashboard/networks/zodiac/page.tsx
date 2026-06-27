@@ -806,6 +806,13 @@ const platformSections = [
     tone: "violet",
   },
   {
+    title: "Compatibility Flow Redesign",
+    href: "/dashboard/networks/zodiac/compatibility-flow-redesign",
+    icon: HeartHandshake,
+    caption: "Package 239 - user-facing compatibility flow redesign: two-person input, score/result cards, shareable feeling and preview-only VIP locked card.",
+    tone: "violet",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

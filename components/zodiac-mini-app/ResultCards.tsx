@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import type { CSSProperties, ReactNode } from "react";
-import { ArrowLeft, Bookmark, CalendarDays, HeartHandshake, MessageCircle, RotateCcw, Share2, Sparkles } from "lucide-react";
+import { ArrowLeft, Bookmark, CalendarDays, HeartHandshake, LockKeyhole, MessageCircle, RotateCcw, Share2, Sparkles } from "lucide-react";
 import { FinalAstroMap } from "./AstroChartVisual";
 import type { CompatibilityResult, ZodiacSign } from "./types";
 import { primaryButtonClass, secondaryButtonClass } from "./WizardControls";
+import { AphroditeBadge, AphroditeCard } from "./aphrodite-design-system";
 
 export function ResultPanel({
   publicMode,
@@ -56,11 +57,13 @@ export function ResultPanel({
   }
 
   return (
-    <div className="min-w-0 space-y-4">
+    <div className="min-w-0 space-y-4" data-aphrodite-compatibility-result="package-239">
       <div
+        data-aphrodite-compatibility-score-card="package-239"
+        data-aphrodite-compatibility-shareable-result="package-239"
         className={
           publicMode
-            ? "overflow-hidden rounded-lg border border-amber-200/20 bg-gradient-to-br from-fuchsia-300/12 via-rose-300/12 to-amber-200/12 p-4 text-white shadow-[0_18px_50px_rgba(0,0,0,0.22)]"
+            ? "overflow-hidden rounded-lg border border-amber-200/20 bg-[radial-gradient(circle_at_top_right,rgba(246,213,138,0.18),transparent_32%),linear-gradient(135deg,rgba(217,70,239,0.14),rgba(244,63,94,0.12),rgba(251,191,36,0.1))] p-4 text-white shadow-[0_24px_70px_rgba(0,0,0,0.28)]"
             : "overflow-hidden rounded-lg border border-violet-100 bg-gradient-to-br from-white via-violet-50 to-amber-50 p-4 text-slate-950 shadow-sm"
         }
       >
@@ -169,6 +172,8 @@ export function ResultPanel({
         </ResultSectionCard>
       </div>
 
+      <CompatibilityVipPreview publicMode={publicMode} />
+
       {result.validationMessages.map((message) => (
         <p key={message} className="rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm font-semibold text-rose-800">{message}</p>
       ))}
@@ -201,6 +206,49 @@ export function ResultPanel({
           Новый расчёт
         </button>
       </div>
+    </div>
+  );
+}
+
+function CompatibilityVipPreview({ publicMode }: { publicMode: boolean }) {
+  if (!publicMode) {
+    return (
+      <div
+        className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-amber-950"
+        data-aphrodite-compatibility-vip-preview="package-239"
+      >
+        <p className="text-sm font-semibold">Full compatibility report</p>
+        <p className="mt-2 text-sm leading-6">
+          Preview only: emotional dynamics, conflict risks, love calendar, and Birth Matrix connection stay locked. No active payment and no real VIP unlock.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div data-aphrodite-compatibility-vip-preview="package-239">
+      <AphroditeCard tone="locked" className="space-y-4">
+        <div className="flex items-start justify-between gap-3">
+          <AphroditeBadge tone="locked">preview only</AphroditeBadge>
+          <LockKeyhole aria-hidden="true" className="h-5 w-5 shrink-0 text-amber-100" />
+        </div>
+        <div className="space-y-2">
+          <h3 className="break-words text-base font-semibold leading-6 text-[#fff7ed]">Full compatibility report</h3>
+          <p className="text-sm leading-6 text-slate-300">
+            Глубже можно раскрыть эмоциональную динамику, конфликтные риски, love calendar и связь с Birth Matrix.
+          </p>
+        </div>
+        <div className="grid gap-2 sm:grid-cols-2">
+          {["Emotional dynamics", "Conflict risks", "Love calendar", "Birth Matrix connection"].map((item) => (
+            <div key={item} className="rounded-lg border border-white/10 bg-white/[0.055] px-3 py-2 text-xs font-semibold text-slate-200">
+              {item}
+            </div>
+          ))}
+        </div>
+        <p className="rounded-lg border border-amber-100/20 bg-black/20 p-3 text-xs leading-5 text-amber-100">
+          Preview only: no active payment, no real VIP unlock, entitlement unchanged.
+        </p>
+      </AphroditeCard>
     </div>
   );
 }

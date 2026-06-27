@@ -97,6 +97,7 @@ const ROUTES = {
   aphroditeMiniappVisualDesignAudit: "/dashboard/networks/zodiac/aphrodite-miniapp-visual-design-audit",
   aphroditeDesignSystem: "/dashboard/networks/zodiac/aphrodite-design-system",
   miniappHomeScreenRedesign: "/dashboard/networks/zodiac/miniapp-home-screen-redesign",
+  compatibilityFlowRedesign: "/dashboard/networks/zodiac/compatibility-flow-redesign",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -1394,6 +1395,26 @@ async function main() {
     assertIncludes(pages.miniappHomeScreenRedesign, "publicLaunchApproved", "miniapp home redesign launch flag");
     assertIncludes(pages.miniappHomeScreenRedesign, "ownerManualReviewRequired", "miniapp home redesign owner review flag");
     assertIncludes(pages.miniappHomeScreenRedesign, "Package 239 - Compatibility Flow Redesign", "miniapp home redesign next package");
+    assertIncludes(pages.compatibilityFlowRedesign, "Compatibility Flow Redesign", "compatibility flow redesign title");
+    assertIncludes(pages.compatibilityFlowRedesign, "redesignedSections", "compatibility flow redesigned sections");
+    assertIncludes(pages.compatibilityFlowRedesign, "compatibilityInputPrinciples", "compatibility flow input principles");
+    assertIncludes(pages.compatibilityFlowRedesign, "resultPresentationPrinciples", "compatibility flow result principles");
+    assertIncludes(pages.compatibilityFlowRedesign, "scoreCardPrinciples", "compatibility flow score card principles");
+    assertIncludes(pages.compatibilityFlowRedesign, "shareableResultPrinciples", "compatibility flow shareable result principles");
+    assertIncludes(pages.compatibilityFlowRedesign, "vipLockedPreviewPrinciples", "compatibility flow VIP preview principles");
+    assertIncludes(pages.compatibilityFlowRedesign, "two-person input flow", "compatibility flow two-person input");
+    assertIncludes(pages.compatibilityFlowRedesign, "score/result card", "compatibility flow score result card");
+    assertIncludes(pages.compatibilityFlowRedesign, "preview only", "compatibility flow preview only");
+    assertIncludes(pages.compatibilityFlowRedesign, "no active payment", "compatibility flow no active payment");
+    assertIncludes(pages.compatibilityFlowRedesign, "no real VIP unlock", "compatibility flow no real VIP unlock");
+    assertIncludes(pages.compatibilityFlowRedesign, "compatibility calculation logic unchanged", "compatibility flow calculation unchanged");
+    assertIncludes(pages.compatibilityFlowRedesign, "birth-date parsing/validation unchanged", "compatibility flow date parsing unchanged");
+    assertIncludes(pages.compatibilityFlowRedesign, "Package 224 date formatting", "compatibility flow package 224 safe");
+    assertIncludes(pages.compatibilityFlowRedesign, "360px / 390px / 430px", "compatibility flow mobile widths");
+    assertIncludes(pages.compatibilityFlowRedesign, "Telegram WebView", "compatibility flow webview");
+    assertIncludes(pages.compatibilityFlowRedesign, "publicLaunchApproved", "compatibility flow launch flag");
+    assertIncludes(pages.compatibilityFlowRedesign, "ownerManualReviewRequired", "compatibility flow owner review flag");
+    assertIncludes(pages.compatibilityFlowRedesign, "Package 240 - Birth Matrix / Natal Flow Redesign", "compatibility flow next package");
     assertIncludes(pages.productCopyFinalPolish, "Финальная полировка текстов Aphrodite", "product copy polish title");
     assertIncludes(pages.productCopyFinalPolish, "Только copy polish", "product copy polish classification");
     assertIncludes(pages.productCopyFinalPolish, "Copy polish не включает оплату", "product copy polish no payment");
