@@ -88,6 +88,7 @@ const ROUTES = {
   envExampleExpansionReadiness: "/dashboard/networks/zodiac/env-example-expansion-readiness",
   qaCrlfCrossPlatformRobustness: "/dashboard/networks/zodiac/qa-crlf-cross-platform-robustness",
   productionEnvSetupProtocol: "/dashboard/networks/zodiac/production-env-setup-protocol",
+  backupFreshnessVerificationProtocol: "/dashboard/networks/zodiac/backup-freshness-verification-protocol",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -252,6 +253,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/env-example-expansion-readiness"', "env example expansion readiness route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/qa-crlf-cross-platform-robustness"', "qa crlf cross-platform robustness route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/production-env-setup-protocol"', "production env setup protocol route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/backup-freshness-verification-protocol"', "backup freshness verification protocol route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");
@@ -1217,6 +1219,17 @@ async function main() {
     assertIncludes(pages.productionEnvSetupProtocol, "never commit .env production values", "production env never commit env values");
     assertIncludes(pages.productionEnvSetupProtocol, "publicLaunchApproved", "production env launch flag");
     assertIncludes(pages.productionEnvSetupProtocol, "ownerManualReviewRequired", "production env owner review flag");
+    assertIncludes(pages.backupFreshnessVerificationProtocol, "Backup Freshness Verification Protocol", "backup freshness protocol title");
+    assertIncludes(pages.backupFreshnessVerificationProtocol, "backup must be &lt;24h before launch", "backup freshness less than 24h");
+    assertIncludes(pages.backupFreshnessVerificationProtocol, "restore rehearsal required", "backup freshness restore rehearsal");
+    assertIncludes(pages.backupFreshnessVerificationProtocol, "rollback point / last verified commit", "backup freshness rollback point");
+    assertIncludes(pages.backupFreshnessVerificationProtocol, "if backup is stale", "backup freshness stale action");
+    assertIncludes(pages.backupFreshnessVerificationProtocol, "if restore rehearsal fails", "backup freshness restore failure action");
+    assertIncludes(pages.backupFreshnessVerificationProtocol, "no automatic DB access", "backup freshness no automatic db access");
+    assertIncludes(pages.backupFreshnessVerificationProtocol, "no automatic restore", "backup freshness no automatic restore");
+    assertIncludes(pages.backupFreshnessVerificationProtocol, "owner sign-off required", "backup freshness owner sign-off");
+    assertIncludes(pages.backupFreshnessVerificationProtocol, "publicLaunchApproved", "backup freshness launch flag");
+    assertIncludes(pages.backupFreshnessVerificationProtocol, "ownerManualReviewRequired", "backup freshness owner review flag");
     assertIncludes(pages.productCopyFinalPolish, "Финальная полировка текстов Aphrodite", "product copy polish title");
     assertIncludes(pages.productCopyFinalPolish, "Только copy polish", "product copy polish classification");
     assertIncludes(pages.productCopyFinalPolish, "Copy polish не включает оплату", "product copy polish no payment");

@@ -743,6 +743,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Backup Freshness Verification Protocol",
+    href: "/dashboard/networks/zodiac/backup-freshness-verification-protocol",
+    icon: Database,
+    caption: "Package 230 - manual backup freshness, restore rehearsal and rollback point protocol without DB access or automatic restore.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
