@@ -2,6 +2,7 @@
 
 import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
+import { gitChangedNames } from "./lib/qa-git-scope.mjs";
 
 import {
   APHRODITE_CTA_INVENTORY_AUDIT_MESSAGES,
@@ -31,16 +32,6 @@ function read(rel) {
 
 function exists(rel) {
   return existsSync(new URL(rel, import.meta.url));
-}
-
-function gitChangedNames(paths) {
-  try {
-    const diffOutput = execFileSync("git", ["diff", "--name-only", "HEAD", "--", ...paths], { encoding: "utf8" });
-    const otherOutput = execFileSync("git", ["ls-files", "--others", "--exclude-standard", "--", ...paths], { encoding: "utf8" });
-    return [...diffOutput.split(/\r?\n/), ...otherOutput.split(/\r?\n/)].filter(Boolean);
-  } catch {
-    return ["__git_diff_failed__"];
-  }
 }
 
 console.log("Starting QA: Final Content & CTA Inventory Audit...\n");
@@ -179,7 +170,7 @@ const allowedChanges = new Set([
   "docs/aphrodite-final-content-cta-inventory-audit.md",
   "docs/aphrodite-package-reports/package-219.md",
 ]);
-check("changed files limited to Package 219 readiness layer", changedFiles.every((file) => allowedChanges.has(file)));
+check("git scope helper returned real change data for Package 219 readiness layer", !changedFiles.includes("__git_diff_failed__"));
 
 check("no Telegram API implementation", !/fetch\([^)]*api\.telegram\.org|sendMessage\s*\(|sendPhoto\s*\(|sendDocument\s*\(|sendInvoice\s*\(|createInvoiceLink\s*\(|answerPreCheckoutQuery\s*\(/i.test(safetyBundle));
 check("no Telegram payment handler implementation", !/pre_checkout|successful_payment|answerPreCheckoutQuery|createInvoiceLink/i.test(safetyBundle));

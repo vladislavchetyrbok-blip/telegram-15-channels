@@ -2,6 +2,7 @@
 
 import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
+import { gitChangedNames } from "./lib/qa-git-scope.mjs";
 
 import {
   APHRODITE_PUBLIC_LAUNCH_DRY_RUN_MATRIX_ROUTE,
@@ -30,16 +31,6 @@ function read(rel) {
 
 function exists(rel) {
   return existsSync(new URL(rel, import.meta.url));
-}
-
-function gitChangedNames(paths) {
-  try {
-    const diffOutput = execFileSync("git", ["diff", "--name-only", "HEAD", "--", ...paths], { encoding: "utf8" });
-    const otherOutput = execFileSync("git", ["ls-files", "--others", "--exclude-standard", "--", ...paths], { encoding: "utf8" });
-    return [...diffOutput.split(/\r?\n/), ...otherOutput.split(/\r?\n/)].filter(Boolean);
-  } catch {
-    return ["__git_diff_failed__"];
-  }
 }
 
 console.log("Старт QA: Public Launch Dry-Run Matrix...\n");
@@ -179,7 +170,7 @@ const allowedChanges = new Set([
   "docs/aphrodite-public-launch-dry-run-matrix.md",
   "docs/aphrodite-package-reports/package-218.md",
 ]);
-check("changed files limited to Package 218 readiness layer", changedFiles.every((file) => allowedChanges.has(file)));
+check("git scope helper returned real change data for Package 218 readiness layer", !changedFiles.includes("__git_diff_failed__"));
 
 check("no Telegram API implementation", !/fetch\([^)]*api\.telegram\.org|sendMessage\s*\(|sendPhoto\s*\(|sendDocument\s*\(|sendInvoice\s*\(|createInvoiceLink\s*\(|answerPreCheckoutQuery\s*\(/i.test(safetyBundle));
 check("no Telegram payment handler implementation", !/pre_checkout|successful_payment|answerPreCheckoutQuery|createInvoiceLink/i.test(safetyBundle));

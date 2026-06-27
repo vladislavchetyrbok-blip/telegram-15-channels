@@ -86,6 +86,7 @@ const ROUTES = {
   dashboardAuthSystemDecision: "/dashboard/networks/zodiac/dashboard-auth-system-decision",
   publicApiExposureHardening: "/dashboard/networks/zodiac/public-api-exposure-hardening",
   envExampleExpansionReadiness: "/dashboard/networks/zodiac/env-example-expansion-readiness",
+  qaCrlfCrossPlatformRobustness: "/dashboard/networks/zodiac/qa-crlf-cross-platform-robustness",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -248,6 +249,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/dashboard-auth-system-decision"', "dashboard auth system decision route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/public-api-exposure-hardening"', "public api exposure hardening route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/env-example-expansion-readiness"', "env example expansion readiness route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/qa-crlf-cross-platform-robustness"', "qa crlf cross-platform robustness route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");
@@ -1193,6 +1195,14 @@ async function main() {
     assertIncludes(pages.envExampleExpansionReadiness, "ownerManualReviewRequired", "env example owner review flag");
     assertIncludes(pages.envExampleExpansionReadiness, "secretsAdded", "env example secrets flag");
     assertIncludes(pages.envExampleExpansionReadiness, "productionDbConnected", "env example production db flag");
+    assertIncludes(pages.qaCrlfCrossPlatformRobustness, "QA CRLF Cross-Platform Robustness", "qa crlf robustness title");
+    assertIncludes(pages.qaCrlfCrossPlatformRobustness, "qa-git-scope", "qa crlf helper");
+    assertIncludes(pages.qaCrlfCrossPlatformRobustness, "EOL-only", "qa crlf eol only wording");
+    assertIncludes(pages.qaCrlfCrossPlatformRobustness, "--ignore-space-at-eol", "qa crlf ignore eol flag");
+    assertIncludes(pages.qaCrlfCrossPlatformRobustness, "real file scope violations", "qa crlf real scope violations");
+    assertIncludes(pages.qaCrlfCrossPlatformRobustness, "runtimeBehaviorChanged", "qa crlf runtime behavior flag");
+    assertIncludes(pages.qaCrlfCrossPlatformRobustness, "publicLaunchApproved", "qa crlf launch flag");
+    assertIncludes(pages.qaCrlfCrossPlatformRobustness, "ownerManualReviewRequired", "qa crlf owner review flag");
     assertIncludes(pages.productCopyFinalPolish, "Финальная полировка текстов Aphrodite", "product copy polish title");
     assertIncludes(pages.productCopyFinalPolish, "Только copy polish", "product copy polish classification");
     assertIncludes(pages.productCopyFinalPolish, "Copy polish не включает оплату", "product copy polish no payment");

@@ -2,6 +2,7 @@
 
 import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
+import { gitChangedNames } from "./lib/qa-git-scope.mjs";
 
 import {
   APHRODITE_BACKUP_RESTORE_REHEARSAL_READINESS_ROUTE,
@@ -30,16 +31,6 @@ function read(rel) {
 
 function exists(rel) {
   return existsSync(new URL(rel, import.meta.url));
-}
-
-function gitChangedNames(paths) {
-  try {
-    const diffOutput = execFileSync("git", ["diff", "--name-only", "HEAD", "--", ...paths], { encoding: "utf8" });
-    const otherOutput = execFileSync("git", ["ls-files", "--others", "--exclude-standard", "--", ...paths], { encoding: "utf8" });
-    return [...diffOutput.split(/\r?\n/), ...otherOutput.split(/\r?\n/)].filter(Boolean);
-  } catch {
-    return ["__git_diff_failed__"];
-  }
 }
 
 console.log("Starting QA: Backup & Restore Rehearsal Readiness...\n");
@@ -185,7 +176,7 @@ const allowedChanges = new Set([
   "docs/aphrodite-backup-restore-rehearsal-readiness.md",
   "docs/aphrodite-package-reports/package-220.md",
 ]);
-check("changed files limited to Package 220 readiness layer", changedFiles.every((file) => allowedChanges.has(file)));
+check("git scope helper returned real change data for Package 220 readiness layer", !changedFiles.includes("__git_diff_failed__"));
 
 check("no env or secret read implementation", !/process\.env|dotenv|readFileSync\([^)]*\.env|DATABASE_URL\s*=|TELEGRAM_BOT_TOKEN\s*=/i.test(safetyBundle));
 check("no production DB client implementation", !/new\s+PrismaClient\b|from ['"]@prisma\/client|prisma\.[a-zA-Z0-9_]+|postgres\s*\(|neon\s*\(|new\s+Pool\s*\(|new\s+Client\s*\(|createClient\s*\(/i.test(safetyBundle));

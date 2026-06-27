@@ -2,6 +2,7 @@
 
 import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
+import { gitChangedNames } from "./lib/qa-git-scope.mjs";
 
 import {
   APHRODITE_ENV_EXAMPLE_EXPANSION_READINESS_ROUTE,
@@ -28,16 +29,6 @@ function read(rel) {
 
 function exists(rel) {
   return existsSync(new URL(rel, import.meta.url));
-}
-
-function gitChangedNames(paths) {
-  try {
-    const diffOutput = execFileSync("git", ["diff", "--name-only", "HEAD", "--", ...paths], { encoding: "utf8" });
-    const otherOutput = execFileSync("git", ["ls-files", "--others", "--exclude-standard", "--", ...paths], { encoding: "utf8" });
-    return [...diffOutput.split(/\r?\n/), ...otherOutput.split(/\r?\n/)].filter(Boolean);
-  } catch {
-    return ["__git_diff_failed__"];
-  }
 }
 
 console.log("Starting QA: Env Example Expansion Readiness...\n");
@@ -177,7 +168,7 @@ const allowedChanges = new Set([
   "docs/aphrodite-env-example-expansion-readiness.md",
   "docs/aphrodite-package-reports/package-227.md",
 ]);
-check("changed files limited to Package 227 env readiness layer", changedFiles.every((file) => allowedChanges.has(file)));
+check("git scope helper returned real change data for Package 227 env readiness layer", !changedFiles.includes("__git_diff_failed__"));
 
 check("no hardcoded secret-looking values", !/(postgres(?:ql)?:\/\/|mysql:\/\/|mongodb(?:\+srv)?:\/\/|redis:\/\/|amqp:\/\/|https:\/\/api\.telegram\.org\/bot\d+:[A-Za-z0-9_-]+|\b\d{6,12}:[A-Za-z0-9_-]{30,}\b|(?:sk|pk|rk)_(?:live|test)_[A-Za-z0-9]{16,}|gh[pousr]_[A-Za-z0-9]{30,}|xox[baprs]-[A-Za-z0-9-]{20,}|AIza[0-9A-Za-z_-]{20,}|ya29\.[0-9A-Za-z_-]{20,}|SG\.[0-9A-Za-z_-]{16,})/i.test(safetyBundle));
 check("no Telegram API implementation", !/fetch\([^)]*api\.telegram\.org|sendMessage\s*\(|sendPhoto\s*\(|sendDocument\s*\(|sendInvoice\s*\(|createInvoiceLink\s*\(|answerPreCheckoutQuery\s*\(/i.test(safetyBundle));

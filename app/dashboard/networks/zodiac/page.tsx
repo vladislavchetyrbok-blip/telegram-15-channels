@@ -729,6 +729,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "QA CRLF Cross-Platform Robustness",
+    href: "/dashboard/networks/zodiac/qa-crlf-cross-platform-robustness",
+    icon: GitBranch,
+    caption: "Package 228 - shared QA git scope helper distinguishes real file changes from EOL-only CRLF/LF noise.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
