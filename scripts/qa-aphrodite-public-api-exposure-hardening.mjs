@@ -132,14 +132,25 @@ check("no cron/workflow/publish flag", model.safetyFlags.cronWorkflowPublishChan
 check("no secrets added flag", model.safetyFlags.secretsAdded === false);
 check("no production DB connected flag", model.safetyFlags.productionDbConnected === false);
 
-check("live Mini App source files not changed", gitChangedNames([
+const approvedPackage238HomeFiles = new Set([
+  "app/miniapp/page.tsx",
+  "components/zodiac-mini-app/AphroditeHomeScreen.tsx",
+  "components/zodiac-mini-app/MainMenuSections.tsx",
+]);
+const liveMiniAppSourceChanges = gitChangedNames([
   "app/miniapp",
   "app/birth-matrix",
   "app/compatibility",
   "components/ZodiacCompatibilityMiniApp.tsx",
   "components/ZodiacMysticSections.tsx",
+  "components/zodiac-mini-app/AphroditeHomeScreen.tsx",
+  "components/zodiac-mini-app/MainMenuSections.tsx",
   "components/zodiac-mini-app/ZodiacDateInput.tsx",
-]).length === 0);
+]);
+check(
+  "live Mini App source changes limited to approved Package 238 home files",
+  liveMiniAppSourceChanges.every((file) => approvedPackage238HomeFiles.has(file)),
+);
 check("no workflow/cron changes", gitChangedNames([".github/workflows", "vercel.json"]).length === 0);
 check("publish scripts not changed", gitChangedNames([
   "scripts/publish-zodiac-by-date.mjs",

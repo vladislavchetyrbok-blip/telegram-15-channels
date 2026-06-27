@@ -799,6 +799,13 @@ const platformSections = [
     tone: "violet",
   },
   {
+    title: "Mini App Home Screen Redesign",
+    href: "/dashboard/networks/zodiac/miniapp-home-screen-redesign",
+    icon: Smartphone,
+    caption: "Package 238 - user-facing Mini App home and entry screen redesign using the Aphrodite design system without changing flows.",
+    tone: "violet",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

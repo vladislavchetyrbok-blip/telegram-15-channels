@@ -208,14 +208,25 @@ check("report says Package 223", reportSource.includes("Package 223"));
 check("report says launch not performed", reportSource.includes("No production launch was performed."));
 check("report says next recommended package", reportSource.includes("Package 224 — Production Env Setup Protocol"));
 
-check("live Mini App source files not changed", gitChangedNames([
+const approvedPackage238HomeFiles = new Set([
+  "app/miniapp/page.tsx",
+  "components/zodiac-mini-app/AphroditeHomeScreen.tsx",
+  "components/zodiac-mini-app/MainMenuSections.tsx",
+]);
+const liveMiniAppSourceChanges = gitChangedNames([
   "app/miniapp",
   "app/birth-matrix",
   "app/compatibility",
   "components/ZodiacCompatibilityMiniApp.tsx",
   "components/ZodiacMysticSections.tsx",
+  "components/zodiac-mini-app/AphroditeHomeScreen.tsx",
+  "components/zodiac-mini-app/MainMenuSections.tsx",
   "components/zodiac-mini-app/ZodiacDateInput.tsx",
-]).length === 0);
+]);
+check(
+  "live Mini App source changes limited to approved Package 238 home files",
+  liveMiniAppSourceChanges.every((file) => approvedPackage238HomeFiles.has(file)),
+);
 check("no workflow/cron changes", gitChangedNames([".github/workflows", "vercel.json"]).length === 0);
 check("publish scripts not changed", gitChangedNames([
   "scripts/publish-zodiac-by-date.mjs",

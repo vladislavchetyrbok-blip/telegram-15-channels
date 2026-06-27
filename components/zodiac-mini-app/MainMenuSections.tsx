@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
-import { ArrowRight, BadgeCheck, CalendarDays, CircleDot, Crown, Gem, Hash, HeartHandshake, Sparkles, Star, Stars, User, WandSparkles } from "lucide-react";
+import { ArrowRight, CalendarDays, Crown, HeartHandshake, Sparkles, User } from "lucide-react";
+import { AphroditeAstrologyCenterHome } from "./AphroditeHomeScreen";
 import { relationshipModes } from "./constants";
 import { panelClass } from "./ui-primitives";
 import type { HubTab, MoreFeatureId, RelationshipMode, ZodiacSign } from "./types";
@@ -10,25 +11,6 @@ export interface MainMenuCategoryTarget {
   tab: HubTab;
   feature?: MoreFeatureId | null;
 }
-
-interface MainMenuCategory {
-  id: string;
-  title: string;
-  text: string;
-  icon: ReactNode;
-  target: MainMenuCategoryTarget;
-  tone: "violet" | "rose" | "cyan" | "amber" | "emerald" | "slate";
-  badge?: string;
-}
-
-const categoryIconClass: Record<MainMenuCategory["tone"], string> = {
-  violet: "border-fuchsia-200/25 bg-fuchsia-200/12 text-fuchsia-100",
-  rose: "border-rose-200/25 bg-rose-200/12 text-rose-100",
-  cyan: "border-cyan-200/25 bg-cyan-200/12 text-cyan-100",
-  amber: "border-amber-200/30 bg-amber-200/12 text-amber-100",
-  emerald: "border-emerald-200/25 bg-emerald-200/12 text-emerald-100",
-  slate: "border-white/15 bg-white/8 text-slate-100",
-};
 
 export function AstrologyCenterHome({
   publicMode,
@@ -41,152 +23,13 @@ export function AstrologyCenterHome({
   vipUntilLabel: string;
   onOpenCategory: (target: MainMenuCategoryTarget, categoryId: string) => void;
 }) {
-  const categories: MainMenuCategory[] = [
-    {
-      id: "horoscopes",
-      title: "✨ Гороскопы",
-      text: "Сегодня, неделя, месяц, удачные дни",
-      icon: <CalendarDays className="h-6 w-6" />,
-      target: { tab: "forecasts", feature: "todayForecast" },
-      tone: "violet",
-      badge: "Ежедневно",
-    },
-    {
-      id: "compatibility",
-      title: "💞 Совместимость",
-      text: "Любовь, дружба, работа, семья",
-      icon: <HeartHandshake className="h-6 w-6" />,
-      target: { tab: "love", feature: "compatibilityTool" },
-      tone: "rose",
-      badge: "Топ",
-    },
-    {
-      id: "angel_numbers",
-      title: "👼 Ангельские числа",
-      text: "11:11, 22:22, 15:15 и знаки Вселенной",
-      icon: <Stars className="h-6 w-6" />,
-      target: { tab: "forecasts", feature: "angelNumbers" },
-      tone: "cyan",
-      badge: "Популярное",
-    },
-    {
-      id: "birth_matrix",
-      title: "🧿 Матрица судьбы",
-      text: "Расчёт по дате рождения",
-      icon: <Star className="h-6 w-6" />,
-      target: { tab: "mystic", feature: "birthMatrix" },
-      tone: "amber",
-      badge: "Личное",
-    },
-    {
-      id: "numerology",
-      title: "🔢 Нумерология",
-      text: "Число судьбы, души и личности",
-      icon: <Hash className="h-6 w-6" />,
-      target: { tab: "profile", feature: "numerology" },
-      tone: "emerald",
-      badge: "Расчёт",
-    },
-    {
-      id: "mystic",
-      title: "🔮 Мистика",
-      text: "Знаки дня, символы, интуиция",
-      icon: <WandSparkles className="h-6 w-6" />,
-      target: { tab: "mystic", feature: "dailyCard" },
-      tone: "violet",
-    },
-    {
-      id: "tarot_runes",
-      title: "🃏 Таро и руны",
-      text: "Карта дня, руна дня, подсказка",
-      icon: <Gem className="h-6 w-6" />,
-      target: { tab: "mystic", feature: "tarotCard" },
-      tone: "rose",
-      badge: "Подсказка",
-    },
-    {
-      id: "moon_rituals",
-      title: "🌙 Луна и ритуалы",
-      text: "Лунный календарь и практики",
-      icon: <CircleDot className="h-6 w-6" />,
-      target: { tab: "mystic", feature: "lunarRitual" },
-      tone: "cyan",
-    },
-    {
-      id: "vip",
-      title: "👑 VIP раздел",
-      text: `Премиум-функции бесплатно до ${vipUntilLabel}`,
-      icon: <Crown className="h-6 w-6" />,
-      target: { tab: "vip", feature: "vip" },
-      tone: "amber",
-      badge: "Бесплатно",
-    },
-    {
-      id: "profile",
-      title: "👤 Мой профиль",
-      text: "Данные, история и быстрый доступ",
-      icon: <User className="h-6 w-6" />,
-      target: { tab: "profile", feature: "natalChart" },
-      tone: "slate",
-    },
-  ];
-
   return (
-    <section className={panelClass(publicMode)}>
-      <div className="relative overflow-hidden rounded-lg border border-fuchsia-200/15 bg-[radial-gradient(circle_at_top_left,rgba(250,204,21,0.16),transparent_13rem),radial-gradient(circle_at_bottom_right,rgba(34,211,238,0.14),transparent_14rem),rgba(255,255,255,0.06)] p-4">
-        <div className="flex flex-wrap items-center gap-2">
-          <p className="inline-flex items-center gap-2 rounded-full border border-amber-200/25 bg-amber-200/10 px-3 py-1 text-xs font-semibold text-amber-100">
-            <Sparkles className="h-3.5 w-3.5" />
-            VIP доступ бесплатно до {vipUntilLabel}
-          </p>
-          {selectedSign ? (
-            <p className="inline-flex items-center rounded-full border border-white/12 bg-white/8 px-3 py-1 text-xs font-semibold text-slate-100">
-              {selectedSign.emoji} {selectedSign.name}
-            </p>
-          ) : null}
-        </div>
-        <h2 className="mt-4 text-2xl font-semibold leading-tight text-white">Астрологический центр ✨</h2>
-        <p className="mt-2 text-sm leading-6 text-slate-300">Гороскопы, совместимость, мистика и личные расчёты в одном месте</p>
-        
-        <button
-          type="button"
-          onClick={() => onOpenCategory({ tab: "forecasts", feature: "angelNumbers" }, "angel_numbers")}
-          className="mt-4 flex w-full items-center justify-between rounded-lg border border-cyan-300/30 bg-gradient-to-r from-cyan-950/50 to-blue-900/40 p-3 text-left transition hover:border-cyan-300/50"
-        >
-          <div className="flex items-center gap-3">
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-cyan-300/20 text-cyan-100">
-              <Stars className="h-5 w-5" />
-            </span>
-            <div>
-              <p className="text-sm font-semibold text-white">Ангельские числа 11:11</p>
-              <p className="text-xs text-cyan-100/70">Узнать значение совпадений</p>
-            </div>
-          </div>
-          <ArrowRight className="h-5 w-5 text-cyan-200/50" />
-        </button>
-      </div>
-
-      <div className="mt-4 grid grid-cols-1 gap-3 min-[390px]:grid-cols-2">
-        {categories.map((category) => (
-          <button
-            key={category.id}
-            type="button"
-            onClick={() => onOpenCategory(category.target, category.id)}
-            className="min-h-[166px] rounded-lg border border-white/12 bg-white/8 p-4 text-left shadow-[0_18px_54px_rgba(8,13,30,0.28)] transition hover:border-fuchsia-200/40 hover:bg-white/12 focus:outline-none focus:ring-2 focus:ring-amber-200/50"
-          >
-            <span className={`inline-flex h-12 w-12 items-center justify-center rounded-lg border ${categoryIconClass[category.tone]}`}>{category.icon}</span>
-            <span className="mt-4 block break-words text-base font-semibold leading-5 text-white">{category.title}</span>
-            <span className="mt-2 block break-words text-sm leading-5 text-slate-300">{category.text}</span>
-            {category.badge ? (
-              <span className="mt-4 inline-flex items-center gap-1 rounded-md border border-amber-200/20 bg-amber-200/10 px-2 py-1 text-[11px] font-semibold text-amber-100">
-                <BadgeCheck className="h-3 w-3" />
-                {category.badge}
-              </span>
-            ) : null}
-          </button>
-        ))}
-      </div>
-    </section>
+    <AphroditeAstrologyCenterHome
+      publicMode={publicMode}
+      selectedSign={selectedSign}
+      vipUntilLabel={vipUntilLabel}
+      onOpenCategory={onOpenCategory}
+    />
   );
 }
 

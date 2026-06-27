@@ -96,6 +96,7 @@ const ROUTES = {
   softLaunchOwnerGoNoGoGate: "/dashboard/networks/zodiac/soft-launch-owner-go-no-go-gate",
   aphroditeMiniappVisualDesignAudit: "/dashboard/networks/zodiac/aphrodite-miniapp-visual-design-audit",
   aphroditeDesignSystem: "/dashboard/networks/zodiac/aphrodite-design-system",
+  miniappHomeScreenRedesign: "/dashboard/networks/zodiac/miniapp-home-screen-redesign",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -471,22 +472,21 @@ async function main() {
     assertIncludes(pages.affirmations, "Static Mock (Package 105)", "affirmations mock notice");
     assertIncludes(pages.affirmations, "Your Daily Affirmation", "affirmations subtitle");
 
-    assertIncludes(pages.miniappHub, "AI Love Reading", "miniapp simplified page title");
-    assertIncludes(pages.miniappHub, "Открыть бесплатный Love Reading preview", "miniapp primary love reading CTA");
-    assertIncludes(pages.miniappHub, "Совместимость", "miniapp compatibility secondary module");
-    assertIncludes(pages.miniappHub, "Матрица судьбы", "miniapp birth matrix secondary module");
-    assertIncludes(pages.miniappHub, "Гороскоп на день", "miniapp daily secondary module");
-    assertIncludes(pages.miniappHub, "Гороскоп на неделю", "miniapp weekly secondary module");
-    assertIncludes(pages.miniappHub, "Гороскоп на месяц", "miniapp monthly secondary module");
-    assertIncludes(pages.miniappHub, "Узнай, что между вами происходит", "miniapp Russian love reading promise");
-    assertIncludes(pages.miniappHub, "Без оплаты", "miniapp hub safety: no payment");
-    assertIncludes(pages.miniappHub, "Без записи в базу данных", "miniapp hub safety: no database write");
-    assertIncludes(pages.miniappHub, "Без Telegram API", "miniapp hub safety: no telegram API");
-    assertIncludes(pages.miniappHub, "birth-matrix", "miniapp hub contains birth matrix link");
-    assertIncludes(pages.miniappHub, "mystic-numbers", "miniapp hub contains mystic numbers link");
-    assertIncludes(pages.miniappHub, "affirmations", "miniapp hub contains affirmations link");
-    assertIncludes(pages.miniappHub, "vip-compatibility-report", "miniapp hub contains locked vip preview link");
-
+    assertIncludes(pages.miniappHub, "data-aphrodite-miniapp-entry-redesign", "miniapp package 238 marker");
+    assertIncludes(pages.miniappHub, "Aphrodite", "miniapp redesigned Aphrodite brand");
+    assertIncludes(pages.miniappHub, "premium mystical romantic", "miniapp redesigned visual mood");
+    assertIncludes(pages.miniappHub, "Узнайте, что между вами сейчас", "miniapp redesigned hero title");
+    assertIncludes(pages.miniappHub, "Проверить совместимость", "miniapp redesigned primary compatibility CTA");
+    assertIncludes(pages.miniappHub, "Матрица судьбы", "miniapp redesigned birth matrix CTA");
+    assertIncludes(pages.miniappHub, "Мистическая карта", "miniapp redesigned mystic CTA");
+    assertIncludes(pages.miniappHub, "VIP locked preview", "miniapp redesigned locked VIP preview");
+    assertIncludes(pages.miniappHub, "Full relationship report", "miniapp redesigned full report teaser");
+    assertIncludes(pages.miniappHub, "Без оплаты на этом экране", "miniapp redesigned safety: no payment");
+    assertIncludes(pages.miniappHub, "Без записи в базу данных", "miniapp redesigned safety: no database write");
+    assertIncludes(pages.miniappHub, "Telegram WebView", "miniapp redesigned webview safe area");
+    assertIncludes(pages.miniappHub, "birth-matrix", "miniapp redesigned contains birth matrix link");
+    assertIncludes(pages.miniappHub, "startapp=mystic", "miniapp redesigned contains mystic startapp link");
+    assertIncludes(pages.miniappHub, "startapp=compat_love", "miniapp redesigned contains compatibility startapp link");
     assertIncludes(pages.birthMatrix, "No payment", "birth matrix safety: no payment");
     assertIncludes(pages.birthMatrix, "No database", "birth matrix safety: no database");
     assertIncludes(pages.birthMatrix, "No Telegram API", "birth matrix safety: no telegram API");
@@ -1378,6 +1378,22 @@ async function main() {
     assertIncludes(pages.aphroditeDesignSystem, "miniAppScreensRedesigned", "aphrodite design system no redesign flag");
     assertIncludes(pages.aphroditeDesignSystem, "publicLaunchApproved", "aphrodite design system launch flag");
     assertIncludes(pages.aphroditeDesignSystem, "ownerManualReviewRequired", "aphrodite design system owner review flag");
+    assertIncludes(pages.miniappHomeScreenRedesign, "Mini App Home Screen Redesign", "miniapp home redesign title");
+    assertIncludes(pages.miniappHomeScreenRedesign, "redesignedSections", "miniapp home redesign sections");
+    assertIncludes(pages.miniappHomeScreenRedesign, "primaryCTA", "miniapp home redesign primary CTA");
+    assertIncludes(pages.miniappHomeScreenRedesign, "secondaryCTAs", "miniapp home redesign secondary CTAs");
+    assertIncludes(pages.miniappHomeScreenRedesign, "visualPrinciplesApplied", "miniapp home redesign visual principles");
+    assertIncludes(pages.miniappHomeScreenRedesign, "/miniapp", "miniapp home redesign miniapp route");
+    assertIncludes(pages.miniappHomeScreenRedesign, "/compatibility", "miniapp home redesign compatibility route");
+    assertIncludes(pages.miniappHomeScreenRedesign, "Проверить совместимость", "miniapp home redesign compatibility CTA");
+    assertIncludes(pages.miniappHomeScreenRedesign, "Матрица судьбы", "miniapp home redesign birth matrix CTA");
+    assertIncludes(pages.miniappHomeScreenRedesign, "Мистическая карта", "miniapp home redesign mystic CTA");
+    assertIncludes(pages.miniappHomeScreenRedesign, "VIP locked preview", "miniapp home redesign locked preview");
+    assertIncludes(pages.miniappHomeScreenRedesign, "no active payment", "miniapp home redesign no active payment");
+    assertIncludes(pages.miniappHomeScreenRedesign, "no VIP unlock", "miniapp home redesign no vip unlock");
+    assertIncludes(pages.miniappHomeScreenRedesign, "publicLaunchApproved", "miniapp home redesign launch flag");
+    assertIncludes(pages.miniappHomeScreenRedesign, "ownerManualReviewRequired", "miniapp home redesign owner review flag");
+    assertIncludes(pages.miniappHomeScreenRedesign, "Package 239 - Compatibility Flow Redesign", "miniapp home redesign next package");
     assertIncludes(pages.productCopyFinalPolish, "Финальная полировка текстов Aphrodite", "product copy polish title");
     assertIncludes(pages.productCopyFinalPolish, "Только copy polish", "product copy polish classification");
     assertIncludes(pages.productCopyFinalPolish, "Copy polish не включает оплату", "product copy polish no payment");
