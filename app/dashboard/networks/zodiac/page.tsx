@@ -785,6 +785,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Aphrodite Mini App Visual Design Audit",
+    href: "/dashboard/networks/zodiac/aphrodite-miniapp-visual-design-audit",
+    icon: Brush,
+    caption: "Package 236 - user-facing Mini App visual audit, design direction and Package 237-245 roadmap without redesigning screens.",
+    tone: "violet",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

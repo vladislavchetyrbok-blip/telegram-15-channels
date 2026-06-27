@@ -94,6 +94,7 @@ const ROUTES = {
   contentCtaOwnerReviewGate: "/dashboard/networks/zodiac/content-cta-owner-review-gate",
   launchSimulationStatusReport: "/dashboard/networks/zodiac/launch-simulation-status-report",
   softLaunchOwnerGoNoGoGate: "/dashboard/networks/zodiac/soft-launch-owner-go-no-go-gate",
+  aphroditeMiniappVisualDesignAudit: "/dashboard/networks/zodiac/aphrodite-miniapp-visual-design-audit",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -1331,6 +1332,26 @@ async function main() {
     assertIncludes(pages.softLaunchOwnerGoNoGoGate, "rollback plan understood", "soft launch rollback plan");
     assertIncludes(pages.softLaunchOwnerGoNoGoGate, "owner explicit approval", "soft launch owner approval");
     assertIncludes(pages.softLaunchOwnerGoNoGoGate, "autoApprovalAdded", "soft launch no auto approval flag");
+    assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "Aphrodite Mini App Visual Design Audit", "aphrodite visual design audit title");
+    assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "current Mini App visual status", "aphrodite visual audit current status");
+    assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "screen-by-screen findings", "aphrodite visual audit screens");
+    assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "top UX/design issues", "aphrodite visual audit issues");
+    assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "recommended design principles", "aphrodite visual audit principles");
+    assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "prioritized redesign roadmap", "aphrodite visual audit roadmap");
+    assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "Mini App home screen", "aphrodite visual audit home");
+    assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "Compatibility input flow", "aphrodite visual audit compatibility input");
+    assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "Compatibility result flow", "aphrodite visual audit compatibility result");
+    assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "Birth Matrix / Natal flow", "aphrodite visual audit birth matrix");
+    assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "Mystic Cards flow", "aphrodite visual audit mystic cards");
+    assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "VIP locked / preview state", "aphrodite visual audit vip locked");
+    assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "premium relationship astrology", "aphrodite visual audit premium");
+    assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "mobile-first 360-430px", "aphrodite visual audit mobile first");
+    assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "Telegram WebView safe-area friendly", "aphrodite visual audit webview");
+    assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "Package 237 - Aphrodite Design System", "aphrodite visual audit package 237");
+    assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "Package 245 - Visual QA Screenshot Pack", "aphrodite visual audit package 245");
+    assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "miniAppScreensRedesigned", "aphrodite visual audit no redesign flag");
+    assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "publicLaunchApproved", "aphrodite visual audit launch flag");
+    assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "ownerManualReviewRequired", "aphrodite visual audit owner review flag");
     assertIncludes(pages.productCopyFinalPolish, "Финальная полировка текстов Aphrodite", "product copy polish title");
     assertIncludes(pages.productCopyFinalPolish, "Только copy polish", "product copy polish classification");
     assertIncludes(pages.productCopyFinalPolish, "Copy polish не включает оплату", "product copy polish no payment");
