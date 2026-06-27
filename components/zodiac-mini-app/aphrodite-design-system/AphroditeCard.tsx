@@ -20,7 +20,7 @@ export function AphroditeCard({ children, tone = "cosmic", className }: Aphrodit
   return (
     <article
       className={aphroditeClassNames(
-        "rounded-lg border p-4 backdrop-blur-md",
+        "min-w-0 max-w-full overflow-hidden rounded-lg border p-3 backdrop-blur-md min-[390px]:p-4",
         toneClassNames[tone],
         className,
       )}

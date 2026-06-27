@@ -46,7 +46,7 @@ export function StepProgress({ publicMode, step }: { publicMode: boolean; step: 
 
 export function ModeSelector({ publicMode, mode, onChange }: { publicMode: boolean; mode: Mode; onChange: (mode: Mode) => void }) {
   return (
-    <section className="grid grid-cols-3 gap-2" data-aphrodite-compatibility-mode-selector="package-239">
+    <section className="grid grid-cols-1 gap-2 min-[390px]:grid-cols-3" data-aphrodite-compatibility-mode-selector="package-239">
       {modes.map((item) => (
         <button
           key={item.id}
@@ -54,16 +54,16 @@ export function ModeSelector({ publicMode, mode, onChange }: { publicMode: boole
           onClick={() => onChange(item.id)}
           className={
             publicMode
-              ? `min-w-0 rounded-lg border px-2.5 py-3 text-center text-xs shadow-sm transition ${
+                ? `aphrodite-touch-target min-w-0 rounded-lg border px-2.5 py-3 text-center text-xs shadow-sm transition ${
                   mode === item.id ? "border-amber-200/70 bg-amber-200/15 text-amber-50 shadow-amber-950/20" : "border-white/10 bg-white/[0.065] text-slate-300 hover:border-fuchsia-200/40 hover:bg-white/[0.085]"
                 }`
-              : `min-w-0 rounded-lg border px-2.5 py-3 text-center text-xs shadow-sm transition ${
+                : `aphrodite-touch-target min-w-0 rounded-lg border px-2.5 py-3 text-center text-xs shadow-sm transition ${
                   mode === item.id ? "border-violet-300 bg-violet-50 text-violet-900" : "border-slate-200 bg-white text-slate-700 hover:border-cyan-200"
                 }`
           }
         >
-          <span className="block font-semibold">{item.label}</span>
-          <span className="mt-1 block leading-snug">{item.caption}</span>
+          <span className="aphrodite-wrap-anywhere block font-semibold">{item.label}</span>
+          <span className="aphrodite-wrap-anywhere mt-1 block leading-snug">{item.caption}</span>
         </button>
       ))}
     </section>
@@ -72,7 +72,7 @@ export function ModeSelector({ publicMode, mode, onChange }: { publicMode: boole
 
 export function RelationshipModeSelector({ publicMode, mode, onChange }: { publicMode: boolean; mode: RelationshipMode; onChange: (mode: RelationshipMode) => void }) {
   return (
-    <section className="grid grid-cols-2 gap-2 sm:grid-cols-3" data-aphrodite-compatibility-relationship-selector="package-239">
+    <section className="grid grid-cols-1 gap-2 min-[390px]:grid-cols-2 sm:grid-cols-3" data-aphrodite-compatibility-relationship-selector="package-239">
       {relationshipModes.map((item) => (
         <button
           key={item.id}
@@ -80,16 +80,16 @@ export function RelationshipModeSelector({ publicMode, mode, onChange }: { publi
           onClick={() => onChange(item.id)}
           className={
             publicMode
-              ? `min-w-0 rounded-lg border px-2.5 py-3 text-left text-xs shadow-sm transition ${
+                ? `aphrodite-touch-target min-w-0 rounded-lg border px-2.5 py-3 text-left text-xs shadow-sm transition ${
                   mode === item.id ? "border-rose-200/70 bg-rose-200/15 text-rose-50 shadow-rose-950/20" : "border-white/10 bg-white/[0.065] text-slate-300 hover:border-rose-200/40 hover:bg-white/[0.085]"
                 }`
-              : `min-w-0 rounded-lg border px-2.5 py-3 text-left text-xs shadow-sm transition ${
+                : `aphrodite-touch-target min-w-0 rounded-lg border px-2.5 py-3 text-left text-xs shadow-sm transition ${
                   mode === item.id ? "border-rose-300 bg-rose-50 text-rose-900" : "border-slate-200 bg-white text-slate-700 hover:border-rose-200"
                 }`
           }
         >
-          <span className="block font-semibold">{item.label}</span>
-          <span className="mt-1 block leading-snug">{item.caption}</span>
+          <span className="aphrodite-wrap-anywhere block font-semibold">{item.label}</span>
+          <span className="aphrodite-wrap-anywhere mt-1 block leading-snug">{item.caption}</span>
         </button>
       ))}
     </section>
@@ -109,7 +109,7 @@ export function WizardCard({ publicMode, stepLabel, title, children }: { publicM
       <div className="mb-5 flex items-center justify-between gap-3">
         <div className="min-w-0">
           <p className={publicMode ? "text-xs font-semibold text-amber-100" : "text-xs font-semibold text-violet-700"}>{stepLabel}</p>
-          <h2 className={publicMode ? "mt-1 text-xl font-semibold text-white" : "mt-1 text-xl font-semibold text-slate-950"}>{title}</h2>
+          <h2 className={publicMode ? "aphrodite-wrap-anywhere mt-1 text-xl font-semibold text-white" : "aphrodite-wrap-anywhere mt-1 text-xl font-semibold text-slate-950"}>{title}</h2>
         </div>
         <span
           className={
@@ -128,32 +128,32 @@ export function WizardCard({ publicMode, stepLabel, title, children }: { publicM
 
 export function primaryButtonClass(publicMode: boolean) {
   return publicMode
-    ? "inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg border border-amber-100/45 bg-gradient-to-r from-fuchsia-500 via-rose-500 to-amber-400 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-rose-950/30 transition hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-amber-200/45"
-    : "inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg border border-violet-500 bg-violet-600 px-4 text-sm font-semibold text-white transition hover:bg-violet-700";
+    ? "aphrodite-touch-target inline-flex w-full items-center justify-center gap-2 rounded-lg border border-amber-100/45 bg-gradient-to-r from-fuchsia-500 via-rose-500 to-amber-400 px-4 py-3 text-center text-sm font-semibold text-white shadow-lg shadow-rose-950/30 transition hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-amber-200/45"
+    : "aphrodite-touch-target inline-flex w-full items-center justify-center gap-2 rounded-lg border border-violet-500 bg-violet-600 px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-violet-700";
 }
 
 export function secondaryButtonClass(publicMode: boolean) {
   return publicMode
-    ? "inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg border border-white/15 bg-white/8 px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/12 focus:outline-none focus:ring-2 focus:ring-white/20"
-    : "inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-50";
+    ? "aphrodite-touch-target inline-flex w-full items-center justify-center gap-2 rounded-lg border border-white/15 bg-white/8 px-4 py-3 text-center text-sm font-semibold text-slate-100 transition hover:bg-white/12 focus:outline-none focus:ring-2 focus:ring-white/20"
+    : "aphrodite-touch-target inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-3 text-center text-sm font-semibold text-slate-700 transition hover:bg-slate-50";
 }
 
 export function primaryTinyButtonClass(publicMode: boolean) {
   return publicMode
-    ? "rounded-lg border border-amber-200/55 bg-amber-200/15 px-3 py-2 text-xs font-semibold text-amber-50"
-    : "rounded-lg border border-violet-300 bg-violet-50 px-3 py-2 text-xs font-semibold text-violet-900";
+    ? "aphrodite-touch-target rounded-lg border border-amber-200/55 bg-amber-200/15 px-3 py-2 text-xs font-semibold text-amber-50"
+    : "aphrodite-touch-target rounded-lg border border-violet-300 bg-violet-50 px-3 py-2 text-xs font-semibold text-violet-900";
 }
 
 export function secondaryTinyButtonClass(publicMode: boolean) {
   return publicMode
-    ? "rounded-lg border border-white/12 bg-white/8 px-3 py-2 text-xs font-semibold text-slate-200"
-    : "rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700";
+    ? "aphrodite-touch-target rounded-lg border border-white/12 bg-white/8 px-3 py-2 text-xs font-semibold text-slate-200"
+    : "aphrodite-touch-target rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700";
 }
 
 export function Field({ label, publicMode, children }: { label: string; publicMode?: boolean; children: ReactNode }) {
   return (
-    <label className="block">
-      <span className={publicMode ? "mb-1.5 block text-sm font-semibold text-slate-100" : "mb-1.5 block text-sm font-semibold text-slate-700"}>{label}</span>
+    <label className="block min-w-0">
+      <span className={publicMode ? "aphrodite-wrap-anywhere mb-1.5 block text-sm font-semibold text-slate-100" : "aphrodite-wrap-anywhere mb-1.5 block text-sm font-semibold text-slate-700"}>{label}</span>
       {children}
     </label>
   );

@@ -63,9 +63,10 @@ export default function MiniAppHubPage() {
   return (
     <main
       data-aphrodite-miniapp-entry-redesign="package-238"
-      className="min-h-screen overflow-x-hidden bg-[#070713] px-3 py-4 text-[#fff7ed] sm:px-5 sm:py-6"
+      data-aphrodite-telegram-webview-mobile-polish="package-244"
+      className="aphrodite-mobile-shell zodiac-miniapp-safe-area bg-[#070713] px-3 py-4 text-[#fff7ed] sm:px-5 sm:py-6"
     >
-      <div className="mx-auto max-w-md space-y-4 pb-[calc(28px+env(safe-area-inset-bottom))]">
+      <div className="aphrodite-scroll-safe aphrodite-safe-bottom mx-auto max-w-md space-y-4">
         <AphroditeSurface className="border-rose-200/20">
           <div className="space-y-4">
             <div className="flex flex-wrap items-center gap-2">
@@ -74,10 +75,10 @@ export default function MiniAppHubPage() {
             </div>
 
             <section className="space-y-3">
-              <h1 className="break-words text-3xl font-semibold leading-9 text-white">
+              <h1 className="aphrodite-wrap-anywhere text-3xl font-semibold leading-9 text-white">
                 Узнайте, что между вами сейчас
               </h1>
-              <p className="text-sm leading-6 text-slate-200">
+              <p className="aphrodite-wrap-anywhere text-sm leading-6 text-slate-200">
                 Совместимость пары, Матрица судьбы и мистическая карта собраны в одном спокойном Mini App
                 экране: романтично, понятно и без дешевой тревожности.
               </p>
@@ -85,7 +86,7 @@ export default function MiniAppHubPage() {
 
             <Link
               href="/compatibility?startapp=compat_love"
-              className="flex min-h-[58px] w-full items-center justify-between gap-3 rounded-lg border border-amber-100/35 bg-[linear-gradient(135deg,#fb7185,#f6d58a)] px-4 py-3 text-left text-[#190914] shadow-[0_16px_44px_rgba(251,113,133,0.28)] transition hover:border-amber-100/60 focus:outline-none focus:ring-2 focus:ring-amber-100/55"
+              className="aphrodite-touch-target flex min-h-[58px] w-full items-center justify-between gap-3 rounded-lg border border-amber-100/35 bg-[linear-gradient(135deg,#fb7185,#f6d58a)] px-4 py-3 text-left text-[#190914] shadow-[0_16px_44px_rgba(251,113,133,0.28)] transition hover:border-amber-100/60 focus:outline-none focus:ring-2 focus:ring-amber-100/55"
             >
               <span className="min-w-0">
                 <span className="block text-sm font-semibold leading-5">Проверить совместимость</span>
@@ -101,7 +102,7 @@ export default function MiniAppHubPage() {
                 <Link
                   key={cta.title}
                   href={cta.href}
-                  className="min-h-[118px] rounded-lg border border-white/12 bg-white/[0.065] p-3 text-left shadow-[0_14px_44px_rgba(8,13,30,0.28)] transition hover:border-rose-200/35 hover:bg-white/[0.095] focus:outline-none focus:ring-2 focus:ring-amber-200/45"
+                  className="aphrodite-touch-target min-h-[118px] min-w-0 rounded-lg border border-white/12 bg-white/[0.065] p-3 text-left shadow-[0_14px_44px_rgba(8,13,30,0.28)] transition hover:border-rose-200/35 hover:bg-white/[0.095] focus:outline-none focus:ring-2 focus:ring-amber-200/45"
                 >
                   <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/15 bg-white/[0.08] text-amber-100">
                     <cta.icon className="h-5 w-5" aria-hidden="true" />
@@ -162,7 +163,7 @@ export default function MiniAppHubPage() {
           </div>
         </AphroditeCard>
 
-        <footer className="flex items-center justify-center gap-2 px-3 pb-[env(safe-area-inset-bottom)] text-center text-[11px] leading-5 text-slate-500">
+        <footer className="flex flex-wrap items-center justify-center gap-2 px-3 pb-[env(safe-area-inset-bottom)] text-center text-[11px] leading-5 text-slate-500">
           <Heart className="h-3.5 w-3.5 text-rose-300" aria-hidden="true" />
           <span>Нижние отступы сохранены для Telegram WebView.</span>
           <Star className="h-3.5 w-3.5 text-amber-200" aria-hidden="true" />

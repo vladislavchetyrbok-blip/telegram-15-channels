@@ -37,3 +37,63 @@ a {
     linear-gradient(90deg, rgba(148, 163, 184, 0.06) 1px, transparent 1px);
   background-size: 32px 32px;
 }
+
+@layer utilities {
+  .aphrodite-mobile-shell {
+    min-height: 100vh;
+    min-height: 100svh;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+    overscroll-behavior-y: contain;
+    touch-action: manipulation;
+  }
+
+  .aphrodite-scroll-safe {
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .aphrodite-safe-top {
+    padding-top: calc(1rem + env(safe-area-inset-top, 0px));
+  }
+
+  .aphrodite-safe-bottom {
+    padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .zodiac-miniapp-safe-area {
+    --zma-safe-area-top: env(safe-area-inset-top, 0px);
+    --zma-safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .aphrodite-touch-target {
+    min-height: 48px;
+    min-width: 48px;
+  }
+
+  .aphrodite-wrap-anywhere {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+  .zodiac-miniapp-horizontal-scroll {
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .aphrodite-mobile-shell *,
+    .zodiac-miniapp-safe-area * {
+      scroll-behavior: auto !important;
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+    }
+  }
+}

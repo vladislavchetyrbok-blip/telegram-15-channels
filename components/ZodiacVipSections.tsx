@@ -154,19 +154,19 @@ function VipCardButton({
       onClick={onClick}
       className={
         publicMode
-          ? `flex min-h-[88px] w-full flex-col justify-center rounded-lg border p-3 text-left transition focus:outline-none focus:ring-2 focus:ring-amber-200/40 ${
+          ? `aphrodite-touch-target flex min-h-[88px] w-full min-w-0 flex-col justify-center rounded-lg border p-3 text-left transition focus:outline-none focus:ring-2 focus:ring-amber-200/40 ${
               locked ? "border-white/5 bg-white/5 opacity-60" : "border-white/10 bg-white/10 hover:border-amber-200/35 hover:bg-white/10"
             }`
-          : `flex min-h-[88px] w-full flex-col justify-center rounded-lg border p-3 text-left transition focus:outline-none focus:ring-2 focus:ring-amber-200 ${
+          : `aphrodite-touch-target flex min-h-[88px] w-full min-w-0 flex-col justify-center rounded-lg border p-3 text-left transition focus:outline-none focus:ring-2 focus:ring-amber-200 ${
               locked ? "border-slate-200 bg-slate-50 opacity-60" : "border-amber-100 bg-white hover:border-amber-300"
             }`
       }
     >
-      <div className="flex items-center gap-2">
+      <div className="flex min-w-0 items-center gap-2">
         <Icon className={publicMode ? "h-4 w-4 text-amber-200" : "h-4 w-4 text-amber-500"} />
-        <p className={publicMode ? "text-sm font-semibold text-white" : "text-sm font-semibold text-slate-950"}>{title}</p>
+        <p className={publicMode ? "aphrodite-wrap-anywhere text-sm font-semibold text-white" : "aphrodite-wrap-anywhere text-sm font-semibold text-slate-950"}>{title}</p>
       </div>
-      <p className={publicMode ? "mt-1.5 text-xs leading-5 text-slate-300" : "mt-1.5 text-xs leading-5 text-slate-600"}>{text}</p>
+      <p className={publicMode ? "aphrodite-wrap-anywhere mt-1.5 text-xs leading-5 text-slate-300" : "aphrodite-wrap-anywhere mt-1.5 text-xs leading-5 text-slate-600"}>{text}</p>
     </button>
   );
 }
@@ -242,12 +242,12 @@ export function VipMenuCard({
 
 function VipScreenLayout({ publicMode, title, onBack, children }: { publicMode: boolean; title: string; onBack: () => void; children: ReactNode }) {
   return (
-    <div className={publicMode ? "rounded-lg border border-amber-200/20 bg-black/40 p-4" : "rounded-lg border border-slate-200 bg-white p-4 shadow-sm"}>
-      <div className="mb-4 flex items-center gap-3">
-        <button type="button" onClick={onBack} className={publicMode ? "rounded-full p-2 text-white hover:bg-white/10" : "rounded-full p-2 text-slate-700 hover:bg-slate-100"}>
+    <div className={publicMode ? "min-w-0 rounded-lg border border-amber-200/20 bg-black/40 p-3 min-[390px]:p-4" : "min-w-0 rounded-lg border border-slate-200 bg-white p-3 shadow-sm min-[390px]:p-4"}>
+      <div className="mb-4 flex min-w-0 items-center gap-3">
+        <button type="button" onClick={onBack} className={publicMode ? "aphrodite-touch-target rounded-full p-2 text-white hover:bg-white/10" : "aphrodite-touch-target rounded-full p-2 text-slate-700 hover:bg-slate-100"}>
           <ArrowLeft className="h-5 w-5" />
         </button>
-        <h2 className={publicMode ? "text-lg font-bold text-amber-200" : "text-lg font-bold text-slate-900"}>{title}</h2>
+        <h2 className={publicMode ? "aphrodite-wrap-anywhere text-lg font-bold text-amber-200" : "aphrodite-wrap-anywhere text-lg font-bold text-slate-900"}>{title}</h2>
       </div>
       <div className="space-y-4">{children}</div>
     </div>
@@ -834,7 +834,7 @@ function NatalResultTabs({
   onTabChange: (tab: NatalResultTabId) => void;
 }) {
   return (
-    <div className="overflow-x-auto pb-1" data-premium-natal-tabs>
+    <div className="zodiac-miniapp-horizontal-scroll pb-1" data-premium-natal-tabs>
       <div className="flex min-w-max gap-2">
         {natalResultTabs.map((tab) => {
           const active = tab.id === activeTab;
@@ -847,8 +847,8 @@ function NatalResultTabs({
               onClick={() => onTabChange(tab.id)}
               className={
                 publicMode
-                  ? `min-h-[54px] rounded-lg border px-3 py-2 text-left transition focus:outline-none focus:ring-2 focus:ring-amber-200/40 ${active ? "border-amber-200/45 bg-amber-200/16 text-white" : "border-white/10 bg-white/5 text-slate-300"}`
-                  : `min-h-[54px] rounded-lg border px-3 py-2 text-left transition focus:outline-none focus:ring-2 focus:ring-amber-300 ${active ? "border-amber-300 bg-amber-100 text-slate-950" : "border-slate-200 bg-white text-slate-700"}`
+                  ? `aphrodite-touch-target min-h-[54px] rounded-lg border px-3 py-2 text-left transition focus:outline-none focus:ring-2 focus:ring-amber-200/40 ${active ? "border-amber-200/45 bg-amber-200/16 text-white" : "border-white/10 bg-white/5 text-slate-300"}`
+                  : `aphrodite-touch-target min-h-[54px] rounded-lg border px-3 py-2 text-left transition focus:outline-none focus:ring-2 focus:ring-amber-300 ${active ? "border-amber-300 bg-amber-100 text-slate-950" : "border-slate-200 bg-white text-slate-700"}`
               }
             >
               <span className="block text-sm font-semibold">{tab.label}</span>

@@ -20,12 +20,12 @@ export function AphroditeBadge({ children, tone = "cosmic", className }: Aphrodi
   return (
     <span
       className={aphroditeClassNames(
-        "inline-flex max-w-full items-center rounded-md border px-2.5 py-1 text-[11px] font-medium leading-4",
+        "inline-flex min-w-0 max-w-full items-center rounded-md border px-2.5 py-1 text-[11px] font-medium leading-4",
         toneClassNames[tone],
         className,
       )}
     >
-      <span className="break-words">{children}</span>
+      <span className="aphrodite-wrap-anywhere break-words">{children}</span>
     </span>
   );
 }

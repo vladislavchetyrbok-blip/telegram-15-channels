@@ -87,22 +87,22 @@ export function AphroditeShareCard({
           variantAccent[variant],
         )}
       >
-        <div className="relative space-y-4 p-4">
-          <div className="flex items-start justify-between gap-3">
+        <div className="relative min-w-0 space-y-4 p-3 min-[390px]:p-4">
+          <div className="flex min-w-0 flex-col gap-3 min-[390px]:flex-row min-[390px]:items-start min-[390px]:justify-between">
             <div className="min-w-0 space-y-2">
               <div className="flex flex-wrap gap-2">
                 <AphroditeBadge tone="gold">share-ready preview</AphroditeBadge>
                 <AphroditeBadge tone={variantTone[variant]}>{eyebrow}</AphroditeBadge>
               </div>
               <div>
-                <h3 className="break-words text-xl font-semibold leading-7 text-[#fff7ed] [overflow-wrap:anywhere]">{title}</h3>
-                {subtitle ? <p className="mt-1 break-words text-sm leading-5 text-slate-300 [overflow-wrap:anywhere]">{subtitle}</p> : null}
+                <h3 className="aphrodite-wrap-anywhere break-words text-xl font-semibold leading-7 text-[#fff7ed] [overflow-wrap:anywhere]">{title}</h3>
+                {subtitle ? <p className="aphrodite-wrap-anywhere mt-1 break-words text-sm leading-5 text-slate-300 [overflow-wrap:anywhere]">{subtitle}</p> : null}
               </div>
             </div>
-            <div className="grid h-16 w-16 shrink-0 place-items-center rounded-lg border border-amber-100/25 bg-black/25 text-center">
+            <div className="grid h-16 w-16 shrink-0 place-items-center self-start rounded-lg border border-amber-100/25 bg-black/25 text-center">
               <div>
-                <p className="text-lg font-semibold leading-5 text-amber-100">{scoreLabel ?? defaultScoreLabel[variant]}</p>
-                <p className="mt-1 text-[10px] font-semibold uppercase leading-3 text-amber-100/70">{scoreDetail}</p>
+                <p className="aphrodite-wrap-anywhere text-lg font-semibold leading-5 text-amber-100">{scoreLabel ?? defaultScoreLabel[variant]}</p>
+                <p className="aphrodite-wrap-anywhere mt-1 text-[10px] font-semibold uppercase leading-3 text-amber-100/70">{scoreDetail}</p>
               </div>
             </div>
           </div>
@@ -110,16 +110,16 @@ export function AphroditeShareCard({
           <div className="rounded-lg border border-white/10 bg-black/18 p-3">
             <div className="flex items-start gap-2">
               <HeartHandshake aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-rose-200" />
-              <p className="break-words text-sm leading-6 text-slate-100 [overflow-wrap:anywhere]">{insight}</p>
+              <p className="aphrodite-wrap-anywhere break-words text-sm leading-6 text-slate-100 [overflow-wrap:anywhere]">{insight}</p>
             </div>
           </div>
 
           {highlights.length ? (
-            <div className="grid gap-2 min-[390px]:grid-cols-3">
+            <div className="grid gap-2 min-[430px]:grid-cols-3">
               {highlights.map((item) => (
-                <div key={`${item.label}-${item.value}`} className="rounded-lg border border-white/10 bg-white/[0.06] px-3 py-2">
+                <div key={`${item.label}-${item.value}`} className="min-w-0 rounded-lg border border-white/10 bg-white/[0.06] px-3 py-2">
                   <p className="text-[11px] font-semibold uppercase leading-4 text-slate-300">{item.label}</p>
-                  <p className="mt-1 break-words text-sm font-semibold leading-5 text-[#fff7ed] [overflow-wrap:anywhere]">{item.value}</p>
+                  <p className="aphrodite-wrap-anywhere mt-1 break-words text-sm font-semibold leading-5 text-[#fff7ed] [overflow-wrap:anywhere]">{item.value}</p>
                   {item.detail ? <p className="mt-1 line-clamp-2 text-xs leading-4 text-slate-400">{item.detail}</p> : null}
                 </div>
               ))}
@@ -128,7 +128,7 @@ export function AphroditeShareCard({
 
           <div className="flex items-start gap-2 rounded-lg border border-emerald-200/20 bg-emerald-200/10 px-3 py-2 text-xs leading-5 text-emerald-50">
             <Share2 aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-emerald-100" />
-            <span>{footer}</span>
+            <span className="aphrodite-wrap-anywhere">{footer}</span>
           </div>
 
           <div className="flex flex-wrap gap-2" aria-hidden="true">

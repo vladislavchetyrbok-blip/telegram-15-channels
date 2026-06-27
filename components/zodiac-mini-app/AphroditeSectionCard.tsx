@@ -29,16 +29,16 @@ export function AphroditeSectionCard({
   className = "",
 }: AphroditeSectionCardProps) {
   return (
-    <section className={`rounded-lg border p-4 ${toneClasses[tone]} ${className}`}>
-      <div className="flex items-start justify-between gap-3">
+    <section className={`min-w-0 max-w-full overflow-hidden rounded-lg border p-3 min-[390px]:p-4 ${toneClasses[tone]} ${className}`}>
+      <div className="flex min-w-0 items-start justify-between gap-3">
         <div className="min-w-0 space-y-1">
-          {eyebrow ? <p className="text-xs font-medium text-rose-200">{eyebrow}</p> : null}
-          <h2 className="text-base font-semibold leading-6 text-white">{title}</h2>
-          {description ? <p className="text-sm leading-6 text-slate-300">{description}</p> : null}
+          {eyebrow ? <p className="aphrodite-wrap-anywhere text-xs font-medium text-rose-200">{eyebrow}</p> : null}
+          <h2 className="aphrodite-wrap-anywhere text-base font-semibold leading-6 text-white">{title}</h2>
+          {description ? <p className="aphrodite-wrap-anywhere text-sm leading-6 text-slate-300">{description}</p> : null}
         </div>
         {actionSlot ? <div className="shrink-0">{actionSlot}</div> : null}
       </div>
-      {children ? <div className="mt-4">{children}</div> : null}
+      {children ? <div className="mt-4 min-w-0">{children}</div> : null}
     </section>
   );
 }

@@ -57,14 +57,14 @@ export function ResultPanel({
   }
 
   return (
-    <div className="min-w-0 space-y-4" data-aphrodite-compatibility-result="package-239">
+    <div className="min-w-0 max-w-full space-y-4" data-aphrodite-compatibility-result="package-239">
       <div
         data-aphrodite-compatibility-score-card="package-239"
         data-aphrodite-compatibility-shareable-result="package-239"
         className={
           publicMode
-            ? "overflow-hidden rounded-lg border border-amber-200/20 bg-[radial-gradient(circle_at_top_right,rgba(246,213,138,0.18),transparent_32%),linear-gradient(135deg,rgba(217,70,239,0.14),rgba(244,63,94,0.12),rgba(251,191,36,0.1))] p-4 text-white shadow-[0_24px_70px_rgba(0,0,0,0.28)]"
-            : "overflow-hidden rounded-lg border border-violet-100 bg-gradient-to-br from-white via-violet-50 to-amber-50 p-4 text-slate-950 shadow-sm"
+            ? "min-w-0 max-w-full overflow-hidden rounded-lg border border-amber-200/20 bg-[radial-gradient(circle_at_top_right,rgba(246,213,138,0.18),transparent_32%),linear-gradient(135deg,rgba(217,70,239,0.14),rgba(244,63,94,0.12),rgba(251,191,36,0.1))] p-3 text-white shadow-[0_24px_70px_rgba(0,0,0,0.28)] min-[390px]:p-4"
+            : "min-w-0 max-w-full overflow-hidden rounded-lg border border-violet-100 bg-gradient-to-br from-white via-violet-50 to-amber-50 p-3 text-slate-950 shadow-sm min-[390px]:p-4"
         }
       >
         <div className="flex flex-wrap items-center gap-2">
@@ -85,7 +85,7 @@ export function ResultPanel({
           <RelationshipScoreRing publicMode={publicMode} value={result.scores.total} label={levelLabel} style={scoreStyle} />
         </div>
 
-        <div className="mt-4 grid gap-2 sm:grid-cols-3">
+        <div className="mt-4 grid gap-2 min-[430px]:grid-cols-3">
           {scoreHighlights.map((item) => (
             <QuickMetric key={item.label} publicMode={publicMode} label={item.label} value={item.value} text={item.text} />
           ))}
@@ -132,7 +132,7 @@ export function ResultPanel({
         </div>
       </div>
 
-      <div className={publicMode ? "sticky top-2 z-10 -mx-1 overflow-x-auto rounded-lg border border-white/10 bg-slate-950/88 p-1 backdrop-blur" : "sticky top-2 z-10 -mx-1 overflow-x-auto rounded-lg border border-slate-200 bg-white/95 p-1 shadow-sm backdrop-blur"}>
+      <div className={publicMode ? "zodiac-miniapp-horizontal-scroll sticky top-2 z-10 -mx-1 rounded-lg border border-white/10 bg-slate-950/88 p-1 backdrop-blur" : "zodiac-miniapp-horizontal-scroll sticky top-2 z-10 -mx-1 rounded-lg border border-slate-200 bg-white/95 p-1 shadow-sm backdrop-blur"}>
         <div className="flex min-w-max gap-1">
           {[
             ["#relationship-overview", "Обзор"],
@@ -143,7 +143,7 @@ export function ResultPanel({
             ["#relationship-message", "Что написать"],
             ["#relationship-action", "Действие сегодня"],
           ].map(([href, label]) => (
-            <a key={href} href={href} className={publicMode ? "rounded-md px-3 py-2 text-xs font-semibold text-slate-200 transition hover:bg-white/10 hover:text-white" : "rounded-md px-3 py-2 text-xs font-semibold text-slate-600 transition hover:bg-violet-50 hover:text-violet-900"}>
+            <a key={href} href={href} className={publicMode ? "aphrodite-touch-target rounded-md px-3 py-2 text-xs font-semibold text-slate-200 transition hover:bg-white/10 hover:text-white" : "aphrodite-touch-target rounded-md px-3 py-2 text-xs font-semibold text-slate-600 transition hover:bg-violet-50 hover:text-violet-900"}>
               {label}
             </a>
           ))}
@@ -261,24 +261,24 @@ function RelationshipScoreRing({ publicMode, value, label, style }: { publicMode
 
 function QuickMetric({ publicMode, label, value, text }: { publicMode: boolean; label: string; value: number; text: string }) {
   return (
-    <div className={publicMode ? "rounded-lg border border-white/12 bg-white/[0.07] p-3" : "rounded-lg border border-white/80 bg-white/85 p-3"}>
+    <div className={publicMode ? "min-w-0 max-w-full rounded-lg border border-white/12 bg-white/[0.07] p-3" : "min-w-0 max-w-full rounded-lg border border-white/80 bg-white/85 p-3"}>
       <div className="flex items-center justify-between gap-3">
-        <p className={publicMode ? "text-xs font-semibold text-slate-200" : "text-xs font-semibold text-slate-600"}>{label}</p>
+        <p className={publicMode ? "aphrodite-wrap-anywhere text-xs font-semibold text-slate-200" : "aphrodite-wrap-anywhere text-xs font-semibold text-slate-600"}>{label}</p>
         <span className={publicMode ? "rounded-md bg-white/10 px-2.5 py-1 text-xs font-semibold text-amber-100" : "rounded-md bg-violet-50 px-2.5 py-1 text-xs font-semibold text-violet-800"}>{value}%</span>
       </div>
       <div className={publicMode ? "mt-2 h-1.5 rounded-full bg-white/12" : "mt-2 h-1.5 rounded-full bg-slate-100"}>
         <div className={publicMode ? "h-1.5 rounded-full bg-gradient-to-r from-fuchsia-300 via-rose-300 to-amber-200" : "h-1.5 rounded-full bg-violet-500"} style={{ width: `${value}%` }} />
       </div>
-      <p className={publicMode ? "mt-2 line-clamp-2 text-xs leading-5 text-slate-300" : "mt-2 line-clamp-2 text-xs leading-5 text-slate-600"}>{text}</p>
+      <p className={publicMode ? "aphrodite-wrap-anywhere mt-2 line-clamp-2 text-xs leading-5 text-slate-300" : "aphrodite-wrap-anywhere mt-2 line-clamp-2 text-xs leading-5 text-slate-600"}>{text}</p>
     </div>
   );
 }
 
 export function ScoreBar({ publicMode, label, value, text }: { publicMode: boolean; label: string; value: number; text: string }) {
   return (
-    <div className={publicMode ? "rounded-lg border border-white/12 bg-white/8 p-3 text-slate-100" : "rounded-lg border border-slate-200 bg-white p-3 text-slate-700"}>
+    <div className={publicMode ? "min-w-0 max-w-full rounded-lg border border-white/12 bg-white/8 p-3 text-slate-100" : "min-w-0 max-w-full rounded-lg border border-slate-200 bg-white p-3 text-slate-700"}>
       <div className="flex items-center justify-between gap-3">
-        <span className="text-sm font-semibold">{label}</span>
+        <span className="aphrodite-wrap-anywhere text-sm font-semibold">{label}</span>
         <span className={publicMode ? "text-sm font-semibold text-amber-100" : "text-sm font-semibold text-violet-700"}>{value}%</span>
       </div>
       <div className={publicMode ? "mt-2 h-2 rounded-full bg-white/12" : "mt-2 h-2 rounded-full bg-slate-100"}>
@@ -287,28 +287,28 @@ export function ScoreBar({ publicMode, label, value, text }: { publicMode: boole
           style={{ width: `${value}%` }}
         />
       </div>
-      <p className={publicMode ? "mt-2 text-sm leading-5 text-slate-300" : "mt-2 text-sm leading-5 text-slate-600"}>{text}</p>
+      <p className={publicMode ? "aphrodite-wrap-anywhere mt-2 text-sm leading-5 text-slate-300" : "aphrodite-wrap-anywhere mt-2 text-sm leading-5 text-slate-600"}>{text}</p>
     </div>
   );
 }
 
 export function ResultTextCard({ publicMode, title, text }: { publicMode: boolean; title: string; text: string }) {
   return (
-    <div className={publicMode ? "rounded-lg border border-white/12 bg-white/8 p-3 text-slate-100" : "rounded-lg border border-slate-200 bg-white p-3 text-slate-700"}>
-      <p className={publicMode ? "text-sm font-semibold text-amber-100" : "text-sm font-semibold text-violet-800"}>{title}</p>
-      <p className={publicMode ? "mt-2 text-sm leading-5 text-slate-300" : "mt-2 text-sm leading-5 text-slate-600"}>{text}</p>
+    <div className={publicMode ? "min-w-0 max-w-full rounded-lg border border-white/12 bg-white/8 p-3 text-slate-100" : "min-w-0 max-w-full rounded-lg border border-slate-200 bg-white p-3 text-slate-700"}>
+      <p className={publicMode ? "aphrodite-wrap-anywhere text-sm font-semibold text-amber-100" : "aphrodite-wrap-anywhere text-sm font-semibold text-violet-800"}>{title}</p>
+      <p className={publicMode ? "aphrodite-wrap-anywhere mt-2 text-sm leading-5 text-slate-300" : "aphrodite-wrap-anywhere mt-2 text-sm leading-5 text-slate-600"}>{text}</p>
     </div>
   );
 }
 
 function ResultSectionCard({ id, publicMode, title, icon, children }: { id: string; publicMode: boolean; title: string; icon: ReactNode; children: ReactNode }) {
   return (
-    <section id={id} className={publicMode ? "scroll-mt-24 rounded-lg border border-white/12 bg-white/[0.065] p-4 text-slate-100" : "scroll-mt-24 rounded-lg border border-slate-200 bg-white p-4 text-slate-700"}>
+    <section id={id} className={publicMode ? "min-w-0 max-w-full scroll-mt-24 rounded-lg border border-white/12 bg-white/[0.065] p-3 text-slate-100 min-[390px]:p-4" : "min-w-0 max-w-full scroll-mt-24 rounded-lg border border-slate-200 bg-white p-3 text-slate-700 min-[390px]:p-4"}>
       <div className="flex items-center gap-2">
         <span className={publicMode ? "grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-white/12 bg-white/8 text-amber-100" : "grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-violet-100 bg-violet-50 text-violet-700"}>
           {icon}
         </span>
-        <h3 className={publicMode ? "text-base font-semibold text-white" : "text-base font-semibold text-slate-950"}>{title}</h3>
+        <h3 className={publicMode ? "aphrodite-wrap-anywhere text-base font-semibold text-white" : "aphrodite-wrap-anywhere text-base font-semibold text-slate-950"}>{title}</h3>
       </div>
       <div className="mt-3 grid gap-3">{children}</div>
     </section>
@@ -319,9 +319,9 @@ function ResultInsightGrid({ publicMode, items }: { publicMode: boolean; items: 
   return (
     <div className="grid gap-2">
       {items.map((item) => (
-        <div key={item.label} className={publicMode ? "rounded-md border border-white/10 bg-white/5 px-3 py-2" : "rounded-md border border-slate-100 bg-slate-50 px-3 py-2"}>
-          <p className={publicMode ? "text-xs font-semibold text-amber-100" : "text-xs font-semibold text-violet-800"}>{item.label}</p>
-          <p className={publicMode ? "mt-1 text-sm leading-5 text-slate-300" : "mt-1 text-sm leading-5 text-slate-600"}>{item.text}</p>
+        <div key={item.label} className={publicMode ? "min-w-0 rounded-md border border-white/10 bg-white/5 px-3 py-2" : "min-w-0 rounded-md border border-slate-100 bg-slate-50 px-3 py-2"}>
+          <p className={publicMode ? "aphrodite-wrap-anywhere text-xs font-semibold text-amber-100" : "aphrodite-wrap-anywhere text-xs font-semibold text-violet-800"}>{item.label}</p>
+          <p className={publicMode ? "aphrodite-wrap-anywhere mt-1 text-sm leading-5 text-slate-300" : "aphrodite-wrap-anywhere mt-1 text-sm leading-5 text-slate-600"}>{item.text}</p>
         </div>
       ))}
     </div>
@@ -334,11 +334,11 @@ function ResultText({ publicMode, text }: { publicMode: boolean; text: string })
 
 function ResultBulletList({ publicMode, items }: { publicMode: boolean; items: string[] }) {
   return (
-    <ul className="grid gap-2">
+    <ul className="grid min-w-0 gap-2">
       {items.map((item) => (
-        <li key={item} className={publicMode ? "flex gap-2 rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm leading-5 text-slate-200" : "flex gap-2 rounded-md border border-slate-100 bg-slate-50 px-3 py-2 text-sm leading-5 text-slate-700"}>
+        <li key={item} className={publicMode ? "flex min-w-0 gap-2 rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm leading-5 text-slate-200" : "flex min-w-0 gap-2 rounded-md border border-slate-100 bg-slate-50 px-3 py-2 text-sm leading-5 text-slate-700"}>
           <span className={publicMode ? "mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-200" : "mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-500"} />
-          <span>{item}</span>
+          <span className="aphrodite-wrap-anywhere">{item}</span>
         </li>
       ))}
     </ul>

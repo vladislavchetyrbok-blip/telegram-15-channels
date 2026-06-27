@@ -15,7 +15,7 @@ const toneClasses: Record<AphroditeStatusPillTone, string> = {
 
 export function AphroditeStatusPill({ label, tone = "muted", className = "" }: AphroditeStatusPillProps) {
   return (
-    <span className={`inline-flex items-center rounded-md border px-2.5 py-1 text-xs font-medium leading-4 ${toneClasses[tone]} ${className}`}>
+    <span className={`aphrodite-wrap-anywhere inline-flex min-w-0 max-w-full items-center rounded-md border px-2.5 py-1 text-xs font-medium leading-4 ${toneClasses[tone]} ${className}`}>
       {label}
     </span>
   );

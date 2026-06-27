@@ -1151,18 +1151,18 @@ function MysticCardsRitualFrame({
     <div
       className={
         publicMode
-          ? "overflow-hidden rounded-lg border border-violet-200/20 bg-[radial-gradient(circle_at_20%_0%,rgba(244,114,182,0.16),transparent_30%),linear-gradient(135deg,rgba(17,16,36,0.90),rgba(88,28,135,0.28),rgba(15,23,42,0.88))] p-4 shadow-[0_22px_70px_rgba(88,28,135,0.28)]"
-          : "overflow-hidden rounded-lg border border-violet-100 bg-gradient-to-br from-violet-50 via-rose-50 to-amber-50 p-4 shadow-sm"
+          ? "min-w-0 max-w-full overflow-hidden rounded-lg border border-violet-200/20 bg-[radial-gradient(circle_at_20%_0%,rgba(244,114,182,0.16),transparent_30%),linear-gradient(135deg,rgba(17,16,36,0.90),rgba(88,28,135,0.28),rgba(15,23,42,0.88))] p-3 shadow-[0_22px_70px_rgba(88,28,135,0.28)] min-[390px]:p-4"
+          : "min-w-0 max-w-full overflow-hidden rounded-lg border border-violet-100 bg-gradient-to-br from-violet-50 via-rose-50 to-amber-50 p-3 shadow-sm min-[390px]:p-4"
       }
       data-aphrodite-mystic-card-selection-frame="package-241"
     >
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           <AphroditeBadge tone="violet">{eyebrow}</AphroditeBadge>
-          <h3 className={publicMode ? "mt-3 text-xl font-semibold leading-7 text-white" : "mt-3 text-xl font-semibold leading-7 text-slate-950"}>{title}</h3>
-          <p className={publicMode ? "mt-2 text-sm leading-6 text-slate-200" : "mt-2 text-sm leading-6 text-slate-700"}>{body}</p>
+          <h3 className={publicMode ? "aphrodite-wrap-anywhere mt-3 text-xl font-semibold leading-7 text-white" : "aphrodite-wrap-anywhere mt-3 text-xl font-semibold leading-7 text-slate-950"}>{title}</h3>
+          <p className={publicMode ? "aphrodite-wrap-anywhere mt-2 text-sm leading-6 text-slate-200" : "aphrodite-wrap-anywhere mt-2 text-sm leading-6 text-slate-700"}>{body}</p>
         </div>
-        <div className="w-full shrink-0 sm:w-[168px]">{children}</div>
+        <div className="w-full min-w-0 shrink-0 sm:w-[168px]">{children}</div>
       </div>
       <div className="mt-4 flex flex-wrap gap-2" data-aphrodite-mystic-card-state="package-241">
         <AphroditeBadge tone="gold">closed card</AphroditeBadge>
@@ -1181,7 +1181,7 @@ function MysticClosedCardStack({
   cards: Array<{ label: string; detail: string; active?: boolean }>;
 }) {
   return (
-    <div className="grid grid-cols-2 gap-2" data-aphrodite-mystic-card-closed-state="package-241">
+    <div className="grid min-w-0 grid-cols-2 gap-2" data-aphrodite-mystic-card-closed-state="package-241">
       {cards.map((card) => (
         <div
           key={`${card.label}-${card.detail}`}
@@ -1189,11 +1189,11 @@ function MysticClosedCardStack({
           className={
             card.active
               ? publicMode
-                ? "min-h-[88px] rounded-lg border border-amber-100/30 bg-amber-100/14 p-3 text-center shadow-[0_12px_36px_rgba(251,191,36,0.12)]"
-                : "min-h-[88px] rounded-lg border border-amber-200 bg-white/80 p-3 text-center shadow-sm"
+                ? "min-h-[88px] min-w-0 rounded-lg border border-amber-100/30 bg-amber-100/14 p-3 text-center shadow-[0_12px_36px_rgba(251,191,36,0.12)]"
+                : "min-h-[88px] min-w-0 rounded-lg border border-amber-200 bg-white/80 p-3 text-center shadow-sm"
               : publicMode
-                ? "min-h-[88px] rounded-lg border border-white/10 bg-black/20 p-3 text-center"
-                : "min-h-[88px] rounded-lg border border-white bg-white/60 p-3 text-center"
+                ? "min-h-[88px] min-w-0 rounded-lg border border-white/10 bg-black/20 p-3 text-center"
+                : "min-h-[88px] min-w-0 rounded-lg border border-white bg-white/60 p-3 text-center"
           }
         >
           <div className={publicMode ? "mx-auto flex h-9 w-9 items-center justify-center rounded-lg border border-violet-200/20 bg-violet-200/10 text-sm font-semibold text-amber-100" : "mx-auto flex h-9 w-9 items-center justify-center rounded-lg border border-violet-100 bg-violet-50 text-sm font-semibold text-violet-800"}>

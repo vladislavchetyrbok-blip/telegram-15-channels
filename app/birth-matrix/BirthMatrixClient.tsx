@@ -162,17 +162,17 @@ export function BirthMatrixClient() {
       <div
         data-birth-matrix-dashboard-qa="Birth Matrix Static Mock (Package 103) Calculate Your Matrix No payment No database No Telegram API"
         data-aphrodite-birth-matrix-natal-flow-redesign="package-240"
-        className="space-y-5"
+        className="min-w-0 max-w-full space-y-5"
       >
         <Link
           href="/miniapp"
-          className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-white/10 bg-white/[0.045] px-3 text-sm font-medium text-slate-300 transition hover:border-rose-200/25 hover:text-white"
+          className="aphrodite-touch-target aphrodite-wrap-anywhere inline-flex min-h-10 items-center gap-2 rounded-lg border border-white/10 bg-white/[0.045] px-3 text-sm font-medium text-slate-300 transition hover:border-rose-200/25 hover:text-white"
         >
           <ArrowLeft className="h-4 w-4" />
           Назад в Mini App
         </Link>
 
-        <section className="rounded-lg border border-violet-300/20 bg-violet-300/[0.08] p-4" data-aphrodite-birth-matrix-what-user-gets="package-240">
+        <section className="min-w-0 rounded-lg border border-violet-300/20 bg-violet-300/[0.08] p-3 min-[390px]:p-4" data-aphrodite-birth-matrix-what-user-gets="package-240">
           <p className="text-xs font-semibold uppercase tracking-wide text-violet-100">Birth Matrix / Natal profile</p>
           <h2 className="mt-2 text-lg font-semibold leading-7 text-white">Личный отчёт по дате рождения</h2>
           <p className="mt-2 text-sm leading-6 text-slate-300">
@@ -216,7 +216,7 @@ export function BirthMatrixClient() {
                   type="time"
                   value={birthTime}
                   onChange={(event) => setBirthTime(event.target.value)}
-                  className="h-12 w-full rounded-lg border border-white/15 bg-white/8 px-3 text-base text-white outline-none transition focus:border-rose-200 focus:bg-white/10"
+                  className="aphrodite-touch-target h-12 w-full rounded-lg border border-white/15 bg-white/8 px-3 text-[16px] text-white outline-none transition focus:border-rose-200 focus:bg-white/10"
                 />
               </label>
 
@@ -308,8 +308,8 @@ function BirthMatrixResultView({
   ];
 
   return (
-    <div className="space-y-4" data-birth-matrix-result="visual-upgrade-package-201" data-aphrodite-birth-matrix-report="package-240">
-      <section className="rounded-lg border border-amber-200/20 bg-gradient-to-br from-rose-950/35 via-slate-900 to-emerald-950/20 p-4">
+    <div className="min-w-0 max-w-full space-y-4" data-birth-matrix-result="visual-upgrade-package-201" data-aphrodite-birth-matrix-report="package-240">
+      <section className="min-w-0 rounded-lg border border-amber-200/20 bg-gradient-to-br from-rose-950/35 via-slate-900 to-emerald-950/20 p-3 min-[390px]:p-4">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <p className="text-xs font-medium text-amber-200">Ваш результат</p>

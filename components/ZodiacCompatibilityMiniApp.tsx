@@ -815,14 +815,15 @@ export function ZodiacCompatibilityMiniApp({
       data-telegram-webapp={telegram.isTelegramWebApp ? "true" : "false"}
       data-telegram-platform={telegram.platform ?? "browser"}
       data-telegram-color-scheme={telegram.colorScheme ?? "dark"}
+      data-aphrodite-telegram-webview-mobile-polish="package-244"
       style={telegramThemeStyle}
       className={
         publicMode
-          ? "min-h-[var(--zma-viewport-height,100vh)] w-full max-w-full overflow-x-hidden bg-[#070712] bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.14)_1px,transparent_0),radial-gradient(circle_at_top,rgba(168,85,247,0.26),transparent_24rem),linear-gradient(180deg,#070712_0%,#13091f_44%,#070b14_100%)] bg-[length:28px_28px,100%_100%,100%_100%] px-4 pb-[calc(1.25rem+var(--zma-safe-area-bottom,0px))] pt-[calc(1.25rem+var(--zma-safe-area-top,0px))] text-slate-100 sm:px-6"
-          : "-mx-4 -my-6 min-h-[var(--zma-viewport-height,100vh)] overflow-x-hidden bg-[#070712] bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.12)_1px,transparent_0),radial-gradient(circle_at_top,rgba(168,85,247,0.2),transparent_24rem),linear-gradient(180deg,#070712_0%,#13091f_48%,#070b14_100%)] bg-[length:28px_28px,100%_100%,100%_100%] px-4 pb-[calc(1.5rem+var(--zma-safe-area-bottom,0px))] pt-[calc(1.5rem+var(--zma-safe-area-top,0px))] text-slate-100 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
+          ? "aphrodite-mobile-shell zodiac-miniapp-safe-area w-full max-w-full bg-[#070712] bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.14)_1px,transparent_0),radial-gradient(circle_at_top,rgba(168,85,247,0.26),transparent_24rem),linear-gradient(180deg,#070712_0%,#13091f_44%,#070b14_100%)] bg-[length:28px_28px,100%_100%,100%_100%] px-3 pb-[calc(1.25rem+var(--zma-safe-area-bottom,0px))] pt-[calc(1.25rem+var(--zma-safe-area-top,0px))] text-slate-100 min-[390px]:px-4 sm:px-6"
+          : "aphrodite-mobile-shell zodiac-miniapp-safe-area -mx-4 -my-6 bg-[#070712] bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.12)_1px,transparent_0),radial-gradient(circle_at_top,rgba(168,85,247,0.2),transparent_24rem),linear-gradient(180deg,#070712_0%,#13091f_48%,#070b14_100%)] bg-[length:28px_28px,100%_100%,100%_100%] px-3 pb-[calc(1.5rem+var(--zma-safe-area-bottom,0px))] pt-[calc(1.5rem+var(--zma-safe-area-top,0px))] text-slate-100 min-[390px]:px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
       }
     >
-      <div className={publicMode ? "mx-auto flex min-h-[calc(100vh-2.5rem)] w-full max-w-md flex-col space-y-4" : "mx-auto flex min-h-screen max-w-3xl flex-col space-y-5"}>
+      <div className={publicMode ? "aphrodite-scroll-safe mx-auto flex min-h-[calc(100svh-2.5rem)] w-full max-w-md flex-col space-y-4" : "aphrodite-scroll-safe mx-auto flex min-h-[100svh] w-full max-w-3xl flex-col space-y-5"}>
         <header
           className={
             publicMode
@@ -868,7 +869,7 @@ export function ZodiacCompatibilityMiniApp({
               </p>
             </div>
             {selectedSign ? (
-              <button type="button" onClick={clearSelectedSign} className="inline-flex w-fit items-center rounded-lg border border-white/15 bg-white/8 px-3 py-2 text-xs font-semibold text-slate-100 transition hover:bg-white/12">
+              <button type="button" onClick={clearSelectedSign} className="aphrodite-touch-target inline-flex w-fit items-center rounded-lg border border-white/15 bg-white/8 px-3 py-2 text-xs font-semibold text-slate-100 transition hover:bg-white/12">
                 Выбрать другой знак
               </button>
             ) : (

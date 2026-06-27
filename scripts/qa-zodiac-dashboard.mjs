@@ -102,6 +102,7 @@ const ROUTES = {
   mysticCardsRedesign: "/dashboard/networks/zodiac/mystic-cards-redesign",
   vipLockedPreviewRedesign: "/dashboard/networks/zodiac/vip-locked-preview-redesign",
   resultShareCards: "/dashboard/networks/zodiac/result-share-cards",
+  telegramWebviewMobilePolish: "/dashboard/networks/zodiac/telegram-webview-mobile-polish",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -272,6 +273,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/content-cta-owner-review-gate"', "content cta owner review gate route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/launch-simulation-status-report"', "launch simulation status report route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/vip-locked-preview-redesign"', "vip locked preview redesign route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/telegram-webview-mobile-polish"', "telegram webview mobile polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");

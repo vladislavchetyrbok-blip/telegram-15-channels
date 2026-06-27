@@ -842,6 +842,13 @@ const platformSections = [
     tone: "violet",
   },
   {
+    title: "Telegram WebView Mobile Polish",
+    href: "/dashboard/networks/zodiac/telegram-webview-mobile-polish",
+    icon: Smartphone,
+    caption: "Package 244 - Telegram WebView mobile polish for 360px, 390px, 430px, safe-area spacing, tap targets, text wrapping and no horizontal overflow.",
+    tone: "violet",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
