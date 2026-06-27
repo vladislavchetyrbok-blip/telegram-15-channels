@@ -25,6 +25,7 @@ import {
   Smartphone,
   Sparkles,
   ShoppingCart,
+  Camera,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
@@ -846,6 +847,13 @@ const platformSections = [
     href: "/dashboard/networks/zodiac/telegram-webview-mobile-polish",
     icon: Smartphone,
     caption: "Package 244 - Telegram WebView mobile polish for 360px, 390px, 430px, safe-area spacing, tap targets, text wrapping and no horizontal overflow.",
+    tone: "violet",
+  },
+  {
+    title: "Visual QA Screenshot Pack",
+    href: "/dashboard/networks/zodiac/visual-qa-screenshot-pack",
+    icon: Camera,
+    caption: "Package 245 - visual QA screenshot pack, checklist, and issue triage protocol across required viewports (360px, 390px, 430px, desktop 1200px) and key user flows.",
     tone: "violet",
   },
   {
