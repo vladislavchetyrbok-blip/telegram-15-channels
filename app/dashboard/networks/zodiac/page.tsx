@@ -885,6 +885,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Real Device QA Execution Gate",
+    href: "/dashboard/networks/zodiac/real-device-qa-execution-gate",
+    icon: Smartphone,
+    caption: "Package 251 - manual real-device QA gate for devices, viewports, flows and evidence fields; no checks are marked complete automatically.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

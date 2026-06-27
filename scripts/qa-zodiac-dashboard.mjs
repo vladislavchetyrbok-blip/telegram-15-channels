@@ -108,6 +108,7 @@ const ROUTES = {
   softLaunchScopeSelector: "/dashboard/networks/zodiac/soft-launch-scope-selector",
   softLaunchPreflightChecklist: "/dashboard/networks/zodiac/soft-launch-preflight-checklist",
   ownerManualReviewPack: "/dashboard/networks/zodiac/owner-manual-review-pack",
+  realDeviceQaExecutionGate: "/dashboard/networks/zodiac/real-device-qa-execution-gate",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -284,6 +285,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/soft-launch-scope-selector"', "soft launch scope selector route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/soft-launch-preflight-checklist"', "soft launch preflight checklist route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/owner-manual-review-pack"', "owner manual review pack route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/real-device-qa-execution-gate"', "real device qa execution gate route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");
@@ -1388,6 +1390,20 @@ async function main() {
     assertIncludes(pages.ownerManualReviewPack, "payment/VIP locked status", "owner manual review payment vip locked");
     assertIncludes(pages.ownerManualReviewPack, "READY FOR LIMITED SOFT LAUNCH, future state only", "owner manual review future state only");
     assertIncludes(pages.ownerManualReviewPack, "Package 251 - Real Device QA Execution Gate", "owner manual review next package");
+    assertIncludes(pages.realDeviceQaExecutionGate, "Real Device QA Execution Gate", "real device qa execution gate title");
+    assertIncludes(pages.realDeviceQaExecutionGate, "NOT CHECKED / OWNER REVIEW REQUIRED", "real device qa current state");
+    assertIncludes(pages.realDeviceQaExecutionGate, "iPhone Safari", "real device qa iphone safari");
+    assertIncludes(pages.realDeviceQaExecutionGate, "Android Chrome", "real device qa android chrome");
+    assertIncludes(pages.realDeviceQaExecutionGate, "Telegram iOS WebView", "real device qa telegram ios");
+    assertIncludes(pages.realDeviceQaExecutionGate, "Telegram Android WebView", "real device qa telegram android");
+    assertIncludes(pages.realDeviceQaExecutionGate, "360px", "real device qa 360 viewport");
+    assertIncludes(pages.realDeviceQaExecutionGate, "390px", "real device qa 390 viewport");
+    assertIncludes(pages.realDeviceQaExecutionGate, "430px", "real device qa 430 viewport");
+    assertIncludes(pages.realDeviceQaExecutionGate, "Compatibility input/result", "real device qa compatibility flow");
+    assertIncludes(pages.realDeviceQaExecutionGate, "Mystic Cards closed/selected/revealed", "real device qa mystic states");
+    assertIncludes(pages.realDeviceQaExecutionGate, "screenshot/evidence", "real device qa evidence field");
+    assertIncludes(pages.realDeviceQaExecutionGate, "No fake screenshots", "real device qa no fake screenshots");
+    assertIncludes(pages.realDeviceQaExecutionGate, "Package 252 - Soft Launch Candidate Report", "real device qa next package");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "Aphrodite Mini App Visual Design Audit", "aphrodite visual design audit title");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "current Mini App visual status", "aphrodite visual audit current status");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "screen-by-screen findings", "aphrodite visual audit screens");
