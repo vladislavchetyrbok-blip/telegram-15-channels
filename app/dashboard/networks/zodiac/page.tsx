@@ -1039,6 +1039,13 @@ const platformSections = [
     tone: "rose",
   },
   {
+    title: "Manual Env Setup Execution Checklist",
+    href: "/dashboard/networks/zodiac/manual-env-setup-execution-checklist",
+    icon: ShieldCheck,
+    caption: "Package 279 - owner checklist for placing DATABASE_URL and TELEGRAM_BOT_TOKEN outside Git with masked verification only.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
