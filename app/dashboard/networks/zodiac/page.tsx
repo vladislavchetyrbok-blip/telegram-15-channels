@@ -983,6 +983,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Final Manual Blocker Board",
+    href: "/dashboard/networks/zodiac/final-manual-blocker-board",
+    icon: ListPlus,
+    caption: "Package 265 - manual blocker board; candidate remains NOT READY until owner evidence closes blockers.",
+    tone: "rose",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
