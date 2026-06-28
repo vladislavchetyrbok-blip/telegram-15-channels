@@ -2853,8 +2853,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-06-28T09:27:20.930Z"
+      "status": "sent",
+      "updatedAt": "2026-06-28T09:27:23.640Z",
+      "messageId": "38,",
+      "sentAt": "2026-06-28T09:27:23.639Z"
     }
   }
 }
