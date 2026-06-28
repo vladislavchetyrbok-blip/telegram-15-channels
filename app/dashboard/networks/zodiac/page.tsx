@@ -969,6 +969,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Pre-Soft-Launch Owner Brief",
+    href: "/dashboard/networks/zodiac/pre-soft-launch-owner-brief",
+    icon: FileText,
+    caption: "Package 263 - owner brief for not-ready launch status and future manual owner decision.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
