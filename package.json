@@ -142,6 +142,7 @@
     "db:reconciliation:plan:apply": "node scripts/apply-supabase-reconciliation-plan.mjs --apply",
     "zodiac:dashboard:qa": "node scripts/qa-zodiac-dashboard.mjs",
     "zodiac:dashboard:auth:check": "node scripts/check-zodiac-dashboard-auth.mjs",
+    "zodiac:package268:qa": "node scripts/qa-aphrodite-owner-visual-recheck-after-mobile-fixes.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {

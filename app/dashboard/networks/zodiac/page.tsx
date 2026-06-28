@@ -1004,6 +1004,13 @@ const platformSections = [
     tone: "emerald",
   },
   {
+    title: "Owner Visual Recheck After Mobile Fixes",
+    href: "/dashboard/networks/zodiac/owner-visual-recheck-after-mobile-fixes",
+    icon: ClipboardCheck,
+    caption: "Package 268 - owner visual recheck confirming Package 267 mobile fixes across 360/390/430px viewports without production launches or side effects.",
+    tone: "violet",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

@@ -125,6 +125,7 @@ const ROUTES = {
   finalManualBlockerBoard: "/dashboard/networks/zodiac/final-manual-blocker-board",
   finalPreOwnerReviewSummary: "/dashboard/networks/zodiac/final-pre-owner-review-summary",
   criticalMobileTelegramWebviewVisualFixes: "/dashboard/networks/zodiac/critical-mobile-telegram-webview-visual-fixes",
+  ownerVisualRecheckAfterMobileFixes: "/dashboard/networks/zodiac/owner-visual-recheck-after-mobile-fixes",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -305,6 +306,9 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/soft-launch-candidate-report"', "soft launch candidate report route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/owner-manual-real-device-review-execution"', "owner manual real-device review execution route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/telegram-webview-startapp-owner-review-execution"', "telegram webview startapp owner review execution route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/final-pre-owner-review-summary"', "final pre owner review summary route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/critical-mobile-telegram-webview-visual-fixes"', "critical mobile telegram webview visual fixes route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/owner-visual-recheck-after-mobile-fixes"', "owner visual recheck after mobile fixes route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");
@@ -1550,6 +1554,15 @@ async function main() {
     assertIncludes(pages.criticalMobileTelegramWebviewVisualFixes, "publicLaunchApproved", "critical mobile launch flag");
     assertIncludes(pages.criticalMobileTelegramWebviewVisualFixes, "ownerManualReviewRequired", "critical mobile owner flag");
     assertIncludes(pages.criticalMobileTelegramWebviewVisualFixes, "Package 268 - Owner Visual Recheck After Mobile Fixes", "critical mobile next package");
+    assertIncludes(pages.ownerVisualRecheckAfterMobileFixes, "Owner Visual Recheck After Mobile Fixes", "owner visual recheck title");
+    assertIncludes(pages.ownerVisualRecheckAfterMobileFixes, "checkedScreens", "owner visual recheck screens section");
+    assertIncludes(pages.ownerVisualRecheckAfterMobileFixes, "360px viewport", "owner visual recheck 360 viewport");
+    assertIncludes(pages.ownerVisualRecheckAfterMobileFixes, "390px viewport", "owner visual recheck 390 viewport");
+    assertIncludes(pages.ownerVisualRecheckAfterMobileFixes, "430px viewport", "owner visual recheck 430 viewport");
+    assertIncludes(pages.ownerVisualRecheckAfterMobileFixes, "two-column narrow cards", "owner visual recheck narrow cards issue");
+    assertIncludes(pages.ownerVisualRecheckAfterMobileFixes, "broken English text wrapping", "owner visual recheck text wrapping issue");
+    assertIncludes(pages.ownerVisualRecheckAfterMobileFixes, "Telegram Android WebView check", "owner visual recheck telegram android");
+    assertIncludes(pages.ownerVisualRecheckAfterMobileFixes, "Package 269", "owner visual recheck next package");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "Aphrodite Mini App Visual Design Audit", "aphrodite visual design audit title");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "current Mini App visual status", "aphrodite visual audit current status");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "screen-by-screen findings", "aphrodite visual audit screens");
