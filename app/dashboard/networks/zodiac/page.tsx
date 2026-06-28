@@ -1046,6 +1046,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Backup Freshness Restore Rehearsal Protocol",
+    href: "/dashboard/networks/zodiac/backup-freshness-restore-rehearsal-protocol",
+    icon: Database,
+    caption: "Package 280 - backup remains stale until owner proves <24h freshness and completes a non-production restore rehearsal.",
+    tone: "rose",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
