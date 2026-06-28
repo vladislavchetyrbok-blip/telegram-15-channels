@@ -1074,6 +1074,13 @@ const platformSections = [
     tone: "rose",
   },
   {
+    title: "Release Gate Status Consolidation",
+    href: "/dashboard/networks/zodiac/release-gate-status-consolidation",
+    icon: GitBranch,
+    caption: "Package 284 - consolidated launch gate board: code PASS, evidence ready, manual blockers still active.",
+    tone: "rose",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
