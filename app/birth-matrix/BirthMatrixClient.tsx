@@ -162,7 +162,7 @@ export function BirthMatrixClient() {
       <div
         data-birth-matrix-dashboard-qa="Birth Matrix Static Mock (Package 103) Calculate Your Matrix No payment No database No Telegram API"
         data-aphrodite-birth-matrix-natal-flow-redesign="package-240"
-        className="min-w-0 max-w-full space-y-5"
+        className="min-w-0 max-w-full space-y-4"
       >
         <Link
           href="/miniapp"
@@ -172,12 +172,10 @@ export function BirthMatrixClient() {
           Назад в Mini App
         </Link>
 
-        <section className="min-w-0 rounded-lg border border-violet-300/20 bg-violet-300/[0.08] p-3 min-[390px]:p-4" data-aphrodite-birth-matrix-what-user-gets="package-240">
+        <section className="min-w-0 rounded-lg border border-violet-300/20 bg-violet-300/[0.08] p-3" data-aphrodite-birth-matrix-what-user-gets="package-240">
           <p className="text-xs font-semibold uppercase tracking-wide text-violet-100">Birth Matrix / Natal profile</p>
           <h2 className="mt-2 text-lg font-semibold leading-7 text-white">Личный отчёт по дате рождения</h2>
-          <p className="mt-2 text-sm leading-6 text-slate-300">
-            Экран показывает главный код, сильную сторону, зону роста, энергии даты, отношения и preview будущего Pro-разбора. Формат даты и проверка диапазона остаются прежними.
-          </p>
+          <p className="mt-1 text-sm leading-5 text-slate-300">Главный код, ресурс, рост и следующий шаг.</p>
         </section>
 
         <div data-aphrodite-birth-matrix-input="package-240">
@@ -185,7 +183,7 @@ export function BirthMatrixClient() {
             tone="primary"
             eyebrow="Расчёт по дате"
             title="Дата рождения"
-            description="Короткий расчёт по дате рождения: главные энергии, ресурс и зона роста."
+            description="Короткий расчёт по дате рождения."
             actionSlot={<Calendar className="h-5 w-5 text-rose-200" />}
           >
             <form onSubmit={handleCalculate} className="space-y-4">
@@ -266,9 +264,7 @@ function EmptyBirthMatrixState() {
         </span>
         <div className="min-w-0">
           <h2 className="text-base font-semibold leading-6 text-white">Что покажет результат</h2>
-          <p className="mt-1 text-sm leading-6 text-slate-300">
-            Короткий символический разбор: главная энергия, сильная сторона, зона роста и следующий шаг. Это не фатальный прогноз, а мягкая подсказка для саморефлексии.
-          </p>
+          <p className="mt-1 text-sm leading-5 text-slate-300">Главная энергия, ресурс, зона роста и один шаг на сегодня.</p>
         </div>
       </div>
     </section>
@@ -309,16 +305,14 @@ function BirthMatrixResultView({
 
   return (
     <div className="min-w-0 max-w-full space-y-4" data-birth-matrix-result="visual-upgrade-package-201" data-aphrodite-birth-matrix-report="package-240">
-      <section className="min-w-0 rounded-lg border border-amber-200/20 bg-gradient-to-br from-rose-950/35 via-slate-900 to-emerald-950/20 p-3 min-[390px]:p-4">
+      <section className="min-w-0 rounded-lg border border-amber-200/20 bg-gradient-to-br from-rose-950/35 via-slate-900 to-emerald-950/20 p-3">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <p className="text-xs font-medium text-amber-200">Ваш результат</p>
             <h2 className="mt-1 text-2xl font-semibold leading-8 text-white">
               {tone.title} · код {result.coreNumber}
             </h2>
-            <p className="mt-2 text-sm leading-6 text-slate-300">
-              Матрица показывает, какие качества легче проявлять и где стоит добавить осознанности.
-            </p>
+            <p className="mt-1 text-sm leading-5 text-slate-300">Короткий ориентир по дате рождения.</p>
           </div>
           <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg border border-amber-200/25 bg-amber-200/10 text-2xl font-semibold text-amber-100">
             {result.coreNumber}
@@ -340,7 +334,7 @@ function BirthMatrixResultView({
           { label: "рост", value: "фокус", detail: tone.growth },
           { label: "сегодня", value: "шаг", detail: tone.nextStep },
         ]}
-        footer="Визуальная карточка Матрицы. Без отправки, без записи в базу, расчет не менялся."
+        footer="Preview-карточка. Данные остаются на устройстве."
       />
 
       <section className="grid gap-2 sm:grid-cols-2" aria-label="Ключевые подсказки матрицы">
@@ -348,7 +342,7 @@ function BirthMatrixResultView({
           <article key={card.title} className="rounded-lg border border-white/10 bg-white/[0.045] p-3">
             <p className="text-[11px] font-medium text-rose-200">{card.title}</p>
             <h3 className="mt-1 text-base font-semibold leading-6 text-white">{card.value}</h3>
-            <p className="mt-2 text-sm leading-5 text-slate-300">{card.text}</p>
+            <p className="mt-1 line-clamp-2 text-sm leading-5 text-slate-300">{card.text}</p>
           </article>
         ))}
       </section>
@@ -357,9 +351,7 @@ function BirthMatrixResultView({
         <div>
           <p className="text-xs font-medium text-rose-200">Глубже</p>
           <h2 className="mt-1 text-base font-semibold leading-6 text-white">Энергии даты</h2>
-          <p className="mt-1 text-sm leading-6 text-slate-300">
-            Каждая строка показывает отдельный слой интерпретации без длинного полотна текста.
-          </p>
+          <p className="mt-1 text-sm leading-5 text-slate-300">Три коротких слоя интерпретации.</p>
         </div>
         {result.energyMatrix.map((item) => (
           <article key={item.label} className="rounded-lg border border-white/10 bg-white/[0.045] p-3">
@@ -369,16 +361,14 @@ function BirthMatrixResultView({
                 {item.value}
               </span>
             </div>
-            <p className="mt-2 text-sm leading-5 text-slate-300">{matrixToneByNumber[item.value]?.strength ?? item.meaning}</p>
+            <p className="mt-1 line-clamp-2 text-sm leading-5 text-slate-300">{matrixToneByNumber[item.value]?.strength ?? item.meaning}</p>
           </article>
         ))}
       </section>
 
-      <section className="rounded-lg border border-emerald-300/20 bg-emerald-950/15 p-4">
+      <section className="rounded-lg border border-emerald-300/20 bg-emerald-950/15 p-3">
         <p className="text-sm font-semibold text-emerald-200">Подсказка для отношений</p>
-        <p className="mt-2 text-sm leading-6 text-slate-300">
-          По этому mock-расчёту легче всего искать диалог с энергиями {getCompatibilityNumbers(result.coreNumber)}. Это ориентир для разговора, а не правило совместимости.
-        </p>
+        <p className="mt-1 text-sm leading-5 text-slate-300">Ищите диалог с энергиями {getCompatibilityNumbers(result.coreNumber)}.</p>
       </section>
 
       <section data-aphrodite-birth-matrix-vip-preview="package-240">
@@ -387,10 +377,10 @@ function BirthMatrixResultView({
           scope="birth-matrix"
           title="Будущая полная версия"
           subtitle="Матрица Pro закрыта"
-          preview="Позже здесь можно будет расширить разбор циклами, отношениями и практиками. Сейчас это только безопасный preview без оплаты, доступа и записи в базу."
+          preview="Расширенный Pro-разбор показан как preview."
           features={["Матрица Pro", "Личный совет", "Карточка результата"]}
           previewItems={["Циклы и отношения", "Деньги и смысл", "План практики"]}
-          safetyLabel="Только preview: без оплаты, без VIP-разблокировки, без записи в базу."
+          safetyLabel="Без оплаты · VIP закрыт"
         />
       </section>
 
@@ -412,7 +402,7 @@ function BirthMatrixFooter() {
       <div className="flex items-start gap-2 rounded-lg border border-amber-300/20 bg-amber-950/20 p-3">
         <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-200" />
         <p className="text-xs leading-5 text-amber-100">
-          Локальный безопасный preview: без оплаты, без Telegram API, без записи в базу данных и без production-запуска.
+          Данные остаются на устройстве. Без оплаты · VIP закрыт.
         </p>
       </div>
     </div>

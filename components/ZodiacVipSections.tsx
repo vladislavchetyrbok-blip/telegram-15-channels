@@ -1033,7 +1033,7 @@ export function ExtendedNatalFeature({
                   scope="vip-natal"
                   title="Pro Natal слой"
                   subtitle="Natal preview закрыт"
-                  preview="Будущий Pro-слой может раскрыть личные циклы, совместимость с матрицей, карьерные сценарии и ритуалы недели. Сейчас это только preview: без оплаты, без обхода доступа и без VIP-разблокировки."
+                  preview="Pro-слой показан как короткий preview."
                   features={["Натальный профиль", "Связь с Матрицей", "Личный совет"]}
                   previewItems={["Личные циклы", "Карьерные сценарии", "Ритуал недели"]}
                 />
@@ -1126,7 +1126,7 @@ export function ExtendedNameProfileFeature({
 
   return (
     <VipScreenLayout publicMode={publicMode} title="Расширенный именной профиль" onBack={onBack}>
-      <VipIntro publicMode={publicMode} text="Именной профиль разбирает звучание имени, стиль общения, сильные стороны и мягкие риски. Само имя не сохраняется и не отправляется в аналитику." />
+      <VipIntro publicMode={publicMode} text="Короткий разбор имени. Данные остаются на устройстве." />
       <VipInputPanel publicMode={publicMode}>
         <VipField publicMode={publicMode} label="Имя">
           <input className={inputClass(publicMode)} value={name} onChange={(event) => setName(event.target.value)} />
@@ -1410,7 +1410,7 @@ export function VipMessageHelperFeature({
 
   return (
     <VipScreenLayout publicMode={publicMode} title="Помощник сообщений" onBack={onBack}>
-      <VipIntro publicMode={publicMode} text="Помощник собирает три готовые фразы для разговора. Текст не сохраняется в localStorage и не уходит в аналитику." />
+      <VipIntro publicMode={publicMode} text="Три короткие фразы для разговора. Данные остаются на устройстве." />
       {!pairReady ? <PairInlineHint publicMode={publicMode} /> : null}
       <VipInputPanel publicMode={publicMode}>
         <SignSelect publicMode={publicMode} value={firstSlug} onChange={setFirstSlug} label="Первый знак" />

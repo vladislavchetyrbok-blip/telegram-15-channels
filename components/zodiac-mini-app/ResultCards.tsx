@@ -106,7 +106,7 @@ export function ResultPanel({
           { label: "диалог", value: `${result.scores.communication}%`, detail: result.communicationText },
           { label: "ритм", value: `${result.scores.household}%`, detail: result.householdText },
         ]}
-        footer="Визуальная карточка совместимости. Без отправки в Telegram и без изменения safe share fallback."
+        footer="Preview-карточка. Данные остаются на устройстве."
       />
 
       <FinalAstroMap
@@ -237,10 +237,10 @@ function CompatibilityVipPreview({ publicMode }: { publicMode: boolean }) {
         scope={previewScope}
         title="Полный разбор совместимости"
         subtitle="VIP preview совместимости"
-        preview="Будущий глубокий слой может показать динамику эмоций, зоны риска, календарь любви и связь с Матрицей. Сейчас это только preview."
-        features={["Разбор совместимости", "Календарь пары", "Связь с Матрицей"]}
-        previewItems={["Динамика эмоций", "Зоны риска", "Календарь любви", "Без оплаты и без VIP-разблокировки"]}
-        safetyLabel="Только preview: без оплаты, без VIP-разблокировки, доступ не меняется."
+        preview="Глубокий слой показан как preview."
+        features={["Разбор", "Календарь пары", "Матрица"]}
+        previewItems={["Эмоции", "Риски", "Любовь"]}
+        safetyLabel="Без оплаты · VIP закрыт"
       />
     </div>
   );

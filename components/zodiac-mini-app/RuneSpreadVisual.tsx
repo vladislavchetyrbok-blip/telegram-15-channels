@@ -17,7 +17,7 @@ export function RuneSpreadVisual({ publicMode, spread }: RuneSpreadVisualProps) 
     >
       <div className="flex items-center justify-between gap-3">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-cyan-100">Rune spread</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-cyan-100">Расклад рун</p>
           <h4 className="mt-1 text-base font-semibold text-white">{spread.modeLabel}</h4>
         </div>
         <div className="rounded-full border border-cyan-200/30 bg-cyan-200/10 px-3 py-1 text-xs font-semibold text-cyan-50">
@@ -25,17 +25,17 @@ export function RuneSpreadVisual({ publicMode, spread }: RuneSpreadVisualProps) 
         </div>
       </div>
 
-      <div className={`mt-4 grid gap-3 ${spread.runes.length === 1 ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-3"}`}>
+      <div className={`mt-3 grid gap-2 ${spread.runes.length === 1 ? "grid-cols-1" : "grid-cols-1 sm:grid-cols-3"}`}>
         {spread.runes.map((item) => (
           <article
             key={`${item.key}-${item.position}`}
-            className="relative min-h-[190px] overflow-hidden rounded-xl border border-white/12 bg-white/[0.06] p-3"
+            className="relative min-h-[158px] overflow-hidden rounded-xl border border-white/12 bg-white/[0.06] p-2.5"
             data-rune-card={item.key}
             data-rune-position={item.position}
           >
             <div className="absolute inset-x-6 top-6 h-20 rounded-full bg-cyan-200/12 blur-2xl" />
-            <div className="relative mx-auto flex h-28 w-28 items-center justify-center rounded-full border border-cyan-100/35 bg-gradient-to-b from-cyan-100/18 via-white/8 to-emerald-900/28 shadow-inner">
-              <span className={`text-6xl leading-none text-cyan-50 ${item.orientation === "reversed" ? "rotate-180" : ""}`}>{item.rune.symbol}</span>
+            <div className="relative mx-auto flex h-24 w-24 items-center justify-center rounded-full border border-cyan-100/35 bg-gradient-to-b from-cyan-100/18 via-white/8 to-emerald-900/28 shadow-inner">
+              <span className={`text-5xl leading-none text-cyan-50 ${item.orientation === "reversed" ? "rotate-180" : ""}`}>{item.rune.symbol}</span>
             </div>
             <div className="relative mt-3 text-center">
               <p className="text-xs font-semibold uppercase tracking-wide text-emerald-100">{item.position}</p>

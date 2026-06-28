@@ -71,7 +71,7 @@ export function AphroditeShareCard({
   scoreDetail = "результат",
   insight,
   highlights = [],
-  footer = "Визуальная карточка результата. Без отправки в Telegram, без экспорта, без записи в базу.",
+  footer = "Preview-карточка. Без оплаты · VIP закрыт.",
   className,
 }: AphroditeShareCardProps) {
   return (
@@ -90,19 +90,19 @@ export function AphroditeShareCard({
           variantAccent[variant],
         )}
       >
-        <div className="relative min-w-0 space-y-4 p-3 min-[390px]:p-4">
-          <div className="flex min-w-0 flex-col gap-3 min-[390px]:flex-row min-[390px]:items-start min-[390px]:justify-between">
-            <div className="min-w-0 space-y-2">
+        <div className="relative min-w-0 space-y-3 p-2.5 min-[390px]:p-3">
+          <div className="flex min-w-0 items-start justify-between gap-2">
+            <div className="min-w-0 space-y-1.5">
               <div className="flex flex-wrap gap-2">
                 <AphroditeBadge tone="gold">карточка</AphroditeBadge>
                 <AphroditeBadge tone={variantTone[variant]}>{eyebrow}</AphroditeBadge>
               </div>
               <div>
-                <h3 className="aphrodite-pkg-267-text-fix break-words text-xl font-semibold leading-7 text-[#fff7ed]">{title}</h3>
+                <h3 className="aphrodite-pkg-267-text-fix line-clamp-2 break-words text-lg font-semibold leading-6 text-[#fff7ed]">{title}</h3>
                 {subtitle ? <p className="aphrodite-pkg-267-text-fix mt-1 break-words text-sm leading-5 text-slate-300">{subtitle}</p> : null}
               </div>
             </div>
-            <div className="grid h-16 w-16 shrink-0 place-items-center self-start rounded-lg border border-amber-100/25 bg-black/25 text-center">
+            <div className="grid h-14 w-14 shrink-0 place-items-center self-start rounded-lg border border-amber-100/25 bg-black/25 text-center">
               <div>
                 <p className="aphrodite-pkg-267-text-fix text-lg font-semibold leading-5 text-amber-100">{scoreLabel ?? defaultScoreLabel[variant]}</p>
                 <p className="aphrodite-pkg-267-text-fix mt-1 text-[10px] font-semibold uppercase leading-3 text-amber-100/70">{scoreDetail}</p>
@@ -110,17 +110,17 @@ export function AphroditeShareCard({
             </div>
           </div>
 
-          <div className="rounded-lg border border-white/10 bg-black/18 p-3">
+          <div className="rounded-lg border border-white/10 bg-black/18 p-2.5">
             <div className="flex items-start gap-2">
               <HeartHandshake aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-rose-200" />
-              <p className="aphrodite-pkg-267-text-fix break-words text-sm leading-6 text-slate-100">{insight}</p>
+              <p className="aphrodite-pkg-267-text-fix line-clamp-2 break-words text-sm leading-5 text-slate-100">{insight}</p>
             </div>
           </div>
 
           {highlights.length ? (
             <div className="aphrodite-pkg-267-three-after-430 grid gap-2">
               {highlights.map((item) => (
-                <div key={`${item.label}-${item.value}`} className="min-w-0 rounded-lg border border-white/10 bg-white/[0.06] px-3 py-2">
+                <div key={`${item.label}-${item.value}`} className="min-w-0 rounded-lg border border-white/10 bg-white/[0.06] px-2.5 py-1.5">
                   <p className="text-[11px] font-semibold uppercase leading-4 text-slate-300">{item.label}</p>
                   <p className="aphrodite-pkg-267-text-fix mt-1 break-words text-sm font-semibold leading-5 text-[#fff7ed]">{item.value}</p>
                   {item.detail ? <p className="mt-1 line-clamp-2 text-xs leading-4 text-slate-400">{item.detail}</p> : null}
@@ -129,7 +129,7 @@ export function AphroditeShareCard({
             </div>
           ) : null}
 
-          <div className="flex items-start gap-2 rounded-lg border border-emerald-200/20 bg-emerald-200/10 px-3 py-2 text-xs leading-5 text-emerald-50">
+          <div className="flex items-start gap-2 rounded-lg border border-emerald-200/20 bg-emerald-200/10 px-2.5 py-2 text-xs leading-4 text-emerald-50">
             <Share2 aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-emerald-100" />
             <span className="aphrodite-pkg-267-text-fix">{footer}</span>
           </div>

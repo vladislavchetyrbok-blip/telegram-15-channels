@@ -24,6 +24,7 @@ const VIP_ACTIVE_CARDS = [
 ];
 const MYSTIC_FEATURES = ["Карта", "Таро", "Руна"];
 const BIRTH_MATRIX_LABELS = ["Матрица судьбы", "Матрица рождения", "Матрица"];
+const COMPACT_HOME_RE = /Что между вами сейчас|Проверить совместимость|Матрица судьбы/;
 const PLACEHOLDER_PATTERNS = [/TODO/i, /lorem ipsum/i, /placeholder/i, /Скоро появится/i];
 const RETENTION_STORAGE_KEY = "zodiac-mini-app-retention-v1";
 const FORBIDDEN_RETENTION_VALUES = [
@@ -153,7 +154,7 @@ async function runDefaultOpenStateSmoke(client, baseUrl, report) {
 }
 
 async function runBrowserModeSmoke(client, report) {
-  await waitForPageText(client, /Астрологический центр|Выберите, что хотите узнать сегодня/, "Mini App main menu hero did not render.");
+  await waitForPageText(client, COMPACT_HOME_RE, "Mini App main menu hero did not render.");
   const mainCategories = ["Гороскопы", "Совместимость", "Матрица судьбы", "Ангельские числа", "Нумерология", "Мистика", "Таро и руны", "Луна и ритуалы", "VIP раздел", "Мой профиль"];
   for (const category of mainCategories) {
     if (!(await hasText(client, new RegExp(category, "i")))) throw new Error(`Main menu category is missing: ${category}`);
@@ -178,7 +179,7 @@ async function runBrowserModeSmoke(client, report) {
   await waitForPageText(client, /Здесь появятся последние расчёты и открытые разделы/, "History empty state did not remain after clearing local data.");
   report.localDataCleared = true;
   await click(client, "Главная");
-  await waitForPageText(client, /Астрологический центр|Выберите, что хотите узнать сегодня/, "Back to main menu did not render after Profile.");
+  await waitForPageText(client, COMPACT_HOME_RE, "Back to main menu did not render after Profile.");
 
   await click(client, "Совместимость");
   await waitForPageText(client, /Любовная совместимость|Дружеская совместимость|Совместимость/, "Compatibility category did not render.");
@@ -237,18 +238,18 @@ async function runBrowserModeSmoke(client, report) {
   report.compatibilityPairReopened = true;
 
   await click(client, "Главная");
-  await waitForPageText(client, /Астрологический центр|Выберите, что хотите узнать сегодня/, "Back to main menu did not render after Compatibility.");
+  await waitForPageText(client, COMPACT_HOME_RE, "Back to main menu did not render after Compatibility.");
   await click(client, "Гороскопы");
   await waitForPageText(client, /Открыт раздел|Гороскоп недели|Удачные дни|Лунный календарь/, "Horoscopes category did not render.");
   report.horoscopesChecked = true;
 
   await click(client, "Главная");
-  await waitForPageText(client, /Астрологический центр|Луна и ритуалы/, "Back to main menu did not render after Horoscopes.");
+  await waitForPageText(client, /Что между вами сейчас|Проверить совместимость|Луна и ритуалы/, "Back to main menu did not render after Horoscopes.");
   await click(client, "Луна и ритуалы");
   await runLunarRitualSmoke(client, report);
 
   await click(client, "Главная");
-  await waitForPageText(client, /Астрологический центр|Ангельские числа/, "Back to main menu did not render after Horoscopes.");
+  await waitForPageText(client, /Что между вами сейчас|Проверить совместимость|Ангельские числа/, "Back to main menu did not render after Horoscopes.");
   await click(client, "Ангельские числа");
   await waitForPageText(client, /Ангельские числа|11:11|22:22/, "Angel Numbers category did not render.");
   await assertFeatureScreen(client, "Ангельские числа", { allowSoon: false, minLength: 260 });
@@ -274,7 +275,7 @@ async function runBrowserModeSmoke(client, report) {
   report.localDataCleared = true;
 
   await click(client, "Главная");
-  await waitForPageText(client, /Астрологический центр|VIP раздел/, "Back to main menu did not render after Angel Numbers.");
+  await waitForPageText(client, /Что между вами сейчас|Проверить совместимость|VIP раздел/, "Back to main menu did not render after Angel Numbers.");
   await click(client, "VIP раздел");
   await waitForPageText(client, /VIP открыт бесплатно|Ранний доступ до 17\.09\.2026/, "VIP menu did not render.");
   report.freeAccessVisible = await hasText(client, /17\.09\.2026/);
@@ -295,7 +296,7 @@ async function runBrowserModeSmoke(client, report) {
   await assertRetentionPrivacy(client, report);
 
   await click(client, "Главное меню");
-  await waitForPageText(client, /Астрологический центр|Мистика/, "Back to main menu did not render after VIP.");
+  await waitForPageText(client, /Что между вами сейчас|Проверить совместимость|Мистика/, "Back to main menu did not render after VIP.");
   await click(client, "Мистика");
   await waitForPageText(client, /Мистика|Карта дня/, "Mystic tab did not render.");
   await assertPageTextAbsent(client, /Сонник/, "Sonnik should be hidden from the active Mystic path.");
@@ -340,7 +341,7 @@ async function runFeedbackPanelSmoke(client, report) {
   await waitForPageText(client, /Безопасный драфт отзыва|Скопировать текст|Поделиться отзывом/, "Feedback panel did not open.");
   await captureSmokeScreenshot(client, report, "feedback-panel");
   await click(client, "Баг");
-  await click(client, "Birth Matrix");
+  await click(client, "Матрица");
   await fillVisibleTextarea(client, "SHOULD_NOT_STORE_RAW_FEEDBACK 2000-01-01 Test City +380501112233");
   await waitForPageText(client, /добавьте коротко вручную|Что сломалось/, "Feedback draft did not render a safe manual-comment placeholder.");
   const draftText = await evalPage(client, "Array.from(document.querySelectorAll('pre')).map((element) => element.innerText || element.textContent || '').join('\\n')", []);
@@ -366,7 +367,7 @@ async function runFeedbackPanelSmoke(client, report) {
 
 async function runStartParamSmoke(client, baseUrl, report) {
   const cases = [
-    { param: "compat", landing: /Астрологический центр|Выберите, что хотите узнать сегодня/, assertDefaultHome: true, message: "startapp=compat should open the default home route, not Compatibility or Mystic." },
+    { param: "compat", landing: COMPACT_HOME_RE, assertDefaultHome: true, message: "startapp=compat should open the default home route, not Compatibility or Mystic." },
     { param: "compat_love", sign: "Овен", landing: /Любовная совместимость|Совместимость/, pattern: /Любовь|Шаг 1|Совместимость/, expectedState: { activeTab: "love", selectedSign: "aries" }, message: "startapp=compat_love did not open Love compatibility after sign selection." },
     { param: "compat_reconciliation", sign: "Овен", landing: /Примирение|Совместимость/, pattern: /Примирение|Шаг 1|Совместимость/, expectedState: { activeTab: "love", selectedSign: "aries" }, message: "startapp=compat_reconciliation did not open Reconciliation compatibility after sign selection." },
     { param: "compat_gemini", sign: "Близнецы", beforeSign: "Любовная совместимость", landing: /Любовная совместимость|Совместимость/, pattern: /Совместимость|Шаг 1/, expectedState: { activeTab: "love", selectedSign: "gemini" }, message: "startapp=compat_gemini did not open Compatibility after sign selection." },
@@ -469,7 +470,7 @@ async function openVipFromStartParam(client, baseUrl) {
 async function openNatalChartWithVipBlocks(client, baseUrl) {
   await navigate(client, withSmokeParam(baseUrl, "dead_cta"));
   await installSmokeHelpers(client);
-  await waitForPageText(client, /Астрологический центр|Выберите, что хотите узнать сегодня/, "Mini App home did not render for dead CTA smoke.");
+  await waitForPageText(client, COMPACT_HOME_RE, "Mini App home did not render for dead CTA smoke.");
   await click(client, "Нумерология");
   await waitForPageText(client, /Выберите знак|Овен/, "Profile sign gate did not render for dead CTA smoke.");
   await click(client, "Овен");
@@ -481,7 +482,7 @@ async function openNatalChartWithVipBlocks(client, baseUrl) {
 }
 
 async function runTelegramMockSmoke(client, baseUrl, report) {
-  await waitForPageText(client, /Астрологический центр|Выберите, что хотите узнать сегодня/, "Telegram mock Mini App home did not render.");
+  await waitForPageText(client, COMPACT_HOME_RE, "Telegram mock Mini App home did not render.");
   await assertDefaultHomeState(client, "Telegram mock default open", "");
   const initialCalls = await telegramCalls(client);
   if (initialCalls.ready < 1 || initialCalls.expand < 1) {
@@ -527,7 +528,7 @@ async function runTelegramMockSmoke(client, baseUrl, report) {
 
   const categoryBackTriggered = await evalPage(client, "window.__triggerTelegramBack?.()", []);
   if (!categoryBackTriggered) throw new Error("Telegram BackButton mock had no category callback.");
-  await waitForPageText(client, /Астрологический центр|Выберите, что хотите узнать сегодня/, "Telegram BackButton did not return from VIP category to home.");
+  await waitForPageText(client, COMPACT_HOME_RE, "Telegram BackButton did not return from VIP category to home.");
   report.telegramCategoryBackChecked = true;
 
   const finalCalls = await telegramCalls(client);

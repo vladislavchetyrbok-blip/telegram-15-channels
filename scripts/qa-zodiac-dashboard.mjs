@@ -517,15 +517,14 @@ async function main() {
 
     assertIncludes(pages.miniappHub, "data-aphrodite-miniapp-entry-redesign", "miniapp package 238 marker");
     assertIncludes(pages.miniappHub, "Aphrodite", "miniapp redesigned Aphrodite brand");
-    assertIncludes(pages.miniappHub, "premium mystical romantic", "miniapp redesigned visual mood");
-    assertIncludes(pages.miniappHub, "Узнайте, что между вами сейчас", "miniapp redesigned hero title");
+    assertIncludes(pages.miniappHub, "VIP preview", "miniapp compact VIP preview copy");
+    assertIncludes(pages.miniappHub, "Короткий Aphrodite Mini App", "miniapp compact metadata");
     assertIncludes(pages.miniappHub, "Проверить совместимость", "miniapp redesigned primary compatibility CTA");
     assertIncludes(pages.miniappHub, "Матрица судьбы", "miniapp redesigned birth matrix CTA");
     assertIncludes(pages.miniappHub, "Мистическая карта", "miniapp redesigned mystic CTA");
-    assertIncludes(pages.miniappHub, "VIP preview закрыт", "miniapp package 267 locked VIP preview copy");
-    assertIncludes(pages.miniappHub, "Полный разбор отношений", "miniapp package 267 full report teaser copy");
-    assertIncludes(pages.miniappHub, "Без оплаты на этом экране", "miniapp redesigned safety: no payment");
-    assertIncludes(pages.miniappHub, "Без записи в базу данных", "miniapp redesigned safety: no database write");
+    assertIncludes(pages.miniappHub, "Прогноз", "miniapp compact forecast CTA");
+    assertIncludes(pages.miniappHub, "Без оплаты", "miniapp compact safety: no payment");
+    assertIncludes(pages.miniappHub, "VIP закрыт", "miniapp compact safety: vip locked");
     assertIncludes(pages.miniappHub, "Telegram WebView", "miniapp redesigned webview safe area");
     assertIncludes(pages.miniappHub, "birth-matrix", "miniapp redesigned contains birth matrix link");
     assertIncludes(pages.miniappHub, "startapp=mystic", "miniapp redesigned contains mystic startapp link");
@@ -542,14 +541,11 @@ async function main() {
     assertIncludes(pages.affirmations, "No database", "affirmations safety: no database");
     assertIncludes(pages.affirmations, "No Telegram API", "affirmations safety: no telegram API");
 
-    assertIncludes(pages.vipPreview, "VIP Preview", "vip preview page title");
-    assertIncludes(pages.vipPreview, "Только preview (Package 107)", "vip preview mock notice");
-    assertIncludes(pages.vipPreview, "Будущий VIP-доступ", "vip preview subtitle");
+    assertIncludes(pages.vipPreview, "VIP preview", "vip preview page title");
+    assertIncludes(pages.vipPreview, "VIP открыт бесплатно до 17.09.2026", "vip preview compact free period");
+    assertIncludes(pages.vipPreview, "Premium preview", "vip preview compact locked card");
     assertIncludes(pages.vipPreview, "Без оплаты", "vip preview safety: no payment");
     assertIncludes(pages.vipPreview, "VIP закрыт", "vip preview safety: no unlock");
-    assertIncludes(pages.vipPreview, "Без базы", "vip preview safety: no database");
-    assertIncludes(pages.vipPreview, "Без Telegram API", "vip preview safety: no telegram API");
-    assertIncludes(pages.vipPreview, "Без подписки", "vip preview safety: no subscription logic");
 
     assertIncludes(pages.miniappRouteSafety, "Mini App Route Safety Baseline", "miniapp route safety page title");
     assertIncludes(pages.miniappRouteSafety, "/miniapp", "miniapp route safety: miniapp route listed");
@@ -1770,11 +1766,10 @@ async function main() {
     assertIncludes(pages.vipCompatibilityReportFoundation, "No real VIP unlock", "vip compatibility report vip boundary");
     assertIncludes(pages.vipCompatibilityReportFoundation, "No Telegram API call", "vip compatibility report telegram boundary");
 
-    assertIncludes(pages.vipCompatibilityReport, "VIP Compatibility Deep Report", "vip compatibility report page title");
-    assertIncludes(pages.vipCompatibilityReport, "UI preview only", "vip compatibility report preview classification");
+    assertIncludes(pages.vipCompatibilityReport, "VIP preview совместимости", "vip compatibility report page title");
+    assertIncludes(pages.vipCompatibilityReport, "Preview", "vip compatibility report preview classification");
     assertIncludes(pages.vipCompatibilityReport, "без оплаты", "vip compatibility report payment boundary");
-    assertIncludes(pages.vipCompatibilityReport, "VIP-разблокировк", "vip compatibility report vip boundary");
-    assertIncludes(pages.vipCompatibilityReport, "Нет вызова Telegram API", "vip compatibility report telegram boundary");
+    assertIncludes(pages.vipCompatibilityReport, "VIP закрыт", "vip compatibility report vip boundary");
 
     assertIncludes(pages.vipCompatibilityReportPreview, "VIP Compatibility Report UI Preview", "vip compatibility report preview dashboard title");
     assertIncludes(pages.vipCompatibilityReportPreview, "Preview UI only", "vip compatibility report preview dashboard classification");

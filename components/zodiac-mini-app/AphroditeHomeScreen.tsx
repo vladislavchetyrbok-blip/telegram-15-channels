@@ -2,14 +2,12 @@
 
 import type { ReactNode } from "react";
 import {
-  BadgeCheck,
   CalendarDays,
   CircleDot,
   Crown,
   Gem,
   Hash,
   HeartHandshake,
-  ShieldCheck,
   Sparkles,
   Star,
   Stars,
@@ -17,7 +15,7 @@ import {
   WandSparkles,
 } from "lucide-react";
 
-import { AphroditeBadge, AphroditeCard, AphroditeLockedPreviewCard } from "./aphrodite-design-system";
+import { AphroditeBadge } from "./aphrodite-design-system";
 import { panelClass } from "./ui-primitives";
 import type { HubTab, MoreFeatureId, ZodiacSign } from "./types";
 
@@ -49,7 +47,7 @@ const quickActions: AphroditeHomeAction[] = [
   {
     id: "compatibility",
     title: "Проверить совместимость",
-    text: "Любовь, страсть, примирение и мягкий совет для пары.",
+    text: "Любовь, пара, примирение.",
     icon: <HeartHandshake className="h-5 w-5" aria-hidden="true" />,
     target: { tab: "love", feature: "compatibilityTool" },
     tone: "rose",
@@ -58,7 +56,7 @@ const quickActions: AphroditeHomeAction[] = [
   {
     id: "birth_matrix",
     title: "Матрица судьбы",
-    text: "Личный код по дате рождения в безопасном текстовом вводе.",
+    text: "Код даты рождения.",
     icon: <Star className="h-5 w-5" aria-hidden="true" />,
     target: { tab: "mystic", feature: "birthMatrix" },
     tone: "amber",
@@ -66,10 +64,27 @@ const quickActions: AphroditeHomeAction[] = [
   {
     id: "mystic",
     title: "Мистическая карта",
-    text: "Карта дня, Таро, руна и спокойная подсказка настроения.",
+    text: "Карта дня, Таро и руна.",
     icon: <WandSparkles className="h-5 w-5" aria-hidden="true" />,
     target: { tab: "mystic", feature: "dailyCard" },
     tone: "violet",
+  },
+  {
+    id: "forecasts",
+    title: "Прогноз",
+    text: "День, неделя и знаки.",
+    icon: <CalendarDays className="h-5 w-5" aria-hidden="true" />,
+    target: { tab: "forecasts", feature: "todayForecast" },
+    tone: "cyan",
+  },
+  {
+    id: "vip",
+    title: "VIP preview",
+    text: "Без оплаты · VIP закрыт.",
+    icon: <Crown className="h-5 w-5" aria-hidden="true" />,
+    target: { tab: "vip", feature: "vip" },
+    tone: "amber",
+    badge: "Preview",
   },
 ];
 
@@ -147,7 +162,7 @@ const categories: AphroditeHomeAction[] = [
   {
     id: "vip",
     title: "VIP раздел",
-    text: "Премиум-функции остаются preview до ручного решения владельца",
+    text: "Preview · без оплаты",
     icon: <Crown className="h-6 w-6" aria-hidden="true" />,
     target: { tab: "vip", feature: "vip" },
     tone: "amber",
@@ -178,13 +193,13 @@ export function AphroditeAstrologyCenterHome({
     <section
       data-aphrodite-miniapp-home-redesign="package-238"
       data-aphrodite-critical-mobile-webview-visual-fix="package-267"
-      className={`${panelClass(publicMode)} aphrodite-pkg-267-mobile-webview-fix space-y-4 overflow-hidden`}
+      className={`${panelClass(publicMode)} aphrodite-pkg-267-mobile-webview-fix space-y-3 overflow-hidden`}
     >
-      <div className="rounded-lg border border-rose-200/20 bg-[linear-gradient(145deg,rgba(251,113,133,0.18),rgba(167,139,250,0.13)_48%,rgba(246,213,138,0.1))] p-4 shadow-[0_22px_70px_rgba(7,7,19,0.5)]">
+      <div className="rounded-lg border border-rose-200/20 bg-[linear-gradient(145deg,rgba(251,113,133,0.18),rgba(167,139,250,0.13)_48%,rgba(246,213,138,0.1))] p-3 shadow-[0_18px_54px_rgba(7,7,19,0.38)] min-[390px]:p-4">
         <div className="flex flex-wrap items-center gap-2">
           <AphroditeBadge tone="rose">Aphrodite</AphroditeBadge>
-          <AphroditeBadge tone="violet">premium mystical romantic</AphroditeBadge>
-          <AphroditeBadge tone="gold">VIP preview до {vipUntilLabel}</AphroditeBadge>
+          <AphroditeBadge tone="violet">романтика</AphroditeBadge>
+          <AphroditeBadge tone="gold">VIP до {vipUntilLabel}</AphroditeBadge>
           {selectedSign ? (
             <AphroditeBadge tone="gold">
               {selectedSign.emoji} {selectedSign.name}
@@ -192,14 +207,9 @@ export function AphroditeAstrologyCenterHome({
           ) : null}
         </div>
 
-        <div className="mt-4 space-y-2">
-          <h2 className="break-words text-2xl font-semibold leading-8 text-white">
-            Астрологический центр для любви и знаков
-          </h2>
-          <p className="text-sm leading-6 text-slate-200">
-            Выберите, что хотите узнать сегодня: совместимость пары, личную Матрицу судьбы,
-            мистическую карту или прогноз дня.
-          </p>
+        <div className="mt-3 space-y-1.5">
+          <h2 className="break-words text-2xl font-semibold leading-8 text-white">Что между вами сейчас?</h2>
+          <p className="text-sm leading-5 text-slate-200">Совместимость, Матрица, Мистика и VIP preview.</p>
         </div>
 
         <button
@@ -210,7 +220,7 @@ export function AphroditeAstrologyCenterHome({
           <span className="min-w-0">
             <span className="block text-sm font-semibold leading-5">Проверить совместимость</span>
             <span className="mt-1 block text-xs leading-4 text-[#3d1622]">
-              Главный вход в любовь, пару и отношения
+              Любовь, пара, примирение
             </span>
           </span>
           <HeartHandshake className="h-5 w-5 shrink-0" aria-hidden="true" />
@@ -223,62 +233,19 @@ export function AphroditeAstrologyCenterHome({
         </div>
       </div>
 
-      <div className="aphrodite-pkg-267-two-after-430 grid gap-3">
-        <AphroditeCard tone="violet" className="min-h-[148px]">
-          <div className="flex h-full flex-col justify-between gap-3">
-            <AphroditeBadge tone="violet">карта дня</AphroditeBadge>
-            <div>
-              <h3 className="text-base font-semibold leading-6 text-white">Мягкий фокус дня</h3>
-              <p className="mt-2 text-sm leading-6 text-slate-300">
-                Начните с совместимости или мистической карты, чтобы получить короткий личный ориентир
-                без плотного технического текста.
-              </p>
-            </div>
-          </div>
-        </AphroditeCard>
-
-        <AphroditeLockedPreviewCard
-          variant="home"
-          scope="home"
-          title="Полный разбор отношений"
-          subtitle="VIP preview закрыт"
-          preview="Глубокая совместимость, Матрица Pro, календарь пары и карточка результата видны как preview. Оплата не запускается, VIP не открывается."
-          features={["Глубокая совместимость", "Матрица Pro", "Календарь пары"]}
-          previewItems={["Карточка результата", "Личный совет", "Нужна проверка владельца"]}
-          safetyLabel="Без оплаты, без VIP-разблокировки, без обхода доступа."
-          className="min-h-[148px]"
-        />
-      </div>
-
       <div className="space-y-3">
         <div className="flex items-end justify-between gap-3">
           <div className="min-w-0">
-            <h2 className="text-base font-semibold leading-6 text-white">Разделы Mini App</h2>
-            <p className="text-sm leading-6 text-slate-400">
-              Все входы ведут в уже существующие безопасные flow.
-            </p>
+            <h2 className="text-base font-semibold leading-6 text-white">Ещё</h2>
+            <p className="text-xs leading-4 text-slate-400">Все разделы доступны ниже.</p>
           </div>
           <AphroditeBadge tone="gold">10 разделов</AphroditeBadge>
         </div>
 
-        <div className="aphrodite-pkg-267-two-after-430 grid gap-3">
+        <div className="aphrodite-pkg-267-two-after-430 grid gap-2">
           {categories.map((category) => (
-            <HomeActionButton key={category.id} action={category} onOpenCategory={onOpenCategory} />
+            <HomeActionButton key={category.id} action={category} onOpenCategory={onOpenCategory} compact />
           ))}
-        </div>
-      </div>
-
-      <div className="rounded-lg border border-emerald-300/20 bg-emerald-950/15 p-3">
-        <div className="flex gap-3">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-emerald-200/25 bg-emerald-200/10 text-emerald-100">
-            <ShieldCheck className="h-4 w-4" aria-hidden="true" />
-          </span>
-          <div className="min-w-0">
-            <h3 className="text-sm font-semibold leading-5 text-emerald-100">Безопасный preview-режим</h3>
-            <p className="mt-1 text-xs leading-5 text-emerald-50/80">
-              Без оплаты на этом экране, без VIP-разблокировки и без отправки сообщений. Публичный запуск остается закрыт до решения владельца.
-            </p>
-          </div>
         </div>
       </div>
 
@@ -300,18 +267,17 @@ function HomeActionButton({
     <button
       type="button"
       onClick={() => onOpenCategory(action.target, action.id)}
-      className={`aphrodite-pkg-267-card-fix group min-w-0 rounded-lg border border-white/12 bg-white/[0.065] p-3 text-left shadow-[0_14px_44px_rgba(8,13,30,0.28)] transition hover:border-rose-200/35 hover:bg-white/[0.095] focus:outline-none focus:ring-2 focus:ring-amber-200/45 ${
-        compact ? "min-h-[104px]" : "min-h-[154px]"
+      className={`aphrodite-pkg-267-card-fix group min-w-0 rounded-lg border border-white/12 bg-white/[0.065] p-2.5 text-left shadow-[0_12px_34px_rgba(8,13,30,0.22)] transition hover:border-rose-200/35 hover:bg-white/[0.095] focus:outline-none focus:ring-2 focus:ring-amber-200/45 ${
+        compact ? "min-h-[86px]" : "min-h-[116px]"
       }`}
     >
       <span className={`inline-flex ${compact ? "h-9 w-9" : "h-11 w-11"} items-center justify-center rounded-lg border ${categoryIconClass[action.tone]}`}>
         {action.icon}
       </span>
-      <span className="aphrodite-pkg-267-text-fix mt-3 block min-w-0 break-words text-sm font-semibold leading-5 text-white">{action.title}</span>
-      <span className="aphrodite-pkg-267-text-fix mt-1 block break-words text-xs leading-5 text-slate-300">{action.text}</span>
-      {action.badge ? (
-        <span className="mt-3 inline-flex items-center gap-1 rounded-md border border-amber-200/20 bg-amber-200/10 px-2 py-1 text-[11px] font-semibold leading-4 text-amber-100">
-          <BadgeCheck className="h-3 w-3" aria-hidden="true" />
+      <span className="aphrodite-pkg-267-text-fix mt-2 block min-w-0 break-words text-sm font-semibold leading-5 text-white">{action.title}</span>
+      <span className="aphrodite-pkg-267-text-fix mt-0.5 block line-clamp-1 break-words text-xs leading-4 text-slate-300">{action.text}</span>
+      {action.badge && !compact ? (
+        <span className="mt-2 inline-flex items-center gap-1 rounded-md border border-amber-200/20 bg-amber-200/10 px-2 py-1 text-[11px] font-semibold leading-4 text-amber-100">
           {action.badge}
         </span>
       ) : null}

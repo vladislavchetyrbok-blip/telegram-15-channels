@@ -45,7 +45,7 @@ const defaultFeatures: Record<AphroditeLockedPreviewVariant, readonly string[]> 
 
 const defaultPreviewItems: Record<AphroditeLockedPreviewVariant, readonly string[]> = {
   general: ["Preview-режим", "Без оплаты", "VIP закрыт"],
-  home: ["Премиум-preview", "Без оплаты", "Нужна проверка владельца"],
+  home: ["Preview", "Без оплаты", "VIP закрыт"],
   compatibility: ["Динамика эмоций", "Календарь любви", "Связь с Матрицей"],
   birthMatrix: ["Циклы", "Деньги и предназначение", "Паттерны отношений"],
   mystic: ["Толкование карты", "Любовь и деньги", "Личный совет"],
@@ -56,8 +56,8 @@ export function AphroditeLockedPreviewCard({
   variant = "general",
   scope,
   title = "VIP preview закрыт",
-  subtitle = "Премиум-блок пока в preview",
-  preview = "Здесь видно, что будет в будущем премиум-слое, но оплата не запускается, VIP не открывается и доступ не меняется.",
+  subtitle = "Preview",
+  preview = "Премиум-блок показан коротко. Без оплаты · VIP закрыт.",
   features,
   previewItems,
   lockLabel = "только preview",
@@ -82,26 +82,26 @@ export function AphroditeLockedPreviewCard({
           variantAccent[variant],
         )}
       >
-        <div className="relative min-w-0 space-y-4 p-3 min-[390px]:p-4">
-          <div className="flex min-w-0 flex-col gap-3 min-[390px]:flex-row min-[390px]:items-start min-[390px]:justify-between">
+        <div className="relative min-w-0 space-y-3 p-2.5 min-[390px]:p-3">
+          <div className="flex min-w-0 items-start justify-between gap-2">
             <div className="flex min-w-0 flex-wrap gap-2">
               <AphroditeBadge tone="locked">VIP preview</AphroditeBadge>
               <AphroditeBadge tone="gold">без оплаты</AphroditeBadge>
             </div>
-            <span className="grid h-10 w-10 shrink-0 place-items-center self-start rounded-lg border border-amber-100/25 bg-black/25 text-amber-100">
-              <LockKeyhole aria-hidden="true" className="h-5 w-5" />
+            <span className="grid h-9 w-9 shrink-0 place-items-center self-start rounded-lg border border-amber-100/25 bg-black/25 text-amber-100">
+              <LockKeyhole aria-hidden="true" className="h-4 w-4" />
             </span>
           </div>
 
-          <div className="min-w-0 space-y-2">
+          <div className="min-w-0 space-y-1.5">
             <p className="text-[11px] font-semibold uppercase leading-4 text-amber-100/80">{subtitle}</p>
-            <h3 className="aphrodite-pkg-267-text-fix break-words text-lg font-semibold leading-7 text-[#fff7ed]">{title}</h3>
-            <p className="aphrodite-pkg-267-text-fix break-words text-sm leading-6 text-slate-300">{preview}</p>
+            <h3 className="aphrodite-pkg-267-text-fix break-words text-base font-semibold leading-6 text-[#fff7ed]">{title}</h3>
+            <p className="aphrodite-pkg-267-text-fix line-clamp-2 break-words text-sm leading-5 text-slate-300">{preview}</p>
           </div>
 
           <div className="aphrodite-pkg-267-two-after-430 grid gap-2">
             {featureList.map((feature) => (
-              <div key={feature} className="aphrodite-pkg-267-text-fix rounded-lg border border-white/10 bg-white/[0.06] px-3 py-2 text-xs font-semibold leading-5 text-slate-100">
+              <div key={feature} className="aphrodite-pkg-267-text-fix rounded-lg border border-white/10 bg-white/[0.06] px-2.5 py-1.5 text-xs font-semibold leading-4 text-slate-100">
                 {feature}
               </div>
             ))}
@@ -109,19 +109,19 @@ export function AphroditeLockedPreviewCard({
 
           <div className="grid gap-2">
             {previewList.map((item) => (
-              <div key={item} className="flex items-start gap-2 rounded-lg border border-amber-100/16 bg-black/18 px-3 py-2 text-xs leading-5 text-amber-50/90">
+              <div key={item} className="flex items-start gap-2 rounded-lg border border-amber-100/16 bg-black/18 px-2.5 py-1.5 text-xs leading-4 text-amber-50/90">
                 <Sparkles aria-hidden="true" className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-100" />
                 <span className="aphrodite-pkg-267-text-fix break-words">{item}</span>
               </div>
             ))}
           </div>
 
-          <div className="grid gap-2 rounded-lg border border-emerald-200/20 bg-emerald-200/10 p-3 text-xs leading-5 text-emerald-50">
+          <div className="flex flex-wrap items-center gap-2 rounded-lg border border-emerald-200/20 bg-emerald-200/10 px-2.5 py-2 text-xs leading-4 text-emerald-50">
             <div className="flex items-start gap-2">
-              <ShieldCheck aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-emerald-100" />
+              <ShieldCheck aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-emerald-100" />
               <span className="aphrodite-pkg-267-text-fix">{safetyLabel}</span>
             </div>
-            <div className="inline-flex w-fit max-w-full rounded-md border border-amber-100/20 bg-black/20 px-2.5 py-1 text-[11px] font-semibold uppercase leading-4 text-amber-100">
+            <div className="inline-flex w-fit max-w-full rounded-md border border-amber-100/20 bg-black/20 px-2 py-0.5 text-[11px] font-semibold uppercase leading-4 text-amber-100">
               <span className="aphrodite-pkg-267-text-fix">{lockLabel}</span>
             </div>
           </div>

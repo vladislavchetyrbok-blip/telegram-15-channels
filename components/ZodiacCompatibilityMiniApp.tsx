@@ -1240,8 +1240,8 @@ function getCategoryStartCopy(tab: HubTab, feature: MoreFeatureId | null) {
   if (tab === "vip" && feature === "giveaways") {
     return {
       title: "🎁 Розыгрыши",
-      subtitle: "Розыгрыши остаются locked preview. Основной VIP-доступ открыт бесплатно до 17.09.2026.",
-      features: ["Locked preview", "Без оплаты", "Без Telegram Stars", "VIP-функции доступны отдельно"],
+      subtitle: "Розыгрыши остаются закрытым preview. Основной VIP-доступ открыт бесплатно до 17.09.2026.",
+      features: ["Preview", "Без оплаты", "VIP закрыт", "Доступ отдельно"],
     };
   }
 
@@ -2578,7 +2578,7 @@ function AngelNumbersCard({
         </div>
         <Field label="Своя комбинация времени" publicMode={publicMode}>
           <input value={value} onChange={(event) => onChange(event.target.value)} placeholder="10:10" inputMode="numeric" autoComplete="off" className="h-12 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900" />
-          <p className={publicMode ? "mt-2 text-xs font-semibold text-emerald-100" : "mt-2 text-xs font-semibold text-emerald-800"}>можно ввести 1010, 10-10, 10 10, 10:10, 222 или 1111; своя комбинация и имя не отправляются в аналитику</p>
+          <p className={publicMode ? "mt-2 text-xs font-semibold text-emerald-100" : "mt-2 text-xs font-semibold text-emerald-800"}>можно ввести 1010, 10-10, 10 10, 10:10, 222 или 1111; данные остаются на устройстве</p>
         </Field>
         {!profile.isValid ? (
           <div className={publicMode ? "rounded-lg border border-rose-200/30 bg-rose-200/10 p-3 text-sm font-semibold text-rose-50" : "rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm font-semibold text-rose-800"}>
@@ -2678,7 +2678,7 @@ function DreamDictionaryCard({
         <ZodiacSelect publicMode={publicMode} label="Символ сна" value={symbolKey} options={dreamSymbolOptions} onChange={onSymbolChange} />
         <Field label="Свой фрагмент сна (необязательно)" publicMode={publicMode}>
           <textarea value={dreamText} onChange={(event) => onDreamTextChange(event.target.value.slice(0, 160))} placeholder="можно оставить пустым" autoComplete="off" className="min-h-24 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-base text-slate-900" />
-          <p className={publicMode ? "mt-2 text-xs font-semibold text-emerald-100" : "mt-2 text-xs font-semibold text-emerald-800"}>текст сна не сохраняется и не отправляется в аналитику</p>
+          <p className={publicMode ? "mt-2 text-xs font-semibold text-emerald-100" : "mt-2 text-xs font-semibold text-emerald-800"}>Данные остаются на устройстве.</p>
         </Field>
         <div className="grid gap-2 sm:grid-cols-2">
           <InfoRow publicMode={publicMode} label={profile.symbol} text={profile.general} />
@@ -2749,7 +2749,7 @@ function NameCompatibilityCard({
           </Field>
         </div>
         {!profile ? (
-          <EmptyFeatureCard publicMode={publicMode} title="Добавьте два имени" text="Результат появится здесь. Имена не сохраняются и не отправляются в аналитику." />
+          <EmptyFeatureCard publicMode={publicMode} title="Добавьте два имени" text="Результат появится здесь. Данные остаются на устройстве." />
         ) : (
           <div className="grid gap-2 sm:grid-cols-2">
             <InfoRow publicMode={publicMode} label={profile.title} text={profile.emotional} />

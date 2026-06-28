@@ -56,12 +56,15 @@ export function ProfileRetentionPanel({
         <ProfileStat publicMode={publicMode} label="Совместимость" value={compatibilityModeLabel} />
       </div>
 
-      <div className="mt-4 rounded-lg border border-sky-200/20 bg-sky-200/10 p-4">
+      <div className="mt-3 rounded-lg border border-sky-200/20 bg-sky-200/10 p-3">
         <div className="flex items-start gap-3">
           <CloudOff className="mt-0.5 h-5 w-5 shrink-0 text-sky-100" />
           <div className="min-w-0">
-            <p className="text-sm font-semibold text-sky-50">Синхронизация между устройствами: выключена</p>
-            <p className="mt-2 text-sm leading-5 text-sky-50/85">История и избранное сейчас сохраняются только на этом устройстве.</p>
+            <p className="text-sm font-semibold text-sky-50">
+              Синхронизация выключена
+              <span className="sr-only">Синхронизация между устройствами: выключена</span>
+            </p>
+            <p className="mt-1 text-xs leading-4 text-sky-50/85">Данные остаются на устройстве.</p>
           </div>
         </div>
       </div>
@@ -106,13 +109,13 @@ export function ProfileRetentionPanel({
 
       <SoftLaunchFeedbackPanel publicMode={publicMode} onEvent={onFeedbackEvent} onShareDraft={onShareFeedbackDraft} />
 
-      <div className="mt-4 rounded-lg border border-emerald-200/20 bg-emerald-200/10 p-4">
+      <div className="mt-3 rounded-lg border border-emerald-200/20 bg-emerald-200/10 p-3">
         <div className="flex items-start gap-3">
           <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-emerald-100" />
           <div className="min-w-0">
             <p className="text-sm font-semibold text-emerald-50">Локальные данные</p>
-            <p className="mt-2 text-sm leading-5 text-emerald-50/85">Данные хранятся только на этом устройстве. Имена, точные даты рождения, время рождения, город и raw-вводы не сохраняются и не отправляются.</p>
-            <button type="button" onClick={onClearLocalData} className="mt-4 inline-flex items-center gap-2 rounded-lg border border-rose-200/25 bg-rose-200/10 px-3 py-2 text-sm font-semibold text-rose-100 transition hover:bg-rose-200/15">
+            <p className="mt-1 text-xs leading-4 text-emerald-50/85">Данные остаются на устройстве.</p>
+            <button type="button" onClick={onClearLocalData} className="mt-3 inline-flex items-center gap-2 rounded-lg border border-rose-200/25 bg-rose-200/10 px-3 py-2 text-sm font-semibold text-rose-100 transition hover:bg-rose-200/15">
               <Trash2 className="h-4 w-4" />
               Очистить данные
             </button>
@@ -178,7 +181,7 @@ function ProfileList({
 }
 
 const quickActions: Array<{ id: string; title: string; text: string; icon: string; target: ProfileQuickTarget }> = [
-  { id: "profile_horoscopes", title: "Гороскопы", text: "сегодня и неделя", icon: "✨", target: { tab: "forecasts", feature: "todayForecast" } },
+  { id: "profile_horoscopes", title: "Прогноз", text: "сегодня и неделя", icon: "✨", target: { tab: "forecasts", feature: "todayForecast" } },
   { id: "profile_compatibility", title: "Совместимость", text: "любовь и диалог", icon: "💞", target: { tab: "love", feature: "compatibilityTool" } },
   { id: "profile_birth_matrix", title: "Матрица судьбы", text: "расчёт по дате", icon: "🧿", target: { tab: "mystic", feature: "birthMatrix" } },
   { id: "profile_angel_numbers", title: "Ангельские числа", text: "11:11 и знаки", icon: "👼", target: { tab: "forecasts", feature: "angelNumbers" } },

@@ -29,14 +29,14 @@ const feedbackTypes: Array<{ id: FeedbackType; label: string; icon: typeof Messa
 ];
 
 const featureOptions: Array<{ id: FeedbackFeatureKey; label: string }> = [
-  { id: "compatibility", label: "Compatibility" },
-  { id: "premium_natal", label: "Premium Natal" },
-  { id: "birth_matrix", label: "Birth Matrix" },
-  { id: "tarot_rune", label: "Tarot/Rune" },
-  { id: "lunar_ritual", label: "Lunar/Ritual" },
-  { id: "angel_numbers", label: "Angel Numbers" },
+  { id: "compatibility", label: "Совместимость" },
+  { id: "premium_natal", label: "Натал" },
+  { id: "birth_matrix", label: "Матрица" },
+  { id: "tarot_rune", label: "Таро/Руны" },
+  { id: "lunar_ritual", label: "Луна" },
+  { id: "angel_numbers", label: "Числа" },
   { id: "vip", label: "VIP" },
-  { id: "profile", label: "Profile" },
+  { id: "profile", label: "Профиль" },
 ];
 
 export function SoftLaunchFeedbackPanel({ publicMode, onEvent, onShareDraft }: SoftLaunchFeedbackPanelProps) {
@@ -95,15 +95,15 @@ export function SoftLaunchFeedbackPanel({ publicMode, onEvent, onShareDraft }: S
   }
 
   return (
-    <div className={publicMode ? "mt-4 rounded-lg border border-fuchsia-200/25 bg-fuchsia-200/10 p-4" : "mt-4 rounded-lg border border-white/12 bg-white/8 p-4"}>
+    <div className={publicMode ? "mt-3 rounded-lg border border-fuchsia-200/25 bg-fuchsia-200/10 p-3" : "mt-3 rounded-lg border border-white/12 bg-white/8 p-3"}>
       <div className="flex items-start gap-3">
         <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-fuchsia-200/25 bg-fuchsia-200/10 text-fuchsia-100">
           <MessageSquare className="h-5 w-5" />
         </span>
         <div className="min-w-0 flex-1">
           <p className="text-sm font-semibold text-white">Помогите улучшить Mini App</p>
-          <p className="mt-1 text-sm leading-5 text-slate-300">Отзыв не сохраняется в профиле и не уходит в аналитику raw-текстом. Мы подготовим безопасный драфт для копирования.</p>
-          <div className="mt-3 flex flex-wrap gap-2">
+          <p className="mt-1 text-xs leading-4 text-slate-300">Данные остаются на устройстве.</p>
+          <div className="mt-2 flex flex-wrap gap-2">
             <button type="button" onClick={() => openPanel("feedback")} className="rounded-lg border border-emerald-200/25 bg-emerald-200/10 px-3 py-2 text-sm font-semibold text-emerald-50 transition hover:bg-emerald-200/15">
               Оставить отзыв
             </button>
@@ -115,10 +115,10 @@ export function SoftLaunchFeedbackPanel({ publicMode, onEvent, onShareDraft }: S
       </div>
 
       {isOpen ? (
-        <div className="mt-4 rounded-lg border border-white/12 bg-black/20 p-4">
+        <div className="mt-3 rounded-lg border border-white/12 bg-black/20 p-3">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-fuchsia-100">Soft launch feedback</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-fuchsia-100">Отзыв</p>
               <h3 className="mt-1 text-base font-semibold text-white">Безопасный драфт отзыва</h3>
             </div>
             <button type="button" onClick={() => setIsOpen(false)} className="rounded-md border border-white/12 bg-white/8 p-2 text-slate-200 transition hover:bg-white/12" aria-label="Закрыть feedback panel">
@@ -203,7 +203,7 @@ export function SoftLaunchFeedbackPanel({ publicMode, onEvent, onShareDraft }: S
               />
               <span className="mt-1 flex items-center gap-1.5 text-xs leading-4 text-emerald-100">
                 <ShieldCheck className="h-3.5 w-3.5" />
-                Комментарий не пишется в localStorage, не отправляется в analytics и не вставляется в драфт автоматически.
+                Данные остаются на устройстве.
               </span>
             </label>
 

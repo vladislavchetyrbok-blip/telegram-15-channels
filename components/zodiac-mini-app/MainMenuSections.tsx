@@ -148,7 +148,7 @@ export function MiniAppBottomNavigation({
 }) {
   const items: Array<{ id: HomeBottomItem; label: string; icon: ReactNode; action: () => void }> = [
     { id: "home", label: "Главная", icon: <Sparkles className="h-4 w-4" />, action: onHome },
-    { id: "forecasts", label: "Гороскопы", icon: <CalendarDays className="h-4 w-4" />, action: onForecasts },
+    { id: "forecasts", label: "Прогноз", icon: <CalendarDays className="h-4 w-4" />, action: onForecasts },
     { id: "love", label: "Совмест.", icon: <HeartHandshake className="h-4 w-4" />, action: onLove },
     { id: "vip", label: "VIP", icon: <Crown className="h-4 w-4" />, action: onVip },
     { id: "profile", label: "Профиль", icon: <User className="h-4 w-4" />, action: onProfile },

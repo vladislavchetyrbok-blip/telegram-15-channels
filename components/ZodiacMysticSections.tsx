@@ -110,17 +110,17 @@ export function DailyCardFeature({ publicMode, dateKey, sign }: CommonProps & { 
       >
         <MysticCardsRitualFrame
           publicMode={publicMode}
-          eyebrow="Mystic Cards / карта дня"
-          title="Закрытая карта уже выбрана для вашего знака"
-          body="Откройте результат как тихий ритуал: сначала общий символ, затем любовь, деньги, предупреждение и один мягкий шаг."
+          eyebrow="Мистическая карта"
+          title="Карта дня готова"
+          body="Откройте символ, любовь, ресурс и предупреждение."
         >
           <MysticClosedCardStack
             publicMode={publicMode}
             cards={[
-              { label: "daily", detail: card.theme, active: true },
-              { label: "love", detail: "отношения" },
-              { label: "money", detail: "ресурс" },
-              { label: "warning", detail: "граница" },
+              { label: "День", detail: card.theme, active: true },
+              { label: "Любовь", detail: "отношения" },
+              { label: "Ресурс", detail: "деньги" },
+              { label: "Предупреждение", detail: "граница" },
             ]}
           />
         </MysticCardsRitualFrame>
@@ -133,10 +133,10 @@ export function DailyCardFeature({ publicMode, dateKey, sign }: CommonProps & { 
 
         <div className="grid gap-2 sm:grid-cols-2" data-aphrodite-mystic-card-result="package-241" data-aphrodite-critical-mobile-webview-visual-fix="package-267">
           {[
-            ["card meaning / interpretation", card.phrase],
-            ["love card", card.love],
-            ["money card", card.money],
-            ["warning card", card.avoid],
+            ["Значение карты", card.phrase],
+            ["Любовь", card.love],
+            ["Ресурс", card.money],
+            ["Предупреждение", card.avoid],
           ].map(([label, text]) => (
             <div key={label} className={publicMode ? "rounded-lg border border-white/10 bg-black/15 p-3" : "rounded-lg border border-slate-100 bg-white/80 p-3"}>
               <p className={publicMode ? "text-[11px] font-semibold uppercase tracking-wide text-violet-100" : "text-[11px] font-semibold uppercase tracking-wide text-violet-800"}>{label}</p>
@@ -159,7 +159,7 @@ export function DailyCardFeature({ publicMode, dateKey, sign }: CommonProps & { 
             { label: "ресурс", value: "фокус", detail: card.money },
             { label: "действие", value: "сегодня", detail: card.action },
           ]}
-          footer="Визуальная карточка Mystic. Без отправки в Telegram; логика генерации не менялась."
+          footer="Preview-карточка. Данные остаются на устройстве."
         />
 
         <div className={publicMode ? "rounded-lg border border-emerald-200/20 bg-emerald-200/10 p-4" : "rounded-lg border border-emerald-200 bg-emerald-50 p-4"}>
@@ -265,17 +265,17 @@ export function TarotCardFeature({ publicMode, dateKey, sign, onSave, onShare, o
       >
         <MysticCardsRitualFrame
           publicMode={publicMode}
-          eyebrow="Mystic Cards / Tarot selection"
-          title="Выберите тему, затем откройте закрытый расклад"
-          body={`Карта фона: ${dayCard.card} — ${dayCard.mainMeaning}. Логика выбора осталась прежней: это символическая интерпретация для размышления и выбора действия, а не фатальное предсказание.`}
+          eyebrow="Мистическая карта / Таро"
+          title="Выберите тему"
+          body={`Фон: ${dayCard.card}. Это символическая подсказка, не фатальный прогноз.`}
         >
           <MysticClosedCardStack
             publicMode={publicMode}
             cards={[
-              { label: "daily", detail: dayCard.card, active: true },
-              { label: "love", detail: topic === "love" ? "выбрано" : "можно выбрать" },
-              { label: "money", detail: topic === "money" ? "выбрано" : "можно выбрать" },
-              { label: "warning", detail: "риск / граница" },
+              { label: "День", detail: dayCard.card, active: true },
+              { label: "Любовь", detail: topic === "love" ? "выбрано" : "можно выбрать" },
+              { label: "Деньги", detail: topic === "money" ? "выбрано" : "можно выбрать" },
+              { label: "Предупреждение", detail: "риск" },
             ]}
           />
         </MysticCardsRitualFrame>
@@ -284,7 +284,7 @@ export function TarotCardFeature({ publicMode, dateKey, sign, onSave, onShare, o
           publicMode={publicMode}
           message={dayCard.phrase}
           focus={dayCard.advice}
-          note="Таро показывает возможный фокус внимания, но не заменяет личный выбор и не обещает неизбежный исход."
+          note="Таро даёт фокус, выбор остаётся за вами."
         />
 
         <div data-aphrodite-mystic-card-selection="package-241" data-aphrodite-mystic-card-input="package-241">
@@ -313,7 +313,7 @@ export function TarotCardFeature({ publicMode, dateKey, sign, onSave, onShare, o
                 : "min-h-24 w-full rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-amber-400 focus:outline-none"
             }
           />
-          <p className={publicMode ? "mt-1 text-xs text-slate-400" : "mt-1 text-xs text-slate-500"}>Сырой текст вопроса не сохраняется в истории, избранном, share или analytics.</p>
+          <p className={publicMode ? "mt-1 text-xs text-slate-400" : "mt-1 text-xs text-slate-500"}>Данные остаются на устройстве.</p>
         </div>
 
         <div data-aphrodite-mystic-card-selection="package-241">
@@ -343,7 +343,7 @@ export function TarotCardFeature({ publicMode, dateKey, sign, onSave, onShare, o
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <div className="mb-2 flex flex-wrap gap-2">
-                    <AphroditeBadge tone="gold">revealed card</AphroditeBadge>
+                    <AphroditeBadge tone="gold">Открытая карта</AphroditeBadge>
                     <AphroditeBadge tone="violet">{spread.resultTier}</AphroditeBadge>
                   </div>
                   <h3 className={publicMode ? "mt-1 text-xl font-semibold leading-7 text-white" : "mt-1 text-xl font-semibold leading-7 text-slate-950"}>{spread.spreadLabel} · {spread.topicLabel}</h3>
@@ -381,7 +381,7 @@ export function TarotCardFeature({ publicMode, dateKey, sign, onSave, onShare, o
             <div className={publicMode ? "rounded-xl border border-white/10 bg-white/7 p-4" : "rounded-xl border border-slate-200 bg-white p-4"}>
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <p className={publicMode ? "text-sm font-semibold text-white" : "text-sm font-semibold text-slate-900"}>Карты расклада</p>
-                <AphroditeBadge tone="rose">card meaning / interpretation</AphroditeBadge>
+                <AphroditeBadge tone="rose">Значение карты</AphroditeBadge>
               </div>
               <div className="mt-3 grid gap-2">
                 {spread.cards.map((item) => (
@@ -468,17 +468,17 @@ export function RuneDayFeature({ publicMode, dateKey, sign, onSave, onShare, onE
       >
         <MysticCardsRitualFrame
           publicMode={publicMode}
-          eyebrow="Mystic Cards / Rune selection"
-          title="Выберите рунический режим и откройте знак"
-          body={`Руна фона: ${dayRune.name} — ${dayRune.mainMeaning}. Руны работают как символическая подсказка для внимания и действия, без давления, страха и фатальных обещаний.`}
+          eyebrow="Мистическая карта / Руны"
+          title="Выберите режим руны"
+          body={`Фон: ${dayRune.name}. Символическая подсказка без давления.`}
         >
           <MysticClosedCardStack
             publicMode={publicMode}
             cards={[
-              { label: "daily", detail: dayRune.symbol, active: true },
-              { label: "love", detail: "контакт" },
-              { label: "money", detail: "ресурс" },
-              { label: "warning", detail: "граница" },
+              { label: "День", detail: dayRune.symbol, active: true },
+              { label: "Любовь", detail: "контакт" },
+              { label: "Ресурс", detail: "деньги" },
+              { label: "Предупреждение", detail: "граница" },
             ]}
           />
         </MysticCardsRitualFrame>
@@ -554,7 +554,7 @@ export function RuneDayFeature({ publicMode, dateKey, sign, onSave, onShare, onE
             <AphroditeShareCard
               variant="mystic"
               scope="mystic-rune"
-              eyebrow="Rune result card"
+              eyebrow="Карточка руны"
               title={spread.modeLabel}
               subtitle={spread.resultTier}
               scoreLabel={String(spread.runeCount)}
@@ -725,7 +725,7 @@ export function LunarRitualFeature({ publicMode, dateKey, onSave, onShare, onEve
         <div className={publicMode ? "rounded-xl border border-violet-200/20 bg-violet-200/10 p-4" : "rounded-xl border border-violet-100 bg-violet-50 p-4"}>
           <p className={publicMode ? "text-xs font-semibold uppercase tracking-wide text-violet-100" : "text-xs font-semibold uppercase tracking-wide text-violet-800"}>честно о формате</p>
           <p className={publicMode ? "mt-2 text-sm leading-6 text-slate-200" : "mt-2 text-sm leading-6 text-slate-700"}>
-            Это приближённая лунная интерпретация для самонаблюдения и мягких действий. Текст намерения не сохраняется, не уходит в analytics и не попадает в share.
+            Данные остаются на устройстве.
           </p>
         </div>
 
@@ -1165,9 +1165,9 @@ function MysticCardsRitualFrame({
         <div className="w-full min-w-0 shrink-0 sm:w-[168px]">{children}</div>
       </div>
       <div className="mt-4 flex flex-wrap gap-2" data-aphrodite-mystic-card-state="package-241">
-        <AphroditeBadge tone="gold">closed card</AphroditeBadge>
-        <AphroditeBadge tone="rose">selected card</AphroditeBadge>
-        <AphroditeBadge tone="cosmic">reveal stays user-triggered</AphroditeBadge>
+        <AphroditeBadge tone="gold">Закрыто</AphroditeBadge>
+        <AphroditeBadge tone="rose">Выбрано</AphroditeBadge>
+        <AphroditeBadge tone="cosmic">Открыть</AphroditeBadge>
       </div>
     </div>
   );
@@ -1232,9 +1232,10 @@ function MysticLockedPreview({ publicMode, context }: { publicMode: boolean; con
         scope={publicMode ? "mystic" : "mystic-dashboard-preview"}
         title={`Глубокое Mystic-чтение: ${context}`}
         subtitle="Mystic preview закрыт"
-        preview="Preview-слой показывает, как позже может выглядеть глубокое толкование карты, love reading, money/luck reading, предупреждение и личный совет. Без активной оплаты, обхода доступа и VIP-разблокировки."
+        preview="Глубокое чтение показано как preview."
         features={["Глубокое чтение", "Личный ритуал", "Предупреждение"]}
-        previewItems={["Толкование карты", "Любовь и деньги", "Личный совет"]}
+        previewItems={["Значение карты", "Любовь", "Личный совет"]}
+        safetyLabel="Без оплаты · VIP закрыт"
       />
     </div>
   );
