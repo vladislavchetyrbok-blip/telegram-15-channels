@@ -1067,6 +1067,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Soft Launch Dry Run Rollback Plan",
+    href: "/dashboard/networks/zodiac/soft-launch-dry-run-rollback-plan",
+    icon: Rocket,
+    caption: "Package 283 - dry-run-only soft launch and rollback plan; softLaunchStatus remains NOT_APPROVED.",
+    tone: "rose",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
