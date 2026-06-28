@@ -117,6 +117,7 @@ const ROUTES = {
   backupFreshnessRestoreRehearsalExecutionPlan: "/dashboard/networks/zodiac/backup-freshness-restore-rehearsal-execution-plan",
   ownerApprovalGateFinalManualDecisionPlan: "/dashboard/networks/zodiac/owner-approval-gate-final-manual-decision-plan",
   limitedSoftLaunchDryRunMatrix: "/dashboard/networks/zodiac/limited-soft-launch-dry-run-matrix",
+  finalSoftLaunchGoNoGoReview: "/dashboard/networks/zodiac/final-soft-launch-go-no-go-review",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -1486,6 +1487,12 @@ async function main() {
     assertIncludes(pages.limitedSoftLaunchDryRunMatrix, "blocked steps", "limited soft launch blocked steps");
     assertIncludes(pages.limitedSoftLaunchDryRunMatrix, "owner approval required", "limited soft launch owner approval");
     assertIncludes(pages.limitedSoftLaunchDryRunMatrix, "Package 260 - Final Soft Launch Go/No-Go Review", "limited soft launch next package");
+    assertIncludes(pages.finalSoftLaunchGoNoGoReview, "Final Soft Launch Go/No-Go Review", "final soft launch go no-go title");
+    assertIncludes(pages.finalSoftLaunchGoNoGoReview, "go/no-go review", "final soft launch review section");
+    assertIncludes(pages.finalSoftLaunchGoNoGoReview, "NO-GO", "final soft launch no-go status");
+    assertIncludes(pages.finalSoftLaunchGoNoGoReview, "Can execute soft launch now", "final soft launch cannot execute");
+    assertIncludes(pages.finalSoftLaunchGoNoGoReview, "approval not granted", "final soft launch approval not granted");
+    assertIncludes(pages.finalSoftLaunchGoNoGoReview, "Package 261 - Soft Launch Monitoring Readiness Plan", "final soft launch next package");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "Aphrodite Mini App Visual Design Audit", "aphrodite visual design audit title");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "current Mini App visual status", "aphrodite visual audit current status");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "screen-by-screen findings", "aphrodite visual audit screens");

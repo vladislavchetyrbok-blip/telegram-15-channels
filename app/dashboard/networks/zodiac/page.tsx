@@ -948,6 +948,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Final Soft Launch Go/No-Go Review",
+    href: "/dashboard/networks/zodiac/final-soft-launch-go-no-go-review",
+    icon: ClipboardCheck,
+    caption: "Package 260 - final NO-GO review; approval is not granted and soft launch cannot execute now.",
+    tone: "rose",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
