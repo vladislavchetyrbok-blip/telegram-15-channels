@@ -132,6 +132,7 @@ const ROUTES = {
   productionEnvBackupReadinessFixPlan: "/dashboard/networks/zodiac/production-env-backup-readiness-fix-plan",
   manualEnvSetupExecutionChecklist: "/dashboard/networks/zodiac/manual-env-setup-execution-checklist",
   backupFreshnessRestoreRehearsalProtocol: "/dashboard/networks/zodiac/backup-freshness-restore-rehearsal-protocol",
+  publicUrlTelegramMiniappSetupPlan: "/dashboard/networks/zodiac/public-url-telegram-miniapp-setup-plan",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -321,6 +322,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/production-env-backup-readiness-fix-plan"', "production env backup readiness fix plan route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-env-setup-execution-checklist"', "manual env setup execution checklist route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/backup-freshness-restore-rehearsal-protocol"', "backup freshness restore rehearsal protocol route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/public-url-telegram-miniapp-setup-plan"', "public url telegram miniapp setup plan route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");

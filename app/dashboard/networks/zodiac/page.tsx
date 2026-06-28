@@ -1053,6 +1053,13 @@ const platformSections = [
     tone: "rose",
   },
   {
+    title: "Public URL Telegram Mini App Setup Plan",
+    href: "/dashboard/networks/zodiac/public-url-telegram-miniapp-setup-plan",
+    icon: Bot,
+    caption: "Package 281 - manual HTTPS public URL and Telegram Mini App setup plan; BotFather remains NOT_DONE.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
