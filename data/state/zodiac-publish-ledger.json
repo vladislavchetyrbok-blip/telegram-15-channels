@@ -2713,8 +2713,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-06-28T09:26:41.940Z"
+      "status": "sent",
+      "updatedAt": "2026-06-28T09:26:46.025Z",
+      "messageId": "49,",
+      "sentAt": "2026-06-28T09:26:46.025Z"
     }
   }
 }
