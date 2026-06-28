@@ -990,6 +990,13 @@ const platformSections = [
     tone: "rose",
   },
   {
+    title: "Final Pre-Owner-Review Summary",
+    href: "/dashboard/networks/zodiac/final-pre-owner-review-summary",
+    icon: ShieldCheck,
+    caption: "Package 266 - packet is ready for owner manual review; soft launch remains blocked.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

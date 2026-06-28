@@ -123,6 +123,7 @@ const ROUTES = {
   preSoftLaunchOwnerBrief: "/dashboard/networks/zodiac/pre-soft-launch-owner-brief",
   manualChecklistOnePageRunbook: "/dashboard/networks/zodiac/manual-checklist-one-page-runbook",
   finalManualBlockerBoard: "/dashboard/networks/zodiac/final-manual-blocker-board",
+  finalPreOwnerReviewSummary: "/dashboard/networks/zodiac/final-pre-owner-review-summary",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -1529,6 +1530,12 @@ async function main() {
     assertIncludes(pages.finalManualBlockerBoard, "blocker remains open", "final manual blocker remains open");
     assertIncludes(pages.finalManualBlockerBoard, "owner approval missing", "final manual blocker owner approval missing");
     assertIncludes(pages.finalManualBlockerBoard, "Package 266 - Final Pre-Owner-Review Summary", "final manual blocker next package");
+    assertIncludes(pages.finalPreOwnerReviewSummary, "Final Pre-Owner-Review Summary", "final pre owner review summary title");
+    assertIncludes(pages.finalPreOwnerReviewSummary, "READY FOR OWNER REVIEW", "final pre owner review ready status");
+    assertIncludes(pages.finalPreOwnerReviewSummary, "Can proceed to owner manual review: Yes", "final pre owner review can proceed");
+    assertIncludes(pages.finalPreOwnerReviewSummary, "Can execute soft launch now", "final pre owner review cannot execute");
+    assertIncludes(pages.finalPreOwnerReviewSummary, "owner approval still required", "final pre owner review owner approval");
+    assertIncludes(pages.finalPreOwnerReviewSummary, "Package 267 - Owner Real-World Checklist Execution / or STOP for owner manual actions", "final pre owner review next package");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "Aphrodite Mini App Visual Design Audit", "aphrodite visual design audit title");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "current Mini App visual status", "aphrodite visual audit current status");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "screen-by-screen findings", "aphrodite visual audit screens");
