@@ -997,6 +997,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Critical Mobile Telegram WebView Visual Fixes",
+    href: "/dashboard/networks/zodiac/critical-mobile-telegram-webview-visual-fixes",
+    icon: Smartphone,
+    caption: "Package 267 - screenshot-driven Android Telegram WebView fixes for narrow mobile grids, broken English wrapping, VIP preview cards, Russian user-facing copy and safe bottom navigation.",
+    tone: "emerald",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

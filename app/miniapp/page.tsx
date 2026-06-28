@@ -64,7 +64,8 @@ export default function MiniAppHubPage() {
     <main
       data-aphrodite-miniapp-entry-redesign="package-238"
       data-aphrodite-telegram-webview-mobile-polish="package-244"
-      className="aphrodite-mobile-shell zodiac-miniapp-safe-area bg-[#070713] px-3 py-4 text-[#fff7ed] sm:px-5 sm:py-6"
+      data-aphrodite-critical-mobile-webview-visual-fix="package-267"
+      className="aphrodite-mobile-shell aphrodite-pkg-267-mobile-webview-fix zodiac-miniapp-safe-area bg-[#070713] px-3 py-4 text-[#fff7ed] sm:px-5 sm:py-6"
     >
       <div className="aphrodite-scroll-safe aphrodite-safe-bottom mx-auto max-w-md space-y-4">
         <AphroditeSurface className="border-rose-200/20">
@@ -97,18 +98,18 @@ export default function MiniAppHubPage() {
               <HeartHandshake className="h-5 w-5 shrink-0" aria-hidden="true" />
             </Link>
 
-            <div className="grid gap-2 min-[390px]:grid-cols-2">
+            <div className="aphrodite-pkg-267-two-after-430 grid gap-2">
               {secondaryCtas.map((cta) => (
                 <Link
                   key={cta.title}
                   href={cta.href}
-                  className="aphrodite-touch-target min-h-[118px] min-w-0 rounded-lg border border-white/12 bg-white/[0.065] p-3 text-left shadow-[0_14px_44px_rgba(8,13,30,0.28)] transition hover:border-rose-200/35 hover:bg-white/[0.095] focus:outline-none focus:ring-2 focus:ring-amber-200/45"
+                  className="aphrodite-touch-target aphrodite-pkg-267-card-fix min-h-[118px] min-w-0 rounded-lg border border-white/12 bg-white/[0.065] p-3 text-left shadow-[0_14px_44px_rgba(8,13,30,0.28)] transition hover:border-rose-200/35 hover:bg-white/[0.095] focus:outline-none focus:ring-2 focus:ring-amber-200/45"
                 >
                   <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/15 bg-white/[0.08] text-amber-100">
                     <cta.icon className="h-5 w-5" aria-hidden="true" />
                   </span>
-                  <span className="mt-3 block text-sm font-semibold leading-5 text-white">{cta.title}</span>
-                  <span className="mt-1 block text-xs leading-5 text-slate-300">{cta.description}</span>
+                  <span className="aphrodite-pkg-267-text-fix mt-3 block text-sm font-semibold leading-5 text-white">{cta.title}</span>
+                  <span className="aphrodite-pkg-267-text-fix mt-1 block text-xs leading-5 text-slate-300">{cta.description}</span>
                 </Link>
               ))}
             </div>
@@ -128,7 +129,7 @@ export default function MiniAppHubPage() {
           </div>
         </AphroditeCard>
 
-        <div className="grid gap-3 min-[390px]:grid-cols-2">
+        <div className="aphrodite-pkg-267-two-after-430 grid gap-3">
           <AphroditeMysticCardPreview
             title="Мистическая карта"
             meaning="Мягкая подсказка дня в violet/rose/gold стиле: красиво, читаемо и без пугающей мистики."
@@ -136,11 +137,12 @@ export default function MiniAppHubPage() {
           <AphroditeLockedPreviewCard
             variant="home"
             scope="miniapp-entry"
-            title="VIP locked preview"
-            subtitle="Static Mini App entry"
-            preview="Full relationship report, Birth Matrix Pro and shareable premium card stay preview-only: no active payment, no VIP unlock, entitlement не меняется."
-            features={["Deep compatibility report", "Birth Matrix Pro", "Shareable premium card"]}
-            previewItems={["Relationship calendar", "Personal advice", "Owner review required"]}
+            title="VIP preview закрыт"
+            subtitle="Статичный Mini App preview"
+            preview="Полный разбор отношений, Матрица Pro и карточка результата показаны только как preview: без оплаты, без VIP-разблокировки, доступ не меняется."
+            features={["Разбор отношений", "Матрица Pro", "Карточка результата"]}
+            previewItems={["Календарь пары", "Личный совет", "Нужна проверка владельца"]}
+            safetyLabel="Без оплаты, без VIP-разблокировки, без обхода доступа."
           />
         </div>
 

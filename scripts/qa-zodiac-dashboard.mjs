@@ -124,6 +124,7 @@ const ROUTES = {
   manualChecklistOnePageRunbook: "/dashboard/networks/zodiac/manual-checklist-one-page-runbook",
   finalManualBlockerBoard: "/dashboard/networks/zodiac/final-manual-blocker-board",
   finalPreOwnerReviewSummary: "/dashboard/networks/zodiac/final-pre-owner-review-summary",
+  criticalMobileTelegramWebviewVisualFixes: "/dashboard/networks/zodiac/critical-mobile-telegram-webview-visual-fixes",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -517,8 +518,8 @@ async function main() {
     assertIncludes(pages.miniappHub, "Проверить совместимость", "miniapp redesigned primary compatibility CTA");
     assertIncludes(pages.miniappHub, "Матрица судьбы", "miniapp redesigned birth matrix CTA");
     assertIncludes(pages.miniappHub, "Мистическая карта", "miniapp redesigned mystic CTA");
-    assertIncludes(pages.miniappHub, "VIP locked preview", "miniapp redesigned locked VIP preview");
-    assertIncludes(pages.miniappHub, "Full relationship report", "miniapp redesigned full report teaser");
+    assertIncludes(pages.miniappHub, "VIP preview закрыт", "miniapp package 267 locked VIP preview copy");
+    assertIncludes(pages.miniappHub, "Полный разбор отношений", "miniapp package 267 full report teaser copy");
     assertIncludes(pages.miniappHub, "Без оплаты на этом экране", "miniapp redesigned safety: no payment");
     assertIncludes(pages.miniappHub, "Без записи в базу данных", "miniapp redesigned safety: no database write");
     assertIncludes(pages.miniappHub, "Telegram WebView", "miniapp redesigned webview safe area");
@@ -538,13 +539,13 @@ async function main() {
     assertIncludes(pages.affirmations, "No Telegram API", "affirmations safety: no telegram API");
 
     assertIncludes(pages.vipPreview, "VIP Preview", "vip preview page title");
-    assertIncludes(pages.vipPreview, "Preview Only (Package 107)", "vip preview mock notice");
-    assertIncludes(pages.vipPreview, "Future VIP Access", "vip preview subtitle");
-    assertIncludes(pages.vipPreview, "No payment", "vip preview safety: no payment");
-    assertIncludes(pages.vipPreview, "No unlock", "vip preview safety: no unlock");
-    assertIncludes(pages.vipPreview, "No database", "vip preview safety: no database");
-    assertIncludes(pages.vipPreview, "No Telegram API", "vip preview safety: no telegram API");
-    assertIncludes(pages.vipPreview, "No subscription logic", "vip preview safety: no subscription logic");
+    assertIncludes(pages.vipPreview, "Только preview (Package 107)", "vip preview mock notice");
+    assertIncludes(pages.vipPreview, "Будущий VIP-доступ", "vip preview subtitle");
+    assertIncludes(pages.vipPreview, "Без оплаты", "vip preview safety: no payment");
+    assertIncludes(pages.vipPreview, "VIP закрыт", "vip preview safety: no unlock");
+    assertIncludes(pages.vipPreview, "Без базы", "vip preview safety: no database");
+    assertIncludes(pages.vipPreview, "Без Telegram API", "vip preview safety: no telegram API");
+    assertIncludes(pages.vipPreview, "Без подписки", "vip preview safety: no subscription logic");
 
     assertIncludes(pages.miniappRouteSafety, "Mini App Route Safety Baseline", "miniapp route safety page title");
     assertIncludes(pages.miniappRouteSafety, "/miniapp", "miniapp route safety: miniapp route listed");
@@ -1535,7 +1536,20 @@ async function main() {
     assertIncludes(pages.finalPreOwnerReviewSummary, "Can proceed to owner manual review: Yes", "final pre owner review can proceed");
     assertIncludes(pages.finalPreOwnerReviewSummary, "Can execute soft launch now", "final pre owner review cannot execute");
     assertIncludes(pages.finalPreOwnerReviewSummary, "owner approval still required", "final pre owner review owner approval");
-    assertIncludes(pages.finalPreOwnerReviewSummary, "Package 267 - Owner Real-World Checklist Execution / or STOP for owner manual actions", "final pre owner review next package");
+    assertIncludes(pages.finalPreOwnerReviewSummary, "Package 267 - Critical Mobile Telegram WebView Visual Fixes From Owner Screenshots", "final pre owner review next package");
+    assertIncludes(pages.criticalMobileTelegramWebviewVisualFixes, "Critical Mobile Telegram WebView Visual Fixes", "critical mobile telegram webview visual fixes title");
+    assertIncludes(pages.criticalMobileTelegramWebviewVisualFixes, "screenshotFindings", "critical mobile screenshot findings section");
+    assertIncludes(pages.criticalMobileTelegramWebviewVisualFixes, "two-column narrow cards", "critical mobile two column finding");
+    assertIncludes(pages.criticalMobileTelegramWebviewVisualFixes, "broken English text wrapping", "critical mobile broken english finding");
+    assertIncludes(pages.criticalMobileTelegramWebviewVisualFixes, "mobileGridRules", "critical mobile grid rules section");
+    assertIncludes(pages.criticalMobileTelegramWebviewVisualFixes, "&lt;=430px", "critical mobile less than 430 rule");
+    assertIncludes(pages.criticalMobileTelegramWebviewVisualFixes, "vipPreviewRules", "critical mobile vip preview rules");
+    assertIncludes(pages.criticalMobileTelegramWebviewVisualFixes, "userFacingCopyRules", "critical mobile user copy rules");
+    assertIncludes(pages.criticalMobileTelegramWebviewVisualFixes, "textWrappingRules", "critical mobile text wrapping rules");
+    assertIncludes(pages.criticalMobileTelegramWebviewVisualFixes, "Telegram Android WebView", "critical mobile telegram android");
+    assertIncludes(pages.criticalMobileTelegramWebviewVisualFixes, "publicLaunchApproved", "critical mobile launch flag");
+    assertIncludes(pages.criticalMobileTelegramWebviewVisualFixes, "ownerManualReviewRequired", "critical mobile owner flag");
+    assertIncludes(pages.criticalMobileTelegramWebviewVisualFixes, "Package 268 - Owner Visual Recheck After Mobile Fixes", "critical mobile next package");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "Aphrodite Mini App Visual Design Audit", "aphrodite visual design audit title");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "current Mini App visual status", "aphrodite visual audit current status");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "screen-by-screen findings", "aphrodite visual audit screens");
@@ -1745,9 +1759,9 @@ async function main() {
 
     assertIncludes(pages.vipCompatibilityReport, "VIP Compatibility Deep Report", "vip compatibility report page title");
     assertIncludes(pages.vipCompatibilityReport, "UI preview only", "vip compatibility report preview classification");
-    assertIncludes(pages.vipCompatibilityReport, "No payment", "vip compatibility report payment boundary");
-    assertIncludes(pages.vipCompatibilityReport, "No real VIP unlock", "vip compatibility report vip boundary");
-    assertIncludes(pages.vipCompatibilityReport, "No Telegram API call", "vip compatibility report telegram boundary");
+    assertIncludes(pages.vipCompatibilityReport, "без оплаты", "vip compatibility report payment boundary");
+    assertIncludes(pages.vipCompatibilityReport, "VIP-разблокировк", "vip compatibility report vip boundary");
+    assertIncludes(pages.vipCompatibilityReport, "Нет вызова Telegram API", "vip compatibility report telegram boundary");
 
     assertIncludes(pages.vipCompatibilityReportPreview, "VIP Compatibility Report UI Preview", "vip compatibility report preview dashboard title");
     assertIncludes(pages.vipCompatibilityReportPreview, "Preview UI only", "vip compatibility report preview dashboard classification");

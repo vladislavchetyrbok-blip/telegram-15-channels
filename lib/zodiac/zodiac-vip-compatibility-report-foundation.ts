@@ -141,7 +141,7 @@ export function createVipCompatibilityReportMock(
     headline: `The Cosmic Dynamic Between ${name1} and ${name2}`,
     summary: `When ${input.firstSign} and ${input.secondSign} come together, it often creates a unique and fascinating energy. This mock report outlines the areas where harmony thrives and where mindful effort may be required. Remember, astrology offers a lens for reflection, not a final judgment.`,
     vipBoundaryNote:
-      "This is a mock content foundation. Real VIP unlocking, payments, and in-depth personalized generation are currently disabled by the VIP Access Boundary.",
+      "Это mock-фундамент контента. Реальная VIP-разблокировка, платежи и глубокая персональная генерация сейчас отключены VIP Access Boundary.",
     sections: [
       {
         title: "Emotional Landscape",

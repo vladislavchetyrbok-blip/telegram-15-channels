@@ -72,7 +72,7 @@ export function ModeSelector({ publicMode, mode, onChange }: { publicMode: boole
 
 export function RelationshipModeSelector({ publicMode, mode, onChange }: { publicMode: boolean; mode: RelationshipMode; onChange: (mode: RelationshipMode) => void }) {
   return (
-    <section className="grid grid-cols-1 gap-2 min-[390px]:grid-cols-2 sm:grid-cols-3" data-aphrodite-compatibility-relationship-selector="package-239">
+    <section className="aphrodite-pkg-267-three-after-430 grid gap-2 sm:grid-cols-3" data-aphrodite-compatibility-relationship-selector="package-239" data-aphrodite-critical-mobile-webview-visual-fix="package-267">
       {relationshipModes.map((item) => (
         <button
           key={item.id}

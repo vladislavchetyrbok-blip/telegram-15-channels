@@ -76,8 +76,9 @@ a {
 
   .aphrodite-wrap-anywhere {
     min-width: 0;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
     word-break: normal;
+    hyphens: auto;
   }
 
   .zodiac-miniapp-horizontal-scroll {
@@ -101,7 +102,57 @@ a {
 
   .aphrodite-card-spacing-fix {
     overflow-wrap: break-word;
-    word-break: break-word;
+    word-break: normal;
+  }
+
+  /* Package 267: critical Telegram Android WebView screenshot fixes */
+  .aphrodite-pkg-267-mobile-webview-fix {
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: clip;
+  }
+
+  .aphrodite-pkg-267-card-fix {
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .aphrodite-pkg-267-text-fix {
+    min-width: 0;
+    overflow-wrap: break-word;
+    word-break: normal;
+    hyphens: auto;
+  }
+
+  .aphrodite-pkg-267-one-col-grid,
+  .aphrodite-pkg-267-two-after-430,
+  .aphrodite-pkg-267-three-after-430 {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .aphrodite-pkg-267-bottom-nav-fix {
+    max-width: 100%;
+    padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0px));
+  }
+
+  @media (min-width: 431px) {
+    .aphrodite-pkg-267-two-after-430 {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+
+    .aphrodite-pkg-267-three-after-430 {
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    }
+  }
+
+  @media (max-width: 430px) {
+    .aphrodite-pkg-267-card-fix *,
+    .aphrodite-pkg-267-mobile-webview-fix * {
+      overflow-wrap: break-word;
+      word-break: normal;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {

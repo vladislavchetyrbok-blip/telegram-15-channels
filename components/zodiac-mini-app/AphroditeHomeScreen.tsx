@@ -177,7 +177,8 @@ export function AphroditeAstrologyCenterHome({
   return (
     <section
       data-aphrodite-miniapp-home-redesign="package-238"
-      className={`${panelClass(publicMode)} space-y-4 overflow-hidden`}
+      data-aphrodite-critical-mobile-webview-visual-fix="package-267"
+      className={`${panelClass(publicMode)} aphrodite-pkg-267-mobile-webview-fix space-y-4 overflow-hidden`}
     >
       <div className="rounded-lg border border-rose-200/20 bg-[linear-gradient(145deg,rgba(251,113,133,0.18),rgba(167,139,250,0.13)_48%,rgba(246,213,138,0.1))] p-4 shadow-[0_22px_70px_rgba(7,7,19,0.5)]">
         <div className="flex flex-wrap items-center gap-2">
@@ -215,14 +216,14 @@ export function AphroditeAstrologyCenterHome({
           <HeartHandshake className="h-5 w-5 shrink-0" aria-hidden="true" />
         </button>
 
-        <div className="mt-3 grid gap-2 min-[390px]:grid-cols-2">
+        <div className="aphrodite-pkg-267-two-after-430 mt-3 grid gap-2">
           {quickActions.slice(1).map((action) => (
             <HomeActionButton key={action.id} action={action} onOpenCategory={onOpenCategory} compact />
           ))}
         </div>
       </div>
 
-      <div className="grid gap-3 min-[390px]:grid-cols-2">
+      <div className="aphrodite-pkg-267-two-after-430 grid gap-3">
         <AphroditeCard tone="violet" className="min-h-[148px]">
           <div className="flex h-full flex-col justify-between gap-3">
             <AphroditeBadge tone="violet">карта дня</AphroditeBadge>
@@ -239,11 +240,12 @@ export function AphroditeAstrologyCenterHome({
         <AphroditeLockedPreviewCard
           variant="home"
           scope="home"
-          title="Full relationship report"
-          subtitle="VIP locked preview"
-          preview="Deep compatibility, Birth Matrix Pro, relationship calendar and shareable premium card stay preview-only: no active payment, no VIP unlock."
-          features={["Deep compatibility report", "Birth Matrix Pro", "Relationship calendar"]}
-          previewItems={["Shareable premium card", "Personal advice", "Owner review required"]}
+          title="Полный разбор отношений"
+          subtitle="VIP preview закрыт"
+          preview="Глубокая совместимость, Матрица Pro, календарь пары и карточка результата видны как preview. Оплата не запускается, VIP не открывается."
+          features={["Глубокая совместимость", "Матрица Pro", "Календарь пары"]}
+          previewItems={["Карточка результата", "Личный совет", "Нужна проверка владельца"]}
+          safetyLabel="Без оплаты, без VIP-разблокировки, без обхода доступа."
           className="min-h-[148px]"
         />
       </div>
@@ -259,7 +261,7 @@ export function AphroditeAstrologyCenterHome({
           <AphroditeBadge tone="gold">10 разделов</AphroditeBadge>
         </div>
 
-        <div className="grid grid-cols-1 gap-3 min-[390px]:grid-cols-2">
+        <div className="aphrodite-pkg-267-two-after-430 grid gap-3">
           {categories.map((category) => (
             <HomeActionButton key={category.id} action={category} onOpenCategory={onOpenCategory} />
           ))}
@@ -274,8 +276,7 @@ export function AphroditeAstrologyCenterHome({
           <div className="min-w-0">
             <h3 className="text-sm font-semibold leading-5 text-emerald-100">Безопасный preview-режим</h3>
             <p className="mt-1 text-xs leading-5 text-emerald-50/80">
-              No active payment. No VIP unlock. No Telegram messages are sent from this screen.
-              Owner review is still required before public launch.
+              Без оплаты на этом экране, без VIP-разблокировки и без отправки сообщений. Публичный запуск остается закрыт до решения владельца.
             </p>
           </div>
         </div>
@@ -299,15 +300,15 @@ function HomeActionButton({
     <button
       type="button"
       onClick={() => onOpenCategory(action.target, action.id)}
-      className={`group min-w-0 rounded-lg border border-white/12 bg-white/[0.065] p-3 text-left shadow-[0_14px_44px_rgba(8,13,30,0.28)] transition hover:border-rose-200/35 hover:bg-white/[0.095] focus:outline-none focus:ring-2 focus:ring-amber-200/45 ${
+      className={`aphrodite-pkg-267-card-fix group min-w-0 rounded-lg border border-white/12 bg-white/[0.065] p-3 text-left shadow-[0_14px_44px_rgba(8,13,30,0.28)] transition hover:border-rose-200/35 hover:bg-white/[0.095] focus:outline-none focus:ring-2 focus:ring-amber-200/45 ${
         compact ? "min-h-[104px]" : "min-h-[154px]"
       }`}
     >
       <span className={`inline-flex ${compact ? "h-9 w-9" : "h-11 w-11"} items-center justify-center rounded-lg border ${categoryIconClass[action.tone]}`}>
         {action.icon}
       </span>
-      <span className="mt-3 block min-w-0 break-words text-sm font-semibold leading-5 text-white">{action.title}</span>
-      <span className="mt-1 block break-words text-xs leading-5 text-slate-300">{action.text}</span>
+      <span className="aphrodite-pkg-267-text-fix mt-3 block min-w-0 break-words text-sm font-semibold leading-5 text-white">{action.title}</span>
+      <span className="aphrodite-pkg-267-text-fix mt-1 block break-words text-xs leading-5 text-slate-300">{action.text}</span>
       {action.badge ? (
         <span className="mt-3 inline-flex items-center gap-1 rounded-md border border-amber-200/20 bg-amber-200/10 px-2 py-1 text-[11px] font-semibold leading-4 text-amber-100">
           <BadgeCheck className="h-3 w-3" aria-hidden="true" />

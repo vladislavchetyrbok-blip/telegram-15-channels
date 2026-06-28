@@ -153,7 +153,7 @@ export function SoftLaunchFeedbackPanel({ publicMode, onEvent, onShareDraft }: S
 
             <div>
               <p className="text-xs font-semibold text-slate-300">Экран / функция</p>
-              <div className="mt-2 grid grid-cols-2 gap-2">
+              <div className="aphrodite-pkg-267-two-after-430 mt-2 grid gap-2">
                 {featureOptions.map((feature) => (
                   <button
                     key={feature.id}

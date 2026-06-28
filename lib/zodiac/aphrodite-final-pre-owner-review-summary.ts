@@ -30,7 +30,7 @@ export function getAphroditeFinalPreOwnerReviewSummary(): AphroditeFinalReadines
       "Can proceed to owner manual review: Yes",
       "Can execute soft launch now: No",
       "owner approval still required",
-      "Package 267 - Owner Real-World Checklist Execution / or STOP for owner manual actions",
+      "Package 267 - Critical Mobile Telegram WebView Visual Fixes From Owner Screenshots",
     ],
     sections: [
       {
@@ -46,7 +46,7 @@ export function getAphroditeFinalPreOwnerReviewSummary(): AphroditeFinalReadines
             area: "Soft launch execution",
             status: "BLOCKED",
             detail: "Can execute soft launch now: No. Manual blockers and owner approval still required.",
-            ownerAction: "Do not start Package 267 automatically and do not launch.",
+            ownerAction: "Do not launch. Package 267 now addresses owner screenshot visual blockers first.",
           },
           {
             area: "Owner decision boundary",
@@ -69,6 +69,6 @@ export function getAphroditeFinalPreOwnerReviewSummary(): AphroditeFinalReadines
     safetyFlags: createFinalReadinessSafetyFlags(),
     safetyNotes: createFinalReadinessSafetyNotes(APHRODITE_FINAL_PRE_OWNER_REVIEW_SUMMARY_TITLE),
     whatWasNotChanged: createFinalReadinessNotChanged(),
-    nextPackageRecommendation: "Package 267 - Owner Real-World Checklist Execution / or STOP for owner manual actions",
+    nextPackageRecommendation: "Package 267 - Critical Mobile Telegram WebView Visual Fixes From Owner Screenshots",
   };
 }

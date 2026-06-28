@@ -1011,18 +1011,18 @@ export function ExtendedNatalFeature({
               <AphroditeShareCard
                 variant="natal"
                 scope="vip-natal"
-                eyebrow="Natal summary card"
+                eyebrow="Карточка Natal"
                 title={`${resultSign.emoji} ${resultSign.name}`}
                 subtitle={result.modeLabel}
                 scoreLabel={vipElementLabel(resultSign.element)}
-                scoreDetail={result.mode === "extended" ? "extended" : result.mode === "date" ? "date" : "sign"}
+                scoreDetail={result.mode === "extended" ? "расширено" : result.mode === "date" ? "дата" : "знак"}
                 insight={result.summary}
                 highlights={[
-                  { label: "strength", value: resultSign.element, detail: result.items[0]?.text ?? result.summary },
-                  { label: "growth", value: "focus", detail: result.recommendations[1] ?? result.summary },
-                  { label: "today", value: "action", detail: result.recommendations[0] ?? result.summary },
+                  { label: "сила", value: resultSign.element, detail: result.items[0]?.text ?? result.summary },
+                  { label: "рост", value: "фокус", detail: result.recommendations[1] ?? result.summary },
+                  { label: "сегодня", value: "действие", detail: result.recommendations[0] ?? result.summary },
                 ]}
-                footer="Share-ready Natal visual only. Existing safe share fallback unchanged; no DB write, no exact astro claim, and no calculation change."
+                footer="Визуальная карточка Natal. Safe share fallback, DB и расчет остаются без изменений."
               />
               <NatalChartVisual publicMode={publicMode} sign={resultSign} birthDate={birthDate} birthTime={birthTime} birthCity={birthCity} gender={gender} mode={result.mode} title={`${resultSign.name} · символическая натальная карта`} />
               <NatalResultTabs publicMode={publicMode} activeTab={activeNatalTab} onTabChange={setActiveNatalTab} />
@@ -1032,10 +1032,10 @@ export function ExtendedNatalFeature({
                   variant="natal"
                   scope="vip-natal"
                   title="Pro Natal слой"
-                  subtitle="Natal profile locked preview"
-                  preview="Будущий Pro-слой может раскрыть личные циклы, совместимость с матрицей, карьерные сценарии и ритуалы недели. Сейчас это только locked preview: без оплаты, без entitlement и без реального VIP unlock."
-                  features={["Natal profile", "Birth Matrix connection", "Personal advice"]}
-                  previewItems={["Personal cycles", "Career scenarios", "Weekly ritual preview"]}
+                  subtitle="Natal preview закрыт"
+                  preview="Будущий Pro-слой может раскрыть личные циклы, совместимость с матрицей, карьерные сценарии и ритуалы недели. Сейчас это только preview: без оплаты, без обхода доступа и без VIP-разблокировки."
+                  features={["Натальный профиль", "Связь с Матрицей", "Личный совет"]}
+                  previewItems={["Личные циклы", "Карьерные сценарии", "Ритуал недели"]}
                 />
               </div>
               <NatalBottomActions publicMode={publicMode}>

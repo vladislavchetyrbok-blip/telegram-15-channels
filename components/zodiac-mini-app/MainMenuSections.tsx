@@ -88,7 +88,7 @@ export function CompatibilityCategoryChooser({
         <h2 className="mt-1 text-xl font-semibold leading-tight text-white">💞 Совместимость</h2>
         <p className="mt-2 text-sm leading-6 text-slate-300">Выберите тип связи, а затем укажите знаки или данные для расчёта.</p>
       </div>
-      <div className="mt-4 grid grid-cols-2 gap-2">
+      <div className="aphrodite-pkg-267-two-after-430 mt-4 grid gap-2">
         {relationshipModes.map((item) => {
           const active = selectedMode === item.id;
           return (
@@ -155,7 +155,7 @@ export function MiniAppBottomNavigation({
   ];
 
   return (
-    <nav className="sticky bottom-[calc(0.75rem+var(--zma-safe-area-bottom,0px))] z-20 mt-auto grid grid-cols-5 gap-1 rounded-lg border border-white/12 bg-[#0c0b18]/90 p-2 shadow-[0_18px_60px_rgba(0,0,0,0.45)] backdrop-blur">
+    <nav className="aphrodite-pkg-267-bottom-nav-fix sticky bottom-[calc(0.75rem+var(--zma-safe-area-bottom,0px))] z-20 mt-auto grid grid-cols-5 gap-1 rounded-lg border border-white/12 bg-[#0c0b18]/90 p-2 shadow-[0_18px_60px_rgba(0,0,0,0.45)] backdrop-blur" data-aphrodite-critical-mobile-webview-bottom-nav="package-267">
       {items.map((item) => {
         const active = activeItem === item.id;
         return (
@@ -171,7 +171,7 @@ export function MiniAppBottomNavigation({
             aria-current={active ? "page" : undefined}
           >
             {item.icon}
-            <span className="block max-w-full break-words text-center">{item.label}</span>
+            <span className="aphrodite-pkg-267-text-fix block max-w-full break-words text-center">{item.label}</span>
           </button>
         );
       })}

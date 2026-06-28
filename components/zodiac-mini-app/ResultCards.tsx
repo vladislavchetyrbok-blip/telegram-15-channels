@@ -85,7 +85,7 @@ export function ResultPanel({
           <RelationshipScoreRing publicMode={publicMode} value={result.scores.total} label={levelLabel} style={scoreStyle} />
         </div>
 
-        <div className="mt-4 grid gap-2 min-[430px]:grid-cols-3">
+        <div className="aphrodite-pkg-267-three-after-430 mt-4 grid gap-2">
           {scoreHighlights.map((item) => (
             <QuickMetric key={item.label} publicMode={publicMode} label={item.label} value={item.value} text={item.text} />
           ))}
@@ -95,18 +95,18 @@ export function ResultPanel({
       <AphroditeShareCard
         variant="compatibility"
         scope="compatibility"
-        eyebrow="Compatibility result card"
+        eyebrow="Карточка совместимости"
         title={result.pairLabel}
         subtitle={`${result.relationshipModeLabel} / ${result.modeLabel}`}
         scoreLabel={`${result.scores.total}%`}
         scoreDetail={levelLabel}
         insight={result.coupleAdvice}
         highlights={[
-          { label: "strength", value: `${result.scores.love}%`, detail: result.loveText },
-          { label: "talk", value: `${result.scores.communication}%`, detail: result.communicationText },
-          { label: "rhythm", value: `${result.scores.household}%`, detail: result.householdText },
+          { label: "чувства", value: `${result.scores.love}%`, detail: result.loveText },
+          { label: "диалог", value: `${result.scores.communication}%`, detail: result.communicationText },
+          { label: "ритм", value: `${result.scores.household}%`, detail: result.householdText },
         ]}
-        footer="Share-ready compatibility result preview only. Existing safe share fallback stays unchanged; no real Telegram share/send API was added."
+        footer="Визуальная карточка совместимости. Без отправки в Telegram и без изменения safe share fallback."
       />
 
       <FinalAstroMap
@@ -235,12 +235,12 @@ function CompatibilityVipPreview({ publicMode }: { publicMode: boolean }) {
       <AphroditeLockedPreviewCard
         variant="compatibility"
         scope={previewScope}
-        title="Full compatibility report"
-        subtitle="Compatibility VIP locked preview"
-        preview="Future deeper layer can show emotional dynamics, conflict risks, love calendar, and Birth Matrix connection. This stays preview only."
-        features={["Deep compatibility report", "Relationship calendar", "Birth Matrix connection"]}
-        previewItems={["Emotional dynamics", "Conflict risks", "Love calendar", "No active payment and no real VIP unlock"]}
-        safetyLabel="Preview only: no active payment, no real VIP unlock, entitlement unchanged."
+        title="Полный разбор совместимости"
+        subtitle="VIP preview совместимости"
+        preview="Будущий глубокий слой может показать динамику эмоций, зоны риска, календарь любви и связь с Матрицей. Сейчас это только preview."
+        features={["Разбор совместимости", "Календарь пары", "Связь с Матрицей"]}
+        previewItems={["Динамика эмоций", "Зоны риска", "Календарь любви", "Без оплаты и без VIP-разблокировки"]}
+        safetyLabel="Только preview: без оплаты, без VIP-разблокировки, доступ не меняется."
       />
     </div>
   );

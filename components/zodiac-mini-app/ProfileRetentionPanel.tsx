@@ -68,7 +68,7 @@ export function ProfileRetentionPanel({
 
       <div className="mt-4">
         <p className="text-sm font-semibold text-white">Быстрые действия</p>
-        <div className="mt-3 grid grid-cols-2 gap-2">
+        <div className="aphrodite-pkg-267-two-after-430 mt-3 grid gap-2">
           {quickActions.map((action) => (
             <button
               key={action.id}

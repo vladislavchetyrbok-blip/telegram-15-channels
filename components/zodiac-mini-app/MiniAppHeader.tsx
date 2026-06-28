@@ -24,7 +24,7 @@ export function SignSelection({ publicMode, hintSign, onSelect }: { publicMode: 
         </div>
       ) : null}
 
-      <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
+      <div className="aphrodite-pkg-267-three-after-430 mt-5 grid gap-3 sm:grid-cols-3">
         {signs.map((sign) => (
           <button
             key={sign.slug}
@@ -51,7 +51,7 @@ export function HeaderStatusStrip({ publicMode, sign, dateLabel, vipUntilLabel }
   ];
 
   return (
-    <div className={publicMode ? "grid gap-2 rounded-lg border border-white/12 bg-white/8 p-3 text-xs font-semibold text-slate-100" : "grid gap-2 rounded-lg border border-white/12 bg-white/8 p-3 text-xs font-semibold text-slate-100 sm:grid-cols-2"}>
+    <div className={publicMode ? "grid gap-2 rounded-lg border border-white/12 bg-white/8 p-3 text-xs font-semibold text-slate-100" : "aphrodite-pkg-267-two-after-430 grid gap-2 rounded-lg border border-white/12 bg-white/8 p-3 text-xs font-semibold text-slate-100"}>
       {items.map((item) => (
         <span key={item} className="min-w-0 rounded-md border border-white/10 bg-black/15 px-3 py-2 [overflow-wrap:anywhere]">
           {item}
@@ -88,7 +88,7 @@ export function HomeQuickSection({
   return (
     <section className={panelClass(publicMode)}>
       <SectionHeader publicMode={publicMode} icon={<Sparkles className="h-5 w-5" />} title="Главная" subtitle="быстрый вход в основные разделы" />
-      <div className="mt-4 grid grid-cols-2 gap-2">
+      <div className="aphrodite-pkg-267-two-after-430 mt-4 grid gap-2">
         {cards.map((card) => (
           <button
             key={card.title}

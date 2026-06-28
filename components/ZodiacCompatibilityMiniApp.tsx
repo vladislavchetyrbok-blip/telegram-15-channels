@@ -1097,7 +1097,7 @@ export function ZodiacCompatibilityMiniApp({
                     {step === 2 ? (
                       <WizardCard publicMode={publicMode} stepLabel="Шаг 2 из 3" title="Партнёр">
                         <PersonPanel publicMode={publicMode} title="Партнёр" mode={mode} value={partner} onChange={setPartner} onBirthDateAutosign={(person, signSlug) => trackCompatibilityBirthdateAutosign("partner", person, signSlug)} />
-                        <div className="mt-5 grid grid-cols-2 gap-3">
+                        <div className="aphrodite-pkg-267-two-after-430 mt-5 grid gap-3">
                           <button type="button" onClick={() => setStep(1)} className={secondaryButtonClass(publicMode)}>
                             <ArrowLeft className="h-4 w-4" />
                             Назад
@@ -1870,7 +1870,7 @@ function MoreSection({
         <p className={publicMode ? "text-xs font-semibold text-amber-100" : "text-xs font-semibold text-violet-800"}>Открыт раздел</p>
         <p className={publicMode ? "mt-1 text-base font-semibold text-white" : "mt-1 text-base font-semibold text-slate-950"}>{selectedMoreFeature.label}</p>
         {activeMoreFeature !== "giveaways" ? (
-          <div className="mt-3 grid grid-cols-2 gap-2">
+          <div className="aphrodite-pkg-267-two-after-430 mt-3 grid gap-2">
             <button type="button" onClick={() => onFavoriteSave(currentRetentionAction)} className={secondaryTinyButtonClass(publicMode)}>
               <Bookmark className="h-4 w-4" />
               Сохранить
@@ -2455,7 +2455,7 @@ function PartnerMessageCard({
       </div>
 
       <p className={publicMode ? "mt-4 text-xs font-semibold text-slate-400" : "mt-4 text-xs font-semibold text-slate-500"}>Дополнительный тон</p>
-      <div className="grid grid-cols-2 gap-2">
+      <div className="aphrodite-pkg-267-two-after-430 grid gap-2">
         {messageTones.map((item) => (
           <button
             key={item.id}

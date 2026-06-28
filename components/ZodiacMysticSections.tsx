@@ -131,7 +131,7 @@ export function DailyCardFeature({ publicMode, dateKey, sign }: CommonProps & { 
 
         <AphroditeMysticUniversePanel publicMode={publicMode} message={card.phrase} focus={card.advice} />
 
-        <div className="grid gap-2 sm:grid-cols-2" data-aphrodite-mystic-card-result="package-241">
+        <div className="grid gap-2 sm:grid-cols-2" data-aphrodite-mystic-card-result="package-241" data-aphrodite-critical-mobile-webview-visual-fix="package-267">
           {[
             ["card meaning / interpretation", card.phrase],
             ["love card", card.love],
@@ -148,18 +148,18 @@ export function DailyCardFeature({ publicMode, dateKey, sign }: CommonProps & { 
         <AphroditeShareCard
           variant="mystic"
           scope="mystic-daily"
-          eyebrow="Mystic Card result card"
+          eyebrow="Карточка Mystic"
           title={card.title}
           subtitle={card.theme}
-          scoreLabel="card"
-          scoreDetail="daily"
+          scoreLabel="карта"
+          scoreDetail="день"
           insight={card.phrase}
           highlights={[
-            { label: "love", value: "signal", detail: card.love },
-            { label: "money", value: "resource", detail: card.money },
-            { label: "action", value: "today", detail: card.action },
+            { label: "любовь", value: "сигнал", detail: card.love },
+            { label: "ресурс", value: "фокус", detail: card.money },
+            { label: "действие", value: "сегодня", detail: card.action },
           ]}
-          footer="Share-ready Mystic visual only. No real Telegram share/send API and Mystic generation logic unchanged."
+          footer="Визуальная карточка Mystic. Без отправки в Telegram; логика генерации не менялась."
         />
 
         <div className={publicMode ? "rounded-lg border border-emerald-200/20 bg-emerald-200/10 p-4" : "rounded-lg border border-emerald-200 bg-emerald-50 p-4"}>
@@ -289,7 +289,7 @@ export function TarotCardFeature({ publicMode, dateKey, sign, onSave, onShare, o
 
         <div data-aphrodite-mystic-card-selection="package-241" data-aphrodite-mystic-card-input="package-241">
           <p className={publicMode ? "mb-2 text-sm font-semibold text-white" : "mb-2 text-sm font-semibold text-slate-900"}>Тема вопроса</p>
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+          <div className="aphrodite-pkg-267-three-after-430 grid gap-2">
             {tarotTopics.map((item) => (
               <button key={item.id} type="button" onClick={() => setTopic(item.id)} className={choiceButtonClass(publicMode, topic === item.id)}>
                 {item.label}
@@ -362,18 +362,18 @@ export function TarotCardFeature({ publicMode, dateKey, sign, onSave, onShare, o
             <AphroditeShareCard
               variant="mystic"
               scope="mystic-tarot"
-              eyebrow="Tarot result card"
+              eyebrow="Карточка Таро"
               title={spread.spreadLabel}
               subtitle={spread.topicLabel}
               scoreLabel={String(spread.cardCount)}
-              scoreDetail="cards"
+              scoreDetail="карты"
               insight={spread.shortAnswer}
               highlights={[
-                { label: "hidden", value: "meaning", detail: spread.hiddenMeaning },
-                { label: "risk", value: "watch", detail: spread.risk },
-                { label: "action", value: "today", detail: spread.actionToday },
+                { label: "смысл", value: "глубже", detail: spread.hiddenMeaning },
+                { label: "риск", value: "осторожно", detail: spread.risk },
+                { label: "действие", value: "сегодня", detail: spread.actionToday },
               ]}
-              footer="Share-ready Tarot visual only. No real Telegram share/send API and Tarot selection logic unchanged."
+              footer="Визуальная карточка Таро. Без отправки в Telegram; выбор карт не менялся."
             />
 
 
@@ -561,11 +561,11 @@ export function RuneDayFeature({ publicMode, dateKey, sign, onSave, onShare, onE
               scoreDetail="runes"
               insight={spread.mainRune.rune.name + ": " + spread.mainRune.rune.mainMeaning}
               highlights={[
-                { label: "power", value: "signal", detail: spread.power },
-                { label: "risk", value: "watch", detail: spread.risk },
-                { label: "action", value: "today", detail: spread.actionToday },
+                { label: "сила", value: "сигнал", detail: spread.power },
+                { label: "риск", value: "осторожно", detail: spread.risk },
+                { label: "действие", value: "сегодня", detail: spread.actionToday },
               ]}
-              footer="Share-ready Rune visual only. No real Telegram share/send API and Rune random/storage logic unchanged."
+              footer="Визуальная карточка руны. Без отправки в Telegram; random/storage логика не менялась."
             />
 
 
@@ -618,7 +618,7 @@ export function TalismansFeature({ publicMode, sign }: CommonProps & { sign: Zod
   return (
     <FeatureCard publicMode={publicMode} title={`🧿 Талисманы: ${signNames[sign as ZodiacSignId]}`} subtitle="Ваши личные символы силы и ресурсные элементы">
       <div className="mt-4 space-y-3">
-        <div className="grid grid-cols-2 gap-2">
+        <div className="aphrodite-pkg-267-two-after-430 grid gap-2">
           <div className={publicMode ? "rounded bg-white/5 p-2" : "rounded bg-slate-50 p-2"}>
             <p className={publicMode ? "text-xs text-slate-400" : "text-xs text-slate-500"}>Главный талисман</p>
             <p className={publicMode ? "text-sm font-medium text-white" : "text-sm font-medium text-slate-800"}>{data.mainTalisman}</p>
@@ -1038,11 +1038,11 @@ export function BirthMatrixFeature({
               scoreDetail="life path"
               insight={matrix.hero}
               highlights={[
-                { label: "soul", value: String(matrix.soulNumber), detail: matrix.sections.find((section) => section.id === "main")?.points[0] ?? matrix.hero },
-                { label: "growth", value: String(matrix.realizationNumber), detail: matrix.sections.find((section) => section.id === "lesson")?.body ?? matrix.tier },
-                { label: "relations", value: String(matrix.relationshipNumber), detail: matrix.sections.find((section) => section.id === "today")?.body ?? matrix.archetype },
+                { label: "душа", value: String(matrix.soulNumber), detail: matrix.sections.find((section) => section.id === "main")?.points[0] ?? matrix.hero },
+                { label: "рост", value: String(matrix.realizationNumber), detail: matrix.sections.find((section) => section.id === "lesson")?.body ?? matrix.tier },
+                { label: "отношения", value: String(matrix.relationshipNumber), detail: matrix.sections.find((section) => section.id === "today")?.body ?? matrix.archetype },
               ]}
-              footer="Share-ready Birth Matrix visual only. Safe share fallback unchanged; no DB write and no calculation change."
+              footer="Визуальная карточка Матрицы. Safe share fallback, расчет и DB остаются без изменений."
             />
 
             <BirthMatrixVisual publicMode={publicMode} matrix={matrix} activeSection={activeSection} onSectionSelect={handleSectionSelect} />
@@ -1111,10 +1111,10 @@ export function BirthMatrixFeature({
                 variant="birthMatrix"
                 scope="miniapp-matrix"
                 title="Pro-разбор матрицы"
-                subtitle="Birth Matrix Pro locked preview"
-                preview="Будущий Pro-слой может раскрывать циклы, деньги, отношения, миссию и практики глубже. Сейчас это визуальный locked preview: без оплаты, без entitlement и без реального VIP unlock."
-                features={["Birth Matrix Pro", "Personal advice", "Relationship patterns"]}
-                previewItems={["Cycles and money", "Mission and purpose", "Shareable premium card"]}
+                subtitle="Матрица Pro закрыта"
+                preview="Будущий Pro-слой может раскрывать циклы, деньги, отношения, миссию и практики глубже. Сейчас это визуальный preview: без оплаты, без обхода доступа и без VIP-разблокировки."
+                features={["Матрица Pro", "Личный совет", "Паттерны отношений"]}
+                previewItems={["Циклы и деньги", "Миссия и смысл", "Карточка результата"]}
               />
             </div>
 
@@ -1181,7 +1181,7 @@ function MysticClosedCardStack({
   cards: Array<{ label: string; detail: string; active?: boolean }>;
 }) {
   return (
-    <div className="grid min-w-0 grid-cols-2 gap-2" data-aphrodite-mystic-card-closed-state="package-241">
+    <div className="aphrodite-pkg-267-two-after-430 grid min-w-0 gap-2" data-aphrodite-mystic-card-closed-state="package-241" data-aphrodite-critical-mobile-webview-visual-fix="package-267">
       {cards.map((card) => (
         <div
           key={`${card.label}-${card.detail}`}
@@ -1230,11 +1230,11 @@ function MysticLockedPreview({ publicMode, context }: { publicMode: boolean; con
       <AphroditeLockedPreviewCard
         variant="mystic"
         scope={publicMode ? "mystic" : "mystic-dashboard-preview"}
-        title={`Глубокий Mystic Reading: ${context}`}
-        subtitle="Mystic deep reading locked preview"
-        preview="Preview-only слой показывает, как позже могут выглядеть deep card interpretation, love reading, money/luck reading, relationship warning и personal ritual/advice. Нет активной оплаты, entitlement bypass или real VIP unlock."
-        features={["Mystic deep reading", "Personal ritual", "Relationship warning"]}
-        previewItems={["Deep card interpretation", "Love and money/luck reading", "Personal advice"]}
+        title={`Глубокое Mystic-чтение: ${context}`}
+        subtitle="Mystic preview закрыт"
+        preview="Preview-слой показывает, как позже может выглядеть глубокое толкование карты, love reading, money/luck reading, предупреждение и личный совет. Без активной оплаты, обхода доступа и VIP-разблокировки."
+        features={["Глубокое чтение", "Личный ритуал", "Предупреждение"]}
+        previewItems={["Толкование карты", "Любовь и деньги", "Личный совет"]}
       />
     </div>
   );

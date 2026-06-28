@@ -329,18 +329,18 @@ function BirthMatrixResultView({
       <AphroditeShareCard
         variant="birthMatrix"
         scope="birth-matrix"
-        eyebrow="Birth Matrix summary card"
-        title={`${tone.title} / code ${result.coreNumber}`}
-        subtitle="Share-ready Birth Matrix / Natal summary."
+        eyebrow="Карточка Матрицы"
+        title={`${tone.title} / код ${result.coreNumber}`}
+        subtitle="Краткий итог Матрицы / Natal."
         scoreLabel={String(result.coreNumber)}
-        scoreDetail="core"
+        scoreDetail="ядро"
         insight={tone.profile}
         highlights={[
-          { label: "strength", value: "resource", detail: tone.strength },
-          { label: "growth", value: "focus", detail: tone.growth },
-          { label: "today", value: "next step", detail: tone.nextStep },
+          { label: "сила", value: "ресурс", detail: tone.strength },
+          { label: "рост", value: "фокус", detail: tone.growth },
+          { label: "сегодня", value: "шаг", detail: tone.nextStep },
         ]}
-        footer="Share-ready Birth Matrix visual only. No real share/send API, no DB write, and calculation logic unchanged."
+        footer="Визуальная карточка Матрицы. Без отправки, без записи в базу, расчет не менялся."
       />
 
       <section className="grid gap-2 sm:grid-cols-2" aria-label="Ключевые подсказки матрицы">
@@ -386,11 +386,11 @@ function BirthMatrixResultView({
           variant="birthMatrix"
           scope="birth-matrix"
           title="Будущая полная версия"
-          subtitle="Birth Matrix Pro locked preview"
+          subtitle="Матрица Pro закрыта"
           preview="Позже здесь можно будет расширить разбор циклами, отношениями и практиками. Сейчас это только безопасный preview без оплаты, доступа и записи в базу."
-          features={["Birth Matrix Pro", "Personal advice", "Shareable premium card"]}
-          previewItems={["Cycles and relationships", "Money and purpose", "Practice plan"]}
-          safetyLabel="Preview only: no active payment, no real VIP unlock, no DB write."
+          features={["Матрица Pro", "Личный совет", "Карточка результата"]}
+          previewItems={["Циклы и отношения", "Деньги и смысл", "План практики"]}
+          safetyLabel="Только preview: без оплаты, без VIP-разблокировки, без записи в базу."
         />
       </section>
 
