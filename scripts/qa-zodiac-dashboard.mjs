@@ -119,6 +119,7 @@ const ROUTES = {
   limitedSoftLaunchDryRunMatrix: "/dashboard/networks/zodiac/limited-soft-launch-dry-run-matrix",
   finalSoftLaunchGoNoGoReview: "/dashboard/networks/zodiac/final-soft-launch-go-no-go-review",
   softLaunchMonitoringReadinessPlan: "/dashboard/networks/zodiac/soft-launch-monitoring-readiness-plan",
+  incidentRollbackResponseDrill: "/dashboard/networks/zodiac/incident-rollback-response-drill",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -1500,6 +1501,12 @@ async function main() {
     assertIncludes(pages.softLaunchMonitoringReadinessPlan, "no external analytics", "soft launch monitoring no analytics");
     assertIncludes(pages.softLaunchMonitoringReadinessPlan, "no production monitoring activation", "soft launch monitoring no production activation");
     assertIncludes(pages.softLaunchMonitoringReadinessPlan, "Package 262 - Incident Rollback Response Drill", "soft launch monitoring next package");
+    assertIncludes(pages.incidentRollbackResponseDrill, "Incident Rollback Response Drill", "incident rollback title");
+    assertIncludes(pages.incidentRollbackResponseDrill, "incident rollback response drill", "incident rollback section");
+    assertIncludes(pages.incidentRollbackResponseDrill, "rollback drill only", "incident rollback drill only");
+    assertIncludes(pages.incidentRollbackResponseDrill, "do not retry blindly", "incident rollback no blind retry");
+    assertIncludes(pages.incidentRollbackResponseDrill, "no restore executed", "incident rollback no restore");
+    assertIncludes(pages.incidentRollbackResponseDrill, "Package 263 - Pre-Soft-Launch Owner Brief", "incident rollback next package");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "Aphrodite Mini App Visual Design Audit", "aphrodite visual design audit title");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "current Mini App visual status", "aphrodite visual audit current status");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "screen-by-screen findings", "aphrodite visual audit screens");

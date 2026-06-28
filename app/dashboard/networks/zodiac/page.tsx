@@ -962,6 +962,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Incident Rollback Response Drill",
+    href: "/dashboard/networks/zodiac/incident-rollback-response-drill",
+    icon: GitBranch,
+    caption: "Package 262 - rollback drill only; no restore executed and owner stop decision remains manual.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
