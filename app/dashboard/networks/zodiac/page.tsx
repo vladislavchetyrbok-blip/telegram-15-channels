@@ -1060,6 +1060,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Owner Real Device Verification Checklist",
+    href: "/dashboard/networks/zodiac/owner-real-device-verification-checklist",
+    icon: Smartphone,
+    caption: "Package 282 - owner Android/iPhone Telegram WebView checklist; approval remains false.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
