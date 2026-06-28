@@ -121,6 +121,7 @@ const ROUTES = {
   softLaunchMonitoringReadinessPlan: "/dashboard/networks/zodiac/soft-launch-monitoring-readiness-plan",
   incidentRollbackResponseDrill: "/dashboard/networks/zodiac/incident-rollback-response-drill",
   preSoftLaunchOwnerBrief: "/dashboard/networks/zodiac/pre-soft-launch-owner-brief",
+  manualChecklistOnePageRunbook: "/dashboard/networks/zodiac/manual-checklist-one-page-runbook",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -1514,6 +1515,12 @@ async function main() {
     assertIncludes(pages.preSoftLaunchOwnerBrief, "not ready for launch", "pre soft launch not ready");
     assertIncludes(pages.preSoftLaunchOwnerBrief, "manual owner decision", "pre soft launch manual decision");
     assertIncludes(pages.preSoftLaunchOwnerBrief, "Package 264 - Manual Checklist One-Page Runbook", "pre soft launch next package");
+    assertIncludes(pages.manualChecklistOnePageRunbook, "Manual Checklist One-Page Runbook", "manual checklist one page runbook title");
+    assertIncludes(pages.manualChecklistOnePageRunbook, "one-page runbook", "manual checklist one page runbook section");
+    assertIncludes(pages.manualChecklistOnePageRunbook, "manual checklist", "manual checklist marker");
+    assertIncludes(pages.manualChecklistOnePageRunbook, "stop if any blocker is open", "manual checklist stop rule");
+    assertIncludes(pages.manualChecklistOnePageRunbook, "owner sign-off required", "manual checklist owner signoff");
+    assertIncludes(pages.manualChecklistOnePageRunbook, "Package 265 - Final Manual Blocker Board", "manual checklist next package");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "Aphrodite Mini App Visual Design Audit", "aphrodite visual design audit title");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "current Mini App visual status", "aphrodite visual audit current status");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "screen-by-screen findings", "aphrodite visual audit screens");

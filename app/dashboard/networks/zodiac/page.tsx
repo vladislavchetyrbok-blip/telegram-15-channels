@@ -976,6 +976,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Manual Checklist One-Page Runbook",
+    href: "/dashboard/networks/zodiac/manual-checklist-one-page-runbook",
+    icon: ClipboardCheck,
+    caption: "Package 264 - one-page manual checklist; stop if any blocker remains open.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
