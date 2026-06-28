@@ -941,6 +941,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Limited Soft Launch Dry Run Matrix",
+    href: "/dashboard/networks/zodiac/limited-soft-launch-dry-run-matrix",
+    icon: Rocket,
+    caption: "Package 259 - dry-run only matrix for limited soft launch steps; no production launch was performed.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

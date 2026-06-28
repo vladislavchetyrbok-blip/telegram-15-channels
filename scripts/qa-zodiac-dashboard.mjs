@@ -116,6 +116,7 @@ const ROUTES = {
   productionEnvManualSetupExecutionPlan: "/dashboard/networks/zodiac/production-env-manual-setup-execution-plan",
   backupFreshnessRestoreRehearsalExecutionPlan: "/dashboard/networks/zodiac/backup-freshness-restore-rehearsal-execution-plan",
   ownerApprovalGateFinalManualDecisionPlan: "/dashboard/networks/zodiac/owner-approval-gate-final-manual-decision-plan",
+  limitedSoftLaunchDryRunMatrix: "/dashboard/networks/zodiac/limited-soft-launch-dry-run-matrix",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -1479,6 +1480,12 @@ async function main() {
     assertIncludes(pages.ownerApprovalGateFinalManualDecisionPlan, "publicLaunchApproved", "owner approval gate launch flag");
     assertIncludes(pages.ownerApprovalGateFinalManualDecisionPlan, "ownerManualReviewRequired", "owner approval gate owner flag");
     assertIncludes(pages.ownerApprovalGateFinalManualDecisionPlan, "Package 259 - Limited Soft Launch Dry Run Matrix", "owner approval gate next package");
+    assertIncludes(pages.limitedSoftLaunchDryRunMatrix, "Limited Soft Launch Dry Run Matrix", "limited soft launch dry run title");
+    assertIncludes(pages.limitedSoftLaunchDryRunMatrix, "dry-run only", "limited soft launch dry run only");
+    assertIncludes(pages.limitedSoftLaunchDryRunMatrix, "No production launch was performed", "limited soft launch no production launch");
+    assertIncludes(pages.limitedSoftLaunchDryRunMatrix, "blocked steps", "limited soft launch blocked steps");
+    assertIncludes(pages.limitedSoftLaunchDryRunMatrix, "owner approval required", "limited soft launch owner approval");
+    assertIncludes(pages.limitedSoftLaunchDryRunMatrix, "Package 260 - Final Soft Launch Go/No-Go Review", "limited soft launch next package");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "Aphrodite Mini App Visual Design Audit", "aphrodite visual design audit title");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "current Mini App visual status", "aphrodite visual audit current status");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "screen-by-screen findings", "aphrodite visual audit screens");
