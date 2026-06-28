@@ -115,6 +115,7 @@ const ROUTES = {
   contentCtaOwnerReviewExecution: "/dashboard/networks/zodiac/content-cta-owner-review-execution",
   productionEnvManualSetupExecutionPlan: "/dashboard/networks/zodiac/production-env-manual-setup-execution-plan",
   backupFreshnessRestoreRehearsalExecutionPlan: "/dashboard/networks/zodiac/backup-freshness-restore-rehearsal-execution-plan",
+  ownerApprovalGateFinalManualDecisionPlan: "/dashboard/networks/zodiac/owner-approval-gate-final-manual-decision-plan",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -1471,6 +1472,13 @@ async function main() {
     assertIncludes(pages.backupFreshnessRestoreRehearsalExecutionPlan, "publicLaunchApproved", "backup freshness restore execution launch flag");
     assertIncludes(pages.backupFreshnessRestoreRehearsalExecutionPlan, "ownerManualReviewRequired", "backup freshness restore execution owner flag");
     assertIncludes(pages.backupFreshnessRestoreRehearsalExecutionPlan, "Package 258 - Owner Approval Gate Final Manual Decision Plan", "backup freshness restore execution next package");
+    assertIncludes(pages.ownerApprovalGateFinalManualDecisionPlan, "Owner Approval Gate Final Manual Decision Plan", "owner approval gate final title");
+    assertIncludes(pages.ownerApprovalGateFinalManualDecisionPlan, "owner approval decision gate", "owner approval gate section");
+    assertIncludes(pages.ownerApprovalGateFinalManualDecisionPlan, "owner approval missing", "owner approval gate missing");
+    assertIncludes(pages.ownerApprovalGateFinalManualDecisionPlan, "soft launch cannot execute now", "owner approval gate cannot execute");
+    assertIncludes(pages.ownerApprovalGateFinalManualDecisionPlan, "publicLaunchApproved", "owner approval gate launch flag");
+    assertIncludes(pages.ownerApprovalGateFinalManualDecisionPlan, "ownerManualReviewRequired", "owner approval gate owner flag");
+    assertIncludes(pages.ownerApprovalGateFinalManualDecisionPlan, "Package 259 - Limited Soft Launch Dry Run Matrix", "owner approval gate next package");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "Aphrodite Mini App Visual Design Audit", "aphrodite visual design audit title");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "current Mini App visual status", "aphrodite visual audit current status");
     assertIncludes(pages.aphroditeMiniappVisualDesignAudit, "screen-by-screen findings", "aphrodite visual audit screens");

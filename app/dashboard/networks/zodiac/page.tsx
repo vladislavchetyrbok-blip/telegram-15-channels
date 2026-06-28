@@ -934,6 +934,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Owner Approval Gate Final Manual Decision Plan",
+    href: "/dashboard/networks/zodiac/owner-approval-gate-final-manual-decision-plan",
+    icon: ClipboardCheck,
+    caption: "Package 258 - final manual owner decision gate; approval remains not granted and soft launch cannot execute now.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
