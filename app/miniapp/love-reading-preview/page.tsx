@@ -69,7 +69,7 @@ export default function LoveReadingPreviewPage() {
 
   return (
     <AphroditeMiniAppShell
-      eyebrow="Aphrodite"
+      eyebrow="Зодиакальный центр"
       title="AI Love Reading"
       description="Бесплатный мягкий preview: главная энергия связи, сильная сторона, зона риска и один следующий шаг."
       statusSlot={<AphroditeStatusPill label="Бесплатный preview" tone="accent" />}
@@ -137,8 +137,8 @@ export default function LoveReadingPreviewPage() {
           <div className="flex flex-wrap gap-2">
             <AphroditeStatusPill label="Сейчас доступен только бесплатный preview" tone="safe" />
             <AphroditeStatusPill label="Полная версия будет подключена позже" tone="locked" />
-            <AphroditeStatusPill label="Нет оплаты" tone="safe" />
-            <AphroditeStatusPill label="Нет VIP-разблокировки" tone="safe" />
+            <AphroditeStatusPill label="Без оплаты" tone="safe" />
+            <AphroditeStatusPill label="VIP закрыт" tone="safe" />
           </div>
           <AphroditePrimaryCta href="/vip-compatibility-report" variant="locked" icon={<LockKeyhole className="h-4 w-4" />}>
             Preview будущего Full Love Report без доступа

@@ -197,7 +197,7 @@ export function AphroditeAstrologyCenterHome({
     >
       <div className="rounded-lg border border-rose-200/20 bg-[linear-gradient(145deg,rgba(251,113,133,0.18),rgba(167,139,250,0.13)_48%,rgba(246,213,138,0.1))] p-3 shadow-[0_18px_54px_rgba(7,7,19,0.38)] min-[390px]:p-4">
         <div className="flex flex-wrap items-center gap-2">
-          <AphroditeBadge tone="rose">Aphrodite</AphroditeBadge>
+          <AphroditeBadge tone="rose">Зодиак</AphroditeBadge>
           <AphroditeBadge tone="violet">романтика</AphroditeBadge>
           <AphroditeBadge tone="gold">VIP до {vipUntilLabel}</AphroditeBadge>
           {selectedSign ? (
@@ -239,7 +239,7 @@ export function AphroditeAstrologyCenterHome({
             <h2 className="text-base font-semibold leading-6 text-white">Ещё</h2>
             <p className="text-xs leading-4 text-slate-400">Все разделы доступны ниже.</p>
           </div>
-          <AphroditeBadge tone="gold">10 разделов</AphroditeBadge>
+          <AphroditeBadge tone="gold">Разделы</AphroditeBadge>
         </div>
 
         <div className="aphrodite-pkg-267-two-after-430 grid gap-2">
@@ -267,15 +267,17 @@ function HomeActionButton({
     <button
       type="button"
       onClick={() => onOpenCategory(action.target, action.id)}
-      className={`aphrodite-pkg-267-card-fix group min-w-0 rounded-lg border border-white/12 bg-white/[0.065] p-2.5 text-left shadow-[0_12px_34px_rgba(8,13,30,0.22)] transition hover:border-rose-200/35 hover:bg-white/[0.095] focus:outline-none focus:ring-2 focus:ring-amber-200/45 ${
-        compact ? "min-h-[86px]" : "min-h-[116px]"
+      className={`aphrodite-pkg-267-card-fix group min-w-0 rounded-lg border border-white/12 bg-white/[0.065] text-left shadow-[0_12px_34px_rgba(8,13,30,0.22)] transition hover:border-rose-200/35 hover:bg-white/[0.095] focus:outline-none focus:ring-2 focus:ring-amber-200/45 ${
+        compact ? "flex min-h-[58px] items-center gap-2.5 p-2" : "min-h-[116px] p-2.5"
       }`}
     >
-      <span className={`inline-flex ${compact ? "h-9 w-9" : "h-11 w-11"} items-center justify-center rounded-lg border ${categoryIconClass[action.tone]}`}>
+      <span className={`inline-flex ${compact ? "h-8 w-8" : "h-11 w-11"} shrink-0 items-center justify-center rounded-lg border ${categoryIconClass[action.tone]}`}>
         {action.icon}
       </span>
-      <span className="aphrodite-pkg-267-text-fix mt-2 block min-w-0 break-words text-sm font-semibold leading-5 text-white">{action.title}</span>
-      <span className="aphrodite-pkg-267-text-fix mt-0.5 block line-clamp-1 break-words text-xs leading-4 text-slate-300">{action.text}</span>
+      <span className="min-w-0 flex-1">
+        <span className="aphrodite-pkg-267-text-fix block min-w-0 break-words text-sm font-semibold leading-5 text-white">{action.title}</span>
+        <span className="aphrodite-pkg-267-text-fix mt-0.5 block line-clamp-1 break-words text-xs leading-4 text-slate-300">{action.text}</span>
+      </span>
       {action.badge && !compact ? (
         <span className="mt-2 inline-flex items-center gap-1 rounded-md border border-amber-200/20 bg-amber-200/10 px-2 py-1 text-[11px] font-semibold leading-4 text-amber-100">
           {action.badge}

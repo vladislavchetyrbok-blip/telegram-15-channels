@@ -32,7 +32,7 @@ import { LunarCalendarVisual } from "./zodiac-mini-app/LunarCalendarVisual";
 import { RuneSpreadVisual } from "./zodiac-mini-app/RuneSpreadVisual";
 import { TarotSpreadVisual } from "./zodiac-mini-app/TarotSpreadVisual";
 import { AphroditeMysticUniversePanel } from "./zodiac-mini-app/AphroditeMysticUniversePanel";
-import { ZodiacDateInput } from "./zodiac-mini-app/ZodiacDateInput";
+import { ZodiacUnifiedDateInput } from "./zodiac-mini-app/ZodiacUnifiedDateInput";
 import {
   AphroditeBadge,
   AphroditeCard,
@@ -535,7 +535,7 @@ export function RuneDayFeature({ publicMode, dateKey, sign, onSave, onShare, onE
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <div className="mb-2 flex flex-wrap gap-2">
-                    <AphroditeBadge tone="violet">revealed rune</AphroditeBadge>
+                    <AphroditeBadge tone="violet">Открытая руна</AphroditeBadge>
                     <AphroditeBadge tone="gold">{spread.resultTier}</AphroditeBadge>
                   </div>
                   <h3 className={publicMode ? "mt-1 text-xl font-semibold leading-7 text-white" : "mt-1 text-xl font-semibold leading-7 text-slate-950"}>{spread.modeLabel}</h3>
@@ -752,7 +752,7 @@ export function LunarRitualFeature({ publicMode, dateKey, onSave, onShare, onEve
           </div>
           {dateBucket === "custom" ? (
             <div className="mt-3">
-              <ZodiacDateInput dateKind="calendar" publicMode={publicMode} value={customDate} onChange={setCustomDate} autoComplete="off" hasError={Boolean(customDate && !selectedDateKey)} />
+              <ZodiacUnifiedDateInput dateKind="calendar" publicMode={publicMode} value={customDate} onChange={setCustomDate} autoComplete="off" hasError={Boolean(customDate && !selectedDateKey)} />
             </div>
           ) : null}
           {dateBucket === "custom" && !selectedDateKey ? <p className={publicMode ? "mt-2 text-xs text-amber-200" : "mt-2 text-xs text-amber-700"}>Введите дату в формате ДД.ММ.ГГГГ.</p> : null}
@@ -953,7 +953,7 @@ export function BirthMatrixFeature({
             data-aphrodite-birth-matrix-input="package-240"
           >
             <AphroditeSectionHeader
-              eyebrow="Birth Matrix / Natal input"
+              eyebrow="Матрица судьбы"
               title="Личный профиль по дате рождения"
               description="Введите дату рождения, чтобы увидеть число пути, число души, реализацию, отношения и главный архетип. Дата используется только на экране расчёта."
             />
@@ -969,7 +969,7 @@ export function BirthMatrixFeature({
                 </div>
               ))}
             </div>
-            <ZodiacDateInput publicMode={publicMode} value={inputVal} onChange={setInputVal} hasError={Boolean(inputVal && !generateBirthMatrix(inputVal))} birthDateScope="miniapp-matrix" />
+            <ZodiacUnifiedDateInput publicMode={publicMode} value={inputVal} onChange={setInputVal} hasError={Boolean(inputVal && !generateBirthMatrix(inputVal))} birthDateScope="miniapp-matrix" />
             <button
               onClick={handleApply}
               disabled={!generateBirthMatrix(inputVal)}
@@ -992,7 +992,7 @@ export function BirthMatrixFeature({
                 <div>
                   <div className="mb-2 flex flex-wrap gap-2">
                     <AphroditeBadge tone="gold">Матрица судьбы</AphroditeBadge>
-                    <AphroditeBadge tone="rose">personal energy report</AphroditeBadge>
+                    <AphroditeBadge tone="rose">Личный код</AphroditeBadge>
                   </div>
                   <h3 className={publicMode ? "mt-1 text-2xl font-semibold leading-tight text-white" : "mt-1 text-2xl font-semibold leading-tight text-slate-950"}>
                     {matrix.archetype} · код {matrix.centralNumber}

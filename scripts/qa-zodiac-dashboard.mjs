@@ -126,6 +126,7 @@ const ROUTES = {
   finalPreOwnerReviewSummary: "/dashboard/networks/zodiac/final-pre-owner-review-summary",
   criticalMobileTelegramWebviewVisualFixes: "/dashboard/networks/zodiac/critical-mobile-telegram-webview-visual-fixes",
   ownerVisualRecheckAfterMobileFixes: "/dashboard/networks/zodiac/owner-visual-recheck-after-mobile-fixes",
+  zodiacBrandCleanupUnifiedInputControls: "/dashboard/networks/zodiac/zodiac-brand-cleanup-unified-input-controls",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -309,6 +310,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/final-pre-owner-review-summary"', "final pre owner review summary route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/critical-mobile-telegram-webview-visual-fixes"', "critical mobile telegram webview visual fixes route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/owner-visual-recheck-after-mobile-fixes"', "owner visual recheck after mobile fixes route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/zodiac-brand-cleanup-unified-input-controls"', "zodiac brand cleanup unified input controls route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");
@@ -516,9 +518,9 @@ async function main() {
     assertIncludes(pages.affirmations, "Your Daily Affirmation", "affirmations subtitle");
 
     assertIncludes(pages.miniappHub, "data-aphrodite-miniapp-entry-redesign", "miniapp package 238 marker");
-    assertIncludes(pages.miniappHub, "Aphrodite", "miniapp redesigned Aphrodite brand");
+    assertIncludes(pages.miniappHub, "Зодиак", "miniapp Package 270 Zodiac-facing brand");
     assertIncludes(pages.miniappHub, "VIP preview", "miniapp compact VIP preview copy");
-    assertIncludes(pages.miniappHub, "Короткий Aphrodite Mini App", "miniapp compact metadata");
+    assertIncludes(pages.miniappHub, "Короткий Mini App экран", "miniapp compact metadata");
     assertIncludes(pages.miniappHub, "Проверить совместимость", "miniapp redesigned primary compatibility CTA");
     assertIncludes(pages.miniappHub, "Матрица судьбы", "miniapp redesigned birth matrix CTA");
     assertIncludes(pages.miniappHub, "Мистическая карта", "miniapp redesigned mystic CTA");

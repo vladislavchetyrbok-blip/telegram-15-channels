@@ -5,7 +5,7 @@ export const menuHubTabs: Array<{ id: HubTab; label: string; shortLabel: string;
   { id: "today", label: "Главная", shortLabel: "Главная", icon: Sparkles },
   { id: "love", label: "Любовь", shortLabel: "Любовь", icon: HeartHandshake },
   { id: "profile", label: "Личный профиль", shortLabel: "Профиль", icon: Star },
-  { id: "forecasts", label: "Прогнозы", shortLabel: "Прогнозы", icon: CalendarDays },
+  { id: "forecasts", label: "Прогноз", shortLabel: "Прогноз", icon: CalendarDays },
   { id: "mystic", label: "Мистика", shortLabel: "Мистика", icon: Sparkles },
   { id: "vip", label: "VIP", shortLabel: "VIP", icon: Crown },
 ];
@@ -14,7 +14,7 @@ export const hubCategoryByTab: Record<HubTab, { group: MenuFeatureGroup | "home"
   today: { group: "home", label: "Главная" },
   love: { group: "love", label: "Любовь" },
   profile: { group: "profile", label: "Личный профиль" },
-  forecasts: { group: "forecasts", label: "Прогнозы" },
+  forecasts: { group: "forecasts", label: "Прогноз" },
   mystic: { group: "mystic", label: "Мистика" },
   vip: { group: "vip", label: "VIP" },
 };
@@ -60,7 +60,7 @@ export const menuFeatureTabs: Array<{ id: MoreFeatureId; label: string; shortLab
 export const menuFeatureGroups: Array<{ id: MenuFeatureGroup; title: string; subtitle: string }> = [
   { id: "love", title: "Любовь", subtitle: "пара, диалог и мягкое сближение" },
   { id: "profile", title: "Личный профиль", subtitle: "натальная карта, имя, числа и символы" },
-  { id: "forecasts", title: "Прогнозы", subtitle: "сегодня, неделя, луна, талисман и подсказки" },
+  { id: "forecasts", title: "Прогноз", subtitle: "сегодня, неделя, луна и подсказки" },
   { id: "mystic", title: "Мистика", subtitle: "карты, Таро, руны, аура и символы дня" },
   { id: "vip", title: "VIP", subtitle: "ранний доступ открыт бесплатно" },
 ];

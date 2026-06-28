@@ -15,7 +15,7 @@ export function AphroditeMysticCardPreview({
   return (
     <AphroditeCard tone="violet" className="space-y-4">
       <div className="flex min-w-0 items-start justify-between gap-3">
-        <AphroditeBadge tone="violet">mystic cards</AphroditeBadge>
+        <AphroditeBadge tone="violet">Мистическая карта</AphroditeBadge>
         <WandSparkles aria-hidden="true" className="h-5 w-5 shrink-0 text-violet-100" />
       </div>
       <div className="min-w-0 rounded-lg border border-violet-200/20 bg-[linear-gradient(180deg,rgba(167,139,250,0.16),rgba(17,16,36,0.78))] p-3 min-[390px]:p-4">

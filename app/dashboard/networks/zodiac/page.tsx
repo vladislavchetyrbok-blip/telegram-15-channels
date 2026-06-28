@@ -1011,6 +1011,13 @@ const platformSections = [
     tone: "violet",
   },
   {
+    title: "Zodiac Brand Cleanup + Unified Inputs",
+    href: "/dashboard/networks/zodiac/zodiac-brand-cleanup-unified-input-controls",
+    icon: Brush,
+    caption: "Package 270 - live Mini App brand cleanup, Прогноз bottom nav, compact catalogs, and unified date/time/city inputs without logic changes.",
+    tone: "violet",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

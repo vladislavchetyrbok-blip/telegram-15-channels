@@ -14,7 +14,7 @@ import { trackZodiacMiniAppEvent } from "@/lib/zodiac-mini-app-analytics-client"
 import { zodiacAnalyticsScoreTier, zodiacAnalyticsStartappType, type ZodiacAnalyticsEventName, type ZodiacAnalyticsPayload } from "@/lib/zodiac-mini-app-analytics-shared";
 import { buildPersonalizedCoupleCalendar } from "@/lib/zodiac-couple-calendar-personalization";
 import { buildZodiacCompatibilityPersonalizedCopy } from "@/lib/zodiac-compatibility-copy-personalization";
-import { ArrowLeft, ArrowRight, Bookmark, CalendarDays, Check, Copy, Crown, Gift, HeartHandshake, MapPin, Share2, ShieldCheck, Sparkles, Star } from "lucide-react";
+import { ArrowLeft, ArrowRight, Bookmark, CalendarDays, Check, Copy, Crown, Gift, HeartHandshake, Share2, ShieldCheck, Sparkles, Star } from "lucide-react";
 import Link from "next/link";
 import {
   AuraColorFeature,
@@ -60,12 +60,10 @@ import { findSign, sectionForFeature, vipDetailFeatureIds } from "./zodiac-mini-
 import {
   cityLabel,
   createInitialPerson,
-  formatTimeInput,
   genderSuffix,
   getCityById,
   normalizeName,
   sanitizeNameInput,
-  searchCities,
   isValidTime,
 } from "./zodiac-mini-app/person-state";
 import { DateLoadingSection, EnergyCard } from "./zodiac-mini-app/ForecastCards";
@@ -79,7 +77,9 @@ import {
   type MainMenuCategoryTarget,
 } from "./zodiac-mini-app/MainMenuSections";
 import { MoreFeatureNavigation } from "./zodiac-mini-app/MoreFeatureNavigation";
-import { ZodiacDateInput } from "./zodiac-mini-app/ZodiacDateInput";
+import { ZodiacCityAutocompleteInput } from "./zodiac-mini-app/ZodiacCityAutocompleteInput";
+import { ZodiacUnifiedDateInput } from "./zodiac-mini-app/ZodiacUnifiedDateInput";
+import { ZodiacUnifiedTimeInput } from "./zodiac-mini-app/ZodiacUnifiedTimeInput";
 import { parseBirthDateInput, sanitizeBirthDateInputDraft } from "@/lib/zodiac-birth-date-range";
 import { ProfileRetentionPanel, type ProfileQuickTarget } from "./zodiac-mini-app/ProfileRetentionPanel";
 import { useZodiacMiniAppRetention, type RetentionPanelFocus, type ZodiacRetentionDraft, type ZodiacRetentionItem } from "./zodiac-mini-app/retention";
@@ -2515,7 +2515,7 @@ function NumerologyCard({
             <input value={person.name} onChange={(event) => onPersonChange({ ...person, name: sanitizeNameInput(event.target.value) })} placeholder="можно оставить пустым" autoComplete="off" autoCorrect="off" spellCheck={false} className="h-12 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900" />
           </Field>
           <Field label="Дата рождения (необязательно)" publicMode={publicMode}>
-            <ZodiacDateInput publicMode={publicMode} value={person.birthDate} onChange={(nextValue) => updateBirthDate(person, nextValue, onPersonChange)} hasError={Boolean(dateError)} birthDateScope="mystic" />
+            <ZodiacUnifiedDateInput publicMode={publicMode} value={person.birthDate} onChange={(nextValue) => updateBirthDate(person, nextValue, onPersonChange)} hasError={Boolean(dateError)} birthDateScope="mystic" />
             {dateError ? <p className="mt-2 text-xs font-semibold text-rose-600">{dateError}</p> : null}
           </Field>
           <p className={publicMode ? "text-xs font-semibold text-emerald-100" : "text-xs font-semibold text-emerald-800"}>имя и дата остаются только на экране</p>
@@ -2778,7 +2778,7 @@ function PersonalityArchetypeCard({ publicMode, person, profile, onPersonChange,
             <input value={person.name} onChange={(event) => onPersonChange({ ...person, name: sanitizeNameInput(event.target.value) })} placeholder="можно оставить пустым" autoComplete="off" autoCorrect="off" spellCheck={false} className="h-12 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900" />
           </Field>
           <Field label="Дата рождения (необязательно)" publicMode={publicMode}>
-            <ZodiacDateInput publicMode={publicMode} value={person.birthDate} onChange={(nextValue) => updateBirthDate(person, nextValue, onPersonChange)} hasError={Boolean(dateError)} birthDateScope="mystic" />
+            <ZodiacUnifiedDateInput publicMode={publicMode} value={person.birthDate} onChange={(nextValue) => updateBirthDate(person, nextValue, onPersonChange)} hasError={Boolean(dateError)} birthDateScope="mystic" />
             {dateError ? <p className="mt-2 text-xs font-semibold text-rose-600">{dateError}</p> : null}
           </Field>
         </div>
@@ -2907,7 +2907,7 @@ function NatalChartV1Card({
           </Field>
 
           <Field label="Дата рождения" publicMode={publicMode}>
-            <ZodiacDateInput publicMode={publicMode} value={person.birthDate} onChange={(nextValue) => updateBirthDate(person, nextValue, onPersonChange)} hasError={Boolean(dateError)} birthDateScope="vip-natal" />
+            <ZodiacUnifiedDateInput publicMode={publicMode} value={person.birthDate} onChange={(nextValue) => updateBirthDate(person, nextValue, onPersonChange)} hasError={Boolean(dateError)} birthDateScope="vip-natal" />
             {dateError ? <p className="mt-2 text-xs font-semibold text-rose-600">{dateError}</p> : null}
           </Field>
 
@@ -2919,17 +2919,7 @@ function NatalChartV1Card({
           {person.knowsTime ? (
             <div className="grid gap-3 sm:grid-cols-2">
               <Field label="Время рождения (необязательно)" publicMode={publicMode}>
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  autoComplete="off"
-                  autoCorrect="off"
-                  spellCheck={false}
-                  placeholder="чч:мм"
-                  value={person.birthTime}
-                  onChange={(event) => onPersonChange({ ...person, birthTime: formatTimeInput(event.target.value) })}
-                  className="h-12 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900"
-                />
+                <ZodiacUnifiedTimeInput publicMode={publicMode} value={person.birthTime} onChange={(birthTime) => onPersonChange({ ...person, birthTime })} />
                 {person.birthTime && !isValidTime(person.birthTime) ? <p className="mt-2 text-xs font-semibold text-amber-700">Если время неизвестно, оставьте поле пустым или включите режим без времени.</p> : null}
               </Field>
               <NatalCitySelector publicMode={publicMode} value={person} onChange={onPersonChange} />
@@ -3006,46 +2996,16 @@ function NatalChartV1Card({
 }
 
 function NatalCitySelector({ publicMode, value, onChange }: { publicMode: boolean; value: PersonState; onChange: (value: PersonState) => void }) {
-  const selectedCity = getCityById(value.selectedCityId);
-  const suggestions = value.cityQuery.trim() && !selectedCity ? searchCities(value.cityQuery).slice(0, 5) : [];
-
   return (
-    <div>
-      <Field label="Город рождения (необязательно)" publicMode={publicMode}>
-        <input
-          value={value.cityQuery}
-          onChange={(event) => onChange({ ...value, cityQuery: event.target.value, selectedCityId: "" })}
-          placeholder="Киев или Kyiv"
-          autoComplete="off"
-          className="h-12 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900"
-        />
-      </Field>
-
-      {suggestions.length > 0 ? (
-        <div className="mt-2 max-h-44 overflow-y-auto rounded-lg border border-slate-200 bg-white p-1 shadow-sm">
-          {suggestions.map((city) => (
-            <button
-              key={city.cityId}
-              type="button"
-              onClick={() => onChange({ ...value, selectedCityId: city.cityId, cityQuery: cityLabel(city) })}
-              className="flex w-full items-start gap-2 rounded-md px-3 py-2 text-left text-sm text-slate-700 hover:bg-cyan-50"
-            >
-              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-cyan-700" />
-              <span>
-                <span className="block font-semibold text-slate-950">{city.nameRu}, {city.countryRu}</span>
-                <span className="block text-xs text-slate-500">{city.nameEn} · {city.timezone}</span>
-              </span>
-            </button>
-          ))}
-        </div>
-      ) : null}
-
-      {selectedCity ? (
-        <div className="mt-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-900">
-          {cityLabel(selectedCity)} · {selectedCity.timezone}
-        </div>
-      ) : null}
-    </div>
+    <Field label="Город рождения (необязательно)" publicMode={publicMode}>
+      <ZodiacCityAutocompleteInput
+        publicMode={publicMode}
+        value={value.cityQuery}
+        selectedCityId={value.selectedCityId}
+        onChange={(cityQuery) => onChange({ ...value, cityQuery, selectedCityId: "" })}
+        onCitySelect={(city) => onChange({ ...value, selectedCityId: city.cityId, cityQuery: cityLabel(city) })}
+      />
+    </Field>
   );
 }
 
@@ -3120,7 +3080,7 @@ function ChineseHoroscopeCard({
         </div>
 
         <Field label="Дата рождения" publicMode={publicMode}>
-          <ZodiacDateInput publicMode={publicMode} value={person.birthDate} onChange={(nextValue) => updateBirthDate(person, nextValue, onPersonChange)} hasError={Boolean(dateError)} birthDateScope="mystic" />
+          <ZodiacUnifiedDateInput publicMode={publicMode} value={person.birthDate} onChange={(nextValue) => updateBirthDate(person, nextValue, onPersonChange)} hasError={Boolean(dateError)} birthDateScope="mystic" />
           {dateError ? <p className="mt-2 text-xs font-semibold text-rose-600">{dateError}</p> : null}
         </Field>
 
@@ -3240,7 +3200,7 @@ function NameProfileCard({
           </Field>
 
           <Field label="Дата рождения (необязательно)" publicMode={publicMode}>
-            <ZodiacDateInput publicMode={publicMode} value={person.birthDate} onChange={(nextValue) => updateBirthDate(person, nextValue, onPersonChange)} hasError={Boolean(dateError)} birthDateScope="mystic" />
+            <ZodiacUnifiedDateInput publicMode={publicMode} value={person.birthDate} onChange={(nextValue) => updateBirthDate(person, nextValue, onPersonChange)} hasError={Boolean(dateError)} birthDateScope="mystic" />
             {dateError ? <p className="mt-2 text-xs font-semibold text-rose-600">{dateError}</p> : null}
           </Field>
         </div>
@@ -3493,7 +3453,7 @@ function PersonPanel({
               </div>
             </Field>
             <Field label="Дата рождения" publicMode={publicMode}>
-              <ZodiacDateInput
+              <ZodiacUnifiedDateInput
                 publicMode={publicMode}
                 value={value.birthDate}
                 onChange={(nextValue) => updateBirthDate(value, nextValue, onChange, onBirthDateAutosign)}
@@ -3546,17 +3506,7 @@ function PersonPanel({
             {value.knowsTime ? (
               <div className="grid gap-3 sm:grid-cols-2">
                 <Field label="Время" publicMode={publicMode}>
-                  <input
-                    type="text"
-                    inputMode="numeric"
-                    autoComplete="off"
-                    autoCorrect="off"
-                    spellCheck={false}
-                    placeholder="чч:мм"
-                    value={value.birthTime}
-                    onChange={(event) => onChange({ ...value, birthTime: formatTimeInput(event.target.value) })}
-                    className="h-12 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900"
-                  />
+                  <ZodiacUnifiedTimeInput publicMode={publicMode} value={value.birthTime} onChange={(birthTime) => onChange({ ...value, birthTime })} />
                   {value.knowsTime && value.birthTime && !isValidTime(value.birthTime) ? (
                     <p className="mt-2 text-xs font-semibold text-rose-700">Укажите корректное время (00:00 - 23:59).</p>
                   ) : null}
@@ -3573,48 +3523,21 @@ function PersonPanel({
 
 function CitySelector({ publicMode, value, onChange }: { publicMode: boolean; value: PersonState; onChange: (value: PersonState) => void }) {
   const selectedCity = getCityById(value.selectedCityId);
-  const suggestions = searchCities(value.cityQuery).slice(0, 5);
   const needsSelection = value.knowsTime && value.cityQuery.trim() && !selectedCity;
   const missingCity = value.knowsTime && !value.cityQuery.trim() && !selectedCity;
 
   return (
-    <div>
-      <Field label="Город" publicMode={publicMode}>
-        <input
-          value={value.cityQuery}
-          onChange={(event) => onChange({ ...value, cityQuery: event.target.value, selectedCityId: "" })}
-          placeholder="Воронеж или Voronezh"
-          className={`h-12 w-full rounded-lg border bg-white px-3 text-base text-slate-900 ${needsSelection || missingCity ? "border-amber-300" : "border-slate-200"}`}
-        />
-      </Field>
-
-      {suggestions.length > 0 && !selectedCity ? (
-        <div className="mt-2 max-h-44 overflow-y-auto rounded-lg border border-slate-200 bg-white p-1 shadow-sm">
-          {suggestions.map((city) => (
-            <button
-              key={city.cityId}
-              type="button"
-              onClick={() => onChange({ ...value, selectedCityId: city.cityId, cityQuery: cityLabel(city) })}
-              className="flex w-full items-start gap-2 rounded-md px-3 py-2 text-left text-sm text-slate-700 hover:bg-cyan-50"
-            >
-              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-cyan-700" />
-              <span>
-                <span className="block font-semibold text-slate-950">{city.nameRu}, {city.countryRu}</span>
-                <span className="block text-xs text-slate-500">{city.nameEn} · {city.timezone}</span>
-              </span>
-            </button>
-          ))}
-        </div>
-      ) : null}
-
-      {selectedCity ? (
-        <div className="mt-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-900">
-          {cityLabel(selectedCity)} · {selectedCity.timezone}
-        </div>
-      ) : null}
-
-      {needsSelection || missingCity ? <p className="mt-2 text-xs font-semibold text-amber-800">{citySelectionWarning}</p> : null}
-    </div>
+    <Field label="Город" publicMode={publicMode}>
+      <ZodiacCityAutocompleteInput
+        publicMode={publicMode}
+        value={value.cityQuery}
+        selectedCityId={value.selectedCityId}
+        onChange={(cityQuery) => onChange({ ...value, cityQuery, selectedCityId: "" })}
+        onCitySelect={(city) => onChange({ ...value, selectedCityId: city.cityId, cityQuery: cityLabel(city) })}
+        hasError={needsSelection || missingCity}
+        helperText={needsSelection || missingCity ? citySelectionWarning : undefined}
+      />
+    </Field>
   );
 }
 

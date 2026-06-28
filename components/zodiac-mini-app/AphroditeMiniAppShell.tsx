@@ -13,7 +13,7 @@ export type AphroditeMiniAppShellProps = {
 };
 
 export function AphroditeMiniAppShell({
-  eyebrow = "Aphrodite Mini App",
+  eyebrow = "Зодиакальный центр",
   title,
   description,
   statusSlot,

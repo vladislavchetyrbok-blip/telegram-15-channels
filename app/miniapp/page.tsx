@@ -17,9 +17,9 @@ import {
 import { recordAphroditeMiniAppNoopIntegrationPoint } from "@/lib/zodiac/aphrodite-miniapp-analytics-noop-integration-points";
 
 export const metadata: Metadata = {
-  title: "Aphrodite Mini App",
+  title: "Зодиакальный центр",
   description:
-    "Короткий Aphrodite Mini App экран: совместимость, Матрица, Мистика и VIP preview.",
+    "Короткий Mini App экран: совместимость, Матрица, Мистика и VIP preview.",
 };
 
 const secondaryCtas = [
@@ -73,7 +73,7 @@ export default function MiniAppHubPage() {
         <AphroditeSurface className="border-rose-200/20">
           <div className="space-y-4">
             <div className="flex flex-wrap items-center gap-2">
-              <AphroditeBadge tone="rose">Aphrodite</AphroditeBadge>
+              <AphroditeBadge tone="rose">Зодиак</AphroditeBadge>
               <AphroditeBadge tone="violet">романтика</AphroditeBadge>
             </div>
 

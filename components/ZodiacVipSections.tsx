@@ -8,7 +8,9 @@ import type { ZodiacSignId } from "@/lib/zodiac-mystic-content";
 import { relationshipModes, signs } from "./zodiac-mini-app/constants";
 import { AstroChartVisual } from "./zodiac-mini-app/AstroChartVisual";
 import { NatalChartVisual, type NatalChartMode } from "./zodiac-mini-app/NatalChartVisual";
-import { ZodiacDateInput } from "./zodiac-mini-app/ZodiacDateInput";
+import { ZodiacCityAutocompleteInput } from "./zodiac-mini-app/ZodiacCityAutocompleteInput";
+import { ZodiacUnifiedDateInput } from "./zodiac-mini-app/ZodiacUnifiedDateInput";
+import { ZodiacUnifiedTimeInput } from "./zodiac-mini-app/ZodiacUnifiedTimeInput";
 import { AphroditeBadge, AphroditeCard, AphroditeLockedPreviewCard, AphroditeShareCard } from "./zodiac-mini-app/aphrodite-design-system";
 import type { ZodiacRetentionDraft } from "./zodiac-mini-app/retention";
 import { ZodiacSelect, type ZodiacSelectOption } from "./zodiac-mini-app/ZodiacSelect";
@@ -955,7 +957,7 @@ export function ExtendedNatalFeature({
         <VipIntro publicMode={publicMode} text="Премиальная натальная карта показывает личный код, темперамент, отношения, решения, работу, рост и действие на сегодня. Данные используются только на экране расчёта." />
         <div data-aphrodite-natal-input="package-240">
           <AphroditeCard tone="rose" className="mb-3 space-y-3">
-            <AphroditeBadge tone="rose">Natal birth profile</AphroditeBadge>
+            <AphroditeBadge tone="rose">Натальная карта</AphroditeBadge>
             <div>
               <h3 className="text-base font-semibold leading-6 text-[#fff7ed]">Что даст натальная карта</h3>
               <p className="mt-2 text-sm leading-6 text-slate-300">
@@ -966,7 +968,7 @@ export function ExtendedNatalFeature({
           <VipInputPanel publicMode={publicMode}>
             <SignSelect publicMode={publicMode} value={signSlug} onChange={setSignSlug} />
             <VipField publicMode={publicMode} label="Дата рождения">
-              <ZodiacDateInput
+              <ZodiacUnifiedDateInput
                 publicMode={publicMode}
                 value={birthDate}
                 onChange={updateBirthDate}
@@ -979,10 +981,10 @@ export function ExtendedNatalFeature({
               ) : null}
             </VipField>
             <VipField publicMode={publicMode} label="Время рождения">
-              <input className={inputClass(publicMode)} type="time" value={birthTime} onChange={(event) => setBirthTime(event.target.value)} />
+              <ZodiacUnifiedTimeInput publicMode={publicMode} value={birthTime} onChange={setBirthTime} />
             </VipField>
             <VipField publicMode={publicMode} label="Город рождения">
-              <input className={inputClass(publicMode)} value={birthCity} onChange={(event) => setBirthCity(event.target.value)} />
+              <ZodiacCityAutocompleteInput publicMode={publicMode} value={birthCity} onChange={setBirthCity} />
             </VipField>
             <GenderSelect publicMode={publicMode} value={gender} onChange={setGender} />
           </VipInputPanel>
@@ -1339,7 +1341,7 @@ export function VipCoupleCalendarFeature({
         <SignSelect publicMode={publicMode} value={firstSlug} onChange={setFirstSlug} label="Первый знак" />
         <SignSelect publicMode={publicMode} value={secondSlug} onChange={setSecondSlug} label="Второй знак" />
         <VipField publicMode={publicMode} label="Старт">
-          <ZodiacDateInput dateKind="calendar" publicMode={publicMode} value={startDate} onChange={setStartDate} autoComplete="off" />
+          <ZodiacUnifiedDateInput dateKind="calendar" publicMode={publicMode} value={startDate} onChange={setStartDate} autoComplete="off" />
         </VipField>
       </VipInputPanel>
       <PrimaryVipButton publicMode={publicMode} onClick={() => {
@@ -1497,7 +1499,7 @@ export function ExtendedNumerologyFeature({
       <VipIntro publicMode={publicMode} text="Нумерология показывает число пути, число имени, личный месяц и практичный совет. Имя и дата остаются только на экране." />
       <VipInputPanel publicMode={publicMode}>
         <VipField publicMode={publicMode} label="Дата рождения">
-          <ZodiacDateInput
+          <ZodiacUnifiedDateInput
             publicMode={publicMode}
             value={birthDate}
             onChange={setBirthDate}
@@ -1665,7 +1667,7 @@ export function VipMysticDayFeature({
       <VipInputPanel publicMode={publicMode}>
         <SignSelect publicMode={publicMode} value={signSlug} onChange={setSignSlug} />
         <VipField publicMode={publicMode} label="Дата">
-          <ZodiacDateInput dateKind="calendar" publicMode={publicMode} value={date} onChange={setDate} autoComplete="off" />
+          <ZodiacUnifiedDateInput dateKind="calendar" publicMode={publicMode} value={date} onChange={setDate} autoComplete="off" />
         </VipField>
         <GoalSelect publicMode={publicMode} value={goal} onChange={setGoal} />
       </VipInputPanel>

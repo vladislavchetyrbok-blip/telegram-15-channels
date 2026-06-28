@@ -18,7 +18,8 @@ import { AphroditeLockedPreviewCard, AphroditeShareCard } from "@/components/zod
 import { AphroditeMiniAppShell } from "@/components/zodiac-mini-app/AphroditeMiniAppShell";
 import { AphroditeSectionCard } from "@/components/zodiac-mini-app/AphroditeSectionCard";
 import { AphroditeStatusPill } from "@/components/zodiac-mini-app/AphroditeStatusPill";
-import { ZodiacDateInput } from "@/components/zodiac-mini-app/ZodiacDateInput";
+import { ZodiacUnifiedDateInput } from "@/components/zodiac-mini-app/ZodiacUnifiedDateInput";
+import { ZodiacUnifiedTimeInput } from "@/components/zodiac-mini-app/ZodiacUnifiedTimeInput";
 import { parseBirthDateInput } from "@/lib/zodiac-birth-date-range";
 import { calculateMockBirthMatrix } from "@/lib/zodiac/zodiac-birth-matrix-mock";
 import type { BirthMatrixResult } from "@/lib/zodiac/zodiac-birth-matrix-mock";
@@ -153,7 +154,7 @@ export function BirthMatrixClient() {
 
   return (
     <AphroditeMiniAppShell
-      eyebrow="Aphrodite"
+      eyebrow="Зодиакальный центр"
       title="Матрица судьбы"
       description="Узнай главные энергии даты рождения и то, что стоит развивать."
       statusSlot={<AphroditeStatusPill label="бесплатный preview" tone="accent" />}
@@ -173,7 +174,7 @@ export function BirthMatrixClient() {
         </Link>
 
         <section className="min-w-0 rounded-lg border border-violet-300/20 bg-violet-300/[0.08] p-3" data-aphrodite-birth-matrix-what-user-gets="package-240">
-          <p className="text-xs font-semibold uppercase tracking-wide text-violet-100">Birth Matrix / Natal profile</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-violet-100">Матрица судьбы</p>
           <h2 className="mt-2 text-lg font-semibold leading-7 text-white">Личный отчёт по дате рождения</h2>
           <p className="mt-1 text-sm leading-5 text-slate-300">Главный код, ресурс, рост и следующий шаг.</p>
         </section>
@@ -192,7 +193,7 @@ export function BirthMatrixClient() {
                 <Calendar className="h-4 w-4 text-rose-200" />
                 Дата рождения
               </label>
-              <ZodiacDateInput
+              <ZodiacUnifiedDateInput
                 publicMode
                 id="birth-matrix-birth-date"
                 value={birthDate}
@@ -210,12 +211,7 @@ export function BirthMatrixClient() {
                   <Clock className="h-4 w-4 text-slate-300" />
                   Время рождения
                 </span>
-                <input
-                  type="time"
-                  value={birthTime}
-                  onChange={(event) => setBirthTime(event.target.value)}
-                  className="aphrodite-touch-target h-12 w-full rounded-lg border border-white/15 bg-white/8 px-3 text-[16px] text-white outline-none transition focus:border-rose-200 focus:bg-white/10"
-                />
+                <ZodiacUnifiedTimeInput publicMode value={birthTime} onChange={setBirthTime} />
               </label>
 
               <label className="space-y-2">
