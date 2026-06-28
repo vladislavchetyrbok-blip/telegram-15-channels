@@ -511,13 +511,13 @@ async function main() {
     assertIncludes(pages.birthMatrix, "Static Mock (Package 103)", "birth matrix mock notice");
     assertIncludes(pages.birthMatrix, "Calculate Your Matrix", "birth matrix subtitle");
 
-    assertIncludes(pages.mysticNumbers, "Mystic Numbers", "mystic numbers page title");
-    assertIncludes(pages.mysticNumbers, "Static Mock (Package 104)", "mystic numbers mock notice");
-    assertIncludes(pages.mysticNumbers, "Decode Repeating Numbers", "mystic numbers subtitle");
+    assertIncludes(pages.mysticNumbers, 'data-aphrodite-package-275-public-mock-guard="mystic-numbers"', "mystic numbers public mock guard visible");
+    assertNotIncludes(pages.mysticNumbers, "Static Mock (Package 104)", "mystic numbers static mock not public");
+    assertNotIncludes(pages.mysticNumbers, "Decode Repeating Numbers", "mystic numbers English mock not public");
 
-    assertIncludes(pages.affirmations, "Zodiac Affirmations", "affirmations page title");
-    assertIncludes(pages.affirmations, "Static Mock (Package 105)", "affirmations mock notice");
-    assertIncludes(pages.affirmations, "Your Daily Affirmation", "affirmations subtitle");
+    assertIncludes(pages.affirmations, 'data-aphrodite-package-275-public-mock-guard="affirmations"', "affirmations public mock guard visible");
+    assertNotIncludes(pages.affirmations, "Static Mock (Package 105)", "affirmations static mock not public");
+    assertNotIncludes(pages.affirmations, "Your Daily Affirmation", "affirmations English mock not public");
 
     assertIncludes(pages.miniappHub, "data-aphrodite-miniapp-entry-redesign", "miniapp package 238 marker");
     assertIncludes(pages.miniappHub, "Зодиак", "miniapp Package 270 Zodiac-facing brand");
@@ -537,16 +537,14 @@ async function main() {
     assertIncludes(pages.birthMatrix, "No database", "birth matrix safety: no database");
     assertIncludes(pages.birthMatrix, "No Telegram API", "birth matrix safety: no telegram API");
 
-    assertIncludes(pages.mysticNumbers, "No payment", "mystic numbers safety: no payment");
-    assertIncludes(pages.mysticNumbers, "No database", "mystic numbers safety: no database");
-    assertIncludes(pages.mysticNumbers, "No Telegram API", "mystic numbers safety: no telegram API");
+    assertIncludes(pages.mysticNumbers, "Открыть Мистику", "mystic numbers guard links to current mystic flow");
+    assertNotIncludes(pages.mysticNumbers, "No payment. No database write. No Telegram API call.", "mystic numbers technical safety mock hidden");
 
-    assertIncludes(pages.affirmations, "No payment", "affirmations safety: no payment");
-    assertIncludes(pages.affirmations, "No database", "affirmations safety: no database");
-    assertIncludes(pages.affirmations, "No Telegram API", "affirmations safety: no telegram API");
+    assertIncludes(pages.affirmations, "Открыть Мистику", "affirmations guard links to current mystic flow");
+    assertNotIncludes(pages.affirmations, "No payment. No database write. No Telegram API call.", "affirmations technical safety mock hidden");
 
     assertIncludes(pages.vipPreview, "VIP preview", "vip preview page title");
-    assertIncludes(pages.vipPreview, "VIP открыт бесплатно до 17.09.2026", "vip preview compact free period");
+    assertIncludes(pages.vipPreview, "VIP preview без оплаты", "vip preview compact no-payment preview");
     assertIncludes(pages.vipPreview, "Premium preview", "vip preview compact locked card");
     assertIncludes(pages.vipPreview, "Без оплаты", "vip preview safety: no payment");
     assertIncludes(pages.vipPreview, "VIP закрыт", "vip preview safety: no unlock");

@@ -6,7 +6,7 @@ import { MOCK_VIP_PREVIEW_FEATURES } from "@/lib/zodiac/zodiac-vip-preview";
 
 export const metadata: Metadata = {
   title: "VIP Preview",
-  description: "Preview shell for future VIP functionality.",
+  description: "Короткий VIP preview без оплаты и без открытия доступа.",
 };
 
 const statusColors = {
@@ -50,8 +50,8 @@ export default function VipPreviewPage() {
           <div className="mt-3 flex items-start gap-3">
             <Sparkles className="mt-1 h-6 w-6 shrink-0 text-fuchsia-300" />
             <div className="min-w-0">
-              <h2 className="aphrodite-pkg-267-text-fix text-2xl font-semibold leading-8 text-white">VIP открыт бесплатно до 17.09.2026</h2>
-              <p className="mt-1 text-sm leading-5 text-slate-300">Короткий premium preview без оплаты.</p>
+              <h2 className="aphrodite-pkg-267-text-fix text-2xl font-semibold leading-8 text-white">VIP preview без оплаты</h2>
+              <p className="mt-1 text-sm leading-5 text-slate-300">Полный VIP закрыт. Доступ не открывается.</p>
             </div>
           </div>
         </section>
@@ -95,10 +95,10 @@ export default function VipPreviewPage() {
               <Link href="/birth-matrix" className="aphrodite-touch-target aphrodite-wrap-anywhere flex items-center justify-center rounded-lg border border-slate-700 bg-slate-800/50 px-3 py-3 text-center text-sm font-medium text-slate-300 hover:bg-slate-700 transition">
                 Открыть Матрицу
               </Link>
-              <Link href="/mystic-numbers" className="aphrodite-touch-target aphrodite-wrap-anywhere flex items-center justify-center rounded-lg border border-slate-700 bg-slate-800/50 px-3 py-3 text-center text-sm font-medium text-slate-300 hover:bg-slate-700 transition">
+              <Link href="/compatibility?startapp=mystic" className="aphrodite-touch-target aphrodite-wrap-anywhere flex items-center justify-center rounded-lg border border-slate-700 bg-slate-800/50 px-3 py-3 text-center text-sm font-medium text-slate-300 hover:bg-slate-700 transition">
                 Мистические числа
               </Link>
-              <Link href="/affirmations" className="aphrodite-touch-target aphrodite-wrap-anywhere flex items-center justify-center rounded-lg border border-slate-700 bg-slate-800/50 px-3 py-3 text-center text-sm font-medium text-slate-300 hover:bg-slate-700 transition">
+              <Link href="/compatibility?startapp=mystic" className="aphrodite-touch-target aphrodite-wrap-anywhere flex items-center justify-center rounded-lg border border-slate-700 bg-slate-800/50 px-3 py-3 text-center text-sm font-medium text-slate-300 hover:bg-slate-700 transition">
                 Аффирмации
               </Link>
             </div>

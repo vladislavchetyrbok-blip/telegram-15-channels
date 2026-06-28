@@ -277,7 +277,7 @@ async function runBrowserModeSmoke(client, report) {
   await click(client, "Главная");
   await waitForPageText(client, /Что между вами сейчас|Проверить совместимость|VIP раздел/, "Back to main menu did not render after Angel Numbers.");
   await click(client, "VIP раздел");
-  await waitForPageText(client, /VIP открыт бесплатно|Ранний доступ до 17\.09\.2026/, "VIP menu did not render.");
+  await waitForPageText(client, /VIP preview|Preview до 17\.09\.2026|Без оплаты · VIP закрыт/, "VIP menu did not render.");
   report.freeAccessVisible = await hasText(client, /17\.09\.2026/);
 
   const giveawayStatus = await evalPage(client, "window.__zodiacSmoke.buttonStatus(arguments[0])", ["Розыгрыши (Скоро)"]);
@@ -291,7 +291,7 @@ async function runBrowserModeSmoke(client, report) {
     await runVipToolSmoke(client, card, report);
     report.vipChecked += 1;
     await clickBackIcon(client);
-    await waitForPageText(client, /VIP открыт бесплатно|Ранний доступ до 17\.09\.2026/, `Back did not return from VIP card "${card}".`);
+    await waitForPageText(client, /VIP preview|Preview до 17\.09\.2026|Без оплаты · VIP закрыт/, `Back did not return from VIP card "${card}".`);
   }
   await assertRetentionPrivacy(client, report);
 
@@ -372,7 +372,7 @@ async function runStartParamSmoke(client, baseUrl, report) {
     { param: "compat_reconciliation", sign: "Овен", landing: /Примирение|Совместимость/, pattern: /Примирение|Шаг 1|Совместимость/, expectedState: { activeTab: "love", selectedSign: "aries" }, message: "startapp=compat_reconciliation did not open Reconciliation compatibility after sign selection." },
     { param: "compat_gemini", sign: "Близнецы", beforeSign: "Любовная совместимость", landing: /Любовная совместимость|Совместимость/, pattern: /Совместимость|Шаг 1/, expectedState: { activeTab: "love", selectedSign: "gemini" }, message: "startapp=compat_gemini did not open Compatibility after sign selection." },
     { param: "mystic", sign: "Овен", landing: /Мистика|Выберите знак/, pattern: /Мистика|Карта дня/, expectedState: { activeTab: "mystic", selectedSign: "aries", moreCategory: "mystic", moreFeature: "dailyCard" }, message: "startapp=mystic did not open Mystic after sign selection." },
-    { param: "vip", sign: "Овен", landing: /VIP раздел|Выберите знак/, pattern: /VIP открыт бесплатно|Ранний доступ до 17\.09\.2026/, expectedState: { activeTab: "vip", selectedSign: "aries", moreCategory: "vip", moreFeature: "vip" }, message: "startapp=vip did not open VIP after sign selection." },
+    { param: "vip", sign: "Овен", landing: /VIP раздел|Выберите знак/, pattern: /VIP preview|Preview до 17\.09\.2026|Без оплаты · VIP закрыт/, expectedState: { activeTab: "vip", selectedSign: "aries", moreCategory: "vip", moreFeature: "vip" }, message: "startapp=vip did not open VIP after sign selection." },
     { param: "birth_matrix", sign: "Овен", landing: /Матрица судьбы|Выберите знак/, pattern: /Матрица|дд\.мм\.гггг|Дата/, expectedState: { activeTab: "mystic", selectedSign: "aries", moreCategory: "mystic", moreFeature: "birthMatrix" }, message: "startapp=birth_matrix did not open Birth Matrix after sign selection." },
     { param: "angel_numbers", sign: "Овен", landing: /Ангельские числа|Выберите знак/, pattern: /Ангельские числа|11:11|22:22/, expectedState: { activeTab: "forecasts", selectedSign: "aries", moreCategory: "forecasts", moreFeature: "angelNumbers" }, message: "startapp=angel_numbers did not open Angel Numbers after sign selection." },
     { param: "week", sign: "Овен", landing: /Гороскопы|Выберите знак/, pattern: /Неделя|Прогнозы|Удачные дни/, expectedState: { activeTab: "forecasts", selectedSign: "aries", moreCategory: "forecasts", moreFeature: "weekForecast" }, message: "startapp=week did not open weekly forecasts after sign selection." },
@@ -464,7 +464,7 @@ async function openVipFromStartParam(client, baseUrl) {
   await installSmokeHelpers(client);
   await waitForPageText(client, /VIP раздел|Выберите знак|Овен/, "VIP startapp sign gate did not render.");
   await click(client, "Овен");
-  await waitForPageText(client, /VIP открыт бесплатно|Ранний доступ до 17\.09\.2026/, "VIP startapp menu did not render.");
+  await waitForPageText(client, /VIP preview|Preview до 17\.09\.2026|Без оплаты · VIP закрыт/, "VIP startapp menu did not render.");
 }
 
 async function openNatalChartWithVipBlocks(client, baseUrl) {
@@ -510,7 +510,7 @@ async function runTelegramMockSmoke(client, baseUrl, report) {
   await click(client, "VIP раздел");
   await waitForPageText(client, /VIP раздел|Выберите знак|Овен/, "Telegram mock VIP sign gate did not render.");
   await click(client, "Овен");
-  await waitForPageText(client, /VIP открыт бесплатно|Ранний доступ до 17\.09\.2026/, "Telegram mock VIP menu did not render.");
+  await waitForPageText(client, /VIP preview|Preview до 17\.09\.2026|Без оплаты · VIP закрыт/, "Telegram mock VIP menu did not render.");
   await click(client, "Месячный прогноз");
   await settle(client);
 
@@ -524,7 +524,7 @@ async function runTelegramMockSmoke(client, baseUrl, report) {
 
   const backTriggered = await evalPage(client, "window.__triggerTelegramBack?.()", []);
   if (!backTriggered) throw new Error("Telegram BackButton mock had no active callback.");
-  await waitForPageText(client, /VIP открыт бесплатно|Ранний доступ до 17\.09\.2026/, "Telegram BackButton did not return to VIP menu.");
+  await waitForPageText(client, /VIP preview|Preview до 17\.09\.2026|Без оплаты · VIP закрыт/, "Telegram BackButton did not return to VIP menu.");
 
   const categoryBackTriggered = await evalPage(client, "window.__triggerTelegramBack?.()", []);
   if (!categoryBackTriggered) throw new Error("Telegram BackButton mock had no category callback.");
