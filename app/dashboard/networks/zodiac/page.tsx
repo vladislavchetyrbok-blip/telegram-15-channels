@@ -1088,6 +1088,13 @@ const platformSections = [
     tone: "cyan",
   },
   {
+    title: "Night Run Final Readiness Summary",
+    href: "/dashboard/networks/zodiac/night-run-final-readiness-summary",
+    icon: FileText,
+    caption: "Package 286 - final Packages 278-286 readiness summary with blockers, owner tasks, and next packages 287-290.",
+    tone: "violet",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
