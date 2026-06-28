@@ -1081,6 +1081,13 @@ const platformSections = [
     tone: "rose",
   },
   {
+    title: "AI Orchestration Runbook",
+    href: "/dashboard/networks/zodiac/ai-orchestration-runbook",
+    icon: Bot,
+    caption: "Package 285 - Claude read-only audit, Antigravity visual QA, Codex scoped commits, then owner review.",
+    tone: "cyan",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
