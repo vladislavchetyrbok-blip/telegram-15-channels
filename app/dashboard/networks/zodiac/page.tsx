@@ -1032,6 +1032,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Production Env Backup Readiness Fix Plan",
+    href: "/dashboard/networks/zodiac/production-env-backup-readiness-fix-plan",
+    icon: Database,
+    caption: "Package 278 - manual plan to clear DATABASE_URL, TELEGRAM_BOT_TOKEN and backup freshness blockers without secrets or launch.",
+    tone: "rose",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

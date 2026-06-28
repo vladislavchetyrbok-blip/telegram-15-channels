@@ -129,6 +129,7 @@ const ROUTES = {
   zodiacBrandCleanupUnifiedInputControls: "/dashboard/networks/zodiac/zodiac-brand-cleanup-unified-input-controls",
   publicMiniappRouteShellIsolation: "/dashboard/networks/zodiac/public-miniapp-route-shell-isolation",
   ownerVisualEvidenceApprovalRecord: "/dashboard/networks/zodiac/owner-visual-evidence-approval-record",
+  productionEnvBackupReadinessFixPlan: "/dashboard/networks/zodiac/production-env-backup-readiness-fix-plan",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -315,6 +316,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/zodiac-brand-cleanup-unified-input-controls"', "zodiac brand cleanup unified input controls route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/public-miniapp-route-shell-isolation"', "public miniapp route shell isolation route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/owner-visual-evidence-approval-record"', "owner visual evidence approval record route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/production-env-backup-readiness-fix-plan"', "production env backup readiness fix plan route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");
