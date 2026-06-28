@@ -1018,6 +1018,13 @@ const platformSections = [
     tone: "violet",
   },
   {
+    title: "Public Mini App Route Shell Isolation",
+    href: "/dashboard/networks/zodiac/public-miniapp-route-shell-isolation",
+    icon: ShieldCheck,
+    caption: "Package 271 - public Telegram Mini App routes bypass internal dashboard shell while dashboard/admin routes stay protected.",
+    tone: "emerald",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

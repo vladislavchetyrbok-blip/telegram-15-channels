@@ -127,6 +127,7 @@ const ROUTES = {
   criticalMobileTelegramWebviewVisualFixes: "/dashboard/networks/zodiac/critical-mobile-telegram-webview-visual-fixes",
   ownerVisualRecheckAfterMobileFixes: "/dashboard/networks/zodiac/owner-visual-recheck-after-mobile-fixes",
   zodiacBrandCleanupUnifiedInputControls: "/dashboard/networks/zodiac/zodiac-brand-cleanup-unified-input-controls",
+  publicMiniappRouteShellIsolation: "/dashboard/networks/zodiac/public-miniapp-route-shell-isolation",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -311,6 +312,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/critical-mobile-telegram-webview-visual-fixes"', "critical mobile telegram webview visual fixes route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/owner-visual-recheck-after-mobile-fixes"', "owner visual recheck after mobile fixes route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/zodiac-brand-cleanup-unified-input-controls"', "zodiac brand cleanup unified input controls route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/public-miniapp-route-shell-isolation"', "public miniapp route shell isolation route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");
