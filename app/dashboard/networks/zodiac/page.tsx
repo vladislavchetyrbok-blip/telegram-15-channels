@@ -1025,6 +1025,13 @@ const platformSections = [
     tone: "emerald",
   },
   {
+    title: "Owner Visual Evidence Approval Record",
+    href: "/dashboard/networks/zodiac/owner-visual-evidence-approval-record",
+    icon: ClipboardCheck,
+    caption: "Package 277 - formal record that Package 275 screenshot evidence is ready for owner review; no owner approval or production launch granted.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
