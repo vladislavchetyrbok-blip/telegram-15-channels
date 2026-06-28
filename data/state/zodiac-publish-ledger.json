@@ -2773,6 +2773,18 @@
       "updatedAt": "2026-06-28T09:27:01.708Z",
       "messageId": "40,",
       "sentAt": "2026-06-28T09:27:01.708Z"
+    },
+    "2026-06-28:leo": {
+      "key": "2026-06-28:leo",
+      "date": "2026-06-28",
+      "slug": "leo",
+      "createdAt": "2026-06-28T09:27:02.601Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-06-28T09:27:02.601Z"
     }
   }
 }
