@@ -199,7 +199,7 @@ export function AphroditeAstrologyCenterHome({
         <div className="flex flex-wrap items-center gap-2">
           <AphroditeBadge tone="rose">Зодиак</AphroditeBadge>
           <AphroditeBadge tone="violet">романтика</AphroditeBadge>
-          <AphroditeBadge tone="gold">VIP до {vipUntilLabel}</AphroditeBadge>
+          <AphroditeBadge tone="gold">VIP preview</AphroditeBadge>
           {selectedSign ? (
             <AphroditeBadge tone="gold">
               {selectedSign.emoji} {selectedSign.name}

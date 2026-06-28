@@ -194,10 +194,10 @@ export function VipMenuCard({
     <div className={publicMode ? "rounded-lg border border-amber-200/25 bg-amber-200/10 p-4" : "rounded-lg border border-amber-200 bg-amber-50 p-4"}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className={publicMode ? "text-lg font-semibold text-white" : "text-lg font-semibold text-slate-950"}>👑 VIP открыт бесплатно</p>
-          <p className={publicMode ? "mt-1 text-sm font-semibold text-amber-100" : "mt-1 text-sm font-semibold text-amber-800"}>Ранний доступ до {untilLabel}</p>
+          <p className={publicMode ? "text-lg font-semibold text-white" : "text-lg font-semibold text-slate-950"}>👑 VIP preview</p>
+          <p className={publicMode ? "mt-1 text-sm font-semibold text-amber-100" : "mt-1 text-sm font-semibold text-amber-800"}>Preview до {untilLabel}</p>
           <p className={publicMode ? "mt-2 text-sm leading-6 text-slate-300" : "mt-2 text-sm leading-6 text-slate-700"}>
-            На период запуска все премиум-функции открыты бесплатно. Позже они войдут в подписку.
+            Премиум-функции показаны как preview. Оплата не активна, VIP не открывается.
           </p>
         </div>
         <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-amber-200/25 bg-black/20 text-amber-100">
@@ -206,9 +206,9 @@ export function VipMenuCard({
       </div>
 
       <div className="mt-4 grid gap-2 sm:grid-cols-3">
-        <VipStatusPill publicMode={publicMode} label="Сейчас" value="бесплатно" />
-        <VipStatusPill publicMode={publicMode} label="Доступ до" value={untilLabel} />
-        <VipStatusPill publicMode={publicMode} label="Подписка" value={config.vipPaymentsEnabled || config.telegramStarsEnabled ? "позже" : "не нужна сейчас"} />
+        <VipStatusPill publicMode={publicMode} label="Сейчас" value="preview" />
+        <VipStatusPill publicMode={publicMode} label="Оплата" value="не активна" />
+        <VipStatusPill publicMode={publicMode} label="VIP" value="закрыт" />
       </div>
 
       <SectionHeading title="1. Личный VIP" publicMode={publicMode} />

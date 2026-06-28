@@ -1,0 +1,102 @@
+{
+  "generatedAt": "2026-06-28T21:53:25.869Z",
+  "files": [
+    {
+      "file": "390-affirmations-guard.png",
+      "bytes": 21981,
+      "sha256": "5df595bd5362cf898d9969f0f67a34c2a6360f1bc9df351772a5ba41cf3faea4"
+    },
+    {
+      "file": "390-birth-matrix-entry.png",
+      "bytes": 40009,
+      "sha256": "86bed15889e4c2ef38546e0d05babb5ff0e5442caceb768357c5530a6d8783b0"
+    },
+    {
+      "file": "390-birth-matrix-result.png",
+      "bytes": 736072,
+      "sha256": "206b4534a961b67f2d5890c9b9effaa5974c785661dd382fec53c7ed07bc15e1"
+    },
+    {
+      "file": "390-bottom-navigation.png",
+      "bytes": 59089,
+      "sha256": "19b765ca27c06cf232cc1d79fbe504361562a5e054e94c5ff46caca5ffa2c201"
+    },
+    {
+      "file": "390-city-autocomplete-dnepr.png",
+      "bytes": 77194,
+      "sha256": "e93343d56319bf7ac9e11c129680873a9fd39bb1d342503bcd43b35c581c5031"
+    },
+    {
+      "file": "390-city-autocomplete-dnipro.png",
+      "bytes": 77302,
+      "sha256": "063f039646f1b3207f8e6e1d5db6762ee63deb1a0b02c6da4624960c0cd3475c"
+    },
+    {
+      "file": "390-compatibility-entry.png",
+      "bytes": 106758,
+      "sha256": "afc48084905648aa6d7ce88e4d17f2eb8f393cc897df90fc1e2d019c0fab68d3"
+    },
+    {
+      "file": "390-compatibility-result.png",
+      "bytes": 1214652,
+      "sha256": "ddfceb6651c528159c91ef15e907ffbbcf3c5a675067e1c9d41ce9114ce6f68a"
+    },
+    {
+      "file": "390-date-input-auto-format.png",
+      "bytes": 39153,
+      "sha256": "1a4e886725982f6a1b963d26c9db2902af93418c6b27def56964ea4b85dac8f5"
+    },
+    {
+      "file": "390-miniapp-startapp-birth-matrix.png",
+      "bytes": 35208,
+      "sha256": "e9d929e82fcd31260a27c15d33da98f53567aa7108791dfd6a667bf92894323b"
+    },
+    {
+      "file": "390-miniapp-startapp-compatibility.png",
+      "bytes": 107565,
+      "sha256": "cede2d613240b06459da2ef4677335b84f518b3ac359dc90dec0d420843bb5c7"
+    },
+    {
+      "file": "390-miniapp-startapp-mystic.png",
+      "bytes": 94187,
+      "sha256": "91d14e25d920643507ddc12ad80ba4cecd2f9d0a09cbffb766ba990819fa8a5f"
+    },
+    {
+      "file": "390-miniapp-startapp-vip.png",
+      "bytes": 47882,
+      "sha256": "53196308893e41ab8f0562f742f35674b6531c7b35d5484b5caddad2c6dee07a"
+    },
+    {
+      "file": "390-miniapp.png",
+      "bytes": 187417,
+      "sha256": "34e99d24f7834c881553003739a3f3dd15f3cc1339514c803e0d419943dbe7a1"
+    },
+    {
+      "file": "390-mystic-cards-entry.png",
+      "bytes": 85297,
+      "sha256": "fe65e8e82c2377ec93dd2a16adc823fc83559149d0e7268279c647f30b58e855"
+    },
+    {
+      "file": "390-mystic-cards-result.png",
+      "bytes": 964391,
+      "sha256": "26d31dab71a8006e4d369be174d7cb5053b6dad2b50ecac9ffc95e30090ddf7b"
+    },
+    {
+      "file": "390-mystic-numbers-guard.png",
+      "bytes": 22036,
+      "sha256": "96c9bd17193b8793024b2c69a8f1c86c7eda27df3005e20a493d57fb71c580dc"
+    },
+    {
+      "file": "390-time-input.png",
+      "bytes": 39338,
+      "sha256": "bf57faf0d73a51347659536cc62a2be9f43371dfd0d9b429ebd9e6fa2d3ad99c"
+    },
+    {
+      "file": "390-vip-preview.png",
+      "bytes": 48103,
+      "sha256": "5d36f7dcdb767db8899987771abb27f040ed81b61ad1ccbf831e440a32e29248"
+    }
+  ],
+  "missing": [],
+  "duplicates": []
+}

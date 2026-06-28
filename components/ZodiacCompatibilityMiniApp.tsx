@@ -1240,7 +1240,7 @@ function getCategoryStartCopy(tab: HubTab, feature: MoreFeatureId | null) {
   if (tab === "vip" && feature === "giveaways") {
     return {
       title: "🎁 Розыгрыши",
-      subtitle: "Розыгрыши остаются закрытым preview. Основной VIP-доступ открыт бесплатно до 17.09.2026.",
+      subtitle: "Розыгрыши остаются закрытым preview. VIP остаётся preview без оплаты.",
       features: ["Preview", "Без оплаты", "VIP закрыт", "Доступ отдельно"],
     };
   }
@@ -1248,7 +1248,7 @@ function getCategoryStartCopy(tab: HubTab, feature: MoreFeatureId | null) {
   if (tab === "vip") {
     return {
       title: "👑 VIP раздел",
-      subtitle: "Выберите знак и откройте 11 премиум-функций бесплатно до 17.09.2026.",
+      subtitle: "Выберите знак и посмотрите preview премиум-функций без оплаты.",
       features: ["Натальная карта+", "Расширенная совместимость", "Карта пары", "30 дней пары", "Месячный прогноз", "VIP мистический день"],
     };
   }
@@ -2803,7 +2803,7 @@ function PersonalityArchetypeCard({ publicMode, person, profile, onPersonChange,
 function VipInlineNote({ publicMode }: { publicMode: boolean }) {
   return (
     <p className={publicMode ? "rounded-lg border border-amber-200/25 bg-amber-200/10 p-3 text-sm font-semibold leading-5 text-amber-50" : "rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm font-semibold leading-5 text-amber-900"}>
-      👑 Расширенный разбор открыт бесплатно до 17.09.2026.
+      👑 Расширенный разбор показан как preview. Без оплаты · VIP закрыт.
     </p>
   );
 }
@@ -3307,10 +3307,10 @@ function VipFreeAccessCard({
     <div className={publicMode ? "rounded-lg border border-amber-200/25 bg-amber-200/10 p-4" : "rounded-lg border border-amber-200 bg-amber-50 p-4"}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className={publicMode ? "text-lg font-semibold text-white" : "text-lg font-semibold text-slate-950"}>👑 VIP открыт бесплатно</p>
-          <p className={publicMode ? "mt-1 text-sm font-semibold text-amber-100" : "mt-1 text-sm font-semibold text-amber-800"}>Ранний доступ до {untilLabel}</p>
+          <p className={publicMode ? "text-lg font-semibold text-white" : "text-lg font-semibold text-slate-950"}>👑 VIP preview</p>
+          <p className={publicMode ? "mt-1 text-sm font-semibold text-amber-100" : "mt-1 text-sm font-semibold text-amber-800"}>Preview до {untilLabel}</p>
           <p className={publicMode ? "mt-2 text-sm leading-6 text-slate-300" : "mt-2 text-sm leading-6 text-slate-700"}>
-            Мы открыли VIP-функции бесплатно на период запуска. Пользуйтесь расширенными прогнозами, а позже здесь появится подписка.
+            Премиум-функции показаны как preview. Оплата не активна, VIP не открывается.
           </p>
         </div>
         <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-amber-200/25 bg-black/20 text-amber-100">
@@ -3319,9 +3319,9 @@ function VipFreeAccessCard({
       </div>
 
       <div className="mt-4 grid gap-2 sm:grid-cols-3">
-        <VipStatusPill publicMode={publicMode} label="Сейчас" value="бесплатно" />
-        <VipStatusPill publicMode={publicMode} label="Доступ до" value={untilLabel} />
-        <VipStatusPill publicMode={publicMode} label="Подписка" value={config.vipPaymentsEnabled || config.telegramStarsEnabled ? "позже" : "не нужна сейчас"} />
+        <VipStatusPill publicMode={publicMode} label="Сейчас" value="preview" />
+        <VipStatusPill publicMode={publicMode} label="Оплата" value="не активна" />
+        <VipStatusPill publicMode={publicMode} label="VIP" value="закрыт" />
       </div>
 
       <div className="mt-4 grid gap-2 sm:grid-cols-2">
@@ -4156,7 +4156,7 @@ function buildFeatureRetentionAction({
     firstSign: activeMoreFeature === "compatibilityTool" ? selfSignSlug || selectedSignSlug || undefined : undefined,
     secondSign: activeMoreFeature === "compatibilityTool" ? partnerSignSlug || undefined : undefined,
     scoreTier: activeMoreFeature === "compatibilityTool" ? scoreTier : undefined,
-    detail: isAngelNumberFeature ? "Без сохранения числового ввода" : category === "vip" ? "VIP бесплатно до 17.09.2026" : selectedFeatureShortLabel,
+    detail: isAngelNumberFeature ? "Без сохранения числового ввода" : category === "vip" ? "VIP preview · без оплаты" : selectedFeatureShortLabel,
   };
 }
 
