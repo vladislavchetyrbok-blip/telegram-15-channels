@@ -955,6 +955,13 @@ const platformSections = [
     tone: "rose",
   },
   {
+    title: "Soft Launch Monitoring Readiness Plan",
+    href: "/dashboard/networks/zodiac/soft-launch-monitoring-readiness-plan",
+    icon: Activity,
+    caption: "Package 261 - manual monitoring readiness only; no external analytics or production monitoring activation.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
