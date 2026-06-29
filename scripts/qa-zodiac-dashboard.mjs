@@ -140,6 +140,7 @@ const ROUTES = {
   nightRunFinalReadinessSummary: "/dashboard/networks/zodiac/night-run-final-readiness-summary",
   ownerRealDeviceApprovalCapture: "/dashboard/networks/zodiac/owner-real-device-approval-capture",
   manualEnvSetupExecution: "/dashboard/networks/zodiac/manual-env-setup-execution",
+  backupFreshnessVerification: "/dashboard/networks/zodiac/backup-freshness-verification",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -337,6 +338,7 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/night-run-final-readiness-summary"', "night run final readiness summary route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/owner-real-device-approval-capture"', "owner real device approval capture route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-env-setup-execution"', "manual env setup execution route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/backup-freshness-verification"', "backup freshness verification route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");

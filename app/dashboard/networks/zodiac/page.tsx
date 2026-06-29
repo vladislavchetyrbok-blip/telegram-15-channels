@@ -1109,6 +1109,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Backup Freshness Verification",
+    href: "/dashboard/networks/zodiac/backup-freshness-verification",
+    icon: Database,
+    caption: "Package 289 - stale backup freshness verification record; backup remains blocked until real evidence is newer than 24h.",
+    tone: "rose",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
