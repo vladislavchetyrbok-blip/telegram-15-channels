@@ -173,6 +173,7 @@ const ROUTES = {
   botFatherOwnerActionGate: "/dashboard/networks/zodiac/botfather-owner-action-gate",
   productionSafetyGreenCriteriaRecord: "/dashboard/networks/zodiac/production-safety-green-criteria-record",
   finalSoftLaunchDryRunChecklist: "/dashboard/networks/zodiac/final-soft-launch-dry-run-checklist",
+  telegramMiniappFinalManualWorkStopGate: "/dashboard/networks/zodiac/telegram-miniapp-final-manual-work-stop-gate",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",

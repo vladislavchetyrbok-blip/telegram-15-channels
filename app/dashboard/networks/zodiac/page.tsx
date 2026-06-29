@@ -1346,6 +1346,13 @@ const platformSections = [
     caption: "Package 331 - final soft-launch dry run checklist stays not started while blockers remain open.",
     tone: "rose",
   },
+  {
+    title: "Telegram Mini App Final Manual Work Stop Gate",
+    href: "/dashboard/networks/zodiac/telegram-miniapp-final-manual-work-stop-gate",
+    icon: LockKeyhole,
+    caption: "Package 332 - stop adding readiness packages until real owner/manual evidence exists.",
+    tone: "rose",
+  },
 ] as const;
 
 export default async function ZodiacNetworkWorkspacePage() {
