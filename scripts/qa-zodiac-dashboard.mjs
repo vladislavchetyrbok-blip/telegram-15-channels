@@ -195,6 +195,7 @@ const ROUTES = {
   nativeMobileTrackDeferredRecord: "/dashboard/networks/zodiac/native-mobile-track-deferred-record",
   finalManualWorkQueue: "/dashboard/networks/zodiac/final-manual-work-queue",
   finalNoMoreReadinessPackagesGate: "/dashboard/networks/zodiac/final-no-more-readiness-packages-gate",
+  telegramMiniappFinalWaitingRoomSummary: "/dashboard/networks/zodiac/telegram-miniapp-final-waiting-room-summary",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",

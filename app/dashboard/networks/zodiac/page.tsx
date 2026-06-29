@@ -1500,6 +1500,13 @@ const platformSections = [
     caption: "Package 353 - Final No More Readiness Packages Gate keeps manual evidence gates open and production launch blocked.",
     tone: "rose",
   },
+  {
+    title: "Telegram Mini App Final Waiting Room Summary",
+    href: "/dashboard/networks/zodiac/telegram-miniapp-final-waiting-room-summary",
+    icon: ListPlus,
+    caption: "Package 354 - Telegram Mini App Final Waiting Room Summary keeps manual evidence gates open and production launch blocked.",
+    tone: "amber",
+  },
 ] as const;
 
 export default async function ZodiacNetworkWorkspacePage() {
