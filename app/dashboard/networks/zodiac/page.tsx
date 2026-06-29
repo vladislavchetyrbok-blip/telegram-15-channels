@@ -1332,6 +1332,13 @@ const platformSections = [
     caption: "Package 329 - BotFather Mini App setup remains manual, not automated, and blocked until URL evidence exists.",
     tone: "rose",
   },
+  {
+    title: "Production Safety Green Criteria Record",
+    href: "/dashboard/networks/zodiac/production-safety-green-criteria-record",
+    icon: ShieldCheck,
+    caption: "Package 330 - production safety remains red until env, token, backup, restore, URL, BotFather, and owner evidence close.",
+    tone: "rose",
+  },
 ] as const;
 
 export default async function ZodiacNetworkWorkspacePage() {
