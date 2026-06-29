@@ -1381,6 +1381,13 @@ const platformSections = [
     caption: "Package 336 - Redacted Env Evidence Intake keeps manual evidence gates open and production launch blocked.",
     tone: "rose",
   },
+  {
+    title: "DATABASE_URL Closure Candidate",
+    href: "/dashboard/networks/zodiac/database-url-closure-candidate",
+    icon: Database,
+    caption: "Package 337 - DATABASE_URL Closure Candidate keeps manual evidence gates open and production launch blocked.",
+    tone: "rose",
+  },
 ] as const;
 
 export default async function ZodiacNetworkWorkspacePage() {
