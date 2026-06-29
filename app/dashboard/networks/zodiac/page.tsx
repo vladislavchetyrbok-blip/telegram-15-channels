@@ -1395,6 +1395,13 @@ const platformSections = [
     caption: "Package 338 - TELEGRAM_BOT_TOKEN Closure Candidate keeps manual evidence gates open and production launch blocked.",
     tone: "rose",
   },
+  {
+    title: "Fresh Backup Closure Candidate",
+    href: "/dashboard/networks/zodiac/fresh-backup-closure-candidate",
+    icon: Database,
+    caption: "Package 339 - Fresh Backup Closure Candidate keeps manual evidence gates open and production launch blocked.",
+    tone: "rose",
+  },
 ] as const;
 
 export default async function ZodiacNetworkWorkspacePage() {
