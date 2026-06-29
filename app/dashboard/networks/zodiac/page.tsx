@@ -1444,6 +1444,13 @@ const platformSections = [
     caption: "Package 345 - One Channel Soft Launch Plan Candidate keeps manual evidence gates open and production launch blocked.",
     tone: "amber",
   },
+  {
+    title: "Soft Launch Monitoring Metrics Plan",
+    href: "/dashboard/networks/zodiac/soft-launch-monitoring-metrics-plan",
+    icon: BarChart3,
+    caption: "Package 346 - Soft Launch Monitoring Metrics Plan keeps manual evidence gates open and production launch blocked.",
+    tone: "amber",
+  },
 ] as const;
 
 export default async function ZodiacNetworkWorkspacePage() {
