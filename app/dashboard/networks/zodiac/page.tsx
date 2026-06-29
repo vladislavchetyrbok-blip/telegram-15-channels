@@ -1451,6 +1451,13 @@ const platformSections = [
     caption: "Package 346 - Soft Launch Monitoring Metrics Plan keeps manual evidence gates open and production launch blocked.",
     tone: "amber",
   },
+  {
+    title: "Incident Rollback Final Playbook",
+    href: "/dashboard/networks/zodiac/incident-rollback-final-playbook",
+    icon: ShieldCheck,
+    caption: "Package 347 - Incident Rollback Final Playbook keeps manual evidence gates open and production launch blocked.",
+    tone: "amber",
+  },
 ] as const;
 
 export default async function ZodiacNetworkWorkspacePage() {

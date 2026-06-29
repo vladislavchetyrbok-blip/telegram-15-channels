@@ -188,6 +188,7 @@ const ROUTES = {
   ownerFinalGoNoGoCandidate: "/dashboard/networks/zodiac/owner-final-go-no-go-candidate",
   oneChannelSoftLaunchPlanCandidate: "/dashboard/networks/zodiac/one-channel-soft-launch-plan-candidate",
   softLaunchMonitoringMetricsPlan: "/dashboard/networks/zodiac/soft-launch-monitoring-metrics-plan",
+  incidentRollbackFinalPlaybook: "/dashboard/networks/zodiac/incident-rollback-final-playbook",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
