@@ -1123,6 +1123,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Production Blocker Closure Checklist",
+    href: "/dashboard/networks/zodiac/production-blocker-closure-checklist",
+    icon: ListPlus,
+    caption: "Package 291 - final manual closure criteria for all seven production blockers; no blockers are closed here.",
+    tone: "rose",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
