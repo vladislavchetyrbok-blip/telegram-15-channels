@@ -1430,6 +1430,13 @@ const platformSections = [
     caption: "Package 343 - Production Safety Check Green Candidate keeps manual evidence gates open and production launch blocked.",
     tone: "rose",
   },
+  {
+    title: "Owner Final Go No-Go Candidate",
+    href: "/dashboard/networks/zodiac/owner-final-go-no-go-candidate",
+    icon: ClipboardCheck,
+    caption: "Package 344 - Owner Final Go No-Go Candidate keeps manual evidence gates open and production launch blocked.",
+    tone: "rose",
+  },
 ] as const;
 
 export default async function ZodiacNetworkWorkspacePage() {
