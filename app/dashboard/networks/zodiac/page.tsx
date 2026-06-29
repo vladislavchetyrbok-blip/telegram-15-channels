@@ -1458,6 +1458,13 @@ const platformSections = [
     caption: "Package 347 - Incident Rollback Final Playbook keeps manual evidence gates open and production launch blocked.",
     tone: "amber",
   },
+  {
+    title: "Final Pre-Launch Evidence Binder",
+    href: "/dashboard/networks/zodiac/final-pre-launch-evidence-binder",
+    icon: FileText,
+    caption: "Package 348 - Final Pre-Launch Evidence Binder keeps manual evidence gates open and production launch blocked.",
+    tone: "rose",
+  },
 ] as const;
 
 export default async function ZodiacNetworkWorkspacePage() {
