@@ -1367,6 +1367,13 @@ const platformSections = [
     caption: "Package 334 - Owner Uploaded Screenshots Intake keeps manual evidence gates open and production launch blocked.",
     tone: "amber",
   },
+  {
+    title: "Owner Real Device Visual Approval Candidate",
+    href: "/dashboard/networks/zodiac/owner-real-device-visual-approval-candidate",
+    icon: CheckCircle2,
+    caption: "Package 335 - Owner Real Device Visual Approval Candidate keeps manual evidence gates open and production launch blocked.",
+    tone: "amber",
+  },
 ] as const;
 
 export default async function ZodiacNetworkWorkspacePage() {
