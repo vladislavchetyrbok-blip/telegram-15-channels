@@ -19,7 +19,7 @@ import { recordAphroditeMiniAppNoopIntegrationPoint } from "@/lib/zodiac/aphrodi
 export const metadata: Metadata = {
   title: "Зодиакальный центр",
   description:
-    "Короткий Mini App экран: совместимость, Матрица, Мистика и VIP preview.",
+    "Короткий Mini App экран: совместимость, Матрица, Мистика и VIP превью.",
 };
 
 const secondaryCtas = [
@@ -45,7 +45,7 @@ const secondaryCtas = [
     tone: "rose",
   },
   {
-    title: "VIP preview",
+    title: "VIP превью",
     description: "Без оплаты · VIP закрыт.",
     href: "/vip-preview",
     icon: Star,
@@ -56,7 +56,7 @@ const secondaryCtas = [
 const trustNotes = [
   "Без оплаты",
   "VIP закрыт",
-  "Preview",
+  "Превью",
 ] as const;
 
 export default function MiniAppHubPage() {
@@ -81,7 +81,7 @@ export default function MiniAppHubPage() {
               <h1 className="aphrodite-wrap-anywhere text-2xl font-semibold leading-8 text-white">
                 Что между вами сейчас?
               </h1>
-              <p className="aphrodite-wrap-anywhere text-sm leading-5 text-slate-200">Совместимость, Матрица, Мистика и VIP preview в одном лёгком экране.</p>
+              <p className="aphrodite-wrap-anywhere text-sm leading-5 text-slate-200">Совместимость, Матрица, Мистика и VIP превью в одном лёгком экране.</p>
             </section>
 
             <Link
@@ -116,9 +116,9 @@ export default function MiniAppHubPage() {
         <AphroditeLockedPreviewCard
           variant="home"
           scope="miniapp-entry"
-          title="VIP preview"
+          title="VIP превью"
           subtitle="VIP закрыт"
-          preview="Премиум-разбор виден как preview."
+          preview="Премиум-разбор виден как короткое превью."
           features={["Разбор пары", "Матрица Pro", "Карточка"]}
           previewItems={["Без оплаты", "VIP закрыт"]}
           safetyLabel="Без оплаты · VIP закрыт"

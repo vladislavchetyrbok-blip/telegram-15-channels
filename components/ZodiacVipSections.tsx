@@ -117,6 +117,20 @@ const relationshipModeSelectOptions: Array<ZodiacSelectOption<RelationshipMode>>
   description: mode.caption,
 }));
 
+const VIP_PREVIEW_LOCKED_SCOPE_COPY = "Показана короткая версия. Полный отчёт закрыт. Оплата не активна.";
+const VIP_PREVIEW_DISCLAIMER_FALLBACK = "Это мягкая навигация для разговора, а не жёсткое предсказание.";
+
+function compactPreviewSentence(value: string, maxLength = 104) {
+  const normalized = value.replace(/\s+/g, " ").trim();
+  const firstStop = normalized.search(/[.!?]/);
+  const firstSentence = firstStop > 24 ? normalized.slice(0, firstStop + 1) : normalized;
+  return firstSentence.length > maxLength ? `${firstSentence.slice(0, maxLength - 1).trim()}…` : firstSentence;
+}
+
+function compactDayMood(day: CoupleCalendarDay) {
+  return day.energy || day.status || "мягкий фокус";
+}
+
 function VipStatusPill({ publicMode, label, value }: VipStatusPillProps) {
   return (
     <div className={publicMode ? "rounded-md border border-white/10 bg-white/5 p-2" : "rounded-md border border-amber-100 bg-amber-50/50 p-2"}>
@@ -194,10 +208,10 @@ export function VipMenuCard({
     <div className={publicMode ? "rounded-lg border border-amber-200/25 bg-amber-200/10 p-4" : "rounded-lg border border-amber-200 bg-amber-50 p-4"}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className={publicMode ? "text-lg font-semibold text-white" : "text-lg font-semibold text-slate-950"}>👑 VIP preview</p>
-          <p className={publicMode ? "mt-1 text-sm font-semibold text-amber-100" : "mt-1 text-sm font-semibold text-amber-800"}>Preview до {untilLabel}</p>
+          <p className={publicMode ? "text-lg font-semibold text-white" : "text-lg font-semibold text-slate-950"}>👑 VIP превью</p>
+          <p className={publicMode ? "mt-1 text-sm font-semibold text-amber-100" : "mt-1 text-sm font-semibold text-amber-800"}>Превью до {untilLabel}</p>
           <p className={publicMode ? "mt-2 text-sm leading-6 text-slate-300" : "mt-2 text-sm leading-6 text-slate-700"}>
-            Премиум-функции показаны как preview. Оплата не активна, VIP не открывается.
+            Показана короткая версия. Полный отчёт закрыт. Оплата не активна.
           </p>
         </div>
         <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-amber-200/25 bg-black/20 text-amber-100">
@@ -206,7 +220,7 @@ export function VipMenuCard({
       </div>
 
       <div className="mt-4 grid gap-2 sm:grid-cols-3">
-        <VipStatusPill publicMode={publicMode} label="Сейчас" value="preview" />
+        <VipStatusPill publicMode={publicMode} label="Сейчас" value="превью" />
         <VipStatusPill publicMode={publicMode} label="Оплата" value="не активна" />
         <VipStatusPill publicMode={publicMode} label="VIP" value="закрыт" />
       </div>
@@ -1034,8 +1048,8 @@ export function ExtendedNatalFeature({
                   variant="natal"
                   scope="vip-natal"
                   title="Pro Natal слой"
-                  subtitle="Natal preview закрыт"
-                  preview="Pro-слой показан как короткий preview."
+                  subtitle="Natal превью закрыто"
+                  preview="Pro-слой показан как короткое превью."
                   features={["Натальный профиль", "Связь с Матрицей", "Личный совет"]}
                   previewItems={["Личные циклы", "Карьерные сценарии", "Ритуал недели"]}
                 />
@@ -1332,10 +1346,13 @@ export function VipCoupleCalendarFeature({
     count: 30,
     scoreTotal: score,
   });
+  const previewDays = days.slice(0, 5);
+  const compactDays = days.slice(5, 30);
+  const sharedDisclaimer = days[0]?.softDisclaimer ?? VIP_PREVIEW_DISCLAIMER_FALLBACK;
 
   return (
     <VipScreenLayout publicMode={publicMode} title="30-дневный календарь пары" onBack={onBack}>
-      <VipIntro publicMode={publicMode} text="Календарь пары показывает ближайшие 30 дней: тему, энергию, действие, риск и короткий совет." />
+      <VipIntro publicMode={publicMode} text="Календарь пары показан как компактное VIP превью: первые 5 дней раскрыты коротко, остальные собраны в список." />
       {!pairReady ? <PairInlineHint publicMode={publicMode} /> : null}
       <VipInputPanel publicMode={publicMode}>
         <SignSelect publicMode={publicMode} value={firstSlug} onChange={setFirstSlug} label="Первый знак" />
@@ -1352,19 +1369,34 @@ export function VipCoupleCalendarFeature({
       </PrimaryVipButton>
       {calculated ? (
         <VipResultPanel publicMode={publicMode} title={`30 дней пары · ${first.name} + ${second.name}`}>
+          <div className={publicMode ? "mb-3 rounded-lg border border-amber-200/20 bg-amber-200/10 p-3 text-sm leading-5 text-amber-50" : "mb-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm leading-5 text-amber-900"}>
+            {VIP_PREVIEW_LOCKED_SCOPE_COPY} {sharedDisclaimer}
+          </div>
           <div className="space-y-2">
-            {days.map((day, index) => (
+            {previewDays.map((day, index) => (
               <div key={`${day.dateKey}-${index}`} className={publicMode ? "rounded-lg border border-white/10 bg-white/5 p-3" : "rounded-lg border border-slate-100 bg-white p-3"}>
-                <div className="flex items-center justify-between gap-2">
+                <div className="flex flex-wrap items-center justify-between gap-2">
                   <p className={publicMode ? "text-sm font-semibold text-white" : "text-sm font-semibold text-slate-950"}>День {day.dayNumber} · {day.date}</p>
-                  <span className={publicMode ? "rounded-full bg-amber-200/15 px-2 py-1 text-[11px] font-semibold text-amber-100" : "rounded-full bg-amber-100 px-2 py-1 text-[11px] font-semibold text-amber-800"}>{day.energy}</span>
+                  <span className={publicMode ? "rounded-full bg-amber-200/15 px-2 py-1 text-[11px] font-semibold text-amber-100" : "rounded-full bg-amber-100 px-2 py-1 text-[11px] font-semibold text-amber-800"}>{compactDayMood(day)}</span>
                 </div>
-                <p className={publicMode ? "mt-1 text-sm text-slate-300" : "mt-1 text-sm text-slate-700"}>{day.title}: {day.emotionalTheme}</p>
-                <p className={publicMode ? "mt-1 text-sm text-slate-300" : "mt-1 text-sm text-slate-700"}>Инсайт пары: {day.coupleInsight}</p>
-                <p className={publicMode ? "mt-1 text-sm text-slate-300" : "mt-1 text-sm text-slate-700"}>Действие: {day.recommendedAction}. Риск: {day.riskZone}. Совет: {day.advice}</p>
-                <p className={publicMode ? "mt-2 text-xs leading-5 text-slate-400" : "mt-2 text-xs leading-5 text-slate-500"}>{day.softDisclaimer}</p>
+                <p className={publicMode ? "mt-1 text-sm leading-5 text-slate-300" : "mt-1 text-sm leading-5 text-slate-700"}>{compactPreviewSentence(`${day.title}: ${day.emotionalTheme}`)}</p>
+                <p className={publicMode ? "mt-1 text-sm font-medium leading-5 text-amber-50" : "mt-1 text-sm font-medium leading-5 text-amber-900"}>Действие: {compactPreviewSentence(day.recommendedAction, 96)}</p>
               </div>
             ))}
+            {compactDays.length ? (
+              <div className={publicMode ? "rounded-lg border border-white/10 bg-white/[0.03] p-3" : "rounded-lg border border-slate-100 bg-slate-50 p-3"}>
+                <p className={publicMode ? "text-sm font-semibold text-white" : "text-sm font-semibold text-slate-950"}>Остальные дни · компактно</p>
+                <div className="mt-2 grid gap-1.5">
+                  {compactDays.map((day) => (
+                    <div key={day.dateKey} className={publicMode ? "flex min-w-0 items-center gap-2 rounded-md border border-white/8 bg-black/15 px-2.5 py-2" : "flex min-w-0 items-center gap-2 rounded-md border border-slate-200 bg-white px-2.5 py-2"}>
+                      <span className={publicMode ? "shrink-0 text-xs font-semibold text-amber-100" : "shrink-0 text-xs font-semibold text-amber-800"}>{day.dayNumber}</span>
+                      <span className={publicMode ? "shrink-0 text-xs text-slate-400" : "shrink-0 text-xs text-slate-500"}>{day.date}</span>
+                      <span className={publicMode ? "min-w-0 flex-1 truncate text-xs text-slate-200" : "min-w-0 flex-1 truncate text-xs text-slate-700"}>{compactDayMood(day)} · {compactPreviewSentence(day.recommendedAction, 68)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : null}
           </div>
           <VipResultActions publicMode={publicMode} saved={actions.saved} shared={actions.shared} shareStatus={actions.shareStatus} onSave={() => actions.save(payload)} onShare={() => actions.share(payload)} />
         </VipResultPanel>

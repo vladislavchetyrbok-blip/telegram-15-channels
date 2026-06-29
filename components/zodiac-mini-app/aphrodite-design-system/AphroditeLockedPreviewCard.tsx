@@ -44,8 +44,8 @@ const defaultFeatures: Record<AphroditeLockedPreviewVariant, readonly string[]> 
 };
 
 const defaultPreviewItems: Record<AphroditeLockedPreviewVariant, readonly string[]> = {
-  general: ["Preview-режим", "Без оплаты", "VIP закрыт"],
-  home: ["Preview", "Без оплаты", "VIP закрыт"],
+  general: ["Превью-режим", "Без оплаты", "VIP закрыт"],
+  home: ["Превью", "Без оплаты", "VIP закрыт"],
   compatibility: ["Динамика эмоций", "Календарь любви", "Связь с Матрицей"],
   birthMatrix: ["Циклы", "Деньги и предназначение", "Паттерны отношений"],
   mystic: ["Толкование карты", "Любовь и деньги", "Личный совет"],
@@ -55,12 +55,12 @@ const defaultPreviewItems: Record<AphroditeLockedPreviewVariant, readonly string
 export function AphroditeLockedPreviewCard({
   variant = "general",
   scope,
-  title = "VIP preview закрыт",
-  subtitle = "Preview",
+  title = "VIP превью закрыт",
+  subtitle = "Превью",
   preview = "Премиум-блок показан коротко. Без оплаты · VIP закрыт.",
   features,
   previewItems,
-  lockLabel = "только preview",
+  lockLabel = "только превью",
   safetyLabel = "Без оплаты, без VIP-разблокировки, без обхода доступа.",
   className,
 }: AphroditeLockedPreviewCardProps) {
@@ -85,7 +85,7 @@ export function AphroditeLockedPreviewCard({
         <div className="relative min-w-0 space-y-3 p-2.5 min-[390px]:p-3">
           <div className="flex min-w-0 items-start justify-between gap-2">
             <div className="flex min-w-0 flex-wrap gap-2">
-              <AphroditeBadge tone="locked">VIP preview</AphroditeBadge>
+              <AphroditeBadge tone="locked">VIP превью</AphroditeBadge>
               <AphroditeBadge tone="gold">без оплаты</AphroditeBadge>
             </div>
             <span className="grid h-9 w-9 shrink-0 place-items-center self-start rounded-lg border border-amber-100/25 bg-black/25 text-amber-100">

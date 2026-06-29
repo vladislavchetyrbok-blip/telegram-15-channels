@@ -32,7 +32,7 @@ export function VipPreviewPanel({ publicMode, title, text }: { publicMode: boole
   return (
     <div className={publicMode ? "rounded-lg border border-white/12 bg-white/8 p-3" : "rounded-lg border border-amber-100 bg-white p-3"}>
       <p className={publicMode ? "aphrodite-wrap-anywhere text-sm font-semibold text-amber-100" : "aphrodite-wrap-anywhere text-sm font-semibold text-amber-800"}>{title}</p>
-      <p className={publicMode ? "aphrodite-wrap-anywhere mt-2 text-sm leading-5 text-slate-300" : "aphrodite-wrap-anywhere mt-2 text-sm leading-5 text-slate-600"}>{text}</p>
+      <p className={publicMode ? "aphrodite-wrap-anywhere mt-2 line-clamp-3 text-sm leading-5 text-slate-300" : "aphrodite-wrap-anywhere mt-2 line-clamp-3 text-sm leading-5 text-slate-600"}>{text}</p>
     </div>
   );
 }

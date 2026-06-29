@@ -38,7 +38,7 @@ export function VipCompatibilityReportClient() {
   return (
     <div className="min-w-0 max-w-full space-y-4">
       <div className="flex flex-wrap gap-2 rounded-lg border border-rose-500/30 bg-rose-500/5 p-2.5 text-xs font-semibold text-rose-100 shadow-sm">
-        <span>Preview</span>
+        <span>Превью</span>
         <span>Без оплаты</span>
         <span>VIP закрыт</span>
       </div>
@@ -47,7 +47,7 @@ export function VipCompatibilityReportClient() {
         <div className="min-w-0 rounded-lg border border-slate-800 bg-slate-900/60 p-3 shadow-sm min-[390px]:p-4">
           <h2 className="aphrodite-wrap-anywhere mb-3 flex items-center gap-2 text-lg font-bold text-slate-100">
             <Sparkles className="h-5 w-5 text-fuchsia-400" />
-            Preview-расчет
+            Превью-расчет
           </h2>
           <div className="aphrodite-pkg-267-two-after-430 mb-4 grid gap-3">
             <div className="min-w-0 space-y-3 rounded-lg border border-slate-800/50 bg-slate-950/50 p-3">
@@ -102,7 +102,7 @@ export function VipCompatibilityReportClient() {
             onClick={() => setIsGenerated(true)}
             className="aphrodite-touch-target aphrodite-wrap-anywhere w-full rounded-lg bg-gradient-to-r from-fuchsia-600 to-indigo-600 px-3 py-3 text-center font-semibold text-white shadow-md transition-all hover:from-fuchsia-500 hover:to-indigo-500"
           >
-              Показать preview
+              Показать превью
           </button>
         </div>
       ) : (
@@ -125,14 +125,14 @@ export function VipCompatibilityReportClient() {
               <AphroditeShareCard
                 variant="vipPreview"
                 scope="vip-compatibility-report"
-                eyebrow="VIP preview"
+                eyebrow="VIP превью"
                 title={mockReport!.headline}
                 subtitle={`${firstSign} + ${secondSign}`}
-                scoreLabel="preview"
+                scoreLabel="превью"
                 scoreDetail="закрыто"
                 insight={mockReport!.summary}
                 highlights={[
-                  { label: "отчёт", value: "preview", detail: "Короткая форма премиум-результата." },
+                  { label: "отчёт", value: "превью", detail: "Короткая форма премиум-результата." },
                   { label: "граница", value: "закрыто", detail: "Без оплаты · VIP закрыт." },
                 ]}
                 footer="Без оплаты · VIP закрыт."
@@ -149,7 +149,7 @@ export function VipCompatibilityReportClient() {
                           scope="vip-compatibility-report"
                           title={section.title}
                           subtitle="VIP-секция закрыта"
-                          preview="Сейчас это только preview."
+                          preview="Сейчас это только превью."
                           features={["Разбор", "Календарь", "Карточка"]}
                           previewItems={["Без оплаты", "VIP закрыт"]}
                           safetyLabel="Без оплаты · VIP закрыт"
@@ -162,7 +162,7 @@ export function VipCompatibilityReportClient() {
                     <div className="flex flex-wrap justify-between items-start gap-2 mb-3">
                       <h3 className="aphrodite-wrap-anywhere text-xl font-semibold text-fuchsia-100">{section.title}</h3>
                       <span className="text-[10px] uppercase tracking-wider px-2 py-1 bg-emerald-500/10 text-emerald-400 rounded-full border border-emerald-500/20">
-                        Preview
+                        Превью
                       </span>
                     </div>
                     <p className="aphrodite-wrap-anywhere mb-3 line-clamp-2 text-sm leading-5 text-slate-300">{section.text}</p>
@@ -180,7 +180,7 @@ export function VipCompatibilityReportClient() {
             <div className="flex min-w-0 items-start gap-3 border-t border-rose-900/30 bg-rose-950/30 p-3 text-sm text-rose-300/80">
               <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" />
               <div className="aphrodite-wrap-anywhere min-w-0">
-                  <strong>Preview:</strong> Без оплаты · VIP закрыт
+                  <strong>Превью:</strong> Без оплаты · VIP закрыт
               </div>
             </div>
           </div>
@@ -195,7 +195,7 @@ export function VipCompatibilityReportClient() {
             Бесплатная совместимость
         </Link>
           <Link href="/vip-preview" className="aphrodite-touch-target aphrodite-wrap-anywhere inline-flex items-center text-indigo-400 hover:text-indigo-300 underline underline-offset-4">
-            VIP preview
+            VIP превью
         </Link>
       </div>
     </div>

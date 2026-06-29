@@ -48,7 +48,7 @@ export function HeaderStatusStrip({ publicMode, sign, dateLabel, vipUntilLabel }
   const items = [
     `${sign.emoji} ${sign.name}`,
     dateLabel ? `Сегодня: ${dateLabel} · Europe/Kyiv` : "Дата обновляется",
-    "VIP preview · без оплаты",
+    "VIP превью · без оплаты",
     "данные не сохраняются",
   ];
 
@@ -83,7 +83,7 @@ export function HomeQuickSection({
     { title: "Совместимость", text: "расчёт пары", action: onOpenLove, icon: <HeartHandshake className="h-4 w-4" /> },
     { title: "Ангельские числа", text: "10:10, 12:12, 02:22", action: onOpenForecasts, icon: <Star className="h-4 w-4" /> },
     { title: "Натальная карта", text: "профиль рождения", action: onOpenProfile, icon: <CalendarDays className="h-4 w-4" /> },
-    { title: "VIP preview", text: "без оплаты", action: onOpenVip, icon: <Crown className="h-4 w-4" /> },
+    { title: "VIP превью", text: "без оплаты", action: onOpenVip, icon: <Crown className="h-4 w-4" /> },
     { title: "Ментальная карта", text: "карта отношений", action: onOpenLove, icon: <Sparkles className="h-4 w-4" /> },
   ];
 

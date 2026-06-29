@@ -71,7 +71,7 @@ export function AphroditeShareCard({
   scoreDetail = "результат",
   insight,
   highlights = [],
-  footer = "Preview-карточка. Без оплаты · VIP закрыт.",
+  footer = "Превью-карточка. Без оплаты · VIP закрыт.",
   className,
 }: AphroditeShareCardProps) {
   return (

@@ -106,7 +106,7 @@ export function ResultPanel({
           { label: "диалог", value: `${result.scores.communication}%`, detail: result.communicationText },
           { label: "ритм", value: `${result.scores.household}%`, detail: result.householdText },
         ]}
-        footer="Preview-карточка. Данные остаются на устройстве."
+        footer="Превью-карточка. Данные остаются на устройстве."
       />
 
       <FinalAstroMap
@@ -236,8 +236,8 @@ function CompatibilityVipPreview({ publicMode }: { publicMode: boolean }) {
         variant="compatibility"
         scope={previewScope}
         title="Полный разбор совместимости"
-        subtitle="VIP preview совместимости"
-        preview="Глубокий слой показан как preview."
+        subtitle="VIP превью совместимости"
+        preview="Глубокий слой показан как короткое превью."
         features={["Разбор", "Календарь пары", "Матрица"]}
         previewItems={["Эмоции", "Риски", "Любовь"]}
         safetyLabel="Без оплаты · VIP закрыт"
