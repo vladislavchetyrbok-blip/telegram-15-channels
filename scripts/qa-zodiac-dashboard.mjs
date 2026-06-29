@@ -167,6 +167,7 @@ const ROUTES = {
   post303FinalReadinessSummary: "/dashboard/networks/zodiac/post-303-final-readiness-summary",
   ownerScreenshotEvidenceReviewAfterUpload: "/dashboard/networks/zodiac/owner-screenshot-evidence-review-after-upload",
   finalRealDeviceVisualAcceptancePendingRecord: "/dashboard/networks/zodiac/final-real-device-visual-acceptance-pending-record",
+  redactedEnvClosureOwnerActionGate: "/dashboard/networks/zodiac/redacted-env-closure-owner-action-gate",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",

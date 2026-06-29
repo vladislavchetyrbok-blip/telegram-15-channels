@@ -1304,6 +1304,13 @@ const platformSections = [
     caption: "Package 325 - final real-device visual acceptance remains pending until owner confirms Android Telegram WebView and preferred iPhone checks.",
     tone: "amber",
   },
+  {
+    title: "Redacted Env Closure Owner Action Gate",
+    href: "/dashboard/networks/zodiac/redacted-env-closure-owner-action-gate",
+    icon: ShieldCheck,
+    caption: "Package 326 - env closure remains owner-only with redacted presence checks and no secret values in Git or chat.",
+    tone: "rose",
+  },
 ] as const;
 
 export default async function ZodiacNetworkWorkspacePage() {
