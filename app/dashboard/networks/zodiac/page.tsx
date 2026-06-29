@@ -1102,6 +1102,13 @@ const platformSections = [
     tone: "amber",
   },
   {
+    title: "Manual Env Setup Execution",
+    href: "/dashboard/networks/zodiac/manual-env-setup-execution",
+    icon: ShieldCheck,
+    caption: "Package 288 - redacted manual env setup execution record; secrets stay outside Git and blockers remain open.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
