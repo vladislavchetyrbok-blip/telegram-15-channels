@@ -1472,6 +1472,13 @@ const platformSections = [
     caption: "Package 349 - Soft Launch Not Approved Banner Record keeps manual evidence gates open and production launch blocked.",
     tone: "rose",
   },
+  {
+    title: "VIP Monetization Future Locked Plan",
+    href: "/dashboard/networks/zodiac/vip-monetization-future-locked-plan",
+    icon: ShoppingCart,
+    caption: "Package 350 - VIP Monetization Future Locked Plan keeps manual evidence gates open and production launch blocked.",
+    tone: "amber",
+  },
 ] as const;
 
 export default async function ZodiacNetworkWorkspacePage() {
