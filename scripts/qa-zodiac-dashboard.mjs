@@ -154,6 +154,7 @@ const ROUTES = {
   softLaunchCandidateGoNoGoRecord: "/dashboard/networks/zodiac/soft-launch-candidate-go-no-go-record",
   postBlockerClosureFinalLaunchRunbookDraft: "/dashboard/networks/zodiac/post-blocker-closure-final-launch-runbook-draft",
   manualEvidenceReadinessSummary: "/dashboard/networks/zodiac/manual-evidence-readiness-summary",
+  realDeviceVipPreviewDensityFix: "/dashboard/networks/zodiac/real-device-vip-preview-density-fix",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -562,7 +563,7 @@ async function main() {
 
     assertIncludes(pages.miniappHub, "data-aphrodite-miniapp-entry-redesign", "miniapp package 238 marker");
     assertIncludes(pages.miniappHub, "Зодиак", "miniapp Package 270 Zodiac-facing brand");
-    assertIncludes(pages.miniappHub, "VIP preview", "miniapp compact VIP preview copy");
+    assertIncludes(pages.miniappHub, "VIP превью", "miniapp compact VIP preview copy");
     assertIncludes(pages.miniappHub, "Короткий Mini App экран", "miniapp compact metadata");
     assertIncludes(pages.miniappHub, "Проверить совместимость", "miniapp redesigned primary compatibility CTA");
     assertIncludes(pages.miniappHub, "Матрица судьбы", "miniapp redesigned birth matrix CTA");
@@ -584,9 +585,9 @@ async function main() {
     assertIncludes(pages.affirmations, "Открыть Мистику", "affirmations guard links to current mystic flow");
     assertNotIncludes(pages.affirmations, "No payment. No database write. No Telegram API call.", "affirmations technical safety mock hidden");
 
-    assertIncludes(pages.vipPreview, "VIP preview", "vip preview page title");
-    assertIncludes(pages.vipPreview, "VIP preview без оплаты", "vip preview compact no-payment preview");
-    assertIncludes(pages.vipPreview, "Premium preview", "vip preview compact locked card");
+    assertIncludes(pages.vipPreview, "VIP превью", "vip preview page title");
+    assertIncludes(pages.vipPreview, "VIP превью без оплаты", "vip preview compact no-payment preview");
+    assertIncludes(pages.vipPreview, "VIP превью", "vip preview compact locked card");
     assertIncludes(pages.vipPreview, "Без оплаты", "vip preview safety: no payment");
     assertIncludes(pages.vipPreview, "VIP закрыт", "vip preview safety: no unlock");
 
@@ -1809,8 +1810,8 @@ async function main() {
     assertIncludes(pages.vipCompatibilityReportFoundation, "No real VIP unlock", "vip compatibility report vip boundary");
     assertIncludes(pages.vipCompatibilityReportFoundation, "No Telegram API call", "vip compatibility report telegram boundary");
 
-    assertIncludes(pages.vipCompatibilityReport, "VIP preview совместимости", "vip compatibility report page title");
-    assertIncludes(pages.vipCompatibilityReport, "Preview", "vip compatibility report preview classification");
+    assertIncludes(pages.vipCompatibilityReport, "VIP превью совместимости", "vip compatibility report page title");
+    assertIncludes(pages.vipCompatibilityReport, "Превью", "vip compatibility report preview classification");
     assertIncludes(pages.vipCompatibilityReport, "без оплаты", "vip compatibility report payment boundary");
     assertIncludes(pages.vipCompatibilityReport, "VIP закрыт", "vip compatibility report vip boundary");
 

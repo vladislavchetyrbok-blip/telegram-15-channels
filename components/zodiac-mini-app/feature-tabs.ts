@@ -49,7 +49,7 @@ export const menuFeatureTabs: Array<{ id: MoreFeatureId; label: string; shortLab
   { id: "lunarRitual", label: "🌙 Лунный ритуал", shortLabel: "Ритуал", group: "mystic" },
   { id: "karmicLessons", label: "🪞 Кармические уроки", shortLabel: "Карма", group: "mystic", requirement: "sign" },
   { id: "birthMatrix", label: "🔢 Матрица рождения", shortLabel: "Матрица", group: "mystic" },
-  { id: "vip", label: "👑 VIP preview", shortLabel: "VIP", group: "vip" },
+  { id: "vip", label: "👑 VIP превью", shortLabel: "VIP", group: "vip" },
   { id: "mentalMap", label: "🧠 Карта пары+", shortLabel: "Карта+", group: "vip", requirement: "pair" },
   { id: "coupleCalendar", label: "📅 30 дней пары", shortLabel: "30 дней", group: "vip", requirement: "pair" },
   { id: "natalChart", label: "🌌 Натал+", shortLabel: "Натал+", group: "vip", requirement: "natal" },
@@ -62,7 +62,7 @@ export const menuFeatureGroups: Array<{ id: MenuFeatureGroup; title: string; sub
   { id: "profile", title: "Личный профиль", subtitle: "натальная карта, имя, числа и символы" },
   { id: "forecasts", title: "Прогноз", subtitle: "сегодня, неделя, луна и подсказки" },
   { id: "mystic", title: "Мистика", subtitle: "карты, Таро, руны, аура и символы дня" },
-  { id: "vip", title: "VIP", subtitle: "preview без оплаты" },
+  { id: "vip", title: "VIP", subtitle: "превью без оплаты" },
 ];
 
 export const defaultMenuFeatureByGroup: Record<MenuFeatureGroup, MoreFeatureId> = {

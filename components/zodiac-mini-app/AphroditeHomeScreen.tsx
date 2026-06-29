@@ -79,12 +79,12 @@ const quickActions: AphroditeHomeAction[] = [
   },
   {
     id: "vip",
-    title: "VIP preview",
+    title: "VIP превью",
     text: "Без оплаты · VIP закрыт.",
     icon: <Crown className="h-5 w-5" aria-hidden="true" />,
     target: { tab: "vip", feature: "vip" },
     tone: "amber",
-    badge: "Preview",
+    badge: "Превью",
   },
 ];
 
@@ -162,7 +162,7 @@ const categories: AphroditeHomeAction[] = [
   {
     id: "vip",
     title: "VIP раздел",
-    text: "Preview · без оплаты",
+    text: "Превью · без оплаты",
     icon: <Crown className="h-6 w-6" aria-hidden="true" />,
     target: { tab: "vip", feature: "vip" },
     tone: "amber",
@@ -199,7 +199,7 @@ export function AphroditeAstrologyCenterHome({
         <div className="flex flex-wrap items-center gap-2">
           <AphroditeBadge tone="rose">Зодиак</AphroditeBadge>
           <AphroditeBadge tone="violet">романтика</AphroditeBadge>
-          <AphroditeBadge tone="gold">VIP preview</AphroditeBadge>
+          <AphroditeBadge tone="gold">VIP превью</AphroditeBadge>
           {selectedSign ? (
             <AphroditeBadge tone="gold">
               {selectedSign.emoji} {selectedSign.name}
@@ -209,7 +209,7 @@ export function AphroditeAstrologyCenterHome({
 
         <div className="mt-3 space-y-1.5">
           <h2 className="break-words text-2xl font-semibold leading-8 text-white">Что между вами сейчас?</h2>
-          <p className="text-sm leading-5 text-slate-200">Совместимость, Матрица, Мистика и VIP preview.</p>
+          <p className="text-sm leading-5 text-slate-200">Совместимость, Матрица, Мистика и VIP превью.</p>
         </div>
 
         <button

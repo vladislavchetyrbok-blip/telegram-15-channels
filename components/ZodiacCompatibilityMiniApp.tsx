@@ -1240,15 +1240,15 @@ function getCategoryStartCopy(tab: HubTab, feature: MoreFeatureId | null) {
   if (tab === "vip" && feature === "giveaways") {
     return {
       title: "🎁 Розыгрыши",
-      subtitle: "Розыгрыши остаются закрытым preview. VIP остаётся preview без оплаты.",
-      features: ["Preview", "Без оплаты", "VIP закрыт", "Доступ отдельно"],
+      subtitle: "Розыгрыши остаются закрытым превью. VIP остаётся закрытым, оплата не активна.",
+      features: ["Превью", "Без оплаты", "VIP закрыт", "Доступ отдельно"],
     };
   }
 
   if (tab === "vip") {
     return {
       title: "👑 VIP раздел",
-      subtitle: "Выберите знак и посмотрите preview премиум-функций без оплаты.",
+      subtitle: "Выберите знак и посмотрите короткое превью премиум-функций без оплаты.",
       features: ["Натальная карта+", "Расширенная совместимость", "Карта пары", "30 дней пары", "Месячный прогноз", "VIP мистический день"],
     };
   }
@@ -2289,6 +2289,20 @@ function MentalMapAdviceCard({ publicMode, title, items }: { publicMode: boolean
   );
 }
 
+const VIP_PREVIEW_LOCKED_SCOPE_COPY = "Показана короткая версия. Полный отчёт закрыт. Оплата не активна.";
+const VIP_PREVIEW_DISCLAIMER_FALLBACK = "Это мягкая навигация для разговора, а не жёсткое предсказание.";
+
+function compactPreviewSentence(value: string, maxLength = 104) {
+  const normalized = value.replace(/\s+/g, " ").trim();
+  const firstStop = normalized.search(/[.!?]/);
+  const firstSentence = firstStop > 24 ? normalized.slice(0, firstStop + 1) : normalized;
+  return firstSentence.length > maxLength ? `${firstSentence.slice(0, maxLength - 1).trim()}…` : firstSentence;
+}
+
+function compactDayMood(day: CoupleCalendarDay) {
+  return day.energy || day.status || "мягкий фокус";
+}
+
 function CoupleCalendarCard({
   publicMode,
   days,
@@ -2304,10 +2318,17 @@ function CoupleCalendarCard({
 }) {
   if (!pairReady) return <PairRequiredCard publicMode={publicMode} title="📅 Календарь пары" lastPairAction={lastPairAction} onPairRequiredAction={onPairRequiredAction} />;
 
+  const previewDays = days.slice(0, 5);
+  const compactDays = days.slice(5, 30);
+  const sharedDisclaimer = days[0]?.softDisclaimer ?? VIP_PREVIEW_DISCLAIMER_FALLBACK;
+
   return (
-    <FeatureCard publicMode={publicMode} title="📅 30 дней пары" subtitle={`Ближайшие ${days.length} дней: тема, энергия, действие и риск`}>
-      <div className="grid max-h-[560px] gap-3 overflow-y-auto pr-1">
-        {days.map((day, index) => {
+    <FeatureCard publicMode={publicMode} title="📅 30 дней пары" subtitle="Первые 5 дней раскрыты коротко, остальные собраны в компактный список">
+      <div className={publicMode ? "mb-3 rounded-lg border border-amber-200/20 bg-amber-200/10 p-3 text-sm leading-5 text-amber-50" : "mb-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm leading-5 text-amber-900"}>
+        {VIP_PREVIEW_LOCKED_SCOPE_COPY} {sharedDisclaimer}
+      </div>
+      <div className="grid max-h-[520px] gap-2 overflow-y-auto pr-1">
+        {previewDays.map((day, index) => {
           const isToday = index === 0;
           return (
             <div
@@ -2315,14 +2336,14 @@ function CoupleCalendarCard({
               className={
                 isToday
                   ? publicMode
-                    ? "rounded-lg border border-amber-200/35 bg-amber-200/10 p-4 shadow-[0_10px_30px_rgba(0,0,0,0.16)]"
-                    : "rounded-lg border border-amber-200 bg-amber-50 p-4 shadow-sm"
+                    ? "rounded-lg border border-amber-200/35 bg-amber-200/10 p-3 shadow-[0_10px_30px_rgba(0,0,0,0.16)]"
+                    : "rounded-lg border border-amber-200 bg-amber-50 p-3 shadow-sm"
                   : publicMode
-                    ? "rounded-lg border border-white/12 bg-white/8 p-4"
-                    : "rounded-lg border border-slate-200 bg-white p-4"
+                    ? "rounded-lg border border-white/12 bg-white/8 p-3"
+                    : "rounded-lg border border-slate-200 bg-white p-3"
               }
             >
-              <div className="flex flex-wrap items-start justify-between gap-3">
+              <div className="flex flex-wrap items-start justify-between gap-2">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className={publicMode ? "rounded-full border border-white/12 bg-white/8 px-2.5 py-1 text-xs font-semibold text-slate-200" : "rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-semibold text-slate-600"}>
@@ -2342,19 +2363,27 @@ function CoupleCalendarCard({
                   <span className={publicMode ? "rounded-full border border-cyan-200/20 bg-cyan-200/10 px-3 py-1 text-xs font-semibold text-cyan-50" : "rounded-full border border-cyan-100 bg-cyan-50 px-3 py-1 text-xs font-semibold text-cyan-800"}>{day.energy}</span>
                 </div>
               </div>
-              <div className="mt-4 grid gap-3">
-                <InfoRow publicMode={publicMode} label="Тема" text={day.emotionalTheme} />
-                <InfoRow publicMode={publicMode} label="Инсайт пары" text={day.coupleInsight} />
-                <InfoRow publicMode={publicMode} label="Действие" text={day.recommendedAction} />
-                <div className="grid gap-2 sm:grid-cols-2">
-                  <InfoRow publicMode={publicMode} label="Риск" text={day.riskZone} />
-                  <InfoRow publicMode={publicMode} label="Совет" text={day.advice} />
-                </div>
-                <p className={publicMode ? "text-xs leading-5 text-slate-400" : "text-xs leading-5 text-slate-500"}>{day.softDisclaimer}</p>
+              <div className="mt-3 grid gap-1.5">
+                <p className={publicMode ? "text-sm leading-5 text-slate-300" : "text-sm leading-5 text-slate-700"}>{compactPreviewSentence(`${day.title}: ${day.emotionalTheme}`)}</p>
+                <p className={publicMode ? "text-sm font-medium leading-5 text-amber-50" : "text-sm font-medium leading-5 text-amber-900"}>Действие: {compactPreviewSentence(day.recommendedAction, 96)}</p>
               </div>
             </div>
           );
         })}
+        {compactDays.length ? (
+          <div className={publicMode ? "rounded-lg border border-white/10 bg-white/[0.03] p-3" : "rounded-lg border border-slate-100 bg-slate-50 p-3"}>
+            <p className={publicMode ? "text-sm font-semibold text-white" : "text-sm font-semibold text-slate-950"}>Остальные дни · компактно</p>
+            <div className="mt-2 grid gap-1.5">
+              {compactDays.map((day) => (
+                <div key={day.dateKey} className={publicMode ? "flex min-w-0 items-center gap-2 rounded-md border border-white/8 bg-black/15 px-2.5 py-2" : "flex min-w-0 items-center gap-2 rounded-md border border-slate-200 bg-white px-2.5 py-2"}>
+                  <span className={publicMode ? "shrink-0 text-xs font-semibold text-amber-100" : "shrink-0 text-xs font-semibold text-amber-800"}>{day.dayNumber}</span>
+                  <span className={publicMode ? "shrink-0 text-xs text-slate-400" : "shrink-0 text-xs text-slate-500"}>{day.date}</span>
+                  <span className={publicMode ? "min-w-0 flex-1 truncate text-xs text-slate-200" : "min-w-0 flex-1 truncate text-xs text-slate-700"}>{compactDayMood(day)} · {compactPreviewSentence(day.recommendedAction, 68)}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : null}
       </div>
     </FeatureCard>
   );
@@ -2803,7 +2832,7 @@ function PersonalityArchetypeCard({ publicMode, person, profile, onPersonChange,
 function VipInlineNote({ publicMode }: { publicMode: boolean }) {
   return (
     <p className={publicMode ? "rounded-lg border border-amber-200/25 bg-amber-200/10 p-3 text-sm font-semibold leading-5 text-amber-50" : "rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm font-semibold leading-5 text-amber-900"}>
-      👑 Расширенный разбор показан как preview. Без оплаты · VIP закрыт.
+      👑 Расширенный разбор показан как превью. Без оплаты · VIP закрыт.
     </p>
   );
 }
@@ -3307,10 +3336,10 @@ function VipFreeAccessCard({
     <div className={publicMode ? "rounded-lg border border-amber-200/25 bg-amber-200/10 p-4" : "rounded-lg border border-amber-200 bg-amber-50 p-4"}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className={publicMode ? "text-lg font-semibold text-white" : "text-lg font-semibold text-slate-950"}>👑 VIP preview</p>
-          <p className={publicMode ? "mt-1 text-sm font-semibold text-amber-100" : "mt-1 text-sm font-semibold text-amber-800"}>Preview до {untilLabel}</p>
+          <p className={publicMode ? "text-lg font-semibold text-white" : "text-lg font-semibold text-slate-950"}>👑 VIP превью</p>
+          <p className={publicMode ? "mt-1 text-sm font-semibold text-amber-100" : "mt-1 text-sm font-semibold text-amber-800"}>Превью до {untilLabel}</p>
           <p className={publicMode ? "mt-2 text-sm leading-6 text-slate-300" : "mt-2 text-sm leading-6 text-slate-700"}>
-            Премиум-функции показаны как preview. Оплата не активна, VIP не открывается.
+            Показана короткая версия. Полный отчёт закрыт. Оплата не активна.
           </p>
         </div>
         <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-amber-200/25 bg-black/20 text-amber-100">
@@ -3319,7 +3348,7 @@ function VipFreeAccessCard({
       </div>
 
       <div className="mt-4 grid gap-2 sm:grid-cols-3">
-        <VipStatusPill publicMode={publicMode} label="Сейчас" value="preview" />
+        <VipStatusPill publicMode={publicMode} label="Сейчас" value="превью" />
         <VipStatusPill publicMode={publicMode} label="Оплата" value="не активна" />
         <VipStatusPill publicMode={publicMode} label="VIP" value="закрыт" />
       </div>
@@ -3344,9 +3373,9 @@ function VipFreeAccessCard({
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         <VipPreviewPanel publicMode={publicMode} title="👑 Расширенная натальная карта" text={natalChart ? `Личность: ${natalChart.archetype} Эмоции и стиль: ${natalChart.communicationStyle} Любовь: ${natalChart.loveStyle} Деньги и реализация: ${natalChart.sections[0]?.items[0]?.text ?? natalChart.strengths} Тени: ${natalChart.compass.risks.join("; ")} Зона роста: ${natalChart.growth} Личный компас: ${natalChart.compass.actions.join("; ")} Совет месяца: ${natalChart.vipBlocks[0]?.text ?? natalChart.precisionNote}` : "Частичный режим открыт: выберите знак, а дату рождения можно добавить для более глубокого профиля."} />
-        <VipPreviewPanel publicMode={publicMode} title="💞 Расширенная совместимость" text={pairReady ? `${result.scores.total}% · ${compatibilityLevelLabel(result.scores.total)}. Любовь: ${result.loveText} Общение: ${result.communicationText} Конфликты: ${result.weakSpotText} Быт: ${result.householdText} Деньги и решения: ${result.attractionText} Примирение: ${result.mentalMapDynamics.find((item) => item.label.includes("мир"))?.text ?? result.adviceText} Сильные стороны: ${result.strengthText} Зоны риска: ${result.riskText} Главный совет: ${result.adviceText}` : "Выберите два знака в разделе «Любовь», чтобы открыть расширенную совместимость без оплаты."} />
-        <VipPreviewPanel publicMode={publicMode} title="🧠 VIP Ментальная карта пары" text={pairReady ? `Как думаете: ${result.mentalMapDynamics[0]?.text ?? result.mentalMapSummary.strengths} Как спорите: ${result.mentalMapDynamics[1]?.text ?? result.mentalMapSummary.risks} Как миритесь: ${result.mentalMapDynamics[2]?.text ?? result.mentalMapSummary.advice} Где сильная связь: ${result.mentalMapSummary.strengths} Что разрушает доверие: ${result.mentalMapSummary.risks} Что укрепляет контакт: ${result.mentalMapSummary.helps.join("; ")}.` : "После выбора пары появится динамика мыслей, споров, примирения и доверия."} />
-        <VipPreviewPanel publicMode={publicMode} title="📅 30-дневный календарь пары" text={pairReady ? formatVipCalendarHighlights(calendarDays) : "Выберите два знака, чтобы увидеть 30 дней пары: разговоры, свидания, примирение, осторожность и решения."} />
+        <VipPreviewPanel publicMode={publicMode} title="💞 Расширенная совместимость" text={pairReady ? formatCompatibilityPreviewSummary(result) : "Выберите два знака в разделе «Любовь», чтобы увидеть короткое превью совместимости без оплаты."} />
+        <VipPreviewPanel publicMode={publicMode} title="🧠 VIP Ментальная карта пары" text={pairReady ? formatMentalMapPreviewSummary(result) : "После выбора пары появится короткое превью мыслей, споров, примирения и доверия."} />
+        <VipPreviewPanel publicMode={publicMode} title="📅 30-дневный календарь пары" text={pairReady ? formatVipCalendarHighlights(calendarDays) : "Выберите два знака, чтобы увидеть первые дни и компактный список. Полный отчёт закрыт."} />
         <VipPreviewPanel publicMode={publicMode} title="🌙 Месячный прогноз" text={monthForecast ? `Тема: ${monthForecast.theme} Любовь: ${monthForecast.love} Деньги и дела: ${monthForecast.money} Энергия: ${monthForecast.energy} Риск: ${monthForecast.risk} Лучший период: ${monthForecast.bestPeriod} Совет: ${monthForecast.advice}` : "Выберите знак, чтобы открыть тему месяца, любовь, деньги, энергию, риск и лучший период."} />
         <VipPreviewPanel publicMode={publicMode} title="💌 Расширенный помощник сообщений" text={messageVariants.map((variant) => `${variant.label}: ${variant.text}`).join(" ")} />
         <VipPreviewPanel publicMode={publicMode} title="🔤 Расширенный именной профиль" text={nameProfile ? `Сильные стороны: ${nameProfile.sections[0]?.items[0]?.text ?? nameProfile.portrait} Риски: ${nameProfile.sections[1]?.items[0]?.text ?? "не делать вывод по одному впечатлению"}. Стиль общения, любовь, работа и внутренний характер: ${nameProfile.vipBlocks.map((block) => `${block.title}: ${block.text}`).join(" ")}` : "Добавьте имя, чтобы открыть сильные стороны, риски, стиль общения, любовь, работу и личный резонанс без сохранения данных."} />
@@ -4156,7 +4185,7 @@ function buildFeatureRetentionAction({
     firstSign: activeMoreFeature === "compatibilityTool" ? selfSignSlug || selectedSignSlug || undefined : undefined,
     secondSign: activeMoreFeature === "compatibilityTool" ? partnerSignSlug || undefined : undefined,
     scoreTier: activeMoreFeature === "compatibilityTool" ? scoreTier : undefined,
-    detail: isAngelNumberFeature ? "Без сохранения числового ввода" : category === "vip" ? "VIP preview · без оплаты" : selectedFeatureShortLabel,
+    detail: isAngelNumberFeature ? "Без сохранения числового ввода" : category === "vip" ? "VIP превью · без оплаты" : selectedFeatureShortLabel,
   };
 }
 
@@ -4299,21 +4328,36 @@ function formatVipCalendarHighlights(days: CoupleCalendarDay[]) {
   const sample = days.slice(0, 30);
   const talks = sample.filter((day) => day.advice.includes("разговор") || day.advice.includes("вопрос")).slice(0, 3);
   const dates = sample.filter((day) => day.status.includes("искр") || day.advice.includes("свид") || day.advice.includes("тепл")).slice(0, 3);
-  const reconciliation = sample.filter((day) => day.advice.includes("пауза") || day.advice.includes("поддерж")).slice(0, 3);
-  const caution = sample.filter((day) => day.status.includes("осторожнее")).slice(0, 3);
-  const decisions = sample.filter((day) => day.status.includes("ясность") || day.advice.includes("реш")).slice(0, 3);
   return [
-    `Лучшие дни для разговора: ${formatCalendarGroup(talks)}.`,
-    `Для свидания: ${formatCalendarGroup(dates)}.`,
-    `Для примирения: ${formatCalendarGroup(reconciliation)}.`,
-    `Дни осторожности: ${formatCalendarGroup(caution)}.`,
-    `Для решений: ${formatCalendarGroup(decisions)}.`,
+    `Первые 5 дней показаны кратко.`,
+    `Разговор: ${formatCalendarGroup(talks)}.`,
+    `Тепло: ${formatCalendarGroup(dates)}.`,
+    `Полный 30-дневный отчёт закрыт.`,
   ].join(" ");
 }
 
 function formatCalendarGroup(days: CoupleCalendarDay[]) {
   if (days.length === 0) return "появятся в списке по мере выбора пары";
-  return days.map((day) => `${day.date} ${day.status}`).join("; ");
+  return days.map((day) => `${day.date} ${compactDayMood(day)}`).join("; ");
+}
+
+function formatCompatibilityPreviewSummary(result: CompatibilityResult) {
+  return [
+    `${result.scores.total}% · ${compatibilityLevelLabel(result.scores.total)}.`,
+    `Фокус: ${compactPreviewSentence(result.loveText, 92)}`,
+    `Действие: ${compactPreviewSentence(result.adviceText, 92)}`,
+    "Полный отчёт закрыт.",
+  ].join(" ");
+}
+
+function formatMentalMapPreviewSummary(result: CompatibilityResult) {
+  const thinking = result.mentalMapDynamics[0]?.text ?? result.mentalMapSummary.strengths;
+  const repair = result.mentalMapDynamics[2]?.text ?? result.mentalMapSummary.advice;
+  return [
+    `Фокус: ${compactPreviewSentence(thinking, 92)}`,
+    `Мириться: ${compactPreviewSentence(repair, 92)}`,
+    "Показана короткая версия.",
+  ].join(" ");
 }
 
 function getWeekKey(dateIso: string) {

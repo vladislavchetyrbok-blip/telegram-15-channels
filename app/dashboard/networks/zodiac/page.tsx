@@ -1213,6 +1213,13 @@ const platformSections = [
     caption: "Package 302 - Packages 293-302 are documented while owner/env evidence is still required.",
     tone: "amber",
   },
+  {
+    title: "Real Device VIP Preview Density Fix",
+    href: "/dashboard/networks/zodiac/real-device-vip-preview-density-fix",
+    icon: Smartphone,
+    caption: "Package 303 - compact VIP/30-day preview cards after owner iPhone screenshots; no payment, VIP unlock, DB, Telegram, BotFather, workflows, or secrets.",
+    tone: "amber",
+  },
 ] as const;
 
 export default async function ZodiacNetworkWorkspacePage() {

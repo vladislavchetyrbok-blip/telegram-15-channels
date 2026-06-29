@@ -116,7 +116,7 @@ export function CompatibilityCategoryChooser({
 export function ReadinessPanel({ publicMode, title, text, items }: { publicMode: boolean; title: string; text: string; items: string[] }) {
   return (
     <section className={panelClass(publicMode)}>
-      <p className="text-xs font-semibold text-amber-100">Preview</p>
+      <p className="text-xs font-semibold text-amber-100">Превью</p>
       <h2 className="mt-1 text-xl font-semibold text-white">{title}</h2>
       <p className="mt-2 text-sm leading-6 text-slate-300">{text}</p>
       <ul className="mt-4 space-y-2 text-sm leading-5 text-slate-300">
