@@ -1360,6 +1360,13 @@ const platformSections = [
     caption: "Package 333 - final pre-manual summary: code readiness documented, manual blockers still open, production launch not ready.",
     tone: "amber",
   },
+  {
+    title: "Owner Uploaded Screenshots Intake",
+    href: "/dashboard/networks/zodiac/owner-uploaded-screenshots-intake",
+    icon: Camera,
+    caption: "Package 334 - Owner Uploaded Screenshots Intake keeps manual evidence gates open and production launch blocked.",
+    tone: "amber",
+  },
 ] as const;
 
 export default async function ZodiacNetworkWorkspacePage() {

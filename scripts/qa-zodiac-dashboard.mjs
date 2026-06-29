@@ -175,6 +175,7 @@ const ROUTES = {
   finalSoftLaunchDryRunChecklist: "/dashboard/networks/zodiac/final-soft-launch-dry-run-checklist",
   telegramMiniappFinalManualWorkStopGate: "/dashboard/networks/zodiac/telegram-miniapp-final-manual-work-stop-gate",
   telegramMiniappFinalPreManualSummary: "/dashboard/networks/zodiac/telegram-miniapp-final-pre-manual-summary",
+  ownerUploadedScreenshotsIntake: "/dashboard/networks/zodiac/owner-uploaded-screenshots-intake",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
