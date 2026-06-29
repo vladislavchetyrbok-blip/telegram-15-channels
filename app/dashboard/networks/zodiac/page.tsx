@@ -1325,6 +1325,13 @@ const platformSections = [
     caption: "Package 328 - public HTTPS URL remains missing and must be verified before BotFather setup.",
     tone: "rose",
   },
+  {
+    title: "BotFather Owner Action Gate",
+    href: "/dashboard/networks/zodiac/botfather-owner-action-gate",
+    icon: Bot,
+    caption: "Package 329 - BotFather Mini App setup remains manual, not automated, and blocked until URL evidence exists.",
+    tone: "rose",
+  },
 ] as const;
 
 export default async function ZodiacNetworkWorkspacePage() {

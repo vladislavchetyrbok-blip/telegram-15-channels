@@ -170,6 +170,7 @@ const ROUTES = {
   redactedEnvClosureOwnerActionGate: "/dashboard/networks/zodiac/redacted-env-closure-owner-action-gate",
   backupRestoreOwnerActionGate: "/dashboard/networks/zodiac/backup-restore-owner-action-gate",
   publicUrlOwnerActionGate: "/dashboard/networks/zodiac/public-url-owner-action-gate",
+  botFatherOwnerActionGate: "/dashboard/networks/zodiac/botfather-owner-action-gate",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
