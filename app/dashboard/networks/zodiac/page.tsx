@@ -1318,6 +1318,13 @@ const platformSections = [
     caption: "Package 327 - backup freshness and restore rehearsal remain owner actions with no production DB mutation.",
     tone: "rose",
   },
+  {
+    title: "Public URL Owner Action Gate",
+    href: "/dashboard/networks/zodiac/public-url-owner-action-gate",
+    icon: Share2,
+    caption: "Package 328 - public HTTPS URL remains missing and must be verified before BotFather setup.",
+    tone: "rose",
+  },
 ] as const;
 
 export default async function ZodiacNetworkWorkspacePage() {
