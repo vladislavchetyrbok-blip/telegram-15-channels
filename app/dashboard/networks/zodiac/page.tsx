@@ -1409,6 +1409,13 @@ const platformSections = [
     caption: "Package 340 - Restore Rehearsal Closure Candidate keeps manual evidence gates open and production launch blocked.",
     tone: "rose",
   },
+  {
+    title: "Public URL Closure Candidate",
+    href: "/dashboard/networks/zodiac/public-url-closure-candidate",
+    icon: Share2,
+    caption: "Package 341 - Public URL Closure Candidate keeps manual evidence gates open and production launch blocked.",
+    tone: "rose",
+  },
 ] as const;
 
 export default async function ZodiacNetworkWorkspacePage() {
