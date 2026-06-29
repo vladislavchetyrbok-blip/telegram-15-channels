@@ -1353,6 +1353,13 @@ const platformSections = [
     caption: "Package 332 - stop adding readiness packages until real owner/manual evidence exists.",
     tone: "rose",
   },
+  {
+    title: "Telegram Mini App Final Pre-Manual Summary",
+    href: "/dashboard/networks/zodiac/telegram-miniapp-final-pre-manual-summary",
+    icon: ListPlus,
+    caption: "Package 333 - final pre-manual summary: code readiness documented, manual blockers still open, production launch not ready.",
+    tone: "amber",
+  },
 ] as const;
 
 export default async function ZodiacNetworkWorkspacePage() {
