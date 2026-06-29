@@ -1486,6 +1486,13 @@ const platformSections = [
     caption: "Package 351 - Native Mobile Track Deferred Record keeps manual evidence gates open and production launch blocked.",
     tone: "amber",
   },
+  {
+    title: "Final Manual Work Queue",
+    href: "/dashboard/networks/zodiac/final-manual-work-queue",
+    icon: ListPlus,
+    caption: "Package 352 - Final Manual Work Queue keeps manual evidence gates open and production launch blocked.",
+    tone: "rose",
+  },
 ] as const;
 
 export default async function ZodiacNetworkWorkspacePage() {
