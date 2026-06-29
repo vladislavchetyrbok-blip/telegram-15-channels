@@ -1130,6 +1130,13 @@ const platformSections = [
     tone: "rose",
   },
   {
+    title: "Owner Manual Closure Execution Pack",
+    href: "/dashboard/networks/zodiac/owner-manual-closure-execution-pack",
+    icon: ClipboardCheck,
+    caption: "Package 292 - owner execution order and redacted evidence templates for manually closing seven blockers; all blockers remain open.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,

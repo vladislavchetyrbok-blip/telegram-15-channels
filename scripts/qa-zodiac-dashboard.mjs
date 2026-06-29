@@ -143,6 +143,7 @@ const ROUTES = {
   backupFreshnessVerification: "/dashboard/networks/zodiac/backup-freshness-verification",
   publicUrlTelegramSetupManualGate: "/dashboard/networks/zodiac/public-url-telegram-setup-manual-gate",
   productionBlockerClosureChecklist: "/dashboard/networks/zodiac/production-blocker-closure-checklist",
+  ownerManualClosureExecutionPack: "/dashboard/networks/zodiac/owner-manual-closure-execution-pack",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
