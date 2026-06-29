@@ -1297,6 +1297,13 @@ const platformSections = [
     caption: "Package 324 - owner screenshot evidence review stays pending until real Telegram screenshots are uploaded and approved.",
     tone: "amber",
   },
+  {
+    title: "Final Real Device Visual Acceptance Pending Record",
+    href: "/dashboard/networks/zodiac/final-real-device-visual-acceptance-pending-record",
+    icon: CheckCircle2,
+    caption: "Package 325 - final real-device visual acceptance remains pending until owner confirms Android Telegram WebView and preferred iPhone checks.",
+    tone: "amber",
+  },
 ] as const;
 
 export default async function ZodiacNetworkWorkspacePage() {
