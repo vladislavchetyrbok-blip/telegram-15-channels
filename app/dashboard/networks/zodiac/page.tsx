@@ -1374,6 +1374,13 @@ const platformSections = [
     caption: "Package 335 - Owner Real Device Visual Approval Candidate keeps manual evidence gates open and production launch blocked.",
     tone: "amber",
   },
+  {
+    title: "Redacted Env Evidence Intake",
+    href: "/dashboard/networks/zodiac/redacted-env-evidence-intake",
+    icon: ShieldCheck,
+    caption: "Package 336 - Redacted Env Evidence Intake keeps manual evidence gates open and production launch blocked.",
+    tone: "rose",
+  },
 ] as const;
 
 export default async function ZodiacNetworkWorkspacePage() {
