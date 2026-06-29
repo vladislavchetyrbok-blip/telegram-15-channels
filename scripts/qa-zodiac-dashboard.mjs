@@ -130,6 +130,14 @@ const ROUTES = {
   publicMiniappRouteShellIsolation: "/dashboard/networks/zodiac/public-miniapp-route-shell-isolation",
   ownerVisualEvidenceApprovalRecord: "/dashboard/networks/zodiac/owner-visual-evidence-approval-record",
   productionEnvBackupReadinessFixPlan: "/dashboard/networks/zodiac/production-env-backup-readiness-fix-plan",
+  manualEnvSetupExecutionChecklist: "/dashboard/networks/zodiac/manual-env-setup-execution-checklist",
+  backupFreshnessRestoreRehearsalProtocol: "/dashboard/networks/zodiac/backup-freshness-restore-rehearsal-protocol",
+  publicUrlTelegramMiniappSetupPlan: "/dashboard/networks/zodiac/public-url-telegram-miniapp-setup-plan",
+  ownerRealDeviceVerificationChecklist: "/dashboard/networks/zodiac/owner-real-device-verification-checklist",
+  softLaunchDryRunRollbackPlan: "/dashboard/networks/zodiac/soft-launch-dry-run-rollback-plan",
+  releaseGateStatusConsolidation: "/dashboard/networks/zodiac/release-gate-status-consolidation",
+  aiOrchestrationRunbook: "/dashboard/networks/zodiac/ai-orchestration-runbook",
+  nightRunFinalReadinessSummary: "/dashboard/networks/zodiac/night-run-final-readiness-summary",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
@@ -317,6 +325,14 @@ async function main() {
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/public-miniapp-route-shell-isolation"', "public miniapp route shell isolation route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/owner-visual-evidence-approval-record"', "owner visual evidence approval record route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/production-env-backup-readiness-fix-plan"', "production env backup readiness fix plan route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-env-setup-execution-checklist"', "manual env setup execution checklist route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/backup-freshness-restore-rehearsal-protocol"', "backup freshness restore rehearsal protocol route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/public-url-telegram-miniapp-setup-plan"', "public url telegram miniapp setup plan route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/owner-real-device-verification-checklist"', "owner real device verification checklist route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/soft-launch-dry-run-rollback-plan"', "soft launch dry run rollback plan route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/release-gate-status-consolidation"', "release gate status consolidation route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/ai-orchestration-runbook"', "ai orchestration runbook route link");
+    assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/night-run-final-readiness-summary"', "night run final readiness summary route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/product-copy-final-polish"', "product copy final polish route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/manual-launch-smoke-test-matrix"', "manual launch smoke test matrix route link");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan"', "miniapp simplified redesign implementation plan route link");
