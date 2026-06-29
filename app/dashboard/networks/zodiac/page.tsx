@@ -1095,6 +1095,13 @@ const platformSections = [
     tone: "violet",
   },
   {
+    title: "Owner Real Device Approval Capture",
+    href: "/dashboard/networks/zodiac/owner-real-device-approval-capture",
+    icon: ClipboardCheck,
+    caption: "Package 287 - owner real-device approval capture record; approval stays PENDING_OWNER_REVIEW until evidence is provided.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
