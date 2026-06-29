@@ -1311,6 +1311,13 @@ const platformSections = [
     caption: "Package 326 - env closure remains owner-only with redacted presence checks and no secret values in Git or chat.",
     tone: "rose",
   },
+  {
+    title: "Backup Restore Owner Action Gate",
+    href: "/dashboard/networks/zodiac/backup-restore-owner-action-gate",
+    icon: Database,
+    caption: "Package 327 - backup freshness and restore rehearsal remain owner actions with no production DB mutation.",
+    tone: "rose",
+  },
 ] as const;
 
 export default async function ZodiacNetworkWorkspacePage() {
