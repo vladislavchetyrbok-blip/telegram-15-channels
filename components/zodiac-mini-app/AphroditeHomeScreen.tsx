@@ -178,6 +178,36 @@ const categories: AphroditeHomeAction[] = [
   },
 ];
 
+const dailyReturnCards: AphroditeHomeAction[] = [
+  {
+    id: "daily_return_forecast",
+    title: "Ритуал дня",
+    text: "Прогноз, совет и действие на сегодня.",
+    icon: <CalendarDays className="h-5 w-5" aria-hidden="true" />,
+    target: { tab: "forecasts", feature: "todayForecast" },
+    tone: "cyan",
+    badge: "каждый день",
+  },
+  {
+    id: "daily_return_pair",
+    title: "Пара дня",
+    text: "Проверьте совместимость и сохраните результат.",
+    icon: <HeartHandshake className="h-5 w-5" aria-hidden="true" />,
+    target: { tab: "love", feature: "compatibilityTool" },
+    tone: "rose",
+    badge: "пара",
+  },
+  {
+    id: "daily_return_mystic",
+    title: "Карта дня",
+    text: "Откройте мистическую подсказку без оплаты.",
+    icon: <WandSparkles className="h-5 w-5" aria-hidden="true" />,
+    target: { tab: "mystic", feature: "dailyCard" },
+    tone: "violet",
+    badge: "на день",
+  },
+];
+
 export function AphroditeAstrologyCenterHome({
   publicMode,
   selectedSign,
@@ -208,8 +238,8 @@ export function AphroditeAstrologyCenterHome({
         </div>
 
         <div className="mt-3 space-y-1.5">
-          <h2 className="break-words text-2xl font-semibold leading-8 text-white">Что между вами сейчас?</h2>
-          <p className="text-sm leading-5 text-slate-200">Совместимость, Матрица, Мистика и VIP превью.</p>
+          <h2 className="break-words text-2xl font-semibold leading-8 text-white">Ваш личный астрологический день</h2>
+          <p className="text-sm leading-5 text-slate-200">Начните с пары, прогноза или карты дня. Все превью открываются без оплаты и без сохранения личных данных.</p>
         </div>
 
         <button
@@ -226,8 +256,29 @@ export function AphroditeAstrologyCenterHome({
           <HeartHandshake className="h-5 w-5 shrink-0" aria-hidden="true" />
         </button>
 
+        <div className="mt-3 grid gap-2 min-[390px]:grid-cols-3">
+          <HomeSignal label="Сегодня" value={selectedSign ? `${selectedSign.emoji} ${selectedSign.name}` : "выберите знак"} />
+          <HomeSignal label="Следующий шаг" value="прогноз или пара" />
+          <HomeSignal label="VIP" value={`превью до ${vipUntilLabel}`} />
+        </div>
+
         <div className="aphrodite-pkg-267-two-after-430 mt-3 grid gap-2">
           {quickActions.slice(1).map((action) => (
+            <HomeActionButton key={action.id} action={action} onOpenCategory={onOpenCategory} compact />
+          ))}
+        </div>
+      </div>
+
+      <div className="rounded-lg border border-white/12 bg-white/[0.065] p-3 shadow-[0_14px_42px_rgba(8,13,30,0.2)]">
+        <div className="flex items-end justify-between gap-3">
+          <div className="min-w-0">
+            <h2 className="text-base font-semibold leading-6 text-white">Зачем вернуться сегодня</h2>
+            <p className="mt-1 text-xs leading-4 text-slate-400">Три быстрых действия держат Mini App живым каждый день.</p>
+          </div>
+          <AphroditeBadge tone="violet">Ежедневно</AphroditeBadge>
+        </div>
+        <div className="mt-3 grid gap-2">
+          {dailyReturnCards.map((action) => (
             <HomeActionButton key={action.id} action={action} onOpenCategory={onOpenCategory} compact />
           ))}
         </div>
@@ -251,6 +302,15 @@ export function AphroditeAstrologyCenterHome({
 
       <div className="h-[calc(12px+var(--zma-safe-area-bottom,0px))]" aria-hidden="true" />
     </section>
+  );
+}
+
+function HomeSignal({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="min-w-0 rounded-lg border border-white/12 bg-black/15 px-3 py-2">
+      <span className="block text-[11px] font-semibold uppercase leading-4 text-slate-400">{label}</span>
+      <span className="mt-0.5 block break-words text-xs font-semibold leading-4 text-white">{value}</span>
+    </div>
   );
 }
 

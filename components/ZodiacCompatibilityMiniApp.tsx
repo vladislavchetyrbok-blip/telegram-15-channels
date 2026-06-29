@@ -1298,6 +1298,11 @@ function TodaySection({ publicMode, sign, dateKey }: { publicMode: boolean; sign
         <p className="text-sm font-semibold text-amber-100">Краткий прогноз</p>
         <p className="mt-2 text-sm leading-6 text-slate-200">{forecast.text}</p>
       </div>
+
+      <div className="mt-3 rounded-lg border border-emerald-200/20 bg-emerald-200/10 p-3">
+        <p className="text-sm font-semibold text-emerald-50">Повод вернуться завтра</p>
+        <p className="mt-1 text-xs leading-4 text-emerald-50/85">Энергия дня, совет, действие и мистическая карта обновляются по дате. Для сохранения откройте раздел Прогноз.</p>
+      </div>
     </section>
   );
 }
@@ -1321,6 +1326,11 @@ function WeekSection({ publicMode, sign, dateKey }: { publicMode: boolean; sign:
         <InfoRow publicMode={publicMode} label="Работа и деньги" text={forecast.money} />
         <InfoRow publicMode={publicMode} label="Энергия" text={forecast.energy} />
         <InfoRow publicMode={publicMode} label="Совет недели" text={forecast.advice} />
+      </div>
+
+      <div className="mt-3 rounded-lg border border-amber-200/20 bg-amber-200/10 p-3">
+        <p className="text-sm font-semibold text-amber-50">Как использовать неделю</p>
+        <p className="mt-1 text-xs leading-4 text-amber-50/85">Сравните тему недели с прогнозом дня: день показывает действие сейчас, неделя помогает выбрать ритм.</p>
       </div>
     </section>
   );
@@ -1882,6 +1892,14 @@ function MoreSection({
           </div>
         ) : null}
       </div>
+      <ProductNextStepStrip
+        publicMode={publicMode}
+        category={category}
+        activeFeature={activeMoreFeature}
+        pairReady={pairReady}
+        natalReady={Boolean(natalChart)}
+        signReady={Boolean(selfSign)}
+      />
       <div className="mt-4">
         {activeMoreFeature === "compatibilityTool" ? <CompatibilityToolCard publicMode={publicMode} /> : null}
         {activeMoreFeature === "todayForecast" ? <TodaySection publicMode={publicMode} sign={selectedSign} dateKey={dateKey} /> : null}
@@ -2065,6 +2083,93 @@ function MoreSection({
       </div>
     </section>
   );
+}
+
+function ProductNextStepStrip({
+  publicMode,
+  category,
+  activeFeature,
+  pairReady,
+  natalReady,
+  signReady,
+}: {
+  publicMode: boolean;
+  category: MenuFeatureGroup;
+  activeFeature: MoreFeatureId;
+  pairReady: boolean;
+  natalReady: boolean;
+  signReady: boolean;
+}) {
+  const steps = getProductNextSteps(category, activeFeature, { pairReady, natalReady, signReady });
+
+  return (
+    <div
+      className={
+        publicMode
+          ? "mt-3 rounded-lg border border-cyan-200/18 bg-cyan-200/10 p-3"
+          : "mt-3 rounded-lg border border-cyan-100 bg-cyan-50 p-3"
+      }
+      data-zodiac-product-next-step="package-315"
+    >
+      <p className={publicMode ? "text-xs font-semibold text-cyan-100" : "text-xs font-semibold text-cyan-800"}>Что сделать дальше</p>
+      <div className="mt-2 grid gap-2">
+        {steps.map((step) => (
+          <div key={step.title} className={publicMode ? "rounded-lg border border-white/10 bg-black/15 px-3 py-2" : "rounded-lg border border-cyan-100 bg-white px-3 py-2"}>
+            <p className={publicMode ? "text-sm font-semibold text-white" : "text-sm font-semibold text-slate-950"}>{step.title}</p>
+            <p className={publicMode ? "mt-1 text-xs leading-4 text-slate-300" : "mt-1 text-xs leading-4 text-slate-600"}>{step.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function getProductNextSteps(
+  category: MenuFeatureGroup,
+  activeFeature: MoreFeatureId,
+  state: { pairReady: boolean; natalReady: boolean; signReady: boolean },
+) {
+  if (category === "love") {
+    return [
+      {
+        title: state.pairReady ? "Пара выбрана" : "Сначала выберите пару",
+        text: state.pairReady ? "Откройте карту пары, 30 дней или сообщение для диалога." : "Введите два знака или даты рождения, затем сохраните результат.",
+      },
+      { title: "После результата", text: "Сохраните расчет в локальный профиль или поделитесь безопасным текстом." },
+    ];
+  }
+
+  if (category === "forecasts") {
+    return [
+      {
+        title: state.signReady ? "Проверьте день" : "Выберите знак",
+        text: activeFeature === "weekForecast" ? "Сравните тему недели с советом дня и вернитесь завтра." : "Начните с прогноза дня, затем откройте неделю и талисман.",
+      },
+      { title: "Повод вернуться", text: "Прогноз, энергия дня и подсказки обновляются по текущей дате." },
+    ];
+  }
+
+  if (category === "mystic") {
+    return [
+      { title: activeFeature === "birthMatrix" ? "Добавьте дату" : "Откройте карту дня", text: "Мистика работает как ежедневная короткая подсказка без сохранения данных." },
+      { title: "Удержание", text: "Сохраните понравившуюся карту, руну или матрицу в локальном профиле." },
+    ];
+  }
+
+  if (category === "vip") {
+    return [
+      { title: "Только превью", text: "VIP остается закрытым: оплат, entitlement и разблокировки здесь нет." },
+      {
+        title: state.pairReady || state.natalReady ? "Смотрите демо глубины" : "Для лучшего превью",
+        text: state.pairReady || state.natalReady ? "Откройте расширенную совместимость, натал или 30 дней пары." : "Выберите пару или дату рождения, чтобы превью стало содержательнее.",
+      },
+    ];
+  }
+
+  return [
+    { title: "Соберите профиль", text: "Добавьте знак, имя или дату рождения только локально на устройстве." },
+    { title: "Следующий шаг", text: "Вернитесь к прогнозу дня или совместимости, когда нужен быстрый сценарий." },
+  ];
 }
 
 function PairRequiredCard({
