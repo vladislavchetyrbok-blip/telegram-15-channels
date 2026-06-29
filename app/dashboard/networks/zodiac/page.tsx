@@ -1388,6 +1388,13 @@ const platformSections = [
     caption: "Package 337 - DATABASE_URL Closure Candidate keeps manual evidence gates open and production launch blocked.",
     tone: "rose",
   },
+  {
+    title: "TELEGRAM_BOT_TOKEN Closure Candidate",
+    href: "/dashboard/networks/zodiac/telegram-bot-token-closure-candidate",
+    icon: Bot,
+    caption: "Package 338 - TELEGRAM_BOT_TOKEN Closure Candidate keeps manual evidence gates open and production launch blocked.",
+    tone: "rose",
+  },
 ] as const;
 
 export default async function ZodiacNetworkWorkspacePage() {

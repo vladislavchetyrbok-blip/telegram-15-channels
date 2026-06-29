@@ -179,6 +179,7 @@ const ROUTES = {
   ownerRealDeviceVisualApprovalCandidate: "/dashboard/networks/zodiac/owner-real-device-visual-approval-candidate",
   redactedEnvEvidenceIntake: "/dashboard/networks/zodiac/redacted-env-evidence-intake",
   databaseUrlClosureCandidate: "/dashboard/networks/zodiac/database-url-closure-candidate",
+  telegramBotTokenClosureCandidate: "/dashboard/networks/zodiac/telegram-bot-token-closure-candidate",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
