@@ -1116,6 +1116,13 @@ const platformSections = [
     tone: "rose",
   },
   {
+    title: "Public URL Telegram Setup Manual Gate",
+    href: "/dashboard/networks/zodiac/public-url-telegram-setup-manual-gate",
+    icon: Share2,
+    caption: "Package 290 - public HTTPS URL and BotFather Mini App setup stay manual, blocked, and owner-gated.",
+    tone: "amber",
+  },
+  {
     title: "Настройки модуля Зодиак",
     href: "/dashboard/networks/zodiac/settings",
     icon: Settings,
