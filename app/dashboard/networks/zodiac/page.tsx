@@ -1437,6 +1437,13 @@ const platformSections = [
     caption: "Package 344 - Owner Final Go No-Go Candidate keeps manual evidence gates open and production launch blocked.",
     tone: "rose",
   },
+  {
+    title: "One Channel Soft Launch Plan Candidate",
+    href: "/dashboard/networks/zodiac/one-channel-soft-launch-plan-candidate",
+    icon: Rocket,
+    caption: "Package 345 - One Channel Soft Launch Plan Candidate keeps manual evidence gates open and production launch blocked.",
+    tone: "amber",
+  },
 ] as const;
 
 export default async function ZodiacNetworkWorkspacePage() {
