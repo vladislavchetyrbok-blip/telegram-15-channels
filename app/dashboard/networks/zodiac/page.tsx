@@ -1416,6 +1416,13 @@ const platformSections = [
     caption: "Package 341 - Public URL Closure Candidate keeps manual evidence gates open and production launch blocked.",
     tone: "rose",
   },
+  {
+    title: "BotFather Mini App URL Closure Candidate",
+    href: "/dashboard/networks/zodiac/botfather-miniapp-url-closure-candidate",
+    icon: Bot,
+    caption: "Package 342 - BotFather Mini App URL Closure Candidate keeps manual evidence gates open and production launch blocked.",
+    tone: "rose",
+  },
 ] as const;
 
 export default async function ZodiacNetworkWorkspacePage() {
