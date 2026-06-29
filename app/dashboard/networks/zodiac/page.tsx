@@ -1339,6 +1339,13 @@ const platformSections = [
     caption: "Package 330 - production safety remains red until env, token, backup, restore, URL, BotFather, and owner evidence close.",
     tone: "rose",
   },
+  {
+    title: "Final Soft Launch Dry Run Checklist",
+    href: "/dashboard/networks/zodiac/final-soft-launch-dry-run-checklist",
+    icon: ClipboardCheck,
+    caption: "Package 331 - final soft-launch dry run checklist stays not started while blockers remain open.",
+    tone: "rose",
+  },
 ] as const;
 
 export default async function ZodiacNetworkWorkspacePage() {

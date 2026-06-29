@@ -172,6 +172,7 @@ const ROUTES = {
   publicUrlOwnerActionGate: "/dashboard/networks/zodiac/public-url-owner-action-gate",
   botFatherOwnerActionGate: "/dashboard/networks/zodiac/botfather-owner-action-gate",
   productionSafetyGreenCriteriaRecord: "/dashboard/networks/zodiac/production-safety-green-criteria-record",
+  finalSoftLaunchDryRunChecklist: "/dashboard/networks/zodiac/final-soft-launch-dry-run-checklist",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",
