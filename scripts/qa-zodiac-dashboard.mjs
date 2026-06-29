@@ -190,6 +190,7 @@ const ROUTES = {
   softLaunchMonitoringMetricsPlan: "/dashboard/networks/zodiac/soft-launch-monitoring-metrics-plan",
   incidentRollbackFinalPlaybook: "/dashboard/networks/zodiac/incident-rollback-final-playbook",
   finalPreLaunchEvidenceBinder: "/dashboard/networks/zodiac/final-pre-launch-evidence-binder",
+  softLaunchNotApprovedBannerRecord: "/dashboard/networks/zodiac/soft-launch-not-approved-banner-record",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",

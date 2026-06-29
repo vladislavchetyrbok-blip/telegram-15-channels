@@ -1465,6 +1465,13 @@ const platformSections = [
     caption: "Package 348 - Final Pre-Launch Evidence Binder keeps manual evidence gates open and production launch blocked.",
     tone: "rose",
   },
+  {
+    title: "Soft Launch Not Approved Banner Record",
+    href: "/dashboard/networks/zodiac/soft-launch-not-approved-banner-record",
+    icon: LockKeyhole,
+    caption: "Package 349 - Soft Launch Not Approved Banner Record keeps manual evidence gates open and production launch blocked.",
+    tone: "rose",
+  },
 ] as const;
 
 export default async function ZodiacNetworkWorkspacePage() {
