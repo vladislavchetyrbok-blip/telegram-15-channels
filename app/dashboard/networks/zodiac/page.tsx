@@ -1479,6 +1479,13 @@ const platformSections = [
     caption: "Package 350 - VIP Monetization Future Locked Plan keeps manual evidence gates open and production launch blocked.",
     tone: "amber",
   },
+  {
+    title: "Native Mobile Track Deferred Record",
+    href: "/dashboard/networks/zodiac/native-mobile-track-deferred-record",
+    icon: Smartphone,
+    caption: "Package 351 - Native Mobile Track Deferred Record keeps manual evidence gates open and production launch blocked.",
+    tone: "amber",
+  },
 ] as const;
 
 export default async function ZodiacNetworkWorkspacePage() {
