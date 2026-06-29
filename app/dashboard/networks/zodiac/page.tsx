@@ -1493,6 +1493,13 @@ const platformSections = [
     caption: "Package 352 - Final Manual Work Queue keeps manual evidence gates open and production launch blocked.",
     tone: "rose",
   },
+  {
+    title: "Final No More Readiness Packages Gate",
+    href: "/dashboard/networks/zodiac/final-no-more-readiness-packages-gate",
+    icon: LockKeyhole,
+    caption: "Package 353 - Final No More Readiness Packages Gate keeps manual evidence gates open and production launch blocked.",
+    tone: "rose",
+  },
 ] as const;
 
 export default async function ZodiacNetworkWorkspacePage() {
