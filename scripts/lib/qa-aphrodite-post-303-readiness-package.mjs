@@ -94,7 +94,6 @@ export function runAphroditeFinalReadinessPackageQa(config) {
     "lib/zodiac",
     "docs",
     "scripts/qa-aphrodite-*.mjs",
-    "scripts/lib/qa-aphrodite-post-303-readiness-package.mjs",
     "scripts/qa-zodiac-dashboard.mjs",
   ]);
 
