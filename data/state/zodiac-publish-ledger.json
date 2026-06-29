@@ -2923,8 +2923,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-06-29T11:20:52.208Z"
+      "status": "sent",
+      "updatedAt": "2026-06-29T11:20:56.573Z",
+      "messageId": "42,",
+      "sentAt": "2026-06-29T11:20:56.573Z"
     }
   }
 }
