@@ -1290,6 +1290,13 @@ const platformSections = [
     caption: "Package 313 - Summarize Packages 303-313 and the current readiness state without closing blockers falsely.",
     tone: "amber",
   },
+  {
+    title: "Owner Screenshot Evidence Review After Upload",
+    href: "/dashboard/networks/zodiac/owner-screenshot-evidence-review-after-upload",
+    icon: Camera,
+    caption: "Package 324 - owner screenshot evidence review stays pending until real Telegram screenshots are uploaded and approved.",
+    tone: "amber",
+  },
 ] as const;
 
 export default async function ZodiacNetworkWorkspacePage() {
