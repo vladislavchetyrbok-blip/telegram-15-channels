@@ -184,6 +184,7 @@ const ROUTES = {
   restoreRehearsalClosureCandidate: "/dashboard/networks/zodiac/restore-rehearsal-closure-candidate",
   publicUrlClosureCandidate: "/dashboard/networks/zodiac/public-url-closure-candidate",
   botFatherMiniAppUrlClosureCandidate: "/dashboard/networks/zodiac/botfather-miniapp-url-closure-candidate",
+  productionSafetyCheckGreenCandidate: "/dashboard/networks/zodiac/production-safety-check-green-candidate",
   productCopyFinalPolish: "/dashboard/networks/zodiac/product-copy-final-polish",
   manualLaunchSmokeTestMatrix: "/dashboard/networks/zodiac/manual-launch-smoke-test-matrix",
   miniappSimplifiedRedesignImplementationPlan: "/dashboard/networks/zodiac/miniapp-simplified-redesign-implementation-plan",

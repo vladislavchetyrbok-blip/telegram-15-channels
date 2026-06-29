@@ -1423,6 +1423,13 @@ const platformSections = [
     caption: "Package 342 - BotFather Mini App URL Closure Candidate keeps manual evidence gates open and production launch blocked.",
     tone: "rose",
   },
+  {
+    title: "Production Safety Check Green Candidate",
+    href: "/dashboard/networks/zodiac/production-safety-check-green-candidate",
+    icon: ShieldCheck,
+    caption: "Package 343 - Production Safety Check Green Candidate keeps manual evidence gates open and production launch blocked.",
+    tone: "rose",
+  },
 ] as const;
 
 export default async function ZodiacNetworkWorkspacePage() {
