@@ -8,7 +8,7 @@ import {
 } from "./lib/social-manual-review-queue-generator.mjs";
 
 const ROOT = process.cwd();
-const EXPECTED_SOCIAL_QA = "node scripts/check-social-manual-export.mjs && node scripts/check-social-calendar.mjs && node scripts/check-social-review-queue.mjs";
+const EXPECTED_SOCIAL_QA = "node scripts/check-social-manual-export.mjs && node scripts/check-social-calendar.mjs && node scripts/check-social-review-queue.mjs && node scripts/check-social-video-packs.mjs";
 const REVIEW_SOURCE_FILES = [
   "scripts/lib/social-manual-review-queue-generator.mjs",
   "scripts/social-review-manual-queue.mjs",

@@ -27,3 +27,5 @@ data/social-calendar/*
 !data/social-calendar/.gitkeep
 data/social-review/*
 !data/social-review/.gitkeep
+data/social-video-packs/*
+!data/social-video-packs/.gitkeep
