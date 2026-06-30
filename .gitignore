@@ -25,3 +25,5 @@ data/social-exports/*
 !data/social-exports/.gitkeep
 data/social-calendar/*
 !data/social-calendar/.gitkeep
+data/social-review/*
+!data/social-review/.gitkeep

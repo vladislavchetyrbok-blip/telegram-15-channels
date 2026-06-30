@@ -5,6 +5,7 @@ import process from "process";
 import { buildSocialCalendar } from "./lib/social-manual-calendar-generator.mjs";
 
 const ROOT = process.cwd();
+const EXPECTED_SOCIAL_QA = "node scripts/check-social-manual-export.mjs && node scripts/check-social-calendar.mjs && node scripts/check-social-review-queue.mjs";
 const CALENDAR_SOURCE_FILES = [
   "scripts/lib/social-manual-calendar-generator.mjs",
   "scripts/social-calendar-manual-plan.mjs",
@@ -95,7 +96,7 @@ function main() {
   assert(packageJson.scripts["social:calendar:7"] === "node scripts/social-calendar-manual-plan.mjs --days 7", "Missing social:calendar:7 script.", failures);
   assert(packageJson.scripts["social:calendar:14"] === "node scripts/social-calendar-manual-plan.mjs --days 14", "Missing social:calendar:14 script.", failures);
   assert(
-    packageJson.scripts["social:qa"] === "node scripts/check-social-manual-export.mjs && node scripts/check-social-calendar.mjs",
+    packageJson.scripts["social:qa"] === EXPECTED_SOCIAL_QA,
     "social:qa must run export and calendar QA.", failures
   );
 
