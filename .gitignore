@@ -23,3 +23,5 @@ exports/
 data/runtime/ 
 data/social-exports/*
 !data/social-exports/.gitkeep
+data/social-calendar/*
+!data/social-calendar/.gitkeep
