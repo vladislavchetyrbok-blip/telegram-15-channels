@@ -5,7 +5,7 @@ import process from "process";
 import { buildSocialCalendar } from "./lib/social-manual-calendar-generator.mjs";
 
 const ROOT = process.cwd();
-const EXPECTED_SOCIAL_QA = "node scripts/check-social-manual-export.mjs && node scripts/check-social-calendar.mjs && node scripts/check-social-review-queue.mjs";
+const EXPECTED_SOCIAL_QA = "node scripts/check-social-manual-export.mjs && node scripts/check-social-calendar.mjs && node scripts/check-social-review-queue.mjs && node scripts/check-social-video-packs.mjs";
 const CALENDAR_SOURCE_FILES = [
   "scripts/lib/social-manual-calendar-generator.mjs",
   "scripts/social-calendar-manual-plan.mjs",
