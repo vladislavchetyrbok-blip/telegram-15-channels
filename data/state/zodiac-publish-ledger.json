@@ -3123,6 +3123,18 @@
       "updatedAt": "2026-06-30T09:57:06.926Z",
       "messageId": "46,",
       "sentAt": "2026-06-30T09:57:06.925Z"
+    },
+    "2026-06-30:cancer": {
+      "key": "2026-06-30:cancer",
+      "date": "2026-06-30",
+      "slug": "cancer",
+      "createdAt": "2026-06-30T09:57:07.899Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-06-30T09:57:07.899Z"
     }
   }
 }
