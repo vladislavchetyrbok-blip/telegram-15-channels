@@ -8,6 +8,8 @@ const ROOT = process.cwd();
 const SOCIAL_FILES = [
   "scripts/lib/social-manual-export-generator.mjs",
   "scripts/social-export-manual-pack.mjs",
+  "scripts/lib/social-manual-calendar-generator.mjs",
+  "scripts/social-calendar-manual-plan.mjs",
   "package.json",
   ".gitignore",
 ];
@@ -90,7 +92,10 @@ function main() {
 
   assert(packageJson.scripts["social:export:dry"] === "node scripts/social-export-manual-pack.mjs --dry-run", "Missing social:export:dry script.", failures);
   assert(packageJson.scripts["social:export:date"] === "node scripts/social-export-manual-pack.mjs", "Missing social:export:date script.", failures);
-  assert(packageJson.scripts["social:qa"] === "node scripts/check-social-manual-export.mjs", "Missing social:qa script.", failures);
+  assert(
+    packageJson.scripts["social:qa"] === "node scripts/check-social-manual-export.mjs && node scripts/check-social-calendar.mjs",
+    "social:qa must run export and calendar QA.", failures
+  );
 
   const changed = gitDiffNames();
   for (const changedFile of changed) {
