@@ -5,6 +5,7 @@ import process from "process";
 import { CONTENT_TYPES, PLATFORMS, buildSocialExportBundle } from "./lib/social-manual-export-generator.mjs";
 
 const ROOT = process.cwd();
+const EXPECTED_SOCIAL_QA = "node scripts/check-social-manual-export.mjs && node scripts/check-social-calendar.mjs && node scripts/check-social-review-queue.mjs";
 const SOCIAL_FILES = [
   "scripts/lib/social-manual-export-generator.mjs",
   "scripts/social-export-manual-pack.mjs",
@@ -93,7 +94,7 @@ function main() {
   assert(packageJson.scripts["social:export:dry"] === "node scripts/social-export-manual-pack.mjs --dry-run", "Missing social:export:dry script.", failures);
   assert(packageJson.scripts["social:export:date"] === "node scripts/social-export-manual-pack.mjs", "Missing social:export:date script.", failures);
   assert(
-    packageJson.scripts["social:qa"] === "node scripts/check-social-manual-export.mjs && node scripts/check-social-calendar.mjs",
+    packageJson.scripts["social:qa"] === EXPECTED_SOCIAL_QA,
     "social:qa must run export and calendar QA.", failures
   );
 
