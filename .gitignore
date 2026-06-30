@@ -21,3 +21,5 @@ data/backups/
 tsconfig.tsbuildinfo
 exports/
 data/runtime/ 
+data/social-exports/*
+!data/social-exports/.gitkeep
