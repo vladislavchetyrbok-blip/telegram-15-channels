@@ -29,3 +29,5 @@ data/social-review/*
 !data/social-review/.gitkeep
 data/social-video-packs/*
 !data/social-video-packs/.gitkeep
+data/social-videos/*
+!data/social-videos/.gitkeep

@@ -198,16 +198,18 @@ function buildStoryboard(item, scenes) {
 }
 
 function buildPostingChecklist(item) {
+  const ctaStatus = item.ctaCheck?.status ?? (item.safety?.ctaSafe ? "pass" : "unknown");
+  const vipPaymentStatus = item.vipPaymentSafetyCheck?.status ?? (item.safety?.vipPaymentSafe ? "pass" : "unknown");
   const checks = [
     ["Platform selected", item.platform],
     ["9:16 project", "1080x1920"],
     ["Duration", "20-35 seconds"],
     ["Voiceover reviewed", "No"],
     ["Subtitles reviewed", "No"],
-    ["CTA checked", item.ctaCheck?.status ?? "unknown"],
+    ["CTA checked", ctaStatus],
     ["CTA URL", item.cta?.url ?? ""],
     ["No admin/dashboard URL", "Yes"],
-    ["VIP/payment safety", item.vipPaymentSafetyCheck?.status ?? "pass"],
+    ["VIP/payment safety", vipPaymentStatus],
     ["No payment screen", "Yes"],
     ["No VIP unlock", "Yes"],
     ["Posted manually", "No"],
