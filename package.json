@@ -144,6 +144,10 @@
     "social:video:date": "node scripts/social-video-production-pack.mjs",
     "social:video:queue": "node scripts/social-video-production-pack.mjs --queue",
     "social:video:7": "node scripts/social-video-production-pack.mjs --queue --days 7",
+    "social:mp4:dry": "node scripts/social-mp4-render.mjs --dry-run",
+    "social:mp4:queue": "node scripts/social-mp4-render.mjs --queue",
+    "social:mp4:7": "node scripts/social-mp4-render.mjs --queue --days 7",
+    "social:mp4:qa": "node scripts/check-social-mp4-render.mjs",
     "social:qa": "node scripts/check-social-manual-export.mjs && node scripts/check-social-calendar.mjs && node scripts/check-social-review-queue.mjs && node scripts/check-social-video-packs.mjs",
     "zodiac:year:preflight": "node scripts/check-zodiac-year.mjs",
     "zodiac:year:check": "node scripts/check-zodiac-year.mjs",
@@ -166,6 +170,8 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
+    "@ffprobe-installer/ffprobe": "^2.1.2",
     "@types/node": "^20.17.6",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
