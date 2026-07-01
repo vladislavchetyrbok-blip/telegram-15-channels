@@ -31,3 +31,5 @@ data/social-video-packs/*
 !data/social-video-packs/.gitkeep
 data/social-videos/*
 !data/social-videos/.gitkeep
+data/social-videos-premium/*
+!data/social-videos-premium/.gitkeep
