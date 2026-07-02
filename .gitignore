@@ -33,3 +33,7 @@ data/social-videos/*
 !data/social-videos/.gitkeep
 data/social-videos-premium/*
 !data/social-videos-premium/.gitkeep
+data/social-static-reels/*
+!data/social-static-reels/.gitkeep
+data/social-reference-images/*
+!data/social-reference-images/.gitkeep
