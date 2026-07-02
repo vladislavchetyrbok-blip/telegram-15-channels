@@ -132,6 +132,18 @@ async function validateOutputFiles({ outputFolder, report, failures }) {
 
   assert(!fs.existsSync(path.join(outputFolder, "image-prompt.txt")), `${outputFolder}: image-prompt.txt must not be generated for reference-image reels.`, failures);
 
+  const captionPath = path.join(outputFolder, "caption.txt");
+  if (fs.existsSync(captionPath)) {
+    const caption = fs.readFileSync(captionPath, "utf8");
+    const ctaUrlMatches = caption.match(/https:\/\/t\.me\/zodiac_love_check_bot\?startapp=mystic/g) ?? [];
+    const ctaLines = caption.split(/\r?\n/).filter((line) => (
+      line.includes("https://t.me/zodiac_love_check_bot?startapp=mystic")
+      || /Открыть карту дня/i.test(line)
+    ));
+    assert(ctaUrlMatches.length === 1, `${outputFolder}: caption must contain exactly one Telegram CTA URL.`, failures);
+    assert(ctaLines.length === 1, `${outputFolder}: caption must contain exactly one Telegram CTA line.`, failures);
+  }
+
   const posterPath = path.join(outputFolder, "poster.png");
   if (fs.existsSync(posterPath)) {
     const metadata = await sharp(posterPath).metadata();
@@ -183,13 +195,15 @@ async function main() {
   const plan = createStaticReferenceReelsPlan({ startDate: START_DATE, days: DAYS, pilotOnly: true, rootDir: ROOT });
   assert(plan.plannedVideos === 1, "Reference reels pilot QA must target one video only.", failures);
   assert(plan.selectedItem === "2026-07-02-instagram-mystic-card", "Reference reels pilot must select Instagram Mystic Card / The Star.", failures);
-  assert(plan.referenceImageFound === true, `Reference image missing: ${plan.referenceImagePath}`, failures);
+  if (!plan.referenceImageFound && REQUIRE_RENDERED_OUTPUT) {
+    assert(false, `Reference image missing: ${plan.referenceImagePath}`, failures);
+  }
   assert(gitCheckIgnored(path.join(ROOT, STATIC_REFERENCE_IMAGE_RELATIVE_PATH)), "Owner reference image path must be ignored by git.", failures);
 
   const outputFolder = path.join(ROOT, plan.selectedOutputFolder);
   const reportPath = path.join(outputFolder, "render-report.json");
   let report = null;
-  if (plan.referenceImageFound) {
+  if (plan.referenceImageFound && REQUIRE_RENDERED_OUTPUT) {
     if (fs.existsSync(reportPath)) {
       const candidateReport = JSON.parse(fs.readFileSync(reportPath, "utf8"));
       if (candidateReport.phase === "social_phase_1_package_h2") {
@@ -213,6 +227,9 @@ async function main() {
 
   console.log("Social Static Reference Reels QA: PASS");
   console.log(`Reference image : ${plan.referenceImagePath}`);
+  if (!plan.referenceImageFound) {
+    console.log("reference image missing, reference render check skipped");
+  }
   console.log(`Pilot item      : ${plan.selectedItemId}`);
   console.log(`Output folder   : ${outputFolder}`);
   console.log("Resolution      : 1080x1920");

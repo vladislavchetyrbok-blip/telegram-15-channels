@@ -275,10 +275,16 @@ function buildPostingChecklist({ pack, audioPath, referenceImagePath }) {
 }
 
 function buildCaption(pack) {
-  const ctaLine = pack.brief.cta?.url
-    ? `\n\nОткрыть карту дня: ${pack.brief.cta.url}`
-    : "";
-  return `${(pack.files["caption.txt"] || "").trim()}${ctaLine}\n`;
+  const ctaUrl = pack.brief.cta?.url;
+  const caption = (pack.files["caption.txt"] || "").trim();
+  if (!ctaUrl) return `${caption}\n`;
+
+  const ctaLabel = "Открыть карту дня в Telegram";
+  const lines = caption
+    .split(/\r?\n/)
+    .filter((line) => !line.includes(ctaUrl) && !/Открыть карту дня/i.test(line));
+  const body = lines.join("\n").trim();
+  return `${body}\n${ctaLabel}: ${ctaUrl}\n`;
 }
 
 function buildHashtags(pack) {
