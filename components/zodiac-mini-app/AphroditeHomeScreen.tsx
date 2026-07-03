@@ -45,8 +45,17 @@ const categoryIconClass: Record<AphroditeHomeAction["tone"], string> = {
 
 const quickActions: AphroditeHomeAction[] = [
   {
+    id: "daily_tarot",
+    title: "Карта дня",
+    text: "Один аркан для фокуса, любви и мягкого действия.",
+    icon: <WandSparkles className="h-5 w-5" aria-hidden="true" />,
+    target: { tab: "mystic", feature: "dailyCard" },
+    tone: "violet",
+    badge: "Таро V1",
+  },
+  {
     id: "compatibility",
-    title: "Проверить совместимость",
+    title: "Совместимость",
     text: "Любовь, пара, примирение.",
     icon: <HeartHandshake className="h-5 w-5" aria-hidden="true" />,
     target: { tab: "love", feature: "compatibilityTool" },
@@ -56,18 +65,19 @@ const quickActions: AphroditeHomeAction[] = [
   {
     id: "birth_matrix",
     title: "Матрица судьбы",
-    text: "Код даты рождения.",
+    text: "Личный код даты рождения.",
     icon: <Star className="h-5 w-5" aria-hidden="true" />,
     target: { tab: "mystic", feature: "birthMatrix" },
     tone: "amber",
   },
   {
-    id: "mystic",
-    title: "Мистическая карта",
-    text: "Карта дня, Таро и руна.",
-    icon: <WandSparkles className="h-5 w-5" aria-hidden="true" />,
-    target: { tab: "mystic", feature: "dailyCard" },
-    tone: "violet",
+    id: "mystic_cards",
+    title: "Мистические карты",
+    text: "Таро, руны и дневные символы.",
+    icon: <Gem className="h-5 w-5" aria-hidden="true" />,
+    target: { tab: "mystic", feature: "tarotCard" },
+    tone: "rose",
+    badge: "Мистика",
   },
   {
     id: "forecasts",
@@ -80,11 +90,11 @@ const quickActions: AphroditeHomeAction[] = [
   {
     id: "vip",
     title: "VIP превью",
-    text: "Без оплаты · VIP закрыт.",
+    text: "Закрытый раздел только в режиме preview.",
     icon: <Crown className="h-5 w-5" aria-hidden="true" />,
     target: { tab: "vip", feature: "vip" },
     tone: "amber",
-    badge: "Превью",
+    badge: "Закрыт",
   },
 ];
 
@@ -137,7 +147,7 @@ const categories: AphroditeHomeAction[] = [
   {
     id: "mystic",
     title: "Мистика",
-    text: "Знаки дня, символы, интуиция",
+    text: "Карта дня, символы, интуиция",
     icon: <WandSparkles className="h-6 w-6" aria-hidden="true" />,
     target: { tab: "mystic", feature: "dailyCard" },
     tone: "violet",
@@ -195,10 +205,10 @@ export function AphroditeAstrologyCenterHome({
       data-aphrodite-critical-mobile-webview-visual-fix="package-267"
       className={`${panelClass(publicMode)} aphrodite-pkg-267-mobile-webview-fix space-y-3 overflow-hidden`}
     >
-      <div className="rounded-lg border border-rose-200/20 bg-[linear-gradient(145deg,rgba(251,113,133,0.18),rgba(167,139,250,0.13)_48%,rgba(246,213,138,0.1))] p-3 shadow-[0_18px_54px_rgba(7,7,19,0.38)] min-[390px]:p-4">
+      <div className="rounded-lg border border-rose-200/20 bg-[radial-gradient(circle_at_16%_0%,rgba(244,114,182,0.22),transparent_31%),radial-gradient(circle_at_86%_18%,rgba(246,213,138,0.14),transparent_28%),linear-gradient(145deg,rgba(12,14,34,0.94),rgba(31,16,54,0.96)_52%,rgba(50,18,56,0.94))] p-3 shadow-[0_20px_70px_rgba(4,6,18,0.48)] min-[390px]:p-4">
         <div className="flex flex-wrap items-center gap-2">
           <AphroditeBadge tone="rose">Зодиак</AphroditeBadge>
-          <AphroditeBadge tone="violet">романтика</AphroditeBadge>
+          <AphroditeBadge tone="violet">Карта дня</AphroditeBadge>
           <AphroditeBadge tone="gold">VIP превью</AphroditeBadge>
           {selectedSign ? (
             <AphroditeBadge tone="gold">
@@ -209,22 +219,10 @@ export function AphroditeAstrologyCenterHome({
 
         <div className="mt-3 space-y-1.5">
           <h2 className="break-words text-2xl font-semibold leading-8 text-white">Что между вами сейчас?</h2>
-          <p className="text-sm leading-5 text-slate-200">Совместимость, Матрица, Мистика и VIP превью.</p>
+          <p className="max-w-[29rem] text-sm leading-5 text-slate-200">Ежедневная карта, совместимость и личные мистические подсказки в одном спокойном Mini App.</p>
         </div>
 
-        <button
-          type="button"
-          onClick={() => onOpenCategory({ tab: "love", feature: "compatibilityTool" }, "compatibility")}
-          className="mt-4 flex min-h-[58px] w-full items-center justify-between gap-3 rounded-lg border border-amber-100/35 bg-[linear-gradient(135deg,#fb7185,#f6d58a)] px-4 py-3 text-left text-[#190914] shadow-[0_16px_44px_rgba(251,113,133,0.28)] transition hover:border-amber-100/60 focus:outline-none focus:ring-2 focus:ring-amber-100/55"
-        >
-          <span className="min-w-0">
-            <span className="block text-sm font-semibold leading-5">Проверить совместимость</span>
-            <span className="mt-1 block text-xs leading-4 text-[#3d1622]">
-              Любовь, пара, примирение
-            </span>
-          </span>
-          <HeartHandshake className="h-5 w-5 shrink-0" aria-hidden="true" />
-        </button>
+        <HomeSpotlightButton action={quickActions[0]!} onOpenCategory={onOpenCategory} />
 
         <div className="aphrodite-pkg-267-two-after-430 mt-3 grid gap-2">
           {quickActions.slice(1).map((action) => (
@@ -251,6 +249,36 @@ export function AphroditeAstrologyCenterHome({
 
       <div className="h-[calc(12px+var(--zma-safe-area-bottom,0px))]" aria-hidden="true" />
     </section>
+  );
+}
+
+function HomeSpotlightButton({
+  action,
+  onOpenCategory,
+}: {
+  action: AphroditeHomeAction;
+  onOpenCategory: (target: AphroditeHomeCategoryTarget, categoryId: string) => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={() => onOpenCategory(action.target, action.id)}
+      className="group mt-4 grid min-h-[134px] w-full grid-cols-[auto_1fr] items-center gap-3 rounded-lg border border-amber-100/30 bg-[linear-gradient(135deg,rgba(246,213,138,0.92),rgba(244,176,197,0.94)_48%,rgba(167,139,250,0.94))] px-3 py-3 text-left text-[#160717] shadow-[0_18px_52px_rgba(244,176,197,0.26)] transition hover:border-amber-100/60 hover:brightness-105 focus:outline-none focus:ring-2 focus:ring-amber-100/60 min-[390px]:px-4"
+    >
+      <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg border border-white/45 bg-white/20 text-[#2a1230] shadow-[inset_0_1px_0_rgba(255,255,255,0.35)]">
+        {action.icon}
+      </span>
+      <span className="min-w-0">
+        <span className="inline-flex rounded-md border border-[#2a1230]/12 bg-[#2a1230]/10 px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#3b1531]">
+          {action.badge}
+        </span>
+        <span className="mt-2 block text-xl font-semibold leading-7 text-[#170817]">{action.title}</span>
+        <span className="mt-1 block text-sm leading-5 text-[#3b1531]">{action.text}</span>
+        <span className="mt-3 inline-flex min-h-10 items-center justify-center rounded-lg border border-[#2a1230]/15 bg-[#160717]/12 px-3 text-sm font-bold text-[#170817] transition group-hover:bg-[#160717]/18">
+          Открыть карту дня
+        </span>
+      </span>
+    </button>
   );
 }
 
