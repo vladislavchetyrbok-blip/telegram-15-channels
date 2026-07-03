@@ -17,12 +17,23 @@ export const PUBLIC_MINIAPP_ROUTE_PREFIXES = [
   "/affirmations",
 ] as const;
 
+export const PUBLIC_WEBSITE_ROUTE_PREFIXES = [
+  "/tarot",
+  "/zodiac",
+  "/privacy",
+  "/terms",
+] as const;
+
 export function isRouteOrChild(pathname: string, route: string) {
   return pathname === route || pathname.startsWith(`${route}/`);
 }
 
 export function isPublicMiniAppRoute(pathname: string) {
   return PUBLIC_MINIAPP_ROUTE_PREFIXES.some((route) => isRouteOrChild(pathname, route));
+}
+
+export function isPublicWebsiteRoute(pathname: string) {
+  return pathname === "/" || PUBLIC_WEBSITE_ROUTE_PREFIXES.some((route) => isRouteOrChild(pathname, route));
 }
 
 export function isDashboardRoute(pathname: string) {
@@ -33,7 +44,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const isDashboardLoginRoute = pathname === "/dashboard/login";
 
-  if (isPublicMiniAppRoute(pathname) || isDashboardLoginRoute) {
+  if (isPublicWebsiteRoute(pathname) || isPublicMiniAppRoute(pathname) || isDashboardLoginRoute) {
     return <div className="min-h-screen overflow-x-hidden bg-[#070b14] text-slate-100">{children}</div>;
   }
 
