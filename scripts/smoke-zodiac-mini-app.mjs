@@ -6,7 +6,7 @@ import net from "node:net";
 import os from "node:os";
 import path from "node:path";
 
-const DEFAULT_URL = "http://localhost:3000/compatibility";
+const DEFAULT_URL = "http://localhost:3000/compatibility?miniapp=1";
 const DEFAULT_TIMEOUT_MS = 120_000;
 const DEFAULT_VIEWPORT = { width: 390, height: 844 };
 const VIP_ACTIVE_CARDS = [
