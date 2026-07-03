@@ -36,6 +36,11 @@ export interface TelegramHapticFeedback {
 export interface TelegramWebApp {
   ready?: () => void;
   expand?: () => void;
+  initDataUnsafe?: {
+    user?: {
+      id?: string | number;
+    };
+  };
   BackButton?: TelegramBackButton;
   HapticFeedback?: TelegramHapticFeedback;
   themeParams?: TelegramThemeParams;

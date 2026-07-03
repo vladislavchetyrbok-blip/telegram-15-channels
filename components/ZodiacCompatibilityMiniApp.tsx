@@ -19,7 +19,6 @@ import Link from "next/link";
 import {
   AuraColorFeature,
   BirthMatrixFeature,
-  DailyCardFeature,
   IntuitiveSignFeature,
   KarmicLessonsFeature,
   LunarRitualFeature,
@@ -27,6 +26,7 @@ import {
   TalismansFeature,
   TarotCardFeature,
 } from "./ZodiacMysticSections";
+import { DailyTarotCardFeature } from "./zodiac-mini-app/DailyTarotCardFeature";
 import {
   ExtendedAngelNumberFeature,
   ExtendedCompatibilityFeature,
@@ -1956,7 +1956,14 @@ function MoreSection({
         {activeMoreFeature === "dreamDictionary" ? <DreamDictionaryCard publicMode={publicMode} symbolKey={dreamSymbolKey} dreamText={dreamText} profile={dreamProfile} onSymbolChange={setDreamSymbolKey} onDreamTextChange={setDreamText} /> : null}
         {activeMoreFeature === "giftBySign" ? <GiftBySignCard publicMode={publicMode} recipientType={giftRecipientType} profile={giftProfile} onRecipientTypeChange={setGiftRecipientType} /> : null}
         {activeMoreFeature === "archetype" ? <PersonalityArchetypeCard publicMode={publicMode} person={natalPerson} profile={archetype} onPersonChange={setNatalPerson} vipFreeAccess={vipFreeAccess} /> : null}
-        {activeMoreFeature === "dailyCard" ? <DailyCardFeature publicMode={publicMode} dateKey={dateKey} sign={(selfSign?.slug as any) || "aries"} /> : null}
+        {activeMoreFeature === "dailyCard" ? (
+          <DailyTarotCardFeature
+            publicMode={publicMode}
+            dateKey={dateKey}
+            telegramUserId={telegram.webApp?.initDataUnsafe?.user?.id ?? null}
+            onReveal={() => onHaptic("impact", "mystic", "daily_tarot_reveal")}
+          />
+        ) : null}
         {activeMoreFeature === "tarotCard" ? (
           <TarotCardFeature
             publicMode={publicMode}

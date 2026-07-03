@@ -31,8 +31,8 @@ const secondaryCtas = [
     tone: "gold",
   },
   {
-    title: "Мистическая карта",
-    description: "Карта дня, Таро и руна.",
+    title: "Таро и руны",
+    description: "Расклады, руна, символы.",
     href: "/compatibility?startapp=mystic",
     icon: WandSparkles,
     tone: "violet",
@@ -93,6 +93,24 @@ export default function MiniAppHubPage() {
                 <span className="mt-1 block text-xs leading-4 text-[#3d1622]">Любовь, пара, примирение</span>
               </span>
               <HeartHandshake className="h-5 w-5 shrink-0" aria-hidden="true" />
+            </Link>
+
+            <Link
+              href="/compatibility?startapp=mystic"
+              className="aphrodite-touch-target block rounded-lg border border-amber-100/25 bg-[radial-gradient(circle_at_24%_0%,rgba(246,213,138,0.18),transparent_34%),linear-gradient(135deg,rgba(88,28,135,0.42),rgba(15,23,42,0.72))] p-3 text-left shadow-[0_16px_44px_rgba(88,28,135,0.24)] transition hover:border-amber-100/45 focus:outline-none focus:ring-2 focus:ring-amber-200/45"
+            >
+              <span className="flex items-start justify-between gap-3">
+                <span className="min-w-0">
+                  <span className="block text-lg font-semibold leading-6 text-white">Карта дня</span>
+                  <span className="mt-1 block text-sm leading-5 text-slate-300">Открой главный знак сегодняшнего дня</span>
+                </span>
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-amber-100/25 bg-amber-100/10 text-amber-100">
+                  <WandSparkles className="h-5 w-5" aria-hidden="true" />
+                </span>
+              </span>
+              <span className="mt-3 inline-flex min-h-10 items-center justify-center rounded-lg bg-amber-100 px-3 text-sm font-bold text-[#18091a]">
+                Открыть карту
+              </span>
             </Link>
 
             <div className="aphrodite-pkg-267-two-after-430 grid gap-2">
