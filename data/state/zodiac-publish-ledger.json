@@ -3707,8 +3707,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-03T09:32:26.002Z"
+      "status": "sent",
+      "updatedAt": "2026-07-03T09:32:29.393Z",
+      "messageId": "50,",
+      "sentAt": "2026-07-03T09:32:29.392Z"
     }
   }
 }
