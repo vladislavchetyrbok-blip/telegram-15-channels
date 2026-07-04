@@ -3833,8 +3833,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-04T08:48:54.199Z"
+      "status": "sent",
+      "updatedAt": "2026-07-04T08:48:57.476Z",
+      "messageId": "52,",
+      "sentAt": "2026-07-04T08:48:57.475Z"
     }
   }
 }
