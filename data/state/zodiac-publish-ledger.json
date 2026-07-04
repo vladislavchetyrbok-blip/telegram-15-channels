@@ -3795,6 +3795,18 @@
       "updatedAt": "2026-07-03T09:32:57.960Z",
       "messageId": "47,",
       "sentAt": "2026-07-03T09:32:57.959Z"
+    },
+    "2026-07-04:zodiac-general": {
+      "key": "2026-07-04:zodiac-general",
+      "date": "2026-07-04",
+      "slug": "zodiac-general",
+      "createdAt": "2026-07-04T08:48:44.632Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-07-04T08:48:44.632Z"
     }
   }
 }
