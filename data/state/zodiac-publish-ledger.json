@@ -3847,8 +3847,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-04T08:48:58.370Z"
+      "status": "sent",
+      "updatedAt": "2026-07-04T08:49:01.505Z",
+      "messageId": "54,",
+      "sentAt": "2026-07-04T08:49:01.504Z"
     }
   }
 }
