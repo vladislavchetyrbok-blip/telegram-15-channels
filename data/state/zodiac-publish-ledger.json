@@ -3903,8 +3903,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-04T08:49:14.150Z"
+      "status": "sent",
+      "updatedAt": "2026-07-04T08:49:16.967Z",
+      "messageId": "52,",
+      "sentAt": "2026-07-04T08:49:16.965Z"
     }
   }
 }
