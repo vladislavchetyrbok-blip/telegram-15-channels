@@ -56,7 +56,10 @@ function SiteNav({ activePath }: { activePath: string }) {
           <span className="block truncate text-xs text-amber-50/56">карта · знаки · любовь</span>
         </span>
       </Link>
-      <nav className="hidden items-center gap-1 rounded-full border border-amber-100/16 bg-black/28 p-1 shadow-[0_18px_80px_rgba(0,0,0,0.42),0_0_0_1px_rgba(255,255,255,0.035)_inset] backdrop-blur-2xl md:flex">
+      <nav
+        aria-label="Основная навигация сайта"
+        className="animate-orbit-shimmer hidden items-center gap-1 rounded-full border border-amber-100/25 bg-black/40 p-1 shadow-[0_18px_80px_rgba(0,0,0,0.6),0_0_20px_rgba(246,213,138,0.12),0_0_0_1px_rgba(255,255,255,0.05)_inset] backdrop-blur-2xl md:flex"
+      >
         {siteNavItems.map((item) => {
           const active = activePath === item.href || (item.href !== "/" && activePath.startsWith(item.href));
           return (
@@ -196,11 +199,12 @@ export function PremiumCTA({ children = "Открыть в Telegram", className 
       href={TELEGRAM_MINI_APP_LINK}
       data-site-cta="telegram-mini-app"
       aria-label="Открыть в Telegram"
-      className={`group relative isolate inline-flex min-h-[3.6rem] items-center justify-center overflow-hidden rounded-full border border-[#ffe8a5] bg-[linear-gradient(135deg,#fff6d6_0%,#f7d36b_35%,#d89c3e_70%,#a86d20_100%)] px-8 text-sm font-extrabold tracking-wider text-[#140a02] shadow-[0_0_0_1px_rgba(255,255,255,0.5)_inset,0_-10px_22px_rgba(140,70,10,0.35)_inset,0_0_45px_rgba(247,211,107,0.48),0_24px_70px_rgba(0,0,0,0.75)] transition duration-300 hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[0_0_0_1px_rgba(255,255,255,0.65)_inset,0_-10px_22px_rgba(140,70,10,0.35)_inset,0_0_65px_rgba(247,211,107,0.7),0_28px_85px_rgba(0,0,0,0.85)] active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f7d36b] ${className}`}
+      className={`animate-orbit-shimmer group relative isolate inline-flex min-h-[3.6rem] items-center justify-center overflow-hidden rounded-full border border-[#ffe8a5] bg-[linear-gradient(135deg,#fff6d6_0%,#f7d36b_35%,#d89c3e_70%,#a86d20_100%)] px-8 text-sm font-extrabold tracking-wider text-[#140a02] shadow-[0_0_0_1px_rgba(255,255,255,0.5)_inset,0_-10px_22px_rgba(140,70,10,0.35)_inset,0_0_45px_rgba(247,211,107,0.48),0_24px_70px_rgba(0,0,0,0.75)] transition duration-300 hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[0_0_0_1px_rgba(255,255,255,0.65)_inset,0_-10px_22px_rgba(140,70,10,0.35)_inset,0_0_65px_rgba(247,211,107,0.7),0_28px_85px_rgba(0,0,0,0.85)] active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f7d36b] ${className}`}
     >
       <span className="absolute inset-x-4 top-0 h-px bg-gradient-to-r from-transparent via-white/90 to-transparent" aria-hidden="true" />
       <span className="absolute inset-0 bg-[linear-gradient(115deg,transparent_0%,rgba(255,255,255,0.45)_32%,transparent_48%)] opacity-75 transition duration-500 group-hover:translate-x-4" aria-hidden="true" />
       <span className="relative flex items-center justify-center gap-2.5 uppercase tracking-wider">
+        <Sparkles className="animate-star-glint h-4 w-4 text-[#784306] transition duration-500 group-hover:rotate-12 group-hover:scale-110" aria-hidden="true" />
         {children}
         <ArrowRight className="h-4 w-4 transition duration-300 group-hover:translate-x-1" aria-hidden="true" />
       </span>
@@ -248,7 +252,7 @@ export function PremiumHeroScene({ variant = "home", sign }: { variant?: HeroSce
 }
 
 export function PremiumPhoneMockup({ mode = "home", sign }: { mode?: HeroSceneVariant; sign?: ZodiacPublicSign }) {
-  const title = mode === "compatibility" ? "Love Check" : mode === "zodiac" ? "Zodiac" : "Zodiac Love";
+  const title = mode === "compatibility" ? "Совместимость" : mode === "zodiac" ? "Зодиак" : "Звездная карта";
   const cardTitle = mode === "compatibility" ? "82%" : mode === "zodiac" && sign ? sign.ruName : "ЗВЕЗДА";
   const cardLabel = mode === "compatibility" ? "совпадение ритма" : mode === "zodiac" ? "профиль знака" : "карта дня";
 
@@ -259,7 +263,7 @@ export function PremiumPhoneMockup({ mode = "home", sign }: { mode?: HeroSceneVa
         <div className="mx-auto h-1.5 w-14 rounded-full bg-white/18" />
         <div className="mt-4 flex items-center justify-between gap-2">
           <div>
-            <p className="text-[10px] font-semibold uppercase text-amber-100/80">Mini App</p>
+            <p className="text-[10px] font-semibold uppercase text-amber-100/80">Telegram Апп</p>
             <p className="text-sm font-semibold text-white">{title}</p>
           </div>
           <span className="flex h-7 w-7 items-center justify-center rounded-lg border border-amber-100/22 bg-amber-100/[0.08] text-amber-100">
@@ -481,15 +485,15 @@ export function ZodiacSealCard({ sign }: { sign: ZodiacPublicSign }) {
   return (
     <Link
       href={`/zodiac/${sign.slug}`}
-      className="group relative isolate flex flex-col items-center justify-between overflow-hidden rounded-2xl border border-[#f6d58a]/25 bg-[radial-gradient(circle_at_50%_0%,rgba(246,213,138,0.15),transparent_45%),linear-gradient(160deg,#090614_0%,#04020a_100%)] p-6 text-center shadow-[0_24px_80px_rgba(0,0,0,0.6),inset_0_0_0_1px_rgba(255,255,255,0.05)] transition duration-500 hover:-translate-y-1.5 hover:border-[#f6d58a]/60 hover:shadow-[0_32px_100px_rgba(0,0,0,0.8),0_0_60px_rgba(246,213,138,0.2),inset_0_0_30px_rgba(246,213,138,0.1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f6d58a]/70"
+      className="animate-orbit-shimmer group relative isolate flex flex-col items-center justify-between overflow-hidden rounded-2xl border border-[#f6d58a]/30 bg-[radial-gradient(circle_at_50%_0%,rgba(246,213,138,0.18),transparent_45%),linear-gradient(160deg,#090614_0%,#04020a_100%)] p-6 text-center shadow-[0_24px_80px_rgba(0,0,0,0.6),inset_0_0_0_1px_rgba(255,255,255,0.08)] transition duration-500 hover:-translate-y-1.5 hover:border-[#f6d58a]/70 hover:shadow-[0_32px_100px_rgba(0,0,0,0.8),0_0_60px_rgba(246,213,138,0.25),inset_0_0_30px_rgba(246,213,138,0.15)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f6d58a]/70"
     >
-      <div className={`absolute inset-0 bg-[radial-gradient(circle_at_50%_25%,rgba(246,213,138,0.18),transparent_40%),radial-gradient(circle_at_20%_80%,rgba(244,176,197,0.12),transparent_40%)] opacity-80 transition duration-500 group-hover:opacity-100`} aria-hidden="true" />
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.05)_0%,transparent_35%,rgba(0,0,0,0.5)_100%)]" aria-hidden="true" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_25%,rgba(246,213,138,0.2),transparent_40%),radial-gradient(circle_at_20%_80%,rgba(244,176,197,0.15),transparent_40%)] opacity-80 transition duration-500 group-hover:opacity-100" aria-hidden="true" />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,transparent_35%,rgba(0,0,0,0.5)_100%)]" aria-hidden="true" />
 
       {/* Medallion / Golden Seal */}
-      <div className="relative my-2 flex h-32 w-32 items-center justify-center rounded-full border border-[#f6d58a]/40 bg-[radial-gradient(circle_at_35%_30%,rgba(255,250,235,0.25),rgba(246,213,138,0.1)_45%,rgba(8,5,18,0.9)_90%)] shadow-[0_10px_40px_rgba(0,0,0,0.8),0_0_50px_rgba(246,213,138,0.25),inset_0_0_35px_rgba(246,213,138,0.15)] transition duration-500 group-hover:scale-105 group-hover:border-[#f6d58a]/80 group-hover:shadow-[0_10px_50px_rgba(0,0,0,0.9),0_0_70px_rgba(246,213,138,0.4),inset_0_0_45px_rgba(246,213,138,0.25)]">
-        <span className="absolute inset-2 rounded-full border border-[#f6d58a]/25" aria-hidden="true" />
-        <span className="absolute inset-5 rounded-full border border-rose-200/15" aria-hidden="true" />
+      <div className="animate-aura-pulse relative my-2 flex h-32 w-32 items-center justify-center rounded-full border border-[#f6d58a]/45 bg-[radial-gradient(circle_at_35%_30%,rgba(255,250,235,0.28),rgba(246,213,138,0.12)_45%,rgba(8,5,18,0.92)_90%)] shadow-[0_10px_40px_rgba(0,0,0,0.8),0_0_50px_rgba(246,213,138,0.3),inset_0_0_35px_rgba(246,213,138,0.18)] transition duration-500 group-hover:scale-105 group-hover:border-[#f6d58a]/85 group-hover:shadow-[0_10px_50px_rgba(0,0,0,0.9),0_0_70px_rgba(246,213,138,0.45),inset_0_0_45px_rgba(246,213,138,0.28)]">
+        <span className="absolute inset-2 rounded-full border border-[#f6d58a]/30" aria-hidden="true" />
+        <span className="absolute inset-5 rounded-full border border-rose-200/20" aria-hidden="true" />
         <span className="absolute top-2 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-[#f6d58a] shadow-[0_0_12px_#f6d58a]" aria-hidden="true" />
         <span className="absolute bottom-2 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-[#f6d58a]/60" aria-hidden="true" />
         <span className="text-5xl text-[#fff8ea] [text-shadow:0_0_30px_rgba(246,213,138,0.6)] transition duration-500 group-hover:scale-110" aria-hidden="true">
@@ -499,11 +503,11 @@ export function ZodiacSealCard({ sign }: { sign: ZodiacPublicSign }) {
 
       <div className="relative mt-4 z-10">
         <h3 className="[font-family:Georgia,'Times_New_Roman',serif] text-2xl font-normal tracking-wide text-[#fff8ea] [text-shadow:0_5px_20px_rgba(0,0,0,0.8)]">{sign.ruName}</h3>
-        <p className="mt-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.3em] text-[#f6d58a]/80">{sign.element}</p>
+        <p className="mt-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.3em] text-[#f6d58a]/85">{sign.element}</p>
         <p className="mx-auto mt-2.5 max-w-[13rem] text-xs text-slate-300/80">{sign.dates}</p>
       </div>
 
-      <div className="relative mt-5 z-10 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#f6d58a]/80 transition duration-300 group-hover:text-[#fff8ea]">
+      <div className="relative mt-5 z-10 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#f6d58a]/85 transition duration-300 group-hover:text-[#fff8ea]">
         <span>Открыть печать</span>
         <ArrowRight className="h-3.5 w-3.5 transition duration-300 group-hover:translate-x-1" aria-hidden="true" />
       </div>
@@ -580,14 +584,14 @@ function SiteFooter() {
     <footer className="mt-10 border-t border-amber-100/10 py-6 text-sm text-slate-400">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2">
-          <CircleDot className="h-4 w-4 text-amber-100" aria-hidden="true" />
-          <span>Мистический public website для Telegram Mini App</span>
+          <CircleDot className="animate-aura-pulse h-4 w-4 text-amber-100" aria-hidden="true" />
+          <span>Мистический публичный портал для Telegram Mini App</span>
         </div>
         <div className="flex flex-wrap gap-4">
-          <Link href="/privacy" className="transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-100/50">Privacy</Link>
-          <Link href="/terms" className="transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-100/50">Terms</Link>
+          <Link href="/privacy" className="transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-100/50">Конфиденциальность</Link>
+          <Link href="/terms" className="transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-100/50">Условия</Link>
           <a href={TELEGRAM_MINI_APP_LINK} data-site-cta="telegram-mini-app" className="transition hover:text-amber-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-100/50">
-            Telegram
+            Telegram Апп
           </a>
         </div>
       </div>

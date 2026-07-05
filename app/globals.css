@@ -160,6 +160,159 @@ a {
   animation: cosmic-orbit 72s linear infinite reverse;
 }
 
+@keyframes gold-dust-drift {
+  0% {
+    background-position: 0 0, 0 0;
+  }
+  50% {
+    background-position: 30px -40px, -20px -30px;
+  }
+  100% {
+    background-position: 0 0, 0 0;
+  }
+}
+
+@keyframes nebula-breathe {
+  0%,
+  100% {
+    opacity: 0.82;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes aura-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(0.98);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.03);
+  }
+}
+
+@keyframes star-glint {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.25);
+  }
+}
+
+@keyframes orbit-shimmer {
+  0%,
+  100% {
+    border-color: rgba(246, 213, 138, 0.16);
+    box-shadow: 0 0 20px rgba(246, 213, 138, 0.08);
+  }
+  50% {
+    border-color: rgba(246, 213, 138, 0.55);
+    box-shadow: 0 0 45px rgba(246, 213, 138, 0.28);
+  }
+}
+
+@keyframes ember-drift {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translateY(-40px) rotate(15deg);
+    opacity: 0.1;
+  }
+}
+
+@keyframes rose-gold-shimmer {
+  0%,
+  100% {
+    opacity: 0.55;
+    filter: drop-shadow(0 0 18px rgba(244, 176, 197, 0.25));
+  }
+  50% {
+    opacity: 0.95;
+    filter: drop-shadow(0 0 38px rgba(244, 176, 197, 0.65));
+  }
+}
+
+@keyframes candle-flicker {
+  0%,
+  100% {
+    opacity: 0.8;
+    transform: scale(1);
+    filter: drop-shadow(0 0 25px rgba(246, 213, 138, 0.35));
+  }
+  33% {
+    opacity: 0.95;
+    transform: scale(1.02);
+    filter: drop-shadow(0 0 40px rgba(246, 213, 138, 0.55));
+  }
+  66% {
+    opacity: 0.88;
+    transform: scale(0.99);
+    filter: drop-shadow(0 0 30px rgba(246, 213, 138, 0.45));
+  }
+}
+
+@keyframes celestial-shimmer {
+  0%,
+  100% {
+    opacity: 0.65;
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    opacity: 0.95;
+    transform: scale(1.02) rotate(1deg);
+  }
+}
+
+.gold-dust-drift {
+  animation: gold-dust-drift 32s ease-in-out infinite;
+}
+
+.animate-nebula-breathe {
+  animation: nebula-breathe 14s ease-in-out infinite;
+}
+
+.animate-aura-pulse {
+  animation: aura-pulse 8s ease-in-out infinite;
+}
+
+.animate-star-glint {
+  animation: star-glint 5s ease-in-out infinite;
+}
+
+.animate-orbit-shimmer {
+  animation: orbit-shimmer 7s ease-in-out infinite;
+}
+
+.animate-ember-drift {
+  animation: ember-drift 9s ease-in-out infinite;
+}
+
+.animate-rose-gold-shimmer {
+  animation: rose-gold-shimmer 6s ease-in-out infinite;
+}
+
+.animate-candle-flicker {
+  animation: candle-flicker 5s ease-in-out infinite;
+}
+
+.animate-celestial-shimmer {
+  animation: celestial-shimmer 10s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .cosmic-drift,
   .cosmic-drift-slow,
@@ -168,8 +321,17 @@ a {
   .premium-float,
   .premium-tilt,
   .zodiac-halo-spin,
-  .zodiac-halo-counter {
-    animation: none;
+  .zodiac-halo-counter,
+  .gold-dust-drift,
+  .animate-nebula-breathe,
+  .animate-aura-pulse,
+  .animate-star-glint,
+  .animate-orbit-shimmer,
+  .animate-ember-drift,
+  .animate-rose-gold-shimmer,
+  .animate-candle-flicker,
+  .animate-celestial-shimmer {
+    animation: none !important;
   }
 }
 
@@ -296,7 +458,16 @@ a {
     .cosmic-drift,
     .cosmic-drift-slow,
     .cosmic-orbit,
-    .cosmic-orbit-reverse {
+    .cosmic-orbit-reverse,
+    .gold-dust-drift,
+    .animate-nebula-breathe,
+    .animate-aura-pulse,
+    .animate-star-glint,
+    .animate-orbit-shimmer,
+    .animate-ember-drift,
+    .animate-rose-gold-shimmer,
+    .animate-candle-flicker,
+    .animate-celestial-shimmer {
       animation: none !important;
     }
 

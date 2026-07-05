@@ -64,34 +64,37 @@ export function PublicArtHero({
         {isTarot ? (
           <>
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_38%,transparent_10%,rgba(5,3,16,0.7)_55%,rgba(2,2,10,0.96)_100%)]" />
-            <div className="absolute left-1/2 top-[32%] -translate-x-1/2 -translate-y-1/2 h-[38rem] w-[38rem] rounded-full bg-[radial-gradient(circle,rgba(246,213,138,0.24),rgba(180,83,9,0.12)_45%,transparent_70%)] blur-3xl pointer-events-none" />
+            <div className="animate-candle-flicker absolute left-1/2 top-[32%] -translate-x-1/2 -translate-y-1/2 h-[40rem] w-[40rem] rounded-full bg-[radial-gradient(circle,rgba(246,213,138,0.28),rgba(180,83,9,0.14)_45%,transparent_70%)] blur-3xl pointer-events-none" />
+            <div className="animate-aura-pulse absolute left-1/2 top-[45%] -translate-x-1/2 -translate-y-1/2 h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle,rgba(246,213,138,0.12),transparent_65%)] blur-2xl pointer-events-none" />
           </>
         ) : isCompat ? (
           <>
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_42%,transparent_12%,rgba(10,5,20,0.65)_58%,rgba(2,2,10,0.96)_100%)]" />
-            <div className="absolute left-1/2 top-[35%] -translate-x-1/2 -translate-y-1/2 h-[40rem] w-[40rem] rounded-full bg-[radial-gradient(circle,rgba(244,176,197,0.24),rgba(125,92,255,0.16)_50%,transparent_72%)] blur-3xl pointer-events-none" />
+            <div className="animate-rose-gold-shimmer absolute left-1/2 top-[35%] -translate-x-1/2 -translate-y-1/2 h-[42rem] w-[42rem] rounded-full bg-[radial-gradient(circle,rgba(244,176,197,0.28),rgba(125,92,255,0.18)_50%,transparent_72%)] blur-3xl pointer-events-none" />
+            <div className="animate-aura-pulse absolute left-1/2 top-[35%] -translate-x-1/2 -translate-y-1/2 h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,rgba(246,213,138,0.15),transparent_70%)] blur-2xl pointer-events-none" />
           </>
         ) : isAries ? (
           <>
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,transparent_12%,rgba(15,4,6,0.68)_60%,rgba(2,2,10,0.96)_100%)]" />
-            <div className="absolute left-1/2 top-[35%] -translate-x-1/2 -translate-y-1/2 h-[38rem] w-[38rem] rounded-full bg-[radial-gradient(circle,rgba(239,68,68,0.22),rgba(246,213,138,0.18)_50%,transparent_72%)] blur-3xl pointer-events-none" />
+            <div className="animate-ember-drift absolute left-1/2 top-[35%] -translate-x-1/2 -translate-y-1/2 h-[40rem] w-[40rem] rounded-full bg-[radial-gradient(circle,rgba(239,68,68,0.26),rgba(246,213,138,0.2)_50%,transparent_72%)] blur-3xl pointer-events-none" />
+            <div className="animate-aura-pulse absolute left-1/2 top-[35%] -translate-x-1/2 -translate-y-1/2 h-[36rem] w-[36rem] rounded-full bg-[radial-gradient(circle,rgba(246,213,138,0.14),transparent_68%)] blur-2xl pointer-events-none" />
           </>
         ) : isZodiac ? (
           <>
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,transparent_15%,rgba(5,5,18,0.68)_65%,rgba(2,2,10,0.96)_100%)]" />
-            <div className="absolute left-1/2 top-[35%] -translate-x-1/2 -translate-y-1/2 h-[40rem] w-[40rem] rounded-full bg-[radial-gradient(circle,rgba(246,213,138,0.18),rgba(88,28,135,0.18)_55%,transparent_75%)] blur-3xl pointer-events-none" />
+            <div className="animate-celestial-shimmer absolute left-1/2 top-[35%] -translate-x-1/2 -translate-y-1/2 h-[42rem] w-[42rem] rounded-full bg-[radial-gradient(circle,rgba(246,213,138,0.22),rgba(88,28,135,0.2)_55%,transparent_75%)] blur-3xl pointer-events-none" />
           </>
         ) : (
           <>
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,transparent_0%,rgba(2,2,10,0.3)_45%,rgba(2,2,10,0.88)_100%)]" />
-            <div className="absolute left-[20%] top-[15%] h-[36rem] w-[36rem] rounded-full bg-[radial-gradient(circle,rgba(247,190,86,0.18),transparent_68%)] blur-3xl pointer-events-none" />
-            <div className="absolute right-[15%] top-[20%] h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle,rgba(125,92,255,0.18),transparent_70%)] blur-3xl pointer-events-none" />
+            <div className="animate-nebula-breathe absolute left-[20%] top-[15%] h-[38rem] w-[38rem] rounded-full bg-[radial-gradient(circle,rgba(247,190,86,0.22),transparent_68%)] blur-3xl pointer-events-none" />
+            <div className="animate-aura-pulse absolute right-[15%] top-[20%] h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,rgba(125,92,255,0.22),transparent_70%)] blur-3xl pointer-events-none" />
           </>
         )}
 
         {/* Unified cinematic depth scrims */}
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(2,2,10,0.45)_0%,transparent_25%,transparent_55%,rgba(2,2,10,0.94)_100%)]" />
-        <div className="luxury-grain absolute inset-0 opacity-[0.18]" />
+        <div className="luxury-grain gold-dust-drift absolute inset-0 opacity-[0.24]" />
         {children ? <div className="absolute inset-0">{children}</div> : null}
       </div>
     );
