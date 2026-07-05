@@ -4043,8 +4043,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-05T09:20:07.705Z"
+      "status": "sent",
+      "updatedAt": "2026-07-05T09:20:15.418Z",
+      "messageId": "54,",
+      "sentAt": "2026-07-05T09:20:15.417Z"
     }
   }
 }
