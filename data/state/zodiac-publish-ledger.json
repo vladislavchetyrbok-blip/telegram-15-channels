@@ -4099,8 +4099,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-05T09:20:30.565Z"
+      "status": "sent",
+      "updatedAt": "2026-07-05T09:20:34.235Z",
+      "messageId": "52,",
+      "sentAt": "2026-07-05T09:20:34.234Z"
     }
   }
 }
