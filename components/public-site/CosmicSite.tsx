@@ -345,13 +345,34 @@ export function TarotPreviewCard({ title = "ЗВЕЗДА", subtitle = "карт�
   );
 }
 
-export function ZodiacHalo({ signs, sign, compact = false }: { signs?: ZodiacPublicSign[]; sign?: ZodiacPublicSign; compact?: boolean }) {
+export function ZodiacHalo({
+  signs,
+  sign,
+  compact = false,
+  mobileCompact = false,
+}: {
+  signs?: ZodiacPublicSign[];
+  sign?: ZodiacPublicSign;
+  compact?: boolean;
+  mobileCompact?: boolean;
+}) {
   const glyphs = signs?.map((item) => item.symbol) ?? ["♈︎", "♉︎", "♊︎", "♋︎", "♌︎", "♍︎", "♎︎", "♏︎", "♐︎", "♑︎", "♒︎", "♓︎"];
   const radius = compact ? "clamp(5.2rem, 24vw, 8rem)" : "clamp(5.35rem, 31vw, 11.4rem)";
-  const haloStyle = { "--zodiac-halo-radius": radius } as CSSProperties;
+  const haloStyle = mobileCompact ? undefined : ({ "--zodiac-halo-radius": radius } as CSSProperties);
+  const haloClass = mobileCompact
+    ? "relative mx-auto aspect-square w-full max-w-[30rem] [--zodiac-halo-radius:clamp(4.35rem,26vw,6.05rem)] sm:[--zodiac-halo-radius:clamp(5.35rem,31vw,11.4rem)]"
+    : "relative mx-auto aspect-square w-full max-w-[30rem]";
+  const glyphClass = (active: boolean) =>
+    mobileCompact
+      ? active
+        ? "absolute left-1/2 top-1/2 flex h-8 w-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-lg border border-amber-100/48 bg-amber-100/18 text-lg text-amber-50 shadow-[0_0_34px_rgba(246,213,138,0.34)] backdrop-blur sm:h-11 sm:w-11 sm:text-xl"
+        : "absolute left-1/2 top-1/2 flex h-7 w-7 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-lg border border-amber-100/22 bg-[#0b0818]/72 text-base text-amber-100 shadow-[0_10px_32px_rgba(0,0,0,0.36)] backdrop-blur sm:h-9 sm:w-9 sm:text-lg"
+      : active
+        ? "absolute left-1/2 top-1/2 flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-lg border border-amber-100/48 bg-amber-100/18 text-xl text-amber-50 shadow-[0_0_34px_rgba(246,213,138,0.34)] backdrop-blur"
+        : "absolute left-1/2 top-1/2 flex h-9 w-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-lg border border-amber-100/22 bg-[#0b0818]/72 text-lg text-amber-100 shadow-[0_10px_32px_rgba(0,0,0,0.36)] backdrop-blur";
 
   return (
-    <div className="relative mx-auto aspect-square w-full max-w-[30rem]" style={haloStyle} aria-hidden="true">
+    <div className={haloClass} style={haloStyle} aria-hidden="true" data-public-zodiac-halo>
       <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle,rgba(246,213,138,0.16),transparent_62%)] blur-sm" />
       <div className="zodiac-halo-spin absolute inset-4 rounded-full border border-amber-100/24 bg-[radial-gradient(circle,rgba(246,213,138,0.08),transparent_58%)] shadow-[0_0_70px_rgba(246,213,138,0.14)]" />
       <div className="zodiac-halo-counter absolute inset-[16%] rounded-full border border-rose-100/18" />
@@ -364,28 +385,29 @@ export function ZodiacHalo({ signs, sign, compact = false }: { signs?: ZodiacPub
         return (
           <span
             key={`${glyph}-${index}`}
-            className={
-              active
-                ? "absolute left-1/2 top-1/2 flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-lg border border-amber-100/48 bg-amber-100/18 text-xl text-amber-50 shadow-[0_0_34px_rgba(246,213,138,0.34)] backdrop-blur"
-                : "absolute left-1/2 top-1/2 flex h-9 w-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-lg border border-amber-100/22 bg-[#0b0818]/72 text-lg text-amber-100 shadow-[0_10px_32px_rgba(0,0,0,0.36)] backdrop-blur"
-            }
+            className={glyphClass(active)}
+            data-public-zodiac-glyph
             style={{ transform: `rotate(${angle}deg) translate(0, calc(-1 * var(--zodiac-halo-radius))) rotate(-${angle}deg)` }}
           >
             {glyph}
           </span>
         );
       })}
-      <div className="absolute left-1/2 top-1/2 flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-amber-100/34 bg-[radial-gradient(circle,rgba(246,213,138,0.22),rgba(167,139,250,0.14),transparent_70%)] text-amber-100 shadow-[0_0_48px_rgba(246,213,138,0.16)] sm:h-24 sm:w-24">
+      <div className={mobileCompact ? "absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-amber-100/34 bg-[radial-gradient(circle,rgba(246,213,138,0.22),rgba(167,139,250,0.14),transparent_70%)] text-amber-100 shadow-[0_0_48px_rgba(246,213,138,0.16)] sm:h-24 sm:w-24" : "absolute left-1/2 top-1/2 flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-amber-100/34 bg-[radial-gradient(circle,rgba(246,213,138,0.22),rgba(167,139,250,0.14),transparent_70%)] text-amber-100 shadow-[0_0_48px_rgba(246,213,138,0.16)] sm:h-24 sm:w-24"}>
         <Sparkles className="h-7 w-7" aria-hidden="true" />
       </div>
     </div>
   );
 }
 
-export function ZodiacWheel({ signs }: { signs: ZodiacPublicSign[] }) {
+export function ZodiacWheel({ signs, compactMobile = false }: { signs: ZodiacPublicSign[]; compactMobile?: boolean }) {
+  const wheelClass = compactMobile
+    ? "relative mx-auto aspect-square w-[min(78vw,320px)] max-w-full overflow-visible px-2 sm:w-[min(88vw,420px)] sm:px-0 lg:w-[min(92vw,420px)]"
+    : "relative mx-auto aspect-square w-[min(92vw,420px)] max-w-full overflow-visible";
+
   return (
-    <div className="relative mx-auto aspect-square w-[min(92vw,420px)] max-w-full overflow-visible" aria-hidden="true">
-      <ZodiacHalo signs={signs} />
+    <div className={wheelClass} aria-hidden="true" data-public-zodiac-wheel>
+      <ZodiacHalo signs={signs} mobileCompact={compactMobile} />
     </div>
   );
 }

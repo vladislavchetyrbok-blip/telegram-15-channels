@@ -56,9 +56,9 @@ export default function ZodiacIndexPage() {
               <p className="mt-5 max-w-lg text-sm leading-7 text-amber-50/68 sm:text-base">
                 Зодиак здесь работает как навигационный инструмент: каждый символ открывает отдельный профиль, а круг ниже остаётся вторичным ориентиром, не заменяя глубину небесной карты.
               </p>
-              <div className="relative mx-auto mt-8 w-full max-w-[28rem] overflow-visible rounded-lg border border-amber-100/14 bg-black/28 p-3 shadow-[0_22px_86px_rgba(0,0,0,0.46),0_0_0_1px_rgba(255,255,255,0.035)_inset] backdrop-blur-xl sm:p-4 lg:mx-0">
+              <div className="relative mx-auto mt-8 w-full max-w-[22.5rem] overflow-visible rounded-lg border border-amber-100/14 bg-black/28 p-4 shadow-[0_22px_86px_rgba(0,0,0,0.46),0_0_0_1px_rgba(255,255,255,0.035)_inset] backdrop-blur-xl sm:max-w-[28rem] sm:p-4 lg:mx-0">
                 <div className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-amber-100/42 to-transparent" aria-hidden="true" />
-                <ZodiacWheel signs={zodiacPublicSigns} />
+                <ZodiacWheel signs={zodiacPublicSigns} compactMobile />
               </div>
             </div>
             <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
