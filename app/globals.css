@@ -12,10 +12,12 @@
 
 body {
   margin: 0;
+  overflow-x: hidden;
   background:
-    radial-gradient(circle at top left, rgba(34, 211, 238, 0.14), transparent 34rem),
-    radial-gradient(circle at top right, rgba(37, 99, 235, 0.18), transparent 30rem),
-    #070b14;
+    radial-gradient(circle at top left, rgba(246, 213, 138, 0.09), transparent 36rem),
+    radial-gradient(circle at top right, rgba(125, 92, 255, 0.15), transparent 32rem),
+    radial-gradient(circle at 50% 70%, rgba(88, 28, 135, 0.22), transparent 44rem),
+    #02020a;
   color: #e2e8f0;
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -27,7 +29,7 @@ a {
 }
 
 ::selection {
-  background: rgba(34, 211, 238, 0.3);
+  background: rgba(246, 213, 138, 0.3);
   color: #ffffff;
 }
 
@@ -40,17 +42,17 @@ a {
 
 .cosmic-starfield {
   background-image:
-    radial-gradient(circle, rgba(255, 255, 255, 0.8) 0 1px, transparent 1.6px),
-    radial-gradient(circle, rgba(246, 213, 138, 0.52) 0 1px, transparent 1.4px),
-    radial-gradient(circle, rgba(244, 176, 197, 0.38) 0 1px, transparent 1.4px);
+    radial-gradient(circle, rgba(255, 255, 255, 0.6) 0 1px, transparent 1.5px),
+    radial-gradient(circle, rgba(246, 213, 138, 0.45) 0 1px, transparent 1.4px),
+    radial-gradient(circle, rgba(244, 176, 197, 0.3) 0 1px, transparent 1.4px);
   background-position:
     0 0,
-    42px 74px,
-    118px 24px;
+    50px 80px,
+    130px 30px;
   background-size:
-    140px 140px,
-    190px 190px,
-    240px 240px;
+    160px 160px,
+    220px 220px,
+    280px 280px;
 }
 
 .cosmic-starfield-deep {
@@ -77,6 +79,15 @@ a {
   opacity: 0.78;
 }
 
+.luxury-grain {
+  background-image:
+    linear-gradient(115deg, rgba(255, 255, 255, 0.05), transparent 28%, rgba(246, 213, 138, 0.04), transparent 52%),
+    radial-gradient(circle, rgba(255, 255, 255, 0.16) 0 0.5px, transparent 0.8px);
+  background-size:
+    100% 100%,
+    46px 46px;
+}
+
 @keyframes cosmic-drift {
   0%,
   100% {
@@ -96,6 +107,26 @@ a {
   }
 }
 
+@keyframes premium-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -10px, 0);
+  }
+}
+
+@keyframes premium-tilt {
+  0%,
+  100% {
+    transform: rotate(-1.5deg) translate3d(0, 0, 0);
+  }
+  50% {
+    transform: rotate(1.5deg) translate3d(0, -6px, 0);
+  }
+}
+
 .cosmic-drift {
   animation: cosmic-drift 18s ease-in-out infinite;
 }
@@ -110,6 +141,36 @@ a {
 
 .cosmic-orbit-reverse {
   animation: cosmic-orbit 52s linear infinite reverse;
+}
+
+.premium-float {
+  animation: premium-float 12s ease-in-out infinite;
+}
+
+.premium-tilt {
+  animation: premium-tilt 14s ease-in-out infinite;
+  transform-origin: 50% 68%;
+}
+
+.zodiac-halo-spin {
+  animation: cosmic-orbit 56s linear infinite;
+}
+
+.zodiac-halo-counter {
+  animation: cosmic-orbit 72s linear infinite reverse;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cosmic-drift,
+  .cosmic-drift-slow,
+  .cosmic-orbit,
+  .cosmic-orbit-reverse,
+  .premium-float,
+  .premium-tilt,
+  .zodiac-halo-spin,
+  .zodiac-halo-counter {
+    animation: none;
+  }
 }
 
 @layer utilities {

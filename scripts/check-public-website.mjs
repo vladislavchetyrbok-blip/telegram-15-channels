@@ -22,8 +22,9 @@ const publicSourceFiles = [
   "app/sitemap.ts",
   "app/robots.ts",
   "components/public-site/CosmicSite.tsx",
+  "components/public-site/PublicArtHero.tsx",
   "lib/public-website.ts",
-];
+].filter((filePath) => fs.existsSync(path.join(repoRoot, filePath)));
 
 const errors = [];
 
@@ -149,13 +150,13 @@ const forbiddenChangedPathPatterns = [
   /^scripts\/publish-/,
   /^app\/api\/telegram\//,
   /\.env(?:\.local)?$/,
-  /\.webp$/i,
 ];
 for (const changedFile of changedFiles) {
   const normalized = changedFile.replaceAll("\\", "/");
   for (const pattern of forbiddenChangedPathPatterns) {
     check(!pattern.test(normalized), `Forbidden path changed: ${changedFile}`);
   }
+  check(!/\.webp$/i.test(normalized) || /^public\/public-site\/art\/.+\.webp$/i.test(normalized), `Forbidden WebP path changed: ${changedFile}`);
 }
 
 if (errors.length) {

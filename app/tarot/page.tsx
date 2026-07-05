@@ -7,8 +7,8 @@ import {
   SiteCTA,
   SiteHero,
   SiteSection,
-  TarotAndOrbVisual,
 } from "@/components/public-site/CosmicSite";
+import { PublicArtHero } from "@/components/public-site/PublicArtHero";
 
 export const metadata: Metadata = {
   title: "Карта дня — Таро в Telegram Mini App",
@@ -24,11 +24,20 @@ export default function TarotLandingPage() {
   return (
     <CosmicSiteShell activePath="/tarot">
       <SiteHero
-        eyebrow="daily tarot"
+        eyebrow="КАРТА ДНЯ"
         title="Карта дня, которая звучит тихо и красиво"
         description="Один старший аркан открывается как маленький дневной ритуал: без фатальных обещаний, без давления, с вниманием к настрою и любви."
-        primaryLabel="Открыть карту в Telegram"
-        visual={<TarotAndOrbVisual />}
+        primaryLabel="Открыть в Telegram"
+        layout="immersive"
+        visual={
+          <PublicArtHero
+            mobileSrc="/public-site/art/tarot/tarot-ritual-hero-mobile.webp"
+            desktopSrc="/public-site/art/tarot/tarot-ritual-hero-desktop.webp"
+            variant="immersive"
+            theme="tarot"
+            priority
+          />
+        }
       />
 
       <SiteSection

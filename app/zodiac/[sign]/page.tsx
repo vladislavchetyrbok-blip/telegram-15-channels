@@ -10,6 +10,7 @@ import {
   ZodiacProfileVisual,
   ZodiacSignCard,
 } from "@/components/public-site/CosmicSite";
+import { PublicArtHero } from "@/components/public-site/PublicArtHero";
 import { getPublicSign, zodiacPublicSigns } from "@/lib/public-website";
 
 type ZodiacSignPageProps = {
@@ -46,16 +47,29 @@ export default function ZodiacSignPage({ params }: ZodiacSignPageProps) {
   if (!sign) notFound();
 
   const otherSigns = zodiacPublicSigns.filter((item) => item.slug !== sign.slug).slice(0, 6);
+  const heroVisual =
+    sign.slug === "aries" ? (
+      <PublicArtHero
+        mobileSrc="/public-site/art/signs/aries-profile-mobile.webp"
+        desktopSrc="/public-site/art/signs/aries-profile-desktop.webp"
+        variant="immersive"
+        theme="aries"
+        priority
+      />
+    ) : (
+      <ZodiacProfileVisual sign={sign} />
+    );
 
   return (
     <CosmicSiteShell activePath="/zodiac">
       <SiteHero
-        eyebrow={`${sign.symbol} ${sign.enName}`}
+        eyebrow={`${sign.symbol} ${sign.ruName}`}
         title={sign.ruName}
         description={`${sign.dates}. Стихия: ${sign.element}. ${sign.todayTeaser}`}
         primaryLabel="Открыть в Telegram"
         secondaryLabel="Карта дня"
-        visual={<ZodiacProfileVisual sign={sign} />}
+        layout={sign.slug === "aries" ? "immersive" : "standard"}
+        visual={heroVisual}
       />
 
       <section className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
