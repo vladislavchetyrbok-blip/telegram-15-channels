@@ -365,11 +365,11 @@ export function ZodiacHalo({
   const glyphClass = (active: boolean) =>
     mobileCompact
       ? active
-        ? "absolute left-1/2 top-1/2 flex h-8 w-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-lg border border-amber-100/48 bg-amber-100/18 text-lg text-amber-50 shadow-[0_0_34px_rgba(246,213,138,0.34)] backdrop-blur sm:h-11 sm:w-11 sm:text-xl"
-        : "absolute left-1/2 top-1/2 flex h-7 w-7 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-lg border border-amber-100/22 bg-[#0b0818]/72 text-base text-amber-100 shadow-[0_10px_32px_rgba(0,0,0,0.36)] backdrop-blur sm:h-9 sm:w-9 sm:text-lg"
+        ? "absolute left-1/2 top-1/2 flex h-8 w-8 items-center justify-center rounded-lg border border-amber-100/48 bg-amber-100/18 text-lg text-amber-50 shadow-[0_0_34px_rgba(246,213,138,0.34)] backdrop-blur sm:h-11 sm:w-11 sm:text-xl"
+        : "absolute left-1/2 top-1/2 flex h-7 w-7 items-center justify-center rounded-lg border border-amber-100/22 bg-[#0b0818]/72 text-base text-amber-100 shadow-[0_10px_32px_rgba(0,0,0,0.36)] backdrop-blur sm:h-9 sm:w-9 sm:text-lg"
       : active
-        ? "absolute left-1/2 top-1/2 flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-lg border border-amber-100/48 bg-amber-100/18 text-xl text-amber-50 shadow-[0_0_34px_rgba(246,213,138,0.34)] backdrop-blur"
-        : "absolute left-1/2 top-1/2 flex h-9 w-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-lg border border-amber-100/22 bg-[#0b0818]/72 text-lg text-amber-100 shadow-[0_10px_32px_rgba(0,0,0,0.36)] backdrop-blur";
+        ? "absolute left-1/2 top-1/2 flex h-11 w-11 items-center justify-center rounded-lg border border-amber-100/48 bg-amber-100/18 text-xl text-amber-50 shadow-[0_0_34px_rgba(246,213,138,0.34)] backdrop-blur"
+        : "absolute left-1/2 top-1/2 flex h-9 w-9 items-center justify-center rounded-lg border border-amber-100/22 bg-[#0b0818]/72 text-lg text-amber-100 shadow-[0_10px_32px_rgba(0,0,0,0.36)] backdrop-blur";
 
   return (
     <div className={haloClass} style={haloStyle} aria-hidden="true" data-public-zodiac-halo>
@@ -380,14 +380,20 @@ export function ZodiacHalo({
       <div className="absolute inset-x-[10%] top-1/2 h-px bg-gradient-to-r from-transparent via-amber-100/30 to-transparent" />
       <div className="absolute inset-y-[10%] left-1/2 w-px bg-gradient-to-b from-transparent via-rose-100/26 to-transparent" />
       {glyphs.map((glyph, index) => {
-        const angle = (index / glyphs.length) * 360;
+        const angle = index * 30;
         const active = sign?.symbol === glyph;
+        const orbitStyle = {
+          "--zodiac-angle": `${angle}deg`,
+          transform:
+            "translate(-50%, -50%) rotate(var(--zodiac-angle)) translateY(calc(-1 * var(--zodiac-halo-radius))) rotate(calc(-1 * var(--zodiac-angle)))",
+        } as CSSProperties;
         return (
           <span
             key={`${glyph}-${index}`}
             className={glyphClass(active)}
             data-public-zodiac-glyph
-            style={{ transform: `rotate(${angle}deg) translate(0, calc(-1 * var(--zodiac-halo-radius))) rotate(-${angle}deg)` }}
+            data-public-zodiac-angle={angle}
+            style={orbitStyle}
           >
             {glyph}
           </span>
