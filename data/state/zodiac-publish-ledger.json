@@ -4001,8 +4001,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-05T09:19:52.910Z"
+      "status": "sent",
+      "updatedAt": "2026-07-05T09:19:56.708Z",
+      "messageId": "54,",
+      "sentAt": "2026-07-05T09:19:56.707Z"
     }
   }
 }
