@@ -96,6 +96,7 @@ export function SiteHero({
   secondaryLabel,
   visual,
   layout = "standard",
+  mobileSafeTop = false,
 }: {
   eyebrow: string;
   title: string;
@@ -104,10 +105,15 @@ export function SiteHero({
   secondaryLabel?: string;
   visual?: ReactNode;
   layout?: SiteHeroLayout;
+  mobileSafeTop?: boolean;
 }) {
   if (layout === "immersive") {
     return (
-      <section className="relative left-1/2 -mt-[5.25rem] min-h-[100svh] w-screen -translate-x-1/2 overflow-hidden px-4 pb-10 pt-[7.5rem] sm:px-6 lg:px-8 lg:pt-[8.25rem]">
+      <section
+        className={`relative left-1/2 -mt-[5.25rem] min-h-[100svh] w-screen -translate-x-1/2 overflow-hidden px-4 pb-10 ${
+          mobileSafeTop ? "pt-[calc(env(safe-area-inset-top)+8.5rem)]" : "pt-[7.5rem]"
+        } sm:px-6 sm:pt-[8.25rem] lg:px-8`}
+      >
         <div className="absolute inset-0">
           {visual ?? <PremiumHeroScene variant="home" />}
         </div>
@@ -337,7 +343,7 @@ export function TarotPreviewCard({ title = "ЗВЕЗДА", subtitle = "карт�
 
 export function ZodiacHalo({ signs, sign, compact = false }: { signs?: ZodiacPublicSign[]; sign?: ZodiacPublicSign; compact?: boolean }) {
   const glyphs = signs?.map((item) => item.symbol) ?? ["♈︎", "♉︎", "♊︎", "♋︎", "♌︎", "♍︎", "♎︎", "♏︎", "♐︎", "♑︎", "♒︎", "♓︎"];
-  const radius = compact ? "clamp(5.2rem, 24vw, 8rem)" : "clamp(7rem, 32vw, 11.4rem)";
+  const radius = compact ? "clamp(5.2rem, 24vw, 8rem)" : "clamp(5.35rem, 31vw, 11.4rem)";
   const haloStyle = { "--zodiac-halo-radius": radius } as CSSProperties;
 
   return (
@@ -374,7 +380,7 @@ export function ZodiacHalo({ signs, sign, compact = false }: { signs?: ZodiacPub
 
 export function ZodiacWheel({ signs }: { signs: ZodiacPublicSign[] }) {
   return (
-    <div className="relative mx-auto w-full max-w-[28rem]" aria-hidden="true">
+    <div className="relative mx-auto aspect-square w-[min(92vw,420px)] max-w-full overflow-visible" aria-hidden="true">
       <ZodiacHalo signs={signs} />
     </div>
   );
