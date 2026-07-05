@@ -9,7 +9,7 @@ const EXPECTED_IDS = [
 
 // Fallback visual seeds if dynamic import is tricky
 const fallbackVisualSeeds = {
-  "zodiac-general": "A luxurious 3D metallic astrolabe and zodiac wheel glowing in deep space, midnight blue and black background, celestial gold and silver accents, sacred geometry.",
+  "zodiac-general": "A luxurious 3D metallic zodiac wheel and celestial chart glowing in deep space, midnight blue and black background, celestial gold and silver accents, sacred geometry.",
   "aries": "Aries premium zodiac visual, fire and gold, sharp energetic lines, deep red luxury backdrop.",
   "taurus": "Taurus premium zodiac visual, earth and stone textures, gold accents, calm power, luxury stillness, black-gold cinematic scene.",
   "gemini": "Gemini dark zodiac editorial image, mirror reflections, twin portrait, air movement, elegant duality, violet-blue shadows and gold lines.",

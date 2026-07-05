@@ -101,6 +101,7 @@
     "zodiac:miniapp:smoke": "node scripts/smoke-zodiac-mini-app.mjs",
     "tarot:qa": "node scripts/check-tarot-daily-cards.mjs",
     "website:qa": "node scripts/check-public-website.mjs",
+    "public:art:qa": "node scripts/check-public-art-assets.mjs",
     "zodiac:desktop:qa": "node scripts/qa-zodiac-desktop-visual.mjs",
     "zodiac:astro:check": "node scripts/check-zodiac-astro-engine.mjs",
     "zodiac:astro:fixtures:check": "node scripts/check-zodiac-astro-fixtures.mjs",

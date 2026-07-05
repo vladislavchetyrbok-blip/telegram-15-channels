@@ -7,10 +7,10 @@ import {
   SiteHero,
   SiteSection,
   StepCard,
-  TarotAndOrbVisual,
   ZodiacSignCard,
   ZodiacWheel,
 } from "@/components/public-site/CosmicSite";
+import { PublicArtHero } from "@/components/public-site/PublicArtHero";
 import { publicFeatureCards, zodiacPublicSigns } from "@/lib/public-website";
 
 export const metadata: Metadata = {
@@ -27,11 +27,20 @@ export default function PublicHomePage() {
   return (
     <CosmicSiteShell activePath="/">
       <SiteHero
-        eyebrow="mystic cosmic portal"
+        eyebrow="МИСТИЧЕСКИЙ ПОРТАЛ"
         title="Карта, знак и любовь в одном ночном ритуале"
         description="Открой красивый Telegram Mini App: ежедневная карта Таро, совместимость пары, знаки зодиака и мягкие подсказки без шума и лишних обещаний."
         secondaryLabel="Узнать совместимость"
-        visual={<TarotAndOrbVisual />}
+        layout="immersive"
+        visual={
+          <PublicArtHero
+            mobileSrc="/public-site/art/hero/home-hero-mobile.webp"
+            desktopSrc="/public-site/art/hero/home-hero-desktop.webp"
+            variant="immersive"
+            theme="home"
+            priority
+          />
+        }
       />
 
       <SiteSection

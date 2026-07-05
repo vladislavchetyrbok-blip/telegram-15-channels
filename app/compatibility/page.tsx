@@ -1,13 +1,7 @@
 import type { Metadata } from "next";
 
-import {
-  CompatibilityOrbsVisual,
-  CosmicSiteShell,
-  ProfilePanel,
-  SiteCTA,
-  SiteHero,
-  SiteSection,
-} from "@/components/public-site/CosmicSite";
+import { CosmicSiteShell, ProfilePanel, SiteCTA, SiteHero, SiteSection } from "@/components/public-site/CosmicSite";
+import { PublicArtHero } from "@/components/public-site/PublicArtHero";
 import { ZodiacCompatibilityMiniApp } from "@/components/ZodiacCompatibilityMiniApp";
 import { recordAphroditeMiniAppNoopIntegrationPoint } from "@/lib/zodiac/aphrodite-miniapp-analytics-noop-integration-points";
 
@@ -43,12 +37,21 @@ export default function CompatibilityPage({ searchParams = {} }: CompatibilityPa
   return (
     <CosmicSiteShell activePath="/compatibility">
       <SiteHero
-        eyebrow="love compatibility"
+        eyebrow="СОВМЕСТИМОСТЬ"
         title="Совместимость как мягкая карта отношений"
         description="Не обещание будущего и не оценка пары. Это красивый способ посмотреть на ритм общения, сильные стороны и места, где нужна бережность."
         primaryLabel="Открыть в Telegram"
         secondaryLabel="Узнать совместимость"
-        visual={<CompatibilityOrbsVisual />}
+        layout="immersive"
+        visual={
+          <PublicArtHero
+            mobileSrc="/public-site/art/compatibility/compatibility-orbs-mobile.webp"
+            desktopSrc="/public-site/art/compatibility/compatibility-orbs-desktop.webp"
+            variant="immersive"
+            theme="compatibility"
+            priority
+          />
+        }
       />
 
       <SiteSection
