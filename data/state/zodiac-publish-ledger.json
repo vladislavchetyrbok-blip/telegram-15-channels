@@ -4323,8 +4323,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-06T10:57:40.349Z"
+      "status": "sent",
+      "updatedAt": "2026-07-06T10:57:43.824Z",
+      "messageId": "53,",
+      "sentAt": "2026-07-06T10:57:43.823Z"
     }
   }
 }
