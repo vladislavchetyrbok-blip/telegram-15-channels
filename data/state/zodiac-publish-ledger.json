@@ -4239,8 +4239,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-06T10:57:13.643Z"
+      "status": "sent",
+      "updatedAt": "2026-07-06T10:57:16.869Z",
+      "messageId": "56,",
+      "sentAt": "2026-07-06T10:57:16.868Z"
     }
   }
 }
