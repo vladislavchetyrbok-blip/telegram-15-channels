@@ -4183,8 +4183,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-06T10:56:55.104Z"
+      "status": "sent",
+      "updatedAt": "2026-07-06T10:56:58.834Z",
+      "messageId": "56,",
+      "sentAt": "2026-07-06T10:56:58.833Z"
     }
   }
 }
