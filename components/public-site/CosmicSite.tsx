@@ -29,7 +29,7 @@ export function CosmicBackground() {
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_-12%,rgba(246,213,138,0.26),transparent_28rem),radial-gradient(circle_at_10%_12%,rgba(244,176,197,0.18),transparent_24rem),radial-gradient(circle_at_90%_4%,rgba(125,92,255,0.2),transparent_28rem),radial-gradient(circle_at_48%_72%,rgba(88,28,135,0.38),transparent_42rem),linear-gradient(180deg,#02020a_0%,#050612_34%,#10061c_66%,#02020a_100%)]" />
-      <div className="cosmic-nebula absolute inset-0 opacity-95" />
+      <div className="cosmic-nebula animate-nebula-breathe absolute inset-0 opacity-95" />
       <div className="luxury-grain absolute inset-0 opacity-[0.18]" />
       <div className="cosmic-starfield absolute inset-0 opacity-85" />
       <div className="cosmic-starfield cosmic-starfield-deep absolute inset-0 opacity-40" />
@@ -121,9 +121,11 @@ export function SiteHero({
           {visual ?? <PremiumHeroScene variant="home" />}
         </div>
         <div
-          className="absolute inset-0 bg-[radial-gradient(circle_at_72%_34%,rgba(246,213,138,0.16),transparent_31rem),radial-gradient(circle_at_22%_56%,rgba(244,176,197,0.14),transparent_25rem),linear-gradient(90deg,rgba(2,2,10,0.92)_0%,rgba(2,2,10,0.56)_42%,rgba(2,2,10,0.18)_70%,rgba(2,2,10,0.58)_100%)]"
+          className="absolute inset-0 bg-[radial-gradient(circle_at_72%_34%,rgba(246,213,138,0.18),transparent_31rem),radial-gradient(circle_at_22%_56%,rgba(244,176,197,0.15),transparent_25rem),radial-gradient(circle_at_50%_88%,rgba(246,213,138,0.11),transparent_34rem),linear-gradient(90deg,rgba(2,2,10,0.94)_0%,rgba(2,2,10,0.58)_42%,rgba(2,2,10,0.16)_70%,rgba(2,2,10,0.6)_100%)]"
           aria-hidden="true"
         />
+        <div className="animate-celestial-shimmer absolute left-[-8rem] top-[18%] h-[28rem] w-[28rem] rounded-full border border-amber-100/10 bg-[radial-gradient(circle,rgba(246,213,138,0.12),transparent_68%)] blur-xl" aria-hidden="true" />
+        <div className="absolute right-[-10rem] bottom-[6%] h-[28rem] w-[28rem] rounded-full border border-rose-100/10 bg-[radial-gradient(circle,rgba(244,176,197,0.1),transparent_68%)] blur-xl" aria-hidden="true" />
         <div className="cosmic-starfield absolute inset-0 opacity-30" aria-hidden="true" />
         <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#02020a] via-[#02020a]/72 to-transparent" aria-hidden="true" />
         <div className="relative z-10 mx-auto flex min-h-[calc(100svh-8.25rem)] max-w-7xl items-end pb-[12vh] pt-24 sm:pb-[13vh] lg:pb-[15vh]">
@@ -360,7 +362,7 @@ export function ZodiacHalo({
   const radius = compact ? "clamp(5.2rem, 24vw, 8rem)" : "clamp(5.35rem, 31vw, 11.4rem)";
   const haloStyle = mobileCompact ? undefined : ({ "--zodiac-halo-radius": radius } as CSSProperties);
   const haloClass = mobileCompact
-    ? "relative mx-auto aspect-square w-full max-w-[30rem] [--zodiac-halo-radius:clamp(4.35rem,26vw,6.05rem)] sm:[--zodiac-halo-radius:clamp(5.35rem,31vw,11.4rem)]"
+    ? "relative mx-auto aspect-square w-full max-w-[30rem] [--zodiac-halo-radius:clamp(4.25rem,25.5vw,6.05rem)] sm:[--zodiac-halo-radius:clamp(5.35rem,31vw,11.4rem)]"
     : "relative mx-auto aspect-square w-full max-w-[30rem]";
   const glyphClass = (active: boolean) =>
     mobileCompact
@@ -376,6 +378,14 @@ export function ZodiacHalo({
       <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle,rgba(246,213,138,0.16),transparent_62%)] blur-sm" />
       <div className="zodiac-halo-spin absolute inset-4 rounded-full border border-amber-100/24 bg-[radial-gradient(circle,rgba(246,213,138,0.08),transparent_58%)] shadow-[0_0_70px_rgba(246,213,138,0.14)]" />
       <div className="zodiac-halo-counter absolute inset-[16%] rounded-full border border-rose-100/18" />
+      <div
+        className="animate-orbit-shimmer pointer-events-none absolute left-1/2 top-1/2 h-[calc(var(--zodiac-halo-radius)*2)] w-[calc(var(--zodiac-halo-radius)*2)] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#f6d58a]/38 bg-[conic-gradient(from_0deg,rgba(246,213,138,0.28),rgba(244,176,197,0.1),rgba(246,213,138,0.34),rgba(125,92,255,0.12),rgba(246,213,138,0.28))] p-px shadow-[0_0_45px_rgba(246,213,138,0.18)]"
+        data-public-zodiac-orbit-ring
+      >
+        <div className="h-full w-full rounded-full bg-[#050511]/72 shadow-[inset_0_0_26px_rgba(246,213,138,0.08)]" />
+      </div>
+      <div className="pointer-events-none absolute left-1/2 top-1/2 h-[calc((var(--zodiac-halo-radius)*2)+1.4rem)] w-[calc((var(--zodiac-halo-radius)*2)+1.4rem)] -translate-x-1/2 -translate-y-1/2 rounded-full border border-amber-100/12 shadow-[0_0_40px_rgba(246,213,138,0.08)]" />
+      <div className="pointer-events-none absolute left-1/2 top-1/2 h-[calc((var(--zodiac-halo-radius)*2)-1.3rem)] w-[calc((var(--zodiac-halo-radius)*2)-1.3rem)] -translate-x-1/2 -translate-y-1/2 rounded-full border border-rose-100/10" />
       <div className="absolute inset-[30%] rounded-full border border-white/12 bg-[#070817]/78 shadow-[inset_0_0_34px_rgba(246,213,138,0.08)]" />
       <div className="absolute inset-x-[10%] top-1/2 h-px bg-gradient-to-r from-transparent via-amber-100/30 to-transparent" />
       <div className="absolute inset-y-[10%] left-1/2 w-px bg-gradient-to-b from-transparent via-rose-100/26 to-transparent" />
@@ -408,7 +418,7 @@ export function ZodiacHalo({
 
 export function ZodiacWheel({ signs, compactMobile = false }: { signs: ZodiacPublicSign[]; compactMobile?: boolean }) {
   const wheelClass = compactMobile
-    ? "relative mx-auto aspect-square w-[min(78vw,320px)] max-w-full overflow-visible px-2 sm:w-[min(88vw,420px)] sm:px-0 lg:w-[min(92vw,420px)]"
+    ? "relative mx-auto aspect-square w-[min(76vw,318px)] max-w-full overflow-visible px-3 sm:w-[min(86vw,410px)] sm:px-1 lg:w-[min(92vw,420px)] lg:px-0"
     : "relative mx-auto aspect-square w-[min(92vw,420px)] max-w-full overflow-visible";
 
   return (
@@ -459,10 +469,11 @@ export function LuxuryPanel({ children, className = "" }: { children: ReactNode;
 export function SiteFeatureCard({ title, text, label, className = "" }: { title: string; text: string; label: string; className?: string }) {
   return (
     <article className={`group relative ${className}`}>
-      <LuxuryPanel className="h-full p-4 transition hover:-translate-y-1 hover:border-amber-100/34 hover:shadow-[0_28px_90px_rgba(0,0,0,0.44)] lg:p-5">
+      <LuxuryPanel className="h-full p-4 transition duration-500 hover:-translate-y-1 hover:border-amber-100/34 hover:shadow-[0_28px_90px_rgba(0,0,0,0.54),0_0_45px_rgba(246,213,138,0.11)] lg:p-5">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_18%,rgba(246,213,138,0.08),transparent_34%),linear-gradient(135deg,transparent,rgba(244,176,197,0.04),transparent)] opacity-0 transition duration-500 group-hover:opacity-100" aria-hidden="true" />
         <div className="flex items-center justify-between gap-3">
           <p className="text-[11px] font-semibold uppercase text-amber-100">{label}</p>
-          <span className="flex h-9 w-9 items-center justify-center rounded-lg border border-amber-100/18 bg-amber-100/[0.08] text-amber-100 shadow-[0_0_28px_rgba(246,213,138,0.12)]">
+          <span className="animate-star-glint flex h-9 w-9 items-center justify-center rounded-lg border border-amber-100/22 bg-amber-100/[0.08] text-amber-100 shadow-[0_0_30px_rgba(246,213,138,0.18)]">
             <Sparkles className="h-4 w-4" aria-hidden="true" />
           </span>
         </div>
@@ -513,18 +524,24 @@ export function ZodiacSealCard({ sign }: { sign: ZodiacPublicSign }) {
   return (
     <Link
       href={`/zodiac/${sign.slug}`}
-      className="animate-orbit-shimmer group relative isolate flex flex-col items-center justify-between overflow-hidden rounded-2xl border border-[#f6d58a]/30 bg-[radial-gradient(circle_at_50%_0%,rgba(246,213,138,0.18),transparent_45%),linear-gradient(160deg,#090614_0%,#04020a_100%)] p-6 text-center shadow-[0_24px_80px_rgba(0,0,0,0.6),inset_0_0_0_1px_rgba(255,255,255,0.08)] transition duration-500 hover:-translate-y-1.5 hover:border-[#f6d58a]/70 hover:shadow-[0_32px_100px_rgba(0,0,0,0.8),0_0_60px_rgba(246,213,138,0.25),inset_0_0_30px_rgba(246,213,138,0.15)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f6d58a]/70"
+      className="animate-orbit-shimmer group relative isolate flex flex-col items-center justify-between overflow-hidden rounded-[1.35rem] border border-[#f6d58a]/32 bg-[radial-gradient(circle_at_50%_0%,rgba(246,213,138,0.2),transparent_45%),linear-gradient(160deg,#090614_0%,#04020a_100%)] p-6 text-center shadow-[0_24px_80px_rgba(0,0,0,0.65),inset_0_0_0_1px_rgba(255,255,255,0.08)] transition duration-500 hover:-translate-y-1.5 hover:border-[#f6d58a]/72 hover:shadow-[0_32px_100px_rgba(0,0,0,0.82),0_0_68px_rgba(246,213,138,0.28),inset_0_0_34px_rgba(246,213,138,0.16)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f6d58a]/70"
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_25%,rgba(246,213,138,0.2),transparent_40%),radial-gradient(circle_at_20%_80%,rgba(244,176,197,0.15),transparent_40%)] opacity-80 transition duration-500 group-hover:opacity-100" aria-hidden="true" />
       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,transparent_35%,rgba(0,0,0,0.5)_100%)]" aria-hidden="true" />
+      <div className="absolute inset-[1px] rounded-[1.28rem] border border-white/[0.06]" aria-hidden="true" />
+      <div className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-amber-100/50 to-transparent" aria-hidden="true" />
+      <div className="absolute bottom-[-4.5rem] left-1/2 h-36 w-36 -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(246,213,138,0.12),transparent_68%)] blur-2xl" aria-hidden="true" />
 
       {/* Medallion / Golden Seal */}
-      <div className="animate-aura-pulse relative my-2 flex h-32 w-32 items-center justify-center rounded-full border border-[#f6d58a]/45 bg-[radial-gradient(circle_at_35%_30%,rgba(255,250,235,0.28),rgba(246,213,138,0.12)_45%,rgba(8,5,18,0.92)_90%)] shadow-[0_10px_40px_rgba(0,0,0,0.8),0_0_50px_rgba(246,213,138,0.3),inset_0_0_35px_rgba(246,213,138,0.18)] transition duration-500 group-hover:scale-105 group-hover:border-[#f6d58a]/85 group-hover:shadow-[0_10px_50px_rgba(0,0,0,0.9),0_0_70px_rgba(246,213,138,0.45),inset_0_0_45px_rgba(246,213,138,0.28)]">
+      <div className="animate-aura-pulse relative my-2 flex h-32 w-32 items-center justify-center overflow-hidden rounded-full border border-[#f6d58a]/45 bg-[radial-gradient(circle_at_35%_30%,rgba(255,250,235,0.3),rgba(246,213,138,0.13)_45%,rgba(8,5,18,0.94)_90%)] shadow-[0_10px_40px_rgba(0,0,0,0.84),0_0_54px_rgba(246,213,138,0.32),inset_0_0_38px_rgba(246,213,138,0.2)] transition duration-500 group-hover:scale-105 group-hover:border-[#f6d58a]/85 group-hover:shadow-[0_10px_50px_rgba(0,0,0,0.92),0_0_78px_rgba(246,213,138,0.48),inset_0_0_48px_rgba(246,213,138,0.3)]">
+        <span className={`absolute inset-[-18%] rounded-full bg-gradient-to-br ${sign.accent} opacity-45 blur-xl transition duration-500 group-hover:opacity-70`} aria-hidden="true" />
+        <span className="absolute inset-0 rounded-full bg-[conic-gradient(from_18deg,rgba(246,213,138,0.1),rgba(246,213,138,0.55),rgba(244,176,197,0.22),rgba(246,213,138,0.58),rgba(246,213,138,0.1))] opacity-70" aria-hidden="true" />
+        <span className="absolute inset-[1px] rounded-full bg-[#070511]/88" aria-hidden="true" />
         <span className="absolute inset-2 rounded-full border border-[#f6d58a]/30" aria-hidden="true" />
         <span className="absolute inset-5 rounded-full border border-rose-200/20" aria-hidden="true" />
         <span className="absolute top-2 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-[#f6d58a] shadow-[0_0_12px_#f6d58a]" aria-hidden="true" />
         <span className="absolute bottom-2 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-[#f6d58a]/60" aria-hidden="true" />
-        <span className="text-5xl text-[#fff8ea] [text-shadow:0_0_30px_rgba(246,213,138,0.6)] transition duration-500 group-hover:scale-110" aria-hidden="true">
+        <span className="relative z-10 text-5xl text-[#fff8ea] [text-shadow:0_0_30px_rgba(246,213,138,0.6)] transition duration-500 group-hover:scale-110" aria-hidden="true">
           {sign.symbol}
         </span>
       </div>
