@@ -4407,8 +4407,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-07T09:58:13.714Z"
+      "status": "sent",
+      "updatedAt": "2026-07-07T09:58:17.691Z",
+      "messageId": "58,",
+      "sentAt": "2026-07-07T09:58:17.690Z"
     }
   }
 }
