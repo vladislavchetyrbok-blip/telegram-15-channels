@@ -4421,8 +4421,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-07T09:58:18.821Z"
+      "status": "sent",
+      "updatedAt": "2026-07-07T09:58:22.282Z",
+      "messageId": "58,",
+      "sentAt": "2026-07-07T09:58:22.280Z"
     }
   }
 }
