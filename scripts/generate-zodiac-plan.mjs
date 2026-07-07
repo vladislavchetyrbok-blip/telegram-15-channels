@@ -30,6 +30,73 @@ const zodiacChannels = [
   { id: "pisces", ruName: "Рыбы", emoji: "♓️", type: "sign", element: "water", visualPromptSeed: "Pisces premium mystic water scene, dream fog, violet-blue intuition, dark zodiac shimmer, cinematic soft light and gold details.", visualSymbols: ["water", "dream", "fog", "violet-blue intuition"] }
 ];
 
+export const ZODIAC_DAILY_CHANNELS = zodiacChannels;
+
+const MINI_APP_CTA_URL = "https://t.me/zodiac_love_check_bot?startapp=mystic";
+
+const signQualityProfiles = {
+  aries: {
+    dateRange: "21 марта — 19 апреля",
+    dayRitual: "выберите одно смелое действие и доведите его до видимого результата",
+    cautionTone: "не превращайте скорость в давление",
+  },
+  taurus: {
+    dateRange: "20 апреля — 20 мая",
+    dayRitual: "закрепите порядок в деньгах, доме или расписании",
+    cautionTone: "не держитесь за привычное только из упрямства",
+  },
+  gemini: {
+    dateRange: "21 мая — 20 июня",
+    dayRitual: "сформулируйте одну мысль коротко и отправьте ее без лишних объяснений",
+    cautionTone: "не распыляйте внимание на шумные диалоги",
+  },
+  cancer: {
+    dateRange: "21 июня — 22 июля",
+    dayRitual: "создайте маленький остров спокойствия: дом, вода, тишина или честный разговор",
+    cautionTone: "не принимайте чужое настроение за свою обязанность",
+  },
+  leo: {
+    dateRange: "23 июля — 22 августа",
+    dayRitual: "сделайте красивый жест без ожидания аплодисментов",
+    cautionTone: "не доказывайте ценность громкостью",
+  },
+  virgo: {
+    dateRange: "23 августа — 22 сентября",
+    dayRitual: "уберите одну лишнюю деталь и оставьте только рабочую структуру",
+    cautionTone: "не превращайте точность в самокритику",
+  },
+  libra: {
+    dateRange: "23 сентября — 22 октября",
+    dayRitual: "назовите честную позицию там, где хочется промолчать ради удобства",
+    cautionTone: "не покупайте гармонию ценой внутреннего согласия",
+  },
+  scorpio: {
+    dateRange: "23 октября — 21 ноября",
+    dayRitual: "оставьте пространство для тишины и не раскрывайте все карты сразу",
+    cautionTone: "не проверяйте близость через контроль",
+  },
+  sagittarius: {
+    dateRange: "22 ноября — 21 декабря",
+    dayRitual: "выберите маршрут дня и сделайте первый практичный шаг",
+    cautionTone: "не путайте свободу с бегством от деталей",
+  },
+  capricorn: {
+    dateRange: "22 декабря — 19 января",
+    dayRitual: "закрепите один долгий результат: документ, план, срок или обещание",
+    cautionTone: "не делайте жесткость единственным способом держать курс",
+  },
+  aquarius: {
+    dateRange: "20 января — 18 февраля",
+    dayRitual: "запишите нестандартную идею и сразу задайте ей понятную форму",
+    cautionTone: "не уходите в холодную дистанцию там, где нужна ясность",
+  },
+  pisces: {
+    dateRange: "19 февраля — 20 марта",
+    dayRitual: "проверьте интуицию тишиной: вода, музыка, заметка или короткая прогулка",
+    cautionTone: "не смешивайте предчувствие с тревогой",
+  },
+};
+
 const zodiacStyles = {
   "luxury-mystic": { id: "luxury-mystic", ruName: "Luxury Mystic", visualStyle: "premium dark mystic, gold and black", promptAddons: "cinematic light, luxury editorial magazine photography" },
   "dark-zodiac": { id: "dark-zodiac", ruName: "Dark Zodiac", visualStyle: "deep shadows, stark contrast, minimal gold", promptAddons: "mysterious atmosphere, dark background, sharp details" },
@@ -511,6 +578,98 @@ function formatNumericDate(dateStr) {
   return `${day}.${month}.${year}`;
 }
 
+function sectionBody(sections, index) {
+  return String(sections[index]?.body || "").trim();
+}
+
+function polishBody(value) {
+  return String(value || "")
+    .trim()
+    .replace(/Сегодня звезды советуют/gi, "Сегодня особенно полезно")
+    .replace(/Это принесет свои плоды в будущем\./gi, "Так результат будет спокойнее и устойчивее.")
+    .replace(/сегодня вы можете узнать чью-то тайну/gi, "сегодня может стать заметнее скрытый мотив")
+    .replace(/не используйте ее в корыстных целях, чтобы не нажить врагов/gi, "обходитесь с этим бережно, без давления и лишних выводов")
+    .replace(/нажить врагов/gi, "создать напряжение")
+    .replace(/корыстных целях/gi, "давления");
+}
+
+function sentenceCase(value) {
+  const text = polishBody(value);
+  if (!text) return "";
+  return `${text.charAt(0).toLocaleUpperCase("ru-RU")}${text.slice(1)}`;
+}
+
+function renderQualityDailyText({ channel, dateStr, sections, guidance }) {
+  if (channel.type === "general") {
+    const signSections = sections.slice(5, 17);
+    return [
+      bold(`${channel.emoji} Гороскоп на ${formatRuDate(dateStr)} для всех знаков`),
+      "",
+      escapeHtml(polishBody(sectionBody(sections, 0))),
+      "",
+      bold("Главная энергия дня:"),
+      escapeHtml(polishBody(sectionBody(sections, 1))),
+      "",
+      bold("Любовь и отношения:"),
+      escapeHtml(polishBody(sectionBody(sections, 2))),
+      "",
+      bold("Дела и деньги:"),
+      escapeHtml(polishBody(sectionBody(sections, 3))),
+      "",
+      bold("Внутренний ритм:"),
+      escapeHtml(polishBody(sectionBody(sections, 4))),
+      "",
+      bold("По знакам:"),
+      ...signSections.map((section) => `${bold(section.title)} — ${escapeHtml(polishBody(section.body))}`),
+      "",
+      bold("Совет дня:"),
+      escapeHtml(sentenceCase(guidance.adviceOfDay)),
+      "",
+      bold("Маленький ритуал:"),
+      escapeHtml(sentenceCase(guidance.shouldDoToday)),
+      "",
+      italic("Мягкий астрологический ориентир: без обещаний, давления и фатальных прогнозов."),
+      "",
+      `${bold("Открыть личный разбор в Mini App:")} ${MINI_APP_CTA_URL}`,
+      "",
+      bold("Хэштеги:"),
+      escapeHtml("#Гороскоп #Зодиак #ГороскопНаСегодня"),
+    ].join("\n");
+  }
+
+  const profile = signQualityProfiles[channel.id] || {};
+  return [
+    bold(`${channel.emoji} ${channel.ruName} — ${formatRuDate(dateStr)}`),
+    ...(profile.dateRange ? [italic(`Период знака: ${profile.dateRange}`)] : []),
+    "",
+    escapeHtml(polishBody(sectionBody(sections, 0))),
+    "",
+    bold("Главная энергия дня:"),
+    escapeHtml(polishBody(sectionBody(sections, 1))),
+    "",
+    bold("В отношениях:"),
+    escapeHtml(polishBody(sectionBody(sections, 2))),
+    "",
+    bold("В делах и деньгах:"),
+    escapeHtml(polishBody(sectionBody(sections, 3))),
+    "",
+    bold("Внутренний совет:"),
+    escapeHtml(sentenceCase(sectionBody(sections, 5))),
+    "",
+    bold("Ритуал дня:"),
+    escapeHtml(sentenceCase(profile.dayRitual ? `${profile.dayRitual}. ${guidance.shouldDoToday}` : guidance.shouldDoToday)),
+    "",
+    bold("Лучше не делать:"),
+    escapeHtml(sentenceCase(profile.cautionTone ? `${profile.cautionTone}; ${guidance.shouldAvoidToday}` : guidance.shouldAvoidToday)),
+    "",
+    italic("Это не обещание событий, а мягкая карта внимания на день."),
+    "",
+    `${bold("Открыть личный разбор в Mini App:")} ${MINI_APP_CTA_URL}`,
+    "",
+    `${bold("Хэштеги:")}\n${escapeHtml(`#${channel.ruName.replace(/\s+/g, "")} #Гороскоп #Зодиак #ГороскопНаСегодня`)}`,
+  ].join("\n");
+}
+
 function buildPost(channel, dateStr, index, stylePreset) {
   const seed = createSeed(dateStr, channel.id, index);
   const guidance = getZodiacDailyGuidance(channel.id, dateStr);
@@ -633,6 +792,8 @@ function buildPost(channel, dateStr, index, stylePreset) {
     ].join("\n");
     visualPrompt = `${channel.visualPromptSeed} Sign identity: ${channel.ruName}, ${channel.element}, ${channel.visualSymbols.join(", ")}. Style Preset: ${stylePreset.visualStyle}. Addons: ${stylePreset.promptAddons}. Premium Telegram magazine cover.`;
   }
+
+  text = renderQualityDailyText({ channel, dateStr, sections, guidance });
 
   return {
     id: `zodiac-preview-${dateStr}-${channel.id}`,

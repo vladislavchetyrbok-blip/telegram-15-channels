@@ -5,6 +5,7 @@ import process from "process";
 export const COMPATIBILITY_CONFIG_PATH = path.resolve(process.cwd(), "data/config/zodiac-compatibility-pairs.json");
 export const COMPATIBILITY_LEDGER_PATH = path.resolve(process.cwd(), "data/state/zodiac-compatibility-publish-ledger.json");
 const CHANNEL_LINKS_PATH = path.resolve(process.cwd(), "data/config/zodiac-channel-links.json");
+const MINI_APP_CTA_URL = "https://t.me/zodiac_love_check_bot?startapp=mystic";
 
 export const SIGNS = [
   { slug: "aquarius", emoji: "♒", nameRu: "Водолей", element: "air", env: "ZODIAC_AQUARIUS_CHANNEL_ID" },
@@ -149,10 +150,65 @@ export function findCompatibilityPair(pairId, pairs = loadCompatibilityConfig().
   return pair;
 }
 
+const ELEMENT_ROLE_LINES = {
+  fire: {
+    gift: "искру, инициативу и смелость говорить прямо",
+    caution: "важно не подменять тепло напором",
+  },
+  earth: {
+    gift: "устойчивость, заботу через действия и чувство реальности",
+    caution: "важно не превращать надежность в упрямый контроль",
+  },
+  air: {
+    gift: "легкость диалога, идеи и способность увидеть ситуацию шире",
+    caution: "важно не уходить в холодную рациональность",
+  },
+  water: {
+    gift: "эмоциональную глубину, интуицию и мягкую поддержку",
+    caution: "важно не додумывать чувства за другого человека",
+  },
+};
+
+function scoreBand(score) {
+  if (score >= 88) return "сильный потенциал легкого взаимного усиления";
+  if (score >= 76) return "хороший потенциал, если пара бережет темп и границы";
+  if (score >= 64) return "интересная динамика, которой нужна осознанная настройка";
+  return "контрастная динамика: она может развивать, если не играть в борьбу характеров";
+}
+
+function buildPairSpecificLine(signA, signB, pair, seed) {
+  if (signA.slug === signB.slug) {
+    return `${signA.nameRu} + ${signB.nameRu} — зеркальная связка: сильное узнавание помогает, если оба не ждут от партнера идеальной копии себя.`;
+  }
+
+  const leftRole = ELEMENT_ROLE_LINES[signA.element] || ELEMENT_ROLE_LINES.air;
+  const rightRole = ELEMENT_ROLE_LINES[signB.element] || ELEMENT_ROLE_LINES.water;
+  const bridge = [
+    "Такой союз раскрывается через уважение к разной скорости реакции.",
+    "Главная настройка здесь — не спорить с природой друг друга, а договариваться о ритме.",
+    "Пара становится сильнее, когда различия превращаются в роли, а не в претензии.",
+    "Лучший сценарий — дать каждому свою зону влияния и не мерить любовь одинаковыми жестами.",
+  ];
+  return `${signA.nameRu} — про ${leftRole.gift}; ${signB.nameRu} — про ${rightRole.gift}. Динамика стихий (${pair.elementDynamic}): ${pick(bridge, seed, 7)}`;
+}
+
+function buildPairCaution(signA, signB, seed) {
+  const leftRole = ELEMENT_ROLE_LINES[signA.element] || ELEMENT_ROLE_LINES.air;
+  const rightRole = ELEMENT_ROLE_LINES[signB.element] || ELEMENT_ROLE_LINES.water;
+  const options = [
+    `${signA.nameRu}: ${leftRole.caution}; ${signB.nameRu}: ${rightRole.caution}.`,
+    `Риск появляется, если ${signA.nameRu} и ${signB.nameRu} начинают доказывать правоту вместо того, чтобы уточнить потребность.`,
+    `Слабое место пары — молчаливые ожидания: они быстро превращают симпатию в напряжение.`,
+    `Лучше не проверять чувства дистанцией, ревностью или игрой в угадайку.`,
+  ];
+  return pick(options, seed, 8);
+}
+
 export function generateCompatibilityPost(pair) {
   const signA = getSign(pair.signA);
   const signB = getSign(pair.signB);
   const seed = hashSeed(pair.pairId);
+  const band = scoreBand(pair.compatibilityScore);
 
   return {
     pairId: pair.pairId,
@@ -160,23 +216,28 @@ export function generateCompatibilityPost(pair) {
     text: [
       `💞 Совместимость: ${pair.titleRu}`,
       "",
-      "Общая энергия:",
-      `${pair.shortTheme}. ${pick(GENERAL_LINES, seed, 1)}`,
+      "Фокус пары:",
+      `${pair.shortTheme}. Оценка ${pair.compatibilityScore}/100 здесь означает ${band}, а не гарантированный сценарий отношений.`,
+      "",
+      "Как работает притяжение:",
+      buildPairSpecificLine(signA, signB, pair, seed),
       "",
       "Любовь:",
-      pick(LOVE_LINES, seed, 2),
+      `${pick(LOVE_LINES, seed, 2)} Для этой пары важнее регулярные маленькие подтверждения, чем громкие обещания.`,
       "",
       "Общение:",
-      pick(COMMUNICATION_LINES, seed, 3),
+      `${pick(COMMUNICATION_LINES, seed, 3)} Хороший вопрос на сегодня: “что тебе сейчас нужно от меня простыми словами?”`,
       "",
       "Сильная сторона пары:",
-      pick(STRENGTH_LINES, seed, 4),
+      `${pick(STRENGTH_LINES, seed, 4)} Сила проявляется мягче, когда у каждого есть пространство и понятная роль.`,
       "",
       "Риск:",
-      pick(RISK_LINES, seed, 5),
+      buildPairCaution(signA, signB, seed),
       "",
-      "Совет:",
-      pick(ADVICE_LINES, seed, 6),
+      "Практика на сегодня:",
+      `${pick(ADVICE_LINES, seed, 6).replace(/^Совет:\s*/i, "")} Для пары ${pair.titleRu} особенно важно проговорить один общий шаг, а не угадывать настроение друг друга.`,
+      "",
+      `Проверить вашу пару в Mini App: ${MINI_APP_CTA_URL}`,
     ].join("\n"),
     score: pair.compatibilityScore,
     elementDynamic: pair.elementDynamic,

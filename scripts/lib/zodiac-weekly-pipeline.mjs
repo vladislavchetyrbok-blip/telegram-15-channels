@@ -6,6 +6,7 @@ import { MINI_APP_START_PARAMETERS, buildCompatibilityInlineButton, buildMiniApp
 
 export const WEEKLY_LEDGER_PATH = path.resolve(process.cwd(), "data/state/zodiac-weekly-publish-ledger.json");
 const CHANNEL_LINKS_PATH = path.resolve(process.cwd(), "data/config/zodiac-channel-links.json");
+const MINI_APP_CTA_URL = "https://t.me/zodiac_love_check_bot?startapp=mystic";
 
 export const SIGN_CHANNELS = [
   { slug: "aries", emoji: "♈", name: "Овен", env: "ZODIAC_ARIES_CHANNEL_ID", tone: "смелость, личная инициатива и честный импульс" },
@@ -128,6 +129,7 @@ const GENERAL_LINES = {
 };
 
 const BEST_DAYS = ["понедельник", "вторник", "среда", "четверг", "пятница", "суббота", "воскресенье"];
+const CAUTION_DAYS = ["понедельник", "вторник", "среда", "четверг", "пятница", "суббота", "воскресенье"];
 
 export function parseWeekCode(value) {
   const match = /^(\d{4})-W(\d{2})$/.exec(String(value || "").trim());
@@ -331,9 +333,10 @@ export function buildWeeklyReport(weekCode) {
 function buildPostForChannel(channel, week, weekRange, index) {
   const asset = resolveZodiacWeeklyVisualAsset(channel.slug, week.startDate, "weekly");
   const keyboard = buildWeeklyNavigationKeyboard(channel.slug);
-  const text = channel.slug === "zodiac-general"
+  const rawText = channel.slug === "zodiac-general"
     ? buildGeneralWeeklyText(week, weekRange)
     : buildSignWeeklyText(channel, week, weekRange, index);
+  const text = buildQualityWeeklyText(rawText, channel, week, weekRange, index);
   const firstLine = text.split("\n")[0] ?? "";
 
   return {
@@ -434,6 +437,28 @@ function buildSignWeeklyText(sign, week, weekRange, index) {
   ].join("\n");
 }
 
+function buildQualityWeeklyText(rawText, channel, week, weekRange, index) {
+  const seed = hashSeed(`${week.week}:${channel.slug}:quality`);
+  const cautionDay = CAUTION_DAYS[(seed + index + 3) % CAUTION_DAYS.length];
+  const existingLines = String(rawText || "")
+    .split("\n")
+    .filter((line) => !/Mini App|кнопк[аи]|Выберите свой знак/i.test(line))
+    .join("\n")
+    .trim();
+
+  const cautionLine = channel.slug === "zodiac-general"
+    ? `${cautionDay} — не перегружайте неделю чужой срочностью и не принимайте решения из тревоги.`
+    : `${cautionDay} — держите темп мягче обычного и не обещайте больше, чем сможете спокойно выполнить.`;
+
+  return [
+    existingLines,
+    "",
+    `<b>День осторожности:</b> ${cautionLine}`,
+    "",
+    `<b>Личный прогноз и совместимость:</b> ${MINI_APP_CTA_URL}`,
+  ].join("\n");
+}
+
 export function buildWeeklyNavigationKeyboard(channelSlug) {
   const links = loadChannelLinks();
   const ctaRow = buildWeeklyRetentionCtaRow(channelSlug);
@@ -524,6 +549,12 @@ export function validateWeeklyPostQuality(post) {
   }
   if (!/Mini App|кнопк[аи]|совместимост/i.test(text)) {
     errors.push("weekly post is missing a lightweight CTA/navigation hint");
+  }
+  if (!text.includes("День осторожности:")) {
+    errors.push("weekly post is missing caution day");
+  }
+  if (!text.includes(MINI_APP_CTA_URL)) {
+    errors.push("weekly post is missing approved Mini App CTA link");
   }
 
   return errors;
