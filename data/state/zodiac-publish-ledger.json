@@ -4383,6 +4383,18 @@
       "updatedAt": "2026-07-07T09:58:07.499Z",
       "messageId": "58,",
       "sentAt": "2026-07-07T09:58:07.498Z"
+    },
+    "2026-07-07:gemini": {
+      "key": "2026-07-07:gemini",
+      "date": "2026-07-07",
+      "slug": "gemini",
+      "createdAt": "2026-07-07T09:58:08.672Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-07-07T09:58:08.672Z"
     }
   }
 }
