@@ -70,6 +70,8 @@ export function PublicArtHero({
             <div className="absolute inset-x-[10%] bottom-[13%] h-36 rounded-full bg-[radial-gradient(ellipse,rgba(246,213,138,0.18),rgba(244,176,197,0.08)_42%,transparent_72%)] blur-3xl" />
             <div className="animate-celestial-shimmer absolute left-[18%] top-[20%] h-[56%] w-px rotate-[17deg] bg-gradient-to-b from-transparent via-amber-100/30 to-transparent blur-[1px]" />
             <div className="animate-celestial-shimmer absolute right-[18%] top-[24%] h-[50%] w-px rotate-[-14deg] bg-gradient-to-b from-transparent via-rose-100/22 to-transparent blur-[1px]" />
+            <div className="luxury-ornament-field absolute inset-[8%] opacity-[0.16]" />
+            <div className="absolute left-1/2 top-[46%] h-[min(70vw,36rem)] w-[min(70vw,36rem)] -translate-x-1/2 -translate-y-1/2 rounded-full border border-amber-100/16 shadow-[0_0_90px_rgba(246,213,138,0.12)]" />
           </>
         ) : isCompat ? (
           <>
@@ -79,6 +81,9 @@ export function PublicArtHero({
             <div className="animate-rose-gold-shimmer absolute left-[14%] right-[14%] top-[45%] h-px rotate-[-6deg] bg-gradient-to-r from-transparent via-rose-100/80 to-transparent shadow-[0_0_28px_rgba(244,176,197,0.6)]" />
             <div className="absolute left-[16%] top-[32%] h-40 w-40 rounded-full border border-rose-100/16 bg-[radial-gradient(circle,rgba(244,176,197,0.16),transparent_68%)] blur-xl" />
             <div className="absolute right-[14%] top-[39%] h-44 w-44 rounded-full border border-amber-100/14 bg-[radial-gradient(circle,rgba(246,213,138,0.14),transparent_68%)] blur-xl" />
+            <div className="luxury-ornament-field absolute inset-[6%] opacity-[0.14]" />
+            <div className="absolute left-[18%] top-[30%] h-[min(42vw,18rem)] w-[min(42vw,18rem)] rounded-full border border-rose-100/14" />
+            <div className="absolute right-[15%] top-[37%] h-[min(42vw,18rem)] w-[min(42vw,18rem)] rounded-full border border-amber-100/14" />
           </>
         ) : isAries ? (
           <>
@@ -87,6 +92,8 @@ export function PublicArtHero({
             <div className="animate-aura-pulse absolute left-1/2 top-[35%] -translate-x-1/2 -translate-y-1/2 h-[36rem] w-[36rem] rounded-full bg-[radial-gradient(circle,rgba(246,213,138,0.14),transparent_68%)] blur-2xl pointer-events-none" />
             <div className="absolute inset-x-[12%] bottom-[9%] h-40 rounded-full bg-[radial-gradient(ellipse,rgba(239,68,68,0.2),rgba(246,213,138,0.12)_48%,transparent_74%)] blur-3xl" />
             <div className="animate-ember-drift absolute left-[24%] bottom-[18%] h-20 w-20 rounded-full bg-[radial-gradient(circle,rgba(246,213,138,0.18),transparent_68%)] blur-xl" />
+            <div className="luxury-ornament-field absolute inset-[8%] opacity-[0.15]" />
+            <div className="absolute left-1/2 top-[40%] h-[min(62vw,34rem)] w-[min(62vw,34rem)] -translate-x-1/2 -translate-y-1/2 rounded-full border border-amber-100/18 shadow-[0_0_100px_rgba(239,68,68,0.13)]" />
           </>
         ) : isZodiac ? (
           <>
@@ -114,6 +121,8 @@ export function PublicArtHero({
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(2,2,10,0.48)_0%,transparent_24%,transparent_54%,rgba(2,2,10,0.96)_100%)]" />
         <div className="absolute inset-y-0 left-0 w-[42%] bg-gradient-to-r from-[#02020a]/88 via-[#02020a]/40 to-transparent" />
         <div className="absolute inset-y-0 right-0 w-[24%] bg-gradient-to-l from-[#02020a]/72 to-transparent" />
+        <div className="absolute inset-x-[8%] top-[8%] h-px bg-gradient-to-r from-transparent via-[#ffe8a5]/55 to-transparent shadow-[0_0_18px_rgba(246,213,138,0.35)]" />
+        <div className="absolute inset-x-[12%] bottom-[10%] h-px bg-gradient-to-r from-transparent via-rose-100/35 to-transparent" />
         <div className="luxury-grain gold-dust-drift absolute inset-0 opacity-[0.24]" />
         {children ? <div className="absolute inset-0">{children}</div> : null}
       </div>
@@ -121,7 +130,7 @@ export function PublicArtHero({
   }
 
   return (
-    <div className="relative mx-auto aspect-[0.86] w-full max-w-[38rem] overflow-hidden rounded-[1.25rem] border border-amber-100/14 bg-[#050510] shadow-[0_34px_110px_rgba(0,0,0,0.6),0_0_92px_rgba(246,213,138,0.16)]" aria-hidden="true">
+    <div className="luxury-altar-frame relative mx-auto aspect-[0.86] w-full max-w-[38rem] overflow-hidden" aria-hidden="true">
       <Image
         src={mobileSrc}
         alt=""
@@ -140,10 +149,15 @@ export function PublicArtHero({
         data-public-art-asset={desktopSrc}
         {...imageLoadProps}
       />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_18%,transparent_0%,transparent_38%,rgba(1,1,8,0.32)_78%),linear-gradient(180deg,rgba(2,2,10,0.06),rgba(2,2,10,0.34)_82%,rgba(2,2,10,0.74))]" />
-      <div className="absolute inset-0 ring-1 ring-inset ring-white/8" />
-      <div className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-amber-100/55 to-transparent" />
-      <div className="absolute inset-x-8 bottom-0 h-px bg-gradient-to-r from-transparent via-rose-100/35 to-transparent" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_18%,transparent_0%,transparent_38%,rgba(1,1,8,0.32)_78%),linear-gradient(180deg,rgba(2,2,10,0.06),rgba(2,2,10,0.34)_82%,rgba(2,2,10,0.88))]" />
+      <div className="absolute inset-2 rounded-[1rem] border border-[#ffe8a5]/18 pointer-events-none" />
+      <div className="absolute top-3 left-3 h-1.5 w-1.5 rounded-full bg-[#ffe8a5]/65 shadow-[0_0_8px_#ffe8a5] pointer-events-none" />
+      <div className="absolute top-3 right-3 h-1.5 w-1.5 rounded-full bg-[#ffe8a5]/65 shadow-[0_0_8px_#ffe8a5] pointer-events-none" />
+      <div className="absolute bottom-3 left-3 h-1.5 w-1.5 rounded-full bg-[#ffe8a5]/65 shadow-[0_0_8px_#ffe8a5] pointer-events-none" />
+      <div className="absolute bottom-3 right-3 h-1.5 w-1.5 rounded-full bg-[#ffe8a5]/65 shadow-[0_0_8px_#ffe8a5] pointer-events-none" />
+      <div className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[#ffe8a5]/70 to-transparent shadow-[0_0_12px_rgba(246,213,138,0.5)]" />
+      <div className="absolute inset-x-8 bottom-0 h-px bg-gradient-to-r from-transparent via-rose-100/45 to-transparent" />
+      <div className="luxury-grain gold-dust-drift absolute inset-0 opacity-[0.2]" />
       {children ? <div className="absolute inset-0">{children}</div> : null}
     </div>
   );
