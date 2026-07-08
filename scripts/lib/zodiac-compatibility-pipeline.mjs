@@ -217,7 +217,7 @@ export function generateCompatibilityPost(pair) {
       `💞 Совместимость: ${pair.titleRu}`,
       "",
       "Фокус пары:",
-      `${pair.shortTheme}. Оценка ${pair.compatibilityScore}/100 здесь означает ${band}, а не гарантированный сценарий отношений.`,
+      `${pair.shortTheme}. Оценка ${pair.compatibilityScore}/100 здесь означает ${band}; это показывает направление взаимодействия, а не обещает исход отношений.`,
       "",
       "Как работает притяжение:",
       buildPairSpecificLine(signA, signB, pair, seed),

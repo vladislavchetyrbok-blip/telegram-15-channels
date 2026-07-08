@@ -76,10 +76,12 @@ const COMPATIBILITY_LABELS = [
 
 const FORBIDDEN_PATTERNS = [
   /точно\s+произойд[её]т/i,
-  /гарантированн[оы]/i,
+  /гарант/i,
+  /guarantee(?:d|s)?/i,
   /100\s*%/i,
   /судьба\s+решена/i,
   /обязательно\s+верн[её]тся/i,
+  /\b(он|она)\s+обязательно\s+верн[её]тся/i,
   /вы\s+обязаны/i,
   /идеальная\s+пара/i,
   /не\s+подходит/i,
@@ -87,7 +89,6 @@ const FORBIDDEN_PATTERNS = [
   /нажить\s+врагов/i,
   /корыстн/i,
   /купите\s+VIP/i,
-  /гарантированный\s+результат/i,
   /payment|unlock\s+vip|vip\s+unlock/i,
   /\/admin\b|\/dashboard\b/i,
   /астроляб|astrolab/i,
@@ -142,11 +143,52 @@ function forbiddenHits(text) {
     .map((pattern) => String(pattern));
 }
 
-function qualityScore({ id, text, requiredLabels = [], requiredSnippets = [], duplicate = false }) {
+function normalizeSentenceOpening(sentence) {
+  return String(sentence || "")
+    .toLowerCase()
+    .replace(/[“”"«»()]/g, "")
+    .replace(/[,:;.!?—–-]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .join(" ");
+}
+
+function repeatedSentenceOpenings(text) {
+  const seen = new Map();
+  const repeats = [];
+  const ignoredLinePattern = /^(открыть|хэштеги|период знака|это не обещание|фокус пары|как работает|любовь|общение|риск|практика|сильная сторона|главная энергия|в отношениях|в делах|внутренний совет|ритуал дня|лучше не делать)\b/i;
+  const lines = stripMarkup(text)
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .filter((line) => !line.includes(APPROVED_CTA_URL))
+    .filter((line) => !line.startsWith("#"))
+    .filter((line) => !ignoredLinePattern.test(line));
+
+  const sentences = lines
+    .flatMap((line) => line.split(/(?<=[.!?…])\s+/))
+    .map((sentence) => sentence.trim())
+    .filter((sentence) => sentence.length >= 24);
+
+  for (const sentence of sentences) {
+    const opening = normalizeSentenceOpening(sentence);
+    if (!opening || opening.split(" ").length < 2) continue;
+    if (seen.has(opening) && !repeats.includes(opening)) repeats.push(opening);
+    seen.set(opening, sentence);
+  }
+
+  return repeats;
+}
+
+function qualityScore({ id, text, requiredLabels = [], requiredSnippets = [], duplicate = false, checkRepeatedOpenings = false }) {
   const plain = stripMarkup(text);
   const missingLabels = requiredLabels.filter((label) => !plain.includes(label));
   const missingSnippets = requiredSnippets.filter((snippet) => !plain.includes(snippet));
   const hits = forbiddenHits(plain);
+  const repeatedOpenings = checkRepeatedOpenings ? repeatedSentenceOpenings(text) : [];
   const mojibake = MOJIBAKE_PATTERN.test(plain);
   const lines = plain.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
   const lengthOk = plain.length >= 420 && plain.length <= 4200;
@@ -155,7 +197,7 @@ function qualityScore({ id, text, requiredLabels = [], requiredSnippets = [], du
 
   const categories = {
     accuracy: clampScore(10 - missingSnippets.length * 2 - (mojibake ? 5 : 0)),
-    uniqueness: duplicate ? 6 : 9.5,
+    uniqueness: clampScore((duplicate ? 6 : 9.5) - repeatedOpenings.length * 1.5),
     tone: clampScore(9.2 - hits.length * 2),
     clarity: clampScore(9.4 - missingLabels.length * 0.8),
     premiumFeel: plain.includes("мягк") || plain.includes("ритуал") || plain.includes("притяжение") ? 9.2 : 8.4,
@@ -170,6 +212,7 @@ function qualityScore({ id, text, requiredLabels = [], requiredSnippets = [], du
     ...missingLabels.map((label) => `missing label: ${label}`),
     ...missingSnippets.map((snippet) => `missing snippet: ${snippet}`),
     ...hits.map((hit) => `forbidden pattern: ${hit}`),
+    ...repeatedOpenings.map((opening) => `repeated sentence opening: ${opening}`),
   ];
   if (mojibake) problems.push("mojibake detected");
   if (!ctaOk) problems.push("approved CTA missing");
@@ -216,6 +259,7 @@ function buildDailySamples(date) {
     requiredLabels: post.channelId === "zodiac-general" ? DAILY_GENERAL_LABELS : DAILY_SIGN_LABELS,
     requiredSnippets: [APPROVED_CTA_URL],
     duplicate: duplicateIds.has(post.channelId),
+    checkRepeatedOpenings: true,
   }));
 
   return { posts, signPosts, general, scores, problems };
@@ -250,7 +294,7 @@ function buildCompatibilitySamples() {
     id: `compatibility:${post.pairId}`,
     text: post.text,
     requiredLabels: COMPATIBILITY_LABELS,
-    requiredSnippets: [APPROVED_CTA_URL, "не гарантированный сценарий"],
+    requiredSnippets: [APPROVED_CTA_URL, "не обещает исход отношений"],
   }));
   return { config, samples, scores, problems: [...configProblems, ...duplicates] };
 }
@@ -386,11 +430,17 @@ function main() {
   writeSamples({ daily, weekly, tarot, compatibility });
 
   const scoreSummary = collectScoreFailures([daily.scores, weekly.scores, compatibility.scores, tarot.scores]);
+  const blockingScoreProblems = scoreSummary.allScores.flatMap((score) =>
+    score.problems
+      .filter((problem) => /forbidden pattern|repeated sentence opening|mojibake detected|approved CTA missing/i.test(problem))
+      .map((problem) => `${score.id}: ${problem}`)
+  );
   const problems = [
     ...daily.problems,
     ...weekly.problems,
     ...compatibility.problems,
     ...tarot.problems,
+    ...blockingScoreProblems,
     ...scoreSummary.lowPosts.flatMap((score) => score.problems.map((problem) => `${score.id}: ${problem}`)),
   ];
 
