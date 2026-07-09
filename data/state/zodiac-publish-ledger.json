@@ -4813,8 +4813,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-09T09:55:14.438Z"
+      "status": "sent",
+      "updatedAt": "2026-07-09T09:55:17.528Z",
+      "messageId": "62,",
+      "sentAt": "2026-07-09T09:55:17.527Z"
     }
   }
 }
