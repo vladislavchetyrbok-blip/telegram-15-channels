@@ -4827,8 +4827,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-09T09:55:18.528Z"
+      "status": "sent",
+      "updatedAt": "2026-07-09T09:55:21.578Z",
+      "messageId": "60,",
+      "sentAt": "2026-07-09T09:55:21.577Z"
     }
   }
 }
