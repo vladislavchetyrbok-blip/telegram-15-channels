@@ -5009,8 +5009,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-10T09:50:56.334Z"
+      "status": "sent",
+      "updatedAt": "2026-07-10T09:50:59.398Z",
+      "messageId": "62,",
+      "sentAt": "2026-07-10T09:50:59.397Z"
     }
   }
 }
