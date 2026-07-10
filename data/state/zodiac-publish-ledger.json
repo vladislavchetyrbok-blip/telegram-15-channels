@@ -4943,6 +4943,18 @@
       "updatedAt": "2026-07-10T09:50:37.350Z",
       "messageId": "66,",
       "sentAt": "2026-07-10T09:50:37.349Z"
+    },
+    "2026-07-10:cancer": {
+      "key": "2026-07-10:cancer",
+      "date": "2026-07-10",
+      "slug": "cancer",
+      "createdAt": "2026-07-10T09:50:38.632Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-07-10T09:50:38.632Z"
     }
   }
 }
