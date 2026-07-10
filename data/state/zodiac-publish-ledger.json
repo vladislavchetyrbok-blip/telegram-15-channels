@@ -4925,8 +4925,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-10T09:50:29.736Z"
+      "status": "sent",
+      "updatedAt": "2026-07-10T09:50:32.954Z",
+      "messageId": "64,",
+      "sentAt": "2026-07-10T09:50:32.952Z"
     }
   }
 }
