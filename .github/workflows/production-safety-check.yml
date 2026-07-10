@@ -1,0 +1,97 @@
+name: Production Safety Check
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-safety-check
+  cancel-in-progress: false
+
+jobs:
+  production-safety:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    env:
+      NODE_ENV: "production"
+      PUBLISH_DUE_STORE: "json"
+      TELEGRAM_DRY_RUN: "true"
+      TELEGRAM_REAL_PUBLISH_ENABLED: "false"
+      DATABASE_URL: "${{ secrets.DATABASE_URL }}"
+      SUPABASE_DATABASE_URL: "${{ secrets.SUPABASE_DATABASE_URL }}"
+      NEXT_PUBLIC_SUPABASE_URL: "${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}"
+      SUPABASE_SERVICE_ROLE_KEY: "${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}"
+      TELEGRAM_BOT_TOKEN: "${{ secrets.TELEGRAM_BOT_TOKEN }}"
+      ZODIAC_GENERAL_CHANNEL_ID: "${{ secrets.ZODIAC_GENERAL_CHANNEL_ID }}"
+      ZODIAC_ARIES_CHANNEL_ID: "${{ secrets.ZODIAC_ARIES_CHANNEL_ID }}"
+      ZODIAC_TAURUS_CHANNEL_ID: "${{ secrets.ZODIAC_TAURUS_CHANNEL_ID }}"
+      ZODIAC_GEMINI_CHANNEL_ID: "${{ secrets.ZODIAC_GEMINI_CHANNEL_ID }}"
+      ZODIAC_CANCER_CHANNEL_ID: "${{ secrets.ZODIAC_CANCER_CHANNEL_ID }}"
+      ZODIAC_LEO_CHANNEL_ID: "${{ secrets.ZODIAC_LEO_CHANNEL_ID }}"
+      ZODIAC_VIRGO_CHANNEL_ID: "${{ secrets.ZODIAC_VIRGO_CHANNEL_ID }}"
+      ZODIAC_LIBRA_CHANNEL_ID: "${{ secrets.ZODIAC_LIBRA_CHANNEL_ID }}"
+      ZODIAC_SCORPIO_CHANNEL_ID: "${{ secrets.ZODIAC_SCORPIO_CHANNEL_ID }}"
+      ZODIAC_SAGITTARIUS_CHANNEL_ID: "${{ secrets.ZODIAC_SAGITTARIUS_CHANNEL_ID }}"
+      ZODIAC_CAPRICORN_CHANNEL_ID: "${{ secrets.ZODIAC_CAPRICORN_CHANNEL_ID }}"
+      ZODIAC_AQUARIUS_CHANNEL_ID: "${{ secrets.ZODIAC_AQUARIUS_CHANNEL_ID }}"
+      ZODIAC_PISCES_CHANNEL_ID: "${{ secrets.ZODIAC_PISCES_CHANNEL_ID }}"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check required environment presence
+        shell: bash
+        run: |
+          node <<'NODE'
+          const required = [
+            "DATABASE_URL",
+            "SUPABASE_DATABASE_URL",
+            "NEXT_PUBLIC_SUPABASE_URL",
+            "SUPABASE_SERVICE_ROLE_KEY",
+            "TELEGRAM_BOT_TOKEN",
+          ];
+          const channelTargets = [
+            "ZODIAC_GENERAL_CHANNEL_ID",
+            "ZODIAC_ARIES_CHANNEL_ID",
+            "ZODIAC_TAURUS_CHANNEL_ID",
+            "ZODIAC_GEMINI_CHANNEL_ID",
+            "ZODIAC_CANCER_CHANNEL_ID",
+            "ZODIAC_LEO_CHANNEL_ID",
+            "ZODIAC_VIRGO_CHANNEL_ID",
+            "ZODIAC_LIBRA_CHANNEL_ID",
+            "ZODIAC_SCORPIO_CHANNEL_ID",
+            "ZODIAC_SAGITTARIUS_CHANNEL_ID",
+            "ZODIAC_CAPRICORN_CHANNEL_ID",
+            "ZODIAC_AQUARIUS_CHANNEL_ID",
+            "ZODIAC_PISCES_CHANNEL_ID",
+          ];
+          const isPresent = (name) => Boolean(String(process.env[name] || "").trim());
+
+          for (const name of required) {
+            console.log(`${name}: ${isPresent(name) ? "present" : "missing"}`);
+          }
+
+          const presentChannelTargets = channelTargets.filter(isPresent).length;
+          console.log(`channel targets: ${presentChannelTargets}/${channelTargets.length} present`);
+
+          if (required.some((name) => !isPresent(name)) || presentChannelTargets !== channelTargets.length) {
+            process.exitCode = 1;
+          }
+          NODE
+
+      - name: Run production safety check
+        if: ${{ always() }}
+        run: npm run production:safety:check
