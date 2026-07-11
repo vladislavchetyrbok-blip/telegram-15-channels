@@ -5209,6 +5209,18 @@
       "updatedAt": "2026-07-11T08:09:10.538Z",
       "messageId": "64,",
       "sentAt": "2026-07-11T08:09:10.537Z"
+    },
+    "2026-07-11:capricorn": {
+      "key": "2026-07-11:capricorn",
+      "date": "2026-07-11",
+      "slug": "capricorn",
+      "createdAt": "2026-07-11T08:09:11.483Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-07-11T08:09:11.483Z"
     }
   }
 }
