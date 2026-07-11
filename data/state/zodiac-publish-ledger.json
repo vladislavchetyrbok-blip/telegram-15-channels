@@ -5223,6 +5223,18 @@
       "updatedAt": "2026-07-11T08:09:14.554Z",
       "messageId": "64,",
       "sentAt": "2026-07-11T08:09:14.553Z"
+    },
+    "2026-07-11:aquarius": {
+      "key": "2026-07-11:aquarius",
+      "date": "2026-07-11",
+      "slug": "aquarius",
+      "createdAt": "2026-07-11T08:09:15.450Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-07-11T08:09:15.450Z"
     }
   }
 }
