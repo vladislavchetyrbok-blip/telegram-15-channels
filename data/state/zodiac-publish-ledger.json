@@ -5303,8 +5303,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-12T08:29:31.445Z"
+      "status": "sent",
+      "updatedAt": "2026-07-12T08:29:34.717Z",
+      "messageId": "70,",
+      "sentAt": "2026-07-12T08:29:34.716Z"
     }
   }
 }
