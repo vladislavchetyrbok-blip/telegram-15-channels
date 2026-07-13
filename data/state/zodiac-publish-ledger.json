@@ -5503,6 +5503,18 @@
       "updatedAt": "2026-07-13T09:44:41.201Z",
       "messageId": "70,",
       "sentAt": "2026-07-13T09:44:41.200Z"
+    },
+    "2026-07-13:leo": {
+      "key": "2026-07-13:leo",
+      "date": "2026-07-13",
+      "slug": "leo",
+      "createdAt": "2026-07-13T09:44:42.152Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-07-13T09:44:42.152Z"
     }
   }
 }
