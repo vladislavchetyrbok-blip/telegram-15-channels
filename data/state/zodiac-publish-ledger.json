@@ -5555,8 +5555,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-13T09:44:53.802Z"
+      "status": "sent",
+      "updatedAt": "2026-07-13T09:44:56.679Z",
+      "messageId": "68,",
+      "sentAt": "2026-07-13T09:44:56.678Z"
     }
   }
 }
