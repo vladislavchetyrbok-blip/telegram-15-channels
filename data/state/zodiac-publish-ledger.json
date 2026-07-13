@@ -5587,6 +5587,18 @@
       "updatedAt": "2026-07-13T09:45:04.608Z",
       "messageId": "68,",
       "sentAt": "2026-07-13T09:45:04.606Z"
+    },
+    "2026-07-13:aquarius": {
+      "key": "2026-07-13:aquarius",
+      "date": "2026-07-13",
+      "slug": "aquarius",
+      "createdAt": "2026-07-13T09:45:05.616Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-07-13T09:45:05.616Z"
     }
   }
 }
