@@ -5643,6 +5643,18 @@
       "updatedAt": "2026-07-14T08:24:05.729Z",
       "messageId": "72,",
       "sentAt": "2026-07-14T08:24:05.728Z"
+    },
+    "2026-07-14:taurus": {
+      "key": "2026-07-14:taurus",
+      "date": "2026-07-14",
+      "slug": "taurus",
+      "createdAt": "2026-07-14T08:24:07.047Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-07-14T08:24:07.047Z"
     }
   }
 }
