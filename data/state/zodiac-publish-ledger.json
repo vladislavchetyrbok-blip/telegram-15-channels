@@ -5793,8 +5793,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-14T08:25:00.752Z"
+      "status": "sent",
+      "updatedAt": "2026-07-14T08:25:05.081Z",
+      "messageId": "69,",
+      "sentAt": "2026-07-14T08:25:05.079Z"
     }
   }
 }
