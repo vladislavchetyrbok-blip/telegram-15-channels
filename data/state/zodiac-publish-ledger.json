@@ -5723,8 +5723,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-14T08:24:33.938Z"
+      "status": "sent",
+      "updatedAt": "2026-07-14T08:24:38.252Z",
+      "messageId": "72,",
+      "sentAt": "2026-07-14T08:24:38.251Z"
     }
   }
 }
