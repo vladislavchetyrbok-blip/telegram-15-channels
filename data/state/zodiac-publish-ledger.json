@@ -5905,8 +5905,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-15T08:30:33.121Z"
+      "status": "sent",
+      "updatedAt": "2026-07-15T08:30:36.261Z",
+      "messageId": "74,",
+      "sentAt": "2026-07-15T08:30:36.260Z"
     }
   }
 }
