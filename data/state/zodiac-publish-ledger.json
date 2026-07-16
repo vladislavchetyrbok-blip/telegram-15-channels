@@ -6017,8 +6017,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-16T08:28:12.391Z"
+      "status": "sent",
+      "updatedAt": "2026-07-16T08:28:15.712Z",
+      "messageId": "76,",
+      "sentAt": "2026-07-16T08:28:15.710Z"
     }
   }
 }
