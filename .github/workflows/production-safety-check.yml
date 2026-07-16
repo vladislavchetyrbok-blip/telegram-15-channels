@@ -13,7 +13,7 @@ concurrency:
 jobs:
   production-safety:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
 
     env:
       NODE_ENV: "production"
@@ -92,6 +92,31 @@ jobs:
           }
           NODE
 
-      - name: Run production safety check
+      - name: Check Docker availability
+        run: docker version --format '{{.Server.Version}}'
+
+      - name: Create fresh system backup manifest
+        run: npm run backup:create
+
+      - name: Export Supabase mirror read-only
+        run: npm run db:mirror:export
+
+      - name: Run isolated restore rehearsal
+        run: npm run backup:restore:rehearsal
+
+      - name: Enforce production safety gate
+        run: npm run production:safety:gate
+
+      - name: Write safe production safety summary
         if: ${{ always() }}
-        run: npm run production:safety:check
+        run: npm run production:safety:summary
+
+      - name: Remove temporary backup data and containers
+        if: ${{ always() }}
+        shell: bash
+        run: |
+          containers="$(docker ps -aq --filter 'name=telegram-15-restore-')"
+          if [ -n "$containers" ]; then
+            docker rm --force $containers >/dev/null 2>&1 || true
+          fi
+          rm -rf data/backups
