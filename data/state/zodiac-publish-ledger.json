@@ -6143,8 +6143,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-16T08:28:52.056Z"
+      "status": "sent",
+      "updatedAt": "2026-07-16T08:28:54.990Z",
+      "messageId": "73,",
+      "sentAt": "2026-07-16T08:28:54.989Z"
     }
   }
 }
