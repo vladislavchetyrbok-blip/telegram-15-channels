@@ -6203,6 +6203,18 @@
       "updatedAt": "2026-07-17T08:23:54.452Z",
       "messageId": "78,",
       "sentAt": "2026-07-17T08:23:54.450Z"
+    },
+    "2026-07-17:gemini": {
+      "key": "2026-07-17:gemini",
+      "date": "2026-07-17",
+      "slug": "gemini",
+      "createdAt": "2026-07-17T08:23:55.435Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-07-17T08:23:55.435Z"
     }
   }
 }
