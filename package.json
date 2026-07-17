@@ -72,6 +72,8 @@
     "backup:restore:dry": "node scripts/restore-backup-dry-run.mjs",
     "backup:restore:rehearsal": "node scripts/backup-restore-rehearsal.mjs",
     "backup:gate:qa": "node scripts/check-backup-gate.mjs",
+    "backup:artifact:encrypt": "node scripts/create-encrypted-backup-artifact.mjs",
+    "backup:artifact:qa": "node scripts/check-encrypted-backup-artifact.mjs",
     "db:schema:check": "node scripts/check-supabase-schema.mjs",
     "autopublish": "node scripts/run-autopublish.mjs",
     "check:autopublish": "node scripts/autopublish-worker.mjs --once",

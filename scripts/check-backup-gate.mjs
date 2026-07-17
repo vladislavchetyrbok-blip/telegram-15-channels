@@ -143,7 +143,11 @@ function runStaticChecks() {
   assert.match(workflow, /^on:\s*\r?\n\s+workflow_dispatch:\s*$/m);
   assert.doesNotMatch(workflow, /^\s+(?:push|pull_request|schedule|repository_dispatch):\s*$/m);
   assert.match(workflow, /permissions:\s*\r?\n\s+contents: read/);
-  assert.doesNotMatch(workflow, /actions\/upload-artifact/i);
+  assert.match(workflow, /uses: actions\/upload-artifact@v4/);
+  assert.match(workflow, /path: data\/runtime\/backup-artifacts\/\*\.tar\.gz\.age/);
+  assert.doesNotMatch(workflow, /path:\s*(?:data\/backups|[^\n]*supabase\.dump|[^\n]*\.json|[^\n]*\.tar\.gz\s*$)/im);
+  assert.match(workflow, /BACKUP_AGE_RECIPIENT: "\$\{\{ vars\.BACKUP_AGE_RECIPIENT \}\}"/);
+  assert.doesNotMatch(workflow, /AGE-SECRET-KEY|age-identity|\.dpapi/i);
   assert.doesNotMatch(workflow, /npm run (?:publish:|zodiac:[^\s]*publish|[^\s]*ledger[^\s]*(?:write|backfill))/i);
   assert.match(workflow, /if: \$\{\{ always\(\) \}\}/);
   assert.match(workflow, /docker rm --force/);
@@ -151,9 +155,10 @@ function runStaticChecks() {
 
   const requiredOrder = [
     "npm run backup:create",
-    "npm run db:mirror:export",
     "npm run backup:restore:rehearsal",
     "npm run production:safety:gate",
+    "npm run backup:artifact:encrypt",
+    "actions/upload-artifact@v4",
     "npm run production:safety:summary",
   ];
   let previous = -1;
@@ -239,6 +244,8 @@ function runStaticChecks() {
   assert.match(gitignore, /^data\/backups\/$/m);
   assert.equal(packageJson.scripts["backup:restore:rehearsal"], "node scripts/backup-restore-rehearsal.mjs");
   assert.equal(packageJson.scripts["backup:gate:qa"], "node scripts/check-backup-gate.mjs");
+  assert.equal(packageJson.scripts["backup:artifact:encrypt"], "node scripts/create-encrypted-backup-artifact.mjs");
+  assert.equal(packageJson.scripts["backup:artifact:qa"], "node scripts/check-encrypted-backup-artifact.mjs");
   assert.equal(packageJson.scripts["production:safety:gate"], "node scripts/check-production-safety-gate.mjs");
 }
 

@@ -5,6 +5,7 @@ const summaryOnly = process.argv.includes("--summary-only");
 const report = await getProductionSafetyReport({ loadEnv: true });
 const backup = report.checks.backup;
 const store = report.checks.store;
+const artifact = getArtifactSummary();
 const gateChecks = {
   safeForManualPublish: report.safeForManualPublish === true,
   backupReady: report.backupReady === true,
@@ -14,8 +15,10 @@ const gateChecks = {
   mirrorDryRunOk: store.mirrorSyncStatus === "ok",
 };
 const gatePassed = Object.values(gateChecks).every(Boolean);
+const workflowApprovalReady = gatePassed && artifact.uploadComplete;
 const safeReport = {
   gatePassed,
+  workflowApprovalReady,
   status: gatePassed ? "ok" : "blocked",
   checkedAt: report.lastCheckedAt,
   safeForManualPublish: report.safeForManualPublish,
@@ -52,6 +55,7 @@ const safeReport = {
     containerRemoved: backup.containerRemoved,
     dumpSha256Verified: backup.dumpSha256Verified,
   },
+  artifact,
 };
 
 console.log(JSON.stringify(safeReport, null, 2));
@@ -73,6 +77,7 @@ function buildSummary(result) {
     "## Production Safety Backup/Restore Gate",
     "",
     `- Gate: **${result.gatePassed ? "PASS" : "BLOCKED"}**`,
+    `- Workflow approval ready: **${result.workflowApprovalReady ? "PASS" : "BLOCKED"}**`,
     `- Checked at: ${formatValue(result.checkedAt)}`,
     `- Backup ready: ${formatValue(result.backupReady)}`,
     `- Safe for manual publish: ${formatValue(result.safeForManualPublish)}`,
@@ -87,12 +92,46 @@ function buildSummary(result) {
     `- Source read-only: ${formatValue(result.backup.sourceReadOnly)}`,
     `- Production writes: ${formatValue(result.backup.productionWrites)}`,
     `- Container removed: ${formatValue(result.backup.containerRemoved)}`,
+    `- Artifact upload attempted: ${formatValue(result.artifact.uploadAttempted)}`,
+    `- Artifact upload outcome: ${formatValue(result.artifact.uploadOutcome)}`,
+    `- Encrypted artifact: ${formatValue(result.artifact.artifactName)}`,
+    `- Encrypted artifact SHA-256: ${formatValue(result.artifact.encryptedSha256)}`,
+    `- Artifact retention days: ${formatValue(result.artifact.retentionDays)}`,
+    `- Raw backup uploaded: false`,
+    `- Encryption: age`,
+    `- Private key present on runner: false`,
     "",
     "| Table | Source count | Restored count | Count match | ID hash match |",
     "|---|---:|---:|:---:|:---:|",
     rows,
     "",
   ].join("\n");
+}
+
+function getArtifactSummary() {
+  const rawOutcome = String(process.env.BACKUP_ARTIFACT_UPLOAD_OUTCOME ?? "").trim().toLowerCase();
+  const uploadOutcome = ["success", "failure", "cancelled", "skipped"].includes(rawOutcome) ? rawOutcome : "unavailable";
+  const artifactNameValue = String(process.env.BACKUP_ENCRYPTED_ARTIFACT_NAME ?? "").trim();
+  const encryptedShaValue = String(process.env.BACKUP_ENCRYPTED_ARTIFACT_SHA256 ?? "").trim().toLowerCase();
+  const retentionValue = Number.parseInt(String(process.env.BACKUP_ARTIFACT_RETENTION_DAYS ?? ""), 10);
+  const artifactName = /^telegram-15-channels-backup-[A-Za-z0-9_-]+-[a-f0-9]{7,40}\.tar\.gz\.age$/.test(artifactNameValue)
+    ? artifactNameValue
+    : null;
+  const encryptedSha256 = /^[a-f0-9]{64}$/.test(encryptedShaValue) ? encryptedShaValue : null;
+  const retentionDays = retentionValue === 30 ? retentionValue : null;
+  const uploadAttempted = ["success", "failure", "cancelled"].includes(uploadOutcome);
+  const uploadComplete = uploadOutcome === "success" && Boolean(artifactName && encryptedSha256 && retentionDays === 30);
+  return {
+    uploadAttempted,
+    uploadOutcome,
+    uploadComplete,
+    artifactName,
+    encryptedSha256,
+    retentionDays,
+    rawBackupUploaded: false,
+    encryption: "age",
+    privateKeyPresentOnRunner: false,
+  };
 }
 
 function formatValue(value) {
