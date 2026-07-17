@@ -34,12 +34,29 @@ const DUMP_TABLE_ARGS = Object.freeze([
   "--table=public.scheduler_runs",
 ]);
 
-export const SUPAVISOR_LIBPQ_ENV = Object.freeze({
+export const BASE_SUPAVISOR_LIBPQ_ENV = Object.freeze({
   PGGSSENCMODE: "disable",
   PGSSLMODE: "require",
   PGCONNECT_TIMEOUT: "30",
+});
+
+export const PGDUMP_LIBPQ_ENV = Object.freeze({
+  ...BASE_SUPAVISOR_LIBPQ_ENV,
   PGOPTIONS: "-c default_transaction_read_only=on",
 });
+
+const POSTGRES_PREFLIGHT_SQL = [
+  "BEGIN TRANSACTION ISOLATION LEVEL REPEATABLE READ READ ONLY;",
+  "SET TRANSACTION SNAPSHOT :'source_snapshot';",
+  "",
+  "SELECT json_build_object(",
+  "  'probe', 1,",
+  "  'serverVersionNum', current_setting('server_version_num')::int,",
+  "  'transactionReadOnly', current_setting('transaction_read_only')::boolean",
+  ")::text;",
+  "",
+  "ROLLBACK;",
+].join("\n");
 
 const DIAGNOSTIC_CODES = new Set([
   "gssapi_negotiation_failed",
@@ -48,6 +65,8 @@ const DIAGNOSTIC_CODES = new Set([
   "connection_timeout",
   "tls_failed",
   "snapshot_import_failed",
+  "preflight_output_invalid",
+  "preflight_read_only_not_confirmed",
   "table_pattern_not_found",
   "permission_denied",
   "client_server_version_mismatch",
@@ -352,13 +371,30 @@ async function runPostgresClientPreflight({ databaseUrl, postgresMajor, sourceSn
   const preflightContainer = `${CONTAINER_PREFIX}preflight-${Date.now()}-${randomBytes(4).toString("hex")}`;
   const preflightCommand = [
     "umask 077",
-    "trap 'rm -f /run/secrets/.pgpass' EXIT INT TERM",
+    "trap 'rm -f /run/secrets/.pgpass /run/secrets/preflight.sql' EXIT INT TERM",
     "cat > /run/secrets/.pgpass",
     "chmod 0600 /run/secrets/.pgpass",
     "export PGPASSFILE=/run/secrets/.pgpass",
+    "cat > /run/secrets/preflight.sql <<'PREFLIGHT_SQL'",
+    POSTGRES_PREFLIGHT_SQL,
+    "PREFLIGHT_SQL",
+    "chmod 0600 /run/secrets/preflight.sql",
     "psql --version",
-    'psql --no-psqlrc --tuples-only --no-align --set=ON_ERROR_STOP=1 --host="$DB_HOST" --port="$DB_PORT" --username="$DB_USER" --dbname="$DB_NAME" --command="select 1; show server_version_num; show transaction_read_only;"',
-    "rm -f /run/secrets/.pgpass",
+    [
+      "psql",
+      "--no-psqlrc",
+      "--quiet",
+      "--tuples-only",
+      "--no-align",
+      "--set=ON_ERROR_STOP=1",
+      '--set=source_snapshot="$SOURCE_SNAPSHOT"',
+      '--host="$DB_HOST"',
+      '--port="$DB_PORT"',
+      '--username="$DB_USER"',
+      '--dbname="$DB_NAME"',
+      "--file=/run/secrets/preflight.sql",
+    ].join(" "),
+    "rm -f /run/secrets/.pgpass /run/secrets/preflight.sql",
     "trap - EXIT INT TERM",
   ].join("\n");
   let result;
@@ -370,14 +406,19 @@ async function runPostgresClientPreflight({ databaseUrl, postgresMajor, sourceSn
       "--interactive",
       "--name",
       preflightContainer,
-      ...libpqDockerEnvArgs(),
+      "--env",
+      "SOURCE_SNAPSHOT",
+      ...libpqDockerEnvArgs(BASE_SUPAVISOR_LIBPQ_ENV),
       "--tmpfs",
       "/run/secrets:rw,noexec,nosuid,nodev,mode=0700",
       image,
       "sh",
       "-ceu",
       preflightCommand,
-    ], postgresClientEnv(connection), {
+    ], {
+      ...postgresClientEnv(connection, BASE_SUPAVISOR_LIBPQ_ENV),
+      SOURCE_SNAPSHOT: sourceSnapshot,
+    }, {
       input: `${connection.pgpassLine}\n`,
       stage: "Docker PostgreSQL preflight",
       toolCategory: "psql",
@@ -394,28 +435,7 @@ async function runPostgresClientPreflight({ databaseUrl, postgresMajor, sourceSn
     }
   }
 
-  const outputLines = result.stdout.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
-  const versionLine = outputLines.shift() ?? "";
-  const clientMajor = postgresClientMajor(versionLine);
-  const connectionOk = outputLines.shift() === "1";
-  const serverMajor = postgresMajorFromVersion(outputLines.shift());
-  const transactionReadOnly = String(outputLines.shift() ?? "").toLowerCase() === "on";
-  const serverMajorCompatible = clientMajor === postgresMajor && serverMajor === postgresMajor;
-
-  if (!connectionOk || !transactionReadOnly) {
-    throw safeExternalError({
-      toolCategory: "psql",
-      stage: "Docker PostgreSQL preflight",
-      diagnosticCode: "unknown_external_failure",
-    });
-  }
-  if (!serverMajorCompatible) {
-    throw safeExternalError({
-      toolCategory: "psql",
-      stage: "Docker PostgreSQL preflight",
-      diagnosticCode: "client_server_version_mismatch",
-    });
-  }
+  const probe = parsePostgresPreflightOutput(result.stdout, postgresMajor);
 
   return {
     containerClientAvailable: true,
@@ -423,6 +443,57 @@ async function runPostgresClientPreflight({ databaseUrl, postgresMajor, sourceSn
     tlsRequested: true,
     gssEncryptionDisabled: true,
     authenticationSuccessful: true,
+    serverMajorCompatible: probe.serverMajorCompatible,
+    transactionReadOnly: probe.transactionReadOnly,
+  };
+}
+
+export function parsePostgresPreflightOutput(output, expectedPostgresMajor) {
+  const lines = String(output ?? "").split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+  const clientMajors = [...new Set(lines.map(postgresClientMajorFromLine).filter(Number.isInteger))];
+  const jsonLines = lines.filter((line) => line.startsWith("{") || line.endsWith("}"));
+
+  if (clientMajors.length !== 1 || jsonLines.length !== 1) {
+    throw preflightSemanticError("preflight_output_invalid");
+  }
+
+  let probe;
+  try {
+    probe = JSON.parse(jsonLines[0]);
+  } catch {
+    throw preflightSemanticError("preflight_output_invalid");
+  }
+
+  const expectedKeys = ["probe", "serverVersionNum", "transactionReadOnly"];
+  const actualKeys = probe && typeof probe === "object" && !Array.isArray(probe)
+    ? Object.keys(probe).sort()
+    : [];
+  if (
+    actualKeys.length !== expectedKeys.length ||
+    !expectedKeys.sort().every((key, index) => actualKeys[index] === key) ||
+    probe.probe !== 1 ||
+    !Number.isInteger(probe.serverVersionNum) ||
+    probe.serverVersionNum < 100_000 ||
+    typeof probe.transactionReadOnly !== "boolean" ||
+    !Number.isInteger(expectedPostgresMajor)
+  ) {
+    throw preflightSemanticError("preflight_output_invalid");
+  }
+
+  if (probe.transactionReadOnly !== true) {
+    throw preflightSemanticError("preflight_read_only_not_confirmed");
+  }
+
+  const clientMajor = clientMajors[0];
+  const serverMajor = Math.floor(probe.serverVersionNum / 10_000);
+  if (clientMajor !== expectedPostgresMajor || serverMajor !== expectedPostgresMajor) {
+    throw preflightSemanticError("client_server_version_mismatch");
+  }
+
+  return {
+    probe: 1,
+    clientMajor,
+    serverMajor,
     serverMajorCompatible: true,
     transactionReadOnly: true,
   };
@@ -474,7 +545,7 @@ async function createCustomDump({ databaseUrl, exportDir, postgresMajor, sourceS
       "DB_USER",
       "--env",
       "SOURCE_SNAPSHOT",
-      ...libpqDockerEnvArgs(),
+      ...libpqDockerEnvArgs(PGDUMP_LIBPQ_ENV),
       "--tmpfs",
       "/run/secrets:rw,noexec,nosuid,nodev,mode=0700",
       "--mount",
@@ -484,7 +555,7 @@ async function createCustomDump({ databaseUrl, exportDir, postgresMajor, sourceS
       "-ceu",
       dumpCommand,
     ], {
-      ...postgresClientEnv(connection),
+      ...postgresClientEnv(connection, PGDUMP_LIBPQ_ENV),
       SOURCE_SNAPSHOT: sourceSnapshot,
     }, {
       input: `${connection.pgpassLine}\n`,
@@ -600,17 +671,10 @@ function postgresMajorFromVersion(value) {
   return major;
 }
 
-function postgresClientMajor(value) {
-  const match = String(value).match(/PostgreSQL\)?\s+(\d+)/i);
+function postgresClientMajorFromLine(value) {
+  const match = String(value).match(/\bpsql\s+\(PostgreSQL\)\s+(\d+)/i);
   const major = Number.parseInt(match?.[1] ?? "", 10);
-  if (!Number.isInteger(major) || major < 10) {
-    throw safeExternalError({
-      toolCategory: "psql",
-      stage: "Docker PostgreSQL preflight",
-      diagnosticCode: "client_server_version_mismatch",
-    });
-  }
-  return major;
+  return Number.isInteger(major) && major >= 10 ? major : null;
 }
 
 function countsFromIds(ids) {
@@ -703,18 +767,18 @@ function parsePostgresConnection(databaseUrl) {
   };
 }
 
-function postgresClientEnv(connection) {
+function postgresClientEnv(connection, libpqEnv) {
   return {
     DB_HOST: connection.host,
     DB_PORT: connection.port,
     DB_NAME: connection.database,
     DB_USER: connection.username,
-    ...SUPAVISOR_LIBPQ_ENV,
+    ...libpqEnv,
   };
 }
 
-function libpqDockerEnvArgs() {
-  return Object.keys(SUPAVISOR_LIBPQ_ENV).flatMap((name) => ["--env", name]);
+function libpqDockerEnvArgs(libpqEnv) {
+  return Object.keys(libpqEnv).flatMap((name) => ["--env", name]);
 }
 
 function connectionSensitiveValues(databaseUrl, connection, sourceSnapshot) {
@@ -955,6 +1019,8 @@ function safeMessageForCode(code) {
     connection_timeout: "PostgreSQL client connection timed out.",
     tls_failed: "PostgreSQL TLS negotiation failed.",
     snapshot_import_failed: "PostgreSQL client could not import the synchronized snapshot.",
+    preflight_output_invalid: "PostgreSQL preflight returned an invalid machine-readable result.",
+    preflight_read_only_not_confirmed: "PostgreSQL preflight did not confirm a read-only transaction.",
     table_pattern_not_found: "The allowlisted PostgreSQL table selection did not match.",
     permission_denied: "PostgreSQL denied the requested read-only backup operation.",
     client_server_version_mismatch: "PostgreSQL client and server major versions are incompatible.",
@@ -963,6 +1029,14 @@ function safeMessageForCode(code) {
     unknown_external_failure: "An external backup command failed without exposing diagnostic output.",
   };
   return messages[code] ?? messages.unknown_external_failure;
+}
+
+function preflightSemanticError(diagnosticCode) {
+  return safeExternalError({
+    toolCategory: "psql",
+    stage: "Docker PostgreSQL preflight",
+    diagnosticCode,
+  });
 }
 
 function inferToolCategory(command, args) {

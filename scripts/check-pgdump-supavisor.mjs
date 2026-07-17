@@ -1,10 +1,12 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import {
-  SUPAVISOR_LIBPQ_ENV,
+  BASE_SUPAVISOR_LIBPQ_ENV,
+  PGDUMP_LIBPQ_ENV,
   SafeExternalCommandError,
   buildSafeFailureReport,
   classifyExternalDiagnostic,
+  parsePostgresPreflightOutput,
   redactExternalDiagnostic,
 } from "./lib/backup-restore-rehearsal.mjs";
 
@@ -32,8 +34,17 @@ const sensitiveValues = [
   fixture.snapshot,
 ];
 
-test("Supavisor libpq compatibility environment", () => {
-  assert.deepEqual(SUPAVISOR_LIBPQ_ENV, {
+test("base Supavisor libpq environment excludes session-level PGOPTIONS", () => {
+  assert.deepEqual(BASE_SUPAVISOR_LIBPQ_ENV, {
+    PGGSSENCMODE: "disable",
+    PGSSLMODE: "require",
+    PGCONNECT_TIMEOUT: "30",
+  });
+  assert.equal(Object.hasOwn(BASE_SUPAVISOR_LIBPQ_ENV, "PGOPTIONS"), false);
+});
+
+test("pg_dump keeps the defense-in-depth read-only environment", () => {
+  assert.deepEqual(PGDUMP_LIBPQ_ENV, {
     PGGSSENCMODE: "disable",
     PGSSLMODE: "require",
     PGCONNECT_TIMEOUT: "30",
@@ -120,12 +131,82 @@ test("safe failure report", () => {
   for (const forbidden of sensitiveValues) assert.equal(serialized.includes(forbidden), false);
 });
 
-test("Docker preflight is read-only and uses the server-major image", () => {
+test("Docker preflight uses explicit transaction-level read-only SQL", () => {
+  const preflight = preflightSource();
   assert.match(source, /postgres:\$\{postgresMajor\}-alpine/);
-  assert.match(source, /psql --version/);
-  assert.match(source, /select 1; show server_version_num; show transaction_read_only;/);
-  assert.match(source, /transactionReadOnly/);
-  assert.doesNotMatch(preflightSource(), /\b(?:insert|update|delete|truncate|alter|drop|create\s+table|grant|revoke)\b/i);
+  assert.match(preflight, /psql --version/);
+  assert.match(preflight, /--file=\/run\/secrets\/preflight\.sql/);
+  assert.match(preflight, /--set=source_snapshot="\$SOURCE_SNAPSHOT"/);
+  assert.match(source, /BEGIN TRANSACTION ISOLATION LEVEL REPEATABLE READ READ ONLY;/);
+  assert.match(source, /SET TRANSACTION SNAPSHOT :'source_snapshot';/);
+  assert.match(source, /SELECT json_build_object\(/);
+  assert.match(source, /ROLLBACK;/);
+  assert.match(preflight, /rm -f \/run\/secrets\/\.pgpass \/run\/secrets\/preflight\.sql/);
+  assert.doesNotMatch(preflight, /PGOPTIONS|PGDUMP_LIBPQ_ENV/);
+  assert.doesNotMatch(preflight, /\b(?:insert|update|delete|truncate|alter|drop|create\s+table|grant|revoke)\b/i);
+});
+
+test("valid machine-readable preflight probe passes", () => {
+  const probe = parsePostgresPreflightOutput(validPreflightOutput(), 17);
+  assert.deepEqual(probe, {
+    probe: 1,
+    clientMajor: 17,
+    serverMajor: 17,
+    serverMajorCompatible: true,
+    transactionReadOnly: true,
+  });
+});
+
+test("preflight parser ignores command-tag noise around one JSON probe", () => {
+  const output = [
+    "docker informational noise",
+    "BEGIN",
+    "psql (PostgreSQL) 17.5",
+    "SET",
+    validProbeJson(),
+    "ROLLBACK",
+    "container informational noise",
+  ].join("\n");
+  assert.equal(parsePostgresPreflightOutput(output, 17).transactionReadOnly, true);
+});
+
+test("preflight parser ignores empty lines", () => {
+  const output = `\n\npsql (PostgreSQL) 17.5\n\n${validProbeJson()}\n\n`;
+  assert.equal(parsePostgresPreflightOutput(output, 17).serverMajorCompatible, true);
+});
+
+testPreflightCode("malformed JSON probe", "psql (PostgreSQL) 17.5\n{not-json}", "preflight_output_invalid");
+testPreflightCode("missing JSON probe", "psql (PostgreSQL) 17.5\nBEGIN\nROLLBACK", "preflight_output_invalid");
+testPreflightCode(
+  "duplicate JSON probes",
+  `psql (PostgreSQL) 17.5\n${validProbeJson()}\n${validProbeJson()}`,
+  "preflight_output_invalid",
+);
+testPreflightCode(
+  "read-only false probe",
+  `psql (PostgreSQL) 17.5\n${validProbeJson({ transactionReadOnly: false })}`,
+  "preflight_read_only_not_confirmed",
+);
+testPreflightCode(
+  "wrong server major probe",
+  `psql (PostgreSQL) 17.5\n${validProbeJson({ serverVersionNum: 160009 })}`,
+  "client_server_version_mismatch",
+);
+
+test("semantic preflight errors do not retain raw output", () => {
+  const rawOutput = `psql (PostgreSQL) 17.5\n{${fixture.snapshot}:${fixture.databaseUrl}}`;
+  let caught;
+  try {
+    parsePostgresPreflightOutput(rawOutput, 17);
+  } catch (error) {
+    caught = error;
+  }
+  assert.ok(caught instanceof SafeExternalCommandError);
+  const serialized = JSON.stringify(caught);
+  assert.equal(serialized.includes(rawOutput), false);
+  assert.equal(serialized.includes(fixture.snapshot), false);
+  assert.equal(serialized.includes(fixture.databaseUrl), false);
+  assert.doesNotMatch(serialized, /stdout|stderr|args|env|stack/i);
 });
 
 test("snapshot lifecycle remains synchronized", () => {
@@ -145,6 +226,16 @@ test("snapshot lifecycle remains synchronized", () => {
     previous = current;
   }
   assert.match(source, /--snapshot="\$SOURCE_SNAPSHOT"/);
+});
+
+test("pg_dump keeps GSS, TLS, timeout, read-only, and synchronized snapshot controls", () => {
+  const dump = customDumpSource();
+  assert.match(dump, /PGDUMP_LIBPQ_ENV/);
+  assert.match(dump, /--snapshot="\$SOURCE_SNAPSHOT"/);
+  assert.equal(PGDUMP_LIBPQ_ENV.PGGSSENCMODE, "disable");
+  assert.equal(PGDUMP_LIBPQ_ENV.PGSSLMODE, "require");
+  assert.equal(PGDUMP_LIBPQ_ENV.PGCONNECT_TIMEOUT, "30");
+  assert.equal(PGDUMP_LIBPQ_ENV.PGOPTIONS, "-c default_transaction_read_only=on");
 });
 
 test("no connection fallback or raw diagnostic output", () => {
@@ -200,6 +291,37 @@ function testCode(name, stderr, expectedCode) {
   });
 }
 
+function testPreflightCode(name, output, expectedCode) {
+  test(name, () => {
+    let caught;
+    try {
+      parsePostgresPreflightOutput(output, 17);
+    } catch (error) {
+      caught = error;
+    }
+    assert.ok(caught instanceof SafeExternalCommandError);
+    assert.equal(caught.diagnosticCode, expectedCode);
+    assert.equal(caught.toolCategory, "psql");
+    assert.equal(caught.stage, "Docker PostgreSQL preflight");
+    const serialized = JSON.stringify(caught);
+    assert.equal(serialized.includes(output), false);
+    assert.doesNotMatch(serialized, /stdout|stderr|args|env|stack/i);
+  });
+}
+
+function validPreflightOutput(overrides = {}) {
+  return `psql (PostgreSQL) 17.5\n${validProbeJson(overrides)}`;
+}
+
+function validProbeJson(overrides = {}) {
+  return JSON.stringify({
+    probe: 1,
+    serverVersionNum: 170005,
+    transactionReadOnly: true,
+    ...overrides,
+  });
+}
+
 function test(name, run) {
   run();
   results.push({ name, passed: true });
@@ -209,5 +331,12 @@ function preflightSource() {
   const start = source.indexOf("async function runPostgresClientPreflight");
   const end = source.indexOf("async function createCustomDump", start);
   assert.ok(start >= 0 && end > start, "Preflight implementation is missing.");
+  return source.slice(start, end);
+}
+
+function customDumpSource() {
+  const start = source.indexOf("async function createCustomDump");
+  const end = source.indexOf("async function startRestoreContainer", start);
+  assert.ok(start >= 0 && end > start, "Custom dump implementation is missing.");
   return source.slice(start, end);
 }
