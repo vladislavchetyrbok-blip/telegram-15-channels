@@ -34,6 +34,56 @@ const DUMP_TABLE_ARGS = Object.freeze([
   "--table=public.scheduler_runs",
 ]);
 
+export const SUPAVISOR_LIBPQ_ENV = Object.freeze({
+  PGGSSENCMODE: "disable",
+  PGSSLMODE: "require",
+  PGCONNECT_TIMEOUT: "30",
+  PGOPTIONS: "-c default_transaction_read_only=on",
+});
+
+const DIAGNOSTIC_CODES = new Set([
+  "gssapi_negotiation_failed",
+  "authentication_failed",
+  "dns_resolution_failed",
+  "connection_timeout",
+  "tls_failed",
+  "snapshot_import_failed",
+  "table_pattern_not_found",
+  "permission_denied",
+  "client_server_version_mismatch",
+  "container_start_failed",
+  "dump_write_failed",
+  "unknown_external_failure",
+]);
+
+export class SafeExternalCommandError extends Error {
+  constructor(details) {
+    const diagnosticCode = DIAGNOSTIC_CODES.has(details.diagnosticCode)
+      ? details.diagnosticCode
+      : "unknown_external_failure";
+    const safeMessage = safeMessageForCode(diagnosticCode);
+    super(safeMessage);
+    this.name = "SafeExternalCommandError";
+    this.toolCategory = normalizeToolCategory(details.toolCategory);
+    this.stage = safeStage(details.stage);
+    this.exitCode = Number.isInteger(details.exitCode) ? details.exitCode : 1;
+    this.timeout = details.timeout === true;
+    this.diagnosticCode = diagnosticCode;
+    this.safeMessage = safeMessage;
+  }
+
+  toJSON() {
+    return {
+      toolCategory: this.toolCategory,
+      stage: this.stage,
+      exitCode: this.exitCode,
+      timeout: this.timeout,
+      diagnosticCode: this.diagnosticCode,
+      safeMessage: this.safeMessage,
+    };
+  }
+}
+
 export async function runBackupRestoreRehearsal(options = {}) {
   const root = path.resolve(options.root ?? process.cwd());
   if (options.loadEnv !== false) loadLocalEnv({ cwd: root });
@@ -54,6 +104,10 @@ export async function runBackupRestoreRehearsal(options = {}) {
   let containerRemoved = true;
   let stage = "Docker availability check";
   let verification = null;
+  let failureDetails = null;
+  let sourceReadOnly = false;
+  let targetEphemeral = false;
+  let connectionPreflight = null;
 
   try {
     await runDocker(["version", "--format", "{{.Server.Version}}"]);
@@ -69,6 +123,7 @@ export async function runBackupRestoreRehearsal(options = {}) {
     if (String(readOnlyResult.rows[0]?.transaction_read_only).toLowerCase() !== "on") {
       throw new Error("Source transaction is not read-only.");
     }
+    sourceReadOnly = true;
 
     const versionResult = await sourceClient.query("show server_version_num");
     const postgresMajor = postgresMajorFromVersion(versionResult.rows[0]?.server_version_num);
@@ -76,6 +131,14 @@ export async function runBackupRestoreRehearsal(options = {}) {
     const sourceSnapshot = String(snapshotResult.rows[0]?.snapshot ?? "");
     if (!sourceSnapshot) throw new Error("Source snapshot is unavailable.");
 
+    stage = "Docker PostgreSQL preflight";
+    connectionPreflight = await runPostgresClientPreflight({
+      databaseUrl,
+      postgresMajor,
+      sourceSnapshot,
+    });
+
+    stage = "same-snapshot source read";
     const sourceRows = await readRowsFromSource(sourceClient);
     const sourceIds = idsFromRows(sourceRows);
     const sourceCounts = countsFromIds(sourceIds);
@@ -113,6 +176,7 @@ export async function runBackupRestoreRehearsal(options = {}) {
       exportDir,
       postgresMajor,
     });
+    targetEphemeral = true;
     await waitForPostgres(restoreContainer);
 
     stage = "isolated pg_restore";
@@ -164,8 +228,10 @@ export async function runBackupRestoreRehearsal(options = {}) {
       containerRemoved: false,
       secretsIncluded: false,
       productionWrites: 0,
+      connectionPreflight,
     };
-  } catch {
+  } catch (error) {
+    failureDetails = safeFailureDetails(error, stage);
     verification = null;
   } finally {
     if (sourceTransactionOpen && sourceClient) {
@@ -180,15 +246,26 @@ export async function runBackupRestoreRehearsal(options = {}) {
 
   if (!verification || !containerRemoved) {
     cleanupAttemptArtifacts(exportDir);
-    return failure(containerRemoved ? stage : "container cleanup");
+    const failedStage = containerRemoved ? stage : "container cleanup";
+    return failure(failedStage, {
+      details: containerRemoved ? failureDetails : safeFailureDetails(null, failedStage),
+      sourceReadOnly,
+      targetEphemeral,
+      containerRemoved,
+    });
   }
 
   verification.containerRemoved = true;
   try {
     writeJsonAtomic(evidencePath, verification);
-  } catch {
+  } catch (error) {
     cleanupAttemptArtifacts(exportDir);
-    return failure("evidence write");
+    return failure("evidence write", {
+      details: safeFailureDetails(error, "evidence write"),
+      sourceReadOnly: true,
+      targetEphemeral: true,
+      containerRemoved: true,
+    });
   }
 
   return {
@@ -210,6 +287,7 @@ export async function runBackupRestoreRehearsal(options = {}) {
     productionWrites: 0,
     containerRemoved: true,
     secretsIncluded: false,
+    connectionPreflight,
   };
 }
 
@@ -268,6 +346,88 @@ function writeSameSnapshotExport(exportDir, rows, counts) {
   });
 }
 
+async function runPostgresClientPreflight({ databaseUrl, postgresMajor, sourceSnapshot }) {
+  const connection = parsePostgresConnection(databaseUrl);
+  const image = `postgres:${postgresMajor}-alpine`;
+  const preflightContainer = `${CONTAINER_PREFIX}preflight-${Date.now()}-${randomBytes(4).toString("hex")}`;
+  const preflightCommand = [
+    "umask 077",
+    "trap 'rm -f /run/secrets/.pgpass' EXIT INT TERM",
+    "cat > /run/secrets/.pgpass",
+    "chmod 0600 /run/secrets/.pgpass",
+    "export PGPASSFILE=/run/secrets/.pgpass",
+    "psql --version",
+    'psql --no-psqlrc --tuples-only --no-align --set=ON_ERROR_STOP=1 --host="$DB_HOST" --port="$DB_PORT" --username="$DB_USER" --dbname="$DB_NAME" --command="select 1; show server_version_num; show transaction_read_only;"',
+    "rm -f /run/secrets/.pgpass",
+    "trap - EXIT INT TERM",
+  ].join("\n");
+  let result;
+
+  try {
+    result = await runDocker([
+      "run",
+      "--rm",
+      "--interactive",
+      "--name",
+      preflightContainer,
+      ...libpqDockerEnvArgs(),
+      "--tmpfs",
+      "/run/secrets:rw,noexec,nosuid,nodev,mode=0700",
+      image,
+      "sh",
+      "-ceu",
+      preflightCommand,
+    ], postgresClientEnv(connection), {
+      input: `${connection.pgpassLine}\n`,
+      stage: "Docker PostgreSQL preflight",
+      toolCategory: "psql",
+      sensitiveValues: connectionSensitiveValues(databaseUrl, connection, sourceSnapshot),
+    });
+  } finally {
+    const preflightContainerRemoved = await removeContainer(preflightContainer);
+    if (!preflightContainerRemoved) {
+      throw safeExternalError({
+        toolCategory: "docker",
+        stage: "Docker PostgreSQL preflight cleanup",
+        diagnosticCode: "container_start_failed",
+      });
+    }
+  }
+
+  const outputLines = result.stdout.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+  const versionLine = outputLines.shift() ?? "";
+  const clientMajor = postgresClientMajor(versionLine);
+  const connectionOk = outputLines.shift() === "1";
+  const serverMajor = postgresMajorFromVersion(outputLines.shift());
+  const transactionReadOnly = String(outputLines.shift() ?? "").toLowerCase() === "on";
+  const serverMajorCompatible = clientMajor === postgresMajor && serverMajor === postgresMajor;
+
+  if (!connectionOk || !transactionReadOnly) {
+    throw safeExternalError({
+      toolCategory: "psql",
+      stage: "Docker PostgreSQL preflight",
+      diagnosticCode: "unknown_external_failure",
+    });
+  }
+  if (!serverMajorCompatible) {
+    throw safeExternalError({
+      toolCategory: "psql",
+      stage: "Docker PostgreSQL preflight",
+      diagnosticCode: "client_server_version_mismatch",
+    });
+  }
+
+  return {
+    containerClientAvailable: true,
+    connectionSuccessful: true,
+    tlsRequested: true,
+    gssEncryptionDisabled: true,
+    authenticationSuccessful: true,
+    serverMajorCompatible: true,
+    transactionReadOnly: true,
+  };
+}
+
 async function createCustomDump({ databaseUrl, exportDir, postgresMajor, sourceSnapshot }) {
   const connection = parsePostgresConnection(databaseUrl);
   const image = `postgres:${postgresMajor}-alpine`;
@@ -314,10 +474,7 @@ async function createCustomDump({ databaseUrl, exportDir, postgresMajor, sourceS
       "DB_USER",
       "--env",
       "SOURCE_SNAPSHOT",
-      "--env",
-      "PGOPTIONS",
-      "--env",
-      "PGSSLMODE",
+      ...libpqDockerEnvArgs(),
       "--tmpfs",
       "/run/secrets:rw,noexec,nosuid,nodev,mode=0700",
       "--mount",
@@ -327,15 +484,13 @@ async function createCustomDump({ databaseUrl, exportDir, postgresMajor, sourceS
       "-ceu",
       dumpCommand,
     ], {
-      DB_HOST: connection.host,
-      DB_PORT: connection.port,
-      DB_NAME: connection.database,
-      DB_USER: connection.username,
+      ...postgresClientEnv(connection),
       SOURCE_SNAPSHOT: sourceSnapshot,
-      PGOPTIONS: "-c default_transaction_read_only=on",
-      PGSSLMODE: "require",
     }, {
       input: `${connection.pgpassLine}\n`,
+      stage: "custom-format dump",
+      toolCategory: "pg_dump",
+      sensitiveValues: connectionSensitiveValues(databaseUrl, connection, sourceSnapshot),
     });
   } finally {
     const dumpContainerRemoved = await removeContainer(dumpContainer);
@@ -445,6 +600,19 @@ function postgresMajorFromVersion(value) {
   return major;
 }
 
+function postgresClientMajor(value) {
+  const match = String(value).match(/PostgreSQL\)?\s+(\d+)/i);
+  const major = Number.parseInt(match?.[1] ?? "", 10);
+  if (!Number.isInteger(major) || major < 10) {
+    throw safeExternalError({
+      toolCategory: "psql",
+      stage: "Docker PostgreSQL preflight",
+      diagnosticCode: "client_server_version_mismatch",
+    });
+  }
+  return major;
+}
+
 function countsFromIds(ids) {
   return Object.fromEntries(BACKUP_TABLES.map((table) => [table, ids[table].length]));
 }
@@ -535,22 +703,67 @@ function parsePostgresConnection(databaseUrl) {
   };
 }
 
+function postgresClientEnv(connection) {
+  return {
+    DB_HOST: connection.host,
+    DB_PORT: connection.port,
+    DB_NAME: connection.database,
+    DB_USER: connection.username,
+    ...SUPAVISOR_LIBPQ_ENV,
+  };
+}
+
+function libpqDockerEnvArgs() {
+  return Object.keys(SUPAVISOR_LIBPQ_ENV).flatMap((name) => ["--env", name]);
+}
+
+function connectionSensitiveValues(databaseUrl, connection, sourceSnapshot) {
+  const values = new Set([
+    databaseUrl,
+    connection.host,
+    connection.database,
+    connection.username,
+    sourceSnapshot,
+  ]);
+  const parsed = new URL(databaseUrl);
+  values.add(decodeURIComponent(parsed.password));
+  for (const candidate of [connection.host, connection.username]) {
+    for (const part of String(candidate).split(/[.@]/)) {
+      if (/^[a-z0-9]{15,40}$/i.test(part)) values.add(part);
+    }
+  }
+  return [...values].filter(Boolean);
+}
+
 function escapePgpassField(value) {
   return value.replaceAll("\\", "\\\\").replaceAll(":", "\\:");
 }
 
-function failure(stage) {
-  return {
+export function buildSafeFailureReport(stage, options = {}) {
+  const details = options.details ?? safeFailureDetails(null, stage);
+  const report = {
     ok: false,
     status: "error",
     mode: RESTORE_REHEARSAL_MODE,
-    message: `Restore rehearsal failed during ${stage}. No production writes were made.`,
-    sourceReadOnly: null,
-    targetEphemeral: null,
+    message: `Restore rehearsal failed during ${safeStage(stage)}. No production writes were made.`,
+    failedStage: safeStage(stage),
+    diagnosticCode: details.diagnosticCode,
+    safeMessage: details.safeMessage,
+    sourceReadOnly: options.sourceReadOnly === true,
+    targetEphemeral: options.targetEphemeral === true,
     targetProduction: false,
     productionWrites: 0,
+    containerRemoved: options.containerRemoved !== false,
     secretsIncluded: false,
   };
+  if (details.toolCategory) report.toolCategory = details.toolCategory;
+  if (Number.isInteger(details.exitCode)) report.exitCode = details.exitCode;
+  if (typeof details.timeout === "boolean") report.timeout = details.timeout;
+  return report;
+}
+
+function failure(stage, options = {}) {
+  return buildSafeFailureReport(stage, options);
 }
 
 async function runDocker(args, extraEnv = {}, options = {}) {
@@ -559,6 +772,9 @@ async function runDocker(args, extraEnv = {}, options = {}) {
     allowFailure: options.allowFailure,
     timeoutMs: options.timeoutMs ?? COMMAND_TIMEOUT_MS,
     input: options.input,
+    stage: options.stage,
+    toolCategory: options.toolCategory ?? inferToolCategory("docker", args),
+    sensitiveValues: options.sensitiveValues,
   });
 }
 
@@ -587,6 +803,8 @@ function safeChildEnv(extra = {}) {
 
 function runCommand(command, args, options = {}) {
   return new Promise((resolve, reject) => {
+    const toolCategory = normalizeToolCategory(options.toolCategory ?? inferToolCategory(command, args));
+    const stage = safeStage(options.stage ?? "external command");
     const child = spawn(command, args, {
       cwd: process.cwd(),
       env: options.env,
@@ -596,8 +814,13 @@ function runCommand(command, args, options = {}) {
     });
     let stdout = "";
     let stderr = "";
+    let timedOut = false;
+    let settled = false;
     const maxOutput = 16 * 1024 * 1024;
-    const timer = setTimeout(() => child.kill(), options.timeoutMs ?? COMMAND_TIMEOUT_MS);
+    const timer = setTimeout(() => {
+      timedOut = true;
+      child.kill();
+    }, options.timeoutMs ?? COMMAND_TIMEOUT_MS);
 
     const collect = (current, chunk) => {
       const next = current + chunk.toString("utf8");
@@ -612,16 +835,149 @@ function runCommand(command, args, options = {}) {
     }
     child.on("error", () => {
       clearTimeout(timer);
-      reject(new Error("External command could not start."));
+      if (settled) return;
+      settled = true;
+      reject(safeExternalError({
+        toolCategory,
+        stage,
+        diagnosticCode: toolCategory === "docker" ? "container_start_failed" : "unknown_external_failure",
+      }));
     });
     child.on("close", (code) => {
       clearTimeout(timer);
+      if (settled) return;
+      settled = true;
       const result = { code: Number(code ?? 1), stdout, stderr };
       if (result.code !== 0 && !options.allowFailure) {
-        reject(new Error("External command failed."));
+        reject(new SafeExternalCommandError(classifyExternalDiagnostic({
+          stdout,
+          stderr,
+          sensitiveValues: options.sensitiveValues,
+          toolCategory,
+          stage,
+          exitCode: result.code,
+          timeout: timedOut,
+        })));
         return;
       }
       resolve(result);
     });
   });
+}
+
+export function classifyExternalDiagnostic(options = {}) {
+  const diagnostic = redactExternalDiagnostic(
+    `${String(options.stderr ?? "")}\n${String(options.stdout ?? "")}`,
+    options.sensitiveValues,
+  );
+  const toolCategory = normalizeToolCategory(options.toolCategory);
+  const timeout = options.timeout === true;
+  let diagnosticCode = "unknown_external_failure";
+
+  if (timeout || /connection timed out|timeout expired|operation timed out|context deadline exceeded/i.test(diagnostic)) {
+    diagnosticCode = "connection_timeout";
+  } else if (/invalid response to GSSAPI negotiation|GSSAPI negotiation|gssencmode|GSS encryption/i.test(diagnostic)) {
+    diagnosticCode = "gssapi_negotiation_failed";
+  } else if (/password authentication failed|authentication failed|no password supplied|SASL authentication failed|SCRAM authentication failed/i.test(diagnostic)) {
+    diagnosticCode = "authentication_failed";
+  } else if (/could not translate host name|name or service not known|temporary failure in name resolution|getaddrinfo|nodename nor servname/i.test(diagnostic)) {
+    diagnosticCode = "dns_resolution_failed";
+  } else if (/SSL error|TLS handshake|certificate verify failed|server does not support SSL|sslmode/i.test(diagnostic)) {
+    diagnosticCode = "tls_failed";
+  } else if (/invalid snapshot identifier|snapshot .* does not exist|could not import the requested snapshot|SET TRANSACTION SNAPSHOT/i.test(diagnostic)) {
+    diagnosticCode = "snapshot_import_failed";
+  } else if (/no matching tables were found|no matching schemas were found|strict-names/i.test(diagnostic)) {
+    diagnosticCode = "table_pattern_not_found";
+  } else if (/permission denied|insufficient privilege|must be owner|not allowed to/i.test(diagnostic)) {
+    diagnosticCode = "permission_denied";
+  } else if (/server version:.*pg_dump version|aborting because of server version mismatch|unsupported server version/i.test(diagnostic)) {
+    diagnosticCode = "client_server_version_mismatch";
+  } else if (/could not open output file|could not write to output file|no space left on device|input\/output error|write failed/i.test(diagnostic)) {
+    diagnosticCode = "dump_write_failed";
+  } else if (toolCategory === "docker" && /cannot connect to the Docker daemon|OCI runtime|container .* failed|unable to find image/i.test(diagnostic)) {
+    diagnosticCode = "container_start_failed";
+  }
+
+  return {
+    toolCategory,
+    stage: safeStage(options.stage),
+    exitCode: Number.isInteger(options.exitCode) ? options.exitCode : 1,
+    timeout,
+    diagnosticCode,
+    safeMessage: safeMessageForCode(diagnosticCode),
+  };
+}
+
+export function redactExternalDiagnostic(value, sensitiveValues = []) {
+  let redacted = String(value ?? "");
+  const exactValues = [...new Set((sensitiveValues ?? []).map((item) => String(item ?? "")).filter(Boolean))]
+    .sort((left, right) => right.length - left.length);
+  for (const sensitiveValue of exactValues) {
+    redacted = redacted.replaceAll(sensitiveValue, "[REDACTED]");
+  }
+  return redacted
+    .replace(/postgres(?:ql)?:\/\/[^\s"'`]+/gi, "[REDACTED_DATABASE_URL]")
+    .replace(/\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\b/g, "[REDACTED_JWT]")
+    .replace(/\b\d{6,}:[A-Za-z0-9_-]{20,}\b/g, "[REDACTED_TOKEN]")
+    .replace(/\b(?:host|user|username|dbname|database|password)\s*=\s*[^\s]+/gi, (match) => `${match.split("=")[0]}=[REDACTED]`)
+    .replace(/\b(?:[a-z0-9-]+\.)+supabase\.(?:co|com)\b/gi, "[REDACTED_HOST]")
+    .replace(/\b[0-9A-F]{8}-[0-9A-F]{8}-\d+\b/gi, "[REDACTED_SNAPSHOT]")
+    .replace(/\b[a-z0-9]{20}\b/gi, "[REDACTED_PROJECT_REF]");
+}
+
+function safeFailureDetails(error, stage) {
+  if (error instanceof SafeExternalCommandError) {
+    return { ...error.toJSON(), stage: safeStage(stage) };
+  }
+  return {
+    stage: safeStage(stage),
+    diagnosticCode: "unknown_external_failure",
+    safeMessage: safeMessageForCode("unknown_external_failure"),
+  };
+}
+
+function safeExternalError({ toolCategory, stage, diagnosticCode, exitCode = 1, timeout = false }) {
+  return new SafeExternalCommandError({
+    toolCategory,
+    stage,
+    exitCode,
+    timeout,
+    diagnosticCode,
+    safeMessage: safeMessageForCode(diagnosticCode),
+  });
+}
+
+function safeMessageForCode(code) {
+  const messages = {
+    gssapi_negotiation_failed: "PostgreSQL client negotiation through the configured pooler failed.",
+    authentication_failed: "PostgreSQL client authentication failed.",
+    dns_resolution_failed: "PostgreSQL client could not resolve the configured endpoint.",
+    connection_timeout: "PostgreSQL client connection timed out.",
+    tls_failed: "PostgreSQL TLS negotiation failed.",
+    snapshot_import_failed: "PostgreSQL client could not import the synchronized snapshot.",
+    table_pattern_not_found: "The allowlisted PostgreSQL table selection did not match.",
+    permission_denied: "PostgreSQL denied the requested read-only backup operation.",
+    client_server_version_mismatch: "PostgreSQL client and server major versions are incompatible.",
+    container_start_failed: "The isolated PostgreSQL client container could not start.",
+    dump_write_failed: "The PostgreSQL custom-format dump could not be written.",
+    unknown_external_failure: "An external backup command failed without exposing diagnostic output.",
+  };
+  return messages[code] ?? messages.unknown_external_failure;
+}
+
+function inferToolCategory(command, args) {
+  const commandText = `${command}\n${(args ?? []).join("\n")}`;
+  if (/\bpg_dump\b/i.test(commandText)) return "pg_dump";
+  if (/\bpg_restore\b/i.test(commandText)) return "pg_restore";
+  if (/\bpsql\b/i.test(commandText)) return "psql";
+  return "docker";
+}
+
+function normalizeToolCategory(value) {
+  return ["docker", "psql", "pg_dump", "pg_restore"].includes(value) ? value : "docker";
+}
+
+function safeStage(value) {
+  const stage = String(value ?? "external command").trim();
+  return /^[A-Za-z0-9 -]{1,80}$/.test(stage) ? stage : "external command";
 }

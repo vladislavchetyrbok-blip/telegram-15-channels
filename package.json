@@ -72,6 +72,7 @@
     "backup:restore:dry": "node scripts/restore-backup-dry-run.mjs",
     "backup:restore:rehearsal": "node scripts/backup-restore-rehearsal.mjs",
     "backup:gate:qa": "node scripts/check-backup-gate.mjs",
+    "backup:pgdump:qa": "node scripts/check-pgdump-supavisor.mjs",
     "backup:artifact:encrypt": "node scripts/create-encrypted-backup-artifact.mjs",
     "backup:artifact:qa": "node scripts/check-encrypted-backup-artifact.mjs",
     "db:schema:check": "node scripts/check-supabase-schema.mjs",
