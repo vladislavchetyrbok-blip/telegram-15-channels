@@ -6343,6 +6343,18 @@
       "updatedAt": "2026-07-17T08:24:34.988Z",
       "messageId": "75,",
       "sentAt": "2026-07-17T08:24:34.987Z"
+    },
+    "2026-07-18:zodiac-general": {
+      "key": "2026-07-18:zodiac-general",
+      "date": "2026-07-18",
+      "slug": "zodiac-general",
+      "createdAt": "2026-07-18T08:04:57.412Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-07-18T08:04:57.412Z"
     }
   }
 }
