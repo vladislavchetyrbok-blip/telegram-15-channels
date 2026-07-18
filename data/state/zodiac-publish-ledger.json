@@ -6455,6 +6455,18 @@
       "updatedAt": "2026-07-18T08:05:31.401Z",
       "messageId": "80,",
       "sentAt": "2026-07-18T08:05:31.400Z"
+    },
+    "2026-07-18:scorpio": {
+      "key": "2026-07-18:scorpio",
+      "date": "2026-07-18",
+      "slug": "scorpio",
+      "createdAt": "2026-07-18T08:05:32.350Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-07-18T08:05:32.350Z"
     }
   }
 }
