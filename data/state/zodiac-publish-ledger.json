@@ -6413,6 +6413,18 @@
       "updatedAt": "2026-07-18T08:05:19.415Z",
       "messageId": "80,",
       "sentAt": "2026-07-18T08:05:19.413Z"
+    },
+    "2026-07-18:leo": {
+      "key": "2026-07-18:leo",
+      "date": "2026-07-18",
+      "slug": "leo",
+      "createdAt": "2026-07-18T08:05:20.352Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-07-18T08:05:20.352Z"
     }
   }
 }
