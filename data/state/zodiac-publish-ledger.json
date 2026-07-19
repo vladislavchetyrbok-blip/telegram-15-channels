@@ -6563,8 +6563,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-19T08:30:33.962Z"
+      "status": "sent",
+      "updatedAt": "2026-07-19T08:30:37.129Z",
+      "messageId": "82,",
+      "sentAt": "2026-07-19T08:30:37.127Z"
     }
   }
 }
