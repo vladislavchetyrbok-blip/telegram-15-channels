@@ -6647,8 +6647,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-19T08:30:59.003Z"
+      "status": "sent",
+      "updatedAt": "2026-07-19T08:31:02.075Z",
+      "messageId": "80,",
+      "sentAt": "2026-07-19T08:31:02.072Z"
     }
   }
 }
