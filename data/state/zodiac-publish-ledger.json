@@ -6591,8 +6591,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-19T08:30:42.450Z"
+      "status": "sent",
+      "updatedAt": "2026-07-19T08:30:45.815Z",
+      "messageId": "82,",
+      "sentAt": "2026-07-19T08:30:45.813Z"
     }
   }
 }
