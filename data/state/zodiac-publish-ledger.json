@@ -6633,8 +6633,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-19T08:30:55.045Z"
+      "status": "sent",
+      "updatedAt": "2026-07-19T08:30:58.045Z",
+      "messageId": "82,",
+      "sentAt": "2026-07-19T08:30:58.043Z"
     }
   }
 }
