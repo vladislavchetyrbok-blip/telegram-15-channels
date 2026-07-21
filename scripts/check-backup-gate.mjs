@@ -222,7 +222,8 @@ function runStaticChecks() {
   }
   assert.match(rehearsal, /--interactive/);
   assert.match(rehearsal, /--tmpfs[\s\S]*\/run\/secrets:rw,noexec,nosuid,nodev,mode=0700/);
-  assert.match(rehearsal, /cat > \/run\/secrets\/\.pgpass/);
+  assert.match(rehearsal, /printf '%s\\\\n' \\"\$PGPASS_RECORD\\" > \/run\/secrets\/\.pgpass/);
+  assert.doesNotMatch(rehearsal, /\|\s*cat\s*>\s*\/run\/secrets\/\.pgpass/);
   assert.match(rehearsal, /chmod 0600 \/run\/secrets\/\.pgpass/);
   assert.match(rehearsal, /input: `\$\{connection\.pgpassLine\}\\n`/);
   assert.match(rehearsal, /--network[\s\S]*"none"/);

@@ -1,12 +1,15 @@
-import { randomBytes } from "node:crypto";
+import { createHash, randomBytes } from "node:crypto";
 import { spawn } from "node:child_process";
 import {
   closeSync,
+  createReadStream,
+  createWriteStream,
   existsSync,
   fsyncSync,
   mkdirSync,
   openSync,
   readFileSync,
+  readSync,
   readdirSync,
   renameSync,
   rmSync,
@@ -14,6 +17,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import path from "node:path";
+import { pipeline } from "node:stream/promises";
 import { setTimeout as delay } from "node:timers/promises";
 import { loadLocalEnv } from "./load-local-env.mjs";
 import { buildPgConfig } from "./pg-config.mjs";
@@ -21,7 +25,6 @@ import {
   BACKUP_TABLES,
   RESTORE_REHEARSAL_MODE,
   hashIdList,
-  sha256File,
 } from "./backup-gate.mjs";
 
 const RESTORE_DATABASE = "restore_rehearsal";
@@ -59,6 +62,12 @@ const DIAGNOSTIC_CODES = new Set([
   "container_start_failed",
   "container_shell_failed",
   "dump_write_failed",
+  "dump_file_missing",
+  "dump_file_empty",
+  "dump_file_unreadable",
+  "dump_format_invalid",
+  "dump_atomic_rename_failed",
+  "dump_checksum_failed",
   "unknown_external_failure",
 ]);
 
@@ -142,19 +151,16 @@ export async function runBackupRestoreRehearsal(options = {}) {
     const sourceCounts = countsFromIds(sourceIds);
     const sourceHashes = hashesFromIds(sourceIds);
 
-    stage = "custom-format dump";
-    await createCustomDump({
+    stage = "custom-format dump process";
+    const dumpSize = await createCustomDump({
       databaseUrl,
-      exportDir,
+      dumpPath,
       postgresMajor,
       sourceSnapshot,
     });
 
-    if (!existsSync(dumpPath) || statSync(dumpPath).size <= 0) {
-      throw new Error("Dump is missing or empty.");
-    }
-    const dumpSize = statSync(dumpPath).size;
-    const dumpSha256 = sha256File(dumpPath);
+    stage = "custom-format dump checksum";
+    const dumpSha256 = await checksumCustomDump(dumpPath);
 
     stage = "same-snapshot JSON export";
     writeSameSnapshotExport(exportDir, sourceRows, sourceCounts);
@@ -228,6 +234,7 @@ export async function runBackupRestoreRehearsal(options = {}) {
       productionWrites: 0,
     };
   } catch (error) {
+    if (error instanceof SafeExternalCommandError) stage = error.stage;
     failureDetails = safeFailureDetails(error, stage);
     verification = null;
   } finally {
@@ -342,7 +349,7 @@ function writeSameSnapshotExport(exportDir, rows, counts) {
   });
 }
 
-async function createCustomDump({ databaseUrl, exportDir, postgresMajor, sourceSnapshot }) {
+async function createCustomDump({ databaseUrl, dumpPath, postgresMajor, sourceSnapshot }) {
   const connection = parsePostgresConnection(databaseUrl);
   const image = `postgres:${postgresMajor}-alpine`;
   const dumpContainer = `${CONTAINER_PREFIX}dump-${Date.now()}-${randomBytes(4).toString("hex")}`;
@@ -350,9 +357,11 @@ async function createCustomDump({ databaseUrl, exportDir, postgresMajor, sourceS
   const dumpCommand = [
     "umask 077",
     "trap 'rm -f /run/secrets/.pgpass' EXIT INT TERM",
-    "cat > /run/secrets/.pgpass",
+    "IFS= read -r PGPASS_RECORD",
+    "printf '%s\\n' \"$PGPASS_RECORD\" > /run/secrets/.pgpass",
     "chmod 0600 /run/secrets/.pgpass",
     "export PGPASSFILE=/run/secrets/.pgpass",
+    "IFS= read -r SOURCE_SNAPSHOT",
     [
       "pg_dump",
       '--host="$DB_HOST"',
@@ -365,17 +374,18 @@ async function createCustomDump({ databaseUrl, exportDir, postgresMajor, sourceS
       "--strict-names",
       tableArgs,
       '--snapshot="$SOURCE_SNAPSHOT"',
-      "--file=/backup/supabase.dump",
     ].join(" "),
     "rm -f /run/secrets/.pgpass",
     "trap - EXIT INT TERM",
   ].join("\n");
 
   try {
-    await runDocker([
+    const result = await runCommandToAtomicFile("docker", [
       "run",
       "--rm",
       "--interactive",
+      "--entrypoint",
+      "sh",
       "--name",
       dumpContainer,
       "--env",
@@ -386,26 +396,21 @@ async function createCustomDump({ databaseUrl, exportDir, postgresMajor, sourceS
       "DB_NAME",
       "--env",
       "DB_USER",
-      "--env",
-      "SOURCE_SNAPSHOT",
       ...libpqDockerEnvArgs(PGDUMP_LIBPQ_ENV),
       "--tmpfs",
       "/run/secrets:rw,noexec,nosuid,nodev,mode=0700",
-      "--mount",
-      `type=bind,source=${exportDir},target=/backup`,
       image,
-      "sh",
       "-ceu",
       dumpCommand,
-    ], {
-      ...postgresClientEnv(connection, PGDUMP_LIBPQ_ENV),
-      SOURCE_SNAPSHOT: sourceSnapshot,
-    }, {
-      input: `${connection.pgpassLine}\n`,
-      stage: "custom-format dump",
+    ], dumpPath, {
+      env: safeChildEnv(postgresClientEnv(connection, PGDUMP_LIBPQ_ENV)),
+      input: `${connection.pgpassLine}\n` + `${sourceSnapshot}\n`,
+      stage: "custom-format dump process",
+      validationStage: "custom-format dump file validation",
       toolCategory: "pg_dump",
       sensitiveValues: connectionSensitiveValues(databaseUrl, connection, sourceSnapshot),
     });
+    return result.size;
   } finally {
     const dumpContainerRemoved = await removeContainer(dumpContainer);
     if (!dumpContainerRemoved) throw new Error("Dump container cleanup was not confirmed.");
@@ -676,6 +681,218 @@ async function runDocker(args, extraEnv = {}, options = {}) {
   });
 }
 
+export async function runCommandToAtomicFile(command, args, filePath, options = {}) {
+  mkdirSync(path.dirname(filePath), { recursive: true });
+  const temporaryPath = `${filePath}.${process.pid}.${randomBytes(6).toString("hex")}.tmp`;
+  const toolCategory = normalizeToolCategory(options.toolCategory ?? inferToolCategory(command, args));
+  const stage = safeStage(options.stage ?? "external command");
+  const validationStage = safeStage(options.validationStage ?? "custom-format dump file validation");
+  let fileDescriptor = null;
+  let child = null;
+  let timer = null;
+  let succeeded = false;
+  let stderr = "";
+  let timedOut = false;
+
+  try {
+    try {
+      rmSync(filePath, { force: true });
+    } catch {
+      throw safeExternalError({ toolCategory: "filesystem", stage, diagnosticCode: "dump_write_failed" });
+    }
+
+    try {
+      fileDescriptor = openSync(temporaryPath, "wx", 0o600);
+    } catch {
+      throw safeExternalError({ toolCategory: "filesystem", stage, diagnosticCode: "dump_write_failed" });
+    }
+
+    child = spawn(command, args, {
+      cwd: process.cwd(),
+      env: options.env,
+      shell: false,
+      windowsHide: true,
+      stdio: [options.input === undefined ? "ignore" : "pipe", "pipe", "pipe"],
+    });
+
+    const maxDiagnosticOutput = 16 * 1024 * 1024;
+    child.stderr.on("data", (chunk) => {
+      const next = stderr + chunk.toString("utf8");
+      if (Buffer.byteLength(next, "utf8") > maxDiagnosticOutput) child.kill();
+      stderr = next.slice(0, maxDiagnosticOutput);
+    });
+
+    const processResult = new Promise((resolve) => {
+      let settled = false;
+      child.once("error", () => {
+        if (settled) return;
+        settled = true;
+        resolve({ code: 1, spawnFailed: true });
+      });
+      child.once("close", (code) => {
+        if (settled) return;
+        settled = true;
+        resolve({ code: Number(code ?? 1), spawnFailed: false });
+      });
+    });
+
+    const outputStream = createWriteStream(temporaryPath, {
+      fd: fileDescriptor,
+      autoClose: false,
+    });
+    const outputResult = pipeline(child.stdout, outputStream).then(
+      () => ({ error: null }),
+      (error) => {
+        child.kill();
+        return { error };
+      },
+    );
+
+    if (options.input !== undefined) {
+      child.stdin.on("error", () => undefined);
+      child.stdin.end(options.input);
+    }
+
+    timer = setTimeout(() => {
+      timedOut = true;
+      child.kill();
+    }, options.timeoutMs ?? COMMAND_TIMEOUT_MS);
+
+    const [processOutcome, outputOutcome] = await Promise.all([processResult, outputResult]);
+    clearTimeout(timer);
+    timer = null;
+
+    if (processOutcome.spawnFailed) {
+      throw safeExternalError({
+        toolCategory: command === "docker" ? "docker" : toolCategory,
+        stage,
+        diagnosticCode: command === "docker" ? "container_start_failed" : "unknown_external_failure",
+      });
+    }
+
+    if (processOutcome.code !== 0) {
+      throw new SafeExternalCommandError(classifyExternalDiagnostic({
+        stderr,
+        sensitiveValues: options.sensitiveValues,
+        toolCategory,
+        stage,
+        exitCode: processOutcome.code,
+        timeout: timedOut,
+      }));
+    }
+
+    if (outputOutcome.error) {
+      throw safeExternalError({ toolCategory: "filesystem", stage, diagnosticCode: "dump_write_failed" });
+    }
+
+    try {
+      fsyncSync(fileDescriptor);
+      closeSync(fileDescriptor);
+      fileDescriptor = null;
+    } catch {
+      throw safeExternalError({ toolCategory: "filesystem", stage, diagnosticCode: "dump_write_failed" });
+    }
+
+    const size = validateCustomDumpFile(temporaryPath, { stage: validationStage });
+    renameCustomDump(temporaryPath, filePath, validationStage);
+    succeeded = true;
+    return { code: 0, size };
+  } finally {
+    if (timer) clearTimeout(timer);
+    if (fileDescriptor !== null) {
+      try {
+        closeSync(fileDescriptor);
+      } catch {
+        // The safe diagnostic is selected before cleanup.
+      }
+    }
+    rmSync(temporaryPath, { force: true });
+    if (!succeeded) rmSync(filePath, { force: true });
+  }
+}
+
+export function validateCustomDumpFile(filePath, options = {}) {
+  const stage = safeStage(options.stage ?? "custom-format dump file validation");
+  const fsOps = {
+    stat: options.stat ?? statSync,
+    open: options.open ?? openSync,
+    read: options.read ?? readSync,
+    close: options.close ?? closeSync,
+  };
+  let stats;
+
+  try {
+    stats = fsOps.stat(filePath);
+  } catch (error) {
+    throw dumpFileError(classifyDumpFileDiagnostic({ operation: "stat", errorCode: error?.code }), stage);
+  }
+
+  if (!stats?.isFile?.()) throw dumpFileError("dump_format_invalid", stage);
+  if (stats.size === 0) throw dumpFileError("dump_file_empty", stage);
+  if (!Number.isSafeInteger(stats.size) || stats.size <= 5) throw dumpFileError("dump_format_invalid", stage);
+
+  let fileDescriptor = null;
+  const header = Buffer.alloc(5);
+  try {
+    fileDescriptor = fsOps.open(filePath, "r");
+    const bytesRead = fsOps.read(fileDescriptor, header, 0, header.length, 0);
+    if (bytesRead !== header.length) throw dumpFileError("dump_format_invalid", stage);
+  } catch (error) {
+    if (error instanceof SafeExternalCommandError) throw error;
+    throw dumpFileError(classifyDumpFileDiagnostic({ operation: "read", errorCode: error?.code }), stage);
+  } finally {
+    if (fileDescriptor !== null) {
+      try {
+        fsOps.close(fileDescriptor);
+      } catch {
+        // Readability has already been determined without exposing OS details.
+      }
+    }
+  }
+
+  if (!header.equals(Buffer.from("PGDMP", "ascii"))) {
+    throw dumpFileError("dump_format_invalid", stage);
+  }
+
+  return stats.size;
+}
+
+export function classifyDumpFileDiagnostic({ operation, errorCode } = {}) {
+  if (errorCode === "ENOENT") return "dump_file_missing";
+  if (operation === "read" && ["EACCES", "EPERM"].includes(errorCode)) return "dump_file_unreadable";
+  if (operation === "rename") return "dump_atomic_rename_failed";
+  if (operation === "checksum") return "dump_checksum_failed";
+  if (operation === "empty") return "dump_file_empty";
+  if (operation === "format") return "dump_format_invalid";
+  return operation === "stat" ? "dump_file_missing" : "dump_file_unreadable";
+}
+
+function renameCustomDump(temporaryPath, filePath, stage) {
+  try {
+    renameSync(temporaryPath, filePath);
+  } catch (error) {
+    throw dumpFileError(classifyDumpFileDiagnostic({ operation: "rename", errorCode: error?.code }), stage);
+  }
+}
+
+async function checksumCustomDump(filePath) {
+  try {
+    const hash = createHash("sha256");
+    for await (const chunk of createReadStream(filePath)) hash.update(chunk);
+    return hash.digest("hex");
+  } catch (error) {
+    throw dumpFileError(classifyDumpFileDiagnostic({ operation: "checksum", errorCode: error?.code }), "custom-format dump checksum");
+  }
+}
+
+function dumpFileError(diagnosticCode, stage) {
+  return safeExternalError({
+    toolCategory: "filesystem",
+    stage,
+    diagnosticCode,
+  });
+}
+
 function safeChildEnv(extra = {}) {
   const allowed = [
     "PATH",
@@ -867,6 +1084,12 @@ function safeMessageForCode(code) {
     container_start_failed: "The isolated PostgreSQL client container could not start.",
     container_shell_failed: "The isolated PostgreSQL client shell wrapper failed.",
     dump_write_failed: "The PostgreSQL custom-format dump could not be written.",
+    dump_file_missing: "The PostgreSQL dump file is missing after the dump process completed.",
+    dump_file_empty: "The PostgreSQL dump file is empty.",
+    dump_file_unreadable: "The PostgreSQL dump was created but is not readable by the workflow process.",
+    dump_format_invalid: "The PostgreSQL output is not a valid custom-format dump.",
+    dump_atomic_rename_failed: "The PostgreSQL dump could not be finalized atomically.",
+    dump_checksum_failed: "The PostgreSQL dump checksum could not be calculated.",
     unknown_external_failure: "An external backup command failed without exposing diagnostic output.",
   };
   return messages[code] ?? messages.unknown_external_failure;
@@ -881,7 +1104,7 @@ function inferToolCategory(command, args) {
 }
 
 function normalizeToolCategory(value) {
-  return ["docker", "psql", "pg_dump", "pg_restore"].includes(value) ? value : "docker";
+  return ["docker", "psql", "pg_dump", "pg_restore", "filesystem"].includes(value) ? value : "docker";
 }
 
 function safeStage(value) {

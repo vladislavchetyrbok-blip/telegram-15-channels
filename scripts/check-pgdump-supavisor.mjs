@@ -1,17 +1,34 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { spawnSync } from "node:child_process";
+import {
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
+import os from "node:os";
+import path from "node:path";
 import {
   BASE_SUPAVISOR_LIBPQ_ENV,
   PGDUMP_LIBPQ_ENV,
   SafeExternalCommandError,
   buildSafeFailureReport,
+  classifyDumpFileDiagnostic,
   classifyExternalDiagnostic,
   redactExternalDiagnostic,
+  runCommandToAtomicFile,
+  validateCustomDumpFile,
 } from "./lib/backup-restore-rehearsal.mjs";
 
 const source = readFileSync("scripts/lib/backup-restore-rehearsal.mjs", "utf8");
 const workflow = readFileSync(".github/workflows/production-safety-check.yml", "utf8");
 const results = [];
+const fixtureRoot = mkdtempSync(path.join(os.tmpdir(), "telegram-pgdump-stream-"));
+process.once("exit", () => rmSync(fixtureRoot, { recursive: true, force: true }));
 const evidenceFields = [
   "performedAt",
   "status",
@@ -256,10 +273,43 @@ test("pg_dump keeps GSS, TLS, timeout, read-only, and synchronized snapshot cont
   assert.match(dump, /--strict-names/);
   assert.match(dump, /--snapshot="\$SOURCE_SNAPSHOT"/);
   assert.match(dump, /--interactive/);
+  assert.match(dump, /"--entrypoint",\s*"sh"/);
+  assert.doesNotMatch(dump, /--tty/);
   assert.match(dump, /--tmpfs[\s\S]*\/run\/secrets:rw,noexec,nosuid,nodev,mode=0700/);
-  assert.match(dump, /cat > \/run\/secrets\/\.pgpass/);
+  assert.match(dump, /IFS= read -r PGPASS_RECORD/);
+  assert.equal(pgpassSourceBackslashCount(), 2);
+  assert.equal(
+    pgpassRuntimeCommand(),
+    `printf '%s\\n' "$PGPASS_RECORD" > /run/secrets/.pgpass`,
+  );
+  assert.doesNotMatch(dump, /\|\s*cat\s*>\s*\/run\/secrets\/\.pgpass/);
+  assert.match(dump, /IFS= read -r SOURCE_SNAPSHOT/);
   assert.match(dump, /chmod 0600 \/run\/secrets\/\.pgpass/);
+  assert.match(dump, /input: `\$\{connection\.pgpassLine\}\\n` \+ `\$\{sourceSnapshot\}\\n`/);
+  assert.doesNotMatch(dump, /"--env",\s*"SOURCE_SNAPSHOT"/);
+  assert.doesNotMatch(dump, /SOURCE_SNAPSHOT:\s*sourceSnapshot/);
+  assert.doesNotMatch(dump, /--file=\/backup\/supabase\.dump/);
+  assert.doesNotMatch(dump, /type=bind[^\n]*target=\/backup/);
   assert.match(dump, /finally[\s\S]*removeContainer\(dumpContainer\)/);
+});
+
+test("host-owned dump helper streams binary stdout atomically", () => {
+  const helper = atomicFileSource();
+  assert.match(helper, /openSync\(temporaryPath, "wx", 0o600\)/);
+  assert.match(helper, /createWriteStream\(temporaryPath/);
+  assert.match(helper, /pipeline\(child\.stdout, outputStream\)/);
+  assert.match(helper, /fsyncSync\(fileDescriptor\)/);
+  assert.match(helper, /renameCustomDump\(temporaryPath, filePath/);
+  assert.match(helper, /rmSync\(temporaryPath, \{ force: true \}\)/);
+  assert.match(helper, /if \(!succeeded\) rmSync\(filePath, \{ force: true \}\)/);
+  assert.doesNotMatch(helper, /child\.stdout\.on\("data"/);
+  assert.doesNotMatch(helper, /stdout[\s\S]{0,120}toString\("utf8"\)/);
+});
+
+test("dump process, validation, and checksum stages are distinct", () => {
+  assert.match(source, /stage = "custom-format dump process"/);
+  assert.match(source, /validationStage: "custom-format dump file validation"/);
+  assert.match(source, /stage = "custom-format dump checksum"/);
 });
 
 test("pg_dump allowlist contains exactly four approved tables", () => {
@@ -296,6 +346,141 @@ test("complete non-production pg_dump fixture", () => {
   assert.equal(details.diagnosticCode, "table_pattern_not_found");
   assert.equal(details.safeMessage, "The allowlisted PostgreSQL table selection did not match.");
   assert.equal(JSON.stringify(details).includes(fixture.snapshot), false);
+});
+
+test("custom dump validator accepts a PGDMP fixture", () => {
+  const filePath = fixturePath("valid.dump");
+  const content = Buffer.concat([Buffer.from("PGDMP", "ascii"), Buffer.from([0, 1, 2, 255])]);
+  writeFileSync(filePath, content, { mode: 0o600 });
+  assert.equal(validateCustomDumpFile(filePath), content.length);
+});
+
+test("pgpass source encodes one runtime newline escape", () => {
+  assert.equal(pgpassSourceBackslashCount(), 2);
+  assert.equal(
+    pgpassRuntimeCommand(),
+    `printf '%s\\n' "$PGPASS_RECORD" > /run/secrets/.pgpass`,
+  );
+});
+
+test("pgpass shell fixture writes the record plus exactly one LF", () => {
+  const fixtureResult = runPgpassProtocolFixture("pgpass-bytes");
+  const expected = Buffer.concat([Buffer.from(fixtureResult.record, "utf8"), Buffer.from([0x0a])]);
+  assert.deepEqual(fixtureResult.pgpass, expected);
+  assert.equal(fixtureResult.pgpass.at(-1), 0x0a);
+  assert.equal(trailingByteCount(fixtureResult.pgpass, 0x0a), 1);
+  assert.equal(fixtureResult.pgpass.includes(Buffer.from([0x5c, 0x6e])), false);
+  assert.notDeepEqual(fixtureResult.pgpass.subarray(-2), Buffer.from([0x5c, 0x6e]));
+  assert.equal(fixtureResult.pgpass.includes(Buffer.from("\\:", "utf8")), true);
+  assert.equal(fixtureResult.pgpass.includes(Buffer.from("\\\\", "utf8")), true);
+  if (process.platform !== "win32") assert.equal(fixtureResult.mode, 0o600);
+});
+
+test("two-line stdin keeps pgpass and snapshot isolated", () => {
+  const fixtureResult = runPgpassProtocolFixture("pgpass-protocol");
+  assert.equal(fixtureResult.snapshotBytes.toString("utf8"), fixtureResult.snapshot);
+  assert.equal(fixtureResult.pgpass.includes(Buffer.from(fixtureResult.snapshot, "utf8")), false);
+  assert.equal(fixtureResult.snapshotBytes.includes(Buffer.from(fixtureResult.record, "utf8")), false);
+});
+
+testFileCode("missing dump file", fixturePath("missing.dump"), "dump_file_missing");
+
+test("empty dump file uses dump_file_empty", () => {
+  const filePath = fixturePath("empty.dump");
+  writeFileSync(filePath, Buffer.alloc(0), { mode: 0o600 });
+  assertSafeFileCode(() => validateCustomDumpFile(filePath), "dump_file_empty");
+});
+
+test("invalid custom-format header uses dump_format_invalid", () => {
+  const filePath = fixturePath("invalid.dump");
+  writeFileSync(filePath, Buffer.from("NOTPGDMP", "ascii"), { mode: 0o600 });
+  assertSafeFileCode(() => validateCustomDumpFile(filePath), "dump_format_invalid");
+});
+
+test("synthetic EACCES read uses dump_file_unreadable", () => {
+  const filePath = fixturePath("unreadable.dump");
+  writeFileSync(filePath, Buffer.from("PGDMPfixture", "ascii"), { mode: 0o600 });
+  const accessError = Object.assign(new Error("fixture access denied"), { code: "EACCES" });
+  assertSafeFileCode(() => validateCustomDumpFile(filePath, {
+    open: () => { throw accessError; },
+  }), "dump_file_unreadable");
+});
+
+test("rename and checksum failures have dedicated safe codes", () => {
+  assert.equal(classifyDumpFileDiagnostic({ operation: "rename", errorCode: "EPERM" }), "dump_atomic_rename_failed");
+  assert.equal(classifyDumpFileDiagnostic({ operation: "checksum", errorCode: "EACCES" }), "dump_checksum_failed");
+});
+
+test("filesystem failure report keeps the exact safe schema", () => {
+  const filePath = fixturePath("invalid-report.dump");
+  writeFileSync(filePath, Buffer.from("invalid custom dump", "ascii"), { mode: 0o600 });
+  let caught;
+  try {
+    validateCustomDumpFile(filePath);
+  } catch (error) {
+    caught = error;
+  }
+  assert.ok(caught instanceof SafeExternalCommandError);
+  const report = buildSafeFailureReport(caught.stage, {
+    details: caught.toJSON(),
+    sourceReadOnly: true,
+    targetEphemeral: false,
+    containerRemoved: true,
+  });
+  assert.deepEqual(Object.keys(report).sort(), failureReportFields);
+  assert.equal(report.toolCategory, "filesystem");
+  assert.equal(report.exitCode, 1);
+  assert.equal(report.timeout, false);
+  assert.equal(report.diagnosticCode, "dump_format_invalid");
+  assert.doesNotMatch(JSON.stringify(report), /fixture|\.dump|EACCES|EPERM|stack|path/i);
+});
+
+await testAsync("binary stdout streams into a host-owned atomic dump", async () => {
+  const filePath = fixturePath("stream-success.dump");
+  const binary = Buffer.from([80, 71, 68, 77, 80, 0, 255, 10, 13, 1, 2, 3]);
+  const command = `process.stdout.write(Buffer.from([${[...binary].join(",")}]))`;
+  const result = await runCommandToAtomicFile(process.execPath, ["-e", command], filePath, {
+    toolCategory: "pg_dump",
+    stage: "custom-format dump process",
+    validationStage: "custom-format dump file validation",
+  });
+  assert.equal(result.size, binary.length);
+  assert.deepEqual(readFileSync(filePath), binary);
+  assert.equal(temporaryDumpFiles(filePath).length, 0);
+  if (process.platform !== "win32") assert.equal(statSync(filePath).mode & 0o777, 0o600);
+});
+
+await testAsync("non-zero pg_dump preserves safe process diagnostics and removes partial files", async () => {
+  const filePath = fixturePath("stream-failure.dump");
+  const rawDiagnostic = `server closed the connection unexpectedly ${fixture.databaseUrl} ${fixture.snapshot}`;
+  const command = [
+    "process.stdout.write(Buffer.from([80,71,68,77,80,0,255]))",
+    `process.stderr.write(${JSON.stringify(rawDiagnostic)})`,
+    "process.exit(2)",
+  ].join(";");
+  let caught;
+  try {
+    await runCommandToAtomicFile(process.execPath, ["-e", command], filePath, {
+      toolCategory: "pg_dump",
+      stage: "custom-format dump process",
+      validationStage: "custom-format dump file validation",
+      sensitiveValues,
+    });
+  } catch (error) {
+    caught = error;
+  }
+  assert.ok(caught instanceof SafeExternalCommandError);
+  assert.equal(caught.toolCategory, "pg_dump");
+  assert.equal(caught.exitCode, 2);
+  assert.equal(caught.timeout, false);
+  assert.equal(caught.diagnosticCode, "postgres_connection_failed");
+  assert.equal(existsSync(filePath), false);
+  assert.equal(temporaryDumpFiles(filePath).length, 0);
+  const serialized = JSON.stringify(caught);
+  assert.equal(serialized.includes(rawDiagnostic), false);
+  assert.equal(serialized.includes(fixture.databaseUrl), false);
+  assert.equal(serialized.includes(fixture.snapshot), false);
+  assert.doesNotMatch(serialized, /stdout|stderr|args|env|stack|PGDMP/i);
 });
 
 console.log(JSON.stringify({
@@ -337,6 +522,108 @@ function test(name, run) {
   results.push({ name, passed: true });
 }
 
+async function testAsync(name, run) {
+  await run();
+  results.push({ name, passed: true });
+}
+
+function testFileCode(name, filePath, expectedCode) {
+  test(name, () => assertSafeFileCode(() => validateCustomDumpFile(filePath), expectedCode));
+}
+
+function assertSafeFileCode(run, expectedCode) {
+  let caught;
+  try {
+    run();
+  } catch (error) {
+    caught = error;
+  }
+  assert.ok(caught instanceof SafeExternalCommandError);
+  assert.equal(caught.toolCategory, "filesystem");
+  assert.equal(caught.exitCode, 1);
+  assert.equal(caught.timeout, false);
+  assert.equal(caught.diagnosticCode, expectedCode);
+  assert.doesNotMatch(JSON.stringify(caught), /stdout|stderr|args|env|stack/i);
+}
+
+function fixturePath(name) {
+  return path.join(fixtureRoot, name);
+}
+
+function pgpassSourceLine() {
+  const line = source.split(/\r?\n/).find((candidate) => candidate.includes("printf '%s"));
+  assert.ok(line, "The pgpass printf source line is missing.");
+  return line.trim();
+}
+
+function pgpassSourceBackslashCount() {
+  const match = pgpassSourceLine().match(/%s(\\+)n'/);
+  assert.ok(match, "The pgpass printf format is missing.");
+  return match[1].length;
+}
+
+function pgpassRuntimeCommand() {
+  return JSON.parse(pgpassSourceLine().replace(/,$/, ""));
+}
+
+function runPgpassProtocolFixture(name) {
+  const directory = fixturePath(name);
+  rmSync(directory, { recursive: true, force: true });
+  mkdirSync(directory, { recursive: true });
+  const pgpassName = "fixture.pgpass";
+  const snapshotName = "fixture.snapshot";
+  const record = String.raw`fixture-host:5432:fixture-db:fixture-user:fixture\:password\\part`;
+  const snapshot = "00000003-000001B5-1";
+  const printfCommand = pgpassRuntimeCommand().replace("/run/secrets/.pgpass", `./${pgpassName}`);
+  const script = [
+    "umask 077",
+    "IFS= read -r PGPASS_RECORD",
+    printfCommand,
+    `chmod 0600 ./${pgpassName}`,
+    "IFS= read -r SOURCE_SNAPSHOT",
+    `printf '%s' "$SOURCE_SNAPSHOT" > ./${snapshotName}`,
+  ].join("\n");
+  const result = spawnSync(localPosixShell(), ["-ceu", script], {
+    cwd: directory,
+    input: `${record}\n${snapshot}\n`,
+    encoding: "utf8",
+    windowsHide: true,
+  });
+  assert.equal(result.status, 0, "The isolated pgpass shell fixture failed.");
+  return {
+    record,
+    snapshot,
+    pgpass: readFileSync(path.join(directory, pgpassName)),
+    snapshotBytes: readFileSync(path.join(directory, snapshotName)),
+    mode: statSync(path.join(directory, pgpassName)).mode & 0o777,
+  };
+}
+
+function localPosixShell() {
+  const candidates = process.platform === "win32"
+    ? [
+        process.env.GIT_INSTALL_ROOT ? path.join(process.env.GIT_INSTALL_ROOT, "bin", "sh.exe") : null,
+        "C:\\Program Files\\Git\\bin\\sh.exe",
+        "C:\\Program Files\\Git\\usr\\bin\\sh.exe",
+      ]
+    : ["/bin/sh", "/usr/bin/sh"];
+  const shell = candidates.filter(Boolean).find((candidate) => existsSync(candidate));
+  assert.ok(shell, "A local POSIX shell is required for the pgpass byte fixture.");
+  return shell;
+}
+
+function trailingByteCount(buffer, byte) {
+  let count = 0;
+  for (let index = buffer.length - 1; index >= 0 && buffer[index] === byte; index -= 1) count += 1;
+  return count;
+}
+
+function temporaryDumpFiles(filePath) {
+  const directory = path.dirname(filePath);
+  const baseName = path.basename(filePath);
+  return readdirSync(directory).filter((name) => name.startsWith(`${baseName}.`) && name.endsWith(".tmp"));
+}
+
 function executorEvidenceKeys() {
   const start = source.indexOf("verification = {");
   const end = source.indexOf("\n    };", start);
@@ -359,5 +646,12 @@ function customDumpSource() {
   const start = source.indexOf("async function createCustomDump");
   const end = source.indexOf("async function startRestoreContainer", start);
   assert.ok(start >= 0 && end > start, "Custom dump implementation is missing.");
+  return source.slice(start, end);
+}
+
+function atomicFileSource() {
+  const start = source.indexOf("export async function runCommandToAtomicFile");
+  const end = source.indexOf("export function validateCustomDumpFile", start);
+  assert.ok(start >= 0 && end > start, "Atomic file stream implementation is missing.");
   return source.slice(start, end);
 }
