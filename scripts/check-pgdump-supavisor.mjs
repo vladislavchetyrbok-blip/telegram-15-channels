@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
 import {
   existsSync,
+  mkdirSync,
   mkdtempSync,
   readFileSync,
   readdirSync,
@@ -275,9 +277,12 @@ test("pg_dump keeps GSS, TLS, timeout, read-only, and synchronized snapshot cont
   assert.doesNotMatch(dump, /--tty/);
   assert.match(dump, /--tmpfs[\s\S]*\/run\/secrets:rw,noexec,nosuid,nodev,mode=0700/);
   assert.match(dump, /IFS= read -r PGPASS_RECORD/);
-  assert.match(dump, /printf '%s\\\\n'/);
-  assert.match(dump, /PGPASS_RECORD/);
-  assert.match(dump, /> \/run\/secrets\/\.pgpass/);
+  assert.equal(pgpassSourceBackslashCount(), 2);
+  assert.equal(
+    pgpassRuntimeCommand(),
+    `printf '%s\\n' "$PGPASS_RECORD" > /run/secrets/.pgpass`,
+  );
+  assert.doesNotMatch(dump, /\|\s*cat\s*>\s*\/run\/secrets\/\.pgpass/);
   assert.match(dump, /IFS= read -r SOURCE_SNAPSHOT/);
   assert.match(dump, /chmod 0600 \/run\/secrets\/\.pgpass/);
   assert.match(dump, /input: `\$\{connection\.pgpassLine\}\\n` \+ `\$\{sourceSnapshot\}\\n`/);
@@ -348,6 +353,34 @@ test("custom dump validator accepts a PGDMP fixture", () => {
   const content = Buffer.concat([Buffer.from("PGDMP", "ascii"), Buffer.from([0, 1, 2, 255])]);
   writeFileSync(filePath, content, { mode: 0o600 });
   assert.equal(validateCustomDumpFile(filePath), content.length);
+});
+
+test("pgpass source encodes one runtime newline escape", () => {
+  assert.equal(pgpassSourceBackslashCount(), 2);
+  assert.equal(
+    pgpassRuntimeCommand(),
+    `printf '%s\\n' "$PGPASS_RECORD" > /run/secrets/.pgpass`,
+  );
+});
+
+test("pgpass shell fixture writes the record plus exactly one LF", () => {
+  const fixtureResult = runPgpassProtocolFixture("pgpass-bytes");
+  const expected = Buffer.concat([Buffer.from(fixtureResult.record, "utf8"), Buffer.from([0x0a])]);
+  assert.deepEqual(fixtureResult.pgpass, expected);
+  assert.equal(fixtureResult.pgpass.at(-1), 0x0a);
+  assert.equal(trailingByteCount(fixtureResult.pgpass, 0x0a), 1);
+  assert.equal(fixtureResult.pgpass.includes(Buffer.from([0x5c, 0x6e])), false);
+  assert.notDeepEqual(fixtureResult.pgpass.subarray(-2), Buffer.from([0x5c, 0x6e]));
+  assert.equal(fixtureResult.pgpass.includes(Buffer.from("\\:", "utf8")), true);
+  assert.equal(fixtureResult.pgpass.includes(Buffer.from("\\\\", "utf8")), true);
+  if (process.platform !== "win32") assert.equal(fixtureResult.mode, 0o600);
+});
+
+test("two-line stdin keeps pgpass and snapshot isolated", () => {
+  const fixtureResult = runPgpassProtocolFixture("pgpass-protocol");
+  assert.equal(fixtureResult.snapshotBytes.toString("utf8"), fixtureResult.snapshot);
+  assert.equal(fixtureResult.pgpass.includes(Buffer.from(fixtureResult.snapshot, "utf8")), false);
+  assert.equal(fixtureResult.snapshotBytes.includes(Buffer.from(fixtureResult.record, "utf8")), false);
 });
 
 testFileCode("missing dump file", fixturePath("missing.dump"), "dump_file_missing");
@@ -515,6 +548,74 @@ function assertSafeFileCode(run, expectedCode) {
 
 function fixturePath(name) {
   return path.join(fixtureRoot, name);
+}
+
+function pgpassSourceLine() {
+  const line = source.split(/\r?\n/).find((candidate) => candidate.includes("printf '%s"));
+  assert.ok(line, "The pgpass printf source line is missing.");
+  return line.trim();
+}
+
+function pgpassSourceBackslashCount() {
+  const match = pgpassSourceLine().match(/%s(\\+)n'/);
+  assert.ok(match, "The pgpass printf format is missing.");
+  return match[1].length;
+}
+
+function pgpassRuntimeCommand() {
+  return JSON.parse(pgpassSourceLine().replace(/,$/, ""));
+}
+
+function runPgpassProtocolFixture(name) {
+  const directory = fixturePath(name);
+  rmSync(directory, { recursive: true, force: true });
+  mkdirSync(directory, { recursive: true });
+  const pgpassName = "fixture.pgpass";
+  const snapshotName = "fixture.snapshot";
+  const record = String.raw`fixture-host:5432:fixture-db:fixture-user:fixture\:password\\part`;
+  const snapshot = "00000003-000001B5-1";
+  const printfCommand = pgpassRuntimeCommand().replace("/run/secrets/.pgpass", `./${pgpassName}`);
+  const script = [
+    "umask 077",
+    "IFS= read -r PGPASS_RECORD",
+    printfCommand,
+    `chmod 0600 ./${pgpassName}`,
+    "IFS= read -r SOURCE_SNAPSHOT",
+    `printf '%s' "$SOURCE_SNAPSHOT" > ./${snapshotName}`,
+  ].join("\n");
+  const result = spawnSync(localPosixShell(), ["-ceu", script], {
+    cwd: directory,
+    input: `${record}\n${snapshot}\n`,
+    encoding: "utf8",
+    windowsHide: true,
+  });
+  assert.equal(result.status, 0, "The isolated pgpass shell fixture failed.");
+  return {
+    record,
+    snapshot,
+    pgpass: readFileSync(path.join(directory, pgpassName)),
+    snapshotBytes: readFileSync(path.join(directory, snapshotName)),
+    mode: statSync(path.join(directory, pgpassName)).mode & 0o777,
+  };
+}
+
+function localPosixShell() {
+  const candidates = process.platform === "win32"
+    ? [
+        process.env.GIT_INSTALL_ROOT ? path.join(process.env.GIT_INSTALL_ROOT, "bin", "sh.exe") : null,
+        "C:\\Program Files\\Git\\bin\\sh.exe",
+        "C:\\Program Files\\Git\\usr\\bin\\sh.exe",
+      ]
+    : ["/bin/sh", "/usr/bin/sh"];
+  const shell = candidates.filter(Boolean).find((candidate) => existsSync(candidate));
+  assert.ok(shell, "A local POSIX shell is required for the pgpass byte fixture.");
+  return shell;
+}
+
+function trailingByteCount(buffer, byte) {
+  let count = 0;
+  for (let index = buffer.length - 1; index >= 0 && buffer[index] === byte; index -= 1) count += 1;
+  return count;
 }
 
 function temporaryDumpFiles(filePath) {

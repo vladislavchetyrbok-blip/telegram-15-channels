@@ -358,7 +358,7 @@ async function createCustomDump({ databaseUrl, dumpPath, postgresMajor, sourceSn
     "umask 077",
     "trap 'rm -f /run/secrets/.pgpass' EXIT INT TERM",
     "IFS= read -r PGPASS_RECORD",
-    "printf '%s\\n' \"$PGPASS_RECORD\" | cat > /run/secrets/.pgpass",
+    "printf '%s\\n' \"$PGPASS_RECORD\" > /run/secrets/.pgpass",
     "chmod 0600 /run/secrets/.pgpass",
     "export PGPASSFILE=/run/secrets/.pgpass",
     "IFS= read -r SOURCE_SNAPSHOT",
