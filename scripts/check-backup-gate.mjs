@@ -55,6 +55,14 @@ try {
     ...value,
     snapshotAligned: false,
   })));
+  testGateCase("unexpected connectionPreflight evidence field", false, ({ rehearsalPath }) => updateJson(rehearsalPath, (value) => ({
+    ...value,
+    connectionPreflight: { connectionSuccessful: true },
+  })));
+  testGateCase("random unexpected evidence field", false, ({ rehearsalPath }) => updateJson(rehearsalPath, (value) => ({
+    ...value,
+    unexpectedFixtureField: true,
+  })));
   testGateCase("complete valid evidence", true);
 
   runStaticChecks();
