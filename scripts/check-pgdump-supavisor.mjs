@@ -6,13 +6,46 @@ import {
   SafeExternalCommandError,
   buildSafeFailureReport,
   classifyExternalDiagnostic,
-  parsePostgresPreflightOutput,
   redactExternalDiagnostic,
 } from "./lib/backup-restore-rehearsal.mjs";
 
 const source = readFileSync("scripts/lib/backup-restore-rehearsal.mjs", "utf8");
 const workflow = readFileSync(".github/workflows/production-safety-check.yml", "utf8");
 const results = [];
+const evidenceFields = [
+  "performedAt",
+  "status",
+  "mode",
+  "sourceReadOnly",
+  "targetEphemeral",
+  "targetProduction",
+  "postgresMajor",
+  "tables",
+  "sourceCounts",
+  "restoredCounts",
+  "countMatches",
+  "idHashMatches",
+  "dumpSha256",
+  "dumpSize",
+  "containerRemoved",
+  "secretsIncluded",
+  "productionWrites",
+].sort();
+const failureReportFields = [
+  "status",
+  "failedStage",
+  "toolCategory",
+  "exitCode",
+  "timeout",
+  "diagnosticCode",
+  "safeMessage",
+  "sourceReadOnly",
+  "targetEphemeral",
+  "targetProduction",
+  "productionWrites",
+  "containerRemoved",
+  "secretsIncluded",
+].sort();
 const fixture = Object.freeze({
   databaseUrl: "postgresql://fixture_user:fixture_password@fixture-project.pooler.supabase.com:5432/fixture_db",
   password: "fixture_password",
@@ -63,6 +96,54 @@ testCode("permission", "permission denied for table posts", "permission_denied")
 testCode("client/server version", "server version: 18; pg_dump version: 17", "client_server_version_mismatch");
 testCode("dump write", "could not write to output file: No space left on device", "dump_write_failed");
 
+testDiagnostic("pg_dump exit code 2 fallback", {
+  stderr: "pg_dump exited before completing the client operation",
+  toolCategory: "pg_dump",
+  exitCode: 2,
+}, "postgres_connection_failed");
+testDiagnostic("psql exit code 2 fallback", {
+  stderr: "psql exited before completing the client operation",
+  toolCategory: "psql",
+  exitCode: 2,
+}, "postgres_connection_failed");
+testDiagnostic("server closed connection", {
+  stderr: "server closed the connection unexpectedly",
+  toolCategory: "pg_dump",
+  exitCode: 1,
+}, "postgres_connection_failed");
+testDiagnostic("connection reset", {
+  stderr: "connection reset by peer",
+  toolCategory: "pg_dump",
+  exitCode: 1,
+}, "postgres_connection_failed");
+for (const [name, stderr] of [
+  ["connection lost", "connection to server was lost"],
+  ["receive failure", "could not receive data from server"],
+  ["terminating connection", "terminating connection"],
+  ["unexpected EOF", "unexpected EOF on client connection"],
+]) {
+  testDiagnostic(name, {
+    stderr,
+    toolCategory: "pg_dump",
+    exitCode: 1,
+  }, "postgres_connection_failed");
+}
+testDiagnostic("confirmed shell syntax failure", {
+  stderr: "sh: syntax error: unexpected token",
+  toolCategory: "pg_dump",
+  exitCode: 2,
+}, "container_shell_failed");
+testDiagnostic("Docker exit code 2 is not assumed to be a shell failure", {
+  stderr: "unclassified Docker failure",
+  toolCategory: "docker",
+  exitCode: 2,
+}, "unknown_external_failure");
+testDiagnostic("precise authentication category beats exit code 2 fallback", {
+  stderr: "password authentication failed",
+  toolCategory: "pg_dump",
+  exitCode: 2,
+}, "authentication_failed");
+
 test("sensitive diagnostic redaction", () => {
   const raw = [
     fixture.databaseUrl,
@@ -105,13 +186,13 @@ test("safe external error contains no raw diagnostics", () => {
   assert.doesNotMatch(serialized, /stderr|stdout|args|env|stack/i);
 });
 
-test("safe failure report", () => {
+test("pg_dump failure report uses only the safe allowlist", () => {
   const details = classifyExternalDiagnostic({
-    stderr: `invalid response to GSSAPI negotiation from ${fixture.host}`,
+    stderr: `server closed the connection unexpectedly at ${fixture.host}`,
     sensitiveValues,
     toolCategory: "pg_dump",
     stage: "custom-format dump",
-    exitCode: 1,
+    exitCode: 2,
   });
   const report = buildSafeFailureReport("custom-format dump", {
     details,
@@ -120,10 +201,13 @@ test("safe failure report", () => {
     containerRemoved: true,
   });
   const serialized = JSON.stringify(report);
+  assert.deepEqual(Object.keys(report).sort(), failureReportFields);
   assert.equal(report.status, "error");
   assert.equal(report.failedStage, "custom-format dump");
-  assert.equal(report.diagnosticCode, "gssapi_negotiation_failed");
+  assert.equal(report.diagnosticCode, "postgres_connection_failed");
+  assert.equal(report.safeMessage, "The PostgreSQL client could not maintain the configured database connection.");
   assert.equal(report.sourceReadOnly, true);
+  assert.equal(report.targetEphemeral, false);
   assert.equal(report.targetProduction, false);
   assert.equal(report.productionWrites, 0);
   assert.equal(report.containerRemoved, true);
@@ -131,89 +215,23 @@ test("safe failure report", () => {
   for (const forbidden of sensitiveValues) assert.equal(serialized.includes(forbidden), false);
 });
 
-test("Docker preflight uses explicit transaction-level read-only SQL", () => {
-  const preflight = preflightSource();
-  assert.match(source, /postgres:\$\{postgresMajor\}-alpine/);
-  assert.match(preflight, /psql --version/);
-  assert.match(preflight, /--file=\/run\/secrets\/preflight\.sql/);
-  assert.match(preflight, /--set=source_snapshot="\$SOURCE_SNAPSHOT"/);
-  assert.match(source, /BEGIN TRANSACTION ISOLATION LEVEL REPEATABLE READ READ ONLY;/);
-  assert.match(source, /SET TRANSACTION SNAPSHOT :'source_snapshot';/);
-  assert.match(source, /SELECT json_build_object\(/);
-  assert.match(source, /ROLLBACK;/);
-  assert.match(preflight, /rm -f \/run\/secrets\/\.pgpass \/run\/secrets\/preflight\.sql/);
-  assert.doesNotMatch(preflight, /PGOPTIONS|PGDUMP_LIBPQ_ENV/);
-  assert.doesNotMatch(preflight, /\b(?:insert|update|delete|truncate|alter|drop|create\s+table|grant|revoke)\b/i);
+test("production executor contains no optional psql preflight", () => {
+  assert.doesNotMatch(source, /runPostgresClientPreflight|POSTGRES_PREFLIGHT_SQL|parsePostgresPreflightOutput/);
+  assert.doesNotMatch(source, /preflightContainer|Docker PostgreSQL preflight|connectionPreflight/);
+  assert.doesNotMatch(source, /psql --version|preflight\.sql/);
 });
 
-test("valid machine-readable preflight probe passes", () => {
-  const probe = parsePostgresPreflightOutput(validPreflightOutput(), 17);
-  assert.deepEqual(probe, {
-    probe: 1,
-    clientMajor: 17,
-    serverMajor: 17,
-    serverMajorCompatible: true,
-    transactionReadOnly: true,
-  });
-});
-
-test("preflight parser ignores command-tag noise around one JSON probe", () => {
-  const output = [
-    "docker informational noise",
-    "BEGIN",
-    "psql (PostgreSQL) 17.5",
-    "SET",
-    validProbeJson(),
-    "ROLLBACK",
-    "container informational noise",
-  ].join("\n");
-  assert.equal(parsePostgresPreflightOutput(output, 17).transactionReadOnly, true);
-});
-
-test("preflight parser ignores empty lines", () => {
-  const output = `\n\npsql (PostgreSQL) 17.5\n\n${validProbeJson()}\n\n`;
-  assert.equal(parsePostgresPreflightOutput(output, 17).serverMajorCompatible, true);
-});
-
-testPreflightCode("malformed JSON probe", "psql (PostgreSQL) 17.5\n{not-json}", "preflight_output_invalid");
-testPreflightCode("missing JSON probe", "psql (PostgreSQL) 17.5\nBEGIN\nROLLBACK", "preflight_output_invalid");
-testPreflightCode(
-  "duplicate JSON probes",
-  `psql (PostgreSQL) 17.5\n${validProbeJson()}\n${validProbeJson()}`,
-  "preflight_output_invalid",
-);
-testPreflightCode(
-  "read-only false probe",
-  `psql (PostgreSQL) 17.5\n${validProbeJson({ transactionReadOnly: false })}`,
-  "preflight_read_only_not_confirmed",
-);
-testPreflightCode(
-  "wrong server major probe",
-  `psql (PostgreSQL) 17.5\n${validProbeJson({ serverVersionNum: 160009 })}`,
-  "client_server_version_mismatch",
-);
-
-test("semantic preflight errors do not retain raw output", () => {
-  const rawOutput = `psql (PostgreSQL) 17.5\n{${fixture.snapshot}:${fixture.databaseUrl}}`;
-  let caught;
-  try {
-    parsePostgresPreflightOutput(rawOutput, 17);
-  } catch (error) {
-    caught = error;
-  }
-  assert.ok(caught instanceof SafeExternalCommandError);
-  const serialized = JSON.stringify(caught);
-  assert.equal(serialized.includes(rawOutput), false);
-  assert.equal(serialized.includes(fixture.snapshot), false);
-  assert.equal(serialized.includes(fixture.databaseUrl), false);
-  assert.doesNotMatch(serialized, /stdout|stderr|args|env|stack/i);
+test("executor success evidence has the exact gate schema", () => {
+  assert.deepEqual(executorEvidenceKeys(), evidenceFields);
+  assert.doesNotMatch(successReportSource(), /connectionPreflight/);
 });
 
 test("snapshot lifecycle remains synchronized", () => {
   const orderedTokens = [
     "begin isolation level repeatable read read only",
+    "show transaction_read_only",
+    "show server_version_num",
     "select pg_export_snapshot() as snapshot",
-    "await runPostgresClientPreflight({",
     "readRowsFromSource(sourceClient)",
     "await createCustomDump({",
     "writeSameSnapshotExport(exportDir, sourceRows, sourceCounts)",
@@ -230,12 +248,28 @@ test("snapshot lifecycle remains synchronized", () => {
 
 test("pg_dump keeps GSS, TLS, timeout, read-only, and synchronized snapshot controls", () => {
   const dump = customDumpSource();
+  assert.match(dump, /postgres:\$\{postgresMajor\}-alpine/);
   assert.match(dump, /PGDUMP_LIBPQ_ENV/);
+  assert.match(dump, /--format=custom/);
+  assert.match(dump, /--no-owner/);
+  assert.match(dump, /--no-privileges/);
+  assert.match(dump, /--strict-names/);
   assert.match(dump, /--snapshot="\$SOURCE_SNAPSHOT"/);
-  assert.equal(PGDUMP_LIBPQ_ENV.PGGSSENCMODE, "disable");
-  assert.equal(PGDUMP_LIBPQ_ENV.PGSSLMODE, "require");
-  assert.equal(PGDUMP_LIBPQ_ENV.PGCONNECT_TIMEOUT, "30");
-  assert.equal(PGDUMP_LIBPQ_ENV.PGOPTIONS, "-c default_transaction_read_only=on");
+  assert.match(dump, /--interactive/);
+  assert.match(dump, /--tmpfs[\s\S]*\/run\/secrets:rw,noexec,nosuid,nodev,mode=0700/);
+  assert.match(dump, /cat > \/run\/secrets\/\.pgpass/);
+  assert.match(dump, /chmod 0600 \/run\/secrets\/\.pgpass/);
+  assert.match(dump, /finally[\s\S]*removeContainer\(dumpContainer\)/);
+});
+
+test("pg_dump allowlist contains exactly four approved tables", () => {
+  const actual = [...source.matchAll(/"--table=(public\.[a-z_]+)"/g)].map((match) => match[1]);
+  assert.deepEqual(actual, [
+    "public.channels",
+    "public.posts",
+    "public.publication_logs",
+    "public.scheduler_runs",
+  ]);
 });
 
 test("no connection fallback or raw diagnostic output", () => {
@@ -251,7 +285,7 @@ test("workflow triggers and publishing safety remain unchanged", () => {
   assert.doesNotMatch(workflow, /npm run (?:publish:|zodiac:[^\s]*publish|[^\s]*ledger[^\s]*(?:write|backfill))/i);
 });
 
-test("complete non-production fixture", () => {
+test("complete non-production pg_dump fixture", () => {
   const details = classifyExternalDiagnostic({
     stderr: `pg_dump: ${fixture.databaseUrl}: snapshot ${fixture.snapshot}: no matching tables were found`,
     sensitiveValues,
@@ -276,13 +310,20 @@ console.log(JSON.stringify({
 }, null, 2));
 
 function testCode(name, stderr, expectedCode) {
-  test(`${name} classification`, () => {
+  testDiagnostic(`${name} classification`, {
+    stderr,
+    toolCategory: "pg_dump",
+    stage: "custom-format dump",
+    exitCode: 1,
+  }, expectedCode);
+}
+
+function testDiagnostic(name, options, expectedCode) {
+  test(name, () => {
     const details = classifyExternalDiagnostic({
-      stderr,
       sensitiveValues,
-      toolCategory: "pg_dump",
       stage: "custom-format dump",
-      exitCode: 1,
+      ...options,
     });
     assert.equal(details.diagnosticCode, expectedCode);
     const serialized = JSON.stringify(details);
@@ -291,46 +332,26 @@ function testCode(name, stderr, expectedCode) {
   });
 }
 
-function testPreflightCode(name, output, expectedCode) {
-  test(name, () => {
-    let caught;
-    try {
-      parsePostgresPreflightOutput(output, 17);
-    } catch (error) {
-      caught = error;
-    }
-    assert.ok(caught instanceof SafeExternalCommandError);
-    assert.equal(caught.diagnosticCode, expectedCode);
-    assert.equal(caught.toolCategory, "psql");
-    assert.equal(caught.stage, "Docker PostgreSQL preflight");
-    const serialized = JSON.stringify(caught);
-    assert.equal(serialized.includes(output), false);
-    assert.doesNotMatch(serialized, /stdout|stderr|args|env|stack/i);
-  });
-}
-
-function validPreflightOutput(overrides = {}) {
-  return `psql (PostgreSQL) 17.5\n${validProbeJson(overrides)}`;
-}
-
-function validProbeJson(overrides = {}) {
-  return JSON.stringify({
-    probe: 1,
-    serverVersionNum: 170005,
-    transactionReadOnly: true,
-    ...overrides,
-  });
-}
-
 function test(name, run) {
   run();
   results.push({ name, passed: true });
 }
 
-function preflightSource() {
-  const start = source.indexOf("async function runPostgresClientPreflight");
-  const end = source.indexOf("async function createCustomDump", start);
-  assert.ok(start >= 0 && end > start, "Preflight implementation is missing.");
+function executorEvidenceKeys() {
+  const start = source.indexOf("verification = {");
+  const end = source.indexOf("\n    };", start);
+  assert.ok(start >= 0 && end > start, "Executor evidence object is missing.");
+  return source.slice(start, end).split(/\r?\n/).map((line) => {
+    const match = line.match(/^\s{6}([A-Za-z][A-Za-z0-9]*)(?::|,)/);
+    return match?.[1] ?? null;
+  }).filter(Boolean).sort();
+}
+
+function successReportSource() {
+  const marker = source.indexOf("    ok: true,");
+  const start = source.lastIndexOf("  return {", marker);
+  const end = source.indexOf("\n  };", marker);
+  assert.ok(marker >= 0 && start >= 0 && end > start, "Success report is missing.");
   return source.slice(start, end);
 }
 

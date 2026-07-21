@@ -45,19 +45,6 @@ export const PGDUMP_LIBPQ_ENV = Object.freeze({
   PGOPTIONS: "-c default_transaction_read_only=on",
 });
 
-const POSTGRES_PREFLIGHT_SQL = [
-  "BEGIN TRANSACTION ISOLATION LEVEL REPEATABLE READ READ ONLY;",
-  "SET TRANSACTION SNAPSHOT :'source_snapshot';",
-  "",
-  "SELECT json_build_object(",
-  "  'probe', 1,",
-  "  'serverVersionNum', current_setting('server_version_num')::int,",
-  "  'transactionReadOnly', current_setting('transaction_read_only')::boolean",
-  ")::text;",
-  "",
-  "ROLLBACK;",
-].join("\n");
-
 const DIAGNOSTIC_CODES = new Set([
   "gssapi_negotiation_failed",
   "authentication_failed",
@@ -65,12 +52,12 @@ const DIAGNOSTIC_CODES = new Set([
   "connection_timeout",
   "tls_failed",
   "snapshot_import_failed",
-  "preflight_output_invalid",
-  "preflight_read_only_not_confirmed",
   "table_pattern_not_found",
   "permission_denied",
   "client_server_version_mismatch",
+  "postgres_connection_failed",
   "container_start_failed",
+  "container_shell_failed",
   "dump_write_failed",
   "unknown_external_failure",
 ]);
@@ -126,7 +113,6 @@ export async function runBackupRestoreRehearsal(options = {}) {
   let failureDetails = null;
   let sourceReadOnly = false;
   let targetEphemeral = false;
-  let connectionPreflight = null;
 
   try {
     await runDocker(["version", "--format", "{{.Server.Version}}"]);
@@ -149,13 +135,6 @@ export async function runBackupRestoreRehearsal(options = {}) {
     const snapshotResult = await sourceClient.query("select pg_export_snapshot() as snapshot");
     const sourceSnapshot = String(snapshotResult.rows[0]?.snapshot ?? "");
     if (!sourceSnapshot) throw new Error("Source snapshot is unavailable.");
-
-    stage = "Docker PostgreSQL preflight";
-    connectionPreflight = await runPostgresClientPreflight({
-      databaseUrl,
-      postgresMajor,
-      sourceSnapshot,
-    });
 
     stage = "same-snapshot source read";
     const sourceRows = await readRowsFromSource(sourceClient);
@@ -247,7 +226,6 @@ export async function runBackupRestoreRehearsal(options = {}) {
       containerRemoved: false,
       secretsIncluded: false,
       productionWrites: 0,
-      connectionPreflight,
     };
   } catch (error) {
     failureDetails = safeFailureDetails(error, stage);
@@ -306,7 +284,6 @@ export async function runBackupRestoreRehearsal(options = {}) {
     productionWrites: 0,
     containerRemoved: true,
     secretsIncluded: false,
-    connectionPreflight,
   };
 }
 
@@ -363,140 +340,6 @@ function writeSameSnapshotExport(exportDir, rows, counts) {
       telegramTokenCopied: false,
     },
   });
-}
-
-async function runPostgresClientPreflight({ databaseUrl, postgresMajor, sourceSnapshot }) {
-  const connection = parsePostgresConnection(databaseUrl);
-  const image = `postgres:${postgresMajor}-alpine`;
-  const preflightContainer = `${CONTAINER_PREFIX}preflight-${Date.now()}-${randomBytes(4).toString("hex")}`;
-  const preflightCommand = [
-    "umask 077",
-    "trap 'rm -f /run/secrets/.pgpass /run/secrets/preflight.sql' EXIT INT TERM",
-    "cat > /run/secrets/.pgpass",
-    "chmod 0600 /run/secrets/.pgpass",
-    "export PGPASSFILE=/run/secrets/.pgpass",
-    "cat > /run/secrets/preflight.sql <<'PREFLIGHT_SQL'",
-    POSTGRES_PREFLIGHT_SQL,
-    "PREFLIGHT_SQL",
-    "chmod 0600 /run/secrets/preflight.sql",
-    "psql --version",
-    [
-      "psql",
-      "--no-psqlrc",
-      "--quiet",
-      "--tuples-only",
-      "--no-align",
-      "--set=ON_ERROR_STOP=1",
-      '--set=source_snapshot="$SOURCE_SNAPSHOT"',
-      '--host="$DB_HOST"',
-      '--port="$DB_PORT"',
-      '--username="$DB_USER"',
-      '--dbname="$DB_NAME"',
-      "--file=/run/secrets/preflight.sql",
-    ].join(" "),
-    "rm -f /run/secrets/.pgpass /run/secrets/preflight.sql",
-    "trap - EXIT INT TERM",
-  ].join("\n");
-  let result;
-
-  try {
-    result = await runDocker([
-      "run",
-      "--rm",
-      "--interactive",
-      "--name",
-      preflightContainer,
-      "--env",
-      "SOURCE_SNAPSHOT",
-      ...libpqDockerEnvArgs(BASE_SUPAVISOR_LIBPQ_ENV),
-      "--tmpfs",
-      "/run/secrets:rw,noexec,nosuid,nodev,mode=0700",
-      image,
-      "sh",
-      "-ceu",
-      preflightCommand,
-    ], {
-      ...postgresClientEnv(connection, BASE_SUPAVISOR_LIBPQ_ENV),
-      SOURCE_SNAPSHOT: sourceSnapshot,
-    }, {
-      input: `${connection.pgpassLine}\n`,
-      stage: "Docker PostgreSQL preflight",
-      toolCategory: "psql",
-      sensitiveValues: connectionSensitiveValues(databaseUrl, connection, sourceSnapshot),
-    });
-  } finally {
-    const preflightContainerRemoved = await removeContainer(preflightContainer);
-    if (!preflightContainerRemoved) {
-      throw safeExternalError({
-        toolCategory: "docker",
-        stage: "Docker PostgreSQL preflight cleanup",
-        diagnosticCode: "container_start_failed",
-      });
-    }
-  }
-
-  const probe = parsePostgresPreflightOutput(result.stdout, postgresMajor);
-
-  return {
-    containerClientAvailable: true,
-    connectionSuccessful: true,
-    tlsRequested: true,
-    gssEncryptionDisabled: true,
-    authenticationSuccessful: true,
-    serverMajorCompatible: probe.serverMajorCompatible,
-    transactionReadOnly: probe.transactionReadOnly,
-  };
-}
-
-export function parsePostgresPreflightOutput(output, expectedPostgresMajor) {
-  const lines = String(output ?? "").split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
-  const clientMajors = [...new Set(lines.map(postgresClientMajorFromLine).filter(Number.isInteger))];
-  const jsonLines = lines.filter((line) => line.startsWith("{") || line.endsWith("}"));
-
-  if (clientMajors.length !== 1 || jsonLines.length !== 1) {
-    throw preflightSemanticError("preflight_output_invalid");
-  }
-
-  let probe;
-  try {
-    probe = JSON.parse(jsonLines[0]);
-  } catch {
-    throw preflightSemanticError("preflight_output_invalid");
-  }
-
-  const expectedKeys = ["probe", "serverVersionNum", "transactionReadOnly"];
-  const actualKeys = probe && typeof probe === "object" && !Array.isArray(probe)
-    ? Object.keys(probe).sort()
-    : [];
-  if (
-    actualKeys.length !== expectedKeys.length ||
-    !expectedKeys.sort().every((key, index) => actualKeys[index] === key) ||
-    probe.probe !== 1 ||
-    !Number.isInteger(probe.serverVersionNum) ||
-    probe.serverVersionNum < 100_000 ||
-    typeof probe.transactionReadOnly !== "boolean" ||
-    !Number.isInteger(expectedPostgresMajor)
-  ) {
-    throw preflightSemanticError("preflight_output_invalid");
-  }
-
-  if (probe.transactionReadOnly !== true) {
-    throw preflightSemanticError("preflight_read_only_not_confirmed");
-  }
-
-  const clientMajor = clientMajors[0];
-  const serverMajor = Math.floor(probe.serverVersionNum / 10_000);
-  if (clientMajor !== expectedPostgresMajor || serverMajor !== expectedPostgresMajor) {
-    throw preflightSemanticError("client_server_version_mismatch");
-  }
-
-  return {
-    probe: 1,
-    clientMajor,
-    serverMajor,
-    serverMajorCompatible: true,
-    transactionReadOnly: true,
-  };
 }
 
 async function createCustomDump({ databaseUrl, exportDir, postgresMajor, sourceSnapshot }) {
@@ -671,12 +514,6 @@ function postgresMajorFromVersion(value) {
   return major;
 }
 
-function postgresClientMajorFromLine(value) {
-  const match = String(value).match(/\bpsql\s+\(PostgreSQL\)\s+(\d+)/i);
-  const major = Number.parseInt(match?.[1] ?? "", 10);
-  return Number.isInteger(major) && major >= 10 ? major : null;
-}
-
 function countsFromIds(ids) {
   return Object.fromEntries(BACKUP_TABLES.map((table) => [table, ids[table].length]));
 }
@@ -806,10 +643,7 @@ function escapePgpassField(value) {
 export function buildSafeFailureReport(stage, options = {}) {
   const details = options.details ?? safeFailureDetails(null, stage);
   const report = {
-    ok: false,
     status: "error",
-    mode: RESTORE_REHEARSAL_MODE,
-    message: `Restore rehearsal failed during ${safeStage(stage)}. No production writes were made.`,
     failedStage: safeStage(stage),
     diagnosticCode: details.diagnosticCode,
     safeMessage: details.safeMessage,
@@ -958,6 +792,13 @@ export function classifyExternalDiagnostic(options = {}) {
     diagnosticCode = "client_server_version_mismatch";
   } else if (/could not open output file|could not write to output file|no space left on device|input\/output error|write failed/i.test(diagnostic)) {
     diagnosticCode = "dump_write_failed";
+  } else if (/(?:^|\n)(?:\/bin\/)?(?:sh|bash)(?::|\[\d+\]:)[^\n]*(?:syntax error|unexpected token|unknown operand|illegal option)|shell command parsing failure/i.test(diagnostic)) {
+    diagnosticCode = "container_shell_failed";
+  } else if (["pg_dump", "psql"].includes(toolCategory) && (
+    /server closed the connection unexpectedly|connection to server was lost|could not receive data from server|terminating connection|unexpected EOF on client connection|connection reset by peer/i.test(diagnostic) ||
+    (options.exitCode === 2 && !timeout)
+  )) {
+    diagnosticCode = "postgres_connection_failed";
   } else if (toolCategory === "docker" && /cannot connect to the Docker daemon|OCI runtime|container .* failed|unable to find image/i.test(diagnostic)) {
     diagnosticCode = "container_start_failed";
   }
@@ -1019,24 +860,16 @@ function safeMessageForCode(code) {
     connection_timeout: "PostgreSQL client connection timed out.",
     tls_failed: "PostgreSQL TLS negotiation failed.",
     snapshot_import_failed: "PostgreSQL client could not import the synchronized snapshot.",
-    preflight_output_invalid: "PostgreSQL preflight returned an invalid machine-readable result.",
-    preflight_read_only_not_confirmed: "PostgreSQL preflight did not confirm a read-only transaction.",
     table_pattern_not_found: "The allowlisted PostgreSQL table selection did not match.",
     permission_denied: "PostgreSQL denied the requested read-only backup operation.",
     client_server_version_mismatch: "PostgreSQL client and server major versions are incompatible.",
+    postgres_connection_failed: "The PostgreSQL client could not maintain the configured database connection.",
     container_start_failed: "The isolated PostgreSQL client container could not start.",
+    container_shell_failed: "The isolated PostgreSQL client shell wrapper failed.",
     dump_write_failed: "The PostgreSQL custom-format dump could not be written.",
     unknown_external_failure: "An external backup command failed without exposing diagnostic output.",
   };
   return messages[code] ?? messages.unknown_external_failure;
-}
-
-function preflightSemanticError(diagnosticCode) {
-  return safeExternalError({
-    toolCategory: "psql",
-    stage: "Docker PostgreSQL preflight",
-    diagnosticCode,
-  });
 }
 
 function inferToolCategory(command, args) {
