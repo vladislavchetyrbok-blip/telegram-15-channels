@@ -36,6 +36,23 @@ const DUMP_TABLE_ARGS = Object.freeze([
   "--table=public.publication_logs",
   "--table=public.scheduler_runs",
 ]);
+const RESTORE_ARCHIVE_PATH = "/backup/supabase.dump";
+const RESTORE_USE_LIST_PATH = "/tmp/portable-restore.list";
+const POSTGRES_18_RESTORE_OPTIONS = new Set(["--no-policies", "--no-statistics"]);
+
+export const PORTABLE_PG_RESTORE_OPTIONS = Object.freeze([
+  "--exit-on-error",
+  "--no-owner",
+  "--no-privileges",
+  "--no-comments",
+  "--no-policies",
+  "--no-publications",
+  "--no-security-labels",
+  "--no-subscriptions",
+  "--no-table-access-method",
+  "--no-tablespaces",
+  "--no-statistics",
+]);
 
 export const BASE_SUPAVISOR_LIBPQ_ENV = Object.freeze({
   PGGSSENCMODE: "disable",
@@ -68,18 +85,40 @@ const DIAGNOSTIC_CODES = new Set([
   "dump_format_invalid",
   "dump_atomic_rename_failed",
   "dump_checksum_failed",
+  "restore_archive_invalid",
+  "restore_archive_contract_invalid",
+  "restore_pre_data_failed",
+  "restore_data_failed",
+  "restore_post_data_failed",
+  "restore_role_missing",
+  "restore_schema_missing",
+  "restore_function_missing",
+  "restore_type_missing",
+  "restore_relation_missing",
+  "restore_duplicate_object",
+  "restore_constraint_failed",
+  "restore_index_failed",
+  "restore_trigger_failed",
+  "restore_policy_failed",
+  "restore_data_constraint_failed",
+  "restore_permission_denied",
+  "restore_version_mismatch",
+  "restore_unknown_failure",
   "unknown_external_failure",
 ]);
 
 export class SafeExternalCommandError extends Error {
   constructor(details) {
+    const toolCategory = normalizeToolCategory(details.toolCategory);
     const diagnosticCode = DIAGNOSTIC_CODES.has(details.diagnosticCode)
       ? details.diagnosticCode
-      : "unknown_external_failure";
+      : toolCategory === "pg_restore"
+        ? "restore_unknown_failure"
+        : "unknown_external_failure";
     const safeMessage = safeMessageForCode(diagnosticCode);
     super(safeMessage);
     this.name = "SafeExternalCommandError";
-    this.toolCategory = normalizeToolCategory(details.toolCategory);
+    this.toolCategory = toolCategory;
     this.stage = safeStage(details.stage);
     this.exitCode = Number.isInteger(details.exitCode) ? details.exitCode : 1;
     this.timeout = details.timeout === true;
@@ -183,36 +222,51 @@ export async function runBackupRestoreRehearsal(options = {}) {
     targetEphemeral = true;
     await waitForPostgres(restoreContainer);
 
-    stage = "isolated pg_restore";
-    await runDocker([
-      "exec",
+    stage = "restore archive inventory";
+    const restoreInventory = await readRestoreArchiveInventory(
       restoreContainer,
-      "pg_restore",
-      "--exit-on-error",
-      "--no-owner",
-      "--no-privileges",
-      `--dbname=${RESTORE_DATABASE}`,
-      "--username=postgres",
-      "/backup/supabase.dump",
-    ]);
+      postgresMajor,
+    );
 
-    stage = "restored table verification";
-    await verifyRestoredTables(restoreContainer);
-    const restoredIds = await readIdsFromRestore(restoreContainer);
-    const restoredCounts = countsFromIds(restoredIds);
-    const restoredHashes = hashesFromIds(restoredIds);
-    const countMatches = tableFlags((table) => (
-      sourceCounts[table] === restoredCounts[table] &&
-      exported.counts[table] === sourceCounts[table]
-    ));
-    const idHashMatches = tableFlags((table) => (
-      sourceHashes[table] === restoredHashes[table] &&
-      exported.hashes[table] === sourceHashes[table]
-    ));
+    stage = "isolated pg_restore pre-data";
+    await runRestoreArchiveSection(restoreContainer, "pre-data", stage, postgresMajor);
+    await verifyRestoredTables(restoreContainer, {
+      stage,
+      diagnosticCode: "restore_pre_data_failed",
+    });
 
-    if (!allFlagsTrue(countMatches) || !allFlagsTrue(idHashMatches)) {
-      throw new Error("Restored data verification failed.");
-    }
+    stage = "isolated pg_restore data";
+    await runRestoreArchiveSection(restoreContainer, "data", stage, postgresMajor);
+    await verifyRestoredSnapshot({
+      containerName: restoreContainer,
+      sourceCounts,
+      sourceHashes,
+      exported,
+      stage,
+      diagnosticCode: "restore_data_failed",
+    });
+
+    stage = "isolated pg_restore post-data";
+    await runRestoreArchiveSection(restoreContainer, "post-data", stage, postgresMajor);
+    await verifyRestoredTables(restoreContainer, {
+      stage,
+      diagnosticCode: "restore_post_data_failed",
+    });
+    const restoredSnapshot = await verifyRestoredSnapshot({
+      containerName: restoreContainer,
+      sourceCounts,
+      sourceHashes,
+      exported,
+      stage,
+      diagnosticCode: "restore_post_data_failed",
+    });
+    await verifyRestoredPostData(restoreContainer, restoreInventory, stage);
+
+    const {
+      restoredCounts,
+      countMatches,
+      idHashMatches,
+    } = restoredSnapshot;
 
     verification = {
       performedAt: new Date().toISOString(),
@@ -454,21 +508,194 @@ async function waitForPostgres(containerName) {
   throw new Error("Restore PostgreSQL did not become ready.");
 }
 
-async function verifyRestoredTables(containerName) {
-  const tableNames = BACKUP_TABLES.map((table) => `'${table}'`).join(",");
-  const result = await runPsql(
+async function readRestoreArchiveInventory(containerName, postgresMajor) {
+  const stage = "restore archive inventory";
+  const result = await runDocker([
+    "exec",
     containerName,
-    `select count(*) from information_schema.tables where table_schema = 'public' and table_name in (${tableNames});`,
-  );
-  if (Number(result.trim()) !== BACKUP_TABLES.length) throw new Error("Restored tables are missing.");
+    "pg_restore",
+    "--list",
+    RESTORE_ARCHIVE_PATH,
+  ], {}, {
+    stage,
+    toolCategory: "pg_restore",
+    timeoutMs: COMMAND_TIMEOUT_MS,
+  });
+  const inventory = validateRestoreArchiveInventory(result.stdout, { postgresMajor, stage });
+  await writePortableRestoreList(containerName, buildPortableRestoreList(result.stdout), stage);
+  return inventory;
 }
 
-async function readIdsFromRestore(containerName) {
+async function writePortableRestoreList(containerName, portableList, stage) {
+  await runDocker([
+    "exec",
+    "--interactive",
+    containerName,
+    "sh",
+    "-ceu",
+    `umask 077; cat > ${RESTORE_USE_LIST_PATH}`,
+  ], {}, {
+    input: portableList,
+    stage,
+    toolCategory: "docker",
+    timeoutMs: COMMAND_TIMEOUT_MS,
+  });
+}
+
+async function runRestoreArchiveSection(containerName, section, stage, postgresMajor) {
+  await runDocker([
+    "exec",
+    containerName,
+    "pg_restore",
+    ...portablePgRestoreOptionsForMajor(postgresMajor),
+    `--use-list=${RESTORE_USE_LIST_PATH}`,
+    `--section=${section}`,
+    "--single-transaction",
+    `--dbname=${RESTORE_DATABASE}`,
+    "--username=postgres",
+    RESTORE_ARCHIVE_PATH,
+  ], {}, {
+    stage,
+    toolCategory: "pg_restore",
+    timeoutMs: COMMAND_TIMEOUT_MS,
+  });
+}
+
+export function portablePgRestoreOptionsForMajor(postgresMajor) {
+  const major = Number.parseInt(String(postgresMajor ?? ""), 10);
+  if (!Number.isInteger(major) || major < 10) {
+    throw restoreSafeError("restore_version_mismatch", "restore archive inventory");
+  }
+  return Object.freeze(PORTABLE_PG_RESTORE_OPTIONS.filter((option) => (
+    major >= 18 || !POSTGRES_18_RESTORE_OPTIONS.has(option)
+  )));
+}
+
+function buildPortableRestoreList(value) {
+  const lines = String(value ?? "").split(/\r?\n/).filter((line) => {
+    const description = restoreTocDescription(line);
+    return !description || !/^(?:POLICY|ROW SECURITY)\s/.test(description);
+  });
+  return `${lines.join("\n").replace(/\n+$/, "")}\n`;
+}
+
+export function validateRestoreArchiveInventory(value, options = {}) {
+  const stage = safeStage(options.stage ?? "restore archive inventory");
+  const text = String(value ?? "");
+  if (!text.trim()) throw restoreSafeError("restore_archive_invalid", stage);
+
+  const expectedMajor = Number.parseInt(String(options.postgresMajor ?? ""), 10);
+  if (Number.isInteger(expectedMajor)) {
+    const versionMatch = text.match(/Dumped by pg_dump version:\s*(\d+)(?:\.|\s|$)/i);
+    const archiveMajor = Number.parseInt(versionMatch?.[1] ?? "", 10);
+    if (!Number.isInteger(archiveMajor)) {
+      throw restoreSafeError("restore_archive_invalid", stage);
+    }
+    if (archiveMajor !== expectedMajor) {
+      throw restoreSafeError("restore_version_mismatch", stage);
+    }
+  }
+
+  const counts = {
+    tableEntries: 0,
+    tableDataEntries: 0,
+    indexEntries: 0,
+    constraintEntries: 0,
+    foreignKeyEntries: 0,
+    triggerEntries: 0,
+    policyEntries: 0,
+    rowSecurityEntries: 0,
+    commentEntries: 0,
+    aclEntries: 0,
+    otherEntries: 0,
+  };
+  const tableEntries = [];
+  const tableDataEntries = [];
+  let recognizedEntries = 0;
+
+  for (const rawLine of text.split(/\r?\n/)) {
+    const line = rawLine.trim();
+    if (!line || line.startsWith(";")) continue;
+    const description = restoreTocDescription(line);
+    if (!description) continue;
+    recognizedEntries += 1;
+
+    const tableDataMatch = description.match(/^TABLE DATA\s+(\S+)\s+(\S+)(?:\s|$)/);
+    if (tableDataMatch) {
+      counts.tableDataEntries += 1;
+      tableDataEntries.push(`${tableDataMatch[1]}.${tableDataMatch[2]}`);
+      continue;
+    }
+
+    const tableMatch = description.match(/^TABLE\s+(\S+)\s+(\S+)(?:\s|$)/);
+    if (tableMatch) {
+      counts.tableEntries += 1;
+      tableEntries.push(`${tableMatch[1]}.${tableMatch[2]}`);
+      continue;
+    }
+
+    if (/^FK CONSTRAINT\s/.test(description)) counts.foreignKeyEntries += 1;
+    else if (/^CONSTRAINT\s/.test(description)) counts.constraintEntries += 1;
+    else if (/^INDEX\s/.test(description)) counts.indexEntries += 1;
+    else if (/^TRIGGER\s/.test(description)) counts.triggerEntries += 1;
+    else if (/^POLICY\s/.test(description)) counts.policyEntries += 1;
+    else if (/^ROW SECURITY\s/.test(description)) counts.rowSecurityEntries += 1;
+    else if (/^COMMENT\s/.test(description)) counts.commentEntries += 1;
+    else if (/^(?:DEFAULT )?ACL\s/.test(description)) counts.aclEntries += 1;
+    else counts.otherEntries += 1;
+  }
+
+  if (recognizedEntries === 0) {
+    throw restoreSafeError("restore_archive_invalid", stage);
+  }
+
+  const requiredTables = BACKUP_TABLES.map((table) => `public.${table}`).sort();
+  const actualTables = [...tableEntries].sort();
+  const actualTableData = [...tableDataEntries].sort();
+  if (
+    actualTables.length !== requiredTables.length ||
+    actualTableData.length !== requiredTables.length ||
+    !requiredTables.every((table, index) => actualTables[index] === table) ||
+    !requiredTables.every((table, index) => actualTableData[index] === table)
+  ) {
+    throw restoreSafeError("restore_archive_contract_invalid", stage);
+  }
+
+  return Object.freeze({ ...counts });
+}
+
+function restoreTocDescription(line) {
+  const separator = String(line ?? "").indexOf(";");
+  if (separator < 1) return null;
+  return String(line).slice(separator + 1).trim().match(/^\d+\s+\d+\s+(.+)$/)?.[1] ?? null;
+}
+
+async function verifyRestoredTables(containerName, options = {}) {
+  const stage = safeStage(options.stage ?? "isolated pg_restore pre-data");
+  const diagnosticCode = options.diagnosticCode ?? restoreFallbackCode(stage);
+  const tableNames = BACKUP_TABLES.map((table) => `'${table}'`).join(",");
+  try {
+    const result = await runPsql(
+      containerName,
+      `select count(*) from information_schema.tables where table_schema = 'public' and table_name in (${tableNames});`,
+      { stage },
+    );
+    if (Number(result.trim()) !== BACKUP_TABLES.length) {
+      throw restoreSafeError(diagnosticCode, stage);
+    }
+  } catch (error) {
+    if (error instanceof SafeExternalCommandError && error.toolCategory === "pg_restore") throw error;
+    throw restoreSafeError(diagnosticCode, stage);
+  }
+}
+
+async function readIdsFromRestore(containerName, options = {}) {
   const ids = {};
   for (const table of BACKUP_TABLES) {
     const output = await runPsql(
       containerName,
       `select encode(convert_to(id::text, 'UTF8'), 'hex') from public.${table} order by id::text asc;`,
+      options,
     );
     ids[table] = output
       ? output.split(/\r?\n/).filter(Boolean).map((encoded) => Buffer.from(encoded, "hex").toString("utf8"))
@@ -477,7 +704,66 @@ async function readIdsFromRestore(containerName) {
   return ids;
 }
 
-async function runPsql(containerName, sql) {
+async function verifyRestoredSnapshot({
+  containerName,
+  sourceCounts,
+  sourceHashes,
+  exported,
+  stage,
+  diagnosticCode,
+}) {
+  try {
+    const restoredIds = await readIdsFromRestore(containerName, { stage });
+    const restoredCounts = countsFromIds(restoredIds);
+    const restoredHashes = hashesFromIds(restoredIds);
+    const countMatches = tableFlags((table) => (
+      sourceCounts[table] === restoredCounts[table] &&
+      exported.counts[table] === sourceCounts[table]
+    ));
+    const idHashMatches = tableFlags((table) => (
+      sourceHashes[table] === restoredHashes[table] &&
+      exported.hashes[table] === sourceHashes[table]
+    ));
+
+    if (!allFlagsTrue(countMatches) || !allFlagsTrue(idHashMatches)) {
+      throw restoreSafeError(diagnosticCode, stage);
+    }
+    return { restoredCounts, countMatches, idHashMatches };
+  } catch (error) {
+    if (error instanceof SafeExternalCommandError && error.toolCategory === "pg_restore") throw error;
+    throw restoreSafeError(diagnosticCode, stage);
+  }
+}
+
+async function verifyRestoredPostData(containerName, inventory, stage) {
+  const tableNames = BACKUP_TABLES.map((table) => `'${table}'`).join(",");
+  try {
+    const indexCount = Number(await runPsql(
+      containerName,
+      `select count(*) from pg_indexes where schemaname = 'public' and tablename in (${tableNames});`,
+      { stage },
+    ));
+    const constraintCount = Number(await runPsql(
+      containerName,
+      `select count(*) from pg_constraint c join pg_class r on r.oid = c.conrelid join pg_namespace n on n.oid = r.relnamespace where n.nspname = 'public' and r.relname in (${tableNames});`,
+      { stage },
+    ));
+    const expectedConstraintCount = inventory.constraintEntries + inventory.foreignKeyEntries;
+    if (
+      !Number.isInteger(indexCount) ||
+      !Number.isInteger(constraintCount) ||
+      indexCount < inventory.indexEntries ||
+      constraintCount < expectedConstraintCount
+    ) {
+      throw restoreSafeError("restore_post_data_failed", stage);
+    }
+  } catch (error) {
+    if (error instanceof SafeExternalCommandError && error.toolCategory === "pg_restore") throw error;
+    throw restoreSafeError("restore_post_data_failed", stage);
+  }
+}
+
+async function runPsql(containerName, sql, options = {}) {
   const result = await runDocker([
     "exec",
     containerName,
@@ -490,7 +776,11 @@ async function runPsql(containerName, sql) {
     `--dbname=${RESTORE_DATABASE}`,
     "--command",
     sql,
-  ]);
+  ], {}, {
+    stage: options.stage,
+    toolCategory: "psql",
+    timeoutMs: COMMAND_TIMEOUT_MS,
+  });
   return result.stdout.trim();
 }
 
@@ -763,10 +1053,15 @@ export async function runCommandToAtomicFile(command, args, filePath, options = 
     timer = null;
 
     if (processOutcome.spawnFailed) {
+      const spawnToolCategory = command === "docker" ? "docker" : toolCategory;
       throw safeExternalError({
-        toolCategory: command === "docker" ? "docker" : toolCategory,
+        toolCategory: spawnToolCategory,
         stage,
-        diagnosticCode: command === "docker" ? "container_start_failed" : "unknown_external_failure",
+        diagnosticCode: spawnToolCategory === "docker"
+          ? "container_start_failed"
+          : spawnToolCategory === "pg_restore"
+            ? restoreFallbackCode(stage)
+            : "unknown_external_failure",
       });
     }
 
@@ -955,7 +1250,11 @@ function runCommand(command, args, options = {}) {
       reject(safeExternalError({
         toolCategory,
         stage,
-        diagnosticCode: toolCategory === "docker" ? "container_start_failed" : "unknown_external_failure",
+        diagnosticCode: toolCategory === "docker"
+          ? "container_start_failed"
+          : toolCategory === "pg_restore"
+            ? restoreFallbackCode(stage)
+            : "unknown_external_failure",
       }));
     });
     child.on("close", (code) => {
@@ -989,7 +1288,12 @@ export function classifyExternalDiagnostic(options = {}) {
   const timeout = options.timeout === true;
   let diagnosticCode = "unknown_external_failure";
 
-  if (timeout || /connection timed out|timeout expired|operation timed out|context deadline exceeded/i.test(diagnostic)) {
+  if (toolCategory === "pg_restore") {
+    diagnosticCode = classifyPgRestoreDiagnostic({
+      diagnostic,
+      stage: options.stage,
+    });
+  } else if (timeout || /connection timed out|timeout expired|operation timed out|context deadline exceeded/i.test(diagnostic)) {
     diagnosticCode = "connection_timeout";
   } else if (/invalid response to GSSAPI negotiation|GSSAPI negotiation|gssencmode|GSS encryption/i.test(diagnostic)) {
     diagnosticCode = "gssapi_negotiation_failed";
@@ -1028,6 +1332,41 @@ export function classifyExternalDiagnostic(options = {}) {
     diagnosticCode,
     safeMessage: safeMessageForCode(diagnosticCode),
   };
+}
+
+export function classifyPgRestoreDiagnostic(options = {}) {
+  const diagnostic = String(options.diagnostic ?? "");
+  const stage = safeStage(options.stage);
+
+  if (/unsupported version(?:\s+\(?\d+(?:\.\d+)*\)?)? in file header|unsupported archive version|archive version .* not supported/i.test(diagnostic)) {
+    return "restore_version_mismatch";
+  }
+  if (/input file does not appear to be a valid archive|does not appear to be a valid archive|input file is too short|could not read from input file|unexpected end of file|invalid archive/i.test(diagnostic)) {
+    return "restore_archive_invalid";
+  }
+  if (/\brole\b[^\r\n]*\bdoes not exist\b/i.test(diagnostic)) return "restore_role_missing";
+  if (/\bschema\b[^\r\n]*\bdoes not exist\b/i.test(diagnostic)) return "restore_schema_missing";
+  if (/\bfunction\b[^\r\n]*\bdoes not exist\b/i.test(diagnostic)) return "restore_function_missing";
+  if (/\btype\b[^\r\n]*\bdoes not exist\b/i.test(diagnostic)) return "restore_type_missing";
+  if (/\brelation\b[^\r\n]*\bdoes not exist\b/i.test(diagnostic)) return "restore_relation_missing";
+  if (/already exists|multiple primary keys/i.test(diagnostic)) return "restore_duplicate_object";
+  if (/violates foreign key|violates check constraint|COPY[^\r\n]*(?:failed|error)|error during COPY/i.test(diagnostic)) {
+    return "restore_data_constraint_failed";
+  }
+  if (/could not create constraint|CREATE CONSTRAINT|ALTER TABLE[^\r\n]*ADD CONSTRAINT/i.test(diagnostic)) {
+    return "restore_constraint_failed";
+  }
+  if (/could not create index|CREATE(?: UNIQUE)? INDEX/i.test(diagnostic)) return "restore_index_failed";
+  if (/could not create trigger|CREATE TRIGGER|\btrigger\b[^\r\n]*(?:failed|error)/i.test(diagnostic)) {
+    return "restore_trigger_failed";
+  }
+  if (/could not create policy|CREATE POLICY|\bpolicy\b[^\r\n]*(?:failed|error)/i.test(diagnostic)) {
+    return "restore_policy_failed";
+  }
+  if (/permission denied|insufficient privilege|must be owner|not allowed to/i.test(diagnostic)) {
+    return "restore_permission_denied";
+  }
+  return restoreFallbackCode(stage);
 }
 
 export function redactExternalDiagnostic(value, sensitiveValues = []) {
@@ -1069,6 +1408,23 @@ function safeExternalError({ toolCategory, stage, diagnosticCode, exitCode = 1, 
   });
 }
 
+function restoreSafeError(diagnosticCode, stage) {
+  return safeExternalError({
+    toolCategory: "pg_restore",
+    stage,
+    diagnosticCode,
+  });
+}
+
+function restoreFallbackCode(stage) {
+  const normalizedStage = safeStage(stage).toLowerCase();
+  if (normalizedStage.includes("inventory")) return "restore_archive_invalid";
+  if (normalizedStage.includes("pre-data")) return "restore_pre_data_failed";
+  if (normalizedStage.includes("post-data")) return "restore_post_data_failed";
+  if (normalizedStage.includes("data")) return "restore_data_failed";
+  return "restore_unknown_failure";
+}
+
 function safeMessageForCode(code) {
   const messages = {
     gssapi_negotiation_failed: "PostgreSQL client negotiation through the configured pooler failed.",
@@ -1090,6 +1446,25 @@ function safeMessageForCode(code) {
     dump_format_invalid: "The PostgreSQL output is not a valid custom-format dump.",
     dump_atomic_rename_failed: "The PostgreSQL dump could not be finalized atomically.",
     dump_checksum_failed: "The PostgreSQL dump checksum could not be calculated.",
+    restore_archive_invalid: "The PostgreSQL restore archive is invalid or unreadable.",
+    restore_archive_contract_invalid: "The PostgreSQL restore archive does not match the approved table contract.",
+    restore_pre_data_failed: "The isolated PostgreSQL pre-data restore phase failed.",
+    restore_data_failed: "The isolated PostgreSQL data restore phase failed.",
+    restore_post_data_failed: "The isolated PostgreSQL post-data restore phase failed.",
+    restore_role_missing: "The isolated restore requires a PostgreSQL role that is unavailable in the target.",
+    restore_schema_missing: "The isolated restore requires a PostgreSQL schema that is unavailable in the target.",
+    restore_function_missing: "The isolated restore requires a PostgreSQL function that is unavailable in the target.",
+    restore_type_missing: "The isolated restore requires a PostgreSQL type that is unavailable in the target.",
+    restore_relation_missing: "The isolated restore requires a PostgreSQL relation that is unavailable in the target.",
+    restore_duplicate_object: "The isolated restore encountered a duplicate PostgreSQL object.",
+    restore_constraint_failed: "The isolated restore could not create a PostgreSQL constraint.",
+    restore_index_failed: "The isolated restore could not create a PostgreSQL index.",
+    restore_trigger_failed: "The isolated restore could not create a PostgreSQL trigger.",
+    restore_policy_failed: "The isolated restore could not create a PostgreSQL policy.",
+    restore_data_constraint_failed: "The isolated restore data violates a PostgreSQL constraint.",
+    restore_permission_denied: "PostgreSQL denied an operation in the isolated restore target.",
+    restore_version_mismatch: "The PostgreSQL restore client cannot read this archive version.",
+    restore_unknown_failure: "The isolated PostgreSQL restore failed without exposing diagnostic output.",
     unknown_external_failure: "An external backup command failed without exposing diagnostic output.",
   };
   return messages[code] ?? messages.unknown_external_failure;
@@ -1109,5 +1484,5 @@ function normalizeToolCategory(value) {
 
 function safeStage(value) {
   const stage = String(value ?? "external command").trim();
-  return /^[A-Za-z0-9 -]{1,80}$/.test(stage) ? stage : "external command";
+  return /^[A-Za-z0-9 _-]{1,80}$/.test(stage) ? stage : "external command";
 }
