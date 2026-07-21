@@ -15,13 +15,16 @@ import path from "node:path";
 import {
   BASE_SUPAVISOR_LIBPQ_ENV,
   PGDUMP_LIBPQ_ENV,
+  PORTABLE_PG_RESTORE_OPTIONS,
   SafeExternalCommandError,
   buildSafeFailureReport,
   classifyDumpFileDiagnostic,
   classifyExternalDiagnostic,
+  portablePgRestoreOptionsForMajor,
   redactExternalDiagnostic,
   runCommandToAtomicFile,
   validateCustomDumpFile,
+  validateRestoreArchiveInventory,
 } from "./lib/backup-restore-rehearsal.mjs";
 
 const source = readFileSync("scripts/lib/backup-restore-rehearsal.mjs", "utf8");
@@ -83,6 +86,27 @@ const sensitiveValues = [
   fixture.database,
   fixture.snapshot,
 ];
+const restoreArchiveList = [
+  "; Archive created by a non-production fixture",
+  "; Dumped by pg_dump version: 17.6",
+  "1; 1259 100 TABLE public channels fixture_owner",
+  "2; 1259 101 TABLE public posts fixture_owner",
+  "3; 1259 102 TABLE public publication_logs fixture_owner",
+  "4; 1259 103 TABLE public scheduler_runs fixture_owner",
+  "5; 0 100 TABLE DATA public channels fixture_owner",
+  "6; 0 101 TABLE DATA public posts fixture_owner",
+  "7; 0 102 TABLE DATA public publication_logs fixture_owner",
+  "8; 0 103 TABLE DATA public scheduler_runs fixture_owner",
+  "9; 1259 104 INDEX public channels_slug_idx fixture_owner",
+  "10; 2606 105 CONSTRAINT public channels channels_pkey fixture_owner",
+  "11; 2606 106 FK CONSTRAINT public posts posts_channel_id_fkey fixture_owner",
+  "12; 2620 107 TRIGGER public posts posts_fixture_trigger fixture_owner",
+  "13; 3256 108 POLICY public channels channels_fixture_policy fixture_owner",
+  "14; 0 109 ROW SECURITY public channels fixture_owner",
+  "15; 0 110 COMMENT - TABLE public channels fixture_owner",
+  "16; 0 111 ACL public channels fixture_owner",
+  "17; 1259 112 SEQUENCE public fixture_sequence fixture_owner",
+].join("\n");
 
 test("base Supavisor libpq environment excludes session-level PGOPTIONS", () => {
   assert.deepEqual(BASE_SUPAVISOR_LIBPQ_ENV, {
@@ -483,6 +507,306 @@ await testAsync("non-zero pg_dump preserves safe process diagnostics and removes
   assert.doesNotMatch(serialized, /stdout|stderr|args|env|stack|PGDMP/i);
 });
 
+test("pg_restore inventory receives its exact stage and timeout", () => {
+  const implementation = restoreInventorySource();
+  assert.match(implementation, /const stage = "restore archive inventory"/);
+  assert.match(implementation, /stage,\s*toolCategory: "pg_restore",\s*timeoutMs: COMMAND_TIMEOUT_MS/);
+});
+
+test("pg_restore pre-data receives its exact stage", () => {
+  assert.match(restoreSuccessFlowSource(), /stage = "isolated pg_restore pre-data";\s*await runRestoreArchiveSection\(restoreContainer, "pre-data", stage, postgresMajor\)/);
+});
+
+test("pg_restore data receives its exact stage", () => {
+  assert.match(restoreSuccessFlowSource(), /stage = "isolated pg_restore data";\s*await runRestoreArchiveSection\(restoreContainer, "data", stage, postgresMajor\)/);
+});
+
+test("pg_restore post-data receives its exact stage", () => {
+  assert.match(restoreSuccessFlowSource(), /stage = "isolated pg_restore post-data";\s*await runRestoreArchiveSection\(restoreContainer, "post-data", stage, postgresMajor\)/);
+});
+
+test("every pg_restore command uses the pg_restore tool category", () => {
+  for (const implementation of [restoreInventorySource(), restoreSectionSource()]) {
+    assert.match(implementation, /toolCategory: "pg_restore"/);
+    assert.match(implementation, /timeoutMs: COMMAND_TIMEOUT_MS/);
+  }
+});
+
+test("pg_restore failures never fall back to external command", () => {
+  for (const stage of [
+    "restore archive inventory",
+    "isolated pg_restore pre-data",
+    "isolated pg_restore data",
+    "isolated pg_restore post-data",
+  ]) {
+    const details = classifyExternalDiagnostic({
+      stderr: "unclassified isolated restore failure",
+      toolCategory: "pg_restore",
+      stage,
+      exitCode: 1,
+    });
+    assert.equal(details.stage, stage);
+    assert.notEqual(details.stage, "external command");
+    assert.notEqual(details.diagnosticCode, "unknown_external_failure");
+  }
+});
+
+test("pg_restore invalid diagnostic codes fail closed to restore_unknown_failure", () => {
+  const error = new SafeExternalCommandError({
+    toolCategory: "pg_restore",
+    stage: "isolated pg_restore",
+    diagnosticCode: "not_allowlisted",
+  });
+  assert.equal(error.diagnosticCode, "restore_unknown_failure");
+  assert.notEqual(error.diagnosticCode, "unknown_external_failure");
+});
+
+test("valid restore TOC has four tables, four data entries, and safe counts", () => {
+  const inventory = validateRestoreArchiveInventory(restoreArchiveList, { postgresMajor: 17 });
+  assert.deepEqual(inventory, {
+    tableEntries: 4,
+    tableDataEntries: 4,
+    indexEntries: 1,
+    constraintEntries: 1,
+    foreignKeyEntries: 1,
+    triggerEntries: 1,
+    policyEntries: 1,
+    rowSecurityEntries: 1,
+    commentEntries: 1,
+    aclEntries: 1,
+    otherEntries: 1,
+  });
+  assert.doesNotMatch(JSON.stringify(inventory), /fixture_owner|channels_slug_idx|channels_pkey|channels_fixture_policy|posts_fixture_trigger/i);
+});
+
+test("missing restore TABLE violates the archive contract", () => {
+  assertSafeRestoreCode(
+    () => validateRestoreArchiveInventory(withoutRestoreLine("TABLE public scheduler_runs"), { postgresMajor: 17 }),
+    "restore_archive_contract_invalid",
+  );
+});
+
+test("missing restore TABLE DATA violates the archive contract", () => {
+  assertSafeRestoreCode(
+    () => validateRestoreArchiveInventory(withoutRestoreLine("TABLE DATA public scheduler_runs"), { postgresMajor: 17 }),
+    "restore_archive_contract_invalid",
+  );
+});
+
+test("unexpected restore TABLE violates the archive contract", () => {
+  const unexpected = `${restoreArchiveList}\n18; 1259 113 TABLE public unexpected_table fixture_owner`;
+  assertSafeRestoreCode(
+    () => validateRestoreArchiveInventory(unexpected, { postgresMajor: 17 }),
+    "restore_archive_contract_invalid",
+  );
+});
+
+test("empty restore archive list is rejected safely", () => {
+  assertSafeRestoreCode(
+    () => validateRestoreArchiveInventory("\n\r\n", { postgresMajor: 17 }),
+    "restore_archive_invalid",
+  );
+});
+
+testRestoreDiagnostic(
+  "invalid restore archive",
+  "input file does not appear to be a valid archive",
+  "restore archive inventory",
+  "restore_archive_invalid",
+);
+
+test("restore archive major mismatch is rejected safely", () => {
+  assertSafeRestoreCode(
+    () => validateRestoreArchiveInventory(restoreArchiveList, { postgresMajor: 16 }),
+    "restore_version_mismatch",
+  );
+});
+
+testRestoreDiagnostic("missing restore role", 'role "private_restore_owner" does not exist', "isolated pg_restore pre-data", "restore_role_missing");
+testRestoreDiagnostic("missing restore schema", 'schema "private_schema" does not exist', "isolated pg_restore pre-data", "restore_schema_missing");
+testRestoreDiagnostic("missing restore function", "function private_function(integer) does not exist", "isolated pg_restore pre-data", "restore_function_missing");
+testRestoreDiagnostic("missing restore type", 'type "private_type" does not exist', "isolated pg_restore pre-data", "restore_type_missing");
+testRestoreDiagnostic("missing restore relation", 'relation "private_relation" does not exist', "isolated pg_restore data", "restore_relation_missing");
+testRestoreDiagnostic("duplicate restore object", "relation already exists", "isolated pg_restore pre-data", "restore_duplicate_object");
+testRestoreDiagnostic("multiple primary keys", "multiple primary keys for table are not allowed", "isolated pg_restore post-data", "restore_duplicate_object");
+testRestoreDiagnostic("restore foreign-key violation", "violates foreign key constraint", "isolated pg_restore data", "restore_data_constraint_failed");
+testRestoreDiagnostic("restore COPY failure", "COPY public.posts failed", "isolated pg_restore data", "restore_data_constraint_failed");
+testRestoreDiagnostic("restore constraint creation", "could not create constraint", "isolated pg_restore post-data", "restore_constraint_failed");
+testRestoreDiagnostic("restore index creation", "could not create index", "isolated pg_restore post-data", "restore_index_failed");
+testRestoreDiagnostic("restore policy creation", "CREATE POLICY failed", "isolated pg_restore post-data", "restore_policy_failed");
+testRestoreDiagnostic("restore trigger creation", "CREATE TRIGGER failed", "isolated pg_restore post-data", "restore_trigger_failed");
+testRestoreDiagnostic("restore permission denial", "permission denied for schema public", "isolated pg_restore pre-data", "restore_permission_denied");
+testRestoreDiagnostic("restore archive version mismatch", "unsupported version 1.16 in file header", "restore archive inventory", "restore_version_mismatch");
+testRestoreDiagnostic("parenthesized restore archive version mismatch", "unsupported version (1.16) in file header", "restore archive inventory", "restore_version_mismatch");
+testRestoreDiagnostic("unknown pre-data restore failure", "unclassified failure", "isolated pg_restore pre-data", "restore_pre_data_failed");
+testRestoreDiagnostic("unknown data restore failure", "unclassified failure", "isolated pg_restore data", "restore_data_failed");
+testRestoreDiagnostic("unknown post-data restore failure", "unclassified failure", "isolated pg_restore post-data", "restore_post_data_failed");
+testRestoreDiagnostic("unknown restore failure", "unclassified failure", "isolated pg_restore", "restore_unknown_failure");
+
+test("pg_restore safe report excludes raw stderr", () => {
+  const raw = 'pg_restore: role "private_restore_owner" does not exist at private object';
+  const details = classifyExternalDiagnostic({
+    stderr: raw,
+    toolCategory: "pg_restore",
+    stage: "isolated pg_restore pre-data",
+    exitCode: 1,
+  });
+  const report = buildSafeFailureReport(details.stage, {
+    details,
+    sourceReadOnly: true,
+    targetEphemeral: true,
+    containerRemoved: true,
+  });
+  assert.deepEqual(Object.keys(report).sort(), failureReportFields);
+  assert.equal(JSON.stringify(report).includes(raw), false);
+  assert.doesNotMatch(JSON.stringify(report), /stdout|stderr|private_restore_owner/i);
+});
+
+test("pg_restore safe diagnostics do not retain role names", () => {
+  const details = classifyExternalDiagnostic({
+    stderr: 'role "sensitive_role_name" does not exist',
+    toolCategory: "pg_restore",
+    stage: "isolated pg_restore pre-data",
+    exitCode: 1,
+  });
+  assert.equal(details.diagnosticCode, "restore_role_missing");
+  assert.equal(JSON.stringify(details).includes("sensitive_role_name"), false);
+});
+
+test("pg_restore safe diagnostics do not retain function schema or object details", () => {
+  for (const diagnostic of [
+    "function sensitive_function does not exist",
+    "schema sensitive_schema does not exist",
+    "relation sensitive_relation does not exist",
+  ]) {
+    const details = classifyExternalDiagnostic({
+      stderr: diagnostic,
+      toolCategory: "pg_restore",
+      stage: "isolated pg_restore pre-data",
+      exitCode: 1,
+    });
+    const serialized = JSON.stringify(details);
+    assert.equal(serialized.includes("sensitive_"), false);
+  }
+});
+
+test("pg_restore failure reports contain no command args or environment", () => {
+  const details = classifyExternalDiagnostic({
+    stderr: "unclassified failure",
+    toolCategory: "pg_restore",
+    stage: "isolated pg_restore data",
+    exitCode: 1,
+  });
+  const serialized = JSON.stringify(buildSafeFailureReport(details.stage, { details }));
+  assert.doesNotMatch(serialized, /stdout|stderr|args|env|stack|command/i);
+});
+
+for (const option of [
+  "--exit-on-error",
+  "--no-owner",
+  "--no-privileges",
+  "--no-comments",
+  "--no-policies",
+  "--no-publications",
+  "--no-security-labels",
+  "--no-subscriptions",
+  "--no-table-access-method",
+  "--no-tablespaces",
+  "--no-statistics",
+]) {
+  test(`portable restore options contain ${option}`, () => {
+    assert.equal(PORTABLE_PG_RESTORE_OPTIONS.includes(option), true);
+  });
+}
+
+test("PostgreSQL 18 receives the complete portable restore option set", () => {
+  assert.deepEqual(portablePgRestoreOptionsForMajor(18), PORTABLE_PG_RESTORE_OPTIONS);
+});
+
+test("pre-18 restore omits only switches introduced in PostgreSQL 18", () => {
+  const options = portablePgRestoreOptionsForMajor(17);
+  assert.equal(options.includes("--no-policies"), false);
+  assert.equal(options.includes("--no-statistics"), false);
+  for (const option of PORTABLE_PG_RESTORE_OPTIONS) {
+    if (!["--no-policies", "--no-statistics"].includes(option)) assert.equal(options.includes(option), true);
+  }
+});
+
+test("portable restore uses a filtered in-container TOC list", () => {
+  const inventory = restoreInventorySource();
+  const section = restoreSectionSource();
+  assert.match(inventory, /buildPortableRestoreList\(result\.stdout\)/);
+  assert.match(inventory, /writePortableRestoreList\(containerName/);
+  assert.match(section, /`--use-list=\$\{RESTORE_USE_LIST_PATH\}`/);
+});
+
+test("portable restore avoids unsafe restore switches", () => {
+  for (const option of [
+    "--clean",
+    "--create",
+    "--disable-triggers",
+    "--superuser",
+    "--use-set-session-authorization",
+  ]) {
+    assert.equal(PORTABLE_PG_RESTORE_OPTIONS.includes(option), false);
+  }
+});
+
+test("raw pg_dump remains full and is not given restore-only exclusions", () => {
+  const dump = customDumpSource();
+  assert.match(dump, /--format=custom/);
+  assert.match(dump, /DUMP_TABLE_ARGS\.join/);
+  assert.match(source, /"--table=public\.channels"/);
+  assert.match(source, /"--table=public\.scheduler_runs"/);
+  assert.doesNotMatch(dump, /--no-comments|--no-policies|--no-publications|--no-security-labels|--no-subscriptions|--no-statistics/);
+});
+
+test("restore success requires inventory pre-data data and post-data in order", () => {
+  const flow = restoreSuccessFlowSource();
+  const orderedTokens = [
+    'stage = "restore archive inventory"',
+    "readRestoreArchiveInventory(",
+    'stage = "isolated pg_restore pre-data"',
+    'runRestoreArchiveSection(restoreContainer, "pre-data", stage, postgresMajor)',
+    'stage = "isolated pg_restore data"',
+    'runRestoreArchiveSection(restoreContainer, "data", stage, postgresMajor)',
+    'stage = "isolated pg_restore post-data"',
+    'runRestoreArchiveSection(restoreContainer, "post-data", stage, postgresMajor)',
+    "verifyRestoredPostData(restoreContainer, restoreInventory, stage)",
+  ];
+  let previous = -1;
+  for (const token of orderedTokens) {
+    const current = flow.indexOf(token, previous + 1);
+    assert.ok(current > previous, `Restore token is missing or out of order: ${token}`);
+    previous = current;
+  }
+});
+
+test("data and post-data both keep four-table count and ID-hash verification", () => {
+  const flow = restoreSuccessFlowSource();
+  assert.equal([...flow.matchAll(/verifyRestoredSnapshot\(\{/g)].length, 2);
+  assert.match(source, /sourceCounts\[table\] === restoredCounts\[table\]/);
+  assert.match(source, /sourceHashes\[table\] === restoredHashes\[table\]/);
+  assert.match(source, /allFlagsTrue\(countMatches\)/);
+  assert.match(source, /allFlagsTrue\(idHashMatches\)/);
+});
+
+test("post-data remains mandatory before success evidence", () => {
+  const flow = restoreSuccessFlowSource();
+  assert.ok(flow.indexOf("verifyRestoredPostData") < flow.indexOf("verification = {"));
+  assert.match(restoreSectionSource(), /--single-transaction/);
+  assert.match(restoreSectionSource(), /`--section=\$\{section\}`/);
+});
+
+test("complete non-production phased restore fixture passes without Docker", () => {
+  const inventory = validateRestoreArchiveInventory(restoreArchiveList, { postgresMajor: 17 });
+  assert.equal(inventory.tableEntries, 4);
+  assert.equal(inventory.tableDataEntries, 4);
+  assert.equal(PORTABLE_PG_RESTORE_OPTIONS.includes("--no-policies"), true);
+  assert.equal(PORTABLE_PG_RESTORE_OPTIONS.includes("--no-tablespaces"), true);
+  assert.doesNotMatch(JSON.stringify(inventory), /fixture_owner|TOC|OID/i);
+});
+
 console.log(JSON.stringify({
   status: "ok",
   fixtureCases: results.length,
@@ -517,6 +841,15 @@ function testDiagnostic(name, options, expectedCode) {
   });
 }
 
+function testRestoreDiagnostic(name, stderr, stage, expectedCode) {
+  testDiagnostic(`${name} classification`, {
+    stderr,
+    toolCategory: "pg_restore",
+    stage,
+    exitCode: 1,
+  }, expectedCode);
+}
+
 function test(name, run) {
   run();
   results.push({ name, passed: true });
@@ -544,6 +877,22 @@ function assertSafeFileCode(run, expectedCode) {
   assert.equal(caught.timeout, false);
   assert.equal(caught.diagnosticCode, expectedCode);
   assert.doesNotMatch(JSON.stringify(caught), /stdout|stderr|args|env|stack/i);
+}
+
+function assertSafeRestoreCode(run, expectedCode) {
+  let caught;
+  try {
+    run();
+  } catch (error) {
+    caught = error;
+  }
+  assert.ok(caught instanceof SafeExternalCommandError);
+  assert.equal(caught.toolCategory, "pg_restore");
+  assert.equal(caught.stage, "restore archive inventory");
+  assert.equal(caught.exitCode, 1);
+  assert.equal(caught.timeout, false);
+  assert.equal(caught.diagnosticCode, expectedCode);
+  assert.doesNotMatch(JSON.stringify(caught), /stdout|stderr|args|env|stack|fixture_owner/i);
 }
 
 function fixturePath(name) {
@@ -647,6 +996,34 @@ function customDumpSource() {
   const end = source.indexOf("async function startRestoreContainer", start);
   assert.ok(start >= 0 && end > start, "Custom dump implementation is missing.");
   return source.slice(start, end);
+}
+
+function restoreInventorySource() {
+  const start = source.indexOf("async function readRestoreArchiveInventory");
+  const end = source.indexOf("async function runRestoreArchiveSection", start);
+  assert.ok(start >= 0 && end > start, "Restore inventory implementation is missing.");
+  return source.slice(start, end);
+}
+
+function restoreSectionSource() {
+  const start = source.indexOf("async function runRestoreArchiveSection");
+  const end = source.indexOf("export function validateRestoreArchiveInventory", start);
+  assert.ok(start >= 0 && end > start, "Restore section implementation is missing.");
+  return source.slice(start, end);
+}
+
+function restoreSuccessFlowSource() {
+  const start = source.indexOf('    stage = "restore archive inventory";');
+  const end = source.indexOf("    verification = {", start);
+  assert.ok(start >= 0 && end > start, "Phased restore success flow is missing.");
+  return source.slice(start, end + "    verification = {".length);
+}
+
+function withoutRestoreLine(fragment) {
+  return restoreArchiveList
+    .split("\n")
+    .filter((line) => !line.includes(fragment))
+    .join("\n");
 }
 
 function atomicFileSource() {
