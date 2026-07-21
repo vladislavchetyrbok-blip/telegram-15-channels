@@ -4,7 +4,7 @@ import path from "node:path";
 import { loadLocalEnv } from "./load-local-env.mjs";
 import { compareJsonSupabaseStore } from "./store-compare.mjs";
 import { runMirrorSync } from "./mirror-sync.mjs";
-import { getBackupCenterStatus } from "./backup-center.mjs";
+import { evaluateBackupGate } from "./backup-gate.mjs";
 
 const root = process.cwd();
 const runtimeDir = path.join(root, "data", "runtime");
@@ -41,8 +41,11 @@ export async function getProductionSafetyReport(options = {}) {
   errors.push(...git.errors, ...production.errors, ...telegram.errors, ...scheduler.errors, ...store.errors, ...backup.errors);
 
   const hasWorkflowChange = git.publishSchedulerChanged;
-  const storeReady = store.synced && store.storeCompareStatus !== "error" && store.dualReadStatus !== "error";
-  const backupReady = backup.latestBackupManifestPresent && !backup.latestBackupOlderThan24h;
+  const storeReady = store.synced &&
+    store.storeCompareStatus === "ok" &&
+    store.dualReadStatus === "ok" &&
+    store.mirrorSyncStatus === "ok";
+  const backupReady = backup.backupReady === true;
   const productionJson = production.productionStoreMode === "json" && production.sourceOfTruth === "json";
   const safeForScheduledPublishing = errors.length === 0 && productionJson && !hasWorkflowChange && storeReady;
   const safeForManualPublish = safeForScheduledPublishing && backupReady && git.workingTreeClean;
@@ -51,6 +54,7 @@ export async function getProductionSafetyReport(options = {}) {
     status: errors.length ? "error" : warnings.length ? "warning" : "ok",
     safeForManualPublish,
     safeForScheduledPublishing,
+    backupReady,
     safeToSwitchToSupabase: false,
     productionStoreMode: "json",
     sourceOfTruth: "json",
@@ -224,35 +228,7 @@ async function getStoreSafety() {
 }
 
 async function getBackupSafety(nowIso) {
-  const warnings = [];
-  const errors = [];
-  const backupsDir = path.join(root, "data", "backups");
-  const latestExportDir = path.join(backupsDir, "latest-supabase-export");
-  const status = await safeCall(() => getBackupCenterStatus());
-  const latestBackup = status?.latestBackup ?? null;
-  const latestManifest = status?.latestManifest ?? null;
-  const latestBackupAgeHours = latestBackup?.createdAt ? Math.max(0, (new Date(nowIso).getTime() - new Date(latestBackup.createdAt).getTime()) / 36e5) : null;
-  const latestBackupOlderThan24h = latestBackupAgeHours !== null && latestBackupAgeHours > 24;
-
-  if (!existsSync(backupsDir)) warnings.push("data/backups is missing.");
-  if (!latestBackup) warnings.push("No backup folder was found.");
-  if (latestBackupOlderThan24h) warnings.push("Latest backup is older than 24 hours.");
-  if (!latestManifest && latestBackup) warnings.push("Latest backup manifest is missing.");
-  if (!existsSync(latestExportDir)) warnings.push("latest-supabase-export is missing.");
-  if (!status) warnings.push("Backup center status is unavailable.");
-
-  return {
-    backupsDirExists: existsSync(backupsDir),
-    latestBackup,
-    latestBackupTime: latestBackup?.createdAt ?? null,
-    latestBackupAgeHours,
-    latestBackupOlderThan24h,
-    latestBackupManifestPresent: Boolean(latestManifest),
-    latestSupabaseExportExists: existsSync(latestExportDir),
-    backupStatus: status?.status ?? "warning",
-    warnings,
-    errors,
-  };
+  return evaluateBackupGate({ root, now: nowIso });
 }
 
 function readJson(filePath, fallback) {

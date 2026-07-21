@@ -54,8 +54,8 @@ export async function createSystemBackup() {
       ? {
           status: compare.status,
           synced: compare.status === "ok",
-          missingInSupabase: compare.missingInSupabase,
-          extraInSupabase: compare.extraInSupabase,
+          missingInSupabaseCount: countGroupedItems(compare.missingInSupabase),
+          extraInSupabaseCount: countGroupedItems(compare.extraInSupabase),
         }
       : null,
     dualRead: compare
@@ -110,12 +110,15 @@ export async function exportSupabaseMirror() {
     const { Client } = await import("pg");
     client = new Client(buildPgConfig(databaseUrl));
     await client.connect();
+    await client.query("begin isolation level repeatable read read only");
 
     for (const table of tables) {
-      const result = await client.query(`select * from ${table} order by id asc`);
+      const result = await client.query(`select * from public.${table} order by id asc`);
       counts[table] = result.rows.length;
       writeJson(path.join(exportDir, `${table}.json`), result.rows);
     }
+
+    await client.query("commit");
 
     const manifest = {
       exportedAt: new Date().toISOString(),
@@ -123,6 +126,7 @@ export async function exportSupabaseMirror() {
       gitBranch: gitValue(["branch", "--show-current"]),
       source: "supabase mirror",
       readOnly: true,
+      snapshotAligned: false,
       tables,
       counts,
       secretPolicy: {
@@ -140,15 +144,21 @@ export async function exportSupabaseMirror() {
       readOnly: true,
       secretsCopied: false,
     };
-  } catch (error) {
+  } catch {
+    if (client) await client.query("rollback").catch(() => undefined);
     return {
       ok: false,
       status: "error",
-      message: sanitizeError(error, databaseUrl),
+      message: "Supabase read-only export failed. No production writes were made.",
     };
   } finally {
     if (client) await client.end().catch(() => undefined);
   }
+}
+
+function countGroupedItems(groups) {
+  if (!groups || typeof groups !== "object") return 0;
+  return Object.values(groups).reduce((total, items) => total + (Array.isArray(items) ? items.length : 0), 0);
 }
 
 export async function restoreBackupDryRun() {
@@ -312,21 +322,4 @@ function gitValue(args) {
   } catch {
     return null;
   }
-}
-
-function sanitizeError(error, databaseUrl) {
-  let message = error instanceof Error ? error.message : String(error);
-  if (databaseUrl) {
-    message = message.split(databaseUrl).join("[redacted DATABASE_URL]");
-    try {
-      const parsed = new URL(databaseUrl);
-      if (parsed.password) {
-        message = message.split(decodeURIComponent(parsed.password)).join("[redacted password]");
-        message = message.split(parsed.password).join("[redacted password]");
-      }
-    } catch {
-      // Full URL replacement above is enough when URL parsing fails.
-    }
-  }
-  return message;
 }
