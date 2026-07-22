@@ -607,7 +607,19 @@ export function SiteCTA({
   );
 }
 
-export function PageHeader({ eyebrow, title, description }: { eyebrow: string; title: string; description: string }) {
+export function PageHeader({
+  eyebrow,
+  title,
+  description,
+  headingLevel = "h1",
+}: {
+  eyebrow: string;
+  title: string;
+  description: string;
+  headingLevel?: "h1" | "h2";
+}) {
+  const Heading = headingLevel;
+
   return (
     <section className="relative py-12 sm:py-16">
       <div className="absolute right-0 top-8 hidden h-52 w-52 rounded-full border border-amber-100/10 bg-[radial-gradient(circle,rgba(246,213,138,0.08),transparent_66%)] md:block" aria-hidden="true" />
@@ -616,7 +628,7 @@ export function PageHeader({ eyebrow, title, description }: { eyebrow: string; t
           <span className="h-px w-6 bg-gradient-to-r from-transparent to-[#f6d58a]/50" />
           <span>{eyebrow}</span>
         </p>
-        <h1 className="mt-4 [font-family:Georgia,'Times_New_Roman',serif] text-4xl font-normal tracking-wide text-transparent bg-[linear-gradient(115deg,#fffef8_0%,#f8d889_40%,#f4b5c7_70%,#fffef8_100%)] bg-clip-text [text-shadow:0_14px_50px_rgba(0,0,0,0.8)] sm:text-6xl">{title}</h1>
+        <Heading className="mt-4 [font-family:Georgia,'Times_New_Roman',serif] text-4xl font-normal tracking-wide text-transparent bg-[linear-gradient(115deg,#fffef8_0%,#f8d889_40%,#f4b5c7_70%,#fffef8_100%)] bg-clip-text [text-shadow:0_14px_50px_rgba(0,0,0,0.8)] sm:text-6xl">{title}</Heading>
         <p className="mt-4 text-base leading-7 text-slate-300/90 sm:text-lg">{description}</p>
       </div>
     </section>
