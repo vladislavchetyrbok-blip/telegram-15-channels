@@ -7207,8 +7207,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-22T08:41:42.025Z"
+      "status": "sent",
+      "updatedAt": "2026-07-22T08:41:46.185Z",
+      "messageId": "86,",
+      "sentAt": "2026-07-22T08:41:46.183Z"
     }
   }
 }
