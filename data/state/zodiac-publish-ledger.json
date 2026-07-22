@@ -7197,6 +7197,18 @@
       "updatedAt": "2026-07-22T08:41:40.924Z",
       "messageId": "86,",
       "sentAt": "2026-07-22T08:41:40.922Z"
+    },
+    "2026-07-22:sagittarius": {
+      "key": "2026-07-22:sagittarius",
+      "date": "2026-07-22",
+      "slug": "sagittarius",
+      "createdAt": "2026-07-22T08:41:42.025Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-07-22T08:41:42.025Z"
     }
   }
 }
