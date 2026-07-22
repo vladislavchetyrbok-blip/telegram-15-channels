@@ -343,6 +343,7 @@ async function ensureServer(rawUrl, timeoutMs) {
   const port = requestedPort;
   normalized.hostname = "127.0.0.1";
   normalized.port = String(port);
+  const serverUrl = normalized.href.replace(/\/$/, "");
 
   const nextCli = path.join(process.cwd(), "node_modules", "next", "dist", "bin", "next");
   if (!fs.existsSync(nextCli)) throw new Error(`Next CLI not found at ${nextCli}`);
@@ -361,12 +362,17 @@ async function ensureServer(rawUrl, timeoutMs) {
   child.stdout?.on("data", (chunk) => { output = `${output}${chunk}`.slice(-4000); });
   child.stderr?.on("data", (chunk) => { output = `${output}${chunk}`.slice(-4000); });
 
-  await waitFor(async () => {
-    if (child.exitCode !== null) throw new Error(`Next ${mode} exited early.\n${output}`);
-    return (await probeHttpStatus(`${normalized.href}/`)) === 200;
-  }, `Next ${mode} did not become ready at ${normalized.href}.\n${output}`, timeoutMs, 1000);
+  try {
+    await waitFor(async () => {
+      if (child.exitCode !== null) throw new Error(`Next ${mode} exited early.\n${output}`);
+      return (await probeHttpStatus(`${serverUrl}/`)) === 200;
+    }, `Next ${mode} did not become ready at ${serverUrl}.\n${output}`, timeoutMs, 1000);
+  } catch (error) {
+    await killProcessTree(child.pid);
+    throw error;
+  }
 
-  return { url: normalized.href.replace(/\/$/, ""), started: true, child, mode };
+  return { url: serverUrl, started: true, child, mode };
 }
 
 async function launchBrowser(browserPath, viewport) {
