@@ -7323,6 +7323,18 @@
       "updatedAt": "2026-07-23T08:42:50.732Z",
       "messageId": "90,",
       "sentAt": "2026-07-23T08:42:50.730Z"
+    },
+    "2026-07-23:leo": {
+      "key": "2026-07-23:leo",
+      "date": "2026-07-23",
+      "slug": "leo",
+      "createdAt": "2026-07-23T08:42:51.807Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-07-23T08:42:51.807Z"
     }
   }
 }
