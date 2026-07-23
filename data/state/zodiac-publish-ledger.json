@@ -7417,8 +7417,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-23T08:43:18.185Z"
+      "status": "sent",
+      "updatedAt": "2026-07-23T08:43:21.491Z",
+      "messageId": "87,",
+      "sentAt": "2026-07-23T08:43:21.488Z"
     }
   }
 }
