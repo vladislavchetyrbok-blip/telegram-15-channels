@@ -7263,8 +7263,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-23T08:42:28.404Z"
+      "status": "sent",
+      "updatedAt": "2026-07-23T08:42:32.521Z",
+      "messageId": "99,",
+      "sentAt": "2026-07-23T08:42:32.519Z"
     }
   }
 }
