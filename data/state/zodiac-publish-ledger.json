@@ -7613,8 +7613,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-24T08:39:54.222Z"
+      "status": "sent",
+      "updatedAt": "2026-07-24T08:39:57.658Z",
+      "messageId": "89,",
+      "sentAt": "2026-07-24T08:39:57.656Z"
     }
   }
 }
