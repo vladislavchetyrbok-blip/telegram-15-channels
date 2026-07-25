@@ -21,10 +21,14 @@ export const SIGN_CHANNELS = [
   { slug: "capricorn", emoji: "♑", name: "Козерог", env: "ZODIAC_CAPRICORN_CHANNEL_ID", tone: "дисциплина, результат и долгий горизонт" },
   { slug: "aquarius", emoji: "♒", name: "Водолей", env: "ZODIAC_AQUARIUS_CHANNEL_ID", tone: "новые связи, свобода и свежий взгляд" },
   { slug: "pisces", emoji: "♓", name: "Рыбы", env: "ZODIAC_PISCES_CHANNEL_ID", tone: "интуиция, мягкость и творческое течение" },
-];
+].map((channel) => ({
+  ...channel,
+  language: "ru",
+  category: "zodiac-sign",
+}));
 
 export const ZODIAC_WEEKLY_CHANNELS = [
-  { slug: "zodiac-general", emoji: "🔮", name: "Общий гороскоп", env: "ZODIAC_GENERAL_CHANNEL_ID" },
+  { slug: "zodiac-general", emoji: "🔮", name: "Общий гороскоп", env: "ZODIAC_GENERAL_CHANNEL_ID", language: "ru", category: "zodiac-general" },
   ...SIGN_CHANNELS,
 ];
 
@@ -79,7 +83,7 @@ const WEEK_PHASE_LINES = {
   ],
   middle: [
     "Середина недели активирует разговоры, деньги и рабочие решения. Здесь важно фиксировать детали, а не полагаться на память.",
-    "К середине недели появится больше движения. Держите фокус на одном результате, чтобы не распылиться на чужую срочность.",
+    "К середине недели появится больше движения. Сведите внимание к одному результату, чтобы не распылиться на чужую срочность.",
     "В середине периода полезно сверить слова с действиями: то, что звучит красиво, должно иметь понятный следующий шаг.",
   ],
   weekend: [
@@ -346,6 +350,9 @@ function buildPostForChannel(channel, week, weekRange, index) {
     startDate: week.startDate,
     endDate: week.endDate,
     weekRange,
+    language: channel.language,
+    category: channel.category,
+    timezone: "Europe/Kyiv",
     firstLine,
     text,
     imagePath: asset.path ?? null,

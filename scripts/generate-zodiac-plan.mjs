@@ -28,7 +28,11 @@ const zodiacChannels = [
   { id: "capricorn", ruName: "Козерог", emoji: "♑️", type: "sign", element: "earth", visualPromptSeed: "Capricorn black-gold zodiac architecture, mountain silhouette, discipline and status, premium cinematic lighting, luxury mystic editorial.", visualSymbols: ["mountain", "discipline", "status", "black-gold architecture"] },
   { id: "aquarius", ruName: "Водолей", emoji: "♒️", type: "sign", element: "air", visualPromptSeed: "Aquarius futuristic zodiac visual, electric blue neon ideas, dark cosmic background, gold accents, premium magazine futurism.", visualSymbols: ["future", "neon", "electric blue", "ideas"] },
   { id: "pisces", ruName: "Рыбы", emoji: "♓️", type: "sign", element: "water", visualPromptSeed: "Pisces premium mystic water scene, dream fog, violet-blue intuition, dark zodiac shimmer, cinematic soft light and gold details.", visualSymbols: ["water", "dream", "fog", "violet-blue intuition"] }
-];
+].map((channel) => ({
+  ...channel,
+  language: "ru",
+  category: channel.type === "general" ? "zodiac-general" : "zodiac-sign",
+}));
 
 export const ZODIAC_DAILY_CHANNELS = zodiacChannels;
 
@@ -589,6 +593,7 @@ function polishBody(value) {
     .replace(/Это принесет свои плоды в будущем\./gi, "Так результат будет спокойнее и устойчивее.")
     .replace(/сегодня вы можете узнать чью-то тайну/gi, "сегодня может стать заметнее скрытый мотив")
     .replace(/не используйте ее в корыстных целях, чтобы не нажить врагов/gi, "обходитесь с этим бережно, без давления и лишних выводов")
+    .replace(/Постарайтесь сохранить эту информацию при себе и обходитесь с этим бережно/gi, "Сохраните наблюдение при себе и отнеситесь к нему бережно")
     .replace(/нажить врагов/gi, "создать напряжение")
     .replace(/корыстных целях/gi, "давления");
 }
@@ -599,34 +604,76 @@ function sentenceCase(value) {
   return `${text.charAt(0).toLocaleUpperCase("ru-RU")}${text.slice(1)}`;
 }
 
+function ensureSentence(value) {
+  const text = sentenceCase(value).replace(/[.!?…]+$/u, "");
+  return text ? `${text}.` : "";
+}
+
+function ensureSentenceFragment(value) {
+  const text = polishBody(value).replace(/[.!?…]+$/u, "");
+  return text ? `${text}.` : "";
+}
+
+function renderDailyRitual(profile, guidance) {
+  if (!profile.dayRitual) return ensureSentence(guidance.shouldDoToday);
+  return `${ensureSentence(profile.dayRitual)} Практический шаг: ${ensureSentenceFragment(guidance.shouldDoToday)}`;
+}
+
+function renderDailyCaution(profile, guidance) {
+  if (!profile.cautionTone) return `Сегодня лучше избегать ${polishBody(guidance.shouldAvoidToday)}`;
+  return `${ensureSentence(profile.cautionTone)} Сегодня лучше избегать ${polishBody(guidance.shouldAvoidToday)}`;
+}
+
+function calculateGeneratedQualityScore({ channel, text }) {
+  const plain = String(text || "").replace(/<[^>]+>/g, "");
+  const requiredLabels = [
+    "Общий настрой дня:",
+    "Любовь / отношения:",
+    "Работа / деньги:",
+    "Энергия / самочувствие:",
+    "Совет дня:",
+    "Маленькое действие:",
+    "Лучше избегать:",
+  ];
+  let score = 100;
+
+  score -= requiredLabels.filter((label) => !plain.includes(label)).length * 8;
+  if (!plain.includes(MINI_APP_CTA_URL)) score -= 20;
+  if (plain.length < 700 || plain.length >= 4096) score -= 15;
+  if (/TODO|placeholder|lorem ipsum|undefined|100\s*%|гарант/i.test(plain)) score -= 25;
+  if (/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/u.test(plain)) score -= 25;
+
+  return Math.max(0, Math.min(100, score));
+}
+
 function renderQualityDailyText({ channel, dateStr, sections, guidance }) {
   if (channel.type === "general") {
     const signSections = sections.slice(5, 17);
     return [
-      bold(`${channel.emoji} Гороскоп на ${formatRuDate(dateStr)} для всех знаков`),
+      bold(`${channel.emoji} Гороскоп на ${formatNumericDate(dateStr)} для всех знаков`),
       "",
       escapeHtml(polishBody(sectionBody(sections, 0))),
       "",
-      bold("Главная энергия дня:"),
+      bold("Общий настрой дня:"),
       escapeHtml(polishBody(sectionBody(sections, 1))),
       "",
-      bold("Любовь и отношения:"),
+      bold("Любовь / отношения:"),
       escapeHtml(polishBody(sectionBody(sections, 2))),
       "",
-      bold("Дела и деньги:"),
+      bold("Работа / деньги:"),
       escapeHtml(polishBody(sectionBody(sections, 3))),
       "",
-      bold("Внутренний ритм:"),
+      bold("Энергия / самочувствие:"),
       escapeHtml(polishBody(sectionBody(sections, 4))),
       "",
       bold("По знакам:"),
       ...signSections.map((section) => `${bold(section.title)} — ${escapeHtml(polishBody(section.body))}`),
       "",
-      bold("Совет дня:"),
-      escapeHtml(sentenceCase(guidance.adviceOfDay)),
+      `${bold("Совет дня:")} ${escapeHtml(guidance.adviceOfDay)}`,
       "",
-      bold("Маленький ритуал:"),
-      escapeHtml(sentenceCase(guidance.shouldDoToday)),
+      `${bold("Маленькое действие:")} ${escapeHtml(guidance.shouldDoToday)}`,
+      "",
+      `${bold("Лучше избегать:")} ${escapeHtml(guidance.shouldAvoidToday)}`,
       "",
       italic("Мягкий астрологический ориентир: без обещаний, давления и фатальных прогнозов."),
       "",
@@ -639,28 +686,28 @@ function renderQualityDailyText({ channel, dateStr, sections, guidance }) {
 
   const profile = signQualityProfiles[channel.id] || {};
   return [
-    bold(`${channel.emoji} ${channel.ruName} — ${formatRuDate(dateStr)}`),
-    ...(profile.dateRange ? [italic(`Период знака: ${profile.dateRange}`)] : []),
+    bold(`${channel.emoji} ${channel.ruName} | Гороскоп на ${formatNumericDate(dateStr)}`),
     "",
     escapeHtml(polishBody(sectionBody(sections, 0))),
+    ...(profile.dateRange ? ["", italic(`Период знака: ${profile.dateRange}`)] : []),
     "",
-    bold("Главная энергия дня:"),
+    bold("Общий настрой дня:"),
     escapeHtml(polishBody(sectionBody(sections, 1))),
     "",
-    bold("В отношениях:"),
+    bold("Любовь / отношения:"),
     escapeHtml(polishBody(sectionBody(sections, 2))),
     "",
-    bold("В делах и деньгах:"),
+    bold("Работа / деньги:"),
     escapeHtml(polishBody(sectionBody(sections, 3))),
     "",
-    bold("Внутренний совет:"),
-    escapeHtml(sentenceCase(sectionBody(sections, 5))),
+    bold("Энергия / самочувствие:"),
+    escapeHtml(polishBody(sectionBody(sections, 4))),
     "",
-    bold("Ритуал дня:"),
-    escapeHtml(sentenceCase(profile.dayRitual ? `${profile.dayRitual}. ${guidance.shouldDoToday}` : guidance.shouldDoToday)),
+    `${bold("Совет дня:")} ${escapeHtml(polishBody(sectionBody(sections, 5)))}`,
     "",
-    bold("Лучше не делать:"),
-    escapeHtml(sentenceCase(profile.cautionTone ? `${profile.cautionTone}; ${guidance.shouldAvoidToday}` : guidance.shouldAvoidToday)),
+    `${bold("Маленькое действие:")} ${escapeHtml(renderDailyRitual(profile, guidance))}`,
+    "",
+    `${bold("Лучше избегать:")} ${escapeHtml(renderDailyCaution(profile, guidance))}`,
     "",
     italic("Это не обещание событий, а мягкая карта внимания на день."),
     "",
@@ -794,6 +841,7 @@ function buildPost(channel, dateStr, index, stylePreset) {
   }
 
   text = renderQualityDailyText({ channel, dateStr, sections, guidance });
+  const qualityScore = calculateGeneratedQualityScore({ channel, text });
 
   return {
     id: `zodiac-preview-${dateStr}-${channel.id}`,
@@ -802,6 +850,9 @@ function buildPost(channel, dateStr, index, stylePreset) {
     channelName: channel.ruName,
     emoji: channel.emoji,
     type: channel.type,
+    language: channel.language,
+    category: channel.category,
+    timezone: "Europe/Kyiv",
     title,
     adviceOfDay: guidance.adviceOfDay,
     shouldDoToday: guidance.shouldDoToday,
@@ -809,8 +860,8 @@ function buildPost(channel, dateStr, index, stylePreset) {
     text,
     sections,
     visualPrompt,
-    qualityScore: 100, // Hardcoded for this generator to bypass complex quality logic
-    editorialStatus: "good_preview",
+    qualityScore,
+    editorialStatus: qualityScore >= 85 ? "good_preview" : "needs_review",
     publishReady: false,
     telegramUsername: null,
     telegramChannelId: null,
