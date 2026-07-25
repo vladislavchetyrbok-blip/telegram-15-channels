@@ -7631,6 +7631,18 @@
       "updatedAt": "2026-07-25T08:58:40.374Z",
       "messageId": "103,",
       "sentAt": "2026-07-25T08:58:40.372Z"
+    },
+    "2026-07-25:aries": {
+      "key": "2026-07-25:aries",
+      "date": "2026-07-25",
+      "slug": "aries",
+      "createdAt": "2026-07-25T08:58:41.725Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-07-25T08:58:41.725Z"
     }
   }
 }
