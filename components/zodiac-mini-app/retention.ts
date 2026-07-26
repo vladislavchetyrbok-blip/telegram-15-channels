@@ -154,7 +154,7 @@ function normalizeLastSection(value: unknown) {
 }
 
 function normalizeItem(value: ZodiacRetentionDraft | Partial<ZodiacRetentionItem>): ZodiacRetentionItem {
-  const label = sanitizeStoredText(sanitizeLabel(value.label)) || "Астрологический центр";
+  const label = sanitizeStoredText(sanitizeLabel(value.label)) || "APHRODITE";
   const section = sanitizeToken(value.section) || "mini_app";
   const featureKey = sanitizeToken(value.featureKey);
   const sign = sanitizeToken(value.sign);

@@ -7,6 +7,7 @@ import { Sidebar } from "@/components/Sidebar";
 import { UnifiedStatusStrip } from "@/components/UnifiedStatusStrip";
 
 export const PUBLIC_MINIAPP_ROUTE_PREFIXES = [
+  "/aphrodite",
   "/miniapp",
   "/compatibility",
   "/birth-matrix",
@@ -42,7 +43,7 @@ export function isDashboardRoute(pathname: string) {
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const isDashboardLoginRoute = pathname === "/dashboard/login";
+  const isDashboardLoginRoute = pathname === "/login" || pathname === "/dashboard/login";
 
   if (isPublicWebsiteRoute(pathname) || isPublicMiniAppRoute(pathname) || isDashboardLoginRoute) {
     return <div className="min-h-screen overflow-x-hidden bg-[#070b14] text-slate-100">{children}</div>;

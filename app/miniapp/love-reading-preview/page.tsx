@@ -69,7 +69,7 @@ export default function LoveReadingPreviewPage() {
 
   return (
     <AphroditeMiniAppShell
-      eyebrow="Зодиакальный центр"
+      eyebrow="APHRODITE · Telegram Mini App"
       title="AI Love Reading"
       description="Бесплатный мягкий preview: главная энергия связи, сильная сторона, зона риска и один следующий шаг."
       statusSlot={<AphroditeStatusPill label="Бесплатный preview" tone="accent" />}

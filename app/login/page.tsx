@@ -2,7 +2,25 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { ShieldAlert, ShieldCheck, Lock } from "lucide-react"
+import { ShieldAlert, Lock } from "lucide-react"
+
+const DEFAULT_OPERATOR_ROUTE = "/dashboard/networks/aphrodite"
+
+function getSafeDashboardNextPath(search: string) {
+  const candidate = new URLSearchParams(search).get("next")
+  if (!candidate) return DEFAULT_OPERATOR_ROUTE
+
+  try {
+    const parsed = new URL(candidate, "https://aphrodite.local")
+    const isLocal = parsed.origin === "https://aphrodite.local"
+    const isDashboard = parsed.pathname === "/dashboard" || parsed.pathname.startsWith("/dashboard/")
+
+    if (!isLocal || !isDashboard) return DEFAULT_OPERATOR_ROUTE
+    return `${parsed.pathname}${parsed.search}${parsed.hash}`
+  } catch {
+    return DEFAULT_OPERATOR_ROUTE
+  }
+}
 
 export default function LoginPage() {
   const router = useRouter()
@@ -24,7 +42,7 @@ export default function LoginPage() {
       })
 
       if (res.ok) {
-        router.push("/dashboard/networks/aphrodite")
+        router.replace(getSafeDashboardNextPath(window.location.search))
         router.refresh()
       } else {
         const data = await res.json()
@@ -38,7 +56,10 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a1122] flex items-center justify-center p-4 font-sans">
+    <div
+      className="min-h-screen bg-[#0a1122] flex items-center justify-center p-4 font-sans"
+      data-aphrodite-operator-login="true"
+    >
       <div className="w-full max-w-md bg-[#0f1b33] rounded-2xl border border-slate-800 shadow-xl overflow-hidden relative">
         <div className="p-8">
           <div className="flex justify-center mb-6">
@@ -48,7 +69,8 @@ export default function LoginPage() {
           </div>
           
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-white mb-2">Вход в Афродиту</h1>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.24em] text-rose-300">АФРОДИТА</p>
+            <h1 className="text-2xl font-bold text-white mb-2">Operator Platform</h1>
             <p className="text-sm text-slate-400">Закрытая панель управления Telegram-модулями.</p>
           </div>
 

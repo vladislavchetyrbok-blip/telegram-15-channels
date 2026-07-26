@@ -34,6 +34,7 @@ const ROUTES = {
   birthMatrix: "/birth-matrix",
   mysticNumbers: "/mystic-numbers",
   affirmations: "/affirmations",
+  aphroditeMiniApp: "/aphrodite",
   miniappHub: "/miniapp",
   miniappRouteSafety: "/dashboard/networks/zodiac/miniapp-route-safety",
   miniappReadiness: "/dashboard/networks/zodiac/miniapp-readiness",
@@ -267,11 +268,13 @@ async function main() {
     
     // Check that an unprotected route (like /login) works
     pages.login = await fetchUrl(`${URL_BASE}${ROUTES.login}`);
-    assertIncludes(pages.login, "Вход в Афродиту", "dashboard login page heading");
+    assertIncludes(pages.login, "АФРОДИТА", "dashboard login product brand");
+    assertIncludes(pages.login, "Operator Platform", "dashboard login platform label");
 
-    // Check that a protected route redirects
+    // Check the production root and protected route redirect chain.
+    await checkRootCutover(`${URL_BASE}/`);
     console.log(`Checking unauthorized access to /dashboard/networks/aphrodite`);
-    await checkRedirect(`${URL_BASE}/dashboard/networks/aphrodite`);
+    await checkRedirect(`${URL_BASE}/dashboard/networks/aphrodite`, "/dashboard/networks/aphrodite");
     await checkRedirectWithCookie(`${URL_BASE}/dashboard/networks/zodiac`, "zodiac_dashboard_session=legacy-test-cookie");
     await checkLegacyDashboardAuthDisabled(`${URL_BASE}/api/dashboard/auth/status`, "GET");
     await checkLegacyDashboardAuthDisabled(`${URL_BASE}/api/dashboard/auth/login`, "POST");
@@ -281,6 +284,9 @@ async function main() {
     console.log(`Logging in via API...`);
     const sessionCookie = await loginAndGetCookie(`${URL_BASE}/api/auth/login`);
     console.log(`Successfully obtained session cookie`);
+    pages.productionRoot = await fetchUrl(`${URL_BASE}/`, sessionCookie);
+    assertIncludes(pages.productionRoot, "Афродита", "authenticated production root resolves to Aphrodite");
+    assertIncludes(pages.productionRoot, "Operator Platform", "authenticated production root resolves to Operator Platform");
 
     for (const [name, route] of Object.entries(ROUTES)) {
       if (name === "login") continue; // Already fetched
@@ -290,7 +296,8 @@ async function main() {
       assertNoSecretValues(pages[name], `${name} page`);
     }
 
-    assertIncludes(pages.login, "Вход в Афродиту", "dashboard login page heading");
+    assertIncludes(pages.login, "АФРОДИТА", "dashboard login product brand");
+    assertIncludes(pages.login, "Operator Platform", "dashboard login platform label");
     assertIncludes(pages.overview, "Афродита", "Aphrodite visible on dashboard shell or overview");
     assertIncludes(pages.overview, "Каналы Зодиака", "overview page heading");
     assertIncludes(pages.overview, 'href="/dashboard/networks/zodiac/channels"', "overview channels route link");
@@ -602,18 +609,27 @@ async function main() {
     assertNotIncludes(pages.affirmations, "Static Mock (Package 105)", "affirmations static mock not public");
     assertNotIncludes(pages.affirmations, "Your Daily Affirmation", "affirmations English mock not public");
 
+    assertIncludes(pages.aphroditeMiniApp, 'data-aphrodite-mini-app-root="true"', "canonical Aphrodite Mini App root marker");
+    assertIncludes(pages.aphroditeMiniApp, 'data-aphrodite-product="telegram-mini-app"', "canonical Aphrodite product marker");
+    assertIncludes(pages.aphroditeMiniApp, "APHRODITE", "canonical Aphrodite visible brand");
+    assertIncludes(pages.aphroditeMiniApp, "Telegram Mini App", "canonical Aphrodite secondary label");
+    assertNotIncludes(pages.aphroditeMiniApp, "Зодиакальный центр", "canonical Aphrodite has no stale Zodiac product brand");
+
     assertIncludes(pages.miniappHub, "data-aphrodite-miniapp-entry-redesign", "miniapp package 238 marker");
-    assertIncludes(pages.miniappHub, "Зодиак", "miniapp Package 270 Zodiac-facing brand");
+    assertIncludes(pages.miniappHub, "APHRODITE", "legacy miniapp hub Aphrodite-facing brand");
     assertIncludes(pages.miniappHub, "VIP превью", "miniapp compact VIP preview copy");
-    assertIncludes(pages.miniappHub, "Короткий Mini App экран", "miniapp compact metadata");
+    assertIncludes(pages.miniappHub, "Совместимый вход в APHRODITE", "miniapp compatibility metadata");
+    assertIncludes(pages.miniappHub, 'rel="canonical"', "miniapp canonical metadata link");
+    assertIncludes(pages.miniappHub, 'href="/aphrodite"', "miniapp canonical Aphrodite route");
     assertIncludes(pages.miniappHub, "Проверить совместимость", "miniapp redesigned primary compatibility CTA");
     assertIncludes(pages.miniappHub, "Матрица судьбы", "miniapp redesigned birth matrix CTA");
-    assertIncludes(pages.miniappHub, "Мистическая карта", "miniapp redesigned mystic CTA");
+    assertIncludes(pages.miniappHub, "Таро и руны", "miniapp redesigned mystic CTA");
     assertIncludes(pages.miniappHub, "Прогноз", "miniapp compact forecast CTA");
     assertIncludes(pages.miniappHub, "Без оплаты", "miniapp compact safety: no payment");
     assertIncludes(pages.miniappHub, "VIP закрыт", "miniapp compact safety: vip locked");
     assertIncludes(pages.miniappHub, "Telegram WebView", "miniapp redesigned webview safe area");
-    assertIncludes(pages.miniappHub, "birth-matrix", "miniapp redesigned contains birth matrix link");
+    assertIncludes(pages.miniappHub, "startapp=birth_matrix", "miniapp redesigned contains canonical birth matrix link");
+    assertIncludes(pages.miniappHub, 'href="/aphrodite?startapp=', "miniapp actions use canonical Aphrodite route");
     assertIncludes(pages.miniappHub, "startapp=mystic", "miniapp redesigned contains mystic startapp link");
     assertIncludes(pages.miniappHub, "startapp=compat_love", "miniapp redesigned contains compatibility startapp link");
     assertIncludes(pages.birthMatrix, "No payment", "birth matrix safety: no payment");
@@ -2330,7 +2346,19 @@ async function main() {
 
 
     assertIncludes(pages.aphroditeOverview, "Афродита", "aphrodite overview heading");
+    assertIncludes(pages.aphroditeOverview, "Платформа управления", "aphrodite overview management platform label");
+    assertIncludes(pages.aphroditeOverview, "Operator Platform", "aphrodite operator top-level sidebar label");
+    assertIncludes(pages.aphroditeOverview, "МОДУЛЬ ZODIAC", "zodiac is presented as an operator module");
     assertIncludes(pages.aphroditeOverview, "/dashboard/networks/aphrodite/channels", "aphrodite overview registry link");
+    assertIncludes(pages.aphroditeOverview, 'href="/dashboard/networks/aphrodite/calendar"', "aphrodite operator calendar nav");
+    assertIncludes(pages.aphroditeOverview, 'href="/dashboard/networks/aphrodite/data-sources"', "aphrodite operator data sources nav");
+    assertIncludes(pages.aphroditeOverview, 'href="/dashboard/networks/aphrodite/currency"', "aphrodite operator currency nav");
+    assertIncludes(pages.aphroditeOverview, 'href="/dashboard/networks/aphrodite/crypto"', "aphrodite operator crypto nav");
+    assertIncludes(pages.aphroditeOverview, 'href="/dashboard/networks/aphrodite/metals"', "aphrodite operator metals nav");
+    assertIncludes(pages.aphroditeOverview, 'href="/dashboard/networks/aphrodite/studio"', "aphrodite operator studio nav");
+    assertIncludes(pages.aphroditeOverview, 'href="/dashboard/networks/aphrodite/legacy"', "aphrodite operator legacy nav");
+    assertIncludes(pages.aphroditeOverview, 'href="/dashboard/networks/zodiac"', "zodiac module overview nav");
+    assertIncludes(pages.aphroditeOverview, 'href="/dashboard/networks/zodiac/operations"', "zodiac module monitoring nav");
     assertIncludes(pages.aphroditeOverview, "Валюты", "aphrodite overview Currency card");
     assertIncludes(pages.aphroditeOverview, "Крипта", "aphrodite overview Crypto card");
     assertIncludes(pages.aphroditeOverview, "Металлы", "aphrodite overview Metals card");
@@ -2457,7 +2485,6 @@ async function main() {
     "Legacy",
     "No live publish from registry",
     "Aphrodite Platform",
-    "Operator Platform",
     "Total Channels",
     "Legacy Paused",
     "Draft Modules",
@@ -2569,14 +2596,33 @@ async function loginAndGetCookie(url) {
   return match[1];
 }
 
-async function checkRedirect(url) {
+async function checkRootCutover(url) {
+  const rootResponse = await fetch(url, { redirect: "manual" });
+  if (![302, 307, 308].includes(rootResponse.status)) {
+    throw new Error(`Expected production root redirect for ${url}, but got ${rootResponse.status}`);
+  }
+
+  const operatorLocation = rootResponse.headers.get("location");
+  const operatorUrl = operatorLocation ? new URL(operatorLocation, url) : null;
+  if (!operatorUrl || operatorUrl.pathname !== "/dashboard/networks/aphrodite") {
+    throw new Error(`Expected production root to target /dashboard/networks/aphrodite, got ${operatorLocation}`);
+  }
+
+  await checkRedirect(operatorUrl.toString(), "/dashboard/networks/aphrodite");
+}
+
+async function checkRedirect(url, expectedNext = null) {
   const res = await fetch(url, { redirect: "manual" });
   if (res.status !== 307 && res.status !== 302 && res.status !== 308) {
     throw new Error(`Expected redirect for ${url}, but got ${res.status}`);
   }
   const location = res.headers.get("location");
-  if (!location || !location.includes("/login")) {
+  const loginUrl = location ? new URL(location, url) : null;
+  if (!loginUrl || loginUrl.pathname !== "/login") {
     throw new Error(`Expected redirect to /login for ${url}, but got ${location}`);
+  }
+  if (expectedNext && loginUrl.searchParams.get("next") !== expectedNext) {
+    throw new Error(`Expected login next=${expectedNext} for ${url}, but got ${loginUrl.searchParams.get("next")}`);
   }
   return true;
 }
