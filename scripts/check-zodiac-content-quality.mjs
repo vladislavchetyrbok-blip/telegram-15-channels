@@ -6,6 +6,7 @@ import path from "node:path";
 import process from "node:process";
 import { buildZodiacPost, ZODIAC_DAILY_CHANNELS } from "./generate-zodiac-plan.mjs";
 import {
+  WEEKLY_DAY_LABELS,
   ZODIAC_WEEKLY_CHANNELS,
   generateWeeklyPosts,
   parseWeekCode,
@@ -13,7 +14,7 @@ import {
 } from "./lib/zodiac-weekly-pipeline.mjs";
 import {
   SIGNS,
-  findCompatibilityPair,
+  findOrderedCompatibilityPair,
   generateCompatibilityPost,
   loadCompatibilityConfig,
   validateCompatibilityConfig,
@@ -135,7 +136,8 @@ const REVIEW_COMPATIBILITY_IDS = [
   "aries-cancer",
   "taurus-gemini",
   "aries-libra",
-  "taurus-scorpio",
+  "scorpio-taurus",
+  "virgo-pisces",
   "pisces-scorpio",
 ];
 const REVIEW_TAROT_SLUGS = ["star", "tower", "temperance", "death", "lovers", "hermit"];
@@ -598,6 +600,83 @@ function buildWeeklyBatch(weekCode) {
   return { plan, messages, problems };
 }
 
+function inspectWeeklyDayRegression() {
+  const weekCodes = [
+    ...Array.from({ length: 53 }, (_, index) => `2020-W${String(index + 1).padStart(2, "0")}`),
+    "2021-W01",
+  ];
+  const metrics = {
+    weeksChecked: weekCodes.length,
+    targetsChecked: ZODIAC_WEEKLY_CHANNELS.length,
+    combinationsChecked: 0,
+    yearTransitionsChecked: 1,
+    isoWeek53Included: weekCodes.includes("2020-W53"),
+    collisions: 0,
+    invalidDayLabels: 0,
+    missingBestDays: 0,
+    missingCautionDays: 0,
+    deterministicMismatches: 0,
+    scorpioReviewWeek: "2026-W28",
+    scorpioBestDay: null,
+    scorpioCautionDay: null,
+    problems: [],
+  };
+
+  for (const weekCode of weekCodes) {
+    const firstPass = generateWeeklyPosts(weekCode).posts;
+    const replay = generateWeeklyPosts(weekCode).posts;
+    if (firstPass.length !== ZODIAC_WEEKLY_CHANNELS.length || replay.length !== firstPass.length) {
+      metrics.problems.push(`${weekCode}: weekly regression target count mismatch`);
+      continue;
+    }
+
+    for (let index = 0; index < firstPass.length; index += 1) {
+      const post = firstPass[index];
+      const replayPost = replay[index];
+      const bestDay = extractWeeklyDayFromText(post.text, "Лучший день");
+      const cautionDay = extractWeeklyDayFromText(post.text, "День осторожности");
+      metrics.combinationsChecked += 1;
+
+      if (!bestDay) metrics.missingBestDays += 1;
+      else if (!WEEKLY_DAY_LABELS.includes(bestDay)) metrics.invalidDayLabels += 1;
+      if (!cautionDay) metrics.missingCautionDays += 1;
+      else if (!WEEKLY_DAY_LABELS.includes(cautionDay)) metrics.invalidDayLabels += 1;
+      if (bestDay && cautionDay && bestDay === cautionDay) metrics.collisions += 1;
+      if (
+        replayPost?.slug !== post.slug
+        || replayPost?.bestDay !== post.bestDay
+        || replayPost?.cautionDay !== post.cautionDay
+        || replayPost?.text !== post.text
+      ) {
+        metrics.deterministicMismatches += 1;
+      }
+    }
+  }
+
+  const scorpioPost = generateWeeklyPosts(metrics.scorpioReviewWeek).posts.find((post) => post.slug === "scorpio");
+  metrics.scorpioBestDay = scorpioPost?.bestDay ?? null;
+  metrics.scorpioCautionDay = scorpioPost?.cautionDay ?? null;
+
+  if (metrics.combinationsChecked < 676) metrics.problems.push("weekly regression must check at least 676 combinations");
+  if (!metrics.isoWeek53Included) metrics.problems.push("weekly regression must include a valid ISO week 53");
+  if (metrics.collisions > 0) metrics.problems.push(`weekly best/caution collisions: ${metrics.collisions}`);
+  if (metrics.invalidDayLabels > 0) metrics.problems.push(`weekly invalid day labels: ${metrics.invalidDayLabels}`);
+  if (metrics.missingBestDays > 0) metrics.problems.push(`weekly missing best days: ${metrics.missingBestDays}`);
+  if (metrics.missingCautionDays > 0) metrics.problems.push(`weekly missing caution days: ${metrics.missingCautionDays}`);
+  if (metrics.deterministicMismatches > 0) {
+    metrics.problems.push(`weekly deterministic replay mismatches: ${metrics.deterministicMismatches}`);
+  }
+
+  return metrics;
+}
+
+function extractWeeklyDayFromText(text, label) {
+  const plain = stripMarkup(text);
+  const escapedLabel = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const match = plain.match(new RegExp(`${escapedLabel}:\\s*([^\\s—]+)`, "iu"));
+  return match?.[1]?.trim().toLocaleLowerCase("ru-RU") ?? null;
+}
+
 function buildCompatibilityBatch() {
   const config = loadCompatibilityConfig();
   const problems = validateCompatibilityConfig(config);
@@ -606,6 +685,16 @@ function buildCompatibilityBatch() {
   const sameSignPairs = config.pairs.filter((pair) => pair.signA === pair.signB);
   const differentSignPairs = config.pairs.filter((pair) => pair.signA !== pair.signB);
   const canonicalKeys = config.pairs.map((pair) => [pair.signA, pair.signB].sort().join("+"));
+  const consistency = {
+    pairsChecked: config.pairs.length,
+    canonicalPairs: new Set(canonicalKeys).size,
+    reverseLookupsChecked: 0,
+    duplicateMirroredPairs: config.pairs.length - new Set(canonicalKeys).size,
+    titleOrderMismatches: 0,
+    metadataOrderMismatches: 0,
+    lowercaseFocusOpenings: 0,
+    lowercasePracticeOpenings: 0,
+  };
 
   if (posts.length !== 78) problems.push(`compatibility coverage must be 78, got ${posts.length}`);
   if (sameSignPairs.length !== 12) problems.push(`same-sign pair count must be 12, got ${sameSignPairs.length}`);
@@ -617,16 +706,54 @@ function buildCompatibilityBatch() {
     const post = posts[index];
     const signA = SIGNS.find((sign) => sign.slug === pair.signA);
     const signB = SIGNS.find((sign) => sign.slug === pair.signB);
+    const expectedTitleRu = `${signA?.nameRu} + ${signB?.nameRu}`;
+    const expectedTitle = `💞 Совместимость: ${expectedTitleRu}`;
     if (post.pairId !== pair.pairId) problems.push(`${pair.pairId}: generated pair id mismatch`);
-    if (!post.title.includes(signA?.nameRu || "")) problems.push(`${pair.pairId}: signA title mismatch`);
-    if (!post.title.includes(signB?.nameRu || "")) problems.push(`${pair.pairId}: signB title mismatch`);
-    if (!post.text.includes(pair.titleRu)) problems.push(`${pair.pairId}: pair title missing from text`);
+    if (post.canonicalPairId !== pair.pairId || post.signA !== pair.signA || post.signB !== pair.signB) {
+      consistency.metadataOrderMismatches += 1;
+      problems.push(`${pair.pairId}: generated pair metadata order mismatch`);
+    }
+    if (pair.titleRu !== expectedTitleRu || post.title !== expectedTitle || !post.text.startsWith(expectedTitle)) {
+      consistency.titleOrderMismatches += 1;
+      problems.push(`${pair.pairId}: visible pair title order matches pair metadata order assertion failed`);
+    }
+    const focusOpening = getVisibleSectionOpening(post.text, "Фокус пары:");
+    const practiceOpening = getVisibleSectionOpening(post.text, "Практика на сегодня:");
+    if (!startsWithUppercaseLetter(focusOpening)) {
+      consistency.lowercaseFocusOpenings += 1;
+      problems.push(`${pair.pairId}: compatibility focus sentence starts uppercase assertion failed`);
+    }
+    if (!startsWithUppercaseLetter(practiceOpening)) {
+      consistency.lowercasePracticeOpenings += 1;
+      problems.push(`${pair.pairId}: compatibility practice sentence starts uppercase assertion failed`);
+    }
     if (!safeOutcomeFraming.test(post.text)) {
       problems.push(`${pair.pairId}: missing non-deterministic outcome framing`);
     }
     const keyboardStatus = validateCompatibilityKeyboard(post);
     if (!keyboardStatus.ok) {
       problems.push(...keyboardStatus.errors.map((error) => `${pair.pairId}: ${error}`));
+    }
+
+    if (pair.signA !== pair.signB) {
+      const reversePairId = `${pair.signB}-${pair.signA}`;
+      const reversePair = findOrderedCompatibilityPair(reversePairId, config.pairs);
+      const reversePost = generateCompatibilityPost(reversePair);
+      const reverseTitleRu = `${signB?.nameRu} + ${signA?.nameRu}`;
+      consistency.reverseLookupsChecked += 1;
+      if (
+        reversePair.pairId !== reversePairId
+        || reversePair.canonicalPairId !== pair.pairId
+        || reversePost.signA !== pair.signB
+        || reversePost.signB !== pair.signA
+      ) {
+        consistency.metadataOrderMismatches += 1;
+        problems.push(`${reversePairId}: reverse pair metadata order mismatch`);
+      }
+      if (reversePost.title !== `💞 Совместимость: ${reverseTitleRu}` || !reversePost.text.startsWith(`💞 Совместимость: ${reverseTitleRu}`)) {
+        consistency.titleOrderMismatches += 1;
+        problems.push(`${reversePairId}: reverse visible pair title order matches pair metadata order assertion failed`);
+      }
     }
   }
 
@@ -642,7 +769,7 @@ function buildCompatibilityBatch() {
   }));
 
   const reviewSamples = REVIEW_COMPATIBILITY_IDS.map((pairId) =>
-    generateCompatibilityPost(findCompatibilityPair(pairId, config.pairs)));
+    generateCompatibilityPost(findOrderedCompatibilityPair(pairId, config.pairs)));
 
   return {
     config,
@@ -650,9 +777,24 @@ function buildCompatibilityBatch() {
     messages,
     sameSignPairs: sameSignPairs.length,
     differentSignPairs: differentSignPairs.length,
+    consistency,
     reviewSamples,
     problems,
   };
+}
+
+function getVisibleSectionOpening(text, label) {
+  const lines = stripMarkup(text)
+    .split(/\r?\n/)
+    .map((line) => line.trim());
+  const labelIndex = lines.findIndex((line) => line === label);
+  if (labelIndex < 0) return "";
+  return lines.slice(labelIndex + 1).find(Boolean) ?? "";
+}
+
+function startsWithUppercaseLetter(value) {
+  const firstLetter = String(value || "").match(/\p{L}/u)?.[0] ?? "";
+  return Boolean(firstLetter) && firstLetter === firstLetter.toLocaleUpperCase("ru-RU");
 }
 
 function buildTarotMessage(card, date) {
@@ -952,6 +1094,8 @@ function selectStableWeeklyFields(post) {
     slug: post.slug,
     week: post.week,
     text: post.text,
+    bestDay: post.bestDay,
+    cautionDay: post.cautionDay,
     language: post.language,
     keyboard: post.keyboard,
   };
@@ -960,6 +1104,11 @@ function selectStableWeeklyFields(post) {
 function selectStableCompatibilityFields(post) {
   return {
     pairId: post.pairId,
+    canonicalPairId: post.canonicalPairId,
+    signA: post.signA,
+    signB: post.signB,
+    titleRu: post.titleRu,
+    title: post.title,
     text: post.text,
     score: post.score,
     language: post.language,
@@ -1106,10 +1255,13 @@ function renderReviewPack(report, batches, languageFixtures) {
   const dailyUa = languageFixtures
     .filter((fixture) => fixture.kind === "daily-localization-fixture")
     .map((fixture) => ({ title: `UA Daily fixture — ${fixture.id.split(":")[1]}`, text: fixture.text }));
-  const weeklyRu = ["aries", "pisces"]
+  const weeklyRu = ["aries", "scorpio", "taurus", "pisces"]
     .map((slug) => batches.weekly.plan.posts.find((post) => post.slug === slug))
     .filter(Boolean)
-    .map((post) => ({ title: `RU Weekly — ${post.slug}`, text: post.text }));
+    .map((post) => ({
+      title: `RU Weekly — ${post.slug} (${post.bestDay} / ${post.cautionDay})`,
+      text: post.text,
+    }));
   const weeklyUa = languageFixtures
     .filter((fixture) => fixture.kind === "weekly-localization-fixture")
     .map((fixture) => ({ title: `UA Weekly fixture — ${fixture.id.split(":")[1]}`, text: fixture.text }));
@@ -1127,7 +1279,7 @@ function renderReviewPack(report, batches, languageFixtures) {
     .map((target) => `| ${target.slug} | ${target.name} | ${target.language.toUpperCase()} | ${target.category} | ${target.enabled ? "Yes" : "No"} |`)
     .join("\n");
 
-  return `# Package 370B — Content Review Pack
+  return `# Package 370B.3 — Content Review Pack
 
 ## Кратко
 
@@ -1161,6 +1313,28 @@ ${targetRows}
 - Same-input deterministic replay: ${report.determinism.sameInputReproducible ? "PASS" : "FAIL"}
 - Cross-date variation: ${report.determinism.crossDateVariation ? "PASS" : "FAIL"}
 
+## Regression Summary
+
+- Weekly weeks checked: ${report.weeklyRegression.weeksChecked}
+- Weekly targets checked: ${report.weeklyRegression.targetsChecked}
+- Weekly combinations checked: ${report.weeklyRegression.combinationsChecked}
+- ISO week 53 included: ${report.weeklyRegression.isoWeek53Included ? "Yes" : "No"}
+- Best/caution collisions: ${report.weeklyRegression.collisions}
+- Invalid day labels: ${report.weeklyRegression.invalidDayLabels}
+- Missing best days: ${report.weeklyRegression.missingBestDays}
+- Missing caution days: ${report.weeklyRegression.missingCautionDays}
+- Deterministic replay mismatches: ${report.weeklyRegression.deterministicMismatches}
+- Weekly Scorpio (${report.weeklyRegression.scorpioReviewWeek}) best day: ${report.weeklyRegression.scorpioBestDay}
+- Weekly Scorpio (${report.weeklyRegression.scorpioReviewWeek}) caution day: ${report.weeklyRegression.scorpioCautionDay}
+- Compatibility pairs checked: ${report.compatibilityConsistency.pairsChecked}
+- Compatibility canonical pairs: ${report.compatibilityConsistency.canonicalPairs}
+- Compatibility reverse lookups checked: ${report.compatibilityConsistency.reverseLookupsChecked}
+- Compatibility duplicate mirrored pairs: ${report.compatibilityConsistency.duplicateMirroredPairs}
+- Compatibility title/order mismatches: ${report.compatibilityConsistency.titleOrderMismatches}
+- Compatibility metadata/order mismatches: ${report.compatibilityConsistency.metadataOrderMismatches}
+- Lowercase focus openings: ${report.compatibilityConsistency.lowercaseFocusOpenings}
+- Lowercase practice openings: ${report.compatibilityConsistency.lowercasePracticeOpenings}
+
 ## Daily Samples
 
 ${[...dailyRu, ...dailyUa].map(sampleBlock).join("\n\n---\n\n")}
@@ -1179,11 +1353,11 @@ ${tarotSamples.map(sampleBlock).join("\n\n---\n\n")}
 
 ## Исправленные дефекты
 
-1. Daily ritual/caution fragments теперь соединяются грамматически.
-2. Runtime qualityScore рассчитывается по структуре, CTA, длине, safety и Unicode вместо жёсткого значения.
-3. Все 78 compatibility outputs участвуют в QA и получили более разнообразные смысловые продолжения.
-4. Все 22 Tarot cards участвуют в text, safety и payload QA.
-5. Добавлены date boundary, timezone, deterministic replay, language purity и Telegram payload checks.
+1. Лучший день и день осторожности теперь выбираются одним детерминированным helper с обязательным различием.
+2. Weekly regression проверяет 54 последовательные ISO-недели, включая 2020-W53 и переход года.
+3. Visible compatibility title, pair metadata и запрошенный порядок знаков используют единый контракт.
+4. Начала блоков «Фокус пары» и «Практика на сегодня» проверяются на заглавную букву во всех 78 canonical outputs.
+5. Все 22 Tarot cards по-прежнему участвуют в text, safety и payload QA.
 
 ## Неблокирующие ограничения
 
@@ -1204,6 +1378,7 @@ function main() {
   const targetConfiguration = inspectTargetConfiguration();
   const daily = buildDailyBatch(options.date);
   const weekly = buildWeeklyBatch(options.week);
+  const weeklyRegression = inspectWeeklyDayRegression();
   const compatibility = buildCompatibilityBatch();
   const tarot = buildTarotBatch(options.date);
   const languageFixtures = buildUkrainianReviewFixtures(options.date, weekly.plan.weekRange);
@@ -1282,6 +1457,7 @@ function main() {
     ...targetConfiguration.problems,
     ...daily.problems,
     ...weekly.problems,
+    ...weeklyRegression.problems,
     ...compatibility.problems,
     ...tarot.problems,
     ...dateAccuracy.problems,
@@ -1333,6 +1509,8 @@ function main() {
     safety,
     telegramPayload,
     determinism,
+    weeklyRegression,
+    compatibilityConsistency: compatibility.consistency,
     quality,
     ledgerFindings,
     sideEffects: {
@@ -1379,6 +1557,9 @@ function main() {
   console.log(`Unsafe claims           : ${safety.total}`);
   console.log(`Malformed payloads      : ${telegramPayload.malformed}`);
   console.log(`Payload range           : ${telegramPayload.minimumLength}-${telegramPayload.maximumLength}`);
+  console.log(`Weekly matrix           : ${weeklyRegression.combinationsChecked} combinations / ${weeklyRegression.collisions} collisions`);
+  console.log(`Compatibility order     : ${compatibility.consistency.pairsChecked} pairs / ${compatibility.consistency.titleOrderMismatches} title mismatches`);
+  console.log(`Compatibility case      : ${compatibility.consistency.lowercaseFocusOpenings} focus / ${compatibility.consistency.lowercasePracticeOpenings} practice failures`);
   console.log(`Deterministic replay    : ${determinism.sameInputReproducible ? "PASS" : "FAIL"}`);
   console.log(`Cross-date variation    : ${determinism.crossDateVariation ? "PASS" : "FAIL"}`);
   console.log(`JSON report             : ${reportPath}`);

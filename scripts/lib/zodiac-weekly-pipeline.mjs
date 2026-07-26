@@ -132,8 +132,15 @@ const GENERAL_LINES = {
   advice: ADVICE_LINES,
 };
 
-const BEST_DAYS = ["понедельник", "вторник", "среда", "четверг", "пятница", "суббота", "воскресенье"];
-const CAUTION_DAYS = ["понедельник", "вторник", "среда", "четверг", "пятница", "суббота", "воскресенье"];
+export const WEEKLY_DAY_LABELS = Object.freeze([
+  "понедельник",
+  "вторник",
+  "среда",
+  "четверг",
+  "пятница",
+  "суббота",
+  "воскресенье",
+]);
 
 export function parseWeekCode(value) {
   const match = /^(\d{4})-W(\d{2})$/.exec(String(value || "").trim());
@@ -337,10 +344,11 @@ export function buildWeeklyReport(weekCode) {
 function buildPostForChannel(channel, week, weekRange, index) {
   const asset = resolveZodiacWeeklyVisualAsset(channel.slug, week.startDate, "weekly");
   const keyboard = buildWeeklyNavigationKeyboard(channel.slug);
+  const weeklyDays = selectDistinctWeeklyDays({ week: week.week, slug: channel.slug, index });
   const rawText = channel.slug === "zodiac-general"
-    ? buildGeneralWeeklyText(week, weekRange)
-    : buildSignWeeklyText(channel, week, weekRange, index);
-  const text = buildQualityWeeklyText(rawText, channel, week, weekRange, index);
+    ? buildGeneralWeeklyText(week, weekRange, weeklyDays)
+    : buildSignWeeklyText(channel, week, weekRange, weeklyDays);
+  const text = buildQualityWeeklyText(rawText, channel, weeklyDays);
   const firstLine = text.split("\n")[0] ?? "";
 
   return {
@@ -355,6 +363,8 @@ function buildPostForChannel(channel, week, weekRange, index) {
     timezone: "Europe/Kyiv",
     firstLine,
     text,
+    bestDay: weeklyDays.bestDay,
+    cautionDay: weeklyDays.cautionDay,
     imagePath: asset.path ?? null,
     imageRelative: asset.relative ?? null,
     mediaMode: asset.path ? "image" : "text_only",
@@ -365,7 +375,7 @@ function buildPostForChannel(channel, week, weekRange, index) {
   };
 }
 
-function buildGeneralWeeklyText(week, weekRange) {
+function buildGeneralWeeklyText(week, weekRange, weeklyDays) {
   const seed = hashSeed(`${week.week}:zodiac-general`);
   const opening = pick(WEEKLY_OPENINGS, seed, 0);
   return [
@@ -400,13 +410,15 @@ function buildGeneralWeeklyText(week, weekRange) {
     "<b>Главный совет недели</b>",
     pick(GENERAL_LINES.advice, seed, 5),
     "",
+    `<b>Лучший день:</b> ${weeklyDays.bestDay}`,
+    "",
     pick(WEEKLY_CTA_LINES, seed, 6),
     "",
     "👇 Выберите свой знак ниже:",
   ].join("\n");
 }
 
-function buildSignWeeklyText(sign, week, weekRange, index) {
+function buildSignWeeklyText(sign, week, weekRange, weeklyDays) {
   const seed = hashSeed(`${week.week}:${sign.slug}`);
   const opening = SIGN_WEEKLY_OPENINGS[sign.slug] ?? pick(WEEKLY_OPENINGS, seed, 0);
   return [
@@ -438,15 +450,36 @@ function buildSignWeeklyText(sign, week, weekRange, index) {
     "<b>Главный совет недели</b>",
     pick(ADVICE_LINES, seed, 5),
     "",
-    `<b>Лучший день:</b> ${BEST_DAYS[(seed + index) % BEST_DAYS.length]}`,
+    `<b>Лучший день:</b> ${weeklyDays.bestDay}`,
     "",
     pick(WEEKLY_CTA_LINES, seed, 6),
   ].join("\n");
 }
 
-function buildQualityWeeklyText(rawText, channel, week, weekRange, index) {
-  const seed = hashSeed(`${week.week}:${channel.slug}:quality`);
-  const cautionDay = CAUTION_DAYS[(seed + index + 3) % CAUTION_DAYS.length];
+export function selectDistinctWeeklyDays({ week, slug, index = 0 }) {
+  const parsedWeek = parseWeekCode(week);
+  if (!parsedWeek.ok) throw new Error(parsedWeek.error);
+
+  const normalizedSlug = String(slug || "").trim().toLowerCase();
+  if (!normalizedSlug) throw new Error("Weekly day selection requires a slug.");
+
+  const normalizedIndex = Number.isInteger(index) ? index : 0;
+  const bestSeed = hashSeed(`${parsedWeek.week}:${normalizedSlug}`);
+  const bestIndex = (bestSeed + normalizedIndex) % WEEKLY_DAY_LABELS.length;
+  const cautionSeed = hashSeed(`${parsedWeek.week}:${normalizedSlug}:quality`);
+  const cautionOffset = (cautionSeed % (WEEKLY_DAY_LABELS.length - 1)) + 1;
+  const cautionIndex = (bestIndex + cautionOffset) % WEEKLY_DAY_LABELS.length;
+
+  return {
+    bestDay: WEEKLY_DAY_LABELS[bestIndex],
+    cautionDay: WEEKLY_DAY_LABELS[cautionIndex],
+    bestIndex,
+    cautionIndex,
+    cautionOffset,
+  };
+}
+
+function buildQualityWeeklyText(rawText, channel, weeklyDays) {
   const existingLines = String(rawText || "")
     .split("\n")
     .filter((line) => !/Mini App|кнопк[аи]|Выберите свой знак/i.test(line))
@@ -454,8 +487,8 @@ function buildQualityWeeklyText(rawText, channel, week, weekRange, index) {
     .trim();
 
   const cautionLine = channel.slug === "zodiac-general"
-    ? `${cautionDay} — не перегружайте неделю чужой срочностью и не принимайте решения из тревоги.`
-    : `${cautionDay} — держите темп мягче обычного и не обещайте больше, чем сможете спокойно выполнить.`;
+    ? `${weeklyDays.cautionDay} — не перегружайте неделю чужой срочностью и не принимайте решения из тревоги.`
+    : `${weeklyDays.cautionDay} — держите темп мягче обычного и не обещайте больше, чем сможете спокойно выполнить.`;
 
   return [
     existingLines,
@@ -560,11 +593,39 @@ export function validateWeeklyPostQuality(post) {
   if (!text.includes("День осторожности:")) {
     errors.push("weekly post is missing caution day");
   }
+  const bestDay = extractWeeklyDayLabel(text, "Лучший день");
+  const cautionDay = extractWeeklyDayLabel(text, "День осторожности");
+  if (!bestDay) {
+    errors.push("weekly post is missing best day");
+  } else if (!WEEKLY_DAY_LABELS.includes(bestDay)) {
+    errors.push(`weekly best day is invalid: ${bestDay}`);
+  }
+  if (!cautionDay) {
+    errors.push("weekly post caution day label is invalid");
+  } else if (!WEEKLY_DAY_LABELS.includes(cautionDay)) {
+    errors.push(`weekly caution day is invalid: ${cautionDay}`);
+  }
+  if (bestDay && cautionDay && bestDay === cautionDay) {
+    errors.push("weekly best day and caution day must differ");
+  }
+  if (post?.bestDay && bestDay && post.bestDay !== bestDay) {
+    errors.push("weekly best day metadata does not match visible text");
+  }
+  if (post?.cautionDay && cautionDay && post.cautionDay !== cautionDay) {
+    errors.push("weekly caution day metadata does not match visible text");
+  }
   if (!text.includes(MINI_APP_CTA_URL)) {
     errors.push("weekly post is missing approved Mini App CTA link");
   }
 
   return errors;
+}
+
+function extractWeeklyDayLabel(text, label) {
+  const plain = String(text || "").replace(/<[^>]+>/g, "");
+  const escapedLabel = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const match = plain.match(new RegExp(`${escapedLabel}:\\s*([^\\s—]+)`, "iu"));
+  return match?.[1]?.trim().toLocaleLowerCase("ru-RU") ?? null;
 }
 
 export function getWeeklyTelegramTargetEnv(slug) {

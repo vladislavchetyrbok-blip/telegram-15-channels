@@ -22,6 +22,13 @@ export const SIGNS = [
   { slug: "virgo", emoji: "♍", nameRu: "Дева", element: "earth", gift: "внимание к деталям, практическую помощь и ясность", caution: "важно не превращать заботу в постоянную коррекцию партнёра", env: "ZODIAC_VIRGO_CHANNEL_ID" },
 ];
 
+const ELEMENT_NAMES_RU = {
+  fire: "огонь",
+  earth: "земля",
+  air: "воздух",
+  water: "вода",
+};
+
 export const VALID_COMPATIBILITY_STATUSES = new Set(["pending", "locked", "in_progress", "publishing", "sent", "published", "failed", "skipped"]);
 export const PROTECTED_COMPATIBILITY_STATUSES = new Set(["pending", "locked", "in_progress", "publishing", "sent", "published"]);
 
@@ -147,6 +154,17 @@ export function validateCompatibilityConfig(config = loadCompatibilityConfig()) 
     if (pairIds.has(pair.pairId)) problems.push(`Duplicate pairId: ${pair.pairId}.`);
     pairIds.add(pair.pairId);
 
+    if (signs.has(pair.signA) && signs.has(pair.signB)) {
+      const expectedPairId = `${pair.signA}-${pair.signB}`;
+      const expectedTitle = buildCompatibilityPairTitle(pair.signA, pair.signB);
+      const expectedElementDynamic = buildCompatibilityElementDynamic(pair.signA, pair.signB);
+      if (pair.pairId !== expectedPairId) problems.push(`${pair.pairId}: pairId must match signA/signB order ${expectedPairId}.`);
+      if (pair.titleRu !== expectedTitle) problems.push(`${pair.pairId}: titleRu must match signA/signB order ${expectedTitle}.`);
+      if (pair.elementDynamic !== expectedElementDynamic) {
+        problems.push(`${pair.pairId}: elementDynamic must match signA/signB order ${expectedElementDynamic}.`);
+      }
+    }
+
     const logicalKey = [pair.signA, pair.signB].sort().join("+");
     if (logicalPairs.has(logicalKey)) problems.push(`Duplicate logical pair: ${logicalKey}.`);
     logicalPairs.add(logicalKey);
@@ -175,22 +193,50 @@ export function selectCompatibilityPairs({ pairId = null, sign = null, all = fal
     if (!SIGNS.some((item) => item.slug === normalizedSign)) throw new Error(`Unknown sign: ${sign}`);
     return config.pairs.filter((pair) => pair.signA === normalizedSign || pair.signB === normalizedSign);
   }
-  if (pairId) return [findCompatibilityPair(pairId, config.pairs)];
+  if (pairId) return [findOrderedCompatibilityPair(pairId, config.pairs)];
 
   throw new Error("Provide --pair, --sign, or --all.");
 }
 
 export function canonicalizeCompatibilityPairId(pairId, pairs = loadCompatibilityConfig().pairs) {
-  return findCompatibilityPair(pairId, pairs).pairId;
+  return findCanonicalCompatibilityPair(pairId, pairs).pairId;
 }
 
 export function findCompatibilityPair(pairId, pairs = loadCompatibilityConfig().pairs) {
+  return findCanonicalCompatibilityPair(pairId, pairs);
+}
+
+export function findOrderedCompatibilityPair(pairId, pairs = loadCompatibilityConfig().pairs) {
   const normalized = normalizePairId(pairId);
   const [left, right] = normalized.split("-");
-  const pair = pairs.find((item) => item.pairId === normalized) ||
-    pairs.find((item) => item.signA === right && item.signB === left);
+  const canonicalPair = findCanonicalCompatibilityPair(normalized, pairs);
+  return orientCompatibilityPair(canonicalPair, left, right);
+}
+
+function findCanonicalCompatibilityPair(pairId, pairs) {
+  const normalized = normalizePairId(pairId);
+  const [left, right, ...extra] = normalized.split("-");
+  if (!left || !right || extra.length > 0) throw new Error(`Unknown compatibility pair: ${pairId}`);
+
+  const pair = pairs.find((item) => item.pairId === normalized)
+    || pairs.find((item) => item.signA === left && item.signB === right)
+    || pairs.find((item) => item.signA === right && item.signB === left);
   if (!pair) throw new Error(`Unknown compatibility pair: ${pairId}`);
   return pair;
+}
+
+function orientCompatibilityPair(pair, signA, signB) {
+  getSign(signA);
+  getSign(signB);
+  return {
+    ...pair,
+    pairId: `${signA}-${signB}`,
+    canonicalPairId: pair.pairId,
+    signA,
+    signB,
+    titleRu: buildCompatibilityPairTitle(signA, signB),
+    elementDynamic: buildCompatibilityElementDynamic(signA, signB),
+  };
 }
 
 const ELEMENT_ROLE_LINES = {
@@ -255,6 +301,10 @@ export function generateCompatibilityPost(pair) {
 
   return {
     pairId: pair.pairId,
+    canonicalPairId: pair.canonicalPairId ?? pair.pairId,
+    signA: pair.signA,
+    signB: pair.signB,
+    titleRu: pair.titleRu,
     title: `💞 Совместимость: ${pair.titleRu}`,
     text: [
       `💞 Совместимость: ${pair.titleRu}`,
@@ -436,6 +486,14 @@ function getSign(slug) {
   const sign = SIGNS.find((item) => item.slug === slug);
   if (!sign) throw new Error(`Unknown sign: ${slug}`);
   return sign;
+}
+
+function buildCompatibilityPairTitle(signA, signB) {
+  return `${getSign(signA).nameRu} + ${getSign(signB).nameRu}`;
+}
+
+function buildCompatibilityElementDynamic(signA, signB) {
+  return `${ELEMENT_NAMES_RU[getSign(signA).element]} + ${ELEMENT_NAMES_RU[getSign(signB).element]}`;
 }
 
 function normalizeSlug(value) {
