@@ -7823,8 +7823,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-26T08:37:16.779Z"
+      "status": "sent",
+      "updatedAt": "2026-07-26T08:37:19.933Z",
+      "messageId": "96,",
+      "sentAt": "2026-07-26T08:37:19.932Z"
     }
   }
 }
