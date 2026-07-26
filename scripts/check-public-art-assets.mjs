@@ -9,8 +9,8 @@ const desktopMaxBytes = 1_200 * 1024;
 
 const requiredAssets = [
   {
-    route: "/",
-    routeFile: "app/page.tsx",
+    route: "/ (paused homepage assets)",
+    routeFile: null,
     mobile: "public/public-site/art/hero/home-hero-mobile.webp",
     desktop: "public/public-site/art/hero/home-hero-desktop.webp",
   },
@@ -56,7 +56,7 @@ const artRoot = path.join(repoRoot, "public/public-site/art");
 check(fs.existsSync(artRoot), "Missing public/public-site/art directory.");
 
 for (const item of requiredAssets) {
-  const routeSource = read(item.routeFile);
+  const routeSource = item.routeFile ? read(item.routeFile) : "";
   for (const [kind, assetPath] of [
     ["mobile", item.mobile],
     ["desktop", item.desktop],
@@ -74,9 +74,13 @@ for (const item of requiredAssets) {
       check(size <= limit, `${assetPath} exceeds ${limit} bytes (${size}).`);
     }
 
-    check(routeSource.includes(publicPath), `${item.routeFile} does not reference expected ${kind} asset: ${publicPath}`);
+    if (item.routeFile) {
+      check(routeSource.includes(publicPath), `${item.routeFile} does not reference expected ${kind} asset: ${publicPath}`);
+    }
   }
-  check(routeSource.includes("PublicArtHero"), `${item.routeFile} does not use PublicArtHero for ${item.route}.`);
+  if (item.routeFile) {
+    check(routeSource.includes("PublicArtHero"), `${item.routeFile} does not use PublicArtHero for ${item.route}.`);
+  }
 }
 
 const artHeroPath = "components/public-site/PublicArtHero.tsx";
@@ -95,7 +99,8 @@ if (errors.length) {
 }
 
 console.log("Public Art Assets QA: PASS");
-console.log(`Required routes checked : ${requiredAssets.length}`);
+console.log(`Active routes checked   : ${requiredAssets.filter((item) => item.routeFile).length}`);
+console.log("Paused root assets      : retained and size-checked");
 console.log(`Required assets checked : ${assetRows.length}`);
 console.log(`Total required art size : ${totalBytes} bytes`);
 console.log("Assets:");

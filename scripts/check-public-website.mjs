@@ -78,13 +78,18 @@ const appShellSource = read("components/AppShell.tsx");
 const smokeSource = read("scripts/smoke-zodiac-mini-app.mjs");
 
 const metadataSources = [
-  ["home", homeSource],
   ["tarot", tarotSource],
   ["compatibility", compatibilitySource],
   ["zodiac", zodiacIndexSource],
   ["privacy", privacySource],
   ["terms", termsSource],
 ];
+
+check(homeSource.includes('from "next/navigation"'), "Production root must use a Next.js server redirect.");
+check(homeSource.includes('"/dashboard/networks/aphrodite"'), "Production root must target the Aphrodite Operator Platform.");
+check(homeSource.includes('dynamic = "force-dynamic"'), "Production root redirect must remain a dynamic server response.");
+check(homeSource.includes("redirect(APHRODITE_OPERATOR_ROOT)"), "Production root redirect is missing.");
+check(!homeSource.includes("CosmicSiteShell"), "Paused public homepage must not render at the production root.");
 
 for (const [name, source] of metadataSources) {
   check(source.includes("export const metadata"), `${name} route is missing metadata export.`);
@@ -115,14 +120,21 @@ check(compatibilitySource.includes("searchParams.startapp"), "Compatibility rout
 check(smokeSource.includes("compatibility?miniapp=1"), "Mini App smoke default URL must target the Mini App branch after public compatibility landing was added.");
 
 check(sitemapSource.includes('"/tarot"') && sitemapSource.includes('"/compatibility"') && sitemapSource.includes('"/zodiac"'), "Sitemap is missing main public routes.");
+check(!sitemapSource.includes('const routes = ["/",'), "Paused production root must not remain in the public sitemap.");
 check(sitemapSource.includes("zodiacPublicSigns"), "Sitemap must include all zodiac sign pages.");
-check(robotsSource.includes('allow: ["/", "/tarot", "/compatibility", "/zodiac", "/privacy", "/terms"]'), "Robots must allow public website routes.");
-check(robotsSource.includes('disallow: ["/admin", "/api", "/dashboard"'), "Robots must disallow private/admin/API routes.");
+check(robotsSource.includes('allow: ["/tarot", "/compatibility", "/zodiac", "/privacy", "/terms"]'), "Robots must allow remaining public website routes.");
+check(robotsSource.includes('disallow: ["/admin", "/api", "/dashboard", "/login"'), "Robots must disallow private/admin/API/login routes.");
 
-const userFacingPublicSourceFiles = requiredRouteFiles.concat([
+const userFacingPublicSourceFiles = [
+  "app/tarot/page.tsx",
+  "app/compatibility/page.tsx",
+  "app/zodiac/page.tsx",
+  "app/zodiac/[sign]/page.tsx",
+  "app/privacy/page.tsx",
+  "app/terms/page.tsx",
   "components/public-site/CosmicSite.tsx",
   "lib/public-website.ts",
-]);
+];
 const publicSource = userFacingPublicSourceFiles.map(read).join("\n");
 const forbiddenPublicPatterns = [
   /100%\s*prediction/i,
@@ -166,8 +178,9 @@ if (errors.length) {
 }
 
 console.log("Public Website QA: PASS");
-console.log("Routes checked          : 18");
+console.log("Routes checked          : 17");
 console.log("Zodiac sign pages       : 12");
+console.log("Production root         : Aphrodite Operator redirect");
 console.log("CTA safety             : Telegram-only");
 console.log("Private route CTA links : none");
 console.log("Sitemap/robots          : present");

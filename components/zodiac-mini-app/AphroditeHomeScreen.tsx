@@ -207,7 +207,7 @@ export function AphroditeAstrologyCenterHome({
     >
       <div className="rounded-lg border border-rose-200/20 bg-[radial-gradient(circle_at_16%_0%,rgba(244,114,182,0.22),transparent_31%),radial-gradient(circle_at_86%_18%,rgba(246,213,138,0.14),transparent_28%),linear-gradient(145deg,rgba(12,14,34,0.94),rgba(31,16,54,0.96)_52%,rgba(50,18,56,0.94))] p-3 shadow-[0_20px_70px_rgba(4,6,18,0.48)] min-[390px]:p-4">
         <div className="flex flex-wrap items-center gap-2">
-          <AphroditeBadge tone="rose">Зодиак</AphroditeBadge>
+          <AphroditeBadge tone="rose">APHRODITE</AphroditeBadge>
           <AphroditeBadge tone="violet">Карта дня</AphroditeBadge>
           <AphroditeBadge tone="gold">VIP превью</AphroditeBadge>
           {selectedSign ? (

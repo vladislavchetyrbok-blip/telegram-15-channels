@@ -807,6 +807,8 @@ export function ZodiacCompatibilityMiniApp({
   return (
     <div
       data-zodiac-mini-app-root="true"
+      data-aphrodite-mini-app-root="true"
+      data-aphrodite-product="telegram-mini-app"
       data-zodiac-active-tab={activeTab}
       data-zodiac-home-panel={homePanel}
       data-zodiac-requested-feature={requestedMoreFeature ?? ""}
@@ -839,16 +841,17 @@ export function ZodiacCompatibilityMiniApp({
 
           <div className={publicMode ? "flex flex-col gap-4" : "mt-5 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between"}>
             <div className="min-w-0">
-              <p
-                className={
-                  publicMode
-                    ? "inline-flex items-center gap-2 rounded-full border border-amber-200/25 bg-amber-200/10 px-3 py-1 text-xs font-semibold text-amber-100"
-                    : "inline-flex items-center gap-2 rounded-full border border-amber-200/25 bg-amber-200/10 px-3 py-1 text-xs font-semibold text-amber-100"
-                }
-              >
-                <Sparkles className="h-3.5 w-3.5" />
-                {selectedSign ? `${selectedSign.emoji} ${selectedSign.name}` : "Зодиакальный центр"}
-              </p>
+              <div className="flex flex-wrap items-center gap-2">
+                <p className="inline-flex items-center gap-2 rounded-full border border-amber-200/25 bg-amber-200/10 px-3 py-1 text-xs font-semibold text-amber-100">
+                  <Sparkles className="h-3.5 w-3.5" />
+                  Telegram Mini App
+                </p>
+                {selectedSign ? (
+                  <span className="inline-flex items-center rounded-full border border-rose-200/20 bg-rose-200/10 px-3 py-1 text-xs font-semibold text-rose-100">
+                    {selectedSign.emoji} {selectedSign.name}
+                  </span>
+                ) : null}
+              </div>
               <h1
                 className={
                   publicMode
@@ -856,7 +859,7 @@ export function ZodiacCompatibilityMiniApp({
                     : "mt-4 break-words text-2xl font-semibold leading-tight text-white [overflow-wrap:anywhere] sm:text-4xl"
                 }
               >
-                {selectedSign ? "Гороскопы и совместимость" : "Астрологический центр ✨"}
+                APHRODITE
               </h1>
               <p
                 className={
@@ -865,7 +868,9 @@ export function ZodiacCompatibilityMiniApp({
                     : "mt-3 max-w-3xl break-words text-sm leading-6 text-slate-300 [overflow-wrap:anywhere] sm:text-base sm:leading-7"
                 }
               >
-                {selectedSign ? "Выберите раздел и откройте прогнозы, совместимость, карту пары и натальную подсказку" : "Гороскопы, совместимость, мистика и личные расчёты в одном месте"}
+                {selectedSign
+                  ? "Гороскопы, совместимость, карта пары и личные подсказки для выбранного знака"
+                  : "Карта дня, совместимость, гороскопы, матрица судьбы, нумерология и мистика в одном Mini App"}
               </p>
             </div>
             {selectedSign ? (
@@ -4301,7 +4306,7 @@ function buildSafeShareText(action: ZodiacRetentionDraft) {
   if (action.featureKey === "vip" || String(action.featureKey || "").startsWith("vip")) {
     return "Я открыл(а) VIP-инструмент в Астрологическом центре ✨\nПопробуй тоже:";
   }
-  return "Я открыл(а) Астрологический центр ✨\nПопробуй тоже:";
+  return "Я открыл(а) APHRODITE\nПопробуй тоже:";
 }
 
 function getDateOrdinal(dateIso: string) {

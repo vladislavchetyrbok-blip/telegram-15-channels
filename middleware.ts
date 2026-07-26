@@ -2,6 +2,12 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { verifySessionCookieValue } from "./lib/auth/aphrodite-auth";
 
+function buildLoginUrl(request: NextRequest) {
+  const loginUrl = new URL("/login", request.url);
+  loginUrl.searchParams.set("next", `${request.nextUrl.pathname}${request.nextUrl.search}`);
+  return loginUrl;
+}
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -11,13 +17,13 @@ export async function middleware(request: NextRequest) {
     const secret = process.env.APHRODITE_SESSION_SECRET;
 
     if (!sessionCookie || !secret) {
-      return NextResponse.redirect(new URL("/login", request.url));
+      return NextResponse.redirect(buildLoginUrl(request));
     }
 
     const isValid = await verifySessionCookieValue(sessionCookie, secret);
     
     if (!isValid) {
-      const response = NextResponse.redirect(new URL("/login", request.url));
+      const response = NextResponse.redirect(buildLoginUrl(request));
       response.cookies.delete("aphrodite_session");
       return response;
     }

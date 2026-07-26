@@ -6,14 +6,14 @@ const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "https://zodiac-love-check.
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
-  const routes = ["/", "/tarot", "/compatibility", "/zodiac", "/privacy", "/terms"];
+  const routes = ["/tarot", "/compatibility", "/zodiac", "/privacy", "/terms"];
 
   return [
     ...routes.map((route) => ({
       url: `${siteUrl}${route}`,
       lastModified: now,
       changeFrequency: "weekly" as const,
-      priority: route === "/" ? 1 : 0.8,
+      priority: 0.8,
     })),
     ...zodiacPublicSigns.map((sign) => ({
       url: `${siteUrl}/zodiac/${sign.slug}`,

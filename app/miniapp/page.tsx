@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import {
   Fingerprint,
   Heart,
@@ -17,37 +18,44 @@ import {
 import { recordAphroditeMiniAppNoopIntegrationPoint } from "@/lib/zodiac/aphrodite-miniapp-analytics-noop-integration-points";
 
 export const metadata: Metadata = {
-  title: "Зодиакальный центр",
+  title: "APHRODITE - Telegram Mini App",
   description:
-    "Короткий Mini App экран: совместимость, Матрица, Мистика и VIP превью.",
+    "Совместимый вход в APHRODITE: карта дня, совместимость, гороскопы, матрица судьбы и мистика.",
+  alternates: {
+    canonical: "/aphrodite",
+  },
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 const secondaryCtas = [
   {
     title: "Матрица судьбы",
     description: "Код даты рождения.",
-    href: "/birth-matrix",
+    href: "/aphrodite?startapp=birth_matrix",
     icon: Fingerprint,
     tone: "gold",
   },
   {
     title: "Таро и руны",
     description: "Расклады, руна, символы.",
-    href: "/compatibility?startapp=mystic",
+    href: "/aphrodite?startapp=mystic",
     icon: WandSparkles,
     tone: "violet",
   },
   {
     title: "Прогноз",
     description: "День, неделя и знаки.",
-    href: "/compatibility?startapp=week",
+    href: "/aphrodite?startapp=week",
     icon: Sparkles,
     tone: "rose",
   },
   {
     title: "VIP превью",
     description: "Без оплаты · VIP закрыт.",
-    href: "/vip-preview",
+    href: "/aphrodite?startapp=vip",
     icon: Star,
     tone: "gold",
   },
@@ -59,7 +67,15 @@ const trustNotes = [
   "Превью",
 ] as const;
 
-export default function MiniAppHubPage() {
+interface MiniAppHubPageProps {
+  searchParams?: Record<string, string | string[] | undefined>;
+}
+
+export default function MiniAppHubPage({ searchParams = {} }: MiniAppHubPageProps) {
+  if (hasLegacyMiniAppIntent(searchParams)) {
+    redirect(buildAphroditeAliasUrl(searchParams));
+  }
+
   recordAphroditeMiniAppNoopIntegrationPoint("route-miniapp-opened");
 
   return (
@@ -73,8 +89,8 @@ export default function MiniAppHubPage() {
         <AphroditeSurface className="border-rose-200/20">
           <div className="space-y-4">
             <div className="flex flex-wrap items-center gap-2">
-              <AphroditeBadge tone="rose">Зодиак</AphroditeBadge>
-              <AphroditeBadge tone="violet">романтика</AphroditeBadge>
+              <AphroditeBadge tone="rose">APHRODITE</AphroditeBadge>
+              <AphroditeBadge tone="violet">Telegram Mini App</AphroditeBadge>
             </div>
 
             <section className="space-y-3">
@@ -85,7 +101,7 @@ export default function MiniAppHubPage() {
             </section>
 
             <Link
-              href="/compatibility?startapp=compat_love"
+              href="/aphrodite?startapp=compat_love"
               className="aphrodite-touch-target flex min-h-[58px] w-full items-center justify-between gap-3 rounded-lg border border-amber-100/35 bg-[linear-gradient(135deg,#fb7185,#f6d58a)] px-4 py-3 text-left text-[#190914] shadow-[0_16px_44px_rgba(251,113,133,0.28)] transition hover:border-amber-100/60 focus:outline-none focus:ring-2 focus:ring-amber-100/55"
             >
               <span className="min-w-0">
@@ -96,7 +112,7 @@ export default function MiniAppHubPage() {
             </Link>
 
             <Link
-              href="/compatibility?startapp=mystic"
+              href="/aphrodite?startapp=mystic"
               className="aphrodite-touch-target block rounded-lg border border-amber-100/25 bg-[radial-gradient(circle_at_24%_0%,rgba(246,213,138,0.18),transparent_34%),linear-gradient(135deg,rgba(88,28,135,0.42),rgba(15,23,42,0.72))] p-3 text-left shadow-[0_16px_44px_rgba(88,28,135,0.24)] transition hover:border-amber-100/45 focus:outline-none focus:ring-2 focus:ring-amber-200/45"
             >
               <span className="flex items-start justify-between gap-3">
@@ -158,4 +174,38 @@ export default function MiniAppHubPage() {
       </div>
     </main>
   );
+}
+
+const legacyMiniAppIntentParams = [
+  "miniapp",
+  "startapp",
+  "tgWebAppStartParam",
+  "start",
+  "sign",
+  "mode",
+  "tgWebAppData",
+  "tgWebAppVersion",
+  "tgWebAppPlatform",
+  "tgWebAppThemeParams",
+] as const;
+
+function hasLegacyMiniAppIntent(searchParams: Record<string, string | string[] | undefined>) {
+  return legacyMiniAppIntentParams.some((key) => firstParam(searchParams[key]));
+}
+
+function buildAphroditeAliasUrl(searchParams: Record<string, string | string[] | undefined>) {
+  const params = new URLSearchParams();
+
+  for (const [key, value] of Object.entries(searchParams)) {
+    for (const item of Array.isArray(value) ? value : [value]) {
+      if (item !== undefined) params.append(key, item);
+    }
+  }
+
+  const query = params.toString();
+  return query ? `/aphrodite?${query}` : "/aphrodite";
+}
+
+function firstParam(value: string | string[] | undefined) {
+  return Array.isArray(value) ? value[0] : value;
 }
