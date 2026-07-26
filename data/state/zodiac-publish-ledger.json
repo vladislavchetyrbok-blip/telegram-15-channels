@@ -7935,8 +7935,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-26T08:37:49.354Z"
+      "status": "sent",
+      "updatedAt": "2026-07-26T08:37:52.416Z",
+      "messageId": "94,",
+      "sentAt": "2026-07-26T08:37:52.414Z"
     }
   }
 }
