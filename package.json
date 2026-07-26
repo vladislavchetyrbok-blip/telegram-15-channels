@@ -107,6 +107,7 @@
     "zodiac:workflow:check": "node scripts/check-zodiac-daily-workflow.mjs",
     "zodiac:content:qa": "node scripts/check-zodiac-content-quality.mjs",
     "zodiac:miniapp:smoke": "node scripts/smoke-zodiac-mini-app.mjs",
+    "aphrodite:route:qa": "node scripts/check-aphrodite-product-separation.mjs",
     "tarot:qa": "node scripts/check-tarot-daily-cards.mjs",
     "website:qa": "node scripts/check-public-website.mjs",
     "public:art:qa": "node scripts/check-public-art-assets.mjs",

@@ -154,7 +154,7 @@ export function BirthMatrixClient() {
 
   return (
     <AphroditeMiniAppShell
-      eyebrow="Зодиакальный центр"
+      eyebrow="APHRODITE · Telegram Mini App"
       title="Матрица судьбы"
       description="Узнай главные энергии даты рождения и то, что стоит развивать."
       statusSlot={<AphroditeStatusPill label="бесплатный preview" tone="accent" />}

@@ -13,7 +13,7 @@ export type AphroditeMiniAppShellProps = {
 };
 
 export function AphroditeMiniAppShell({
-  eyebrow = "Зодиакальный центр",
+  eyebrow = "APHRODITE · Telegram Mini App",
   title,
   description,
   statusSlot,
