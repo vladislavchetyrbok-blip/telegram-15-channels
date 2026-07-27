@@ -8145,8 +8145,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-27T10:06:27.901Z"
+      "status": "sent",
+      "updatedAt": "2026-07-27T10:06:32.070Z",
+      "messageId": "95,",
+      "sentAt": "2026-07-27T10:06:32.068Z"
     }
   }
 }
