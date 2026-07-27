@@ -8061,8 +8061,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-27T10:05:56.510Z"
+      "status": "sent",
+      "updatedAt": "2026-07-27T10:06:00.158Z",
+      "messageId": "98,",
+      "sentAt": "2026-07-27T10:06:00.157Z"
     }
   }
 }
