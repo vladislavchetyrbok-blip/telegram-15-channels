@@ -8103,8 +8103,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-27T10:06:11.631Z"
+      "status": "sent",
+      "updatedAt": "2026-07-27T10:06:15.414Z",
+      "messageId": "96,",
+      "sentAt": "2026-07-27T10:06:15.412Z"
     }
   }
 }
