@@ -8093,6 +8093,18 @@
       "updatedAt": "2026-07-27T10:06:10.159Z",
       "messageId": "98,",
       "sentAt": "2026-07-27T10:06:10.157Z"
+    },
+    "2026-07-27:scorpio": {
+      "key": "2026-07-27:scorpio",
+      "date": "2026-07-27",
+      "slug": "scorpio",
+      "createdAt": "2026-07-27T10:06:11.631Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-07-27T10:06:11.631Z"
     }
   }
 }
