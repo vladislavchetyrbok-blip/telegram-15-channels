@@ -75,13 +75,15 @@ export default function ZodiacIndexPage() {
 
       <section className="relative py-16">
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-100/22 to-transparent" aria-hidden="true" />
-        <div className="relative overflow-hidden rounded-lg border border-amber-100/16 bg-[radial-gradient(circle_at_82%_0%,rgba(246,213,138,0.16),transparent_30%),linear-gradient(145deg,rgba(255,255,255,0.07),rgba(255,255,255,0.028))] p-5 shadow-[0_26px_90px_rgba(0,0,0,0.42)] sm:p-8">
+        <div className="luxury-manuscript-scroll luxury-seal-corners relative overflow-hidden rounded-[1.35rem] p-6 sm:p-9">
           <div className="absolute right-[-5rem] top-[-5rem] h-64 w-64 rounded-full border border-amber-100/12 bg-[radial-gradient(circle,rgba(246,213,138,0.14),transparent_66%)]" aria-hidden="true" />
-          <p className="text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-amber-100/70">В MINI APP</p>
-          <h2 className="mt-4 max-w-3xl [font-family:Georgia,'Times_New_Roman',serif] text-3xl font-semibold leading-tight text-white sm:text-5xl">
+          <div className="luxury-ornament-field absolute inset-0 opacity-[0.14]" aria-hidden="true" />
+          <div className="absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-[#ffe8a5]/55 to-transparent" aria-hidden="true" />
+          <p className="relative text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-amber-100/70">В MINI APP</p>
+          <h2 className="relative mt-4 max-w-3xl [font-family:Georgia,'Times_New_Roman',serif] text-3xl font-normal leading-tight text-transparent bg-[linear-gradient(115deg,#fffef8_0%,#f8d889_45%,#f4b5c7_78%,#fffef8_100%)] bg-clip-text sm:text-5xl">
             Знак — вход в личный ритуал
           </h2>
-          <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-300 sm:text-base">
+          <p className="relative mt-4 max-w-3xl text-sm leading-7 text-slate-300 sm:text-base">
             В Telegram можно соединить знак с картой дня, совместимостью и другими мягкими мистическими форматами. Public page остаётся красивым входом, а персональный сценарий открывается внутри Mini App.
           </p>
         </div>
