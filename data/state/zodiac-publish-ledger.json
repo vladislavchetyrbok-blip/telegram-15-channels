@@ -8247,6 +8247,18 @@
       "updatedAt": "2026-07-28T08:48:26.759Z",
       "messageId": "100,",
       "sentAt": "2026-07-28T08:48:26.757Z"
+    },
+    "2026-07-28:virgo": {
+      "key": "2026-07-28:virgo",
+      "date": "2026-07-28",
+      "slug": "virgo",
+      "createdAt": "2026-07-28T08:48:28.202Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-07-28T08:48:28.202Z"
     }
   }
 }
