@@ -8173,8 +8173,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-28T08:47:55.057Z"
+      "status": "sent",
+      "updatedAt": "2026-07-28T08:47:59.916Z",
+      "messageId": "109,",
+      "sentAt": "2026-07-28T08:47:59.914Z"
     }
   }
 }
