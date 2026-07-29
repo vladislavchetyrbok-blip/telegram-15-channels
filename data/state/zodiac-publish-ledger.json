@@ -8453,8 +8453,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-29T08:53:18.926Z"
+      "status": "sent",
+      "updatedAt": "2026-07-29T08:53:22.838Z",
+      "messageId": "102,",
+      "sentAt": "2026-07-29T08:53:22.836Z"
     }
   }
 }
