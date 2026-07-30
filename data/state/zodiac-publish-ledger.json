@@ -8551,8 +8551,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-30T08:43:24.716Z"
+      "status": "sent",
+      "updatedAt": "2026-07-30T08:43:27.873Z",
+      "messageId": "104,",
+      "sentAt": "2026-07-30T08:43:27.871Z"
     }
   }
 }
