@@ -8663,8 +8663,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-30T08:43:57.000Z"
+      "status": "sent",
+      "updatedAt": "2026-07-30T08:43:59.898Z",
+      "messageId": "102,",
+      "sentAt": "2026-07-30T08:43:59.896Z"
     }
   }
 }
