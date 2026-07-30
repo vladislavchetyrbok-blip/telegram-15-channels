@@ -8593,8 +8593,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-30T08:43:37.172Z"
+      "status": "sent",
+      "updatedAt": "2026-07-30T08:43:40.315Z",
+      "messageId": "104,",
+      "sentAt": "2026-07-30T08:43:40.313Z"
     }
   }
 }
