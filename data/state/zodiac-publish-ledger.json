@@ -8719,8 +8719,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-31T09:13:28.760Z"
+      "status": "sent",
+      "updatedAt": "2026-07-31T09:13:32.858Z",
+      "messageId": "115,",
+      "sentAt": "2026-07-31T09:13:32.856Z"
     }
   }
 }
