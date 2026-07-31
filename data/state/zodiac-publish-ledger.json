@@ -8873,8 +8873,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-31T09:14:42.379Z"
+      "status": "sent",
+      "updatedAt": "2026-07-31T09:14:45.517Z",
+      "messageId": "103,",
+      "sentAt": "2026-07-31T09:14:45.515Z"
     }
   }
 }
