@@ -8887,8 +8887,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-07-31T09:14:48.386Z"
+      "status": "sent",
+      "updatedAt": "2026-07-31T09:14:52.551Z",
+      "messageId": "103,",
+      "sentAt": "2026-07-31T09:14:52.548Z"
     }
   }
 }
