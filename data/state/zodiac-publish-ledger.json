@@ -9055,8 +9055,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-01T08:32:30.973Z"
+      "status": "sent",
+      "updatedAt": "2026-08-01T08:32:34.716Z",
+      "messageId": "105,",
+      "sentAt": "2026-08-01T08:32:34.714Z"
     }
   }
 }
