@@ -8943,8 +8943,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-01T08:31:51.368Z"
+      "status": "sent",
+      "updatedAt": "2026-08-01T08:31:55.421Z",
+      "messageId": "110,",
+      "sentAt": "2026-08-01T08:31:55.419Z"
     }
   }
 }
