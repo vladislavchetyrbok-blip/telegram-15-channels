@@ -9045,6 +9045,18 @@
       "updatedAt": "2026-08-01T08:32:29.956Z",
       "messageId": "106,",
       "sentAt": "2026-08-01T08:32:29.953Z"
+    },
+    "2026-08-01:aquarius": {
+      "key": "2026-08-01:aquarius",
+      "date": "2026-08-01",
+      "slug": "aquarius",
+      "createdAt": "2026-08-01T08:32:30.973Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-08-01T08:32:30.973Z"
     }
   }
 }
