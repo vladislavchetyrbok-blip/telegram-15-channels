@@ -8891,6 +8891,18 @@
       "updatedAt": "2026-07-31T09:14:52.551Z",
       "messageId": "103,",
       "sentAt": "2026-07-31T09:14:52.548Z"
+    },
+    "2026-08-01:zodiac-general": {
+      "key": "2026-08-01:zodiac-general",
+      "date": "2026-08-01",
+      "slug": "zodiac-general",
+      "createdAt": "2026-08-01T08:31:35.290Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-08-01T08:31:35.290Z"
     }
   }
 }
