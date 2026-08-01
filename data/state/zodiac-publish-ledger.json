@@ -9027,8 +9027,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-01T08:32:21.219Z"
+      "status": "sent",
+      "updatedAt": "2026-08-01T08:32:25.007Z",
+      "messageId": "106,",
+      "sentAt": "2026-08-01T08:32:25.005Z"
     }
   }
 }
