@@ -9013,8 +9013,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-01T08:32:16.393Z"
+      "status": "sent",
+      "updatedAt": "2026-08-01T08:32:20.165Z",
+      "messageId": "106,",
+      "sentAt": "2026-08-01T08:32:20.162Z"
     }
   }
 }
