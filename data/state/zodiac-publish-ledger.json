@@ -9213,6 +9213,18 @@
       "updatedAt": "2026-08-02T08:35:26.620Z",
       "messageId": "108,",
       "sentAt": "2026-08-02T08:35:26.618Z"
+    },
+    "2026-08-02:capricorn": {
+      "key": "2026-08-02:capricorn",
+      "date": "2026-08-02",
+      "slug": "capricorn",
+      "createdAt": "2026-08-02T08:35:27.903Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-08-02T08:35:27.903Z"
     }
   }
 }
