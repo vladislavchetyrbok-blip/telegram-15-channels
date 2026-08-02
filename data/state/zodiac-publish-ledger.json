@@ -9083,8 +9083,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-02T08:34:35.278Z"
+      "status": "sent",
+      "updatedAt": "2026-08-02T08:34:40.328Z",
+      "messageId": "119,",
+      "sentAt": "2026-08-02T08:34:40.326Z"
     }
   }
 }
