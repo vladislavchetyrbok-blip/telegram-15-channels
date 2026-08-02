@@ -9195,8 +9195,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-02T08:35:18.084Z"
+      "status": "sent",
+      "updatedAt": "2026-08-02T08:35:21.765Z",
+      "messageId": "108,",
+      "sentAt": "2026-08-02T08:35:21.762Z"
     }
   }
 }
