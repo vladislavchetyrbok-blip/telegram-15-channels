@@ -9223,8 +9223,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-02T08:35:27.903Z"
+      "status": "sent",
+      "updatedAt": "2026-08-02T08:35:31.488Z",
+      "messageId": "108,",
+      "sentAt": "2026-08-02T08:35:31.487Z"
     }
   }
 }
