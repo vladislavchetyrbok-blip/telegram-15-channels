@@ -9363,8 +9363,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-03T10:02:40.135Z"
+      "status": "sent",
+      "updatedAt": "2026-08-03T10:02:43.114Z",
+      "messageId": "112,",
+      "sentAt": "2026-08-03T10:02:43.112Z"
     }
   }
 }
