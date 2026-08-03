@@ -9293,8 +9293,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-03T10:02:19.736Z"
+      "status": "sent",
+      "updatedAt": "2026-08-03T10:02:22.966Z",
+      "messageId": "112,",
+      "sentAt": "2026-08-03T10:02:22.964Z"
     }
   }
 }
