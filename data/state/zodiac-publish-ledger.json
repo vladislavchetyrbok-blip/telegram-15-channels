@@ -9325,6 +9325,18 @@
       "updatedAt": "2026-08-03T10:02:31.313Z",
       "messageId": "112,",
       "sentAt": "2026-08-03T10:02:31.311Z"
+    },
+    "2026-08-03:leo": {
+      "key": "2026-08-03:leo",
+      "date": "2026-08-03",
+      "slug": "leo",
+      "createdAt": "2026-08-03T10:02:32.311Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-08-03T10:02:32.311Z"
     }
   }
 }
