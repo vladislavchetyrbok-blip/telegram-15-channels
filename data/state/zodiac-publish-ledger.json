@@ -9433,8 +9433,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-03T10:03:00.496Z"
+      "status": "sent",
+      "updatedAt": "2026-08-03T10:03:03.482Z",
+      "messageId": "109,",
+      "sentAt": "2026-08-03T10:03:03.480Z"
     }
   }
 }
