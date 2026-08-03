@@ -9283,6 +9283,18 @@
       "updatedAt": "2026-08-03T10:02:18.746Z",
       "messageId": "112,",
       "sentAt": "2026-08-03T10:02:18.744Z"
+    },
+    "2026-08-03:taurus": {
+      "key": "2026-08-03:taurus",
+      "date": "2026-08-03",
+      "slug": "taurus",
+      "createdAt": "2026-08-03T10:02:19.736Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-08-03T10:02:19.736Z"
     }
   }
 }
