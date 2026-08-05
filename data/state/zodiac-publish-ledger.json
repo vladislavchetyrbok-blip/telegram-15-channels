@@ -9713,8 +9713,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-05T08:49:00.218Z"
+      "status": "sent",
+      "updatedAt": "2026-08-05T08:49:04.005Z",
+      "messageId": "116,",
+      "sentAt": "2026-08-05T08:49:04.003Z"
     }
   }
 }
