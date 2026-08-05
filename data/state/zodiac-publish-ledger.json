@@ -9797,8 +9797,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-05T08:49:30.957Z"
+      "status": "sent",
+      "updatedAt": "2026-08-05T08:49:38.815Z",
+      "messageId": "113,",
+      "sentAt": "2026-08-05T08:49:38.813Z"
     }
   }
 }
