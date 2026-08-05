@@ -9629,8 +9629,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-05T08:48:27.287Z"
+      "status": "sent",
+      "updatedAt": "2026-08-05T08:48:32.743Z",
+      "messageId": "125,",
+      "sentAt": "2026-08-05T08:48:32.741Z"
     }
   }
 }
