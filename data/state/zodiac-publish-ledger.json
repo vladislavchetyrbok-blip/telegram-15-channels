@@ -9937,8 +9937,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-06T08:50:44.780Z"
+      "status": "sent",
+      "updatedAt": "2026-08-06T08:50:48.559Z",
+      "messageId": "116,",
+      "sentAt": "2026-08-06T08:50:48.556Z"
     }
   }
 }
