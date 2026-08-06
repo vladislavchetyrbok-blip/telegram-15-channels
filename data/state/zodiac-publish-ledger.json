@@ -9923,8 +9923,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-06T08:50:39.820Z"
+      "status": "sent",
+      "updatedAt": "2026-08-06T08:50:43.555Z",
+      "messageId": "116,",
+      "sentAt": "2026-08-06T08:50:43.553Z"
     }
   }
 }
