@@ -9843,6 +9843,18 @@
       "updatedAt": "2026-08-06T08:50:10.219Z",
       "messageId": "118,",
       "sentAt": "2026-08-06T08:50:10.216Z"
+    },
+    "2026-08-06:gemini": {
+      "key": "2026-08-06:gemini",
+      "date": "2026-08-06",
+      "slug": "gemini",
+      "createdAt": "2026-08-06T08:50:11.540Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-08-06T08:50:11.540Z"
     }
   }
 }
