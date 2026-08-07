@@ -10137,6 +10137,18 @@
       "updatedAt": "2026-08-07T07:37:53.481Z",
       "messageId": "118,",
       "sentAt": "2026-08-07T07:37:53.479Z"
+    },
+    "2026-08-07:aquarius": {
+      "key": "2026-08-07:aquarius",
+      "date": "2026-08-07",
+      "slug": "aquarius",
+      "createdAt": "2026-08-07T07:37:54.611Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-08-07T07:37:54.611Z"
     }
   }
 }
