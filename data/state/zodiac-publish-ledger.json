@@ -10133,8 +10133,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-07T07:37:49.574Z"
+      "status": "sent",
+      "updatedAt": "2026-08-07T07:37:53.481Z",
+      "messageId": "118,",
+      "sentAt": "2026-08-07T07:37:53.479Z"
     }
   }
 }
