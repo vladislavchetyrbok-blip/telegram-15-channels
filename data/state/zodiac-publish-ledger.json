@@ -10203,8 +10203,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-08T07:06:40.023Z"
+      "status": "sent",
+      "updatedAt": "2026-08-08T07:06:43.318Z",
+      "messageId": "122,",
+      "sentAt": "2026-08-08T07:06:43.315Z"
     }
   }
 }
