@@ -10413,8 +10413,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-09T07:09:20.460Z"
+      "status": "sent",
+      "updatedAt": "2026-08-09T07:09:23.659Z",
+      "messageId": "124,",
+      "sentAt": "2026-08-09T07:09:23.657Z"
     }
   }
 }
