@@ -10585,6 +10585,18 @@
       "updatedAt": "2026-08-10T07:58:30.441Z",
       "messageId": "128,",
       "sentAt": "2026-08-10T07:58:30.440Z"
+    },
+    "2026-08-10:cancer": {
+      "key": "2026-08-10:cancer",
+      "date": "2026-08-10",
+      "slug": "cancer",
+      "createdAt": "2026-08-10T07:58:31.819Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-08-10T07:58:31.819Z"
     }
   }
 }
