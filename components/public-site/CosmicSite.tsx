@@ -33,11 +33,13 @@ export function CosmicBackground() {
       <div className="luxury-grain absolute inset-0 opacity-[0.18]" />
       <div className="cosmic-starfield absolute inset-0 opacity-85" />
       <div className="cosmic-starfield cosmic-starfield-deep absolute inset-0 opacity-40" />
+      <div className="luxury-ornament-field absolute inset-0 opacity-[0.18]" />
       <div className="cosmic-aurora absolute left-1/2 top-[-19rem] h-[38rem] w-[74rem] -translate-x-1/2 rounded-full" />
       <div className="absolute left-[-12rem] top-24 h-[34rem] w-[34rem] rounded-full border border-rose-100/8 bg-[radial-gradient(circle,rgba(244,176,197,0.13),transparent_66%)] blur-2xl" />
       <div className="absolute right-[-12rem] top-6 h-[36rem] w-[36rem] rounded-full border border-amber-100/8 bg-[radial-gradient(circle,rgba(246,213,138,0.14),transparent_66%)] blur-2xl" />
       <div className="absolute left-1/2 top-[30rem] h-px w-[min(78rem,88vw)] -translate-x-1/2 bg-gradient-to-r from-transparent via-amber-100/28 to-transparent" />
       <div className="absolute bottom-[-24rem] left-1/2 h-[50rem] w-[50rem] -translate-x-1/2 rounded-full border border-amber-100/10 bg-[radial-gradient(circle,rgba(246,213,138,0.09),transparent_62%)]" />
+      <div className="absolute left-1/2 top-[16rem] h-[34rem] w-[34rem] -translate-x-1/2 rounded-full border border-amber-100/[0.045] shadow-[0_0_120px_rgba(246,213,138,0.06)]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_42%,transparent_0%,transparent_48%,rgba(0,0,0,0.62)_100%)]" />
     </div>
   );
@@ -127,7 +129,8 @@ export function SiteHero({
         <div className="animate-celestial-shimmer absolute left-[-8rem] top-[18%] h-[28rem] w-[28rem] rounded-full border border-amber-100/10 bg-[radial-gradient(circle,rgba(246,213,138,0.12),transparent_68%)] blur-xl" aria-hidden="true" />
         <div className="absolute right-[-10rem] bottom-[6%] h-[28rem] w-[28rem] rounded-full border border-rose-100/10 bg-[radial-gradient(circle,rgba(244,176,197,0.1),transparent_68%)] blur-xl" aria-hidden="true" />
         <div className="cosmic-starfield absolute inset-0 opacity-30" aria-hidden="true" />
-        <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#02020a] via-[#02020a]/72 to-transparent" aria-hidden="true" />
+      <div className="luxury-ornament-field absolute inset-x-0 bottom-0 h-[52vh] opacity-[0.13]" aria-hidden="true" />
+      <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#02020a] via-[#02020a]/72 to-transparent" aria-hidden="true" />
         <div className="relative z-10 mx-auto flex min-h-[calc(100svh-8.25rem)] max-w-7xl items-end pb-[12vh] pt-24 sm:pb-[13vh] lg:pb-[15vh]">
           <div className="max-w-[37rem]">
             {eyebrow ? (
@@ -418,7 +421,7 @@ export function ZodiacHalo({
 
 export function ZodiacWheel({ signs, compactMobile = false }: { signs: ZodiacPublicSign[]; compactMobile?: boolean }) {
   const wheelClass = compactMobile
-    ? "relative mx-auto aspect-square w-[min(76vw,318px)] max-w-full overflow-visible px-3 sm:w-[min(86vw,410px)] sm:px-1 lg:w-[min(92vw,420px)] lg:px-0"
+    ? "relative mx-auto aspect-square w-[min(76vw,318px)] max-w-full overflow-visible sm:w-[min(86vw,410px)] lg:w-[min(92vw,420px)]"
     : "relative mx-auto aspect-square w-[min(92vw,420px)] max-w-full overflow-visible";
 
   return (
@@ -450,6 +453,11 @@ export function SiteSection({
         <h2 className="mt-3 [font-family:Georgia,'Times_New_Roman',serif] text-3xl font-normal tracking-wide text-transparent bg-[linear-gradient(115deg,#fffdf7_0%,#f8d889_45%,#f4b5c7_75%,#fffdf7_100%)] bg-clip-text [text-shadow:0_12px_40px_rgba(0,0,0,0.8)] sm:text-4xl lg:text-5xl">
           {title}
         </h2>
+        <div className="mt-4 flex items-center gap-3" aria-hidden="true">
+          <span className="h-px w-12 bg-gradient-to-r from-transparent via-[#ffe8a5]/70 to-transparent" />
+          <span className="h-1.5 w-1.5 rounded-full bg-[#ffe8a5]/70 shadow-[0_0_10px_rgba(246,213,138,0.55)]" />
+          <span className="h-px w-20 bg-gradient-to-r from-[#ffe8a5]/70 to-transparent" />
+        </div>
         {description ? <p className="mt-3.5 text-base leading-7 text-slate-300/90 sm:text-lg">{description}</p> : null}
       </div>
       {children}
@@ -459,8 +467,14 @@ export function SiteSection({
 
 export function LuxuryPanel({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
-    <div className={`relative min-w-0 overflow-hidden rounded-lg border border-amber-100/16 bg-[radial-gradient(circle_at_18%_0%,rgba(246,213,138,0.12),transparent_30%),radial-gradient(circle_at_92%_18%,rgba(244,176,197,0.09),transparent_32%),linear-gradient(160deg,rgba(255,255,255,0.085),rgba(255,255,255,0.03))] shadow-[0_22px_76px_rgba(0,0,0,0.34)] backdrop-blur-xl ${className}`}>
-      <div className="absolute inset-x-4 top-0 h-px bg-gradient-to-r from-transparent via-amber-100/42 to-transparent" aria-hidden="true" />
+    <div className={`luxury-engraved-plaque relative min-w-0 overflow-hidden rounded-[1.15rem] backdrop-blur-2xl ${className}`}>
+      <div className="absolute inset-1.5 rounded-[0.95rem] border border-[#ffe8a5]/15 pointer-events-none" aria-hidden="true" />
+      <div className="absolute top-2.5 left-2.5 h-1 w-1 rounded-full bg-[#ffe8a5]/60 shadow-[0_0_6px_#ffe8a5] pointer-events-none" aria-hidden="true" />
+      <div className="absolute top-2.5 right-2.5 h-1 w-1 rounded-full bg-[#ffe8a5]/60 shadow-[0_0_6px_#ffe8a5] pointer-events-none" aria-hidden="true" />
+      <div className="absolute bottom-2.5 left-2.5 h-1 w-1 rounded-full bg-[#ffe8a5]/60 shadow-[0_0_6px_#ffe8a5] pointer-events-none" aria-hidden="true" />
+      <div className="absolute bottom-2.5 right-2.5 h-1 w-1 rounded-full bg-[#ffe8a5]/60 shadow-[0_0_6px_#ffe8a5] pointer-events-none" aria-hidden="true" />
+      <div className="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-[#ffe8a5]/60 to-transparent shadow-[0_0_12px_rgba(246,213,138,0.4)]" aria-hidden="true" />
+      <div className="absolute inset-x-6 bottom-0 h-px bg-gradient-to-r from-transparent via-rose-100/35 to-transparent" aria-hidden="true" />
       {children}
     </div>
   );
@@ -469,16 +483,16 @@ export function LuxuryPanel({ children, className = "" }: { children: ReactNode;
 export function SiteFeatureCard({ title, text, label, className = "" }: { title: string; text: string; label: string; className?: string }) {
   return (
     <article className={`group relative ${className}`}>
-      <LuxuryPanel className="h-full p-4 transition duration-500 hover:-translate-y-1 hover:border-amber-100/34 hover:shadow-[0_28px_90px_rgba(0,0,0,0.54),0_0_45px_rgba(246,213,138,0.11)] lg:p-5">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_18%,rgba(246,213,138,0.08),transparent_34%),linear-gradient(135deg,transparent,rgba(244,176,197,0.04),transparent)] opacity-0 transition duration-500 group-hover:opacity-100" aria-hidden="true" />
+      <LuxuryPanel className="h-full p-5 transition duration-500 hover:-translate-y-1 hover:border-[#ffe8a5]/45 hover:shadow-[0_28px_90px_rgba(0,0,0,0.65),0_0_55px_rgba(246,213,138,0.15)] lg:p-6">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_18%,rgba(246,213,138,0.12),transparent_38%),linear-gradient(135deg,transparent,rgba(244,176,197,0.06),transparent)] opacity-0 transition duration-500 group-hover:opacity-100" aria-hidden="true" />
         <div className="flex items-center justify-between gap-3">
-          <p className="text-[11px] font-semibold uppercase text-amber-100">{label}</p>
-          <span className="animate-star-glint flex h-9 w-9 items-center justify-center rounded-lg border border-amber-100/22 bg-amber-100/[0.08] text-amber-100 shadow-[0_0_30px_rgba(246,213,138,0.18)]">
+          <p className="text-[11px] font-semibold uppercase tracking-widest text-[#ffe8a5]">{label}</p>
+          <span className="animate-star-glint flex h-9 w-9 items-center justify-center rounded-lg border border-[#ffe8a5]/30 bg-[#ffe8a5]/[0.1] text-[#ffe8a5] shadow-[0_0_30px_rgba(246,213,138,0.22)]">
             <Sparkles className="h-4 w-4" aria-hidden="true" />
           </span>
         </div>
         <h3 className="mt-4 [font-family:Georgia,'Times_New_Roman',serif] text-xl font-normal tracking-wide text-[#fff8ea]">{title}</h3>
-        <p className="mt-2 text-sm leading-6 text-slate-300">{text}</p>
+        <p className="mt-2.5 text-sm leading-6 text-slate-300">{text}</p>
       </LuxuryPanel>
     </article>
   );
@@ -487,11 +501,11 @@ export function SiteFeatureCard({ title, text, label, className = "" }: { title:
 export function StepCard({ index, title, text }: { index: string; title: string; text: string }) {
   return (
     <article>
-      <LuxuryPanel className="h-full p-5">
-        <div className="absolute right-4 top-4 h-12 w-12 rounded-full border border-amber-100/14 bg-[radial-gradient(circle,rgba(246,213,138,0.12),transparent_68%)]" aria-hidden="true" />
-        <p className="text-sm font-semibold text-amber-100">{index}</p>
-        <h3 className="mt-3 [font-family:Georgia,'Times_New_Roman',serif] text-xl font-normal tracking-wide text-[#fff8ea]">{title}</h3>
-        <p className="mt-2 text-sm leading-6 text-slate-300">{text}</p>
+      <LuxuryPanel className="h-full p-6">
+        <div className="absolute right-4 top-4 h-12 w-12 rounded-full border border-[#ffe8a5]/20 bg-[radial-gradient(circle,rgba(246,213,138,0.16),transparent_68%)]" aria-hidden="true" />
+        <p className="text-sm font-semibold tracking-widest text-[#ffe8a5]">{index}</p>
+        <h3 className="mt-3.5 [font-family:Georgia,'Times_New_Roman',serif] text-xl font-normal tracking-wide text-[#fff8ea]">{title}</h3>
+        <p className="mt-2.5 text-sm leading-6 text-slate-300">{text}</p>
       </LuxuryPanel>
     </article>
   );
@@ -501,18 +515,23 @@ export function ZodiacSignCard({ sign }: { sign: ZodiacPublicSign }) {
   return (
     <Link
       href={`/zodiac/${sign.slug}`}
-      className="group relative min-w-0 overflow-hidden rounded-lg border border-amber-100/16 bg-[linear-gradient(145deg,var(--tw-gradient-stops))] shadow-[0_20px_70px_rgba(0,0,0,0.34)] transition hover:-translate-y-1 hover:border-amber-100/38 hover:shadow-[0_28px_88px_rgba(0,0,0,0.42)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-100/60"
+      className="luxury-engraved-plaque group relative min-w-0 overflow-hidden rounded-[1.15rem] p-5 transition duration-500 hover:-translate-y-1 hover:border-[#ffe8a5]/50 hover:shadow-[0_28px_90px_rgba(0,0,0,0.65),0_0_55px_rgba(246,213,138,0.18)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ffe8a5]/60"
     >
-      <div className={`absolute inset-0 bg-[radial-gradient(circle_at_22%_8%,rgba(246,213,138,0.14),transparent_30%)] ${sign.accent}`} aria-hidden="true" />
-      <div className="absolute right-[-1.8rem] top-[-1.8rem] h-24 w-24 rounded-full border border-amber-100/12 bg-[radial-gradient(circle,rgba(246,213,138,0.12),transparent_66%)]" aria-hidden="true" />
-      <div className="relative p-4">
+      <div className="absolute inset-1.5 rounded-[0.95rem] border border-[#ffe8a5]/15 pointer-events-none" aria-hidden="true" />
+      <div className="absolute top-2.5 left-2.5 h-1 w-1 rounded-full bg-[#ffe8a5]/60 shadow-[0_0_6px_#ffe8a5] pointer-events-none" aria-hidden="true" />
+      <div className="absolute top-2.5 right-2.5 h-1 w-1 rounded-full bg-[#ffe8a5]/60 shadow-[0_0_6px_#ffe8a5] pointer-events-none" aria-hidden="true" />
+      <div className="absolute bottom-2.5 left-2.5 h-1 w-1 rounded-full bg-[#ffe8a5]/60 shadow-[0_0_6px_#ffe8a5] pointer-events-none" aria-hidden="true" />
+      <div className="absolute bottom-2.5 right-2.5 h-1 w-1 rounded-full bg-[#ffe8a5]/60 shadow-[0_0_6px_#ffe8a5] pointer-events-none" aria-hidden="true" />
+      <div className={`absolute inset-0 bg-[radial-gradient(circle_at_22%_8%,rgba(246,213,138,0.18),transparent_35%)] ${sign.accent}`} aria-hidden="true" />
+      <div className="absolute right-[-1.8rem] top-[-1.8rem] h-24 w-24 rounded-full border border-[#ffe8a5]/16 bg-[radial-gradient(circle,rgba(246,213,138,0.16),transparent_66%)]" aria-hidden="true" />
+      <div className="relative z-10">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <p className="text-4xl text-amber-100 [text-shadow:0_0_24px_rgba(246,213,138,0.34)]" aria-hidden="true">{sign.symbol}</p>
+            <p className="text-4xl text-[#ffe8a5] [text-shadow:0_0_24px_rgba(246,213,138,0.45)]" aria-hidden="true">{sign.symbol}</p>
             <h3 className="mt-3 [font-family:Georgia,'Times_New_Roman',serif] text-xl font-normal tracking-wide text-[#fff8ea]">{sign.ruName}</h3>
-            <p className="mt-1 text-xs uppercase text-slate-400">{sign.enName}</p>
+            <p className="mt-1 text-xs uppercase tracking-widest text-slate-400">{sign.enName}</p>
           </div>
-          <ArrowRight className="mt-1 h-4 w-4 text-amber-100/70 transition group-hover:translate-x-0.5" aria-hidden="true" />
+          <ArrowRight className="mt-1 h-4 w-4 text-[#ffe8a5]/70 transition group-hover:translate-x-0.5" aria-hidden="true" />
         </div>
         <p className="mt-4 text-sm leading-5 text-slate-300">{sign.element} · {sign.dates}</p>
       </div>
@@ -524,35 +543,38 @@ export function ZodiacSealCard({ sign }: { sign: ZodiacPublicSign }) {
   return (
     <Link
       href={`/zodiac/${sign.slug}`}
-      className="animate-orbit-shimmer group relative isolate flex flex-col items-center justify-between overflow-hidden rounded-[1.35rem] border border-[#f6d58a]/32 bg-[radial-gradient(circle_at_50%_0%,rgba(246,213,138,0.2),transparent_45%),linear-gradient(160deg,#090614_0%,#04020a_100%)] p-6 text-center shadow-[0_24px_80px_rgba(0,0,0,0.65),inset_0_0_0_1px_rgba(255,255,255,0.08)] transition duration-500 hover:-translate-y-1.5 hover:border-[#f6d58a]/72 hover:shadow-[0_32px_100px_rgba(0,0,0,0.82),0_0_68px_rgba(246,213,138,0.28),inset_0_0_34px_rgba(246,213,138,0.16)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f6d58a]/70"
+      className="luxury-engraved-plaque animate-orbit-shimmer group relative isolate flex flex-col items-center justify-between overflow-hidden rounded-[1.35rem] p-6 text-center transition duration-500 hover:-translate-y-1.5 hover:border-[#ffe8a5]/72 hover:shadow-[0_32px_100px_rgba(0,0,0,0.85),0_0_68px_rgba(246,213,138,0.32),inset_0_0_34px_rgba(246,213,138,0.18)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f6d58a]/70"
     >
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_25%,rgba(246,213,138,0.2),transparent_40%),radial-gradient(circle_at_20%_80%,rgba(244,176,197,0.15),transparent_40%)] opacity-80 transition duration-500 group-hover:opacity-100" aria-hidden="true" />
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,transparent_35%,rgba(0,0,0,0.5)_100%)]" aria-hidden="true" />
-      <div className="absolute inset-[1px] rounded-[1.28rem] border border-white/[0.06]" aria-hidden="true" />
-      <div className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-amber-100/50 to-transparent" aria-hidden="true" />
-      <div className="absolute bottom-[-4.5rem] left-1/2 h-36 w-36 -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(246,213,138,0.12),transparent_68%)] blur-2xl" aria-hidden="true" />
+      <div className="absolute inset-2 rounded-[1.15rem] border border-[#ffe8a5]/18 pointer-events-none" aria-hidden="true" />
+      <div className="absolute top-3 left-3 h-1.5 w-1.5 rounded-full bg-[#ffe8a5]/65 shadow-[0_0_8px_#ffe8a5] pointer-events-none" aria-hidden="true" />
+      <div className="absolute top-3 right-3 h-1.5 w-1.5 rounded-full bg-[#ffe8a5]/65 shadow-[0_0_8px_#ffe8a5] pointer-events-none" aria-hidden="true" />
+      <div className="absolute bottom-3 left-3 h-1.5 w-1.5 rounded-full bg-[#ffe8a5]/65 shadow-[0_0_8px_#ffe8a5] pointer-events-none" aria-hidden="true" />
+      <div className="absolute bottom-3 right-3 h-1.5 w-1.5 rounded-full bg-[#ffe8a5]/65 shadow-[0_0_8px_#ffe8a5] pointer-events-none" aria-hidden="true" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_25%,rgba(246,213,138,0.22),transparent_40%),radial-gradient(circle_at_20%_80%,rgba(244,176,197,0.16),transparent_40%)] opacity-80 transition duration-500 group-hover:opacity-100" aria-hidden="true" />
+      <div className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[#ffe8a5]/60 to-transparent shadow-[0_0_12px_rgba(246,213,138,0.4)]" aria-hidden="true" />
+      <div className="absolute bottom-[-4.5rem] left-1/2 h-36 w-36 -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(246,213,138,0.15),transparent_68%)] blur-2xl" aria-hidden="true" />
 
       {/* Medallion / Golden Seal */}
-      <div className="animate-aura-pulse relative my-2 flex h-32 w-32 items-center justify-center overflow-hidden rounded-full border border-[#f6d58a]/45 bg-[radial-gradient(circle_at_35%_30%,rgba(255,250,235,0.3),rgba(246,213,138,0.13)_45%,rgba(8,5,18,0.94)_90%)] shadow-[0_10px_40px_rgba(0,0,0,0.84),0_0_54px_rgba(246,213,138,0.32),inset_0_0_38px_rgba(246,213,138,0.2)] transition duration-500 group-hover:scale-105 group-hover:border-[#f6d58a]/85 group-hover:shadow-[0_10px_50px_rgba(0,0,0,0.92),0_0_78px_rgba(246,213,138,0.48),inset_0_0_48px_rgba(246,213,138,0.3)]">
+      <div className="animate-aura-pulse relative my-2 flex h-32 w-32 items-center justify-center overflow-hidden rounded-full border border-[#ffe8a5]/50 bg-[radial-gradient(circle_at_35%_30%,rgba(255,250,235,0.35),rgba(246,213,138,0.16)_45%,rgba(8,5,18,0.94)_90%)] shadow-[0_10px_40px_rgba(0,0,0,0.84),0_0_54px_rgba(246,213,138,0.36),inset_0_0_38px_rgba(246,213,138,0.24)] transition duration-500 group-hover:scale-105 group-hover:border-[#ffe8a5]/90 group-hover:shadow-[0_10px_50px_rgba(0,0,0,0.92),0_0_78px_rgba(246,213,138,0.52),inset_0_0_48px_rgba(246,213,138,0.34)]">
         <span className={`absolute inset-[-18%] rounded-full bg-gradient-to-br ${sign.accent} opacity-45 blur-xl transition duration-500 group-hover:opacity-70`} aria-hidden="true" />
-        <span className="absolute inset-0 rounded-full bg-[conic-gradient(from_18deg,rgba(246,213,138,0.1),rgba(246,213,138,0.55),rgba(244,176,197,0.22),rgba(246,213,138,0.58),rgba(246,213,138,0.1))] opacity-70" aria-hidden="true" />
+        <span className="absolute inset-0 rounded-full bg-[conic-gradient(from_18deg,rgba(246,213,138,0.12),rgba(246,213,138,0.6),rgba(244,176,197,0.24),rgba(246,213,138,0.6),rgba(246,213,138,0.12))] opacity-75" aria-hidden="true" />
         <span className="absolute inset-[1px] rounded-full bg-[#070511]/88" aria-hidden="true" />
-        <span className="absolute inset-2 rounded-full border border-[#f6d58a]/30" aria-hidden="true" />
-        <span className="absolute inset-5 rounded-full border border-rose-200/20" aria-hidden="true" />
-        <span className="absolute top-2 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-[#f6d58a] shadow-[0_0_12px_#f6d58a]" aria-hidden="true" />
-        <span className="absolute bottom-2 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-[#f6d58a]/60" aria-hidden="true" />
-        <span className="relative z-10 text-5xl text-[#fff8ea] [text-shadow:0_0_30px_rgba(246,213,138,0.6)] transition duration-500 group-hover:scale-110" aria-hidden="true">
+        <span className="absolute inset-2 rounded-full border border-[#ffe8a5]/35" aria-hidden="true" />
+        <span className="absolute inset-5 rounded-full border border-rose-200/22" aria-hidden="true" />
+        <span className="absolute top-2 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-[#ffe8a5] shadow-[0_0_12px_#ffe8a5]" aria-hidden="true" />
+        <span className="absolute bottom-2 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-[#ffe8a5]/65" aria-hidden="true" />
+        <span className="relative z-10 text-5xl text-[#fff8ea] [text-shadow:0_0_30px_rgba(246,213,138,0.65)] transition duration-500 group-hover:scale-110" aria-hidden="true">
           {sign.symbol}
         </span>
       </div>
 
       <div className="relative mt-4 z-10">
         <h3 className="[font-family:Georgia,'Times_New_Roman',serif] text-2xl font-normal tracking-wide text-[#fff8ea] [text-shadow:0_5px_20px_rgba(0,0,0,0.8)]">{sign.ruName}</h3>
-        <p className="mt-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.3em] text-[#f6d58a]/85">{sign.element}</p>
+        <p className="mt-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.3em] text-[#ffe8a5]/90">{sign.element}</p>
         <p className="mx-auto mt-2.5 max-w-[13rem] text-xs text-slate-300/80">{sign.dates}</p>
       </div>
 
-      <div className="relative mt-5 z-10 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#f6d58a]/85 transition duration-300 group-hover:text-[#fff8ea]">
+      <div className="relative mt-5 z-10 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#ffe8a5]/90 transition duration-300 group-hover:text-[#fff8ea]">
         <span>Открыть печать</span>
         <ArrowRight className="h-3.5 w-3.5 transition duration-300 group-hover:translate-x-1" aria-hidden="true" />
       </div>
@@ -569,12 +591,13 @@ export function SiteCTA({
 }) {
   return (
     <section className="relative my-14">
-      <LuxuryPanel className="p-5 sm:p-8">
+      <LuxuryPanel className="luxury-seal-corners p-6 sm:p-9">
         <div className="absolute right-[-5rem] top-[-5rem] h-52 w-52 rounded-full border border-amber-100/12 bg-[radial-gradient(circle,rgba(246,213,138,0.16),transparent_66%)]" aria-hidden="true" />
+        <div className="luxury-ornament-field absolute inset-0 opacity-[0.16]" aria-hidden="true" />
         <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
           <div>
-            <p className="inline-flex rounded-lg border border-amber-100/18 bg-amber-100/[0.06] px-3 py-1.5 text-xs font-semibold uppercase text-amber-100">Telegram Mini App</p>
-            <h2 className="mt-3 text-3xl font-semibold leading-tight text-white sm:text-4xl">{title}</h2>
+            <p className="inline-flex rounded-full border border-amber-100/24 bg-amber-100/[0.08] px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.24em] text-amber-100">Telegram Mini App</p>
+            <h2 className="mt-4 [font-family:Georgia,'Times_New_Roman',serif] text-3xl font-normal leading-tight text-transparent bg-[linear-gradient(115deg,#fffef8_0%,#f8d889_45%,#f4b5c7_78%,#fffef8_100%)] bg-clip-text sm:text-4xl">{title}</h2>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300 sm:text-base">{text}</p>
           </div>
           <PremiumCTA className="lg:justify-self-end">Открыть в Telegram</PremiumCTA>
@@ -584,7 +607,19 @@ export function SiteCTA({
   );
 }
 
-export function PageHeader({ eyebrow, title, description }: { eyebrow: string; title: string; description: string }) {
+export function PageHeader({
+  eyebrow,
+  title,
+  description,
+  headingLevel = "h1",
+}: {
+  eyebrow: string;
+  title: string;
+  description: string;
+  headingLevel?: "h1" | "h2";
+}) {
+  const Heading = headingLevel;
+
   return (
     <section className="relative py-12 sm:py-16">
       <div className="absolute right-0 top-8 hidden h-52 w-52 rounded-full border border-amber-100/10 bg-[radial-gradient(circle,rgba(246,213,138,0.08),transparent_66%)] md:block" aria-hidden="true" />
@@ -593,7 +628,7 @@ export function PageHeader({ eyebrow, title, description }: { eyebrow: string; t
           <span className="h-px w-6 bg-gradient-to-r from-transparent to-[#f6d58a]/50" />
           <span>{eyebrow}</span>
         </p>
-        <h1 className="mt-4 [font-family:Georgia,'Times_New_Roman',serif] text-4xl font-normal tracking-wide text-transparent bg-[linear-gradient(115deg,#fffef8_0%,#f8d889_40%,#f4b5c7_70%,#fffef8_100%)] bg-clip-text [text-shadow:0_14px_50px_rgba(0,0,0,0.8)] sm:text-6xl">{title}</h1>
+        <Heading className="mt-4 [font-family:Georgia,'Times_New_Roman',serif] text-4xl font-normal tracking-wide text-transparent bg-[linear-gradient(115deg,#fffef8_0%,#f8d889_40%,#f4b5c7_70%,#fffef8_100%)] bg-clip-text [text-shadow:0_14px_50px_rgba(0,0,0,0.8)] sm:text-6xl">{title}</Heading>
         <p className="mt-4 text-base leading-7 text-slate-300/90 sm:text-lg">{description}</p>
       </div>
     </section>
@@ -603,9 +638,11 @@ export function PageHeader({ eyebrow, title, description }: { eyebrow: string; t
 export function ProfilePanel({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section>
-      <LuxuryPanel className="h-full p-5">
-        <h2 className="[font-family:Georgia,'Times_New_Roman',serif] text-xl font-normal tracking-wide text-[#fff8ea]">{title}</h2>
-        <div className="mt-3 text-sm leading-6 text-slate-300">{children}</div>
+      <LuxuryPanel className="luxury-seal-corners h-full p-6">
+        <div className="luxury-ornament-field absolute inset-0 opacity-[0.1]" aria-hidden="true" />
+        <h2 className="relative [font-family:Georgia,'Times_New_Roman',serif] text-xl font-normal tracking-wide text-[#fff8ea]">{title}</h2>
+        <div className="relative mt-3 h-px w-16 bg-gradient-to-r from-[#ffe8a5]/70 to-transparent" aria-hidden="true" />
+        <div className="relative mt-3 text-sm leading-6 text-slate-300">{children}</div>
       </LuxuryPanel>
     </section>
   );
