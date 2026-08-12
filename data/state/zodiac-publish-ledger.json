@@ -10973,8 +10973,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-12T07:45:15.476Z"
+      "status": "sent",
+      "updatedAt": "2026-08-12T07:45:18.807Z",
+      "messageId": "130,",
+      "sentAt": "2026-08-12T07:45:18.805Z"
     }
   }
 }
