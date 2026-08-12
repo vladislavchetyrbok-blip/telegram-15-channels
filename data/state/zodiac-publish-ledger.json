@@ -11043,8 +11043,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-12T07:45:39.365Z"
+      "status": "sent",
+      "updatedAt": "2026-08-12T07:45:42.688Z",
+      "messageId": "128,",
+      "sentAt": "2026-08-12T07:45:42.686Z"
     }
   }
 }
