@@ -11113,8 +11113,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-13T07:46:50.435Z"
+      "status": "sent",
+      "updatedAt": "2026-08-13T07:46:54.935Z",
+      "messageId": "132,",
+      "sentAt": "2026-08-13T07:46:54.932Z"
     }
   }
 }
