@@ -11145,6 +11145,18 @@
       "updatedAt": "2026-08-13T07:47:06.674Z",
       "messageId": "132,",
       "sentAt": "2026-08-13T07:47:06.671Z"
+    },
+    "2026-08-13:leo": {
+      "key": "2026-08-13:leo",
+      "date": "2026-08-13",
+      "slug": "leo",
+      "createdAt": "2026-08-13T07:47:08.120Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-08-13T07:47:08.120Z"
     }
   }
 }
