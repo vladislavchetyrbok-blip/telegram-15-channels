@@ -11393,8 +11393,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-14T07:45:19.652Z"
+      "status": "sent",
+      "updatedAt": "2026-08-14T07:45:23.563Z",
+      "messageId": "132,",
+      "sentAt": "2026-08-14T07:45:23.561Z"
     }
   }
 }
