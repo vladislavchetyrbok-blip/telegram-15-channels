@@ -11673,8 +11673,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-16T06:53:47.262Z"
+      "status": "sent",
+      "updatedAt": "2026-08-16T06:53:50.531Z",
+      "messageId": "140,",
+      "sentAt": "2026-08-16T06:53:50.529Z"
     }
   }
 }
