@@ -67,21 +67,25 @@ import {
   isValidTime,
 } from "./zodiac-mini-app/person-state";
 import { DateLoadingSection, EnergyCard } from "./zodiac-mini-app/ForecastCards";
-import { HeaderStatusStrip, HubNavigation, SignSelection } from "./zodiac-mini-app/MiniAppHeader";
+import { HeaderStatusStrip, HubNavigation } from "./zodiac-mini-app/MiniAppHeader";
 import {
   AstrologyCenterHome,
-  CategorySignGate,
-  CompatibilityCategoryChooser,
   MiniAppBottomNavigation,
   type HomeBottomItem,
   type MainMenuCategoryTarget,
 } from "./zodiac-mini-app/MainMenuSections";
+import { AphroditePersonalProfileFields } from "./zodiac-mini-app/AphroditePersonalProfileFields";
 import { MoreFeatureNavigation } from "./zodiac-mini-app/MoreFeatureNavigation";
 import { ZodiacCityAutocompleteInput } from "./zodiac-mini-app/ZodiacCityAutocompleteInput";
 import { ZodiacUnifiedDateInput } from "./zodiac-mini-app/ZodiacUnifiedDateInput";
 import { ZodiacUnifiedTimeInput } from "./zodiac-mini-app/ZodiacUnifiedTimeInput";
 import { parseBirthDateInput, sanitizeBirthDateInputDraft } from "@/lib/zodiac-birth-date-range";
 import { ProfileRetentionPanel, type ProfileQuickTarget } from "./zodiac-mini-app/ProfileRetentionPanel";
+import {
+  clearAphroditePersonalProfile,
+  loadAphroditePersonalProfile,
+  saveAphroditePersonalProfile,
+} from "./zodiac-mini-app/personal-profile";
 import { useZodiacMiniAppRetention, type RetentionPanelFocus, type ZodiacRetentionDraft, type ZodiacRetentionItem } from "./zodiac-mini-app/retention";
 import { ResultPanel, ResultTextCard } from "./zodiac-mini-app/ResultCards";
 import { ZodiacSelect, type ZodiacSelectOption } from "./zodiac-mini-app/ZodiacSelect";
@@ -194,7 +198,6 @@ export function ZodiacCompatibilityMiniApp({
   const initialMoreFeature = useMemo(() => resolveInitialMoreFeature(startParam), [startParam]);
   const initialHomePanel = useMemo(() => resolveInitialHomePanel(startParam), [startParam]);
   const initialRelationshipMode = useMemo(() => resolveInitialRelationshipMode(startParam), [startParam]);
-  const hintSign = hintSignSlug ? findSign(hintSignSlug) : null;
   const retention = useZodiacMiniAppRetention();
   const lastPairAction = useMemo(() => findLastPairRetentionItem(retention.state.history, retention.state.favorites), [retention.state.favorites, retention.state.history]);
   const [appDateKey, setAppDateKey] = useState<string | null>(null);
@@ -203,12 +206,12 @@ export function ZodiacCompatibilityMiniApp({
   const [requestedMoreFeature, setRequestedMoreFeature] = useState<MoreFeatureId | null>(initialMoreFeature);
   const [homePanel, setHomePanel] = useState<"home" | RetentionPanelFocus>(initialHomePanel);
   const [shareFallbackText, setShareFallbackText] = useState("");
-  const [pendingCompatibilityMode, setPendingCompatibilityMode] = useState<RelationshipMode | null>(initialRelationshipMode);
   const [mode, setMode] = useState<Mode>(resolvedMode);
   const [relationshipMode, setRelationshipMode] = useState<RelationshipMode>(initialRelationshipMode ?? "love");
   const [step, setStep] = useState<WizardStep>(1);
   const [self, setSelf] = useState<PersonState>(() => createInitialPerson("", "unspecified", false, ""));
   const [partner, setPartner] = useState<PersonState>(() => createInitialPerson("", "unspecified", false, ""));
+  const [personalProfileReady, setPersonalProfileReady] = useState(false);
   const appOpenTrackedRef = useRef(false);
   const lastTabTrackedRef = useRef("");
   const lastMoreTrackedRef = useRef("");
@@ -218,6 +221,7 @@ export function ZodiacCompatibilityMiniApp({
   const mainMenuTrackedRef = useRef("");
   const compatibilityWizardTrackedRef = useRef("");
   const lastStartParamSyncRef = useRef("");
+  const personalProfileHydratedRef = useRef(false);
 
   const result = useMemo(() => buildCompatibilityResult(mode, relationshipMode, self, partner), [mode, partner, relationshipMode, self]);
   const selectedSign = selectedSignSlug ? findSign(selectedSignSlug) : null;
@@ -238,6 +242,22 @@ export function ZodiacCompatibilityMiniApp({
   const telegramImpactOccurred = telegram.impactOccurred;
   const telegramSelectionChanged = telegram.selectionChanged;
   const telegramThemeStyle = buildTelegramThemeStyle(telegram);
+
+  useEffect(() => {
+    if (personalProfileHydratedRef.current) return;
+    personalProfileHydratedRef.current = true;
+    const storedProfile = loadAphroditePersonalProfile() ?? createInitialPerson("", "unspecified", false, "");
+    const profileWithDetectedSign = applyBirthDateSign(storedProfile);
+    const hydratedProfile = hintSignSlug ? { ...profileWithDetectedSign, sign: hintSignSlug } : profileWithDetectedSign;
+    setSelf(hydratedProfile);
+    setSelectedSignSlug(hydratedProfile.sign);
+    setPersonalProfileReady(true);
+  }, [hintSignSlug]);
+
+  useEffect(() => {
+    if (!personalProfileReady) return;
+    saveAphroditePersonalProfile(self);
+  }, [personalProfileReady, self]);
 
   useEffect(() => {
     function refreshAppDate() {
@@ -274,15 +294,15 @@ export function ZodiacCompatibilityMiniApp({
     setActiveTab(initialActiveTab);
     setRequestedMoreFeature(initialMoreFeature);
     setHomePanel(initialHomePanel);
-    setPendingCompatibilityMode(initialRelationshipMode);
     setRelationshipMode(initialRelationshipMode ?? "love");
     setShareFallbackText("");
 
-    setSelectedSignSlug("");
-    setSelf((current) => ({ ...current, sign: "" }));
+    if (hintSignSlug) {
+      setSelectedSignSlug(hintSignSlug);
+      setSelf((current) => ({ ...current, sign: hintSignSlug }));
+    }
 
     if (!normalizedStartParam || normalizedStartParam === "compat") {
-      setPartner((current) => ({ ...current, sign: "" }));
       setMode(resolvedMode);
       setStep(1);
     }
@@ -421,11 +441,10 @@ export function ZodiacCompatibilityMiniApp({
     setHomePanel("home");
     setActiveTab("today");
     setRequestedMoreFeature(null);
-    setPendingCompatibilityMode(null);
     setShareFallbackText("");
   }, [triggerTelegramHaptic]);
 
-  const homeTelegramBackVisible = telegram.isTelegramWebApp && !selectedSign && (activeTab !== "today" || homePanel !== "home");
+  const homeTelegramBackVisible = telegram.isTelegramWebApp && activeTab === "today" && homePanel !== "home";
   const handleHomeTelegramBack = useCallback(() => {
     trackTelegramBackUsed("main_menu", activeTab === "today" ? homePanel : activeTab);
     returnToMainMenu();
@@ -443,7 +462,6 @@ export function ZodiacCompatibilityMiniApp({
     setShareFallbackText("");
     setActiveTab(target.tab);
     setRequestedMoreFeature(target.feature ?? null);
-    if (target.tab !== "love") setPendingCompatibilityMode(null);
     retention.recordAction({ section: categoryId, label: mainMenuCategoryLabel(categoryId), featureKey: target.feature ?? target.tab, sign: selectedSignSlug || undefined });
     trackZodiacMiniAppEvent(
       "main_menu_category_opened",
@@ -465,21 +483,11 @@ export function ZodiacCompatibilityMiniApp({
     }
   }
 
-  function selectCompatibilityCategory(nextMode: RelationshipMode) {
-    triggerTelegramHaptic("selection", "compatibility", nextMode);
-    setRelationshipMode(nextMode);
-    setPendingCompatibilityMode(nextMode);
-    retention.recordAction({ section: "compatibility", label: `Совместимость: ${relationshipModeText(nextMode)}`, featureKey: "compatibilityTool", relationshipMode: nextMode, sign: selectedSignSlug || undefined });
-    trackZodiacMiniAppEvent("compatibility_category_selected", analyticsPayload({ section: "compatibility", relationshipMode: nextMode, sign: selectedSignSlug || undefined }));
-    trackZodiacMiniAppEvent("compatibility_mode_selected", analyticsPayload({ section: "compatibility", relationshipMode: nextMode, sign: selectedSignSlug || undefined }));
-  }
-
   function openHomePanel(nextPanel: RetentionPanelFocus) {
     triggerTelegramHaptic("selection", "bottom_nav", nextPanel);
     setActiveTab("today");
     setHomePanel(nextPanel);
     setRequestedMoreFeature(null);
-    setPendingCompatibilityMode(null);
     setShareFallbackText("");
     trackZodiacMiniAppEvent("profile_preview_opened", analyticsPayload({ section: "profile_preview", category: nextPanel, sign: selectedSignSlug || retention.state.lastSign }));
   }
@@ -497,7 +505,6 @@ export function ZodiacCompatibilityMiniApp({
     setActiveTab("love");
     setHomePanel("home");
     setRequestedMoreFeature("compatibilityTool");
-    setPendingCompatibilityMode(relationshipMode);
     setStep(1);
   }
 
@@ -506,7 +513,6 @@ export function ZodiacCompatibilityMiniApp({
     const nextRelationshipMode = lastPairAction.relationshipMode ?? "love";
     triggerTelegramHaptic("selection", "compatibility", featureKey);
     setRelationshipMode(nextRelationshipMode);
-    setPendingCompatibilityMode(nextRelationshipMode);
     setMode("fast");
     setSelectedSignSlug(lastPairAction.firstSign);
     setSelf((current) => ({ ...current, sign: lastPairAction.firstSign || current.sign }));
@@ -519,25 +525,13 @@ export function ZodiacCompatibilityMiniApp({
     setHomePanel("home");
     setRequestedMoreFeature(null);
     setShareFallbackText("");
-    if (nextTab !== "love") setPendingCompatibilityMode(null);
     setActiveTab(nextTab);
   }
 
-  function chooseSign(slug: string) {
-    triggerTelegramHaptic("selection", "sign", slug);
-    setSelectedSignSlug(slug);
-    setActiveTab((currentTab) => (currentTab === "today" ? initialActiveTab : currentTab));
-    setSelf((current) => ({ ...current, sign: !current.sign || current.sign === selectedSignSlug ? slug : current.sign }));
-    retention.recordAction({ section: "sign", label: `Выбран знак: ${findSign(slug).name}`, featureKey: "sign", sign: slug });
-    trackZodiacMiniAppEvent("sign_selected", analyticsPayload({ sign: slug }));
-  }
-
-  function clearSelectedSign() {
-    setSelectedSignSlug("");
-    setActiveTab("today");
-    setHomePanel("home");
-    setRequestedMoreFeature(null);
-    setPendingCompatibilityMode(null);
+  function updatePersonalProfile(nextProfile: PersonState) {
+    const profileWithDetectedSign = applyBirthDateSign(nextProfile);
+    setSelf(profileWithDetectedSign);
+    setSelectedSignSlug(profileWithDetectedSign.sign);
   }
 
   function changeMode(nextMode: Mode) {
@@ -547,7 +541,6 @@ export function ZodiacCompatibilityMiniApp({
 
   function changeRelationshipMode(nextMode: RelationshipMode) {
     setRelationshipMode(nextMode);
-    setPendingCompatibilityMode(nextMode);
     trackZodiacMiniAppEvent("compatibility_mode_selected", analyticsPayload({ section: "compatibility", relationshipMode: nextMode, sign: selectedSignSlug || undefined }));
   }
 
@@ -602,7 +595,6 @@ export function ZodiacCompatibilityMiniApp({
     setHomePanel("home");
     setActiveTab("vip");
     setRequestedMoreFeature(featureId);
-    setPendingCompatibilityMode(null);
     setShareFallbackText("");
     trackZodiacMiniAppEvent("vip_feature_opened", payload);
     const featureEvent = vipFeatureAnalyticsEvents[featureId];
@@ -700,7 +692,6 @@ export function ZodiacCompatibilityMiniApp({
       const secondSign = signSlugs.has(item.secondSign || "") ? item.secondSign : undefined;
       const nextRelationshipMode = item.relationshipMode ?? "love";
       setRelationshipMode(nextRelationshipMode);
-      setPendingCompatibilityMode(nextRelationshipMode);
       setMode("fast");
       if (firstSign) {
         setSelectedSignSlug(firstSign);
@@ -725,6 +716,10 @@ export function ZodiacCompatibilityMiniApp({
 
   function clearLocalData() {
     retention.clearAll();
+    clearAphroditePersonalProfile();
+    setSelf(createInitialPerson("", "unspecified", false, ""));
+    setPartner(createInitialPerson("", "unspecified", false, ""));
+    setSelectedSignSlug("");
     trackZodiacMiniAppEvent("local_data_cleared", analyticsPayload({ section: "profile", category: "local_storage" }));
   }
 
@@ -754,7 +749,6 @@ export function ZodiacCompatibilityMiniApp({
   function resetFlow() {
     setMode(resolvedMode);
     setRelationshipMode(initialRelationshipMode ?? "love");
-    setSelf(createInitialPerson(selectedSignSlug, "unspecified", false, ""));
     setPartner(createInitialPerson("", "unspecified", false, ""));
     setStep(1);
   }
@@ -773,8 +767,10 @@ export function ZodiacCompatibilityMiniApp({
         <ProfileRetentionPanel
           publicMode={publicMode}
           selectedSign={selectedSign}
+          personalProfile={self}
           retention={retention.state}
           focus={homePanel}
+          onPersonalProfileChange={updatePersonalProfile}
           onQuickAction={openBottomTarget}
           onOpenFavorite={openFavorite}
           onClearLocalData={clearLocalData}
@@ -787,20 +783,41 @@ export function ZodiacCompatibilityMiniApp({
     return <AstrologyCenterHome publicMode={publicMode} selectedSign={selectedSign} vipUntilLabel={vipUntilLabel} onOpenCategory={openMenuCategory} />;
   }
 
-  function renderUnsignedCategoryContent() {
-    if (activeTab === "love") {
-      return (
-        <CompatibilityCategoryChooser publicMode={publicMode} selectedMode={pendingCompatibilityMode} onSelectMode={selectCompatibilityCategory}>
-          <SignSelection publicMode={publicMode} hintSign={hintSign} onSelect={chooseSign} />
-        </CompatibilityCategoryChooser>
-      );
-    }
-
-    const copy = getCategoryStartCopy(activeTab, activeRequestedFeature);
+  function renderMoreCategory(category: MenuFeatureGroup) {
     return (
-      <CategorySignGate publicMode={publicMode} title={copy.title} subtitle={copy.subtitle} featureLabels={copy.features}>
-        <SignSelection publicMode={publicMode} hintSign={hintSign} onSelect={chooseSign} />
-      </CategorySignGate>
+      <MoreSection
+        publicMode={publicMode}
+        appDateKey={appDateKey}
+        category={category}
+        initialFeature={activeRequestedFeature}
+        selectedSignSlug={selectedSignSlug}
+        self={self}
+        partner={partner}
+        result={result}
+        relationshipMode={relationshipMode}
+        telegram={telegram}
+        onPersonalProfileChange={updatePersonalProfile}
+        onCategoryBack={returnToMainMenu}
+        onHaptic={triggerTelegramHaptic}
+        onTelegramBackUsed={trackTelegramBackUsed}
+        onLuckyDayClick={trackLuckyDayClick}
+        onVipFeatureOpen={trackVipFeatureOpen}
+        onVipFutureSubscriptionClick={trackVipFutureSubscriptionClick}
+        onGiveawayClick={trackGiveawayPreviewClick}
+        onMessageHelperUsed={trackMessageHelperUse}
+        onRelationshipMapCategoryOpen={trackRelationshipMapCategoryOpen}
+        onNatalChartOpened={trackNatalChartOpened}
+        onNatalChartResultViewed={trackNatalChartResultViewed}
+        onNatalChartSectionOpen={trackNatalChartSectionOpen}
+        onNatalChartVipFreeOpen={trackNatalChartVipFreeOpen}
+        onPersonalToolEvent={trackPersonalToolEvent}
+        onRetentionAction={retention.recordAction}
+        onFavoriteSave={saveFavorite}
+        lastPairAction={lastPairAction}
+        onCreatePair={startPairSetup}
+        onUseLastPair={useLastPair}
+        onShare={shareSafeAction}
+      />
     );
   }
 
@@ -814,6 +831,8 @@ export function ZodiacCompatibilityMiniApp({
       data-zodiac-requested-feature={requestedMoreFeature ?? ""}
       data-zodiac-selected-sign={selectedSignSlug}
       data-zodiac-start-param={normalizedStartParam}
+      data-aphrodite-profile-first="true"
+      data-aphrodite-profile-ready={personalProfileReady ? "true" : "false"}
       data-telegram-webapp={telegram.isTelegramWebApp ? "true" : "false"}
       data-telegram-platform={telegram.platform ?? "browser"}
       data-telegram-color-scheme={telegram.colorScheme ?? "dark"}
@@ -874,13 +893,13 @@ export function ZodiacCompatibilityMiniApp({
               </p>
             </div>
             {selectedSign ? (
-              <button type="button" onClick={clearSelectedSign} className="aphrodite-touch-target inline-flex w-fit items-center rounded-lg border border-white/15 bg-white/8 px-3 py-2 text-xs font-semibold text-slate-100 transition hover:bg-white/12">
-                Выбрать другой знак
+              <button type="button" onClick={() => openHomePanel("profile")} className="aphrodite-touch-target inline-flex w-fit items-center rounded-lg border border-white/15 bg-white/8 px-3 py-2 text-xs font-semibold text-slate-100 transition hover:bg-white/12">
+                Изменить профиль
               </button>
             ) : (
               <div className="inline-flex w-fit items-center rounded-lg border border-emerald-300/25 bg-emerald-300/10 px-3 py-2 text-xs font-semibold text-emerald-100">
                 <ShieldCheck className="mr-2 h-4 w-4" />
-                без сохранения данных
+                профиль только на этом устройстве
               </div>
             )}
           </div>
@@ -890,298 +909,112 @@ export function ZodiacCompatibilityMiniApp({
           <HeaderStatusStrip publicMode={publicMode} sign={selectedSign} dateLabel={appDisplayDate} vipUntilLabel={vipUntilLabel} />
         ) : null}
 
-        {!selectedSign ? (
-          <>
-            {activeTab === "today" ? renderHomePanelContent() : renderUnsignedCategoryContent()}
-            <MiniAppBottomNavigation activeItem={bottomActiveItem} onHome={returnToMainMenu} onForecasts={() => openBottomTarget({ tab: "forecasts", feature: "todayForecast" }, "horoscopes")} onLove={() => openBottomTarget({ tab: "love", feature: "compatibilityTool" }, "compatibility")} onVip={() => openBottomTarget({ tab: "vip", feature: "vip" }, "vip")} onProfile={openProfileFromBottom} />
-          </>
-        ) : (
-          <>
-            <HubNavigation publicMode={publicMode} activeTab={activeTab} onChange={changeActiveTab} />
+        <HubNavigation publicMode={publicMode} activeTab={activeTab} onChange={changeActiveTab} />
 
-            <section className="min-w-0 flex-1">
-              {activeTab === "today" ? (
-                <div className="space-y-4">
-                  {renderHomePanelContent()}
-                  {appDateKey ? <TodaySection publicMode={publicMode} sign={selectedSign} dateKey={appDateKey} /> : <DateLoadingSection publicMode={publicMode} title="Сегодня" />}
+        <section className="min-w-0 flex-1">
+          {activeTab === "today" ? (
+            <div className="space-y-4">
+              {renderHomePanelContent()}
+              {selectedSign && homePanel === "home" ? (
+                appDateKey ? <TodaySection publicMode={publicMode} sign={selectedSign} dateKey={appDateKey} /> : <DateLoadingSection publicMode={publicMode} title="Сегодня" />
+              ) : null}
+            </div>
+          ) : null}
+          {activeTab === "forecasts" ? renderMoreCategory("forecasts") : null}
+          {activeTab === "vip" ? renderMoreCategory("vip") : null}
+          {activeTab === "profile" ? renderMoreCategory("profile") : null}
+          {activeTab === "mystic" ? renderMoreCategory("mystic") : null}
+          {activeTab === "love" ? (
+            <div className="space-y-4" data-aphrodite-compatibility-flow-redesign="package-239">
+              <button type="button" onClick={returnToMainMenu} className={secondaryButtonClass(publicMode)}>
+                <ArrowLeft className="h-4 w-4" />
+                Главное меню
+              </button>
+              <StepProgress publicMode={publicMode} step={step} />
+              <div
+                className={
+                  publicMode
+                    ? "rounded-lg border border-rose-200/18 bg-gradient-to-br from-rose-300/12 via-violet-300/10 to-amber-200/10 p-4 text-slate-100 shadow-[0_18px_56px_rgba(12,10,30,0.28)]"
+                    : "rounded-lg border border-rose-100 bg-rose-50 p-4 text-slate-800"
+                }
+                data-aphrodite-compatibility-input="package-239"
+              >
+                <div className="flex items-start gap-3">
+                  <span className={publicMode ? "grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-amber-200/20 bg-amber-200/10 text-amber-100" : "grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-rose-100 bg-white text-rose-700"}>
+                    <HeartHandshake className="h-5 w-5" />
+                  </span>
+                  <div className="min-w-0">
+                    <p className={publicMode ? "text-sm font-semibold text-amber-50" : "text-sm font-semibold text-rose-950"}>Совместимость двух людей</p>
+                    <p className={publicMode ? "mt-1 text-sm leading-6 text-slate-300" : "mt-1 text-sm leading-6 text-slate-700"}>
+                      Ваши сохранённые данные подставляются автоматически. Для партнёра укажите только данные, нужные выбранному режиму.
+                    </p>
+                  </div>
                 </div>
-              ) : null}
-              {activeTab === "forecasts" ? (
-                <div className="space-y-4">
-                  {appDateKey ? <WeekSection publicMode={publicMode} sign={selectedSign} dateKey={appDateKey} /> : <DateLoadingSection publicMode={publicMode} title="Неделя" />}
-                  <MoreSection
-                    publicMode={publicMode}
-                    appDateKey={appDateKey}
-                    category="forecasts"
-                    initialFeature={activeTab === "forecasts" ? activeRequestedFeature : null}
-                    selectedSign={selectedSign}
-                    selectedSignSlug={selectedSignSlug}
-                    self={self}
-                    partner={partner}
-                    result={result}
-                    relationshipMode={relationshipMode}
-                    telegram={telegram}
-                    onCategoryBack={returnToMainMenu}
-                    onHaptic={triggerTelegramHaptic}
-                    onTelegramBackUsed={trackTelegramBackUsed}
-                    onLuckyDayClick={trackLuckyDayClick}
-                    onVipFeatureOpen={trackVipFeatureOpen}
-                    onVipFutureSubscriptionClick={trackVipFutureSubscriptionClick}
-                    onGiveawayClick={trackGiveawayPreviewClick}
-                    onMessageHelperUsed={trackMessageHelperUse}
-                    onRelationshipMapCategoryOpen={trackRelationshipMapCategoryOpen}
-                    onNatalChartOpened={trackNatalChartOpened}
-                    onNatalChartResultViewed={trackNatalChartResultViewed}
-                    onNatalChartSectionOpen={trackNatalChartSectionOpen}
-                    onNatalChartVipFreeOpen={trackNatalChartVipFreeOpen}
-                    onPersonalToolEvent={trackPersonalToolEvent}
-                    onRetentionAction={retention.recordAction}
-                    onFavoriteSave={saveFavorite}
-                    lastPairAction={lastPairAction}
-                    onCreatePair={startPairSetup}
-                    onUseLastPair={useLastPair}
-                    onShare={shareSafeAction}
-                  />
-                </div>
-              ) : null}
-              {activeTab === "vip" ? (
-                <MoreSection
-                  publicMode={publicMode}
-                  appDateKey={appDateKey}
-                  category="vip"
-                  initialFeature={activeTab === "vip" ? activeRequestedFeature : null}
-                  selectedSign={selectedSign}
-                  selectedSignSlug={selectedSignSlug}
-                  self={self}
-                  partner={partner}
-                  result={result}
-                  relationshipMode={relationshipMode}
-                  telegram={telegram}
-                  onCategoryBack={returnToMainMenu}
-                  onHaptic={triggerTelegramHaptic}
-                  onTelegramBackUsed={trackTelegramBackUsed}
-                  onLuckyDayClick={trackLuckyDayClick}
-                  onVipFeatureOpen={trackVipFeatureOpen}
-                  onVipFutureSubscriptionClick={trackVipFutureSubscriptionClick}
-                  onGiveawayClick={trackGiveawayPreviewClick}
-                  onMessageHelperUsed={trackMessageHelperUse}
-                  onRelationshipMapCategoryOpen={trackRelationshipMapCategoryOpen}
-                  onNatalChartOpened={trackNatalChartOpened}
-                  onNatalChartResultViewed={trackNatalChartResultViewed}
-                  onNatalChartSectionOpen={trackNatalChartSectionOpen}
-                  onNatalChartVipFreeOpen={trackNatalChartVipFreeOpen}
-                  onPersonalToolEvent={trackPersonalToolEvent}
-                  onRetentionAction={retention.recordAction}
-                  onFavoriteSave={saveFavorite}
-                  lastPairAction={lastPairAction}
-                  onCreatePair={startPairSetup}
-                  onUseLastPair={useLastPair}
-                  onShare={shareSafeAction}
-                />
-              ) : null}
-              {activeTab === "profile" ? (
-                <MoreSection
-                  publicMode={publicMode}
-                  appDateKey={appDateKey}
-                  category="profile"
-                  initialFeature={activeTab === "profile" ? activeRequestedFeature : null}
-                  selectedSign={selectedSign}
-                  selectedSignSlug={selectedSignSlug}
-                  self={self}
-                  partner={partner}
-                  result={result}
-                  relationshipMode={relationshipMode}
-                  telegram={telegram}
-                  onCategoryBack={returnToMainMenu}
-                  onHaptic={triggerTelegramHaptic}
-                  onTelegramBackUsed={trackTelegramBackUsed}
-                  onLuckyDayClick={trackLuckyDayClick}
-                  onVipFeatureOpen={trackVipFeatureOpen}
-                  onVipFutureSubscriptionClick={trackVipFutureSubscriptionClick}
-                  onGiveawayClick={trackGiveawayPreviewClick}
-                  onMessageHelperUsed={trackMessageHelperUse}
-                  onRelationshipMapCategoryOpen={trackRelationshipMapCategoryOpen}
-                  onNatalChartOpened={trackNatalChartOpened}
-                  onNatalChartResultViewed={trackNatalChartResultViewed}
-                  onNatalChartSectionOpen={trackNatalChartSectionOpen}
-                  onNatalChartVipFreeOpen={trackNatalChartVipFreeOpen}
-                  onPersonalToolEvent={trackPersonalToolEvent}
-                  onRetentionAction={retention.recordAction}
-                  onFavoriteSave={saveFavorite}
-                  lastPairAction={lastPairAction}
-                  onCreatePair={startPairSetup}
-                  onUseLastPair={useLastPair}
-                  onShare={shareSafeAction}
-                />
-              ) : null}
-              {activeTab === "mystic" ? (
-                <MoreSection
-                  publicMode={publicMode}
-                  appDateKey={appDateKey}
-                  category="mystic"
-                  initialFeature={activeTab === "mystic" ? activeRequestedFeature : null}
-                  selectedSign={selectedSign}
-                  selectedSignSlug={selectedSignSlug}
-                  self={self}
-                  partner={partner}
-                  result={result}
-                  relationshipMode={relationshipMode}
-                  telegram={telegram}
-                  onCategoryBack={returnToMainMenu}
-                  onHaptic={triggerTelegramHaptic}
-                  onTelegramBackUsed={trackTelegramBackUsed}
-                  onLuckyDayClick={trackLuckyDayClick}
-                  onVipFeatureOpen={trackVipFeatureOpen}
-                  onVipFutureSubscriptionClick={trackVipFutureSubscriptionClick}
-                  onGiveawayClick={trackGiveawayPreviewClick}
-                  onMessageHelperUsed={trackMessageHelperUse}
-                  onRelationshipMapCategoryOpen={trackRelationshipMapCategoryOpen}
-                  onNatalChartOpened={trackNatalChartOpened}
-                  onNatalChartResultViewed={trackNatalChartResultViewed}
-                  onNatalChartSectionOpen={trackNatalChartSectionOpen}
-                  onNatalChartVipFreeOpen={trackNatalChartVipFreeOpen}
-                  onPersonalToolEvent={trackPersonalToolEvent}
-                  onRetentionAction={retention.recordAction}
-                  onFavoriteSave={saveFavorite}
-                  lastPairAction={lastPairAction}
-                  onCreatePair={startPairSetup}
-                  onUseLastPair={useLastPair}
-                  onShare={shareSafeAction}
-                />
-              ) : null}
-              {activeTab === "love" ? (
-                <div className="space-y-4" data-aphrodite-compatibility-flow-redesign="package-239">
-                  <button type="button" onClick={returnToMainMenu} className={secondaryButtonClass(publicMode)}>
-                    <ArrowLeft className="h-4 w-4" />
-                    Главное меню
-                  </button>
-                  <StepProgress publicMode={publicMode} step={step} />
-                  <div
-                    className={
-                      publicMode
-                        ? "rounded-lg border border-rose-200/18 bg-gradient-to-br from-rose-300/12 via-violet-300/10 to-amber-200/10 p-4 text-slate-100 shadow-[0_18px_56px_rgba(12,10,30,0.28)]"
-                        : "rounded-lg border border-rose-100 bg-rose-50 p-4 text-slate-800"
-                    }
-                    data-aphrodite-compatibility-input="package-239"
-                  >
-                    <div className="flex items-start gap-3">
-                      <span
-                        className={
-                          publicMode
-                            ? "grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-amber-200/20 bg-amber-200/10 text-amber-100"
-                            : "grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-rose-100 bg-white text-rose-700"
-                        }
-                      >
-                        <HeartHandshake className="h-5 w-5" />
-                      </span>
-                      <div className="min-w-0">
-                        <p className={publicMode ? "text-sm font-semibold text-amber-50" : "text-sm font-semibold text-rose-950"}>
-                          Совместимость двух людей
-                        </p>
-                        <p className={publicMode ? "mt-1 text-sm leading-6 text-slate-300" : "mt-1 text-sm leading-6 text-slate-700"}>
-                          Введите данные пары: имя можно оставить пустым, дату рождения можно набрать цифрами, а знак подставится автоматически.
-                        </p>
-                      </div>
+              </div>
+              <ModeSelector publicMode={publicMode} mode={mode} onChange={changeMode} />
+              <RelationshipModeSelector publicMode={publicMode} mode={relationshipMode} onChange={changeRelationshipMode} />
+              <div className="min-w-0 flex-1 transition-all duration-300">
+                {step === 1 ? (
+                  <WizardCard publicMode={publicMode} stepLabel="Шаг 1 из 3" title="Вы">
+                    <PersonPanel publicMode={publicMode} title="Вы" mode={mode} value={self} onChange={updatePersonalProfile} onBirthDateAutosign={(person, signSlug) => trackCompatibilityBirthdateAutosign("self", person, signSlug)} />
+                    <div className="mt-5">
+                      <button type="button" onClick={() => setStep(2)} className={primaryButtonClass(publicMode)}>
+                        Далее
+                        <ArrowRight className="h-4 w-4" />
+                      </button>
                     </div>
-                  </div>
-                  <ModeSelector publicMode={publicMode} mode={mode} onChange={changeMode} />
-                  <RelationshipModeSelector publicMode={publicMode} mode={relationshipMode} onChange={changeRelationshipMode} />
-                  <div className="min-w-0 flex-1 transition-all duration-300">
-                    {step === 1 ? (
-                      <WizardCard publicMode={publicMode} stepLabel="Шаг 1 из 3" title="Вы">
-                        <PersonPanel publicMode={publicMode} title="Вы" mode={mode} value={self} onChange={setSelf} onBirthDateAutosign={(person, signSlug) => trackCompatibilityBirthdateAutosign("self", person, signSlug)} />
-                        <div className="mt-5">
-                          <button type="button" onClick={() => setStep(2)} className={primaryButtonClass(publicMode)}>
-                            Далее
-                            <ArrowRight className="h-4 w-4" />
-                          </button>
-                        </div>
-                      </WizardCard>
-                    ) : null}
+                  </WizardCard>
+                ) : null}
 
-                    {step === 2 ? (
-                      <WizardCard publicMode={publicMode} stepLabel="Шаг 2 из 3" title="Партнёр">
-                        <PersonPanel publicMode={publicMode} title="Партнёр" mode={mode} value={partner} onChange={setPartner} onBirthDateAutosign={(person, signSlug) => trackCompatibilityBirthdateAutosign("partner", person, signSlug)} />
-                        <div className="aphrodite-pkg-267-two-after-430 mt-5 grid gap-3">
+                {step === 2 ? (
+                  <WizardCard publicMode={publicMode} stepLabel="Шаг 2 из 3" title="Партнёр">
+                    <PersonPanel publicMode={publicMode} title="Партнёр" mode={mode} value={partner} onChange={setPartner} onBirthDateAutosign={(person, signSlug) => trackCompatibilityBirthdateAutosign("partner", person, signSlug)} />
+                    <div className="aphrodite-pkg-267-two-after-430 mt-5 grid gap-3">
+                      <button type="button" onClick={() => setStep(1)} className={secondaryButtonClass(publicMode)}>
+                        <ArrowLeft className="h-4 w-4" />
+                        Назад
+                      </button>
+                      <button type="button" onClick={calculateCompatibility} className={primaryButtonClass(publicMode)}>
+                        Рассчитать
+                        <ArrowRight className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </WizardCard>
+                ) : null}
+
+                {step === 3 ? (
+                  <WizardCard publicMode={publicMode} stepLabel="Шаг 3 из 3" title={stepTitle}>
+                    {isReadyToCalculate(mode, self, partner) ? (
+                      <ResultPanel
+                        publicMode={publicMode}
+                        result={result}
+                        levelLabel={compatibilityLevelLabel(result.scores.total)}
+                        onEdit={() => setStep(1)}
+                        onReset={resetFlow}
+                        onSave={() => saveFavorite(compatibilityRetentionAction(self, partner, relationshipMode, result))}
+                        onShare={() => shareSafeAction(compatibilityRetentionAction(self, partner, relationshipMode, result))}
+                        firstSign={findSign(self.sign)}
+                        secondSign={findSign(partner.sign)}
+                      />
+                    ) : (
+                      <div className="py-8 text-center">
+                        <p className="text-slate-300">Заполните данные, чтобы увидеть совместимость.</p>
+                        <div className="mt-6 flex justify-center">
                           <button type="button" onClick={() => setStep(1)} className={secondaryButtonClass(publicMode)}>
-                            <ArrowLeft className="h-4 w-4" />
-                            Назад
-                          </button>
-                          <button type="button" onClick={calculateCompatibility} className={primaryButtonClass(publicMode)}>
-                            Рассчитать
-                            <ArrowRight className="h-4 w-4" />
+                            <ArrowLeft className="mr-2 h-4 w-4" />
+                            Вернуться к заполнению
                           </button>
                         </div>
-                      </WizardCard>
-                    ) : null}
-
-                    {step === 3 ? (
-                      <WizardCard publicMode={publicMode} stepLabel="Шаг 3 из 3" title={stepTitle}>
-                        {isReadyToCalculate(mode, self, partner) ? (
-                          <ResultPanel
-                            publicMode={publicMode}
-                            result={result}
-                            levelLabel={compatibilityLevelLabel(result.scores.total)}
-                            onEdit={() => setStep(1)}
-                            onReset={resetFlow}
-                            onSave={() => saveFavorite(compatibilityRetentionAction(self, partner, relationshipMode, result))}
-                            onShare={() => shareSafeAction(compatibilityRetentionAction(self, partner, relationshipMode, result))}
-                            firstSign={findSign(self.sign)}
-                            secondSign={findSign(partner.sign)}
-                          />
-                        ) : (
-                          <div className="py-8 text-center">
-                            <p className="text-slate-300">Заполните данные, чтобы увидеть совместимость.</p>
-                            <div className="mt-6 flex justify-center">
-                              <button type="button" onClick={() => setStep(1)} className={secondaryButtonClass(publicMode)}>
-                                <ArrowLeft className="mr-2 h-4 w-4" />
-                                Вернуться к заполнению
-                              </button>
-                            </div>
-                          </div>
-                        )}
-                      </WizardCard>
-                    ) : null}
-                  </div>
-                  <MoreSection
-                    publicMode={publicMode}
-                    appDateKey={appDateKey}
-                    category="love"
-                    initialFeature={activeTab === "love" ? activeRequestedFeature : null}
-                    selectedSign={selectedSign}
-                    selectedSignSlug={selectedSignSlug}
-                    self={self}
-                    partner={partner}
-                    result={result}
-                    relationshipMode={relationshipMode}
-                    telegram={telegram}
-                    onCategoryBack={returnToMainMenu}
-                    onHaptic={triggerTelegramHaptic}
-                    onTelegramBackUsed={trackTelegramBackUsed}
-                    onLuckyDayClick={trackLuckyDayClick}
-                    onVipFeatureOpen={trackVipFeatureOpen}
-                    onVipFutureSubscriptionClick={trackVipFutureSubscriptionClick}
-                    onGiveawayClick={trackGiveawayPreviewClick}
-                    onMessageHelperUsed={trackMessageHelperUse}
-                    onRelationshipMapCategoryOpen={trackRelationshipMapCategoryOpen}
-                    onNatalChartOpened={trackNatalChartOpened}
-                    onNatalChartResultViewed={trackNatalChartResultViewed}
-                    onNatalChartSectionOpen={trackNatalChartSectionOpen}
-                    onNatalChartVipFreeOpen={trackNatalChartVipFreeOpen}
-                  onPersonalToolEvent={trackPersonalToolEvent}
-                  onRetentionAction={retention.recordAction}
-                  onFavoriteSave={saveFavorite}
-                  lastPairAction={lastPairAction}
-                  onCreatePair={startPairSetup}
-                  onUseLastPair={useLastPair}
-                  onShare={shareSafeAction}
-                />
-                </div>
-              ) : null}
-            </section>
-            <MiniAppBottomNavigation activeItem={bottomActiveItem} onHome={returnToMainMenu} onForecasts={() => openBottomTarget({ tab: "forecasts", feature: "todayForecast" }, "horoscopes")} onLove={() => openBottomTarget({ tab: "love", feature: "compatibilityTool" }, "compatibility")} onVip={() => openBottomTarget({ tab: "vip", feature: "vip" }, "vip")} onProfile={openProfileFromBottom} />
-          </>
-        )}
+                      </div>
+                    )}
+                  </WizardCard>
+                ) : null}
+              </div>
+              {renderMoreCategory("love")}
+            </div>
+          ) : null}
+        </section>
+        <MiniAppBottomNavigation activeItem={bottomActiveItem} onHome={returnToMainMenu} onForecasts={() => openBottomTarget({ tab: "forecasts", feature: "todayForecast" }, "horoscopes")} onLove={() => openBottomTarget({ tab: "love", feature: "compatibilityTool" }, "compatibility")} onVip={() => openBottomTarget({ tab: "vip", feature: "vip" }, "vip")} onProfile={openProfileFromBottom} />
         {shareFallbackText ? (
           <div className={publicMode ? "rounded-lg border border-amber-200/25 bg-amber-200/10 p-3 text-sm leading-5 text-amber-50" : "rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm leading-5 text-amber-900"}>
             <p className="font-semibold">Текст для копирования</p>
@@ -1191,78 +1024,6 @@ export function ZodiacCompatibilityMiniApp({
       </div>
     </div>
   );
-}
-
-function getCategoryStartCopy(tab: HubTab, feature: MoreFeatureId | null) {
-  if (tab === "forecasts" && feature === "angelNumbers") {
-    return {
-      title: "👼 Ангельские числа",
-      subtitle: "Выберите знак для входа и откройте толкование 11:11, 22:22, зеркальных чисел и знаков дня.",
-      features: ["11:11 и 22:22", "Зеркальные комбинации", "Знаки Вселенной", "Базовое толкование", "VIP-расширение внутри VIP"],
-    };
-  }
-
-  if (tab === "forecasts") {
-    return {
-      title: "✨ Гороскопы",
-      subtitle: "Выберите знак, чтобы открыть прогнозы на сегодня, неделю и ближайший месяц.",
-      features: ["Гороскоп сегодня", "Гороскоп недели", "Месячный прогноз", "Удачные дни", "Лунный календарь"],
-    };
-  }
-
-  if (tab === "mystic" && feature === "birthMatrix") {
-    return {
-      title: "🧿 Матрица судьбы",
-      subtitle: "Выберите знак для входа, затем рассчитайте матрицу по дате рождения без сохранения данных.",
-      features: ["Расчёт по дате рождения", "Личные коды", "Сильные стороны", "Точки роста"],
-    };
-  }
-
-  if (tab === "mystic" && (feature === "tarotCard" || feature === "runeDay")) {
-    return {
-      title: "🃏 Таро и руны",
-      subtitle: "Выберите знак, чтобы открыть карту дня, руну дня и короткую подсказку на текущую ситуацию.",
-      features: ["Карта дня", "Таро дня", "Руна дня", "Интуитивная подсказка"],
-    };
-  }
-
-  if (tab === "mystic" && feature === "lunarRitual") {
-    return {
-      title: "🌙 Луна и ритуалы",
-      subtitle: "Выберите знак, чтобы открыть лунный ритм, практики и мягкие действия на день.",
-      features: ["Лунный календарь", "Лунный ритуал", "Практика дня", "Что усилить", "Чего избегать"],
-    };
-  }
-
-  if (tab === "mystic") {
-    return {
-      title: "🔮 Мистика",
-      subtitle: "Выберите знак, чтобы открыть карты, Таро, руны, ритуалы и символы дня.",
-      features: ["Карта дня", "Таро дня", "Руна дня", "Интуитивный знак", "Талисманы", "Цвет ауры", "Лунный ритуал", "Кармические уроки"],
-    };
-  }
-
-  if (tab === "vip" && feature === "giveaways") {
-    return {
-      title: "🎁 Розыгрыши",
-      subtitle: "Розыгрыши остаются закрытым превью. VIP остаётся закрытым, оплата не активна.",
-      features: ["Превью", "Без оплаты", "VIP закрыт", "Доступ отдельно"],
-    };
-  }
-
-  if (tab === "vip") {
-    return {
-      title: "👑 VIP раздел",
-      subtitle: "Выберите знак и посмотрите короткое превью премиум-функций без оплаты.",
-      features: ["Натальная карта+", "Расширенная совместимость", "Карта пары", "30 дней пары", "Месячный прогноз", "VIP мистический день"],
-    };
-  }
-
-  return {
-    title: feature === "numerology" ? "🔢 Нумерология" : "👤 Мой профиль",
-    subtitle: "Выберите знак для личных расчётов. Данные остаются только на экране и не сохраняются.",
-    features: feature === "numerology" ? ["Число судьбы", "Число души", "Число личности", "Рекомендации дня"] : ["Натальная карта", "Имя", "Камни знака", "Архетип", "Нумерология"],
-  };
 }
 
 function buildTelegramThemeStyle(telegram: TelegramWebAppState): CSSProperties {
@@ -1382,13 +1143,13 @@ function MoreSection({
   appDateKey,
   category,
   initialFeature,
-  selectedSign,
   selectedSignSlug,
   self,
   partner,
   result,
   relationshipMode,
   telegram,
+  onPersonalProfileChange,
   onCategoryBack,
   onHaptic,
   onTelegramBackUsed,
@@ -1414,13 +1175,13 @@ function MoreSection({
   appDateKey: string | null;
   category: MenuFeatureGroup;
   initialFeature?: MoreFeatureId | null;
-  selectedSign: ZodiacSign;
   selectedSignSlug: string;
   self: PersonState;
   partner: PersonState;
   result: CompatibilityResult;
   relationshipMode: RelationshipMode;
   telegram: TelegramWebAppState;
+  onPersonalProfileChange: (profile: PersonState) => void;
   onCategoryBack?: () => void;
   onHaptic: (kind: TelegramHapticKind, category: string, featureKey?: string) => void;
   onTelegramBackUsed: (category: string, featureKey: string) => void;
@@ -1457,13 +1218,7 @@ function MoreSection({
     return categoryHasInitialFeature && initialFeature ? initialFeature : defaultMoreFeature;
   });
   const lastInitialFeatureSyncRef = useRef("");
-  const [natalPerson, setNatalPerson] = useState<PersonState>(() => ({
-    ...createInitialPerson(self.sign || selectedSignSlug, self.gender, self.knowsTime, self.selectedCityId),
-    name: self.name,
-    birthDate: self.birthDate,
-    birthTime: self.birthTime,
-    cityQuery: self.cityQuery,
-  }));
+  const natalPerson = self;
   const lastPersonalToolTrackedRef = useRef("");
   const lastCompatibilityToolTrackedRef = useRef("");
   const dateKey = appDateKey ?? getCurrentZodiacDateKey(DEFAULT_ZODIAC_TIME_ZONE);
@@ -1494,6 +1249,7 @@ function MoreSection({
   const archetype = buildPersonalityArchetypeProfile(natalPerson, selfSign, chineseHoroscope, numerology, dailyTalisman, dateKey);
   const monthForecast = selfSign ? buildPersonalMonthForecast(selfSign, dateKey, result) : null;
   const selectedMoreFeature = categoryFeatures.find((item) => item.id === activeMoreFeature) ?? categoryFeatures[0] ?? menuFeatureTabs[0];
+  const featureNeedsSign = selectedMoreFeature.requirement === "sign" && !selfSign;
   const currentRetentionAction = useMemo(
     () =>
       buildFeatureRetentionAction({
@@ -1656,25 +1412,6 @@ function MoreSection({
     const categoryHasInitialFeature = categoryFeatures.some((item) => item.id === initialFeature) || (category === "vip" && vipDetailFeatureIds.has(initialFeature));
     if (categoryHasInitialFeature) setActiveMoreFeature(initialFeature);
   }, [category, categoryFeatures, defaultMoreFeature, initialFeature]);
-
-  useEffect(() => {
-    if (!self.sign && !selectedSignSlug) return;
-    setNatalPerson((current) => {
-      const hasPersonalInput = Boolean(current.name || current.birthDate || current.birthTime || current.cityQuery || current.selectedCityId);
-      if (hasPersonalInput) return current.sign ? current : { ...current, sign: self.sign || selectedSignSlug };
-      return {
-        ...current,
-        name: self.name,
-        sign: self.sign || selectedSignSlug,
-        gender: self.gender,
-        birthDate: self.birthDate,
-        knowsTime: self.knowsTime,
-        birthTime: self.birthTime,
-        cityQuery: self.cityQuery,
-        selectedCityId: self.selectedCityId,
-      };
-    });
-  }, [selectedSignSlug, self]);
 
   useEffect(() => {
     if (activeMoreFeature !== "chineseHoroscope" && activeMoreFeature !== "zodiacStones" && activeMoreFeature !== "nameProfile") return;
@@ -1858,7 +1595,13 @@ function MoreSection({
   const menuGroup = menuFeatureGroups.find((item) => item.id === category) ?? menuFeatureGroups[0];
 
   return (
-    <section className={panelClass(publicMode)} data-zodiac-more-section="true" data-zodiac-more-category={category} data-zodiac-more-feature={activeMoreFeature}>
+    <section
+      className={panelClass(publicMode)}
+      data-zodiac-more-section="true"
+      data-zodiac-more-category={category}
+      data-zodiac-more-feature={activeMoreFeature}
+      data-aphrodite-feature-sign-gate={featureNeedsSign ? "required" : "open"}
+    >
       {onCategoryBack ? (
         <button type="button" onClick={onCategoryBack} className={secondaryButtonClass(publicMode)}>
           <ArrowLeft className="h-4 w-4" />
@@ -1868,7 +1611,7 @@ function MoreSection({
       <SectionHeader publicMode={publicMode} icon={<Crown className="h-5 w-5" />} title={menuGroup.title} subtitle={menuGroup.subtitle} />
       <div className={publicMode ? "mt-3 flex gap-2 rounded-lg border border-emerald-200/20 bg-emerald-200/10 p-3 text-sm leading-5 text-emerald-50" : "mt-3 flex gap-2 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm leading-5 text-emerald-900"}>
         <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0" />
-        <p>без сохранения данных: имена, даты, время и город остаются только на этом экране.</p>
+        <p>Личный профиль хранится только на этом устройстве. Данные партнёра остаются в текущем расчёте.</p>
       </div>
       <MoreFeatureNavigation features={categoryFeatures} activeFeature={activeMoreFeature} pairReady={pairReady} natalReady={Boolean(natalChart)} signReady={Boolean(selfSign)} onChange={changeMoreFeature} />
       <div className={publicMode ? "mt-3 rounded-lg border border-white/10 bg-white/7 p-3" : "mt-3 rounded-lg border border-slate-200 bg-white p-3"}>
@@ -1888,10 +1631,14 @@ function MoreSection({
         ) : null}
       </div>
       <div className="mt-4">
+        {featureNeedsSign ? (
+          <AphroditePersonalProfileFields publicMode={publicMode} value={self} onChange={onPersonalProfileChange} compact />
+        ) : (
+          <>
         {activeMoreFeature === "compatibilityTool" ? <CompatibilityToolCard publicMode={publicMode} /> : null}
-        {activeMoreFeature === "todayForecast" ? <TodaySection publicMode={publicMode} sign={selectedSign} dateKey={dateKey} /> : null}
-        {activeMoreFeature === "weekForecast" ? <WeekSection publicMode={publicMode} sign={selectedSign} dateKey={dateKey} /> : null}
-        {activeMoreFeature === "luckyDays" ? <LuckyDaysSection publicMode={publicMode} sign={selectedSign} dateKey={dateKey} onLuckyDayClick={onLuckyDayClick} /> : null}
+        {activeMoreFeature === "todayForecast" ? <TodaySection publicMode={publicMode} sign={selfSign!} dateKey={dateKey} /> : null}
+        {activeMoreFeature === "weekForecast" ? <WeekSection publicMode={publicMode} sign={selfSign!} dateKey={dateKey} /> : null}
+        {activeMoreFeature === "luckyDays" ? <LuckyDaysSection publicMode={publicMode} sign={selfSign!} dateKey={dateKey} onLuckyDayClick={onLuckyDayClick} /> : null}
         {activeMoreFeature === "coupleHoroscope" ? <CoupleHoroscopeCard publicMode={publicMode} horoscope={coupleHoroscope} actionToday={coupleAction} lastPairAction={lastPairAction} onPairRequiredAction={handlePairRequiredAction} /> : null}
         {activeMoreFeature === "mentalMap" ? <RelationshipMapCard publicMode={publicMode} result={result} pairReady={pairReady} lastPairAction={lastPairAction} onPairRequiredAction={handlePairRequiredAction} onCategoryOpen={onRelationshipMapCategoryOpen} /> : null}
         {activeMoreFeature === "coupleCalendar" ? <CoupleCalendarCard publicMode={publicMode} days={coupleCalendar} pairReady={pairReady} lastPairAction={lastPairAction} onPairRequiredAction={handlePairRequiredAction} /> : null}
@@ -1928,7 +1675,7 @@ function MoreSection({
             publicMode={publicMode}
             person={natalPerson}
             chart={natalChart}
-            onPersonChange={setNatalPerson}
+            onPersonChange={onPersonalProfileChange}
             onOpened={onNatalChartOpened}
             onResultViewed={onNatalChartResultViewed}
             onSectionOpen={onNatalChartSectionOpen}
@@ -1936,10 +1683,10 @@ function MoreSection({
             onVipBlockOpen={openNatalVipBlockFeature}
           />
         ) : null}
-        {activeMoreFeature === "chineseHoroscope" ? <ChineseHoroscopeCard publicMode={publicMode} person={natalPerson} horoscope={chineseHoroscope} onPersonChange={setNatalPerson} /> : null}
+        {activeMoreFeature === "chineseHoroscope" ? <ChineseHoroscopeCard publicMode={publicMode} person={natalPerson} horoscope={chineseHoroscope} onPersonChange={onPersonalProfileChange} /> : null}
         {activeMoreFeature === "zodiacStones" ? <ZodiacStonesCard publicMode={publicMode} profile={zodiacStoneProfile} /> : null}
-        {activeMoreFeature === "nameProfile" ? <NameProfileCard publicMode={publicMode} person={natalPerson} profile={nameProfile} onPersonChange={setNatalPerson} vipFreeAccess={vipFreeAccess} /> : null}
-        {activeMoreFeature === "numerology" ? <NumerologyCard publicMode={publicMode} person={natalPerson} profile={numerology} onPersonChange={setNatalPerson} vipFreeAccess={vipFreeAccess} /> : null}
+        {activeMoreFeature === "nameProfile" ? <NameProfileCard publicMode={publicMode} person={natalPerson} profile={nameProfile} onPersonChange={onPersonalProfileChange} vipFreeAccess={vipFreeAccess} /> : null}
+        {activeMoreFeature === "numerology" ? <NumerologyCard publicMode={publicMode} person={natalPerson} profile={numerology} onPersonChange={onPersonalProfileChange} vipFreeAccess={vipFreeAccess} /> : null}
         {activeMoreFeature === "angelNumbers" ? (
           <AngelNumbersCard
             publicMode={publicMode}
@@ -1960,7 +1707,7 @@ function MoreSection({
         {activeMoreFeature === "dailyTalisman" ? <DailyTalismanCard publicMode={publicMode} profile={dailyTalisman} /> : null}
         {activeMoreFeature === "dreamDictionary" ? <DreamDictionaryCard publicMode={publicMode} symbolKey={dreamSymbolKey} dreamText={dreamText} profile={dreamProfile} onSymbolChange={setDreamSymbolKey} onDreamTextChange={setDreamText} /> : null}
         {activeMoreFeature === "giftBySign" ? <GiftBySignCard publicMode={publicMode} recipientType={giftRecipientType} profile={giftProfile} onRecipientTypeChange={setGiftRecipientType} /> : null}
-        {activeMoreFeature === "archetype" ? <PersonalityArchetypeCard publicMode={publicMode} person={natalPerson} profile={archetype} onPersonChange={setNatalPerson} vipFreeAccess={vipFreeAccess} /> : null}
+        {activeMoreFeature === "archetype" ? <PersonalityArchetypeCard publicMode={publicMode} person={natalPerson} profile={archetype} onPersonChange={onPersonalProfileChange} vipFreeAccess={vipFreeAccess} /> : null}
         {activeMoreFeature === "dailyCard" ? (
           <DailyTarotCardFeature
             publicMode={publicMode}
@@ -1973,7 +1720,7 @@ function MoreSection({
           <TarotCardFeature
             publicMode={publicMode}
             dateKey={dateKey}
-            sign={(selfSign?.slug as any) || "aries"}
+            sign={selfSign!.slug as any}
             onSave={(action) => onFavoriteSave(action)}
             onShare={(action) => onShare(action)}
             onEvent={onPersonalToolEvent}
@@ -1983,31 +1730,30 @@ function MoreSection({
           <RuneDayFeature
             publicMode={publicMode}
             dateKey={dateKey}
-            sign={(selfSign?.slug as any) || "aries"}
+            sign={selfSign!.slug as any}
             onSave={(action) => onFavoriteSave(action)}
             onShare={(action) => onShare(action)}
             onEvent={onPersonalToolEvent}
           />
         ) : null}
-        {activeMoreFeature === "intuitiveSign" ? <IntuitiveSignFeature publicMode={publicMode} dateKey={dateKey} sign={(selfSign?.slug as any) || "aries"} /> : null}
-        {activeMoreFeature === "talismans" ? <TalismansFeature publicMode={publicMode} sign={(selfSign?.slug as any) || ""} /> : null}
-        {activeMoreFeature === "auraColor" ? <AuraColorFeature publicMode={publicMode} dateKey={dateKey} sign={(selfSign?.slug as any) || "aries"} /> : null}
+        {activeMoreFeature === "intuitiveSign" ? <IntuitiveSignFeature publicMode={publicMode} dateKey={dateKey} sign={selfSign!.slug as any} /> : null}
+        {activeMoreFeature === "talismans" ? <TalismansFeature publicMode={publicMode} sign={selfSign!.slug as any} /> : null}
+        {activeMoreFeature === "auraColor" ? <AuraColorFeature publicMode={publicMode} dateKey={dateKey} sign={selfSign!.slug as any} /> : null}
         {activeMoreFeature === "lunarRitual" ? (
           <LunarRitualFeature
             publicMode={publicMode}
             dateKey={dateKey}
-            sign={(selfSign?.slug as any) || "aries"}
             onSave={(action) => onFavoriteSave(action)}
             onShare={(action) => onShare(action)}
             onEvent={onPersonalToolEvent}
           />
         ) : null}
-        {activeMoreFeature === "karmicLessons" ? <KarmicLessonsFeature publicMode={publicMode} sign={(selfSign?.slug as any) || ""} birthDateKey={self.birthDate} /> : null}
+        {activeMoreFeature === "karmicLessons" ? <KarmicLessonsFeature publicMode={publicMode} sign={selfSign!.slug as any} birthDateKey={self.birthDate} /> : null}
         {activeMoreFeature === "birthMatrix" ? (
           <BirthMatrixFeature
             publicMode={publicMode}
             birthDateString={natalPerson.birthDate}
-            onBirthDateChange={(val) => setNatalPerson((s) => ({ ...s, birthDate: val }))}
+            onBirthDateChange={(birthDate) => onPersonalProfileChange({ ...natalPerson, birthDate })}
             onSave={(action) => onFavoriteSave(action)}
             onShare={(action) => onShare(action)}
             onEvent={onPersonalToolEvent}
@@ -2074,6 +1820,8 @@ function MoreSection({
             onPreviewClick={onGiveawayClick}
           />
         ) : null}
+          </>
+        )}
       </div>
     </section>
   );
@@ -2526,7 +2274,7 @@ function CompatibilityToolCard({ publicMode }: { publicMode: boolean }) {
   return (
     <FeatureCard publicMode={publicMode} title="💞 Совместимость знаков" subtitle="основной расчёт открыт в верхней части раздела Любовь">
       <div className={publicMode ? "rounded-lg border border-emerald-200/20 bg-emerald-200/10 p-3 text-sm leading-6 text-emerald-50" : "rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm leading-6 text-emerald-900"}>
-        Выберите два знака в калькуляторе выше. Имена, даты, время и города не сохраняются.
+        Ваш локальный профиль уже подставлен в калькулятор. Данные партнёра используются только в текущем расчёте.
       </div>
     </FeatureCard>
   );
@@ -2549,7 +2297,7 @@ function NumerologyCard({
   const dateError = person.birthDate && !parsedDate.ok ? parsedDate.error : "";
 
   return (
-    <FeatureCard publicMode={publicMode} title="🔢 Нумерология" subtitle="числа имени, даты и текущего месяца без сохранения данных">
+    <FeatureCard publicMode={publicMode} title="🔢 Нумерология" subtitle="числа имени, даты и текущего месяца из локального профиля">
       <div className="grid gap-4">
         <div className={publicMode ? "grid gap-3 rounded-lg border border-white/12 bg-white/8 p-3" : "grid gap-3 rounded-lg border border-slate-200 bg-white p-3"}>
           <Field label="Имя (необязательно)" publicMode={publicMode}>
@@ -2930,7 +2678,7 @@ function NatalChartV1Card({
             Разбор характера, эмоций, отношений, сильных сторон и зон роста по дате рождения.
           </p>
           <p className={publicMode ? "mt-2 text-xs font-semibold text-emerald-100" : "mt-2 text-xs font-semibold text-emerald-800"}>
-            без сохранения данных: имя, дата, время и город остаются только на этом экране
+            данные профиля сохраняются только на этом устройстве
           </p>
         </div>
 
@@ -3116,7 +2864,7 @@ function ChineseHoroscopeCard({
             Введите дату рождения, чтобы увидеть восточный знак, стихию и мягкие подсказки для отношений, работы и месяца.
           </p>
           <p className={publicMode ? "mt-2 text-xs font-semibold text-emerald-100" : "mt-2 text-xs font-semibold text-emerald-800"}>
-            без сохранения данных: дата остаётся только на этом экране
+            дата сохраняется только в локальном профиле на этом устройстве
           </p>
         </div>
 
@@ -3223,7 +2971,7 @@ function NameProfileCard({
             Это интерпретационный профиль имени: символическое значение, личный резонанс и мягкие подсказки без утверждений о характере как о факте.
           </p>
           <p className={publicMode ? "mt-2 text-xs font-semibold text-emerald-100" : "mt-2 text-xs font-semibold text-emerald-800"}>
-            без сохранения данных: имя, дата, время и город остаются только на этом экране
+            данные профиля сохраняются только на этом устройстве
           </p>
         </div>
 
@@ -3390,7 +3138,7 @@ function VipFreeAccessCard({
         <VipPreviewPanel publicMode={publicMode} title="📅 30-дневный календарь пары" text={pairReady ? formatVipCalendarHighlights(calendarDays) : "Выберите два знака, чтобы увидеть первые дни и компактный список. Полный отчёт закрыт."} />
         <VipPreviewPanel publicMode={publicMode} title="🌙 Месячный прогноз" text={monthForecast ? `Тема: ${monthForecast.theme} Любовь: ${monthForecast.love} Деньги и дела: ${monthForecast.money} Энергия: ${monthForecast.energy} Риск: ${monthForecast.risk} Лучший период: ${monthForecast.bestPeriod} Совет: ${monthForecast.advice}` : "Выберите знак, чтобы открыть тему месяца, любовь, деньги, энергию, риск и лучший период."} />
         <VipPreviewPanel publicMode={publicMode} title="💌 Расширенный помощник сообщений" text={messageVariants.map((variant) => `${variant.label}: ${variant.text}`).join(" ")} />
-        <VipPreviewPanel publicMode={publicMode} title="🔤 Расширенный именной профиль" text={nameProfile ? `Сильные стороны: ${nameProfile.sections[0]?.items[0]?.text ?? nameProfile.portrait} Риски: ${nameProfile.sections[1]?.items[0]?.text ?? "не делать вывод по одному впечатлению"}. Стиль общения, любовь, работа и внутренний характер: ${nameProfile.vipBlocks.map((block) => `${block.title}: ${block.text}`).join(" ")}` : "Добавьте имя, чтобы открыть сильные стороны, риски, стиль общения, любовь, работу и личный резонанс без сохранения данных."} />
+        <VipPreviewPanel publicMode={publicMode} title="🔤 Расширенный именной профиль" text={nameProfile ? `Сильные стороны: ${nameProfile.sections[0]?.items[0]?.text ?? nameProfile.portrait} Риски: ${nameProfile.sections[1]?.items[0]?.text ?? "не делать вывод по одному впечатлению"}. Стиль общения, любовь, работа и внутренний характер: ${nameProfile.vipBlocks.map((block) => `${block.title}: ${block.text}`).join(" ")}` : "Добавьте имя в локальный профиль, чтобы открыть сильные стороны, риски, стиль общения, любовь, работу и личный резонанс."} />
         <VipPreviewPanel publicMode={publicMode} title="🔢 Расширенная нумерология" text={`Число жизненного пути: ${numerology.lifePath ?? "добавьте дату рождения"}. Число имени: ${numerology.nameNumber ?? "добавьте имя"}. Личный месяц: ${numerology.personalMonth ?? "появится с датой рождения"}. Сильные стороны: ${numerology.strengths} Риски: ${numerology.risks} Деньги/любовь: ${numerology.summary} Совет месяца: ${numerology.advice}`} />
         <VipPreviewPanel publicMode={publicMode} title="👼 Расширенное толкование ангельских чисел" text={angelNumber.isValid ? `${angelNumber.label}: ${angelNumber.vipBlocks.map((block) => `${block.title}: ${block.text}`).join(" ")}` : "Введите комбинацию времени, чтобы открыть любовь, дела, интуицию, действие, осторожность, знак и текущий день."} />
         <VipPreviewPanel publicMode={publicMode} title="🧿 VIP талисманы и символы силы" text={dailyTalisman ? `Камень силы: ${dailyTalisman.stone}. Цвет силы: ${dailyTalisman.color}. Число силы: ${dailyTalisman.number}. Символ: ${selfSign ? buildZodiacStoneProfile(selfSign).symbol : "личный знак"}. Тотем: ${selfSign ? `${selfSign.emoji} ${selfSign.name}` : "выберите знак"}. Фраза силы: ${dailyTalisman.phrase}. Действие дня: ${dailyTalisman.action}` : "Выберите знак, чтобы открыть камень, цвет, число, символ, тотем, фразу силы и действие дня."} />
@@ -4064,7 +3812,7 @@ function normalizeMode(value?: string | null): Mode {
 function resolveInitialHubTab(startParam?: string | null): HubTab {
   const normalized = normalizeStartParam(startParam);
   if (!normalized) return "today";
-  if (normalized === "compat") return "today";
+  if (normalized === "compat") return "love";
   if (normalized.startsWith("compat_")) return "love";
   if (normalized === "mystic" || normalized === "birth_matrix") return "mystic";
   if (normalized === "angel_numbers" || normalized === "week") return "forecasts";
@@ -5183,7 +4931,7 @@ function buildAngelNumberProfile(
           { title: "♈ Связь со знаком", text: signLine },
           { title: "🧿 Талисман дня", text: talismanLine },
           { title: "🔢 Нумерология", text: `Число дня ${numerology.dayNumber}${numerology.lifePath ? `, число пути ${numerology.lifePath}` : ""}: ${numerology.advice}` },
-          { title: "🔤 Именной резонанс", text: hasName ? "имя учтено только на экране: резонанс усиливает личный смысл фразы настройки" : "добавьте имя, если хотите увидеть именной оттенок без сохранения данных" },
+          { title: "🔤 Именной резонанс", text: hasName ? "имя учтено локально: резонанс усиливает личный смысл фразы настройки" : "добавьте имя в локальный профиль, если хотите увидеть именной оттенок" },
         ]
       : [],
   };
@@ -5899,6 +5647,10 @@ const nameCompatibilityHints = [
   "сильнее всего отношения поддержит уважение к личному ритму друг друга",
 ];
 
+function applyBirthDateSign(profile: PersonState): PersonState {
+  const parsed = parseBirthDate(profile.birthDate);
+  return parsed.ok ? { ...profile, sign: parsed.signSlug } : profile;
+}
 
 function parseBirthDate(value: string): ParsedDate {
   const parsed = parseBirthDateInput(value, {
