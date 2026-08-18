@@ -12163,8 +12163,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-18T06:58:57.312Z"
+      "status": "sent",
+      "updatedAt": "2026-08-18T06:59:01.380Z",
+      "messageId": "139,",
+      "sentAt": "2026-08-18T06:59:01.377Z"
     }
   }
 }
