@@ -12125,6 +12125,18 @@
       "updatedAt": "2026-08-18T06:58:44.097Z",
       "messageId": "140,",
       "sentAt": "2026-08-18T06:58:44.095Z"
+    },
+    "2026-08-18:capricorn": {
+      "key": "2026-08-18:capricorn",
+      "date": "2026-08-18",
+      "slug": "capricorn",
+      "createdAt": "2026-08-18T06:58:45.542Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-08-18T06:58:45.542Z"
     }
   }
 }
