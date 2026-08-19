@@ -12205,8 +12205,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-19T06:58:36.063Z"
+      "status": "sent",
+      "updatedAt": "2026-08-19T06:58:39.260Z",
+      "messageId": "144,",
+      "sentAt": "2026-08-19T06:58:39.258Z"
     }
   }
 }
