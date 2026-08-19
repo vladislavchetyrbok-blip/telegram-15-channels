@@ -12303,8 +12303,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-19T06:59:07.057Z"
+      "status": "sent",
+      "updatedAt": "2026-08-19T06:59:10.211Z",
+      "messageId": "142,",
+      "sentAt": "2026-08-19T06:59:10.209Z"
     }
   }
 }
