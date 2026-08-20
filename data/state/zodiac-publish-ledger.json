@@ -12475,6 +12475,18 @@
       "updatedAt": "2026-08-20T06:59:58.787Z",
       "messageId": "144,",
       "sentAt": "2026-08-20T06:59:58.785Z"
+    },
+    "2026-08-20:sagittarius": {
+      "key": "2026-08-20:sagittarius",
+      "date": "2026-08-20",
+      "slug": "sagittarius",
+      "createdAt": "2026-08-20T07:00:00.095Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-08-20T07:00:00.095Z"
     }
   }
 }
