@@ -12373,8 +12373,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-20T06:59:16.257Z"
+      "status": "sent",
+      "updatedAt": "2026-08-20T06:59:20.446Z",
+      "messageId": "146,",
+      "sentAt": "2026-08-20T06:59:20.443Z"
     }
   }
 }
