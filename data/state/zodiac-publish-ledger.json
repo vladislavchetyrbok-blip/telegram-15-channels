@@ -12513,8 +12513,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-20T07:00:11.030Z"
+      "status": "sent",
+      "updatedAt": "2026-08-20T07:00:14.960Z",
+      "messageId": "143,",
+      "sentAt": "2026-08-20T07:00:14.958Z"
     }
   }
 }
