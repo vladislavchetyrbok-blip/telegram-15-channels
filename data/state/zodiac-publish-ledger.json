@@ -12877,8 +12877,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-22T06:54:37.683Z"
+      "status": "sent",
+      "updatedAt": "2026-08-22T06:54:40.523Z",
+      "messageId": "147,",
+      "sentAt": "2026-08-22T06:54:40.521Z"
     }
   }
 }
