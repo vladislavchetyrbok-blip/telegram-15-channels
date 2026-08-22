@@ -12863,8 +12863,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-22T06:54:33.401Z"
+      "status": "sent",
+      "updatedAt": "2026-08-22T06:54:36.456Z",
+      "messageId": "148,",
+      "sentAt": "2026-08-22T06:54:36.454Z"
     }
   }
 }
