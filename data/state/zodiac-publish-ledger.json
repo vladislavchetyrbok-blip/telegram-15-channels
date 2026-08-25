@@ -13423,8 +13423,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-25T07:02:32.621Z"
+      "status": "sent",
+      "updatedAt": "2026-08-25T07:02:36.008Z",
+      "messageId": "153,",
+      "sentAt": "2026-08-25T07:02:36.003Z"
     }
   }
 }
