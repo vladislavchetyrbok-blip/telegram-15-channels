@@ -13761,6 +13761,18 @@
       "status": "failed",
       "updatedAt": "2026-08-27T17:36:57.859Z",
       "error": "Child process failed with status 1"
+    },
+    "2026-08-27:capricorn": {
+      "key": "2026-08-27:capricorn",
+      "date": "2026-08-27",
+      "slug": "capricorn",
+      "createdAt": "2026-08-27T17:36:59.548Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-08-27T17:36:59.548Z"
     }
   }
 }
