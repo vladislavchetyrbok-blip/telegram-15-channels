@@ -13730,8 +13730,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-27T17:36:42.528Z"
+      "status": "sent",
+      "updatedAt": "2026-08-27T17:36:46.493Z",
+      "messageId": "160,",
+      "sentAt": "2026-08-27T17:36:46.490Z"
     }
   }
 }
