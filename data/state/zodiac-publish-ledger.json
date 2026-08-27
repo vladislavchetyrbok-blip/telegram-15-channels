@@ -13678,6 +13678,18 @@
       "status": "failed",
       "updatedAt": "2026-08-27T17:35:54.467Z",
       "error": "Child process failed with status 1"
+    },
+    "2026-08-27:cancer": {
+      "key": "2026-08-27:cancer",
+      "date": "2026-08-27",
+      "slug": "cancer",
+      "createdAt": "2026-08-27T17:35:56.061Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-08-27T17:35:56.061Z"
     }
   }
 }
