@@ -13840,8 +13840,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-28T18:33:34.107Z"
+      "status": "sent",
+      "updatedAt": "2026-08-28T18:33:37.698Z",
+      "messageId": "162,",
+      "sentAt": "2026-08-28T18:33:37.695Z"
     }
   }
 }
