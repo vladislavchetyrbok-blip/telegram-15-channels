@@ -13830,6 +13830,18 @@
       "updatedAt": "2026-08-28T18:33:32.847Z",
       "messageId": "162,",
       "sentAt": "2026-08-28T18:33:32.845Z"
+    },
+    "2026-08-28:taurus": {
+      "key": "2026-08-28:taurus",
+      "date": "2026-08-28",
+      "slug": "taurus",
+      "createdAt": "2026-08-28T18:33:34.107Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-08-28T18:33:34.107Z"
     }
   }
 }
