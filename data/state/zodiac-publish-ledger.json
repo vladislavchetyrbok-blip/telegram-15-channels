@@ -13868,8 +13868,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-28T18:33:44.952Z"
+      "status": "sent",
+      "updatedAt": "2026-08-28T18:33:48.528Z",
+      "messageId": "162,",
+      "sentAt": "2026-08-28T18:33:48.526Z"
     }
   }
 }
