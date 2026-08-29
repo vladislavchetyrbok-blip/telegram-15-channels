@@ -14078,8 +14078,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-29T12:38:13.212Z"
+      "status": "sent",
+      "updatedAt": "2026-08-29T12:38:16.843Z",
+      "messageId": "164,",
+      "sentAt": "2026-08-29T12:38:16.840Z"
     }
   }
 }
