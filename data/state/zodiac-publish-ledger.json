@@ -14120,8 +14120,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-29T12:38:27.620Z"
+      "status": "sent",
+      "updatedAt": "2026-08-29T12:38:31.062Z",
+      "messageId": "161,",
+      "sentAt": "2026-08-29T12:38:31.060Z"
     }
   }
 }
