@@ -14358,8 +14358,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-31T13:31:22.071Z"
+      "status": "sent",
+      "updatedAt": "2026-08-31T13:31:27.564Z",
+      "messageId": "177,",
+      "sentAt": "2026-08-31T13:31:27.559Z"
     }
   }
 }
