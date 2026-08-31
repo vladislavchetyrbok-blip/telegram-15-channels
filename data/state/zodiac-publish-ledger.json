@@ -14459,6 +14459,18 @@
       "status": "failed",
       "updatedAt": "2026-08-31T13:32:09.652Z",
       "error": "Child process failed with status 1"
+    },
+    "2026-08-31:scorpio": {
+      "key": "2026-08-31:scorpio",
+      "date": "2026-08-31",
+      "slug": "scorpio",
+      "createdAt": "2026-08-31T13:32:11.211Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-08-31T13:32:11.211Z"
     }
   }
 }
