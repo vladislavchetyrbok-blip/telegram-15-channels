@@ -14400,8 +14400,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-08-31T13:31:43.737Z"
+      "status": "sent",
+      "updatedAt": "2026-08-31T13:31:48.474Z",
+      "messageId": "169,",
+      "sentAt": "2026-08-31T13:31:48.472Z"
     }
   }
 }
