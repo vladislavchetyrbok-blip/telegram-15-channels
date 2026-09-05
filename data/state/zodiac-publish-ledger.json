@@ -15285,6 +15285,18 @@
       "updatedAt": "2026-09-05T10:28:36.459Z",
       "messageId": "178,",
       "sentAt": "2026-09-05T10:28:36.456Z"
+    },
+    "2026-09-05:taurus": {
+      "key": "2026-09-05:taurus",
+      "date": "2026-09-05",
+      "slug": "taurus",
+      "createdAt": "2026-09-05T10:28:37.850Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-09-05T10:28:37.850Z"
     }
   }
 }
