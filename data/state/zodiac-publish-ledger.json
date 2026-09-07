@@ -15673,8 +15673,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-09-07T12:18:51.743Z"
+      "status": "sent",
+      "updatedAt": "2026-09-07T12:18:56.132Z",
+      "messageId": "183,",
+      "sentAt": "2026-09-07T12:18:56.129Z"
     }
   }
 }
