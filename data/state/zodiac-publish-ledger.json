@@ -16303,8 +16303,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-09-10T11:09:27.464Z"
+      "status": "sent",
+      "updatedAt": "2026-09-10T11:09:31.462Z",
+      "messageId": "185,",
+      "sentAt": "2026-09-10T11:09:31.459Z"
     }
   }
 }
