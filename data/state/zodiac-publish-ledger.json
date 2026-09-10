@@ -16209,6 +16209,18 @@
       "updatedAt": "2026-09-10T11:08:51.896Z",
       "messageId": "188,",
       "sentAt": "2026-09-10T11:08:51.892Z"
+    },
+    "2026-09-10:gemini": {
+      "key": "2026-09-10:gemini",
+      "date": "2026-09-10",
+      "slug": "gemini",
+      "createdAt": "2026-09-10T11:08:53.247Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-09-10T11:08:53.247Z"
     }
   }
 }
