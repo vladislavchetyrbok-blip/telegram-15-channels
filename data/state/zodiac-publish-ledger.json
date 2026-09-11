@@ -16443,8 +16443,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-09-11T11:08:34.250Z"
+      "status": "sent",
+      "updatedAt": "2026-09-11T11:08:37.577Z",
+      "messageId": "190,",
+      "sentAt": "2026-09-11T11:08:37.574Z"
     }
   }
 }
