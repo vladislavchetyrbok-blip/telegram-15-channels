@@ -16653,8 +16653,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-09-12T10:37:17.514Z"
+      "status": "sent",
+      "updatedAt": "2026-09-12T10:37:20.656Z",
+      "messageId": "190,",
+      "sentAt": "2026-09-12T10:37:20.653Z"
     }
   }
 }
