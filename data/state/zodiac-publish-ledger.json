@@ -17161,6 +17161,18 @@
       "updatedAt": "2026-09-15T11:36:44.499Z",
       "messageId": "198,",
       "sentAt": "2026-09-15T11:36:44.495Z"
+    },
+    "2026-09-15:virgo": {
+      "key": "2026-09-15:virgo",
+      "date": "2026-09-15",
+      "slug": "virgo",
+      "createdAt": "2026-09-15T11:36:46.091Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-09-15T11:36:46.091Z"
     }
   }
 }
