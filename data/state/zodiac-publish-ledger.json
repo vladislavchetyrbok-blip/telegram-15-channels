@@ -17213,8 +17213,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-09-15T11:37:00.098Z"
+      "status": "sent",
+      "updatedAt": "2026-09-15T11:37:03.528Z",
+      "messageId": "195,",
+      "sentAt": "2026-09-15T11:37:03.523Z"
     }
   }
 }
