@@ -17171,8 +17171,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-09-15T11:36:46.091Z"
+      "status": "sent",
+      "updatedAt": "2026-09-15T11:36:49.501Z",
+      "messageId": "198,",
+      "sentAt": "2026-09-15T11:36:49.498Z"
     }
   }
 }
