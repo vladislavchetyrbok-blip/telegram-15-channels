@@ -17353,8 +17353,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-09-16T11:23:33.467Z"
+      "status": "sent",
+      "updatedAt": "2026-09-16T11:23:37.450Z",
+      "messageId": "200,",
+      "sentAt": "2026-09-16T11:23:37.447Z"
     }
   }
 }
