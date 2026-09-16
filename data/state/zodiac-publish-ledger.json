@@ -17399,6 +17399,18 @@
       "updatedAt": "2026-09-16T11:23:54.042Z",
       "messageId": "197,",
       "sentAt": "2026-09-16T11:23:54.038Z"
+    },
+    "2026-09-16:capricorn": {
+      "key": "2026-09-16:capricorn",
+      "date": "2026-09-16",
+      "slug": "capricorn",
+      "createdAt": "2026-09-16T11:23:55.388Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-09-16T11:23:55.388Z"
     }
   }
 }
