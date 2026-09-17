@@ -17511,6 +17511,18 @@
       "updatedAt": "2026-09-17T11:31:54.119Z",
       "messageId": "202,",
       "sentAt": "2026-09-17T11:31:54.114Z"
+    },
+    "2026-09-17:leo": {
+      "key": "2026-09-17:leo",
+      "date": "2026-09-17",
+      "slug": "leo",
+      "createdAt": "2026-09-17T11:31:55.513Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-09-17T11:31:55.513Z"
     }
   }
 }
