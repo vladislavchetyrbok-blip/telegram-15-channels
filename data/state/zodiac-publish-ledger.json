@@ -17483,6 +17483,18 @@
       "updatedAt": "2026-09-17T11:31:43.044Z",
       "messageId": "202,",
       "sentAt": "2026-09-17T11:31:43.039Z"
+    },
+    "2026-09-17:gemini": {
+      "key": "2026-09-17:gemini",
+      "date": "2026-09-17",
+      "slug": "gemini",
+      "createdAt": "2026-09-17T11:31:44.401Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-09-17T11:31:44.401Z"
     }
   }
 }
