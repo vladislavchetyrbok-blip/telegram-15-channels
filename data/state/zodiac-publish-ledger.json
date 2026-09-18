@@ -17703,8 +17703,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-09-18T11:04:17.145Z"
+      "status": "sent",
+      "updatedAt": "2026-09-18T11:04:20.918Z",
+      "messageId": "204,",
+      "sentAt": "2026-09-18T11:04:20.915Z"
     }
   }
 }
