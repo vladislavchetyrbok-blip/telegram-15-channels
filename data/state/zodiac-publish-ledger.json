@@ -17843,8 +17843,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-09-19T10:48:13.433Z"
+      "status": "sent",
+      "updatedAt": "2026-09-19T10:48:17.089Z",
+      "messageId": "206,",
+      "sentAt": "2026-09-19T10:48:17.086Z"
     }
   }
 }
