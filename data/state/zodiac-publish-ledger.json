@@ -17913,8 +17913,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-09-19T10:48:38.719Z"
+      "status": "sent",
+      "updatedAt": "2026-09-19T10:48:42.086Z",
+      "messageId": "204,",
+      "sentAt": "2026-09-19T10:48:42.081Z"
     }
   }
 }
