@@ -18253,6 +18253,18 @@
       "updatedAt": "2026-09-21T12:40:07.962Z",
       "messageId": "210,",
       "sentAt": "2026-09-21T12:40:07.959Z"
+    },
+    "2026-09-21:virgo": {
+      "key": "2026-09-21:virgo",
+      "date": "2026-09-21",
+      "slug": "virgo",
+      "createdAt": "2026-09-21T12:40:09.423Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-09-21T12:40:09.423Z"
     }
   }
 }
