@@ -18543,8 +18543,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-09-23T11:23:25.892Z"
+      "status": "sent",
+      "updatedAt": "2026-09-23T11:23:31.024Z",
+      "messageId": "223,",
+      "sentAt": "2026-09-23T11:23:31.020Z"
     }
   }
 }
