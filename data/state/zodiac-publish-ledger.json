@@ -18823,8 +18823,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-09-24T11:36:06.672Z"
+      "status": "sent",
+      "updatedAt": "2026-09-24T11:36:11.113Z",
+      "messageId": "214,",
+      "sentAt": "2026-09-24T11:36:11.110Z"
     }
   }
 }
