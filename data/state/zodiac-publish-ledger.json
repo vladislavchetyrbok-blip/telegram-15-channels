@@ -19005,8 +19005,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-09-25T11:42:50.765Z"
+      "status": "sent",
+      "updatedAt": "2026-09-25T11:42:54.996Z",
+      "messageId": "216,",
+      "sentAt": "2026-09-25T11:42:54.992Z"
     }
   }
 }
