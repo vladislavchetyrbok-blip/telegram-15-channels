@@ -18953,6 +18953,18 @@
       "updatedAt": "2026-09-25T11:42:32.067Z",
       "messageId": "219,",
       "sentAt": "2026-09-25T11:42:32.063Z"
+    },
+    "2026-09-25:cancer": {
+      "key": "2026-09-25:cancer",
+      "date": "2026-09-25",
+      "slug": "cancer",
+      "createdAt": "2026-09-25T11:42:33.564Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-09-25T11:42:33.564Z"
     }
   }
 }
