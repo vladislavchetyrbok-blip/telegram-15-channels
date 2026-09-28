@@ -19523,8 +19523,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-09-28T13:42:37.138Z"
+      "status": "sent",
+      "updatedAt": "2026-09-28T13:42:40.724Z",
+      "messageId": "224,",
+      "sentAt": "2026-09-28T13:42:40.720Z"
     }
   }
 }
