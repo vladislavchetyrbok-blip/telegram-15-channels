@@ -19453,8 +19453,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-09-28T13:42:10.250Z"
+      "status": "sent",
+      "updatedAt": "2026-09-28T13:42:15.349Z",
+      "messageId": "233,",
+      "sentAt": "2026-09-28T13:42:15.345Z"
     }
   }
 }
