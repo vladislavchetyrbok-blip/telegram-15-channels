@@ -19653,6 +19653,18 @@
       "updatedAt": "2026-09-29T12:40:15.092Z",
       "messageId": "226,",
       "sentAt": "2026-09-29T12:40:15.086Z"
+    },
+    "2026-09-29:taurus": {
+      "key": "2026-09-29:taurus",
+      "date": "2026-09-29",
+      "slug": "taurus",
+      "createdAt": "2026-09-29T12:40:16.789Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-09-29T12:40:16.789Z"
     }
   }
 }
