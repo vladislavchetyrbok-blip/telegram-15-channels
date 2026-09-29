@@ -19719,8 +19719,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-09-29T12:40:39.456Z"
+      "status": "sent",
+      "updatedAt": "2026-09-29T12:40:43.449Z",
+      "messageId": "226,",
+      "sentAt": "2026-09-29T12:40:43.444Z"
     }
   }
 }
