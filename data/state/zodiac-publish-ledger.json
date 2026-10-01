@@ -20041,8 +20041,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-01T13:01:24.110Z"
+      "status": "sent",
+      "updatedAt": "2026-10-01T13:01:28.949Z",
+      "messageId": "231,",
+      "sentAt": "2026-10-01T13:01:28.943Z"
     }
   }
 }
