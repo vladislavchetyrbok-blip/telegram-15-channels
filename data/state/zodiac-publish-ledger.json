@@ -20167,8 +20167,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-01T13:02:14.769Z"
+      "status": "sent",
+      "updatedAt": "2026-10-01T13:02:18.792Z",
+      "messageId": "227,",
+      "sentAt": "2026-10-01T13:02:18.789Z"
     }
   }
 }
