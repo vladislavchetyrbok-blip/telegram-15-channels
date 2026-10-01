@@ -20013,8 +20013,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-01T13:01:11.545Z"
+      "status": "sent",
+      "updatedAt": "2026-10-01T13:01:16.568Z",
+      "messageId": "230,",
+      "sentAt": "2026-10-01T13:01:16.564Z"
     }
   }
 }
