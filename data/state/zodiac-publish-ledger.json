@@ -20129,6 +20129,18 @@
       "updatedAt": "2026-10-01T13:02:02.471Z",
       "messageId": "227,",
       "sentAt": "2026-10-01T13:02:02.466Z"
+    },
+    "2026-10-01:capricorn": {
+      "key": "2026-10-01:capricorn",
+      "date": "2026-10-01",
+      "slug": "capricorn",
+      "createdAt": "2026-10-01T13:02:03.907Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-10-01T13:02:03.907Z"
     }
   }
 }
