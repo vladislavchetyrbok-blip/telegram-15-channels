@@ -20055,8 +20055,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-01T13:01:30.534Z"
+      "status": "sent",
+      "updatedAt": "2026-10-01T13:01:34.842Z",
+      "messageId": "230,",
+      "sentAt": "2026-10-01T13:01:34.838Z"
     }
   }
 }
