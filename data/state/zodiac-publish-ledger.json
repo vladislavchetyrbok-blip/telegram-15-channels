@@ -20111,8 +20111,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-01T13:01:53.062Z"
+      "status": "sent",
+      "updatedAt": "2026-10-01T13:01:56.999Z",
+      "messageId": "228,",
+      "sentAt": "2026-10-01T13:01:56.993Z"
     }
   }
 }
