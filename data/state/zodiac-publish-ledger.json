@@ -20003,6 +20003,18 @@
       "updatedAt": "2026-10-01T13:01:09.773Z",
       "messageId": "239,",
       "sentAt": "2026-10-01T13:01:09.767Z"
+    },
+    "2026-10-01:aries": {
+      "key": "2026-10-01:aries",
+      "date": "2026-10-01",
+      "slug": "aries",
+      "createdAt": "2026-10-01T13:01:11.545Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-10-01T13:01:11.545Z"
     }
   }
 }
