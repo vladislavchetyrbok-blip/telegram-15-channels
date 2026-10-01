@@ -20143,6 +20143,18 @@
       "updatedAt": "2026-10-01T13:02:08.094Z",
       "messageId": "228,",
       "sentAt": "2026-10-01T13:02:08.090Z"
+    },
+    "2026-10-01:aquarius": {
+      "key": "2026-10-01:aquarius",
+      "date": "2026-10-01",
+      "slug": "aquarius",
+      "createdAt": "2026-10-01T13:02:09.364Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-10-01T13:02:09.364Z"
     }
   }
 }
