@@ -20181,8 +20181,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-02T12:22:16.468Z"
+      "status": "sent",
+      "updatedAt": "2026-10-02T12:22:22.177Z",
+      "messageId": "241,",
+      "sentAt": "2026-10-02T12:22:22.171Z"
     }
   }
 }
