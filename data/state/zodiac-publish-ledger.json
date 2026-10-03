@@ -20433,8 +20433,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-03T11:33:29.044Z"
+      "status": "sent",
+      "updatedAt": "2026-10-03T11:33:32.154Z",
+      "messageId": "234,",
+      "sentAt": "2026-10-03T11:33:32.150Z"
     }
   }
 }
