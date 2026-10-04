@@ -20573,8 +20573,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-04T12:14:22.180Z"
+      "status": "sent",
+      "updatedAt": "2026-10-04T12:14:25.837Z",
+      "messageId": "236,",
+      "sentAt": "2026-10-04T12:14:25.834Z"
     }
   }
 }
