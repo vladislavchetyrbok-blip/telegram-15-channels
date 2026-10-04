@@ -20713,8 +20713,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-04T12:15:17.283Z"
+      "status": "sent",
+      "updatedAt": "2026-10-04T12:15:20.951Z",
+      "messageId": "233,",
+      "sentAt": "2026-10-04T12:15:20.946Z"
     }
   }
 }
