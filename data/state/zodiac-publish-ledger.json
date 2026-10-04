@@ -20643,8 +20643,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-04T12:14:49.825Z"
+      "status": "sent",
+      "updatedAt": "2026-10-04T12:14:53.657Z",
+      "messageId": "234,",
+      "sentAt": "2026-10-04T12:14:53.653Z"
     }
   }
 }
