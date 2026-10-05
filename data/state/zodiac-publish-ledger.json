@@ -20853,8 +20853,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-05T14:25:50.965Z"
+      "status": "sent",
+      "updatedAt": "2026-10-05T14:25:54.622Z",
+      "messageId": "235,",
+      "sentAt": "2026-10-05T14:25:54.619Z"
     }
   }
 }
