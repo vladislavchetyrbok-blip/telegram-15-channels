@@ -21137,6 +21137,18 @@
       "updatedAt": "2026-10-07T13:11:18.951Z",
       "messageId": "243,",
       "sentAt": "2026-10-07T13:11:18.947Z"
+    },
+    "2026-10-07:cancer": {
+      "key": "2026-10-07:cancer",
+      "date": "2026-10-07",
+      "slug": "cancer",
+      "createdAt": "2026-10-07T13:11:20.327Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-10-07T13:11:20.327Z"
     }
   }
 }
