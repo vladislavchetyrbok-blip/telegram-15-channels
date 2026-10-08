@@ -21273,8 +21273,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-08T13:17:42.893Z"
+      "status": "sent",
+      "updatedAt": "2026-10-08T13:17:47.889Z",
+      "messageId": "253,",
+      "sentAt": "2026-10-08T13:17:47.884Z"
     }
   }
 }
