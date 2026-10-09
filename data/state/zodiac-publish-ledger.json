@@ -21483,8 +21483,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-09T13:05:41.593Z"
+      "status": "sent",
+      "updatedAt": "2026-10-09T13:05:45.075Z",
+      "messageId": "246,",
+      "sentAt": "2026-10-09T13:05:45.069Z"
     }
   }
 }
