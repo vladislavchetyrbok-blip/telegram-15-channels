@@ -21697,6 +21697,18 @@
       "updatedAt": "2026-10-10T12:21:50.864Z",
       "messageId": "248,",
       "sentAt": "2026-10-10T12:21:50.861Z"
+    },
+    "2026-10-10:leo": {
+      "key": "2026-10-10:leo",
+      "date": "2026-10-10",
+      "slug": "leo",
+      "createdAt": "2026-10-10T12:21:52.907Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-10-10T12:21:52.907Z"
     }
   }
 }
