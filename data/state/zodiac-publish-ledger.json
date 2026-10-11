@@ -21893,6 +21893,18 @@
       "updatedAt": "2026-10-11T12:38:19.108Z",
       "messageId": "250,",
       "sentAt": "2026-10-11T12:38:19.105Z"
+    },
+    "2026-10-11:virgo": {
+      "key": "2026-10-11:virgo",
+      "date": "2026-10-11",
+      "slug": "virgo",
+      "createdAt": "2026-10-11T12:38:20.336Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-10-11T12:38:20.336Z"
     }
   }
 }
