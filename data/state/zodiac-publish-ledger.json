@@ -21833,8 +21833,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-11T12:37:55.977Z"
+      "status": "sent",
+      "updatedAt": "2026-10-11T12:37:59.587Z",
+      "messageId": "250,",
+      "sentAt": "2026-10-11T12:37:59.583Z"
     }
   }
 }
