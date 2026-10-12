@@ -22116,6 +22116,18 @@
       "updatedAt": "2026-10-12T15:12:20.947Z",
       "messageId": "250,",
       "sentAt": "2026-10-12T15:12:20.941Z"
+    },
+    "2026-10-12:sagittarius": {
+      "key": "2026-10-12:sagittarius",
+      "date": "2026-10-12",
+      "slug": "sagittarius",
+      "createdAt": "2026-10-12T15:12:22.230Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-10-12T15:12:22.230Z"
     }
   }
 }
