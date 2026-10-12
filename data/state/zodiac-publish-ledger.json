@@ -22043,8 +22043,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-12T15:11:49.330Z"
+      "status": "sent",
+      "updatedAt": "2026-10-12T15:11:53.655Z",
+      "messageId": "253,",
+      "sentAt": "2026-10-12T15:11:53.651Z"
     }
   }
 }
