@@ -22168,8 +22168,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-12T15:12:38.676Z"
+      "status": "sent",
+      "updatedAt": "2026-10-12T15:12:42.548Z",
+      "messageId": "249,",
+      "sentAt": "2026-10-12T15:12:42.544Z"
     }
   }
 }
