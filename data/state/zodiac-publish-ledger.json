@@ -22140,8 +22140,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-12T15:12:27.696Z"
+      "status": "sent",
+      "updatedAt": "2026-10-12T15:12:31.792Z",
+      "messageId": "250,",
+      "sentAt": "2026-10-12T15:12:31.786Z"
     }
   }
 }
