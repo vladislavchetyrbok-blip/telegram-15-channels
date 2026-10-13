@@ -22238,8 +22238,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-13T14:03:35.115Z"
+      "status": "sent",
+      "updatedAt": "2026-10-13T14:03:39.429Z",
+      "messageId": "254,",
+      "sentAt": "2026-10-13T14:03:39.423Z"
     }
   }
 }
