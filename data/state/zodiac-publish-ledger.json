@@ -22200,6 +22200,18 @@
       "updatedAt": "2026-10-13T14:03:22.961Z",
       "messageId": "254,",
       "sentAt": "2026-10-13T14:03:22.955Z"
+    },
+    "2026-10-13:taurus": {
+      "key": "2026-10-13:taurus",
+      "date": "2026-10-13",
+      "slug": "taurus",
+      "createdAt": "2026-10-13T14:03:24.134Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-10-13T14:03:24.134Z"
     }
   }
 }
