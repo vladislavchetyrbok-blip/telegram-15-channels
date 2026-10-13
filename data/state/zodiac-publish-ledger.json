@@ -22280,8 +22280,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-13T14:03:51.020Z"
+      "status": "sent",
+      "updatedAt": "2026-10-13T14:03:55.196Z",
+      "messageId": "252,",
+      "sentAt": "2026-10-13T14:03:55.192Z"
     }
   }
 }
