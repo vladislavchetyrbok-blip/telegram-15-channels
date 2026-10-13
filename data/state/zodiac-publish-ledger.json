@@ -22322,8 +22322,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-13T14:04:07.393Z"
+      "status": "sent",
+      "updatedAt": "2026-10-13T14:04:11.305Z",
+      "messageId": "252,",
+      "sentAt": "2026-10-13T14:04:11.299Z"
     }
   }
 }
