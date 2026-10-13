@@ -22350,8 +22350,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-13T14:04:17.755Z"
+      "status": "sent",
+      "updatedAt": "2026-10-13T14:04:22.156Z",
+      "messageId": "251,",
+      "sentAt": "2026-10-13T14:04:22.150Z"
     }
   }
 }
