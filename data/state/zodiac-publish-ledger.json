@@ -22490,8 +22490,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-14T11:41:14.450Z"
+      "status": "sent",
+      "updatedAt": "2026-10-14T11:41:17.923Z",
+      "messageId": "253,",
+      "sentAt": "2026-10-14T11:41:17.919Z"
     }
   }
 }
