@@ -22378,8 +22378,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-14T11:40:34.822Z"
+      "status": "sent",
+      "updatedAt": "2026-10-14T11:40:38.640Z",
+      "messageId": "256,",
+      "sentAt": "2026-10-14T11:40:38.637Z"
     }
   }
 }
