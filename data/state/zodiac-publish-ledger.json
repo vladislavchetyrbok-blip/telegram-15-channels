@@ -22448,8 +22448,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-14T11:40:59.544Z"
+      "status": "sent",
+      "updatedAt": "2026-10-14T11:41:03.237Z",
+      "messageId": "255,",
+      "sentAt": "2026-10-14T11:41:03.233Z"
     }
   }
 }
