@@ -22494,6 +22494,18 @@
       "updatedAt": "2026-10-14T11:41:17.923Z",
       "messageId": "253,",
       "sentAt": "2026-10-14T11:41:17.919Z"
+    },
+    "2026-10-14:capricorn": {
+      "key": "2026-10-14:capricorn",
+      "date": "2026-10-14",
+      "slug": "capricorn",
+      "createdAt": "2026-10-14T11:41:19.257Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-10-14T11:41:19.257Z"
     }
   }
 }
