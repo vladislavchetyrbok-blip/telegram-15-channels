@@ -22700,8 +22700,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-15T11:18:56.227Z"
+      "status": "sent",
+      "updatedAt": "2026-10-15T11:18:59.584Z",
+      "messageId": "254,",
+      "sentAt": "2026-10-15T11:18:59.580Z"
     }
   }
 }
