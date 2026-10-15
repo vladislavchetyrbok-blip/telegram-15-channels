@@ -22560,8 +22560,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-15T11:18:09.277Z"
+      "status": "sent",
+      "updatedAt": "2026-10-15T11:18:12.723Z",
+      "messageId": "258,",
+      "sentAt": "2026-10-15T11:18:12.716Z"
     }
   }
 }
