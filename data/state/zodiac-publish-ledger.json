@@ -22770,8 +22770,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-16T11:13:27.248Z"
+      "status": "sent",
+      "updatedAt": "2026-10-16T11:13:30.767Z",
+      "messageId": "261,",
+      "sentAt": "2026-10-16T11:13:30.764Z"
     }
   }
 }
