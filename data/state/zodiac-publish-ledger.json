@@ -22840,8 +22840,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-16T11:13:52.681Z"
+      "status": "sent",
+      "updatedAt": "2026-10-16T11:13:56.204Z",
+      "messageId": "258,",
+      "sentAt": "2026-10-16T11:13:56.199Z"
     }
   }
 }
