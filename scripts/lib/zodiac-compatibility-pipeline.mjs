@@ -5,21 +5,29 @@ import process from "process";
 export const COMPATIBILITY_CONFIG_PATH = path.resolve(process.cwd(), "data/config/zodiac-compatibility-pairs.json");
 export const COMPATIBILITY_LEDGER_PATH = path.resolve(process.cwd(), "data/state/zodiac-compatibility-publish-ledger.json");
 const CHANNEL_LINKS_PATH = path.resolve(process.cwd(), "data/config/zodiac-channel-links.json");
+const MINI_APP_CTA_URL = "https://t.me/zodiac_love_check_bot?startapp=mystic";
 
 export const SIGNS = [
-  { slug: "aquarius", emoji: "♒", nameRu: "Водолей", element: "air", env: "ZODIAC_AQUARIUS_CHANNEL_ID" },
-  { slug: "aries", emoji: "♈", nameRu: "Овен", element: "fire", env: "ZODIAC_ARIES_CHANNEL_ID" },
-  { slug: "cancer", emoji: "♋", nameRu: "Рак", element: "water", env: "ZODIAC_CANCER_CHANNEL_ID" },
-  { slug: "capricorn", emoji: "♑", nameRu: "Козерог", element: "earth", env: "ZODIAC_CAPRICORN_CHANNEL_ID" },
-  { slug: "gemini", emoji: "♊", nameRu: "Близнецы", element: "air", env: "ZODIAC_GEMINI_CHANNEL_ID" },
-  { slug: "leo", emoji: "♌", nameRu: "Лев", element: "fire", env: "ZODIAC_LEO_CHANNEL_ID" },
-  { slug: "libra", emoji: "♎", nameRu: "Весы", element: "air", env: "ZODIAC_LIBRA_CHANNEL_ID" },
-  { slug: "pisces", emoji: "♓", nameRu: "Рыбы", element: "water", env: "ZODIAC_PISCES_CHANNEL_ID" },
-  { slug: "sagittarius", emoji: "♐", nameRu: "Стрелец", element: "fire", env: "ZODIAC_SAGITTARIUS_CHANNEL_ID" },
-  { slug: "scorpio", emoji: "♏", nameRu: "Скорпион", element: "water", env: "ZODIAC_SCORPIO_CHANNEL_ID" },
-  { slug: "taurus", emoji: "♉", nameRu: "Телец", element: "earth", env: "ZODIAC_TAURUS_CHANNEL_ID" },
-  { slug: "virgo", emoji: "♍", nameRu: "Дева", element: "earth", env: "ZODIAC_VIRGO_CHANNEL_ID" },
+  { slug: "aquarius", emoji: "♒", nameRu: "Водолей", element: "air", gift: "свободу мышления, дружеский контакт и неожиданный взгляд", caution: "важно не прятать чувства за отстранённостью", env: "ZODIAC_AQUARIUS_CHANNEL_ID" },
+  { slug: "aries", emoji: "♈", nameRu: "Овен", element: "fire", gift: "инициативу, честный импульс и смелость начать разговор", caution: "важно не подменять близость напором", env: "ZODIAC_ARIES_CHANNEL_ID" },
+  { slug: "cancer", emoji: "♋", nameRu: "Рак", element: "water", gift: "эмоциональную чуткость, заботу и чувство дома", caution: "важно говорить о потребностях, а не ждать, что их угадают", env: "ZODIAC_CANCER_CHANNEL_ID" },
+  { slug: "capricorn", emoji: "♑", nameRu: "Козерог", element: "earth", gift: "надёжность, выдержку и умение строить долгие планы", caution: "важно оставлять отношениям место вне расписания", env: "ZODIAC_CAPRICORN_CHANNEL_ID" },
+  { slug: "gemini", emoji: "♊", nameRu: "Близнецы", element: "air", gift: "живой диалог, любопытство и гибкость", caution: "важно не уходить от сложного разговора в смену темы", env: "ZODIAC_GEMINI_CHANNEL_ID" },
+  { slug: "leo", emoji: "♌", nameRu: "Лев", element: "fire", gift: "тепло, щедрость и смелость проявлять чувства", caution: "важно слышать партнёра, а не только добиваться признания", env: "ZODIAC_LEO_CHANNEL_ID" },
+  { slug: "libra", emoji: "♎", nameRu: "Весы", element: "air", gift: "дипломатию, чувство баланса и внимание к взаимности", caution: "важно не заменять честную позицию удобным молчанием", env: "ZODIAC_LIBRA_CHANNEL_ID" },
+  { slug: "pisces", emoji: "♓", nameRu: "Рыбы", element: "water", gift: "эмпатию, воображение и тонкое чувство настроения", caution: "важно проверять догадки словами и сохранять границы", env: "ZODIAC_PISCES_CHANNEL_ID" },
+  { slug: "sagittarius", emoji: "♐", nameRu: "Стрелец", element: "fire", gift: "оптимизм, прямоту и желание двигаться вместе", caution: "важно не обещать больше, чем позволяет общий ритм", env: "ZODIAC_SAGITTARIUS_CHANNEL_ID" },
+  { slug: "scorpio", emoji: "♏", nameRu: "Скорпион", element: "water", gift: "глубину, верность и способность замечать скрытые мотивы", caution: "важно не превращать наблюдательность в проверку чувств", env: "ZODIAC_SCORPIO_CHANNEL_ID" },
+  { slug: "taurus", emoji: "♉", nameRu: "Телец", element: "earth", gift: "устойчивость, телесное тепло и заботу через действия", caution: "важно не путать надёжность с жёстким контролем", env: "ZODIAC_TAURUS_CHANNEL_ID" },
+  { slug: "virgo", emoji: "♍", nameRu: "Дева", element: "earth", gift: "внимание к деталям, практическую помощь и ясность", caution: "важно не превращать заботу в постоянную коррекцию партнёра", env: "ZODIAC_VIRGO_CHANNEL_ID" },
 ];
+
+const ELEMENT_NAMES_RU = {
+  fire: "огонь",
+  earth: "земля",
+  air: "воздух",
+  water: "вода",
+};
 
 export const VALID_COMPATIBILITY_STATUSES = new Set(["pending", "locked", "in_progress", "publishing", "sent", "published", "failed", "skipped"]);
 export const PROTECTED_COMPATIBILITY_STATUSES = new Set(["pending", "locked", "in_progress", "publishing", "sent", "published"]);
@@ -66,6 +74,49 @@ const ADVICE_LINES = [
   "Совет: берегите уважение в мелочах — именно оно делает совместимость устойчивой.",
 ];
 
+const SCORE_CONTEXT_LINES = [
+  (score, band) => `Внутренняя шкала ${score}/100 даёт качественную рамку: ${band}. Это ориентир для разговора, а не обещание результата.`,
+  (score, band) => `Значение ${score}/100 сопровождается описанием: ${band}. Оно не определяет исход отношений.`,
+  (score, band) => `Условная отметка ${score}/100 подсвечивает динамику пары. Основной ориентир: ${band}. Реальная близость всё равно складывается из решений двух людей.`,
+  (score, band) => `Шкала взаимодействия даёт ${score}/100 и помогает увидеть общий ритм. Его краткое описание: ${band}. Это не готовый сценарий отношений.`,
+];
+
+const LOVE_FOLLOW_UP_LINES = [
+  "Небольшие последовательные жесты здесь важнее громких признаний.",
+  "Тепло лучше поддерживать конкретными действиями, а не проверками.",
+  "Спокойная взаимность помогает не превращать симпатию в соревнование.",
+  "Личное пространство делает контакт устойчивее, если о нём договорились словами.",
+  "Внимание к темпу партнёра добавляет отношениям больше доверия.",
+  "Честность звучит мягче, когда в ней нет требования немедленного ответа.",
+];
+
+const COMMUNICATION_QUESTIONS = [
+  "Полезный вопрос: “что сейчас поможет нам услышать друг друга?”",
+  "Можно спросить прямо: “какой поддержки тебе сегодня не хватает?”",
+  "Начните с простого: “что мы можем уточнить без спора?”",
+  "Хорошая точка входа в разговор: “какой общий шаг будет комфортным для обоих?”",
+  "Попробуйте спросить: “где нам нужна ясность, а где — немного времени?”",
+  "Разговор станет предметнее с вопросом: “о чём мы сейчас только догадываемся?”",
+];
+
+const STRENGTH_FOLLOW_UP_LINES = [
+  "Этот ресурс заметнее, когда роли понятны и никто не тянет всё на себе.",
+  "Различия становятся поддержкой, если их не использовать как аргумент в споре.",
+  "Общий ритм укрепляется через уважение к сильным сторонам каждого.",
+  "Пара выигрывает, когда переводит взаимный интерес в понятные совместные действия.",
+  "Такое дополнение работает лучше без сравнения, кто вкладывается правильнее.",
+  "Сила союза раскрывается через договорённости, которые можно выполнить.",
+];
+
+const PRACTICE_FOLLOW_UP_LINES = [
+  (title) => `Для пары ${title} полезно выбрать один общий шаг и назвать его вслух.`,
+  (title) => `${title}: договоритесь об одном действии, которое сегодня уменьшит неопределённость.`,
+  (title) => `В связке ${title} лучше проверить ожидания вопросом, а не угадывать настроение.`,
+  (title) => `Пусть ${title} начнут с небольшого решения, удобного для обоих.`,
+  (title) => `Для динамики ${title} важен один конкретный жест без скрытой проверки реакции.`,
+  (title) => `${title}: обозначьте границу и поддержку, которые сейчас действительно нужны.`,
+];
+
 export function loadCompatibilityConfig() {
   const raw = fs.readFileSync(COMPATIBILITY_CONFIG_PATH, "utf8");
   const parsed = JSON.parse(raw);
@@ -103,6 +154,17 @@ export function validateCompatibilityConfig(config = loadCompatibilityConfig()) 
     if (pairIds.has(pair.pairId)) problems.push(`Duplicate pairId: ${pair.pairId}.`);
     pairIds.add(pair.pairId);
 
+    if (signs.has(pair.signA) && signs.has(pair.signB)) {
+      const expectedPairId = `${pair.signA}-${pair.signB}`;
+      const expectedTitle = buildCompatibilityPairTitle(pair.signA, pair.signB);
+      const expectedElementDynamic = buildCompatibilityElementDynamic(pair.signA, pair.signB);
+      if (pair.pairId !== expectedPairId) problems.push(`${pair.pairId}: pairId must match signA/signB order ${expectedPairId}.`);
+      if (pair.titleRu !== expectedTitle) problems.push(`${pair.pairId}: titleRu must match signA/signB order ${expectedTitle}.`);
+      if (pair.elementDynamic !== expectedElementDynamic) {
+        problems.push(`${pair.pairId}: elementDynamic must match signA/signB order ${expectedElementDynamic}.`);
+      }
+    }
+
     const logicalKey = [pair.signA, pair.signB].sort().join("+");
     if (logicalPairs.has(logicalKey)) problems.push(`Duplicate logical pair: ${logicalKey}.`);
     logicalPairs.add(logicalKey);
@@ -131,56 +193,151 @@ export function selectCompatibilityPairs({ pairId = null, sign = null, all = fal
     if (!SIGNS.some((item) => item.slug === normalizedSign)) throw new Error(`Unknown sign: ${sign}`);
     return config.pairs.filter((pair) => pair.signA === normalizedSign || pair.signB === normalizedSign);
   }
-  if (pairId) return [findCompatibilityPair(pairId, config.pairs)];
+  if (pairId) return [findOrderedCompatibilityPair(pairId, config.pairs)];
 
   throw new Error("Provide --pair, --sign, or --all.");
 }
 
 export function canonicalizeCompatibilityPairId(pairId, pairs = loadCompatibilityConfig().pairs) {
-  return findCompatibilityPair(pairId, pairs).pairId;
+  return findCanonicalCompatibilityPair(pairId, pairs).pairId;
 }
 
 export function findCompatibilityPair(pairId, pairs = loadCompatibilityConfig().pairs) {
+  return findCanonicalCompatibilityPair(pairId, pairs);
+}
+
+export function findOrderedCompatibilityPair(pairId, pairs = loadCompatibilityConfig().pairs) {
   const normalized = normalizePairId(pairId);
   const [left, right] = normalized.split("-");
-  const pair = pairs.find((item) => item.pairId === normalized) ||
-    pairs.find((item) => item.signA === right && item.signB === left);
+  const canonicalPair = findCanonicalCompatibilityPair(normalized, pairs);
+  return orientCompatibilityPair(canonicalPair, left, right);
+}
+
+function findCanonicalCompatibilityPair(pairId, pairs) {
+  const normalized = normalizePairId(pairId);
+  const [left, right, ...extra] = normalized.split("-");
+  if (!left || !right || extra.length > 0) throw new Error(`Unknown compatibility pair: ${pairId}`);
+
+  const pair = pairs.find((item) => item.pairId === normalized)
+    || pairs.find((item) => item.signA === left && item.signB === right)
+    || pairs.find((item) => item.signA === right && item.signB === left);
   if (!pair) throw new Error(`Unknown compatibility pair: ${pairId}`);
   return pair;
+}
+
+function orientCompatibilityPair(pair, signA, signB) {
+  getSign(signA);
+  getSign(signB);
+  return {
+    ...pair,
+    pairId: `${signA}-${signB}`,
+    canonicalPairId: pair.pairId,
+    signA,
+    signB,
+    titleRu: buildCompatibilityPairTitle(signA, signB),
+    elementDynamic: buildCompatibilityElementDynamic(signA, signB),
+  };
+}
+
+const ELEMENT_ROLE_LINES = {
+  fire: {
+    gift: "искру, инициативу и смелость говорить прямо",
+    caution: "важно не подменять тепло напором",
+  },
+  earth: {
+    gift: "устойчивость, заботу через действия и чувство реальности",
+    caution: "важно не превращать надежность в упрямый контроль",
+  },
+  air: {
+    gift: "легкость диалога, идеи и способность увидеть ситуацию шире",
+    caution: "важно не уходить в холодную рациональность",
+  },
+  water: {
+    gift: "эмоциональную глубину, интуицию и мягкую поддержку",
+    caution: "важно не додумывать чувства за другого человека",
+  },
+};
+
+function scoreBand(score) {
+  if (score >= 88) return "заметный потенциал взаимной поддержки";
+  if (score >= 76) return "хороший потенциал, если пара бережёт темп и границы";
+  if (score >= 64) return "интересная динамика, которой нужна осознанная настройка";
+  return "контрастная динамика: она может развивать, если не играть в борьбу характеров";
+}
+
+function buildPairSpecificLine(signA, signB, pair, seed) {
+  if (signA.slug === signB.slug) {
+    return `${signA.nameRu} + ${signB.nameRu} — зеркальная связка: сильное узнавание помогает, если оба не ждут от партнера идеальной копии себя.`;
+  }
+
+  const leftRole = ELEMENT_ROLE_LINES[signA.element] || ELEMENT_ROLE_LINES.air;
+  const rightRole = ELEMENT_ROLE_LINES[signB.element] || ELEMENT_ROLE_LINES.water;
+  const bridge = [
+    "Такой союз раскрывается через уважение к разной скорости реакции.",
+    "Главная настройка здесь — не спорить с природой друг друга, а договариваться о ритме.",
+    "Пара становится сильнее, когда различия превращаются в роли, а не в претензии.",
+    "Лучший сценарий — дать каждому свою зону влияния и не мерить любовь одинаковыми жестами.",
+  ];
+  return `${signA.nameRu} — про ${signA.gift || leftRole.gift}; ${signB.nameRu} — про ${signB.gift || rightRole.gift}. Динамика стихий (${pair.elementDynamic}): ${pick(bridge, seed, 7)}`;
+}
+
+function buildPairCaution(signA, signB, seed) {
+  const leftRole = ELEMENT_ROLE_LINES[signA.element] || ELEMENT_ROLE_LINES.air;
+  const rightRole = ELEMENT_ROLE_LINES[signB.element] || ELEMENT_ROLE_LINES.water;
+  const options = [
+    `${signA.nameRu}: ${signA.caution || leftRole.caution}; ${signB.nameRu}: ${signB.caution || rightRole.caution}.`,
+    `Риск появляется, если ${signA.nameRu} и ${signB.nameRu} начинают доказывать правоту вместо того, чтобы уточнить потребность.`,
+    `Слабое место пары — молчаливые ожидания: они быстро превращают симпатию в напряжение.`,
+    `Лучше не проверять чувства дистанцией, ревностью или игрой в угадайку.`,
+  ];
+  return pick(options, seed, 8);
 }
 
 export function generateCompatibilityPost(pair) {
   const signA = getSign(pair.signA);
   const signB = getSign(pair.signB);
   const seed = hashSeed(pair.pairId);
+  const band = scoreBand(pair.compatibilityScore);
 
   return {
     pairId: pair.pairId,
+    canonicalPairId: pair.canonicalPairId ?? pair.pairId,
+    signA: pair.signA,
+    signB: pair.signB,
+    titleRu: pair.titleRu,
     title: `💞 Совместимость: ${pair.titleRu}`,
     text: [
       `💞 Совместимость: ${pair.titleRu}`,
       "",
-      "Общая энергия:",
-      `${pair.shortTheme}. ${pick(GENERAL_LINES, seed, 1)}`,
+      "Фокус пары:",
+      `${sentenceCase(pair.shortTheme)}. ${pick(GENERAL_LINES, seed, 1)} ${pick(SCORE_CONTEXT_LINES, seed, 9)(pair.compatibilityScore, band)}`,
+      "",
+      "Как работает притяжение:",
+      buildPairSpecificLine(signA, signB, pair, seed),
       "",
       "Любовь:",
-      pick(LOVE_LINES, seed, 2),
+      `${pick(LOVE_LINES, seed, 2)} ${pick(LOVE_FOLLOW_UP_LINES, seed, 10)}`,
       "",
       "Общение:",
-      pick(COMMUNICATION_LINES, seed, 3),
+      `${pick(COMMUNICATION_LINES, seed, 3)} ${pick(COMMUNICATION_QUESTIONS, seed, 11)}`,
       "",
       "Сильная сторона пары:",
-      pick(STRENGTH_LINES, seed, 4),
+      `${pick(STRENGTH_LINES, seed, 4)} ${pick(STRENGTH_FOLLOW_UP_LINES, seed, 12)}`,
       "",
       "Риск:",
-      pick(RISK_LINES, seed, 5),
+      buildPairCaution(signA, signB, seed),
       "",
-      "Совет:",
-      pick(ADVICE_LINES, seed, 6),
+      "Практика на сегодня:",
+      `${sentenceCase(pick(ADVICE_LINES, seed, 6).replace(/^Совет:\s*/i, ""))} ${pick(PRACTICE_FOLLOW_UP_LINES, seed, 13)(pair.titleRu)}`,
+      "",
+      `Проверить вашу пару в Mini App: ${MINI_APP_CTA_URL}`,
     ].join("\n"),
     score: pair.compatibilityScore,
     elementDynamic: pair.elementDynamic,
     signs: [signA, signB],
+    language: "ru",
+    category: "zodiac-compatibility",
+    parseMode: "HTML",
     keyboard: buildCompatibilityKeyboard(pair),
     target: "general",
   };
@@ -331,8 +488,22 @@ function getSign(slug) {
   return sign;
 }
 
+function buildCompatibilityPairTitle(signA, signB) {
+  return `${getSign(signA).nameRu} + ${getSign(signB).nameRu}`;
+}
+
+function buildCompatibilityElementDynamic(signA, signB) {
+  return `${ELEMENT_NAMES_RU[getSign(signA).element]} + ${ELEMENT_NAMES_RU[getSign(signB).element]}`;
+}
+
 function normalizeSlug(value) {
   return String(value || "").trim().toLowerCase();
+}
+
+function sentenceCase(value) {
+  const text = String(value || "").trim();
+  if (!text) return "";
+  return `${text.charAt(0).toLocaleUpperCase("ru-RU")}${text.slice(1)}`;
 }
 
 function normalizePairId(value) {
