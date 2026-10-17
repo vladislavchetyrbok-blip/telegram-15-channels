@@ -22924,8 +22924,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-17T10:31:58.817Z"
+      "status": "sent",
+      "updatedAt": "2026-10-17T10:32:06.890Z",
+      "messageId": "262,",
+      "sentAt": "2026-10-17T10:32:06.886Z"
     }
   }
 }
