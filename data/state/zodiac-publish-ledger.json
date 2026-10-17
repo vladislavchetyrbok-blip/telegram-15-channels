@@ -23078,8 +23078,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-17T10:32:52.045Z"
+      "status": "sent",
+      "updatedAt": "2026-10-17T10:32:55.744Z",
+      "messageId": "259,",
+      "sentAt": "2026-10-17T10:32:55.740Z"
     }
   }
 }
