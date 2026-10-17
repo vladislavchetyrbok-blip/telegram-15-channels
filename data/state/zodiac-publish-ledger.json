@@ -22900,6 +22900,18 @@
       "updatedAt": "2026-10-16T11:14:16.761Z",
       "messageId": "257,",
       "sentAt": "2026-10-16T11:14:16.755Z"
+    },
+    "2026-10-17:zodiac-general": {
+      "key": "2026-10-17:zodiac-general",
+      "date": "2026-10-17",
+      "slug": "zodiac-general",
+      "createdAt": "2026-10-17T10:31:53.092Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-10-17T10:31:53.092Z"
     }
   }
 }
