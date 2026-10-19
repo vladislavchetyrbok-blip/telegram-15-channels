@@ -23400,8 +23400,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-19T12:56:13.396Z"
+      "status": "sent",
+      "updatedAt": "2026-10-19T12:56:17.633Z",
+      "messageId": "263,",
+      "sentAt": "2026-10-19T12:56:17.627Z"
     }
   }
 }
