@@ -23418,6 +23418,18 @@
       "updatedAt": "2026-10-19T12:56:22.804Z",
       "messageId": "264,",
       "sentAt": "2026-10-19T12:56:22.799Z"
+    },
+    "2026-10-19:aquarius": {
+      "key": "2026-10-19:aquarius",
+      "date": "2026-10-19",
+      "slug": "aquarius",
+      "createdAt": "2026-10-19T12:56:23.895Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-10-19T12:56:23.895Z"
     }
   }
 }
