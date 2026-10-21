@@ -23750,8 +23750,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-21T11:39:13.029Z"
+      "status": "sent",
+      "updatedAt": "2026-10-21T11:39:17.291Z",
+      "messageId": "268,",
+      "sentAt": "2026-10-21T11:39:17.287Z"
     }
   }
 }
