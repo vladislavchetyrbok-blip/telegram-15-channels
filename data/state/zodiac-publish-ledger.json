@@ -24170,8 +24170,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-23T11:29:25.453Z"
+      "status": "sent",
+      "updatedAt": "2026-10-23T11:29:29.690Z",
+      "messageId": "271,",
+      "sentAt": "2026-10-23T11:29:29.685Z"
     }
   }
 }
