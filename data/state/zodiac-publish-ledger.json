@@ -24048,6 +24048,18 @@
       "updatedAt": "2026-10-23T11:28:40.536Z",
       "messageId": "275,",
       "sentAt": "2026-10-23T11:28:40.531Z"
+    },
+    "2026-10-23:cancer": {
+      "key": "2026-10-23:cancer",
+      "date": "2026-10-23",
+      "slug": "cancer",
+      "createdAt": "2026-10-23T11:28:41.955Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-10-23T11:28:41.955Z"
     }
   }
 }
