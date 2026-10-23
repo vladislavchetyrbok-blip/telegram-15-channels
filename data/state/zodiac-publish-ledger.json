@@ -24030,8 +24030,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-23T11:28:31.354Z"
+      "status": "sent",
+      "updatedAt": "2026-10-23T11:28:35.428Z",
+      "messageId": "274,",
+      "sentAt": "2026-10-23T11:28:35.424Z"
     }
   }
 }
