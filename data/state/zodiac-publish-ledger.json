@@ -24100,8 +24100,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-23T11:28:58.158Z"
+      "status": "sent",
+      "updatedAt": "2026-10-23T11:29:02.122Z",
+      "messageId": "272,",
+      "sentAt": "2026-10-23T11:29:02.116Z"
     }
   }
 }
