@@ -24188,6 +24188,18 @@
       "updatedAt": "2026-10-24T10:47:14.439Z",
       "messageId": "285,",
       "sentAt": "2026-10-24T10:47:14.436Z"
+    },
+    "2026-10-24:aries": {
+      "key": "2026-10-24:aries",
+      "date": "2026-10-24",
+      "slug": "aries",
+      "createdAt": "2026-10-24T10:47:15.600Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-10-24T10:47:15.600Z"
     }
   }
 }
