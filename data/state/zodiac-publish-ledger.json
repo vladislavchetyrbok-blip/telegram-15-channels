@@ -24230,6 +24230,18 @@
       "updatedAt": "2026-10-24T10:47:28.651Z",
       "messageId": "277,",
       "sentAt": "2026-10-24T10:47:28.648Z"
+    },
+    "2026-10-24:cancer": {
+      "key": "2026-10-24:cancer",
+      "date": "2026-10-24",
+      "slug": "cancer",
+      "createdAt": "2026-10-24T10:47:29.892Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-10-24T10:47:29.892Z"
     }
   }
 }
