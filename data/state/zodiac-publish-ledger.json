@@ -24370,6 +24370,18 @@
       "updatedAt": "2026-10-25T11:13:33.314Z",
       "messageId": "287,",
       "sentAt": "2026-10-25T11:13:33.310Z"
+    },
+    "2026-10-25:aries": {
+      "key": "2026-10-25:aries",
+      "date": "2026-10-25",
+      "slug": "aries",
+      "createdAt": "2026-10-25T11:13:34.569Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-10-25T11:13:34.569Z"
     }
   }
 }
