@@ -24618,8 +24618,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-26T12:48:17.432Z"
+      "status": "sent",
+      "updatedAt": "2026-10-26T12:48:20.818Z",
+      "messageId": "280,",
+      "sentAt": "2026-10-26T12:48:20.813Z"
     }
   }
 }
