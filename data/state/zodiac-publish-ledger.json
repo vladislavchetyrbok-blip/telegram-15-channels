@@ -24580,6 +24580,18 @@
       "updatedAt": "2026-10-26T12:48:06.582Z",
       "messageId": "280,",
       "sentAt": "2026-10-26T12:48:06.577Z"
+    },
+    "2026-10-26:gemini": {
+      "key": "2026-10-26:gemini",
+      "date": "2026-10-26",
+      "slug": "gemini",
+      "createdAt": "2026-10-26T12:48:07.942Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-10-26T12:48:07.942Z"
     }
   }
 }
