@@ -24747,6 +24747,18 @@
       "status": "failed",
       "updatedAt": "2026-10-27T12:00:13.443Z",
       "error": "Child process failed with status 1"
+    },
+    "2026-10-27:taurus": {
+      "key": "2026-10-27:taurus",
+      "date": "2026-10-27",
+      "slug": "taurus",
+      "createdAt": "2026-10-27T12:00:14.844Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-10-27T12:00:14.844Z"
     }
   }
 }
