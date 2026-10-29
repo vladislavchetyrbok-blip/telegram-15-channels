@@ -25093,8 +25093,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-29T12:48:50.024Z"
+      "status": "sent",
+      "updatedAt": "2026-10-29T12:48:54.330Z",
+      "messageId": "295,",
+      "sentAt": "2026-10-29T12:48:54.326Z"
     }
   }
 }
