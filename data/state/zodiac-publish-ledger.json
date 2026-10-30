@@ -25373,8 +25373,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-10-30T12:41:24.922Z"
+      "status": "sent",
+      "updatedAt": "2026-10-30T12:41:28.258Z",
+      "messageId": "286,",
+      "sentAt": "2026-10-30T12:41:28.253Z"
     }
   }
 }
