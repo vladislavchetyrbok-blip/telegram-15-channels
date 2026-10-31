@@ -25503,6 +25503,18 @@
       "updatedAt": "2026-10-31T12:10:51.234Z",
       "messageId": "291,",
       "sentAt": "2026-10-31T12:10:51.229Z"
+    },
+    "2026-10-31:cancer": {
+      "key": "2026-10-31:cancer",
+      "date": "2026-10-31",
+      "slug": "cancer",
+      "createdAt": "2026-10-31T12:10:52.436Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-10-31T12:10:52.436Z"
     }
   }
 }
