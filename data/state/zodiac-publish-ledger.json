@@ -25653,8 +25653,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-01T13:09:43.462Z"
+      "status": "sent",
+      "updatedAt": "2026-11-01T13:09:47.452Z",
+      "messageId": "290,",
+      "sentAt": "2026-11-01T13:09:47.448Z"
     }
   }
 }
