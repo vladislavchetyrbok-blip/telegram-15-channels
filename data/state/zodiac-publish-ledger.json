@@ -25713,6 +25713,18 @@
       "updatedAt": "2026-11-01T13:10:08.836Z",
       "messageId": "292,",
       "sentAt": "2026-11-01T13:10:08.832Z"
+    },
+    "2026-11-01:virgo": {
+      "key": "2026-11-01:virgo",
+      "date": "2026-11-01",
+      "slug": "virgo",
+      "createdAt": "2026-11-01T13:10:10.380Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-11-01T13:10:10.380Z"
     }
   }
 }
