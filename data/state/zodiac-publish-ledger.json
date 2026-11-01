@@ -25643,6 +25643,18 @@
       "updatedAt": "2026-11-01T13:09:42.095Z",
       "messageId": "301,",
       "sentAt": "2026-11-01T13:09:42.091Z"
+    },
+    "2026-11-01:aries": {
+      "key": "2026-11-01:aries",
+      "date": "2026-11-01",
+      "slug": "aries",
+      "createdAt": "2026-11-01T13:09:43.462Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-11-01T13:09:43.462Z"
     }
   }
 }
