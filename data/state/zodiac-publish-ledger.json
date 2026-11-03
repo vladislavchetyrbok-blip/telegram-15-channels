@@ -26045,6 +26045,18 @@
       "status": "failed",
       "updatedAt": "2026-11-03T14:02:28.328Z",
       "error": "Child process failed with status 1"
+    },
+    "2026-11-03:cancer": {
+      "key": "2026-11-03:cancer",
+      "date": "2026-11-03",
+      "slug": "cancer",
+      "createdAt": "2026-11-03T14:02:29.898Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-11-03T14:02:29.898Z"
     }
   }
 }
