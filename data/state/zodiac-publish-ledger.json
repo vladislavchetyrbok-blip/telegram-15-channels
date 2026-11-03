@@ -26136,6 +26136,18 @@
       "status": "failed",
       "updatedAt": "2026-11-03T14:04:41.345Z",
       "error": "Child process failed with status 1"
+    },
+    "2026-11-03:aquarius": {
+      "key": "2026-11-03:aquarius",
+      "date": "2026-11-03",
+      "slug": "aquarius",
+      "createdAt": "2026-11-03T14:04:43.061Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-11-03T14:04:43.061Z"
     }
   }
 }
