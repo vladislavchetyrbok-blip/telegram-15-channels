@@ -26110,6 +26110,18 @@
       "status": "failed",
       "updatedAt": "2026-11-03T14:04:14.482Z",
       "error": "Child process failed with status 1"
+    },
+    "2026-11-03:sagittarius": {
+      "key": "2026-11-03:sagittarius",
+      "date": "2026-11-03",
+      "slug": "sagittarius",
+      "createdAt": "2026-11-03T14:04:16.221Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-11-03T14:04:16.221Z"
     }
   }
 }
