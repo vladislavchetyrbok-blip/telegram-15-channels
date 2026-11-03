@@ -26120,8 +26120,9 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-03T14:04:16.221Z"
+      "status": "failed",
+      "updatedAt": "2026-11-03T14:04:35.299Z",
+      "error": "Child process failed with status 1"
     }
   }
 }
