@@ -26228,8 +26228,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-04T14:19:30.847Z"
+      "status": "sent",
+      "updatedAt": "2026-11-04T14:19:34.456Z",
+      "messageId": "296,",
+      "sentAt": "2026-11-04T14:19:34.451Z"
     }
   }
 }
