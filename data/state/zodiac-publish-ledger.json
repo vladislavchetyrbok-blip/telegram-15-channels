@@ -26162,6 +26162,18 @@
       "status": "failed",
       "updatedAt": "2026-11-03T14:04:51.650Z",
       "error": "Child process failed with status 1"
+    },
+    "2026-11-04:zodiac-general": {
+      "key": "2026-11-04:zodiac-general",
+      "date": "2026-11-04",
+      "slug": "zodiac-general",
+      "createdAt": "2026-11-04T14:19:07.365Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-11-04T14:19:07.365Z"
     }
   }
 }
