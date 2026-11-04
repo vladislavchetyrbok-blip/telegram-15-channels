@@ -26284,8 +26284,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-04T14:19:51.317Z"
+      "status": "sent",
+      "updatedAt": "2026-11-04T14:19:54.824Z",
+      "messageId": "294,",
+      "sentAt": "2026-11-04T14:19:54.820Z"
     }
   }
 }
