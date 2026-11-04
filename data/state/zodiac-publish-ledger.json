@@ -26218,6 +26218,18 @@
       "updatedAt": "2026-11-04T14:19:29.014Z",
       "messageId": "297,",
       "sentAt": "2026-11-04T14:19:29.007Z"
+    },
+    "2026-11-04:cancer": {
+      "key": "2026-11-04:cancer",
+      "date": "2026-11-04",
+      "slug": "cancer",
+      "createdAt": "2026-11-04T14:19:30.847Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-11-04T14:19:30.847Z"
     }
   }
 }
