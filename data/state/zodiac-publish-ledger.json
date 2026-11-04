@@ -26190,6 +26190,18 @@
       "updatedAt": "2026-11-04T14:19:17.301Z",
       "messageId": "294,",
       "sentAt": "2026-11-04T14:19:17.296Z"
+    },
+    "2026-11-04:taurus": {
+      "key": "2026-11-04:taurus",
+      "date": "2026-11-04",
+      "slug": "taurus",
+      "createdAt": "2026-11-04T14:19:18.721Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-11-04T14:19:18.721Z"
     }
   }
 }
