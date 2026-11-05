@@ -26480,8 +26480,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-05T14:30:41.217Z"
+      "status": "sent",
+      "updatedAt": "2026-11-05T14:30:45.316Z",
+      "messageId": "295,",
+      "sentAt": "2026-11-05T14:30:45.312Z"
     }
   }
 }
