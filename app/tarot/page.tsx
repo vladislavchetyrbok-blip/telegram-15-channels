@@ -65,6 +65,7 @@ export default function TarotLandingPage() {
         eyebrow="Эстетика"
         title="Тёмная карта, золото и спокойная глубина"
         description="Mini App показывает аккуратную premium-карту без технических надписей, лишних блоков и визуального шума."
+        headingLevel="h2"
       />
 
       <SiteCTA

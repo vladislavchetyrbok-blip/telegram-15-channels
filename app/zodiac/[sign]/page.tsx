@@ -93,8 +93,10 @@ export default function ZodiacSignPage({ params }: ZodiacSignPageProps) {
         title="Дневной teaser"
         description={sign.todayTeaser}
       >
-        <div className="rounded-lg border border-amber-100/18 bg-[radial-gradient(circle_at_18%_0%,rgba(246,213,138,0.13),transparent_26%),linear-gradient(145deg,rgba(255,255,255,0.07),rgba(255,255,255,0.035))] p-5 text-sm leading-7 text-slate-300">
-          В Mini App этот знак можно соединить с картой дня, совместимостью и другими личными подсказками.
+        <div className="luxury-manuscript-scroll luxury-seal-corners relative overflow-hidden rounded-[1.25rem] p-6 text-sm leading-7 text-slate-300 sm:p-8">
+          <div className="luxury-ornament-field absolute inset-0 opacity-[0.14]" aria-hidden="true" />
+          <div className="animate-ember-drift absolute right-8 top-6 h-16 w-16 rounded-full bg-[radial-gradient(circle,rgba(246,213,138,0.16),transparent_70%)] blur-xl" aria-hidden="true" />
+          <div className="relative">В Mini App этот знак можно соединить с картой дня, совместимостью и другими личными подсказками.</div>
         </div>
       </SiteSection>
 
