@@ -26578,8 +26578,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-06T14:07:37.070Z"
+      "status": "sent",
+      "updatedAt": "2026-11-06T14:07:40.809Z",
+      "messageId": "301,",
+      "sentAt": "2026-11-06T14:07:40.804Z"
     }
   }
 }
