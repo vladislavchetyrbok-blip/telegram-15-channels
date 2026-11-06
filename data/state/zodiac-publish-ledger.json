@@ -26582,6 +26582,18 @@
       "updatedAt": "2026-11-06T14:07:40.809Z",
       "messageId": "301,",
       "sentAt": "2026-11-06T14:07:40.804Z"
+    },
+    "2026-11-06:cancer": {
+      "key": "2026-11-06:cancer",
+      "date": "2026-11-06",
+      "slug": "cancer",
+      "createdAt": "2026-11-06T14:07:42.284Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-11-06T14:07:42.284Z"
     }
   }
 }
