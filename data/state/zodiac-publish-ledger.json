@@ -26610,6 +26610,18 @@
       "updatedAt": "2026-11-06T14:07:51.968Z",
       "messageId": "300,",
       "sentAt": "2026-11-06T14:07:51.963Z"
+    },
+    "2026-11-06:virgo": {
+      "key": "2026-11-06:virgo",
+      "date": "2026-11-06",
+      "slug": "virgo",
+      "createdAt": "2026-11-06T14:07:53.316Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-11-06T14:07:53.316Z"
     }
   }
 }
