@@ -26620,8 +26620,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-06T14:07:53.316Z"
+      "status": "sent",
+      "updatedAt": "2026-11-06T14:07:56.751Z",
+      "messageId": "299,",
+      "sentAt": "2026-11-06T14:07:56.744Z"
     }
   }
 }
