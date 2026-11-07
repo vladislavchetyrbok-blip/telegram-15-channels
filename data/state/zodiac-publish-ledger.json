@@ -26763,6 +26763,18 @@
       "updatedAt": "2026-11-07T12:51:36.967Z",
       "messageId": "303,",
       "sentAt": "2026-11-07T12:51:36.963Z"
+    },
+    "2026-11-07:cancer": {
+      "key": "2026-11-07:cancer",
+      "date": "2026-11-07",
+      "slug": "cancer",
+      "createdAt": "2026-11-07T12:51:38.291Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-11-07T12:51:38.291Z"
     }
   }
 }
