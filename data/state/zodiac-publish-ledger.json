@@ -26843,8 +26843,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-07T12:52:03.260Z"
+      "status": "sent",
+      "updatedAt": "2026-11-07T12:52:06.946Z",
+      "messageId": "299,",
+      "sentAt": "2026-11-07T12:52:06.942Z"
     }
   }
 }
