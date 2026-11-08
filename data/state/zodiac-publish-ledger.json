@@ -26983,8 +26983,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-08T13:13:32.235Z"
+      "status": "sent",
+      "updatedAt": "2026-11-08T13:13:37.013Z",
+      "messageId": "303,",
+      "sentAt": "2026-11-08T13:13:37.008Z"
     }
   }
 }
