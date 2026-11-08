@@ -27053,8 +27053,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-08T13:13:57.063Z"
+      "status": "sent",
+      "updatedAt": "2026-11-08T13:14:00.608Z",
+      "messageId": "300,",
+      "sentAt": "2026-11-08T13:14:00.604Z"
     }
   }
 }
