@@ -27360,8 +27360,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-10T14:45:42.668Z"
+      "status": "sent",
+      "updatedAt": "2026-11-10T14:45:46.502Z",
+      "messageId": "306,",
+      "sentAt": "2026-11-10T14:45:46.497Z"
     }
   }
 }
