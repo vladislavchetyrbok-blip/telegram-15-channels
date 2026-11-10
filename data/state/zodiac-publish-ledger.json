@@ -27252,6 +27252,18 @@
       "updatedAt": "2026-11-09T16:00:48.361Z",
       "messageId": "303,",
       "sentAt": "2026-11-09T16:00:48.357Z"
+    },
+    "2026-11-10:zodiac-general": {
+      "key": "2026-11-10:zodiac-general",
+      "date": "2026-11-10",
+      "slug": "zodiac-general",
+      "createdAt": "2026-11-10T14:44:59.954Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-11-10T14:44:59.954Z"
     }
   }
 }
