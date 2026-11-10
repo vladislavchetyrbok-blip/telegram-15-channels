@@ -27388,8 +27388,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-10T14:45:53.693Z"
+      "status": "sent",
+      "updatedAt": "2026-11-10T14:45:57.677Z",
+      "messageId": "305,",
+      "sentAt": "2026-11-10T14:45:57.673Z"
     }
   }
 }
