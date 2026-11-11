@@ -27598,8 +27598,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-11T14:02:32.489Z"
+      "status": "sent",
+      "updatedAt": "2026-11-11T14:02:36.331Z",
+      "messageId": "306,",
+      "sentAt": "2026-11-11T14:02:36.326Z"
     }
   }
 }
