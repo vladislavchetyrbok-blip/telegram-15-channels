@@ -27458,8 +27458,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-11T14:01:38.495Z"
+      "status": "sent",
+      "updatedAt": "2026-11-11T14:01:42.997Z",
+      "messageId": "308,",
+      "sentAt": "2026-11-11T14:01:42.992Z"
     }
   }
 }
