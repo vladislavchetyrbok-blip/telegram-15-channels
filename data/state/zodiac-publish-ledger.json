@@ -27500,8 +27500,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-11T14:01:54.919Z"
+      "status": "sent",
+      "updatedAt": "2026-11-11T14:01:58.809Z",
+      "messageId": "310,",
+      "sentAt": "2026-11-11T14:01:58.805Z"
     }
   }
 }
