@@ -27780,8 +27780,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-12T15:02:50.700Z"
+      "status": "sent",
+      "updatedAt": "2026-11-12T15:02:54.815Z",
+      "messageId": "308,",
+      "sentAt": "2026-11-12T15:02:54.808Z"
     }
   }
 }
