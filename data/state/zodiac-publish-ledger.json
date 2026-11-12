@@ -27630,6 +27630,18 @@
       "updatedAt": "2026-11-12T15:01:50.652Z",
       "messageId": "321,",
       "sentAt": "2026-11-12T15:01:50.647Z"
+    },
+    "2026-11-12:aries": {
+      "key": "2026-11-12:aries",
+      "date": "2026-11-12",
+      "slug": "aries",
+      "createdAt": "2026-11-12T15:01:52.014Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-11-12T15:01:52.014Z"
     }
   }
 }
