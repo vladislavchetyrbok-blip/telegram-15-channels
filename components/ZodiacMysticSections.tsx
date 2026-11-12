@@ -666,7 +666,7 @@ export function AuraColorFeature({ publicMode, dateKey, sign }: CommonProps & { 
   );
 }
 
-export function LunarRitualFeature({ publicMode, dateKey, onSave, onShare, onEvent }: InteractiveMysticProps) {
+export function LunarRitualFeature({ publicMode, dateKey, onSave, onShare, onEvent }: Omit<InteractiveMysticProps, "sign">) {
   const [mode, setMode] = useState<MysticLunarMode>("daily_ritual");
   const [dateBucket, setDateBucket] = useState<MysticLunarDateBucket>("today");
   const [customDate, setCustomDate] = useState("");

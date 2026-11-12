@@ -40,7 +40,7 @@ export const menuFeatureTabs: Array<{ id: MoreFeatureId; label: string; shortLab
   { id: "dailyTalisman", label: "🧿 Талисман дня", shortLabel: "Талисман", group: "forecasts", requirement: "sign" },
   { id: "angelNumbers", label: "👼 Ангельские числа", shortLabel: "11:11", group: "forecasts" },
   { id: "giftBySign", label: "🎁 Подарок по знаку", shortLabel: "Подарок", group: "forecasts", requirement: "sign" },
-  { id: "dailyCard", label: "🃏 Карта дня", shortLabel: "Карта", group: "mystic", requirement: "sign" },
+  { id: "dailyCard", label: "🃏 Карта дня", shortLabel: "Карта", group: "mystic" },
   { id: "tarotCard", label: "🔮 Таро дня", shortLabel: "Таро", group: "mystic", requirement: "sign" },
   { id: "runeDay", label: "ᚱ Руна дня", shortLabel: "Руна", group: "mystic", requirement: "sign" },
   { id: "intuitiveSign", label: "✨ Интуитивный знак", shortLabel: "Знак", group: "mystic", requirement: "sign" },
