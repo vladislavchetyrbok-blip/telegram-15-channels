@@ -27668,8 +27668,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-12T15:02:03.835Z"
+      "status": "sent",
+      "updatedAt": "2026-11-12T15:02:08.493Z",
+      "messageId": "313,",
+      "sentAt": "2026-11-12T15:02:08.486Z"
     }
   }
 }
