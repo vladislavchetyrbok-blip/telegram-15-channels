@@ -27640,8 +27640,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-12T15:01:52.014Z"
+      "status": "sent",
+      "updatedAt": "2026-11-12T15:01:56.664Z",
+      "messageId": "310,",
+      "sentAt": "2026-11-12T15:01:56.659Z"
     }
   }
 }
