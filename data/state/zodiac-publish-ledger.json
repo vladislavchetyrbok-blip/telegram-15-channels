@@ -27961,6 +27961,18 @@
       "status": "failed",
       "updatedAt": "2026-11-13T14:28:11.908Z",
       "error": "Child process failed with status 1"
+    },
+    "2026-11-13:pisces": {
+      "key": "2026-11-13:pisces",
+      "date": "2026-11-13",
+      "slug": "pisces",
+      "createdAt": "2026-11-13T14:28:13.097Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-11-13T14:28:13.097Z"
     }
   }
 }
