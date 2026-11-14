@@ -28139,8 +28139,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-14T13:24:08.577Z"
+      "status": "sent",
+      "updatedAt": "2026-11-14T13:24:12.328Z",
+      "messageId": "310,",
+      "sentAt": "2026-11-14T13:24:12.322Z"
     }
   }
 }
