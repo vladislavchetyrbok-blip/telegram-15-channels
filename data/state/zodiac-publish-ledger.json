@@ -28013,8 +28013,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-14T13:23:20.897Z"
+      "status": "sent",
+      "updatedAt": "2026-11-14T13:23:25.454Z",
+      "messageId": "316,",
+      "sentAt": "2026-11-14T13:23:25.449Z"
     }
   }
 }
