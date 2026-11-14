@@ -28153,8 +28153,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-14T13:24:13.419Z"
+      "status": "sent",
+      "updatedAt": "2026-11-14T13:24:17.699Z",
+      "messageId": "313,",
+      "sentAt": "2026-11-14T13:24:17.695Z"
     }
   }
 }
