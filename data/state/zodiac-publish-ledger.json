@@ -28111,8 +28111,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-14T13:23:58.195Z"
+      "status": "sent",
+      "updatedAt": "2026-11-14T13:24:02.093Z",
+      "messageId": "311,",
+      "sentAt": "2026-11-14T13:24:02.088Z"
     }
   }
 }
