@@ -28320,8 +28320,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-15T14:06:14.656Z"
+      "status": "sent",
+      "updatedAt": "2026-11-15T14:06:18.588Z",
+      "messageId": "312,",
+      "sentAt": "2026-11-15T14:06:18.584Z"
     }
   }
 }
