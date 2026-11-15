@@ -28195,8 +28195,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-15T13:50:26.075Z"
+      "status": "sent",
+      "updatedAt": "2026-11-15T13:50:29.792Z",
+      "messageId": "318,",
+      "sentAt": "2026-11-15T13:50:29.787Z"
     }
   }
 }
