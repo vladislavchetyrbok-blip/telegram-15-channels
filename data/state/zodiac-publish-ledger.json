@@ -28279,8 +28279,9 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-15T14:06:00.623Z"
+      "status": "failed",
+      "updatedAt": "2026-11-15T14:06:03.204Z",
+      "error": "Child process failed with status 1"
     }
   }
 }
