@@ -28199,6 +28199,18 @@
       "updatedAt": "2026-11-15T13:50:29.792Z",
       "messageId": "318,",
       "sentAt": "2026-11-15T13:50:29.787Z"
+    },
+    "2026-11-15:gemini": {
+      "key": "2026-11-15:gemini",
+      "date": "2026-11-15",
+      "slug": "gemini",
+      "createdAt": "2026-11-15T13:50:30.842Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-11-15T13:50:30.842Z"
     }
   }
 }
