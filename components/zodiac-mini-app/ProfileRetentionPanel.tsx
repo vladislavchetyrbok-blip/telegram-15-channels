@@ -2,9 +2,10 @@ import type { ReactNode } from "react";
 import { Bookmark, CloudOff, History, ShieldCheck, Trash2, User } from "lucide-react";
 import type { ZodiacAnalyticsEventName, ZodiacAnalyticsPayload } from "@/lib/zodiac-mini-app-analytics-shared";
 import { relationshipModes } from "./constants";
+import { AphroditePersonalProfileFields } from "./AphroditePersonalProfileFields";
 import { SoftLaunchFeedbackPanel } from "./SoftLaunchFeedbackPanel";
 import { panelClass } from "./ui-primitives";
-import type { HubTab, MoreFeatureId, RelationshipMode, ZodiacSign } from "./types";
+import type { HubTab, MoreFeatureId, PersonState, RelationshipMode, ZodiacSign } from "./types";
 import type { RetentionPanelFocus, ZodiacRetentionItem, ZodiacRetentionState } from "./retention";
 
 export interface ProfileQuickTarget {
@@ -15,8 +16,10 @@ export interface ProfileQuickTarget {
 export function ProfileRetentionPanel({
   publicMode,
   selectedSign,
+  personalProfile,
   retention,
   focus,
+  onPersonalProfileChange,
   onQuickAction,
   onOpenFavorite,
   onClearLocalData,
@@ -25,8 +28,10 @@ export function ProfileRetentionPanel({
 }: {
   publicMode: boolean;
   selectedSign: ZodiacSign | null;
+  personalProfile: PersonState;
   retention: ZodiacRetentionState;
   focus: RetentionPanelFocus;
+  onPersonalProfileChange: (profile: PersonState) => void;
   onQuickAction: (target: ProfileQuickTarget, categoryId: string) => void;
   onOpenFavorite: (item: ZodiacRetentionItem) => void;
   onClearLocalData: () => void;
@@ -46,8 +51,12 @@ export function ProfileRetentionPanel({
         <div className="min-w-0">
           <p className="text-xs font-semibold text-amber-100">Локальный профиль</p>
           <h2 className="mt-1 text-xl font-semibold leading-tight text-white">👤 Мой профиль</h2>
-          <p className="mt-2 text-sm leading-6 text-slate-300">История, избранное и быстрые переходы хранятся только на этом устройстве.</p>
+          <p className="mt-2 text-sm leading-6 text-slate-300">Дата рождения, знак, история и избранное хранятся только на этом устройстве.</p>
         </div>
+      </div>
+
+      <div className="mt-4">
+        <AphroditePersonalProfileFields publicMode={publicMode} value={personalProfile} onChange={onPersonalProfileChange} />
       </div>
 
       <div className="mt-4 grid gap-3 min-[390px]:grid-cols-3">
@@ -64,7 +73,7 @@ export function ProfileRetentionPanel({
               Синхронизация выключена
               <span className="sr-only">Синхронизация между устройствами: выключена</span>
             </p>
-            <p className="mt-1 text-xs leading-4 text-sky-50/85">Данные остаются на устройстве.</p>
+            <p className="mt-1 text-xs leading-4 text-sky-50/85">Профиль доступен только в этом браузере или Telegram WebView.</p>
           </div>
         </div>
       </div>

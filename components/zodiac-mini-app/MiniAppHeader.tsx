@@ -49,7 +49,7 @@ export function HeaderStatusStrip({ publicMode, sign, dateLabel, vipUntilLabel }
     `${sign.emoji} ${sign.name}`,
     dateLabel ? `Сегодня: ${dateLabel} · Europe/Kyiv` : "Дата обновляется",
     "VIP превью · без оплаты",
-    "данные не сохраняются",
+    "профиль хранится на устройстве",
   ];
 
   return (

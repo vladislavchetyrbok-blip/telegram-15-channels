@@ -27,6 +27,7 @@ const BIRTH_MATRIX_LABELS = ["Матрица судьбы", "Матрица ро
 const COMPACT_HOME_RE = /Что между вами сейчас|Проверить совместимость|Матрица судьбы/;
 const PLACEHOLDER_PATTERNS = [/TODO/i, /lorem ipsum/i, /placeholder/i, /Скоро появится/i];
 const RETENTION_STORAGE_KEY = "zodiac-mini-app-retention-v1";
+const PERSONAL_PROFILE_STORAGE_KEY = "aphrodite-personal-profile-v1";
 const FORBIDDEN_RETENTION_VALUES = [
   "2000-01-01",
   "01.01.2000",
@@ -132,9 +133,8 @@ async function runDefaultOpenStateSmoke(client, baseUrl, report) {
 
   await navigate(client, withStartParam(baseUrl, "mystic"));
   await installSmokeHelpers(client);
-  await assertAppState(client, { activeTab: "mystic", startParam: "mystic", selectedSign: "" }, "startapp=mystic pre-sign");
-  await click(client, "Овен");
-  await assertAppState(client, { activeTab: "mystic", selectedSign: "aries", moreCategory: "mystic", moreFeature: "dailyCard" }, "startapp=mystic signed");
+  await assertAppState(client, { activeTab: "mystic", startParam: "mystic", selectedSign: "", moreCategory: "mystic", moreFeature: "dailyCard" }, "startapp=mystic profile-first");
+  await waitForPageText(client, /Карта дня|Открыть карту дня/, "startapp=mystic did not open the sign-free daily card.");
   report.startappMysticDeepLinkChecked = true;
 
   await seedMysticRetention(client);
@@ -145,7 +145,8 @@ async function runDefaultOpenStateSmoke(client, baseUrl, report) {
 
   await navigate(client, withStartParam(baseUrl, "compat"));
   await installSmokeHelpers(client);
-  await assertDefaultHomeState(client, "startapp=compat default route", "compat");
+  await assertAppState(client, { activeTab: "love", startParam: "compat", selectedSign: "" }, "startapp=compat direct compatibility route");
+  await waitForPageText(client, /Совместимость двух людей|Шаг 1 из 3/, "startapp=compat did not open Compatibility directly.");
   report.startappCompatHomeChecked = true;
   await assertPageTextAbsent(client, /Сонник/, "Sonnik should stay hidden on default/startapp=compat home.");
   report.sonnikHiddenBacklogChecked = true;
@@ -182,11 +183,8 @@ async function runBrowserModeSmoke(client, report) {
   await waitForPageText(client, COMPACT_HOME_RE, "Back to main menu did not render after Profile.");
 
   await click(client, "Совместимость");
-  await waitForPageText(client, /Любовная совместимость|Дружеская совместимость|Совместимость/, "Compatibility category did not render.");
-  await click(client, "Любовная совместимость");
-  await waitForPageText(client, /Выберите знак|Овен/, "Compatibility sign gate did not render.");
-  await click(client, "Овен");
-  await waitForPageText(client, /Совместимость|Шаг 1/, "Love flow did not render after sign selection.");
+  await waitForPageText(client, /Любовная совместимость|Дружеская совместимость|Совместимость двух людей/, "Compatibility category did not render.");
+  await waitForPageText(client, /Совместимость|Шаг 1/, "Love flow did not render without a global sign gate.");
   await assertNoNativeSelects(client, report, "Compatibility step 1");
   await click(client, "Персональный");
   await fillVisibleInputAt(client, 1, "01012000");
@@ -199,6 +197,7 @@ async function runBrowserModeSmoke(client, report) {
   await waitForPageText(client, /Овен/, "Birth date autosign failed for 2000-03-21 -> Овен.");
   await expectVisibleSelectValue(client, 0, "aries", "Birth date autosign 2000-03-21 -> Овен");
   report.compatibilityAutosignCases.push("2000-03-21 -> Овен");
+  await assertPersonalProfileStored(client, report, "aries");
   await click(client, "Далее");
   await waitForPageText(client, /Партнёр|Рассчитать/, "Compatibility step 2 did not render.");
   await click(client, "Женщина");
@@ -272,6 +271,7 @@ async function runBrowserModeSmoke(client, report) {
   await waitForPageText(client, /Мой профиль|Локальные данные/, "Profile did not render after opening favorite.");
   await click(client, "Очистить данные");
   await waitForPageText(client, /Здесь появятся сохранённые расчёты и быстрые переходы/, "Favorites empty state did not render after clearing local data.");
+  await assertPersonalProfileCleared(client, report);
   report.localDataCleared = true;
 
   await click(client, "Главная");
@@ -303,6 +303,11 @@ async function runBrowserModeSmoke(client, report) {
   for (const feature of MYSTIC_FEATURES) {
     await click(client, feature);
     await settle(client);
+    if (feature === "Таро" && (await hasText(client, /Нужен ваш знак|Знак вручную/))) {
+      await fillVisibleInputAt(client, 0, "01012000");
+      await waitForPageText(client, /Знак определён:.*Козерог|Козерог/, "Feature-level profile prompt did not auto-detect Capricorn.");
+      report.compatibilityAutosignCases.push("profile-first 01012000 -> 01.01.2000 -> Козерог");
+    }
     await assertFeatureScreen(client, feature, { allowSoon: false, minLength: 260 });
     report.mysticChecked += 1;
     await click(client, "Карта");
@@ -367,15 +372,15 @@ async function runFeedbackPanelSmoke(client, report) {
 
 async function runStartParamSmoke(client, baseUrl, report) {
   const cases = [
-    { param: "compat", landing: COMPACT_HOME_RE, assertDefaultHome: true, message: "startapp=compat should open the default home route, not Compatibility or Mystic." },
-    { param: "compat_love", sign: "Овен", landing: /Любовная совместимость|Совместимость/, pattern: /Любовь|Шаг 1|Совместимость/, expectedState: { activeTab: "love", selectedSign: "aries" }, message: "startapp=compat_love did not open Love compatibility after sign selection." },
-    { param: "compat_reconciliation", sign: "Овен", landing: /Примирение|Совместимость/, pattern: /Примирение|Шаг 1|Совместимость/, expectedState: { activeTab: "love", selectedSign: "aries" }, message: "startapp=compat_reconciliation did not open Reconciliation compatibility after sign selection." },
-    { param: "compat_gemini", sign: "Близнецы", beforeSign: "Любовная совместимость", landing: /Любовная совместимость|Совместимость/, pattern: /Совместимость|Шаг 1/, expectedState: { activeTab: "love", selectedSign: "gemini" }, message: "startapp=compat_gemini did not open Compatibility after sign selection." },
-    { param: "mystic", sign: "Овен", landing: /Мистика|Выберите знак/, pattern: /Мистика|Карта дня/, expectedState: { activeTab: "mystic", selectedSign: "aries", moreCategory: "mystic", moreFeature: "dailyCard" }, message: "startapp=mystic did not open Mystic after sign selection." },
-    { param: "vip", sign: "Овен", landing: /VIP раздел|Выберите знак/, pattern: /VIP превью|Превью до 17\.09\.2026|Без оплаты · VIP закрыт/, expectedState: { activeTab: "vip", selectedSign: "aries", moreCategory: "vip", moreFeature: "vip" }, message: "startapp=vip did not open VIP after sign selection." },
-    { param: "birth_matrix", sign: "Овен", landing: /Матрица судьбы|Выберите знак/, pattern: /Матрица|дд\.мм\.гггг|Дата/, expectedState: { activeTab: "mystic", selectedSign: "aries", moreCategory: "mystic", moreFeature: "birthMatrix" }, message: "startapp=birth_matrix did not open Birth Matrix after sign selection." },
-    { param: "angel_numbers", sign: "Овен", landing: /Ангельские числа|Выберите знак/, pattern: /Ангельские числа|11:11|22:22/, expectedState: { activeTab: "forecasts", selectedSign: "aries", moreCategory: "forecasts", moreFeature: "angelNumbers" }, message: "startapp=angel_numbers did not open Angel Numbers after sign selection." },
-    { param: "week", sign: "Овен", landing: /Гороскопы|Выберите знак/, pattern: /Неделя|Прогнозы|Удачные дни/, expectedState: { activeTab: "forecasts", selectedSign: "aries", moreCategory: "forecasts", moreFeature: "weekForecast" }, message: "startapp=week did not open weekly forecasts after sign selection." },
+    { param: "compat", landing: /Совместимость двух людей|Шаг 1/, pattern: /Любовь|Шаг 1|Совместимость/, expectedState: { activeTab: "love", selectedSign: "" }, message: "startapp=compat did not open Compatibility directly." },
+    { param: "compat_love", landing: /Любовная совместимость|Совместимость/, pattern: /Любовь|Шаг 1|Совместимость/, expectedState: { activeTab: "love", selectedSign: "" }, message: "startapp=compat_love did not open Love compatibility." },
+    { param: "compat_reconciliation", landing: /Примирение|Совместимость/, pattern: /Примирение|Шаг 1|Совместимость/, expectedState: { activeTab: "love", selectedSign: "" }, message: "startapp=compat_reconciliation did not open Reconciliation compatibility." },
+    { param: "compat_gemini", landing: /Любовная совместимость|Совместимость/, pattern: /Совместимость|Шаг 1/, expectedState: { activeTab: "love", selectedSign: "gemini" }, message: "startapp=compat_gemini did not preserve the sign deep link." },
+    { param: "mystic", landing: /Мистика|Карта дня/, pattern: /Мистика|Карта дня/, expectedState: { activeTab: "mystic", selectedSign: "", moreCategory: "mystic", moreFeature: "dailyCard" }, message: "startapp=mystic did not open sign-free Daily Card." },
+    { param: "vip", landing: /VIP раздел|VIP превью/, pattern: /VIP превью|Превью до 17\.09\.2026|Без оплаты · VIP закрыт/, expectedState: { activeTab: "vip", selectedSign: "", moreCategory: "vip", moreFeature: "vip" }, message: "startapp=vip did not open VIP without a global sign gate." },
+    { param: "birth_matrix", landing: /Матрица судьбы|Матрица рождения/, pattern: /Матрица|дд\.мм\.гггг|Дата/, expectedState: { activeTab: "mystic", selectedSign: "", moreCategory: "mystic", moreFeature: "birthMatrix" }, message: "startapp=birth_matrix did not open Birth Matrix directly." },
+    { param: "angel_numbers", landing: /Ангельские числа|11:11/, pattern: /Ангельские числа|11:11|22:22/, expectedState: { activeTab: "forecasts", selectedSign: "", moreCategory: "forecasts", moreFeature: "angelNumbers" }, message: "startapp=angel_numbers did not open Angel Numbers directly." },
+    { param: "week", querySign: "aries", landing: /Неделя|Гороскоп/, pattern: /Неделя|Прогнозы|Удачные дни/, expectedState: { activeTab: "forecasts", selectedSign: "aries", moreCategory: "forecasts", moreFeature: "weekForecast" }, message: "startapp=week did not preserve an explicit sign." },
     { param: "profile", landing: /Мой профиль|Локальные данные/, pattern: /Мой профиль|Избранное|История/, expectedState: { activeTab: "today", homePanel: "profile", selectedSign: "" }, message: "startapp=profile did not open Profile." },
     { param: "history", landing: /История|последние расчёты/, pattern: /История|Здесь появятся последние расчёты/, expectedState: { activeTab: "today", homePanel: "history", selectedSign: "" }, message: "startapp=history did not open Profile history." },
     { param: "favorites", landing: /Избранное|сохранённые расчёты/, pattern: /Избранное|Здесь появятся сохранённые расчёты/, expectedState: { activeTab: "today", homePanel: "favorites", selectedSign: "" }, message: "startapp=favorites did not open Profile favorites." },
@@ -385,21 +390,12 @@ async function runStartParamSmoke(client, baseUrl, report) {
   await runNatalVipCtaSmoke(client, baseUrl, report);
 
   for (const item of cases) {
-    await navigate(client, withStartParam(baseUrl, item.param));
+    await clearRetentionStorage(client);
+    const targetUrl = new URL(withStartParam(baseUrl, item.param));
+    if (item.querySign) targetUrl.searchParams.set("sign", item.querySign);
+    await navigate(client, targetUrl.href);
     await installSmokeHelpers(client);
     await waitForPageText(client, item.landing, `startapp=${item.param} landing did not render.`);
-    if (item.assertDefaultHome) {
-      await assertDefaultHomeState(client, `startapp=${item.param}`, item.param);
-      await assertPageTextAbsent(client, /Сонник/, `Sonnik should stay hidden for startapp=${item.param}.`);
-      report.startappCompatHomeChecked = true;
-      report.startParamsChecked.push(item.param);
-      continue;
-    }
-    if (item.beforeSign) {
-      await click(client, item.beforeSign);
-      await waitForPageText(client, /Выберите знак|Овен|Близнецы/, `startapp=${item.param} sign gate did not render.`);
-    }
-    if (item.sign) await click(client, item.sign);
     await waitForPageText(client, item.pattern, item.message);
     if (item.expectedState) await assertAppState(client, item.expectedState, `startapp=${item.param}`);
     if (item.param === "vip") {
@@ -460,11 +456,10 @@ async function runNatalVipCtaSmoke(client, baseUrl, report) {
 }
 
 async function openVipFromStartParam(client, baseUrl) {
+  await clearRetentionStorage(client);
   await navigate(client, withStartParam(baseUrl, "vip"));
   await installSmokeHelpers(client);
-  await waitForPageText(client, /VIP раздел|Выберите знак|Овен/, "VIP startapp sign gate did not render.");
-  await click(client, "Овен");
-  await waitForPageText(client, /VIP превью|Превью до 17\.09\.2026|Без оплаты · VIP закрыт/, "VIP startapp menu did not render.");
+  await waitForPageText(client, /VIP превью|Превью до 17\.09\.2026|Без оплаты · VIP закрыт/, "VIP startapp menu did not render without a sign.");
 }
 
 async function openNatalChartWithVipBlocks(client, baseUrl) {
@@ -472,8 +467,6 @@ async function openNatalChartWithVipBlocks(client, baseUrl) {
   await installSmokeHelpers(client);
   await waitForPageText(client, COMPACT_HOME_RE, "Mini App home did not render for dead CTA smoke.");
   await click(client, "Нумерология");
-  await waitForPageText(client, /Выберите знак|Овен/, "Profile sign gate did not render for dead CTA smoke.");
-  await click(client, "Овен");
   await waitForPageText(client, /Нумерология|Открыт раздел/, "Profile category did not render for dead CTA smoke.");
   await click(client, "Натал");
   await waitForPageText(client, /Натальная карта|Дата рождения/, "Natal chart feature did not render for dead CTA smoke.");
@@ -496,9 +489,7 @@ async function runTelegramMockSmoke(client, baseUrl, report) {
 
   await navigate(client, withStartParam(baseUrl, "mystic"));
   await installSmokeHelpers(client);
-  await assertAppState(client, { activeTab: "mystic", startParam: "mystic", selectedSign: "" }, "Telegram mock startapp=mystic pre-sign");
-  await click(client, "Овен");
-  await assertAppState(client, { activeTab: "mystic", selectedSign: "aries", moreCategory: "mystic", moreFeature: "dailyCard" }, "Telegram mock startapp=mystic signed");
+  await assertAppState(client, { activeTab: "mystic", startParam: "mystic", selectedSign: "", moreCategory: "mystic", moreFeature: "dailyCard" }, "Telegram mock startapp=mystic profile-first");
   await navigate(client, withSmokeParam(withoutStartParam(baseUrl), "telegram_fresh_after_mystic"));
   await installSmokeHelpers(client);
   await assertDefaultHomeState(client, "Telegram fresh open after Mystic", "");
@@ -508,8 +499,6 @@ async function runTelegramMockSmoke(client, baseUrl, report) {
   report.backButtonNoStaleMysticChecked = true;
 
   await click(client, "VIP раздел");
-  await waitForPageText(client, /VIP раздел|Выберите знак|Овен/, "Telegram mock VIP sign gate did not render.");
-  await click(client, "Овен");
   await waitForPageText(client, /VIP превью|Превью до 17\.09\.2026|Без оплаты · VIP закрыт/, "Telegram mock VIP menu did not render.");
   await click(client, "Месячный прогноз");
   await settle(client);
@@ -1467,6 +1456,47 @@ async function assertDefaultHomeState(client, label, expectedStartParam) {
 
 async function clearRetentionStorage(client) {
   await evalPage(client, "window.localStorage.removeItem(arguments[0]); true", [RETENTION_STORAGE_KEY]);
+  await evalPage(client, "window.localStorage.removeItem(arguments[0]); true", [PERSONAL_PROFILE_STORAGE_KEY]);
+}
+
+async function assertPersonalProfileStored(client, report, expectedSign) {
+  await settle(client);
+  const raw = await evalPage(client, "window.localStorage.getItem(arguments[0]) || ''", [PERSONAL_PROFILE_STORAGE_KEY]);
+  if (!raw) throw new Error("Personal profile was not stored locally.");
+
+  let profile;
+  try {
+    profile = JSON.parse(raw);
+  } catch {
+    throw new Error("Personal profile localStorage is not valid JSON.");
+  }
+
+  if (profile.sign !== expectedSign) throw new Error(`Personal profile sign mismatch: expected ${expectedSign}, got ${profile.sign || "empty"}.`);
+  if (!profile.birthDate) throw new Error("Personal profile did not retain the birth date used for auto-sign.");
+  for (const forbiddenField of ["partner", "secondSign", "partnerBirthDate", "telegramUserId", "initData"]) {
+    if (Object.prototype.hasOwnProperty.call(profile, forbiddenField)) throw new Error(`Personal profile contains forbidden field: ${forbiddenField}.`);
+  }
+  report.personalProfilePersistenceChecked = true;
+}
+
+async function assertPersonalProfileCleared(client, report) {
+  await settle(client);
+  const raw = await evalPage(client, "window.localStorage.getItem(arguments[0]) || ''", [PERSONAL_PROFILE_STORAGE_KEY]);
+  if (!raw) {
+    report.personalProfileClearChecked = true;
+    return;
+  }
+
+  let profile;
+  try {
+    profile = JSON.parse(raw);
+  } catch {
+    throw new Error("Cleared personal profile localStorage is not valid JSON.");
+  }
+  if (profile.sign || profile.birthDate || profile.name || profile.birthTime || profile.selectedCityId) {
+    throw new Error("Clear local data left personal profile values behind.");
+  }
+  report.personalProfileClearChecked = true;
 }
 
 async function seedMysticRetention(client) {
@@ -1811,6 +1841,8 @@ function createReport() {
     backButtonNoStaleMysticChecked: false,
     sonnikHiddenBacklogChecked: false,
     profileChecked: false,
+    personalProfilePersistenceChecked: false,
+    personalProfileClearChecked: false,
     feedbackChecked: false,
     feedbackDraftCopied: false,
     feedbackShareChecked: false,
@@ -1899,12 +1931,14 @@ function printSummary(status, report) {
   console.log(`Main menu categories checked: ${report.mainMenuCategoryCount}/10`);
   console.log(`Default app open checked: ${report.defaultOpenHomeChecked ? "YES" : "NO"}`);
   console.log(`Stale Mystic state cleared: ${report.staleMysticResetChecked ? "YES" : "NO"}`);
-  console.log(`startapp=compat opens home: ${report.startappCompatHomeChecked ? "YES" : "NO"}`);
+  console.log(`startapp=compat opens Compatibility: ${report.startappCompatHomeChecked ? "YES" : "NO"}`);
   console.log(`startapp=mystic opens Mystic: ${report.startappMysticDeepLinkChecked ? "YES" : "NO"}`);
   console.log(`Deep links regression checked: ${report.deepLinksRegressionChecked ? "YES" : "NO"}`);
   console.log(`BackButton stale Mystic regression: ${report.backButtonNoStaleMysticChecked ? "YES" : "NO"}`);
   console.log(`Sonnik hidden/backlog checked: ${report.sonnikHiddenBacklogChecked ? "YES" : "NO"}`);
   console.log(`Profile checked: ${report.profileChecked ? "YES" : "NO"}`);
+  console.log(`Personal profile persisted locally: ${report.personalProfilePersistenceChecked ? "YES" : "NO"}`);
+  console.log(`Personal profile clear checked: ${report.personalProfileClearChecked ? "YES" : "NO"}`);
   console.log(`Profile sync status visible: ${report.profileSyncStatusChecked ? "YES" : "NO"}`);
   console.log(`Profile sync network calls: ${report.profileSyncNetworkCalls.length}`);
   console.log(`Feedback CTA/panel checked: ${report.feedbackChecked ? "YES" : "NO"}`);
