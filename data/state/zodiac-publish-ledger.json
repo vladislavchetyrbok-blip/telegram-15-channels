@@ -28171,6 +28171,18 @@
       "updatedAt": "2026-11-15T13:50:20.010Z",
       "messageId": "325,",
       "sentAt": "2026-11-15T13:50:20.004Z"
+    },
+    "2026-11-15:aries": {
+      "key": "2026-11-15:aries",
+      "date": "2026-11-15",
+      "slug": "aries",
+      "createdAt": "2026-11-15T13:50:21.046Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-11-15T13:50:21.046Z"
     }
   }
 }
