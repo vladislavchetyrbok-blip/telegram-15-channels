@@ -28380,6 +28380,18 @@
       "updatedAt": "2026-11-16T15:33:15.916Z",
       "messageId": "320,",
       "sentAt": "2026-11-16T15:33:15.911Z"
+    },
+    "2026-11-16:gemini": {
+      "key": "2026-11-16:gemini",
+      "date": "2026-11-16",
+      "slug": "gemini",
+      "createdAt": "2026-11-16T15:33:17.443Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-11-16T15:33:17.443Z"
     }
   }
 }
