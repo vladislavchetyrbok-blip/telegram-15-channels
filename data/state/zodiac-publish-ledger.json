@@ -28390,8 +28390,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-16T15:33:17.443Z"
+      "status": "sent",
+      "updatedAt": "2026-11-16T15:33:21.704Z",
+      "messageId": "321,",
+      "sentAt": "2026-11-16T15:33:21.698Z"
     }
   }
 }
