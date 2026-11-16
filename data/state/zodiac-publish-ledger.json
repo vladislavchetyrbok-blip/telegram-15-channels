@@ -28348,8 +28348,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-16T15:32:59.633Z"
+      "status": "sent",
+      "updatedAt": "2026-11-16T15:33:04.552Z",
+      "messageId": "327,",
+      "sentAt": "2026-11-16T15:33:04.544Z"
     }
   }
 }
