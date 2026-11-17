@@ -28548,6 +28548,18 @@
       "updatedAt": "2026-11-17T15:52:43.261Z",
       "messageId": "320,",
       "sentAt": "2026-11-17T15:52:43.256Z"
+    },
+    "2026-11-17:taurus": {
+      "key": "2026-11-17:taurus",
+      "date": "2026-11-17",
+      "slug": "taurus",
+      "createdAt": "2026-11-17T15:52:44.293Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-11-17T15:52:44.293Z"
     }
   }
 }
