@@ -28520,6 +28520,18 @@
       "updatedAt": "2026-11-16T15:34:07.180Z",
       "messageId": "317,",
       "sentAt": "2026-11-16T15:34:07.174Z"
+    },
+    "2026-11-17:zodiac-general": {
+      "key": "2026-11-17:zodiac-general",
+      "date": "2026-11-17",
+      "slug": "zodiac-general",
+      "createdAt": "2026-11-17T15:52:32.698Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-11-17T15:52:32.698Z"
     }
   }
 }
