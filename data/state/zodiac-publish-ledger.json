@@ -28618,6 +28618,18 @@
       "updatedAt": "2026-11-17T15:53:10.298Z",
       "messageId": "321,",
       "sentAt": "2026-11-17T15:53:10.293Z"
+    },
+    "2026-11-17:libra": {
+      "key": "2026-11-17:libra",
+      "date": "2026-11-17",
+      "slug": "libra",
+      "createdAt": "2026-11-17T15:53:11.523Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-11-17T15:53:11.523Z"
     }
   }
 }
