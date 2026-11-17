@@ -28530,8 +28530,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-17T15:52:32.698Z"
+      "status": "sent",
+      "updatedAt": "2026-11-17T15:52:37.798Z",
+      "messageId": "329,",
+      "sentAt": "2026-11-17T15:52:37.793Z"
     }
   }
 }
