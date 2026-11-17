@@ -28670,8 +28670,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-17T15:53:27.819Z"
+      "status": "sent",
+      "updatedAt": "2026-11-17T15:53:31.670Z",
+      "messageId": "320,",
+      "sentAt": "2026-11-17T15:53:31.665Z"
     }
   }
 }
