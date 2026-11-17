@@ -28600,8 +28600,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-17T15:53:01.426Z"
+      "status": "sent",
+      "updatedAt": "2026-11-17T15:53:05.262Z",
+      "messageId": "322,",
+      "sentAt": "2026-11-17T15:53:05.259Z"
     }
   }
 }
