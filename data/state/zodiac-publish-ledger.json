@@ -28698,8 +28698,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-17T15:53:38.592Z"
+      "status": "sent",
+      "updatedAt": "2026-11-17T15:53:43.469Z",
+      "messageId": "319,",
+      "sentAt": "2026-11-17T15:53:43.465Z"
     }
   }
 }
