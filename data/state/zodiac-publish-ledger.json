@@ -28838,8 +28838,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-18T15:31:35.462Z"
+      "status": "sent",
+      "updatedAt": "2026-11-18T15:31:40.087Z",
+      "messageId": "319,",
+      "sentAt": "2026-11-18T15:31:40.082Z"
     }
   }
 }
