@@ -28768,8 +28768,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-18T15:31:08.285Z"
+      "status": "sent",
+      "updatedAt": "2026-11-18T15:31:12.654Z",
+      "messageId": "323,",
+      "sentAt": "2026-11-18T15:31:12.650Z"
     }
   }
 }
