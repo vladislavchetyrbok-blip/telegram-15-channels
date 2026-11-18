@@ -28740,8 +28740,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-18T15:30:56.781Z"
+      "status": "sent",
+      "updatedAt": "2026-11-18T15:31:01.347Z",
+      "messageId": "324,",
+      "sentAt": "2026-11-18T15:31:01.342Z"
     }
   }
 }
