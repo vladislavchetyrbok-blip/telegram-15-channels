@@ -28730,6 +28730,18 @@
       "updatedAt": "2026-11-18T15:30:54.873Z",
       "messageId": "322,",
       "sentAt": "2026-11-18T15:30:54.870Z"
+    },
+    "2026-11-18:taurus": {
+      "key": "2026-11-18:taurus",
+      "date": "2026-11-18",
+      "slug": "taurus",
+      "createdAt": "2026-11-18T15:30:56.781Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-11-18T15:30:56.781Z"
     }
   }
 }
