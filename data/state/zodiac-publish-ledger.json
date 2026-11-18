@@ -28810,8 +28810,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-18T15:31:24.887Z"
+      "status": "sent",
+      "updatedAt": "2026-11-18T15:31:28.876Z",
+      "messageId": "322,",
+      "sentAt": "2026-11-18T15:31:28.873Z"
     }
   }
 }
