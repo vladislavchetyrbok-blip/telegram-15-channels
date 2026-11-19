@@ -29048,8 +29048,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-19T15:39:24.801Z"
+      "status": "sent",
+      "updatedAt": "2026-11-19T15:39:27.753Z",
+      "messageId": "320,",
+      "sentAt": "2026-11-19T15:39:27.747Z"
     }
   }
 }
