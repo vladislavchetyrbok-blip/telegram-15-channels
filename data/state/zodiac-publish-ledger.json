@@ -29118,8 +29118,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-20T15:18:58.636Z"
+      "status": "sent",
+      "updatedAt": "2026-11-20T15:19:01.914Z",
+      "messageId": "329,",
+      "sentAt": "2026-11-20T15:19:01.909Z"
     }
   }
 }
