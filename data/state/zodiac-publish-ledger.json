@@ -29230,8 +29230,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-20T15:19:36.479Z"
+      "status": "sent",
+      "updatedAt": "2026-11-20T15:19:39.985Z",
+      "messageId": "322,",
+      "sentAt": "2026-11-20T15:19:39.980Z"
     }
   }
 }
