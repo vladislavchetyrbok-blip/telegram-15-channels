@@ -29370,8 +29370,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-21T14:32:24.363Z"
+      "status": "sent",
+      "updatedAt": "2026-11-21T14:32:28.156Z",
+      "messageId": "323,",
+      "sentAt": "2026-11-21T14:32:28.149Z"
     }
   }
 }
