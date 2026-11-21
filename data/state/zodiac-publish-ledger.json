@@ -29388,6 +29388,18 @@
       "updatedAt": "2026-11-21T14:32:32.994Z",
       "messageId": "325,",
       "sentAt": "2026-11-21T14:32:32.989Z"
+    },
+    "2026-11-21:capricorn": {
+      "key": "2026-11-21:capricorn",
+      "date": "2026-11-21",
+      "slug": "capricorn",
+      "createdAt": "2026-11-21T14:32:34.491Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-11-21T14:32:34.491Z"
     }
   }
 }
