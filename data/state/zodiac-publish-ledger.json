@@ -29356,8 +29356,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-21T14:32:19.319Z"
+      "status": "sent",
+      "updatedAt": "2026-11-21T14:32:23.040Z",
+      "messageId": "328,",
+      "sentAt": "2026-11-21T14:32:23.035Z"
     }
   }
 }
