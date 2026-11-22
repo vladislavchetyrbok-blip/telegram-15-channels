@@ -29570,6 +29570,18 @@
       "updatedAt": "2026-11-22T14:28:28.622Z",
       "messageId": "327,",
       "sentAt": "2026-11-22T14:28:28.619Z"
+    },
+    "2026-11-22:capricorn": {
+      "key": "2026-11-22:capricorn",
+      "date": "2026-11-22",
+      "slug": "capricorn",
+      "createdAt": "2026-11-22T14:28:30.049Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-11-22T14:28:30.049Z"
     }
   }
 }
