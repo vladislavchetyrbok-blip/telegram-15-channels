@@ -29440,8 +29440,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-22T14:27:35.172Z"
+      "status": "sent",
+      "updatedAt": "2026-11-22T14:27:40.593Z",
+      "messageId": "339,",
+      "sentAt": "2026-11-22T14:27:40.589Z"
     }
   }
 }
