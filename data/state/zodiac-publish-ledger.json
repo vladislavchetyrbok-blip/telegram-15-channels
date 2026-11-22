@@ -29608,8 +29608,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-22T14:28:39.548Z"
+      "status": "sent",
+      "updatedAt": "2026-11-22T14:28:43.065Z",
+      "messageId": "329,",
+      "sentAt": "2026-11-22T14:28:43.062Z"
     }
   }
 }
