@@ -29668,6 +29668,18 @@
       "updatedAt": "2026-11-23T17:56:10.669Z",
       "messageId": "335,",
       "sentAt": "2026-11-23T17:56:10.664Z"
+    },
+    "2026-11-23:cancer": {
+      "key": "2026-11-23:cancer",
+      "date": "2026-11-23",
+      "slug": "cancer",
+      "createdAt": "2026-11-23T17:56:12.116Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-11-23T17:56:12.116Z"
     }
   }
 }
