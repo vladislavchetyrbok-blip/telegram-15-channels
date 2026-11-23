@@ -29790,8 +29790,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-23T17:56:49.655Z"
+      "status": "sent",
+      "updatedAt": "2026-11-23T17:56:52.973Z",
+      "messageId": "331,",
+      "sentAt": "2026-11-23T17:56:52.968Z"
     }
   }
 }
