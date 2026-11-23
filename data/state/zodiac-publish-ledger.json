@@ -29650,8 +29650,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-23T17:56:02.151Z"
+      "status": "sent",
+      "updatedAt": "2026-11-23T17:56:05.686Z",
+      "messageId": "334,",
+      "sentAt": "2026-11-23T17:56:05.680Z"
     }
   }
 }
