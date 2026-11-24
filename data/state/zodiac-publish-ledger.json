@@ -29888,8 +29888,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-24T17:29:34.649Z"
+      "status": "sent",
+      "updatedAt": "2026-11-24T17:29:38.486Z",
+      "messageId": "335,",
+      "sentAt": "2026-11-24T17:29:38.482Z"
     }
   }
 }
