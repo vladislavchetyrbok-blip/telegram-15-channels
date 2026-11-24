@@ -29860,8 +29860,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-24T17:29:23.064Z"
+      "status": "sent",
+      "updatedAt": "2026-11-24T17:29:27.182Z",
+      "messageId": "335,",
+      "sentAt": "2026-11-24T17:29:27.178Z"
     }
   }
 }
