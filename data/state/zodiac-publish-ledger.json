@@ -30000,8 +30000,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-25T17:03:58.133Z"
+      "status": "sent",
+      "updatedAt": "2026-11-25T17:04:01.973Z",
+      "messageId": "336,",
+      "sentAt": "2026-11-25T17:04:01.965Z"
     }
   }
 }
