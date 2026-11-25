@@ -30032,6 +30032,18 @@
       "updatedAt": "2026-11-25T17:04:12.254Z",
       "messageId": "339,",
       "sentAt": "2026-11-25T17:04:12.249Z"
+    },
+    "2026-11-25:cancer": {
+      "key": "2026-11-25:cancer",
+      "date": "2026-11-25",
+      "slug": "cancer",
+      "createdAt": "2026-11-25T17:04:13.622Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-11-25T17:04:13.622Z"
     }
   }
 }
