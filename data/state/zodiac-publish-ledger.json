@@ -30042,8 +30042,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-25T17:04:13.622Z"
+      "status": "sent",
+      "updatedAt": "2026-11-25T17:04:17.438Z",
+      "messageId": "337,",
+      "sentAt": "2026-11-25T17:04:17.433Z"
     }
   }
 }
