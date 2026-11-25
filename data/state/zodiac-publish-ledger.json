@@ -30070,8 +30070,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-25T17:04:23.445Z"
+      "status": "sent",
+      "updatedAt": "2026-11-25T17:04:26.665Z",
+      "messageId": "337,",
+      "sentAt": "2026-11-25T17:04:26.659Z"
     }
   }
 }
