@@ -30112,8 +30112,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-25T17:04:37.755Z"
+      "status": "sent",
+      "updatedAt": "2026-11-25T17:04:41.245Z",
+      "messageId": "333,",
+      "sentAt": "2026-11-25T17:04:41.238Z"
     }
   }
 }
