@@ -29990,6 +29990,18 @@
       "updatedAt": "2026-11-25T17:03:56.305Z",
       "messageId": "345,",
       "sentAt": "2026-11-25T17:03:56.300Z"
+    },
+    "2026-11-25:aries": {
+      "key": "2026-11-25:aries",
+      "date": "2026-11-25",
+      "slug": "aries",
+      "createdAt": "2026-11-25T17:03:58.133Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-11-25T17:03:58.133Z"
     }
   }
 }
