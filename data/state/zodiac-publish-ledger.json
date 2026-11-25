@@ -30028,8 +30028,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-25T17:04:08.688Z"
+      "status": "sent",
+      "updatedAt": "2026-11-25T17:04:12.254Z",
+      "messageId": "339,",
+      "sentAt": "2026-11-25T17:04:12.249Z"
     }
   }
 }
