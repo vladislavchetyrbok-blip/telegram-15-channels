@@ -30140,8 +30140,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-25T17:04:47.616Z"
+      "status": "sent",
+      "updatedAt": "2026-11-25T17:04:51.139Z",
+      "messageId": "332,",
+      "sentAt": "2026-11-25T17:04:51.132Z"
     }
   }
 }
