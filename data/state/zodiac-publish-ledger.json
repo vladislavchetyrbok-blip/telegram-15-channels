@@ -30210,8 +30210,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-26T16:45:21.823Z"
+      "status": "sent",
+      "updatedAt": "2026-11-26T16:45:26.239Z",
+      "messageId": "341,",
+      "sentAt": "2026-11-26T16:45:26.234Z"
     }
   }
 }
