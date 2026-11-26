@@ -30298,6 +30298,18 @@
       "updatedAt": "2026-11-26T16:46:02.725Z",
       "messageId": "335,",
       "sentAt": "2026-11-26T16:46:02.718Z"
+    },
+    "2026-11-26:capricorn": {
+      "key": "2026-11-26:capricorn",
+      "date": "2026-11-26",
+      "slug": "capricorn",
+      "createdAt": "2026-11-26T16:46:04.344Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-11-26T16:46:04.344Z"
     }
   }
 }
