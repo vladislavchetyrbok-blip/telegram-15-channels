@@ -30280,8 +30280,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-26T16:45:52.584Z"
+      "status": "sent",
+      "updatedAt": "2026-11-26T16:45:56.720Z",
+      "messageId": "333,",
+      "sentAt": "2026-11-26T16:45:56.714Z"
     }
   }
 }
