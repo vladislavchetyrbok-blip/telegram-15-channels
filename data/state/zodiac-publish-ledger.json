@@ -30410,6 +30410,18 @@
       "updatedAt": "2026-11-27T16:30:55.919Z",
       "messageId": "341,",
       "sentAt": "2026-11-27T16:30:55.916Z"
+    },
+    "2026-11-27:leo": {
+      "key": "2026-11-27:leo",
+      "date": "2026-11-27",
+      "slug": "leo",
+      "createdAt": "2026-11-27T16:30:57.369Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-11-27T16:30:57.369Z"
     }
   }
 }
