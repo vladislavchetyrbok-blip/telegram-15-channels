@@ -30452,6 +30452,18 @@
       "updatedAt": "2026-11-27T16:31:10.590Z",
       "messageId": "340,",
       "sentAt": "2026-11-27T16:31:10.586Z"
+    },
+    "2026-11-27:scorpio": {
+      "key": "2026-11-27:scorpio",
+      "date": "2026-11-27",
+      "slug": "scorpio",
+      "createdAt": "2026-11-27T16:31:12.200Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-11-27T16:31:12.200Z"
     }
   }
 }
