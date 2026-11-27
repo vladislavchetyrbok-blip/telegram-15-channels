@@ -30354,6 +30354,18 @@
       "updatedAt": "2026-11-27T16:30:34.604Z",
       "messageId": "349,",
       "sentAt": "2026-11-27T16:30:34.601Z"
+    },
+    "2026-11-27:aries": {
+      "key": "2026-11-27:aries",
+      "date": "2026-11-27",
+      "slug": "aries",
+      "createdAt": "2026-11-27T16:30:36.652Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-11-27T16:30:36.652Z"
     }
   }
 }
