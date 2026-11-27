@@ -30493,6 +30493,18 @@
       "updatedAt": "2026-11-27T16:31:25.287Z",
       "messageId": "340,",
       "sentAt": "2026-11-27T16:31:25.283Z"
+    },
+    "2026-11-27:aquarius": {
+      "key": "2026-11-27:aquarius",
+      "date": "2026-11-27",
+      "slug": "aquarius",
+      "createdAt": "2026-11-27T16:31:26.859Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-11-27T16:31:26.859Z"
     }
   }
 }
