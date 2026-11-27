@@ -30382,6 +30382,18 @@
       "updatedAt": "2026-11-27T16:30:46.151Z",
       "messageId": "342,",
       "sentAt": "2026-11-27T16:30:46.146Z"
+    },
+    "2026-11-27:gemini": {
+      "key": "2026-11-27:gemini",
+      "date": "2026-11-27",
+      "slug": "gemini",
+      "createdAt": "2026-11-27T16:30:47.602Z",
+      "mediaMode": "image",
+      "source": "pipeline",
+      "mediaSuppressed": false,
+      "suppressionReason": null,
+      "status": "locked",
+      "updatedAt": "2026-11-27T16:30:47.602Z"
     }
   }
 }
