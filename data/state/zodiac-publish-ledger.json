@@ -30378,8 +30378,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-27T16:30:42.448Z"
+      "status": "sent",
+      "updatedAt": "2026-11-27T16:30:46.151Z",
+      "messageId": "342,",
+      "sentAt": "2026-11-27T16:30:46.146Z"
     }
   }
 }
