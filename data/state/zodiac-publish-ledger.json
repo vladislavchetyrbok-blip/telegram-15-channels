@@ -30350,8 +30350,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-27T16:30:30.224Z"
+      "status": "sent",
+      "updatedAt": "2026-11-27T16:30:34.604Z",
+      "messageId": "349,",
+      "sentAt": "2026-11-27T16:30:34.601Z"
     }
   }
 }
