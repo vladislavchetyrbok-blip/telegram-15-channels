@@ -30517,8 +30517,10 @@
       "source": "pipeline",
       "mediaSuppressed": false,
       "suppressionReason": null,
-      "status": "locked",
-      "updatedAt": "2026-11-27T16:31:32.046Z"
+      "status": "sent",
+      "updatedAt": "2026-11-27T16:31:36.144Z",
+      "messageId": "339,",
+      "sentAt": "2026-11-27T16:31:36.140Z"
     }
   }
 }
